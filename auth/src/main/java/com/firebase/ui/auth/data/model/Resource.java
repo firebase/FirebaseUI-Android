@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.firebase.ui.auth.util.Preconditions;
-
 /**
  * Base state model object.
  * <p>
@@ -18,35 +16,44 @@ public final class Resource<T> {
     private final T mValue;
     private final Exception mException;
 
-    /**
-     * Creates a default, unfinished, state.
-     */
-    public Resource() {
-        mState = State.LOADING;
-        mValue = null;
-        mException = null;
+    private boolean mIsUsed;
+
+    private Resource(State state, T value, Exception exception) {
+        mState = state;
+        mValue = value;
+        mException = exception;
     }
 
     /**
-     * Creates a finished success state.
-     *
-     * @param value result of the operation
+     * Creates a successful, empty Resource.
      */
-    public Resource(@NonNull T value) {
-        mState = State.SUCCESS;
-        mValue = Preconditions.checkNotNull(value, "Success state cannot have null result.");
-        mException = null;
+    @NonNull
+    public static Resource<Void> forVoidSuccess() {
+        return new Resource<>(State.SUCCESS, null, null);
     }
 
     /**
-     * Creates a finished failure state.
-     *
-     * @param exception error in computing the result
+     * Creates a successful resource containing a value.
      */
-    public Resource(@NonNull Exception exception) {
-        mState = State.FAILURE;
-        mValue = null;
-        mException = Preconditions.checkNotNull(exception, "Failure state cannot have null error.");
+    @NonNull
+    public static <T> Resource<T> forSuccess(@NonNull T value) {
+        return new Resource<>(State.SUCCESS, value, null);
+    }
+
+    /**
+     * Creates a failed resource with an exception.
+     */
+    @NonNull
+    public static <T> Resource<T> forFailure(@NonNull Exception e) {
+        return new Resource<>(State.FAILURE, null, e);
+    }
+
+    /**
+     * Creates a resource in the loading state, without a value or an exception.
+     */
+    @NonNull
+    public static <T> Resource<T> forLoading() {
+        return new Resource<>(State.LOADING, null, null);
     }
 
     @NonNull
@@ -56,12 +63,18 @@ public final class Resource<T> {
 
     @Nullable
     public final Exception getException() {
+        mIsUsed = true;
         return mException;
     }
 
     @Nullable
     public T getValue() {
+        mIsUsed = true;
         return mValue;
+    }
+
+    public boolean isUsed() {
+        return mIsUsed;
     }
 
     @Override

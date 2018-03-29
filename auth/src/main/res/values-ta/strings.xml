@@ -1,71 +1,69 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">ஏற்றுகிறது…</string>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">உள்நுழைக</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">பிழை ஏற்பட்டது.</string>
+    <string name="fui_progress_dialog_loading">ஏற்றுகிறது…</string>
+    <string name="fui_sign_in_default">உள்நுழைக</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">மின்னஞ்சல்</string>
-    <string name="fui_provider_name_phone">ஃபோன்</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google மூலம் உள்நுழைக</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook மூலம் உள்நுழைக</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter மூலம் உள்நுழைக</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">மின்னஞ்சல் மூலம் உள்நுழைக</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">ஃபோன் எண் மூலம் உள்நுழைக</string>
-    <string name="fui_next_default" translation_description="Button text to continue">அடுத்து</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">மின்னஞ்சல்</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">ஃபோன் எண்</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">கடவுச்சொல்</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">இதை காலியாக விடக்கூடாது.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">மின்னஞ்சல் முகவரி தவறாக உள்ளது</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">தொடர, மின்னஞ்சல் முகவரியை உள்ளிடவும்</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">ஏற்கனவே உள்ள கணக்குகளைச் சரிபார்க்கிறது…</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">பதிவு செய்க</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">பெயரின் முற்பகுதி மற்றும் பிற்பகுதி</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">சேமி</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">பதிவு செய்கிறது…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">அந்த மின்னஞ்சல் முகவரியுடன் ஏற்கனவே ஒரு கணக்கு உள்ளது.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s என்பதைத் தட்டுவதன் மூலம், %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">சேவை விதிமுறைகள்</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">தனியுரிமைக் கொள்கை</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">ஏற்கனவே உங்களிடம் கணக்கு உள்ளது</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">மீண்டும் வரவேற்கிறோம்!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">ஏற்கனவே %1$sஐப் பயன்படுத்தியுள்ளீர்கள். தொடர, %2$s மூலம் உள்நுழையவும்.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">ஏற்கனவே %1$sஐப் பயன்படுத்தி உள்நுழைந்திருக்கிறீர்கள். அந்தக் கணக்கிற்கான கடவுச்சொல்லை உள்ளிடவும்.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">உள்நுழைகிறீர்கள்…</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">உள்நுழைவதில் சிக்கலா?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">கடவுச்சொல்லை மீட்டெடு</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">உங்கள் மின்னஞ்சலைப் பார்க்கவும்</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">கடவுச்சொல்லை மீட்டமைப்பது தொடர்பான வழிமுறைகளை இந்த மின்னஞ்சலில் பார்க்கவும்.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">அனுப்பு</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">கடவுச்சொல்லை மீட்டெடுக்க, %1$sக்கு அனுப்பிய வழிமுறைகளைப் பின்பற்றவும்.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">அனுப்புகிறது…</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">மின்னஞ்சல் முகவரி தற்போதைய கணக்குடன் பொருந்தவில்லை</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">பயன்பாட்டு லோகோ</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">உள்நுழைந்துள்ள முகவரி: %1$s</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">ஃபோன் எண்ணை உள்ளிடவும்</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">குறியீட்டை 0:%02d நேரத்தில் மீண்டும் அனுப்பவும்</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">ஃபோன் எண்ணைச் சரிபார்</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">சரிபார்க்கிறது…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">smsஐ மீட்டெடுக்கிறது…</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">சரி</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">இந்த ஃபோன் எண் பலமுறை பயன்படுத்தப்பட்டுள்ளது</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">உங்கள் ஃபோன் எண்ணைச் சரிபார்ப்பதில் சிக்கல் ஏற்பட்டது</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">இந்தக் குறியீடு இனி செல்லுபடியாகாது</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">ஃபோன் எண் மூலம் உள்நுழையவும்</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">முடிந்தது</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">சரிபார்க்கப்பட்டது!</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">குறியீடு அனுப்பப்பட்டது!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">மீண்டும் அனுப்புகிறது…</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">குறியீட்டை மீண்டும் அனுப்பு</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ஃபோன் எண்ணைச் சரிபார்</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">தொடர்க</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s“ என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
+    <string name="fui_sign_in_with_google">Google மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_facebook">Facebook மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_twitter">Twitter மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_email">மின்னஞ்சல் மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_phone">ஃபோன் எண் மூலம் உள்நுழைக</string>
+    <string name="fui_next_default">அடுத்து</string>
+    <string name="fui_email_hint">மின்னஞ்சல்</string>
+    <string name="fui_phone_hint">ஃபோன் எண்</string>
+    <string name="fui_password_hint">கடவுச்சொல்</string>
+    <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>
+    <string name="fui_invalid_email_address">மின்னஞ்சல் முகவரி தவறாக உள்ளது</string>
+    <string name="fui_missing_email_address">தொடர, மின்னஞ்சல் முகவரியை உள்ளிடவும்</string>
+    <string name="fui_progress_dialog_checking_accounts">ஏற்கனவே உள்ள கணக்குகளைச் சரிபார்க்கிறது…</string>
+    <string name="fui_title_register_email">பதிவு செய்க</string>
+    <string name="fui_name_hint">பெயரின் முற்பகுதி மற்றும் பிற்பகுதி</string>
+    <string name="fui_button_text_save">சேமி</string>
+    <string name="fui_progress_dialog_signing_up">பதிவு செய்கிறது…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
+    <string name="fui_email_account_creation_error">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
+    <string name="fui_error_user_collision">அந்த மின்னஞ்சல் முகவரியுடன் ஏற்கனவே ஒரு கணக்கு உள்ளது.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">%1$s என்பதைத் தட்டுவதன் மூலம், %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
+    <string name="fui_create_account_preamble_tos_only">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
+    <string name="fui_create_account_preamble_pp_only">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
+    <string name="fui_terms_of_service">சேவை விதிமுறைகள்</string>
+    <string name="fui_privacy_policy">தனியுரிமைக் கொள்கை</string>
+    <string name="fui_welcome_back_idp_header">ஏற்கனவே உங்களிடம் கணக்கு உள்ளது</string>
+    <string name="fui_welcome_back_email_header">மீண்டும் வரவேற்கிறோம்!</string>
+    <string name="fui_welcome_back_idp_prompt">ஏற்கனவே %1$sஐப் பயன்படுத்தியுள்ளீர்கள். தொடர, %2$s மூலம் உள்நுழையவும்.</string>
+    <string name="fui_welcome_back_password_prompt_body">ஏற்கனவே %1$sஐப் பயன்படுத்தி உள்நுழைந்திருக்கிறீர்கள். அந்தக் கணக்கிற்கான கடவுச்சொல்லை உள்ளிடவும்.</string>
+    <string name="fui_progress_dialog_signing_in">உள்நுழைகிறீர்கள்…</string>
+    <string name="fui_trouble_signing_in">உள்நுழைவதில் சிக்கலா?</string>
+    <string name="fui_title_recover_password_activity">கடவுச்சொல்லை மீட்டெடு</string>
+    <string name="fui_title_confirm_recover_password">உங்கள் மின்னஞ்சலைப் பார்க்கவும்</string>
+    <string name="fui_password_recovery_body">கடவுச்சொல்லை மீட்டமைப்பது தொடர்பான வழிமுறைகளை இந்த மின்னஞ்சலில் பார்க்கவும்.</string>
+    <string name="fui_button_text_send">அனுப்பு</string>
+    <string name="fui_confirm_recovery_body">கடவுச்சொல்லை மீட்டெடுக்க, %1$sக்கு அனுப்பிய வழிமுறைகளைப் பின்பற்றவும்.</string>
+    <string name="fui_progress_dialog_sending">அனுப்புகிறது…</string>
+    <string name="fui_error_email_does_not_exist">மின்னஞ்சல் முகவரி தற்போதைய கணக்குடன் பொருந்தவில்லை</string>
+    <string name="fui_error_unknown">அறியப்படாத பிழை ஏற்பட்டது.</string>
+    <string name="fui_error_invalid_password">தவறான கடவுச்சொல்.</string>
+    <string name="fui_accessibility_logo">பயன்பாட்டு லோகோ</string>
+    <string name="fui_verify_phone_number_title">ஃபோன் எண்ணை உள்ளிடவும்</string>
+    <string name="fui_invalid_phone_number">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
+    <string name="fui_enter_confirmation_code">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>
+    <string name="fui_resend_code_in">குறியீட்டை 0:%02d நேரத்தில் மீண்டும் அனுப்பவும்</string>
+    <string name="fui_verify_your_phone_title">ஃபோன் எண்ணைச் சரிபார்</string>
+    <string name="fui_verifying">சரிபார்க்கிறது…</string>
+    <string name="fui_retrieving_sms">smsஐ மீட்டெடுக்கிறது…</string>
+    <string name="fui_incorrect_code_dialog_body">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">சரி</string>
+    <string name="fui_error_too_many_attempts">இந்த ஃபோன் எண் பலமுறை பயன்படுத்தப்பட்டுள்ளது</string>
+    <string name="fui_error_quota_exceeded">உங்கள் ஃபோன் எண்ணைச் சரிபார்ப்பதில் சிக்கல் ஏற்பட்டது</string>
+    <string name="fui_error_session_expired">இந்தக் குறியீடு இனி செல்லுபடியாகாது</string>
+    <string name="fui_sign_in_with_phone_number">ஃபோன் எண் மூலம் உள்நுழையவும்</string>
+    <string name="fui_done">முடிந்தது</string>
+    <string name="fui_verified">சரிபார்க்கப்பட்டது!</string>
+    <string name="fui_code_sent">குறியீடு அனுப்பப்பட்டது!</string>
+    <string name="fui_resending">மீண்டும் அனுப்புகிறது…</string>
+    <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
+    <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
+    <string name="fui_continue_phone_login">தொடர்க</string>
+    <string name="fui_sms_terms_of_service">“%1$s” என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
 </resources>

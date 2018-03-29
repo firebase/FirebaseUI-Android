@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -41,6 +42,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -53,7 +55,6 @@ import java.util.Locale;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
-    private static final int RC_PHONE_HINT = 22;
 
     private Context mAppContext;
 
@@ -69,8 +70,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         VerifyPhoneNumberFragment fragment = new VerifyPhoneNumberFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putBundle(ExtraConstants.EXTRA_PARAMS, params);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putBundle(ExtraConstants.PARAMS, params);
 
         fragment.setArguments(args);
         return fragment;
@@ -84,8 +85,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fui_phone_layout, container, false);
 
@@ -133,14 +134,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         // Check for phone
         // It is assumed that the phone number that are being wired in via Credential Selector
         // are e164 since we store it.
-        Bundle params = getArguments().getBundle(ExtraConstants.EXTRA_PARAMS);
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         String phone = null;
         String countryIso = null;
         String nationalNumber = null;
         if (params != null) {
-            phone = params.getString(ExtraConstants.EXTRA_PHONE);
-            countryIso = params.getString(ExtraConstants.EXTRA_COUNTRY_ISO);
-            nationalNumber = params.getString(ExtraConstants.EXTRA_NATIONAL_NUMBER);
+            phone = params.getString(ExtraConstants.PHONE);
+            countryIso = params.getString(ExtraConstants.COUNTRY_ISO);
+            nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
         }
         if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
             // User supplied country code & national number
@@ -166,7 +167,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_PHONE_HINT) {
+        if (requestCode == RequestCodes.CRED_HINT) {
             if (data != null) {
                 Credential cred = data.getParcelableExtra(Credential.EXTRA_KEY);
                 if (cred != null) {
@@ -233,7 +234,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     private void showPhoneAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getPhoneHintIntent().getIntentSender(), RC_PHONE_HINT);
+            startIntentSenderForResult(getPhoneHintIntent().getIntentSender(), RequestCodes.CRED_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }

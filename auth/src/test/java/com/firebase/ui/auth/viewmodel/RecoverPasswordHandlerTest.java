@@ -56,7 +56,7 @@ public class RecoverPasswordHandlerTest {
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Begin observation, then send the email
-        mHandler.getProgressLiveData().observeForever(mObserver);
+        mHandler.getOperation().observeForever(mObserver);
         mHandler.startReset(TestConstants.EMAIL);
 
         // Should get in-progress resource
@@ -76,7 +76,7 @@ public class RecoverPasswordHandlerTest {
                 .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));
 
         // Begin observation, then send the email
-        mHandler.getProgressLiveData().observeForever(mObserver);
+        mHandler.getOperation().observeForever(mObserver);
         mHandler.startReset(TestConstants.EMAIL);
 
         // Should get in-progress resource

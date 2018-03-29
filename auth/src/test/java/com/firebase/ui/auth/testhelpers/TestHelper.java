@@ -14,21 +14,22 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleRegistry;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -40,22 +41,23 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-import org.mockito.ArgumentCaptor;
+import org.junit.Assert;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowActivity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TestHelper {
@@ -151,7 +153,7 @@ public class TestHelper {
         return user;
     }
 
-    public static FlowParameters getFlowParameters(List<String> providerIds) {
+    public static FlowParameters getFlowParameters(Collection<String> providerIds) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -185,32 +187,23 @@ public class TestHelper {
                 true);
     }
 
-    public static void mockCredentialsClient(HelperActivityBase activity) {
-        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
-        CredentialsClient mockCredentials = mock(CredentialsClient.class);
-        saveSmartLock.setCredentialsClient(mockCredentials);
-        ((LifecycleRegistry) saveSmartLock.getLifecycle()).markState(Lifecycle.State.RESUMED);
+    public static void verifyCredentialSaveStarted(@NonNull  Activity activity,
+                                                   @Nullable String providerId,
+                                                   @Nullable String email,
+                                                   @Nullable String password,
+                                                   @Nullable String phoneNumber) {
 
-        when(mockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
-    }
+        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
 
-    public static void verifySmartLockSave(HelperActivityBase activity,
-                                           String providerId, String email, String password) {
-        verifySmartLockSave(activity, providerId, email, password, null);
-    }
+        // Verify that CredentialSaveActivity is next up
+        Assert.assertEquals(startedIntent.getComponent().getClassName(),
+                CredentialSaveActivity.class.getName());
 
-    public static void verifySmartLockSave(HelperActivityBase activity,
-                                           String providerId, String email,
-                                           String password, String phoneNumber) {
+        // Check the credential passed
+        Credential credential = startedIntent.getParcelableExtra(ExtraConstants.CREDENTIAL);
 
-        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
-        CredentialsClient mockCredentials = saveSmartLock.getCredentialsClient();
-
-        ArgumentCaptor<Credential> credentialCaptor = ArgumentCaptor.forClass(Credential.class);
-        verify(mockCredentials).save(credentialCaptor.capture());
-
-        Credential credential = credentialCaptor.getValue();
+        // Check the password
         assertEquals(credential.getPassword(), password);
 
         // Non-password credentials have a provider ID

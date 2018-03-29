@@ -12,10 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.AuthHelper;
+import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -23,27 +27,26 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
-
     private FlowHolder mFlowHolder;
 
     private FlowParameters mFlowParameters;
     private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
-    public static Intent createBaseIntent(
+    protected static Intent createBaseIntent(
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
             @NonNull FlowParameters flowParams) {
         return new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
+                .putExtra(ExtraConstants.FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }
@@ -52,6 +55,16 @@ public class HelperActivityBase extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mProgressDialogHolder.dismissDialog();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Forward the results of Smartlock Saving
+        if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
+            finish(RESULT_OK, data);
+        }
     }
 
     public FlowHolder getFlowHolder() {
@@ -79,25 +92,24 @@ public class HelperActivityBase extends AppCompatActivity {
         return mProgressDialogHolder;
     }
 
-    public void finish(int resultCode, Intent intent) {
+    public void finish(int resultCode, @Nullable Intent intent) {
         setResult(resultCode, intent);
         finish();
     }
 
-    public void saveCredentialsOrFinish(FirebaseUser firebaseUser, IdpResponse response) {
-        saveCredentialsOrFinish(firebaseUser, null, response);
-    }
-
-    public void saveCredentialsOrFinish(
+    public void startSaveCredentials(
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(this);
-        if (saveSmartLock == null) {
-            finish(Activity.RESULT_OK, response.toIntent());
-        } else {
-            saveSmartLock.saveCredentialsOrFinish(firebaseUser, password, response);
-        }
-    }
 
+        // Build credential
+        String accountType = ProviderUtils.idpResponseToAccountType(response);
+        Credential credential = CredentialsUtil.buildCredential(
+                firebaseUser, password, accountType);
+
+        // Start the dedicated SmartLock Activity
+        Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
+                credential, response);
+        startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
+    }
 }

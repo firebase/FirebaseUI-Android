@@ -71,8 +71,8 @@ public final class BucketedTextChangeListener implements TextWatcher {
     }
 
     /**
-     * For example, passing in ("-", 6) would return the following result: {"", "-", "--", "---",
-     * "----", "-----", "------"}
+     * For example, passing in ("-", 6) would return the following result:
+     * {"", "-", "--", "---", "----", "-----", "------"}
      *
      * @param repeatableChar the char to repeat to the specified length
      * @param length         the maximum length of repeated chars

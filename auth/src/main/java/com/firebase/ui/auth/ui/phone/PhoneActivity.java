@@ -20,7 +20,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -32,7 +34,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -75,28 +76,27 @@ public class PhoneActivity extends AppCompatBase {
     private VerificationState mVerificationState;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, Bundle params) {
-        return HelperActivityBase.createBaseIntent(
-                context, PhoneActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_PARAMS, params);
+        return createBaseIntent(context, PhoneActivity.class, flowParams)
+                .putExtra(ExtraConstants.PARAMS, params);
     }
 
     @Override
-    protected void onCreate(final Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
         mHandler = new Handler();
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
-        if (savedInstance != null && !savedInstance.isEmpty()) {
-            mPhoneNumber = savedInstance.getString(KEY_VERIFICATION_PHONE);
+        if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
+            mPhoneNumber = savedInstanceState.getString(KEY_VERIFICATION_PHONE);
 
-            if (savedInstance.getSerializable(KEY_STATE) != null) {
-                mVerificationState = (VerificationState) savedInstance.getSerializable(KEY_STATE);
+            if (savedInstanceState.getSerializable(KEY_STATE) != null) {
+                mVerificationState = (VerificationState) savedInstanceState.getSerializable(KEY_STATE);
             }
             return;
         }
 
-        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.EXTRA_PARAMS);
+        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.PARAMS);
         VerifyPhoneNumberFragment fragment = VerifyPhoneNumberFragment.newInstance
                 (getFlowParams(), params);
         getSupportFragmentManager().beginTransaction()
@@ -221,18 +221,18 @@ public class PhoneActivity extends AppCompatBase {
                     }
                     break;
                 case ERROR_TOO_MANY_REQUESTS:
-                    showAlertDialog(getString(R.string.fui_error_too_many_attempts), null);
+                    showAlertDialog(R.string.fui_error_too_many_attempts, null);
                     break;
                 case ERROR_QUOTA_EXCEEDED:
-                    showAlertDialog(getString(R.string.fui_error_quota_exceeded), null);
+                    showAlertDialog(R.string.fui_error_quota_exceeded, null);
                     break;
                 default:
                     Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), ex);
-                    showAlertDialog(error.getDescription(), null);
+                    showAlertDialog(R.string.fui_error_unknown, null);
             }
         } else {
-            Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
-            showAlertDialog(ex.getLocalizedMessage(), null);
+            Log.w(PHONE_VERIFICATION_LOG_TAG, "Unknown error", ex);
+            showAlertDialog(R.string.fui_error_unknown, null);
         }
     }
 
@@ -305,8 +305,10 @@ public class PhoneActivity extends AppCompatBase {
         finish(RESULT_OK, response.toIntent());
     }
 
-    private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
-            onClickListener) {
+    private void showAlertDialog(@StringRes int messageId,
+                                 DialogInterface.OnClickListener onClickListener) {
+
+        String s = getString(messageId);
         mAlertDialog = new AlertDialog.Builder(this)
                 .setMessage(s)
                 .setPositiveButton(R.string.fui_incorrect_code_dialog_positive_button_text, onClickListener)
@@ -346,7 +348,7 @@ public class PhoneActivity extends AppCompatBase {
                             switch (error) {
                                 case ERROR_INVALID_VERIFICATION_CODE:
                                     showAlertDialog(
-                                            getString(R.string.fui_incorrect_code_dialog_body),
+                                            R.string.fui_incorrect_code_dialog_body,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -357,7 +359,7 @@ public class PhoneActivity extends AppCompatBase {
                                     break;
                                 case ERROR_SESSION_EXPIRED:
                                     showAlertDialog(
-                                            getString(R.string.fui_error_session_expired),
+                                            R.string.fui_error_session_expired,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -368,10 +370,10 @@ public class PhoneActivity extends AppCompatBase {
                                     break;
                                 default:
                                     Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), e);
-                                    showAlertDialog(error.getDescription(), null);
+                                    showAlertDialog(R.string.fui_error_unknown, null);
                             }
                         } else {
-                            showAlertDialog(e.getLocalizedMessage(), null);
+                            showAlertDialog(R.string.fui_error_unknown, null);
                         }
                     }
                 });

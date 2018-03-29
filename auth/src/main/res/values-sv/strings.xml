@@ -1,71 +1,69 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Läser in…</string>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">Logga in</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">Ett fel har uppstått.</string>
+    <string name="fui_progress_dialog_loading">Läser in…</string>
+    <string name="fui_sign_in_default">Logga in</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">E-post</string>
-    <string name="fui_provider_name_phone">Telefon</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Logga in med Google</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Logga in med Facebook</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Logga in med Twitter</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Logga in med e-post</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Logga in med telefon</string>
-    <string name="fui_next_default" translation_description="Button text to continue">Nästa</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">E-post</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">Telefonnummer</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">Lösenord</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">Du måste fylla i det här fältet.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">E-postadressen är ogiltig</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Ange din e-postadress om du vill fortsätta</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Söker efter befintliga konton…</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">Registrera dig</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">För- och efternamn</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">Spara</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrerar…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> <item quantity="other">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Det gick inte att registrera e-postkontot</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Det finns redan ett konto med den e-postadressen.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Genom att trycka på %1$s godkänner du tjänstens %2$s och %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Genom att trycka på %1$s godkänner du tjänstens %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Genom att trycka på %1$s godkänner du tjänstens %2$s.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">användarvillkoren</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Sekretesspolicy</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har redan ett konto</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Välkommen tillbaka!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har redan använt %1$s. Logga in med %2$s om du vill fortsätta.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har redan loggat in med %1$s. Ange lösenordet för det kontot.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Loggar in…</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problem med att logga in?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Återställa lösenord</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Kolla dina e-postmeddelanden</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Få ett e-postmeddelande med anvisningar för hur du återställer lösenordet.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Skicka</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Följ anvisningarna som har skickats till %1$s för att återställa ditt lösenord.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Skickar…</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">E-postadressen matchar inget befintligt konto</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Appens logotyp</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Inloggad som %1$s</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Ange ditt telefonnummer</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Ange ett giltigt telefonnummer</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Ange den sexsiffriga koden vi skickade till</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Skicka kod igen om 0:%02d</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verifiera ditt telefonnummer</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifierar…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Hämtar sms…</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Fel kod. Försök igen.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Det här telefonnumret har använts för många gånger</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Det gick inte att verifiera telefonnumret</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Koden är inte längre giltig</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Logga in med telefonnummer</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Klart</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Verifierat!</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Koden har skickats!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Skickar igen…</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Skicka koden igen</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verifiera telefonnummer</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Fortsätt</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Genom att trycka på %1$s skickas ett sms. Meddelande- och dataavgifter kan tillkomma.</string>
+    <string name="fui_sign_in_with_google">Logga in med Google</string>
+    <string name="fui_sign_in_with_facebook">Logga in med Facebook</string>
+    <string name="fui_sign_in_with_twitter">Logga in med Twitter</string>
+    <string name="fui_sign_in_with_email">Logga in med e-post</string>
+    <string name="fui_sign_in_with_phone">Logga in med telefon</string>
+    <string name="fui_next_default">Nästa</string>
+    <string name="fui_email_hint">E-post</string>
+    <string name="fui_phone_hint">Telefonnummer</string>
+    <string name="fui_password_hint">Lösenord</string>
+    <string name="fui_required_field">Du måste fylla i det här fältet.</string>
+    <string name="fui_invalid_email_address">E-postadressen är ogiltig</string>
+    <string name="fui_missing_email_address">Ange din e-postadress om du vill fortsätta</string>
+    <string name="fui_progress_dialog_checking_accounts">Söker efter befintliga konton…</string>
+    <string name="fui_title_register_email">Registrera dig</string>
+    <string name="fui_name_hint">För- och efternamn</string>
+    <string name="fui_button_text_save">Spara</string>
+    <string name="fui_progress_dialog_signing_up">Registrerar…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> <item quantity="other">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> </plurals>
+    <string name="fui_email_account_creation_error">Det gick inte att registrera e-postkontot</string>
+    <string name="fui_error_user_collision">Det finns redan ett konto med den e-postadressen.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">Genom att trycka på %1$s godkänner du tjänstens %2$s och %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only">Genom att trycka på %1$s godkänner du tjänstens %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only">Genom att trycka på %1$s godkänner du tjänstens %2$s.</string>
+    <string name="fui_terms_of_service">användarvillkoren</string>
+    <string name="fui_privacy_policy">Sekretesspolicy</string>
+    <string name="fui_welcome_back_idp_header">Du har redan ett konto</string>
+    <string name="fui_welcome_back_email_header">Välkommen tillbaka!</string>
+    <string name="fui_welcome_back_idp_prompt">Du har redan använt %1$s. Logga in med %2$s om du vill fortsätta.</string>
+    <string name="fui_welcome_back_password_prompt_body">Du har redan loggat in med %1$s. Ange lösenordet för det kontot.</string>
+    <string name="fui_progress_dialog_signing_in">Loggar in…</string>
+    <string name="fui_trouble_signing_in">Har du problem med att logga in?</string>
+    <string name="fui_title_recover_password_activity">Återställa lösenord</string>
+    <string name="fui_title_confirm_recover_password">Kolla dina e-postmeddelanden</string>
+    <string name="fui_password_recovery_body">Få ett e-postmeddelande med anvisningar för hur du återställer lösenordet.</string>
+    <string name="fui_button_text_send">Skicka</string>
+    <string name="fui_confirm_recovery_body">Följ anvisningarna som har skickats till %1$s för att återställa ditt lösenord.</string>
+    <string name="fui_progress_dialog_sending">Skickar…</string>
+    <string name="fui_error_email_does_not_exist">E-postadressen matchar inget befintligt konto</string>
+    <string name="fui_error_unknown">Ett okänt fel uppstod.</string>
+    <string name="fui_error_invalid_password">Felaktigt lösenord.</string>
+    <string name="fui_accessibility_logo">Appens logotyp</string>
+    <string name="fui_verify_phone_number_title">Ange ditt telefonnummer</string>
+    <string name="fui_invalid_phone_number">Ange ett giltigt telefonnummer</string>
+    <string name="fui_enter_confirmation_code">Ange den sexsiffriga koden vi skickade till</string>
+    <string name="fui_resend_code_in">Skicka kod igen om 0:%02d</string>
+    <string name="fui_verify_your_phone_title">Verifiera ditt telefonnummer</string>
+    <string name="fui_verifying">Verifierar …</string>
+    <string name="fui_retrieving_sms">Hämtar sms…</string>
+    <string name="fui_incorrect_code_dialog_body">Fel kod. Försök igen.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
+    <string name="fui_error_too_many_attempts">Det här telefonnumret har använts för många gånger</string>
+    <string name="fui_error_quota_exceeded">Det gick inte att verifiera telefonnumret</string>
+    <string name="fui_error_session_expired">Koden är inte längre giltig</string>
+    <string name="fui_sign_in_with_phone_number">Logga in med telefonnummer</string>
+    <string name="fui_done">Klart</string>
+    <string name="fui_verified">Verifierat!</string>
+    <string name="fui_code_sent">Koden har skickats!</string>
+    <string name="fui_resending">Skickar igen…</string>
+    <string name="fui_resend_code">Skicka koden igen</string>
+    <string name="fui_verify_phone_number">Verifiera telefonnummer</string>
+    <string name="fui_continue_phone_login">Fortsätt</string>
+    <string name="fui_sms_terms_of_service">Genom att trycka på %1$s skickas ett sms. Meddelande- och dataavgifter kan tillkomma.</string>
 </resources>

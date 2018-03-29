@@ -16,6 +16,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
    1. [Compatability](#compatibility-with-firebase--google-play-services-libraries)
    1. [Upgrading dependencies](#upgrading-dependencies)
 1. [Sample App](#sample-app)
+1. [Snapshot Builds](#snapshot-builds)
 1. [Contributing](#contributing)
    1. [Installing](#installing-locally)
    1. [Deploying](#deployment)
@@ -46,16 +47,16 @@ libraries.
 ```groovy
 dependencies {
 // FirebaseUI for Firebase Realtime Database
-implementation 'com.firebaseui:firebase-ui-database:3.2.1'
+implementation 'com.firebaseui:firebase-ui-database:3.3.0'
 
 // FirebaseUI for Cloud Firestore
-implementation 'com.firebaseui:firebase-ui-firestore:3.2.1'
+implementation 'com.firebaseui:firebase-ui-firestore:3.3.0'
 
 // FirebaseUI for Firebase Auth
-implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
+implementation 'com.firebaseui:firebase-ui-auth:3.3.0'
 
 // FirebaseUI for Cloud Storage
-implementation 'com.firebaseui:firebase-ui-storage:3.2.1'
+implementation 'com.firebaseui:firebase-ui-storage:3.3.0'
 }
 ```
 
@@ -102,7 +103,8 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
-| 3.2.1              | 11.8.0                         |
+| 3.3.0              | 12.0.1                         |
+| 3.2.2              | 11.8.0                         |
 | 3.1.3              | 11.8.0                         |
 | 3.1.2              | 11.6.2                         |
 | 3.1.0              | 11.4.2                         |
@@ -198,6 +200,32 @@ If you encounter a version incompatibility error between Android Studio
 and Gradle while trying to run the sample app, try disabling the Instant
 Run feature of Android Studio. Alternatively, update Android Studio and
 Gradle to their latest versions.
+
+## Snapshot builds
+
+Like to live on the cutting edge?  Want to try the next release of FirebaseUI before anyone else? As of version `3.2.2`
+FirebaseUI hosts "snapshot" builds on oss.jfrog.org.
+
+Just add the following to your `build.gradle`:
+
+```groovy
+repositories {
+  maven { url "https://oss.jfrog.org/artifactory/oss-release-local" }
+}
+```
+
+Then you can depend on snapshot versions:
+
+```groovy
+implementation 'com.firebaseui:firebase-ui-auth:3.2.2-SNAPSHOT`
+```
+
+You can see which `SNAPSHOT` builds are avaiable here:
+https://oss.jfrog.org/webapp/#/artifacts/browse/tree/General/oss-snapshot-local/com/firebaseui
+
+Snapshot builds come with absolutely no guarantees and we will close any issues asking to troubleshoot
+a snapshot report unless they identify a bug that should block the release launch. Experiment
+at your own risk!
 
 ## Contributing
 

@@ -1,71 +1,69 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Yükleniyor…</string>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">Oturum aç</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">Bir hata oluştu.</string>
+    <string name="fui_progress_dialog_loading">Yükleniyor…</string>
+    <string name="fui_sign_in_default">Oturum aç</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">E-posta</string>
-    <string name="fui_provider_name_phone">Telefon</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google ile oturum aç</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook ile oturum aç</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter ile oturum aç</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">E-posta ile oturum aç</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Telefonla oturum aç</string>
-    <string name="fui_next_default" translation_description="Button text to continue">İleri</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">E-posta</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">Telefon Numarası</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">Şifre</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">Bu alanı boş bırakamazsınız.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">E-posta adresi doğru değil</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Devam etmek için e-posta adresinizi girin</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Mevcut hesaplar kontrol ediliyor…</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">Kaydol</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">Ad ve Soyadı</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">Kaydet</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Kaydolunuyor…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">E-posta hesabı kaydı başarısız oldu</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Bu e-posta adresiyle kayıtlı bir hesap zaten var.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s öğesine dokunarak şunları kabul ettiğinizi bildirirsiniz: %2$s ve %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s öğesine dokunarak şunu kabul ettiğinizi bildirirsiniz: %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s öğesine dokunarak şunu kabul ettiğinizi bildirirsiniz: %2$s.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Hizmet Şartları</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Gizlilik Politikası</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Zaten bir hesabınız var</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Tekrar hoş geldiniz!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">%1$s adresini zaten kullandınız. Devam etmek için %2$s ile oturum açın.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">%1$s adresini oturum açmak için zaten kullandınız. Bu hesap için şifrenizi girin.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Oturum açılıyor…</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Oturum açılamıyor mu?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Şifreyi kurtarın</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">E-postanızı kontrol edin</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Şifrenizi nasıl sıfırlayacağınızı açıklayan talimatlar bu e-postaya gönderilsin.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Gönder</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Şifrenizi kurtarmak için %1$s adresine gönderilen talimatları uygulayın.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Gönderiliyor…</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Bu e-posta adresi mevcut bir hesapla eşleşmiyor</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Uygulama logosu</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s olarak oturum açıldı</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Telefon numaranızı girin</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Geçerli bir telefon numarası girin</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Şu telefon numarasına gönderdiğimiz 6 haneli kodu girin:</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d içinde kodu yeniden gönder</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Telefon numaranızı doğrulayın</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Doğrulanıyor…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">SMS alınıyor…</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Yanlış kod. Tekrar deneyin.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Tamam</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Bu telefon numarası çok fazla kez kullanıldı</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Telefon numaranız doğrulanırken bir sorun oluştu</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Bu kod artık geçerli değil</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Telefon numarasıyla oturum açın</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Bitti</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Doğrulandı!</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Kod gönderildi!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Yeniden gönderiliyor…</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Kodu Yeniden Gönder</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Telefon Numarasını Doğrula</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Devam</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s” öğesine dokunarak SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
+    <string name="fui_sign_in_with_google">Google ile oturum aç</string>
+    <string name="fui_sign_in_with_facebook">Facebook ile oturum aç</string>
+    <string name="fui_sign_in_with_twitter">Twitter ile oturum aç</string>
+    <string name="fui_sign_in_with_email">E-posta ile oturum aç</string>
+    <string name="fui_sign_in_with_phone">Telefonla oturum aç</string>
+    <string name="fui_next_default">İleri</string>
+    <string name="fui_email_hint">E-posta</string>
+    <string name="fui_phone_hint">Telefon Numarası</string>
+    <string name="fui_password_hint">Şifre</string>
+    <string name="fui_required_field">Bu alanı boş bırakamazsınız.</string>
+    <string name="fui_invalid_email_address">E-posta adresi doğru değil</string>
+    <string name="fui_missing_email_address">Devam etmek için e-posta adresinizi girin</string>
+    <string name="fui_progress_dialog_checking_accounts">Mevcut hesaplar kontrol ediliyor…</string>
+    <string name="fui_title_register_email">Kaydol</string>
+    <string name="fui_name_hint">Ad ve Soyadı</string>
+    <string name="fui_button_text_save">Kaydet</string>
+    <string name="fui_progress_dialog_signing_up">Kaydolunuyor…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> </plurals>
+    <string name="fui_email_account_creation_error">E-posta hesabı kaydı başarısız oldu</string>
+    <string name="fui_error_user_collision">Bu e-posta adresiyle kayıtlı bir hesap zaten var.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">%1$s öğesine dokunarak şunları kabul ettiğinizi bildirirsiniz: %2$s ve %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only">%1$s öğesine dokunarak şunu kabul ettiğinizi bildirirsiniz: %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only">%1$s öğesine dokunarak şunu kabul ettiğinizi bildirirsiniz: %2$s.</string>
+    <string name="fui_terms_of_service">Hizmet Şartları</string>
+    <string name="fui_privacy_policy">Gizlilik Politikası</string>
+    <string name="fui_welcome_back_idp_header">Zaten bir hesabınız var</string>
+    <string name="fui_welcome_back_email_header">Tekrar hoş geldiniz!</string>
+    <string name="fui_welcome_back_idp_prompt">%1$s adresini zaten kullandınız. Devam etmek için %2$s ile oturum açın.</string>
+    <string name="fui_welcome_back_password_prompt_body">%1$s adresini oturum açmak için zaten kullandınız. Bu hesap için şifrenizi girin.</string>
+    <string name="fui_progress_dialog_signing_in">Oturum açılıyor…</string>
+    <string name="fui_trouble_signing_in">Oturum açılamıyor mu?</string>
+    <string name="fui_title_recover_password_activity">Şifreyi kurtarın</string>
+    <string name="fui_title_confirm_recover_password">E-postanızı kontrol edin</string>
+    <string name="fui_password_recovery_body">Şifrenizi nasıl sıfırlayacağınızı açıklayan talimatlar bu e-postaya gönderilsin.</string>
+    <string name="fui_button_text_send">Gönder</string>
+    <string name="fui_confirm_recovery_body">Şifrenizi kurtarmak için %1$s adresine gönderilen talimatları uygulayın.</string>
+    <string name="fui_progress_dialog_sending">Gönderiliyor…</string>
+    <string name="fui_error_email_does_not_exist">Bu e-posta adresi mevcut bir hesapla eşleşmiyor</string>
+    <string name="fui_error_unknown">Bilinmeyen bir hata oluştu.</string>
+    <string name="fui_error_invalid_password">Yanlış şifre.</string>
+    <string name="fui_accessibility_logo">Uygulama logosu</string>
+    <string name="fui_verify_phone_number_title">Telefon numaranızı girin</string>
+    <string name="fui_invalid_phone_number">Geçerli bir telefon numarası girin</string>
+    <string name="fui_enter_confirmation_code">Şu telefon numarasına gönderdiğimiz 6 haneli kodu girin:</string>
+    <string name="fui_resend_code_in">0:%02d içinde kodu yeniden gönder</string>
+    <string name="fui_verify_your_phone_title">Telefon numaranızı doğrulayın</string>
+    <string name="fui_verifying">Doğrulanıyor…</string>
+    <string name="fui_retrieving_sms">SMS alınıyor…</string>
+    <string name="fui_incorrect_code_dialog_body">Yanlış kod. Tekrar deneyin.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">Tamam</string>
+    <string name="fui_error_too_many_attempts">Bu telefon numarası çok fazla kez kullanıldı</string>
+    <string name="fui_error_quota_exceeded">Telefon numaranız doğrulanırken bir sorun oluştu</string>
+    <string name="fui_error_session_expired">Bu kod artık geçerli değil</string>
+    <string name="fui_sign_in_with_phone_number">Telefon numarasıyla oturum açın</string>
+    <string name="fui_done">Bitti</string>
+    <string name="fui_verified">Doğrulandı!</string>
+    <string name="fui_code_sent">Kod gönderildi!</string>
+    <string name="fui_resending">Yeniden gönderiliyor…</string>
+    <string name="fui_resend_code">Kodu Yeniden Gönder</string>
+    <string name="fui_verify_phone_number">Telefon Numarasını Doğrula</string>
+    <string name="fui_continue_phone_login">Devam</string>
+    <string name="fui_sms_terms_of_service">“%1$s” öğesine dokunarak SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
 </resources>

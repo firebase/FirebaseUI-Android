@@ -1,90 +1,81 @@
 package com.firebase.ui.auth;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.UserCancellationException;
+import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.PlayServicesHelper;
-import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
-    private static final String TAG = "KickoffActivity";
-    private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
-    private static final int RC_PLAY_SERVICES = 1;
-
-    private boolean mIsWaitingForPlayServices = false;
+    private SignInKickstarter mKickstarter;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return HelperActivityBase.createBaseIntent(context, KickoffActivity.class, flowParams);
+        return createBaseIntent(context, KickoffActivity.class, flowParams);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-
-        if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
-            if (isOffline()) {
-                Log.d(TAG, "No network connection");
-                finish(RESULT_CANCELED,
-                       IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
-                return;
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
+        mKickstarter.init(getFlowParams());
+        mKickstarter.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_loading) {
+            @Override
+            protected void onSuccess(@NonNull IdpResponse response) {
+                finish(RESULT_OK, response.toIntent());
             }
 
-            boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
-                    this,
-                    RC_PLAY_SERVICES,
-                    new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            finish(RESULT_CANCELED,
-                                   IdpResponse.getErrorCodeIntent(
-                                           ErrorCodes.UNKNOWN_ERROR));
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                if (e instanceof UserCancellationException) {
+                    finish(RESULT_CANCELED, null);
+                } else {
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                }
+            }
+        });
+
+        GoogleApiAvailability.getInstance()
+                .makeGooglePlayServicesAvailable(this)
+                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        if (savedInstanceState != null) { return; }
+
+                        if (isOffline()) {
+                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                                    new FirebaseUiException(ErrorCodes.NO_NETWORK)));
+                        } else {
+                            mKickstarter.start();
                         }
-                    });
-
-            if (isPlayServicesAvailable) {
-                start();
-            } else {
-                mIsWaitingForPlayServices = true;
-            }
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        // It doesn't matter what we put here, we just don't want outState to be empty
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        outState.putBoolean(IS_WAITING_FOR_PLAY_SERVICES, mIsWaitingForPlayServices);
-        super.onSaveInstanceState(outState);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
+                                ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED, e)));
+                    }
+                });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_PLAY_SERVICES) {
-            if (resultCode == RESULT_OK) {
-                start();
-            } else {
-                finish(RESULT_CANCELED,
-                       IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-            }
-        } else {
-            SignInDelegate delegate = SignInDelegate.getInstance(this);
-            if (delegate != null) delegate.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private void start() {
-        FlowParameters flowParams = getFlowParams();
-        SignInDelegate.delegate(this, flowParams);
+        mKickstarter.onActivityResult(requestCode, resultCode, data);
     }
 
     /**

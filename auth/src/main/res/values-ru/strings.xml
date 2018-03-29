@@ -1,71 +1,69 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Загрузка…</string>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">Войти</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">Произошла ошибка</string>
+    <string name="fui_progress_dialog_loading">Загрузка…</string>
+    <string name="fui_sign_in_default">Войти</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">Адрес электронной почты</string>
-    <string name="fui_provider_name_phone">Телефон</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Войти через аккаунт Google</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Войти через аккаунт Facebook</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Войти через аккаунт Twitter</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Войти по адресу электронной почты</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Войти по номеру телефона</string>
-    <string name="fui_next_default" translation_description="Button text to continue">Далее</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">Адрес электронной почты</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">Номер телефона</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">Пароль</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">Это поле должно быть заполнено.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Неверный адрес электронной почты.</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Введите адрес электронной почты.</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Проверка существующих аккаунтов…</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">Регистрация</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">Имя и фамилия</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">Сохранить</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Идет регистрация…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Не удалось зарегистрировать аккаунт</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Аккаунт с таким адресом электронной почты уже существует.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Нажимая кнопку “%1$s”, вы принимаете %2$s и %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Нажимая кнопку “%1$s”, вы принимаете %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Нажимая кнопку “%1$s”, вы принимаете %2$s.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Условия использования</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Политику конфиденциальности</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">У вас уже есть аккаунт</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Рады видеть вас снова!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Вы уже использовали адрес %1$s. Войдите через аккаунт %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Вы уже использовали адрес %1$s. Введите пароль для этого аккаунта.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Выполняется вход…</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Проблемы со входом в систему?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Восстановление пароля</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Проверьте электронную почту</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">На этот адрес будет отправлено письмо с инструкциями по сбросу пароля.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Отправить</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">На адрес %1$s отправлено письмо с инструкциями по сбросу пароля.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Отправка…</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Нет аккаунта с таким адресом электронной почты.</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Логотип приложения</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Вы вошли как %1$s</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Введите номер телефона</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Введите действительный номер телефона.</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Введите 6-значный код, отправленный на номер</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Отправить код ещё раз можно будет через 0:%02d.</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Подтвердить номер телефона</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Проверка…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Получение SMS…</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Неверный код. Повторите попытку.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ОК</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Этот номер телефона использовался слишком много раз.</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Не удалось подтвердить номер телефона.</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Этот код уже неактивен.</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Войти по номеру телефона</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Готово</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Проверка выполнена.</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Код отправлен</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Повторная отправка…</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Отправить код ещё раз</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Подтвердить номер телефона</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Продолжить</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Нажимая кнопку “%1$s”, вы соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
+    <string name="fui_sign_in_with_google">Войти через аккаунт Google</string>
+    <string name="fui_sign_in_with_facebook">Войти через аккаунт Facebook</string>
+    <string name="fui_sign_in_with_twitter">Войти через аккаунт Twitter</string>
+    <string name="fui_sign_in_with_email">Войти по адресу электронной почты</string>
+    <string name="fui_sign_in_with_phone">Войти по номеру телефона</string>
+    <string name="fui_next_default">Далее</string>
+    <string name="fui_email_hint">Адрес электронной почты</string>
+    <string name="fui_phone_hint">Номер телефона</string>
+    <string name="fui_password_hint">Пароль</string>
+    <string name="fui_required_field">Это поле должно быть заполнено.</string>
+    <string name="fui_invalid_email_address">Неверный адрес электронной почты.</string>
+    <string name="fui_missing_email_address">Введите адрес электронной почты.</string>
+    <string name="fui_progress_dialog_checking_accounts">Проверка существующих аккаунтов…</string>
+    <string name="fui_title_register_email">Регистрация</string>
+    <string name="fui_name_hint">Имя и фамилия</string>
+    <string name="fui_button_text_save">Сохранить</string>
+    <string name="fui_progress_dialog_signing_up">Идет регистрация…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> </plurals>
+    <string name="fui_email_account_creation_error">Не удалось зарегистрировать аккаунт</string>
+    <string name="fui_error_user_collision">Аккаунт с таким адресом электронной почты уже существует.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">Нажимая кнопку “%1$s”, вы принимаете %2$s и %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only">Нажимая кнопку “%1$s”, вы принимаете %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only">Нажимая кнопку “%1$s”, вы принимаете %2$s.</string>
+    <string name="fui_terms_of_service">Условия использования</string>
+    <string name="fui_privacy_policy">Политику конфиденциальности</string>
+    <string name="fui_welcome_back_idp_header">У вас уже есть аккаунт</string>
+    <string name="fui_welcome_back_email_header">Рады видеть вас снова!</string>
+    <string name="fui_welcome_back_idp_prompt">Вы уже использовали адрес %1$s. Войдите через аккаунт %2$s.</string>
+    <string name="fui_welcome_back_password_prompt_body">Вы уже использовали адрес %1$s. Введите пароль для этого аккаунта.</string>
+    <string name="fui_progress_dialog_signing_in">Выполняется вход…</string>
+    <string name="fui_trouble_signing_in">Проблемы со входом в систему?</string>
+    <string name="fui_title_recover_password_activity">Восстановление пароля</string>
+    <string name="fui_title_confirm_recover_password">Проверьте электронную почту</string>
+    <string name="fui_password_recovery_body">На этот адрес будет отправлено письмо с инструкциями по сбросу пароля.</string>
+    <string name="fui_button_text_send">Отправить</string>
+    <string name="fui_confirm_recovery_body">На адрес %1$s отправлено письмо с инструкциями по сбросу пароля.</string>
+    <string name="fui_progress_dialog_sending">Отправка…</string>
+    <string name="fui_error_email_does_not_exist">Нет аккаунта с таким адресом электронной почты.</string>
+    <string name="fui_error_unknown">Произошла неизвестная ошибка.</string>
+    <string name="fui_error_invalid_password">Неправильный пароль.</string>
+    <string name="fui_accessibility_logo">Логотип приложения</string>
+    <string name="fui_verify_phone_number_title">Введите номер телефона</string>
+    <string name="fui_invalid_phone_number">Введите действительный номер телефона.</string>
+    <string name="fui_enter_confirmation_code">Введите 6-значный код, отправленный на номер</string>
+    <string name="fui_resend_code_in">Отправить код ещё раз можно будет через 0:%02d.</string>
+    <string name="fui_verify_your_phone_title">Подтвердить номер телефона</string>
+    <string name="fui_verifying">Проверка…</string>
+    <string name="fui_retrieving_sms">Получение SMS…</string>
+    <string name="fui_incorrect_code_dialog_body">Неверный код. Повторите попытку.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">ОК</string>
+    <string name="fui_error_too_many_attempts">Этот номер телефона использовался слишком много раз.</string>
+    <string name="fui_error_quota_exceeded">Не удалось подтвердить номер телефона.</string>
+    <string name="fui_error_session_expired">Этот код уже неактивен.</string>
+    <string name="fui_sign_in_with_phone_number">Войти по номеру телефона</string>
+    <string name="fui_done">Готово</string>
+    <string name="fui_verified">Проверка выполнена.</string>
+    <string name="fui_code_sent">Код отправлен</string>
+    <string name="fui_resending">Повторная отправка…</string>
+    <string name="fui_resend_code">Отправить код ещё раз</string>
+    <string name="fui_verify_phone_number">Подтвердить номер телефона</string>
+    <string name="fui_continue_phone_login">Продолжить</string>
+    <string name="fui_sms_terms_of_service">Нажимая кнопку “%1$s”, вы соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
 </resources>

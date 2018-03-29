@@ -23,16 +23,36 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
-import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
  */
 public class IdpResponse implements Parcelable {
+    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
+        @Override
+        public IdpResponse createFromParcel(Parcel in) {
+            return new IdpResponse(
+                    in.<User>readParcelable(User.class.getClassLoader()),
+                    in.readString(),
+                    in.readString(),
+                    (FirebaseUiException) in.readSerializable()
+            );
+        }
+
+        @Override
+        public IdpResponse[] newArray(int size) {
+            return new IdpResponse[size];
+        }
+    };
+
     private final User mUser;
 
     private final String mToken;
@@ -71,29 +91,34 @@ public class IdpResponse implements Parcelable {
     @Nullable
     public static IdpResponse fromResultIntent(@Nullable Intent resultIntent) {
         if (resultIntent != null) {
-            return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+            return resultIntent.getParcelableExtra(ExtraConstants.IDP_RESPONSE);
         } else {
             return null;
         }
     }
 
+    @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static IdpResponse fromError(@NonNull FirebaseUiException e) {
-        return new IdpResponse(e);
+    public static IdpResponse from(@NonNull Exception e) {
+        if (e instanceof FirebaseUiException) {
+            return new IdpResponse((FirebaseUiException) e);
+        } else {
+            FirebaseUiException wrapped = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e);
+            wrapped.setStackTrace(e.getStackTrace());
+            return new IdpResponse(wrapped);
+        }
     }
 
-    /**
-     * @deprecated migrate internals to {@link #fromError(FirebaseUiException)}
-     */
-    @Deprecated
+    @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static Intent getErrorCodeIntent(int errorCode) {
-        return new IdpResponse(new FirebaseUiException(errorCode)).toIntent();
+    public static Intent getErrorIntent(@NonNull Exception e) {
+        return from(e).toIntent();
     }
 
+    @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public Intent toIntent() {
-        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
+        return new Intent().putExtra(ExtraConstants.IDP_RESPONSE, this);
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -149,7 +174,10 @@ public class IdpResponse implements Parcelable {
 
     /**
      * Get the error code for a failed sign in
+     *
+     * @deprecated use {@link #getError()} instead
      */
+    @Deprecated
     public int getErrorCode() {
         if (isSuccessful()) {
             return Activity.RESULT_OK;
@@ -158,9 +186,11 @@ public class IdpResponse implements Parcelable {
         }
     }
 
+    /**
+     * Get the error for a failed sign in.
+     */
     @Nullable
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException getException() {
+    public FirebaseUiException getError() {
         return mException;
     }
 
@@ -174,25 +204,62 @@ public class IdpResponse implements Parcelable {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
         dest.writeString(mSecret);
-        dest.writeSerializable(mException);
+
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new ByteArrayOutputStream());
+            oos.writeObject(mException);
+
+            // Success! The entire exception tree is serializable.
+            dest.writeSerializable(mException);
+        } catch (IOException e) {
+            // Somewhere down the line, the exception is holding on to an object that isn't
+            // serializable so default to some exception. It's the best we can do in this case.
+            FirebaseUiException fake = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
+                    "Fake exception created, original: " + mException
+                            + ", original cause: " + mException.getCause());
+            fake.setStackTrace(mException.getStackTrace());
+            dest.writeSerializable(fake);
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException ignored) {}
+            }
+        }
     }
 
-    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
-        @Override
-        public IdpResponse createFromParcel(Parcel in) {
-            return new IdpResponse(
-                    in.<User>readParcelable(User.class.getClassLoader()),
-                    in.readString(),
-                    in.readString(),
-                    (FirebaseUiException) in.readSerializable()
-            );
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        @Override
-        public IdpResponse[] newArray(int size) {
-            return new IdpResponse[size];
-        }
-    };
+        IdpResponse response = (IdpResponse) o;
+
+        return (mUser == null ? response.mUser == null : mUser.equals(response.mUser))
+                && (mToken == null ? response.mToken == null : mToken.equals(response.mToken))
+                && (mSecret == null ? response.mSecret == null : mSecret.equals(response.mSecret))
+                && (mException == null ? response.mException == null : mException.equals(response.mException));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mUser == null ? 0 : mUser.hashCode();
+        result = 31 * result + (mToken == null ? 0 : mToken.hashCode());
+        result = 31 * result + (mSecret == null ? 0 : mSecret.hashCode());
+        result = 31 * result + (mException == null ? 0 : mException.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "IdpResponse{" +
+                "mUser=" + mUser +
+                ", mToken='" + mToken + '\'' +
+                ", mSecret='" + mSecret + '\'' +
+                ", mException=" + mException +
+                '}';
+    }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {

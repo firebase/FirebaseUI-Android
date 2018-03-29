@@ -26,6 +26,7 @@ import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -69,10 +70,6 @@ public class CheckEmailFragment extends FragmentBase implements
 
     public static final String TAG = "CheckEmailFragment";
 
-    private static final int RC_HINT = 13;
-    private static final int RC_WELCOME_BACK_IDP = 15;
-    private static final int RC_SIGN_IN = 16;
-
     private EditText mEmailEditText;
     private TextInputLayout mEmailLayout;
 
@@ -85,8 +82,8 @@ public class CheckEmailFragment extends FragmentBase implements
                                                  @Nullable String email) {
         CheckEmailFragment fragment = new CheckEmailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putString(ExtraConstants.EXTRA_EMAIL, email);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putString(ExtraConstants.EMAIL, email);
 
         fragment.setArguments(args);
         return fragment;
@@ -94,7 +91,7 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
@@ -133,7 +130,7 @@ public class CheckEmailFragment extends FragmentBase implements
         }
 
         // Check for email
-        String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = getArguments().getString(ExtraConstants.EMAIL);
         if (!TextUtils.isEmpty(email)) {
             // Use email passed in
             mEmailEditText.setText(email);
@@ -145,31 +142,22 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RC_HINT:
-                if (data != null) {
-                    mLastCredential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                    if (mLastCredential != null) {
-                        // Get the email from the credential
-                        mEmailEditText.setText(mLastCredential.getId());
+        if (requestCode == RequestCodes.CRED_HINT && data != null) {
+            mLastCredential = data.getParcelableExtra(Credential.EXTRA_KEY);
+            if (mLastCredential != null) {
+                // Get the email from the credential
+                mEmailEditText.setText(mLastCredential.getId());
 
-                        // Attempt to proceed
-                        validateAndProceed();
-                    }
-                }
-                break;
-            case RC_SIGN_IN:
-            case RC_WELCOME_BACK_IDP:
-                finish(resultCode, data);
-                break;
+                // Attempt to proceed
+                validateAndProceed();
+            }
         }
     }
 
@@ -224,7 +212,7 @@ public class CheckEmailFragment extends FragmentBase implements
 
     private void showEmailAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
+            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RequestCodes.CRED_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }

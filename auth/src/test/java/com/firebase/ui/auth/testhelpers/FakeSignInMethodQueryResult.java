@@ -12,24 +12,24 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.testhelpers;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
-public class TaskFailureLogger implements OnFailureListener {
-    private String mTag;
-    private String mMessage;
+import java.util.List;
 
-    public TaskFailureLogger(@NonNull String tag, @NonNull String message) {
-        mTag = tag;
-        mMessage = message;
+public class FakeSignInMethodQueryResult implements SignInMethodQueryResult {
+    private List<String> mMethods;
+
+    public FakeSignInMethodQueryResult(List<String> methods) {
+        mMethods = methods;
     }
 
+    @Nullable
     @Override
-    public void onFailure(@NonNull Exception e) {
-        Log.w(mTag, mMessage, e);
+    public List<String> getSignInMethods() {
+        return mMethods;
     }
 }
