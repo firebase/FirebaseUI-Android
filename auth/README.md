@@ -406,13 +406,13 @@ If a user is not currently signed in, then a silent sign-in process can be start
 displaying any UI to provide a seamless experience. Silent sign-in uses saved Smart Lock credentials
 and returns a successful `Task` only if the user has been fully signed in with Firebase.
 
-Here's an example of how you would use silent sign-in paired with anonymous users to get your users
-up and running as fast as possible:
+Here's an example of how you could use silent sign-in paired with Firebase anonymous sign-in to get
+your users up and running as fast as possible:
 
 ```java
 List<IdpConfig> providers = getSelectedProviders();
 AuthUI.getInstance().silentSignIn(this, providers)
-        .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
+        .continueWithTask(this, new Continuation<AuthResult, Task<AuthResult>>() {
     @Override
     public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
@@ -422,7 +422,7 @@ AuthUI.getInstance().silentSignIn(this, providers)
             return FirebaseAuth.getInstance().signInAnonymously();
         }
     }
-}).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+}).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
