@@ -34,6 +34,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.CredentialsUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
@@ -384,11 +385,15 @@ public class AuthUI {
             }
 
             String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
+            if (type != null) {
+                credentials.add(CredentialsUtils.buildCredentialOrThrow(user, null, type));
+            }
+        }
 
-            credentials.add(new Credential.Builder(
-                    user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())
-                    .setAccountType(type)
-                    .build());
+        // Also add an email credential to ensure password accounts get deleted.
+        Credential passwordCredential = CredentialsUtils.buildCredential(user, "pass", null);
+        if (passwordCredential != null) {
+            credentials.add(passwordCredential);
         }
 
         return credentials;
@@ -623,8 +628,8 @@ public class AuthUI {
             }
 
             /**
-             * Configures the requirement for the user to enter first and last name
-             * in the email sign up flow.
+             * Configures the requirement for the user to enter first and last name in the email
+             * sign up flow.
              * <p>
              * Name is required by default.
              */
