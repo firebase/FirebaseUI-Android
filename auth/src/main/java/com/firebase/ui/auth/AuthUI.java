@@ -271,28 +271,31 @@ public class AuthUI {
      * Signs the user in without any UI if possible. If this operation fails, you can safely start a
      * UI-based sign-in flow knowing it is required.
      *
-     * @param context requesting the user be signed in
-     * @param configs to use for silent sign in
+     * @param context        requesting the user be signed in
+     * @param desiredConfigs to use for silent sign in. Only Google and email are currently
+     *                       supported, the rest will be ignored.
      * @return a task which indicates whether or not the user was successfully signed in.
      */
     @NonNull
-    public Task<AuthResult> silentSignIn(@NonNull final Context context,
-                                         @NonNull List<IdpConfig> configs) {
-        if (configs.isEmpty()) {
-            throw new IllegalArgumentException("At least one provider must be specified.");
-        }
-        for (IdpConfig config : configs) {
-            String provider = config.getProviderId();
-            if (!provider.equals(EmailAuthProvider.PROVIDER_ID)
-                    && !provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
-                throw new IllegalArgumentException("Only email and google providers are supported " +
-                        "for silent sign-in.");
-            }
-        }
+    public Task<AuthResult> silentSignIn(@NonNull Context context,
+                                         @NonNull List<IdpConfig> desiredConfigs) {
         if (mAuth.getCurrentUser() != null) {
             throw new IllegalArgumentException("User already signed in!");
         }
+        if (desiredConfigs.isEmpty()) {
+            throw new IllegalArgumentException("At least one provider must be specified.");
+        }
 
+        List<IdpConfig> configs = new ArrayList<>();
+        for (IdpConfig config : desiredConfigs) {
+            String provider = config.getProviderId();
+            if (provider.equals(EmailAuthProvider.PROVIDER_ID)
+                    || provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                configs.add(config);
+            }
+        }
+
+        final Context appContext = context.getApplicationContext();
         final IdpConfig google =
                 ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
         final IdpConfig email =
@@ -300,7 +303,7 @@ public class AuthUI {
 
         GoogleSignInOptions googleOptions = null;
         if (google != null) {
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(context);
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
             if (last != null && last.getIdToken() != null) {
                 return mAuth.signInWithCredential(GoogleAuthProvider.getCredential(
                         last.getIdToken(), null));
@@ -325,7 +328,7 @@ public class AuthUI {
                         String password = credential.getPassword();
 
                         if (TextUtils.isEmpty(password)) {
-                            return GoogleSignIn.getClient(context,
+                            return GoogleSignIn.getClient(appContext,
                                     new GoogleSignInOptions.Builder(finalGoogleOptions)
                                             .setAccountName(email)
                                             .build())
