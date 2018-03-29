@@ -171,7 +171,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @OnClick(R.id.sign_in_silent)
     public void silentSignIn(View view) {
         AuthUI.getInstance().silentSignIn(this, getSelectedProviders())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
