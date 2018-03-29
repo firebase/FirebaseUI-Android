@@ -295,6 +295,10 @@ public class AuthUI {
             }
         }
 
+        if (configs.isEmpty()) {
+            throw new IllegalArgumentException("No supported providers were supplied.");
+        }
+
         final Context appContext = context.getApplicationContext();
         final IdpConfig google =
                 ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
