@@ -1,5 +1,5 @@
 # Twitter and Facebook are optional
-#-dontwarn com.facebook.**
+-dontwarn com.facebook.**
 -dontwarn com.twitter.**
 
 # Don't note a bunch of dynamically referenced classes
