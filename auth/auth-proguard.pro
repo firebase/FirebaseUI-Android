@@ -1,7 +1,6 @@
 # Twitter and Facebook are optional
--dontwarn com.twitter.**
 -dontwarn com.facebook.**
--dontwarn com.firebase.ui.auth.provider.**
+-dontwarn com.twitter.**
 
 # Don't note a bunch of dynamically referenced classes
 -dontnote com.google.**
@@ -16,5 +15,6 @@
 
 # Retrofit config
 -dontnote retrofit2.Platform
--dontwarn retrofit2.Platform$Java8
+-dontwarn retrofit2.** # Also keeps Twitter at bay as long as they keep using Retrofit
+-dontwarn okio.**
 -keepattributes Exceptions
