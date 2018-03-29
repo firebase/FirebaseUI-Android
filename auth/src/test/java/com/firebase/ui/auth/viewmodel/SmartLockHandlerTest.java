@@ -7,6 +7,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
@@ -60,6 +61,9 @@ public class SmartLockHandlerTest {
                 EmailAuthProvider.PROVIDER_ID));
 
         mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials, null);
+        mHandler.setResponse(new IdpResponse.Builder(
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build()
+        ).build());
     }
 
     @Test
