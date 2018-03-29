@@ -3,6 +3,8 @@ package com.firebase.ui.firestore.paging;
 import android.arch.paging.DataSource;
 import android.arch.paging.PageKeyedDataSource;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -11,12 +13,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by samstern on 3/15/18.
+ * Data source to power a {@link FirestorePagingAdapter}.
  */
-
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSnapshot> {
 
     private static final String TAG = "FirestoreDataSource";
@@ -57,7 +60,13 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // TODO: errors?
+                        Log.w(TAG, "loadInitial:failure", e);
+
+                        // On error, return an empty page with the next page key being basically
+                        // equal to the initial query.
+                        PageKey nextPage = new PageKey(null, null);
+                        callback.onResult(Collections.<DocumentSnapshot>emptyList(),
+                                null, nextPage);
                     }
                 });
 
@@ -74,7 +83,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     @Override
     public void loadAfter(@NonNull LoadParams<PageKey> params,
                           @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
-        PageKey key = params.key;
+        final PageKey key = params.key;
         Log.d(TAG, "loadAfter: " + key + ", " + params.requestedLoadSize);
 
         key.getPageQuery(mBaseQuery, params.requestedLoadSize)
@@ -92,17 +101,22 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "loadAfter:failure", e);
 
+                        // On error, return an empty page with the next page key being basically
+                        // equal to the initial query.
+                        callback.onResult(Collections.<DocumentSnapshot>emptyList(), key);
                     }
                 });
 
     }
 
+    @Nullable
     private DocumentSnapshot getLast(List<DocumentSnapshot> data) {
-        DocumentSnapshot last = (data == null || data.isEmpty())
-                ? null
-                : data.get(data.size() - 1);
-
-        return last;
+        if (data == null || data.isEmpty()) {
+            return null;
+        } else {
+            return data.get(data.size() - 1);
+        }
     }
 }

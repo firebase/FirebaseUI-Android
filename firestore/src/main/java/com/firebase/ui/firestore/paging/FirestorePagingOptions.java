@@ -13,11 +13,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * TODO: Document
+ * Options to conifigure an {@link FirestorePagingAdapter}.
  */
 public class FirestorePagingOptions<T> {
-
-    // TODO: Default config
 
     private final LiveData<PagedList<DocumentSnapshot>> mData;
     private final SnapshotParser<T> mParser;

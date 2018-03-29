@@ -1,7 +1,10 @@
 package com.firebase.ui.firestore.paging;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.paging.PagedList;
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
@@ -14,10 +17,13 @@ import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 /**
- * TODO(samstern): Document
+ * Paginated RecyclerView Adapter for a Cloud Firestore query.
+ *
+ * Configured with {@link FirestorePagingOptions}.
  */
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends PagedListAdapter<DocumentSnapshot, VH> {
+        extends PagedListAdapter<DocumentSnapshot, VH>
+        implements LifecycleObserver {
 
     private final SnapshotParser<T> mParser;
     private final LiveData<PagedList<DocumentSnapshot>> mData;
@@ -62,14 +68,17 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         mParser = options.getParser();
         mData = options.getData();
 
-        // TODO: Lifecycle owner
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
+        }
     }
 
-    // TODO: Unify method names with other adapters
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         mData.observeForever(mObserver);
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mData.removeObserver(mObserver);
     }
@@ -84,7 +93,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         onBindViewHolder(holder, position, mParser.parseSnapshot(snapshot));
     }
 
-    // TODO: Check that this is the right visibility
     protected abstract void onBindViewHolder(@NonNull VH holder, int position, T model);
 
     private void onListChanged(@NonNull PagedList<DocumentSnapshot> snapshots) {

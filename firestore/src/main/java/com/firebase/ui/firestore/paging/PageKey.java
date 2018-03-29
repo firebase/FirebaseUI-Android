@@ -1,13 +1,15 @@
 package com.firebase.ui.firestore.paging;
 
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * TODO: Document.
+ * Key for Firestore pagination. Holds the DocumentSnapshot(s) that bound the page.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PageKey {
 
     private final DocumentSnapshot mStartAfter;
