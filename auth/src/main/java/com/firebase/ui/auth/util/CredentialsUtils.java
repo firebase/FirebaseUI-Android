@@ -34,10 +34,8 @@ public class CredentialsUtils {
         Uri profilePictureUri =
                 user.getPhotoUrl() == null ? null : Uri.parse(user.getPhotoUrl().toString());
 
-        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)
-                || password == null && accountType == null) {
-            return null;
-        }
+        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)) { return null; }
+        if (password == null && accountType == null) { return null; }
 
         Credential.Builder builder =
                 new Credential.Builder(TextUtils.isEmpty(email) ? phone : email)

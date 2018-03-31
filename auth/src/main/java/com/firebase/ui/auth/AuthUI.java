@@ -385,15 +385,11 @@ public class AuthUI {
             }
 
             String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
-            if (type != null) {
+            if (type == null) {
+                credentials.add(CredentialsUtils.buildCredential(user, "pass", null));
+            } else {
                 credentials.add(CredentialsUtils.buildCredentialOrThrow(user, null, type));
             }
-        }
-
-        // Also add an email credential to ensure password accounts get deleted.
-        Credential passwordCredential = CredentialsUtils.buildCredential(user, "pass", null);
-        if (passwordCredential != null) {
-            credentials.add(passwordCredential);
         }
 
         return credentials;
