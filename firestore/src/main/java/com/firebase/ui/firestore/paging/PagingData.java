@@ -3,7 +3,6 @@ package com.firebase.ui.firestore.paging;
 import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
-import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
@@ -19,10 +18,8 @@ public class PagingData {
     private final LiveData<PagedList<DocumentSnapshot>> mSnapshots;
     private final LiveData<LoadingState> mLoadingState;
 
-    public PagingData(@NonNull FirestoreDataSource.Factory factory,
-                      @NonNull PagedList.Config config) {
-
-        mSnapshots = new LivePagedListBuilder<>(factory, config).build();
+    public PagingData(@NonNull LiveData<PagedList<DocumentSnapshot>> snapshots) {
+        mSnapshots = snapshots;
 
         mLoadingState = Transformations.switchMap(mSnapshots,
                 new Function<PagedList<DocumentSnapshot>, LiveData<LoadingState>>() {

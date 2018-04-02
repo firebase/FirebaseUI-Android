@@ -1,6 +1,7 @@
 package com.firebase.ui.firestore.paging;
 
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -62,7 +63,7 @@ public class FirestorePagingOptions<T> {
 
             // Build paged list
             FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query);
-            mData = new PagingData(factory, config);
+            mData = new PagingData(new LivePagedListBuilder<>(factory, config).build());
 
             mParser = parser;
             return this;

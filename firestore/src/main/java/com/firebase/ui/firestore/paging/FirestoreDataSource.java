@@ -51,7 +51,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     @Override
     public void loadInitial(@NonNull LoadInitialParams<PageKey> params,
                             @NonNull final LoadInitialCallback<PageKey, DocumentSnapshot> callback) {
-        Log.d(TAG, "loadInitial: " + params.requestedLoadSize);
+        logd("loadInitial: " + params.requestedLoadSize);
 
         // Set initial loading state
         mLoadingState.postValue(LoadingState.LOADING_INITIAL);
@@ -101,7 +101,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     public void loadAfter(@NonNull LoadParams<PageKey> params,
                           @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
         final PageKey key = params.key;
-        Log.d(TAG, "loadAfter: " + key + ", " + params.requestedLoadSize);
+        logd("loadAfter: " + key + ", " + params.requestedLoadSize);
 
         // Set loading state
         mLoadingState.postValue(LoadingState.LOADING_MORE);
@@ -145,6 +145,12 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
             return null;
         } else {
             return data.get(data.size() - 1);
+        }
+    }
+
+    private static void logd(String message) {
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log.d(TAG, message);
         }
     }
 }
