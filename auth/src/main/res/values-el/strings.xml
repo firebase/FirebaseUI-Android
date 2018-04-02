@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Γίνεται εγγραφή…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρα και έναν συνδυασμό γραμμάτων και αριθμών</item> <item quantity="other">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρες και έναν συνδυασμό γραμμάτων και αριθμών</item> </plurals>
     <string name="fui_email_account_creation_error">Η εγγραφή του λογαριασμού ηλεκτρονικού ταχυδρομείου δεν ήταν επιτυχής</string>
-    <string name="fui_error_user_collision">Υπάρχει ήδη λογαριασμός με αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με τους %2$s και την %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με τους %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με την %2$s.</string>

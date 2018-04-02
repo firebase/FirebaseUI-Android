@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Registrerer…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item> <item quantity="other">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item> </plurals>
     <string name="fui_email_account_creation_error">Kunne ikke registrere e-postkontoen</string>
-    <string name="fui_error_user_collision">Det finnes allerede en konto med denne e-postadressen.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Når du trykker på %1$s, godtar du %2$s og %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Når du trykker på %1$s, godtar du %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Når du trykker på %1$s, godtar du %2$s.</string>
