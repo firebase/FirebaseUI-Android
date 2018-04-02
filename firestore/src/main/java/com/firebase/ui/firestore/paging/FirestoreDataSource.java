@@ -29,7 +29,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     public static class Factory extends DataSource.Factory<PageKey, DocumentSnapshot> {
 
         private final Query mQuery;
-        private final MutableLiveData<FirestoreDataSource> mDataSource = new MutableLiveData<>();
 
         public Factory(Query query) {
             mQuery = query;
@@ -37,13 +36,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
         @Override
         public DataSource<PageKey, DocumentSnapshot> create() {
-            FirestoreDataSource source = new FirestoreDataSource(mQuery);
-            mDataSource.postValue(source);
-            return source;
-        }
-
-        public LiveData<FirestoreDataSource> getDataSource() {
-            return mDataSource;
+            return new FirestoreDataSource(mQuery);
         }
     }
 

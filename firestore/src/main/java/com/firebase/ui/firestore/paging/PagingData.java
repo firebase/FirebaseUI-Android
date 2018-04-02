@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -18,16 +19,17 @@ public class PagingData {
     private final LiveData<PagedList<DocumentSnapshot>> mSnapshots;
     private final LiveData<LoadingState> mLoadingState;
 
-    public PagingData(FirestoreDataSource.Factory factory,
-                      PagedList.Config config) {
+    public PagingData(@NonNull FirestoreDataSource.Factory factory,
+                      @NonNull PagedList.Config config) {
 
         mSnapshots = new LivePagedListBuilder<>(factory, config).build();
 
-        mLoadingState = Transformations.switchMap(factory.getDataSource(),
-                new Function<FirestoreDataSource, LiveData<LoadingState>>() {
+        mLoadingState = Transformations.switchMap(mSnapshots,
+                new Function<PagedList<DocumentSnapshot>, LiveData<LoadingState>>() {
                     @Override
-                    public LiveData<LoadingState> apply(FirestoreDataSource input) {
-                        return input.getLoadingState();
+                    public LiveData<LoadingState> apply(PagedList<DocumentSnapshot> input) {
+                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
+                        return dataSource.getLoadingState();
                     }
                 });
     }
