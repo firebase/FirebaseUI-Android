@@ -57,7 +57,13 @@ public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse>
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
                             ProviderUtils.fetchTopProvider(getAuth(), email)
-                                    .addOnSuccessListener(new StartWelcomeBackFlow(email));
+                                    .addOnSuccessListener(new StartWelcomeBackFlow(email))
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            setResult(Resource.<IdpResponse>forFailure(e));
+                                        }
+                                    });
                         } else {
                             setResult(Resource.<IdpResponse>forFailure(e));
                         }
