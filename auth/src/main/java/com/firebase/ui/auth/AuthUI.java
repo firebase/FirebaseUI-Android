@@ -390,7 +390,7 @@ public class AuthUI {
             String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
 
             credentials.add(new Credential.Builder(
-                    user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())
+                    TextUtils.isEmpty(user.getEmail()) ? user.getPhoneNumber() : user.getEmail())
                     .setAccountType(type)
                     .build());
         }
