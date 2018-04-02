@@ -211,7 +211,11 @@ public class AuthUI {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
 
-        mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
+        try {
+            mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't set the FUI version.", e);
+        }
         mAuth.useAppLanguage();
     }
 

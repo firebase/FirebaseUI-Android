@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">ಸೈನ್ ಅಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> </plurals>
     <string name="fui_email_account_creation_error">ಇಮೇಲ್ ಖಾತೆ ನೋಂದಣಿ ಮಾಡುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ</string>
-    <string name="fui_error_user_collision">ಆ ಇಮೇಲ್ ವಿಳಾಸದ ಜೊತೆಗೆ ಈಗಾಗಲೇ ಖಾತೆಯೊಂದು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ.</string>
     <string name="fui_create_account_preamble_tos_and_pp">%1$s ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು %2$s ಮತ್ತು %3$s ಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ.</string>
     <string name="fui_create_account_preamble_tos_only">%1$s ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು %2$sಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ.</string>
     <string name="fui_create_account_preamble_pp_only">%1$s ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು %2$sಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ.</string>
