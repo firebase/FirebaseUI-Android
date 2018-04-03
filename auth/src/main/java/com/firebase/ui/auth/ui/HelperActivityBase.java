@@ -59,7 +59,7 @@ public class HelperActivityBase extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // Forward the results of Smart Lock saving
         if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
-            finish(RESULT_OK, data);
+            finish(resultCode, data);
         }
     }
 
