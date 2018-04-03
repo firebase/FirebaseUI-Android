@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Prebieha registrácia…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Heslo nie je dostatočne silné. Použite aspoň %1$d znak a kombináciu písmen a čísel</item> <item quantity="few">Heslo nie je dostatočne silné. Použite aspoň %1$d znaky a kombináciu písmen a čísel</item> <item quantity="many">Heslo nie je dostatočne silné. Použite aspoň %1$d znaku a kombináciu písmen a čísel</item> <item quantity="other">Heslo nie je dostatočne silné. Použite aspoň %1$d znakov a kombináciu písmen a čísel</item> </plurals>
     <string name="fui_email_account_creation_error">Registrácia e-mailového účtu nebola úspešná</string>
-    <string name="fui_error_user_collision">Už existuje účet s touto e-mailovou adresou.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Klepnutím na tlačidlo %1$s vyjadrujete súhlas so zmluvnými podmienkami %2$s a pravidlami ochrany súkromia %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Klepnutím na tlačidlo %1$s vyjadrujete súhlas so zmluvnými podmienkami %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Klepnutím na tlačidlo %1$s vyjadrujete súhlas s pravidlami ochrany súkromia %2$s.</string>

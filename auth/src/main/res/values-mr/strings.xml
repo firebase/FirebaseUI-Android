@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">साइन अप करत आहे…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item> <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item> </plurals>
     <string name="fui_email_account_creation_error">ईमेल खात्याची नोंदणी अयशस्वी झाली</string>
-    <string name="fui_error_user_collision">त्या ईमेल अॅड्रेसवर आधीपासूनच एक खाते नोंदवलेले आहे.</string>
     <string name="fui_create_account_preamble_tos_and_pp">%1$s वर टॅप केल्याने तुम्ही %2$s आणि %3$sशी सहमती असल्याचे दाखवत आहात.</string>
     <string name="fui_create_account_preamble_tos_only">%1$s वर टॅप करून तुम्ही %2$sशी सहमती असल्याचे दाखवत आहात.</string>
     <string name="fui_create_account_preamble_pp_only">%1$s वर टॅप करून तुम्ही %2$sशी सहमती असल्याचे दाखवत आहात.</string>
