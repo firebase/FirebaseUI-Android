@@ -34,7 +34,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialsUtils;
+import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
@@ -390,9 +390,9 @@ public class AuthUI {
 
             String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
             if (type == null) {
-                credentials.add(CredentialsUtils.buildCredential(user, "pass", null));
+                credentials.add(CredentialUtils.buildCredential(user, "pass", null));
             } else {
-                credentials.add(CredentialsUtils.buildCredentialOrThrow(user, null, type));
+                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
             }
         }
 

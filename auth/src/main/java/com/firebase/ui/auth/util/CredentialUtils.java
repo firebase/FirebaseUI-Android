@@ -14,8 +14,8 @@ import com.google.firebase.auth.FirebaseUser;
  * Utility class for working with {@link Credential} objects.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CredentialsUtils {
-    private CredentialsUtils() {
+public class CredentialUtils {
+    private CredentialUtils() {
         throw new AssertionError("No instance for you!");
     }
 

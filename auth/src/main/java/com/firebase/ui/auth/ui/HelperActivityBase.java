@@ -13,7 +13,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.AuthHelper;
-import com.firebase.ui.auth.util.CredentialsUtils;
+import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -89,7 +89,7 @@ public class HelperActivityBase extends AppCompatActivity {
             @Nullable String password) {
         // Build credential
         String accountType = ProviderUtils.idpResponseToAccountType(response);
-        Credential credential = CredentialsUtils.buildCredential(
+        Credential credential = CredentialUtils.buildCredential(
                 firebaseUser, password, accountType);
 
         // Start the dedicated SmartLock Activity

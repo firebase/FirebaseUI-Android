@@ -12,7 +12,7 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.util.CredentialsUtils;
+import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -61,7 +61,7 @@ public class SmartLockHandler extends AuthViewModelBase<IdpResponse> {
     public void saveCredentials(FirebaseUser firebaseUser,
                                 @Nullable String password,
                                 @Nullable String accountType) {
-        saveCredentials(CredentialsUtils.buildCredential(firebaseUser, password, accountType));
+        saveCredentials(CredentialUtils.buildCredential(firebaseUser, password, accountType));
     }
 
     /** Initialize saving a credential. */
@@ -108,7 +108,7 @@ public class SmartLockHandler extends AuthViewModelBase<IdpResponse> {
             String type = ProviderUtils.providerIdToAccountType(
                     GoogleAuthProvider.PROVIDER_ID);
             GoogleApiUtils.getCredentialsClient(getApplication()).delete(
-                    CredentialsUtils.buildCredentialOrThrow(getCurrentUser(), "pass", type));
+                    CredentialUtils.buildCredentialOrThrow(getCurrentUser(), "pass", type));
         }
     }
 }
