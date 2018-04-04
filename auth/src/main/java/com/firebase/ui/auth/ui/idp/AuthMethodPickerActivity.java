@@ -162,12 +162,22 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     this, R.string.fui_progress_dialog_loading) {
                 @Override
                 protected void onSuccess(@NonNull IdpResponse response) {
-                    handler.startSignIn(response);
+                    handleResponse(response);
                 }
 
                 @Override
                 protected void onFailure(@NonNull Exception e) {
-                    handler.startSignIn(IdpResponse.from(e));
+                    handleResponse(IdpResponse.from(e));
+                }
+
+                private void handleResponse(@NonNull IdpResponse response) {
+                    if (!response.isSuccessful()
+                            || AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+                        handler.startSignIn(response);
+                    } else {
+                        finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
+                                response.toIntent());
+                    }
                 }
             });
 
