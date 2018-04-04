@@ -51,7 +51,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     @Override
     public void loadInitial(@NonNull LoadInitialParams<PageKey> params,
                             @NonNull final LoadInitialCallback<PageKey, DocumentSnapshot> callback) {
-        logd("loadInitial: " + params.requestedLoadSize);
 
         // Set initial loading state
         mLoadingState.postValue(LoadingState.LOADING_INITIAL);
@@ -60,8 +59,8 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot snapshots) {
-                        List<DocumentSnapshot> data = snapshots.getDocuments();
+                    public void onSuccess(QuerySnapshot snapshot) {
+                        List<DocumentSnapshot> data = snapshot.getDocuments();
                         DocumentSnapshot last = getLast(data);
 
                         PageKey nextPage = new PageKey(last, null);
@@ -101,7 +100,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     public void loadAfter(@NonNull LoadParams<PageKey> params,
                           @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
         final PageKey key = params.key;
-        logd("loadAfter: " + key + ", " + params.requestedLoadSize);
 
         // Set loading state
         mLoadingState.postValue(LoadingState.LOADING_MORE);
@@ -110,8 +108,8 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot snapshots) {
-                        List<DocumentSnapshot> data = snapshots.getDocuments();
+                    public void onSuccess(QuerySnapshot snapshot) {
+                        List<DocumentSnapshot> data = snapshot.getDocuments();
                         DocumentSnapshot last = getLast(data);
 
                         PageKey nextPage = new PageKey(last, null);
@@ -140,17 +138,11 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     }
 
     @Nullable
-    private DocumentSnapshot getLast(List<DocumentSnapshot> data) {
-        if (data == null || data.isEmpty()) {
+    private DocumentSnapshot getLast(@NonNull List<DocumentSnapshot> data) {
+        if (data.isEmpty()) {
             return null;
         } else {
             return data.get(data.size() - 1);
-        }
-    }
-
-    private static void logd(String message) {
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
-            Log.d(TAG, message);
         }
     }
 }

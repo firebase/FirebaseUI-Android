@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -47,7 +46,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                         return;
                     }
 
-                    onListChanged(snapshots);
+                    submitList(snapshots);
                 }
             };
 
@@ -96,10 +95,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         mData.getLoadingState().removeObserver(mStateObserver);
     }
 
-    @NonNull
-    @Override
-    public abstract VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType);
-
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         DocumentSnapshot snapshot = getItem(position);
@@ -110,9 +105,5 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     protected void onLoadingStateChanged(@NonNull LoadingState state) {
         // For overriding
-    }
-
-    private void onListChanged(@NonNull PagedList<DocumentSnapshot> snapshots) {
-        submitList(snapshots);
     }
 }

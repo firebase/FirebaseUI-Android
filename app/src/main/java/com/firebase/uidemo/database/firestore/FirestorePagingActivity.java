@@ -67,7 +67,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
                 .build();
 
         FirestorePagingOptions<Item> options = new FirestorePagingOptions.Builder<Item>()
-                .setOwner(this)
+                .setLifecycleOwner(this)
                 .setQuery(baseQuery, config, Item.class)
                 .build();
 

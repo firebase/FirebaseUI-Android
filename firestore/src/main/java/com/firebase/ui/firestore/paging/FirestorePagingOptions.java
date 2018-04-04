@@ -59,8 +59,6 @@ public class FirestorePagingOptions<T> {
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
                                    @NonNull SnapshotParser<T> parser) {
-
-
             // Build paged list
             FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query);
             mData = new PagingData(new LivePagedListBuilder<>(factory, config).build());
@@ -70,11 +68,12 @@ public class FirestorePagingOptions<T> {
         }
 
         @NonNull
-        public Builder<T> setOwner(@NonNull LifecycleOwner owner) {
+        public Builder<T> setLifecycleOwner(@NonNull LifecycleOwner owner) {
             mOwner = owner;
             return this;
         }
 
+        @NonNull
         public FirestorePagingOptions<T> build() {
             return new FirestorePagingOptions<>(mData, mParser, mOwner);
         }

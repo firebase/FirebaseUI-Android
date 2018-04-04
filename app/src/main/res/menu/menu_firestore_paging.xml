@@ -7,4 +7,5 @@
         android:id="@+id/item_add_data"
         android:title="@string/menu_add_data"
         app:showAsAction="never" />
+
 </menu>
