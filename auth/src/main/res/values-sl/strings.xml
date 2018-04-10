@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Registriranje…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znak in kombinacijo črk ter številk.</item> <item quantity="two">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znaka in kombinacijo črk ter številk.</item> <item quantity="few">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znake in kombinacijo črk ter številk.</item> <item quantity="other">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znakov in kombinacijo črk ter številk.</item> </plurals>
     <string name="fui_email_account_creation_error">Registracija e-poštnega računa ni bila uspešna</string>
-    <string name="fui_error_user_collision">Račun s tem e-poštnim naslovom že obstaja.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Če se dotaknete možnosti %1$s, potrjujete, da se strinjate z dokumentoma %2$s in %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Če se dotaknete možnosti %1$s, potrjujete, da se strinjate z dokumentom %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Če se dotaknete možnosti %1$s, potrjujete, da se strinjate z dokumentom %2$s.</string>

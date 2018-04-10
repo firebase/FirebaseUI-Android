@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">註冊中…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> <item quantity="other">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> </plurals>
     <string name="fui_email_account_creation_error">電子郵件帳戶註冊失敗</string>
-    <string name="fui_error_user_collision">這個電子郵件地址已連結一個帳戶。</string>
     <string name="fui_create_account_preamble_tos_and_pp">輕觸 [%1$s] 即表示您同意《%2$s》和《%3$s》。</string>
     <string name="fui_create_account_preamble_tos_only">輕觸 [%1$s] 即表示您同意《%2$s》。</string>
     <string name="fui_create_account_preamble_pp_only">輕觸 [%1$s] 即表示您同意《%2$s》。</string>
