@@ -8,7 +8,6 @@ import android.arch.paging.PagedList;
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 
 import com.firebase.ui.firestore.SnapshotParser;
@@ -50,30 +49,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 }
             };
 
-    public static class DiffCallback<T> extends DiffUtil.ItemCallback<DocumentSnapshot> {
-
-        private final SnapshotParser<T> mParser;
-
-        public DiffCallback(SnapshotParser<T> parser) {
-            mParser = parser;
-        }
-
-        @Override
-        public boolean areItemsTheSame(DocumentSnapshot oldItem, DocumentSnapshot newItem) {
-            return oldItem.getId().equals(newItem.getId());
-        }
-
-        @Override
-        public boolean areContentsTheSame(DocumentSnapshot oldItem, DocumentSnapshot newItem) {
-            T oldModel = mParser.parseSnapshot(oldItem);
-            T newModel = mParser.parseSnapshot(newItem);
-
-            return oldModel.equals(newModel);
-        }
-    }
-
     public FirestorePagingAdapter(@NonNull FirestorePagingOptions<T> options) {
-        super(new DiffCallback<>(options.getParser()));
+        super(options.getDiffCallback());
 
         mParser = options.getParser();
         mData = options.getData();

@@ -5,9 +5,11 @@ import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.util.DiffUtil;
 
 import com.firebase.ui.firestore.ClassSnapshotParser;
 import com.firebase.ui.firestore.SnapshotParser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
@@ -17,13 +19,16 @@ public class FirestorePagingOptions<T> {
 
     private final PagingData mData;
     private final SnapshotParser<T> mParser;
+    private final DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
     private final LifecycleOwner mOwner;
 
     private FirestorePagingOptions(@NonNull PagingData data,
                                    @NonNull SnapshotParser<T> parser,
+                                   @NonNull DiffUtil.ItemCallback<DocumentSnapshot> diffCallback,
                                    @Nullable LifecycleOwner owner) {
         mData = data;
         mParser = parser;
+        mDiffCallback = diffCallback;
         mOwner = owner;
     }
 
@@ -37,6 +42,11 @@ public class FirestorePagingOptions<T> {
         return mParser;
     }
 
+    @NonNull
+    public DiffUtil.ItemCallback<DocumentSnapshot> getDiffCallback() {
+        return mDiffCallback;
+    }
+
     @Nullable
     public LifecycleOwner getOwner() {
         return mOwner;
@@ -47,6 +57,7 @@ public class FirestorePagingOptions<T> {
         private PagingData mData;
         private SnapshotParser<T> mParser;
         private LifecycleOwner mOwner;
+        private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
 
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
@@ -74,8 +85,22 @@ public class FirestorePagingOptions<T> {
         }
 
         @NonNull
+        public Builder<T> setDiffCallback(@NonNull DiffUtil.ItemCallback<DocumentSnapshot> diffCallback) {
+            mDiffCallback = diffCallback;
+            return this;
+        }
+
+        @NonNull
         public FirestorePagingOptions<T> build() {
-            return new FirestorePagingOptions<>(mData, mParser, mOwner);
+            if (mData == null || mParser == null) {
+                throw new IllegalStateException("Must call setQuery() before calling build().");
+            }
+
+            if (mDiffCallback == null) {
+                mDiffCallback = new SnapshotDiffCallback<T>(mParser);
+            }
+
+            return new FirestorePagingOptions<>(mData, mParser, mDiffCallback, mOwner);
         }
 
     }
