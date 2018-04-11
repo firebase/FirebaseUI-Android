@@ -276,32 +276,36 @@ public class AuthUI {
      */
     @NonNull
     public Task<Void> signOut(@NonNull Context context) {
-        mAuth.signOut();
-
         Task<Void> maybeDisableAutoSignIn = GoogleApiUtils.getCredentialsClient(context)
                 .disableAutoSignIn()
-                .continueWithTask(new Continuation<Void, Task<Void>>() {
+                .continueWith(new Continuation<Void, Void>() {
                     @Override
-                    public Task<Void> then(@NonNull Task<Void> task) {
+                    public Void then(@NonNull Task<Void> task) {
                         // We want to ignore a specific exception, since it's not a good reason
                         // to fail (see Issue 1156).
-                        if (!task.isSuccessful() && (task.getException() instanceof ApiException)) {
-                            ApiException ae = (ApiException) task.getException();
-                            if (ae.getStatusCode() == CommonStatusCodes.CANCELED) {
-                                Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
-                                    "SmartLock accounts available?", ae);
-
-                                return Tasks.forResult(null);
-                            }
+                        Exception e = task.getException();
+                        if (e instanceof ApiException
+                                && ((ApiException) e).getStatusCode() == CommonStatusCodes.CANCELED) {
+                            Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
+                                    "SmartLock accounts available?", e);
+                            return null;
                         }
 
-                        return task;
+                        return task.getResult();
                     }
                 });
 
         return Tasks.whenAll(
                 signOutIdps(context),
-                maybeDisableAutoSignIn);
+                maybeDisableAutoSignIn
+        ).continueWith(new Continuation<Void, Void>() {
+            @Override
+            public Void then(@NonNull Task<Void> task) {
+                task.getResult(); // Propagate exceptions
+                mAuth.signOut();
+                return null;
+            }
+        });
     }
 
     /**
@@ -329,21 +333,15 @@ public class AuthUI {
             @Override
             public Task<Void> then(@NonNull Task<Void> task) {
                 task.getResult(); // Propagate exception if there was one
-                return currentUser.delete();
-            }
-        }).continueWithTask(new Continuation<Void, Task<Void>>() {
-            @Override
-            public Task<Void> then(@NonNull Task<Void> task) {
-                task.getResult(); // Propagate exception if there was one
 
                 List<Task<?>> credentialTasks = new ArrayList<>();
                 for (Credential credential : credentials) {
                     credentialTasks.add(client.delete(credential));
                 }
                 return Tasks.whenAll(credentialTasks)
-                        .continueWithTask(new Continuation<Void, Task<Void>>() {
+                        .continueWith(new Continuation<Void, Void>() {
                             @Override
-                            public Task<Void> then(@NonNull Task<Void> task) {
+                            public Void then(@NonNull Task<Void> task) {
                                 Exception e = task.getException();
                                 Throwable t = e == null ? null : e.getCause();
                                 if (!(t instanceof ApiException)
@@ -352,12 +350,18 @@ public class AuthUI {
                                     // one. This can occur if we failed to save the credential or it
                                     // was deleted elsewhere. However, a lack of stored credential
                                     // doesn't mean fully deleting the user failed.
-                                    task.getResult();
+                                    return task.getResult();
                                 }
 
-                                return Tasks.forResult(null);
+                                return null;
                             }
                         });
+            }
+        }).continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Void> task) {
+                task.getResult(); // Propagate exception if there was one
+                return currentUser.delete();
             }
         });
     }
