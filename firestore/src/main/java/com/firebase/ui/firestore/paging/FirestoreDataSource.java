@@ -19,6 +19,10 @@ import java.util.List;
 
 /**
  * Data source to power a {@link FirestorePagingAdapter}.
+ *
+ * Note: although loadInitial, loadBefore, and loadAfter are not called on the main thread by the
+ *       paging library, we treat them as if they were so that we can facilitate retry without
+ *       managing our own thread pool or requiring the user to pass us an executor.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSnapshot> {
@@ -43,12 +47,14 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
     private final Query mBaseQuery;
 
+    private Runnable mRetryRunnable;
+
     public FirestoreDataSource(Query baseQuery) {
         mBaseQuery = baseQuery;
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<PageKey> params,
+    public void loadInitial(@NonNull final LoadInitialParams<PageKey> params,
                             @NonNull final LoadInitialCallback<PageKey, DocumentSnapshot> callback) {
 
         // Set initial loading state
@@ -56,16 +62,20 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
         mBaseQuery.limit(params.requestedLoadSize)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                .addOnSuccessListener(new OnLoadSuccessListener() {
                     @Override
-                    public void onSuccess(QuerySnapshot snapshot) {
+                    protected void setResult(@NonNull QuerySnapshot snapshot) {
                         PageKey nextPage = getNextPageKey(snapshot);
                         callback.onResult(snapshot.getDocuments(), null, nextPage);
 
-                        mLoadingState.postValue(LoadingState.LOADED);
                     }
                 })
-                .addOnFailureListener(new OnLoadFailureListener());
+                .addOnFailureListener(new OnLoadFailureListener() {
+                    @Override
+                    protected Runnable getRetryRunnable() {
+                        return getRetryLoadInitial(params, callback);
+                    }
+                });
 
     }
 
@@ -80,7 +90,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<PageKey> params,
+    public void loadAfter(@NonNull final LoadParams<PageKey> params,
                           @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
         final PageKey key = params.key;
 
@@ -89,16 +99,19 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
         key.getPageQuery(mBaseQuery, params.requestedLoadSize)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                .addOnSuccessListener(new OnLoadSuccessListener() {
                     @Override
-                    public void onSuccess(QuerySnapshot snapshot) {
+                    protected void setResult(@NonNull QuerySnapshot snapshot) {
                         PageKey nextPage = getNextPageKey(snapshot);
                         callback.onResult(snapshot.getDocuments(), nextPage);
-
-                        mLoadingState.postValue(LoadingState.LOADED);
                     }
                 })
-                .addOnFailureListener(new OnLoadFailureListener());
+                .addOnFailureListener(new OnLoadFailureListener() {
+                    @Override
+                    protected Runnable getRetryRunnable() {
+                        return getRetryLoadAfter(params, callback);
+                    }
+                });
 
     }
 
@@ -113,6 +126,21 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         return mLoadingState;
     }
 
+    public void retry() {
+        LoadingState currentState = mLoadingState.getValue();
+        if (currentState != LoadingState.ERROR) {
+            Log.w(TAG, "retry() not valid when in state: " + currentState);
+            return;
+        }
+
+        if (mRetryRunnable == null) {
+            Log.w(TAG, "retry() called with no eligible retry runnable.");
+            return;
+        }
+
+        mRetryRunnable.run();
+    }
+
     @Nullable
     private DocumentSnapshot getLast(@NonNull List<DocumentSnapshot> data) {
         if (data.isEmpty()) {
@@ -122,10 +150,46 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         }
     }
 
+    @NonNull
+    private Runnable getRetryLoadAfter(@NonNull final LoadParams<PageKey> params,
+                                       @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                loadAfter(params, callback);
+            }
+        };
+    }
+
+    @NonNull
+    private Runnable getRetryLoadInitial(@NonNull final LoadInitialParams<PageKey> params,
+                                         @NonNull final LoadInitialCallback<PageKey, DocumentSnapshot> callback) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                loadInitial(params, callback);
+            }
+        };
+    }
+
     /**
-     * Error listener that just logs and sets the error state.
+     * Success listener that sets success state and nullifies the retry runnable.
      */
-    private class OnLoadFailureListener implements OnFailureListener {
+    private abstract class OnLoadSuccessListener implements OnSuccessListener<QuerySnapshot> {
+
+        @Override
+        public void onSuccess(QuerySnapshot snapshots) {
+            mLoadingState.postValue(LoadingState.LOADED);
+            mRetryRunnable = null;
+        }
+
+        protected abstract void setResult(@NonNull QuerySnapshot snapshot);
+    }
+
+    /**
+     * Error listener that logs, sets the error state, and sets up retry.
+     */
+    private abstract class OnLoadFailureListener implements OnFailureListener {
 
         @Override
         public void onFailure(@NonNull Exception e) {
@@ -134,6 +198,11 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
             // On error we do NOT post any value to the PagedList, we just tell
             // the developer that we are now in the error state.
             mLoadingState.postValue(LoadingState.ERROR);
+
+            // Set the retry action
+            mRetryRunnable = getRetryRunnable();
         }
+
+        protected abstract Runnable getRetryRunnable();
     }
 }
