@@ -15,7 +15,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,29 +59,13 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot snapshot) {
-                        List<DocumentSnapshot> data = snapshot.getDocuments();
-                        DocumentSnapshot last = getLast(data);
-
-                        PageKey nextPage = new PageKey(last, null);
-                        callback.onResult(data, null, nextPage);
+                        PageKey nextPage = getNextPageKey(snapshot);
+                        callback.onResult(snapshot.getDocuments(), null, nextPage);
 
                         mLoadingState.postValue(LoadingState.LOADED);
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "loadInitial:failure", e);
-
-                        // On error, return an empty page with the next page key being basically
-                        // equal to the initial query.
-                        PageKey nextPage = new PageKey(null, null);
-                        callback.onResult(Collections.<DocumentSnapshot>emptyList(),
-                                null, nextPage);
-
-                        mLoadingState.postValue(LoadingState.ERROR);
-                    }
-                });
+                .addOnFailureListener(new OnLoadFailureListener());
 
     }
 
@@ -109,28 +92,21 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot snapshot) {
-                        List<DocumentSnapshot> data = snapshot.getDocuments();
-                        DocumentSnapshot last = getLast(data);
-
-                        PageKey nextPage = new PageKey(last, null);
-                        callback.onResult(data, nextPage);
+                        PageKey nextPage = getNextPageKey(snapshot);
+                        callback.onResult(snapshot.getDocuments(), nextPage);
 
                         mLoadingState.postValue(LoadingState.LOADED);
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "loadAfter:failure", e);
+                .addOnFailureListener(new OnLoadFailureListener());
 
-                        // On error, return an empty page with the next page key being basically
-                        // equal to the initial query.
-                        callback.onResult(Collections.<DocumentSnapshot>emptyList(), key);
+    }
 
-                        mLoadingState.postValue(LoadingState.ERROR);
-                    }
-                });
+    private PageKey getNextPageKey(@NonNull QuerySnapshot snapshot) {
+        List<DocumentSnapshot> data = snapshot.getDocuments();
+        DocumentSnapshot last = getLast(data);
 
+        return new PageKey(last, null);
     }
 
     public LiveData<LoadingState> getLoadingState() {
@@ -143,6 +119,21 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
             return null;
         } else {
             return data.get(data.size() - 1);
+        }
+    }
+
+    /**
+     * Error listener that just logs and sets the error state.
+     */
+    private class OnLoadFailureListener implements OnFailureListener {
+
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            Log.w(TAG, "load:onFailure", e);
+
+            // On error we do NOT post any value to the PagedList, we just tell
+            // the developer that we are now in the error state.
+            mLoadingState.postValue(LoadingState.ERROR);
         }
     }
 }
