@@ -365,6 +365,8 @@ see the Firebase Auth documentation to
 [get the currently signed-in user](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
 and [register an AuthStateListener](https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#addAuthStateListener(com.google.firebase.auth.FirebaseAuth.AuthStateListener)).
 
+Note: if you choose to use an `AuthStateListener`, make sure to unregister it before launching the FirebaseUI flow and re-register it after the flow returns. FirebaseUI performs auth operations internally which may trigger the listener before the flow is complete.
+
 #### ID tokens
 
 To retrieve the ID token that the IDP returned, you can extract an `IdpResponse` from the result
