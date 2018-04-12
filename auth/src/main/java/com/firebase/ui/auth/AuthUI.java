@@ -394,7 +394,9 @@ public class AuthUI {
 
             String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
             if (type == null) {
-                credentials.add(CredentialUtils.buildCredential(user, "pass", null));
+                // Since the account type is null, we've got an email credential. Adding a fake
+                // password is the only way to tell Smart Lock that this is an email credential.
+                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
             } else {
                 credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
             }
