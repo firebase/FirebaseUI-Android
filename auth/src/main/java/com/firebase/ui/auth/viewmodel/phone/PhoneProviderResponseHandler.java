@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.viewmodel.idp;
+package com.firebase.ui.auth.viewmodel.phone;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
