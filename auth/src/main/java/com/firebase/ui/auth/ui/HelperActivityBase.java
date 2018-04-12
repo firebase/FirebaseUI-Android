@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
-import com.firebase.ui.auth.util.CredentialsUtils;
+import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -56,7 +56,7 @@ public class HelperActivityBase extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // Forward the results of Smart Lock saving
         if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
-            finish(RESULT_OK, data);
+            finish(resultCode, data);
         }
     }
 
@@ -82,7 +82,7 @@ public class HelperActivityBase extends AppCompatActivity {
             @Nullable String password) {
         // Build credential
         String accountType = ProviderUtils.idpResponseToAccountType(response);
-        Credential credential = CredentialsUtils.buildCredential(
+        Credential credential = CredentialUtils.buildCredential(
                 firebaseUser, password, accountType);
 
         // Start the dedicated SmartLock Activity
