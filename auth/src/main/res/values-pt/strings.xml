@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Concluindo sua inscrição…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item> <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item> </plurals>
     <string name="fui_email_account_creation_error">Falha no registro da conta do e-mail</string>
-    <string name="fui_error_user_collision">Já existe uma conta com esse endereço de e-mail.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Ao tocar em “%1$s”, você indica que está de acordo com os %2$s e a %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Ao tocar em “%1$s”, você indica que está de acordo com os %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Ao tocar em “%1$s”, você indica que está de acordo com a %2$s.</string>

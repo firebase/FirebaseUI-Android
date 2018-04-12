@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion compileSdk
+
+    defaultConfig {
+        applicationId "com.firebase.uidemo"
+        minSdkVersion 16
+        targetSdkVersion targetSdk
+        versionCode 1
+        versionName version
+    }
+
+    buildTypes {
+        release {
+            // For the purposes of the sample, allow testing of a proguarded release build
+            // using the debug key
+            signingConfig signingConfigs.debug
+
+            postprocessing {
+                removeUnusedCode true
+                removeUnusedResources true
+                obfuscate true
+                optimizeCode true
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation "com.google.firebase:firebase-core:$firebaseVersion"
+
+    implementation project(path: ':auth')
+    implementation project(path: ':firestore')
+    implementation project(path: ':database')
+    implementation project(path: ':storage')
+}
+
+apply plugin: 'com.google.gms.google-services'

@@ -25,14 +25,6 @@ public final class Resource<T> {
     }
 
     /**
-     * Creates a successful, empty Resource.
-     */
-    @NonNull
-    public static Resource<Void> forVoidSuccess() {
-        return new Resource<>(State.SUCCESS, null, null);
-    }
-
-    /**
      * Creates a successful resource containing a value.
      */
     @NonNull

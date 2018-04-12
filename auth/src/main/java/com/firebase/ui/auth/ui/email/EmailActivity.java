@@ -33,7 +33,6 @@ import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -42,9 +41,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements
-        CheckEmailFragment.CheckEmailListener,
-        RegisterEmailFragment.RegistrationListener {
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener {
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -67,17 +64,11 @@ public class EmailActivity extends AppCompatBase implements
         String email = getIntent().getExtras().getString(ExtraConstants.EMAIL);
 
         // Start with check email
-        CheckEmailFragment fragment = CheckEmailFragment.newInstance(getFlowParams(), email);
+        CheckEmailFragment fragment = CheckEmailFragment.newInstance(email);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -119,9 +110,7 @@ public class EmailActivity extends AppCompatBase implements
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
-            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
-                    getFlowParams(),
-                    user);
+            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 
@@ -135,12 +124,6 @@ public class EmailActivity extends AppCompatBase implements
         } else {
             emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
-    }
-
-    @Override
-    public void onRegistrationSuccess(AuthResult authResult, String password,
-                                      IdpResponse response) {
-        startSaveCredentials(authResult.getUser(), password, response);
     }
 
     private void setSlideAnimation() {

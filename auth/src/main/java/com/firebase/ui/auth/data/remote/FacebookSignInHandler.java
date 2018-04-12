@@ -12,7 +12,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookRequestError;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.WebDialog;
@@ -43,13 +42,11 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
     static {
         boolean available;
         try {
-            //noinspection unused to possibly throw
-            Class c = FacebookSdk.class;
+            Class.forName("com.facebook.login.LoginManager");
             available = true;
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException e) {
             available = false;
         }
-        //noinspection ConstantConditions IntelliJ is wrong
         IS_AVAILABLE = available;
     }
 

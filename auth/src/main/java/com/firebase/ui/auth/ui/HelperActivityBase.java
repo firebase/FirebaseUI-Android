@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +13,9 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.AuthHelper;
-import com.firebase.ui.auth.util.CredentialsUtil;
+import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,9 +25,8 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
-    private FlowHolder mFlowHolder;
+    private FlowParameters mParams;
 
-    private FlowParameters mFlowParameters;
     private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
@@ -60,28 +57,17 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Forward the results of Smartlock Saving
+        // Forward the results of Smart Lock saving
         if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
-            finish(RESULT_OK, data);
+            finish(resultCode, data);
         }
-    }
-
-    public FlowHolder getFlowHolder() {
-        if (mFlowHolder == null) {
-            mFlowHolder = ViewModelProviders.of(this).get(FlowHolder.class);
-            mFlowHolder.init(FlowParameters.fromIntent(getIntent()));
-        }
-
-        return mFlowHolder;
     }
 
     public FlowParameters getFlowParams() {
-        if (mFlowParameters == null) {
-            mFlowParameters = FlowParameters.fromIntent(getIntent());
+        if (mParams == null) {
+            mParams = FlowParameters.fromIntent(getIntent());
         }
-
-        return mFlowParameters;
+        return mParams;
     }
 
     public AuthHelper getAuthHelper() {
@@ -99,17 +85,16 @@ public class HelperActivityBase extends AppCompatActivity {
 
     public void startSaveCredentials(
             FirebaseUser firebaseUser,
-            @Nullable String password,
-            IdpResponse response) {
-
+            IdpResponse response,
+            @Nullable String password) {
         // Build credential
         String accountType = ProviderUtils.idpResponseToAccountType(response);
-        Credential credential = CredentialsUtil.buildCredential(
+        Credential credential = CredentialUtils.buildCredential(
                 firebaseUser, password, accountType);
 
         // Start the dedicated SmartLock Activity
-        Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
-                credential, response);
+        Intent intent = CredentialSaveActivity.createIntent(
+                this, getFlowParams(), credential, response);
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
     }
 }

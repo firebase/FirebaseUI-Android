@@ -96,7 +96,7 @@ public class SingleSignInActivity extends HelperActivityBase {
                 this, R.string.fui_progress_dialog_loading) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                startSaveCredentials(mHandler.getCurrentUser(), null, response);
+                startSaveCredentials(mHandler.getCurrentUser(), response, null);
             }
 
             @Override
