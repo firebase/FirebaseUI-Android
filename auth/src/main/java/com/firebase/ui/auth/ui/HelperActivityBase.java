@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
-import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -27,7 +26,6 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 public class HelperActivityBase extends AppCompatActivity {
     private FlowParameters mParams;
 
-    private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
     protected static Intent createBaseIntent(
@@ -44,7 +42,6 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }
 
@@ -68,10 +65,6 @@ public class HelperActivityBase extends AppCompatActivity {
             mParams = FlowParameters.fromIntent(getIntent());
         }
         return mParams;
-    }
-
-    public AuthHelper getAuthHelper() {
-        return mAuthHelper;
     }
 
     public ProgressDialogHolder getDialogHolder() {
