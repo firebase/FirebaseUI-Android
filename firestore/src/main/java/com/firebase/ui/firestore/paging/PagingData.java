@@ -17,6 +17,7 @@ public class PagingData {
 
     private final LiveData<PagedList<DocumentSnapshot>> mSnapshots;
     private final LiveData<LoadingState> mLoadingState;
+    private final LiveData<FirestoreDataSource> mDataSource;
 
     public PagingData(@NonNull LiveData<PagedList<DocumentSnapshot>> snapshots) {
         mSnapshots = snapshots;
@@ -29,6 +30,14 @@ public class PagingData {
                         return dataSource.getLoadingState();
                     }
                 });
+
+        mDataSource = Transformations.map(mSnapshots,
+                new Function<PagedList<DocumentSnapshot>, FirestoreDataSource>() {
+                    @Override
+                    public FirestoreDataSource apply(PagedList<DocumentSnapshot> input) {
+                        return (FirestoreDataSource) input.getDataSource();
+                    }
+                });
     }
 
     public LiveData<PagedList<DocumentSnapshot>> getSnapshots() {
@@ -38,5 +47,7 @@ public class PagingData {
     public LiveData<LoadingState> getLoadingState() {
         return mLoadingState;
     }
+
+    public LiveData<FirestoreDataSource> getDataSource() { return mDataSource; }
 
 }

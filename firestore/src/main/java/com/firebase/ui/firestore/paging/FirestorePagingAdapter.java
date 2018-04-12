@@ -9,6 +9,7 @@ import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -21,6 +22,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
         extends PagedListAdapter<DocumentSnapshot, VH>
         implements LifecycleObserver {
+
+    private static final String TAG = "FirestorePagingAdapter";
 
     private final SnapshotParser<T> mParser;
     private final PagingData mData;
@@ -58,6 +61,20 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         if (options.getOwner() != null) {
             options.getOwner().getLifecycle().addObserver(this);
         }
+    }
+
+    /**
+     * If {@link #onLoadingStateChanged(LoadingState)} indicates error state, call this method
+     * to attempt to retry the most recent failure.
+     */
+    public void retry() {
+        FirestoreDataSource source = mData.getDataSource().getValue();
+        if (source == null) {
+            Log.w(TAG, "Called retry() when FirestoreDataSource is null!");
+            return;
+        }
+
+        source.retry();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
