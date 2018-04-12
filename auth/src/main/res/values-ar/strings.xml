@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">جارٍ الاشتراك…</string>
     <plurals name="fui_error_weak_password"> <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> </plurals>
     <string name="fui_email_account_creation_error">فشل تسجيل حساب البريد الإلكتروني</string>
-    <string name="fui_error_user_collision">ثمة حساب يستخدم عنوان البريد الإلكتروني هذا.</string>
     <string name="fui_create_account_preamble_tos_and_pp">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s و%3$s.</string>
     <string name="fui_create_account_preamble_tos_only">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s.</string>

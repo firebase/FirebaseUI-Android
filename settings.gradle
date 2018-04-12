@@ -1,2 +1,2 @@
 include ':app', ':library', ':database', ':auth', ':storage', ':firestore', ':common',
-        ':internal:lint', ':internal:lintchecks'
+        'proguard-tests', ':internal:lint', ':internal:lintchecks'

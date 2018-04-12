@@ -96,7 +96,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 this, R.string.fui_progress_dialog_signing_in) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                startSaveCredentials(mHandler.getCurrentUser(), null, response);
+                startSaveCredentials(mHandler.getCurrentUser(), response, null);
             }
 
             @Override

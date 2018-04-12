@@ -234,7 +234,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     private void showPhoneAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getPhoneHintIntent().getIntentSender(), RequestCodes.CRED_HINT);
+            startIntentSenderForResult(
+                    getPhoneHintIntent().getIntentSender(),
+                    RequestCodes.CRED_HINT,
+                    null,
+                    0,
+                    0,
+                    0,
+                    null);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }

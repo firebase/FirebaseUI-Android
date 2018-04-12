@@ -194,6 +194,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             final IdpResponse response = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
 
+            setResult(Resource.<IdpResponse>forLoading());
             getAuth().signInWithEmailAndPassword(id, password)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
