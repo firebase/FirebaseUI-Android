@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -62,7 +61,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         setContentView(R.layout.fui_forgot_password_layout);
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
-        mHandler.init(getFlowHolder().getArguments());
+        mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<String>(
                 this, R.string.fui_progress_dialog_sending) {
             @Override
@@ -117,7 +116,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        finish(Activity.RESULT_OK, new Intent());
+                        finish(RESULT_OK, new Intent());
                     }
                 })
                 .setPositiveButton(android.R.string.ok, null)

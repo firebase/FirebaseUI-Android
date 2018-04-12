@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">سائن اپ ہو رہا ہے…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item> <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item> </plurals>
     <string name="fui_email_account_creation_error">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
-    <string name="fui_error_user_collision">اس ای میل پتہ کے ساتھ ایک اکاؤنٹ پہلے سے ہی موجود ہے۔</string>
     <string name="fui_create_account_preamble_tos_and_pp">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s اور %3$s سے اتفاق کرتے ہیں۔</string>
     <string name="fui_create_account_preamble_tos_only">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
     <string name="fui_create_account_preamble_pp_only">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>

@@ -14,7 +14,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.VoidResourceObserver;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 
@@ -25,7 +25,6 @@ public class CredentialSaveActivity extends HelperActivityBase {
     private static final String TAG = "CredentialSaveActivity";
 
     private SmartLockHandler mHandler;
-    private IdpResponse mIdpResponse;
 
     @NonNull
     public static Intent createIntent(Context context,
@@ -41,29 +40,30 @@ public class CredentialSaveActivity extends HelperActivityBase {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final IdpResponse response = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
+        Credential credential = getIntent().getParcelableExtra(ExtraConstants.CREDENTIAL);
+
         mHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
         mHandler.init(getFlowParams());
+        mHandler.setResponse(response);
 
-        Credential credential = getIntent().getParcelableExtra(ExtraConstants.CREDENTIAL);
-        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
-
-        mHandler.getOperation().observe(this, new VoidResourceObserver(
+        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
                 this, R.string.fui_progress_dialog_loading) {
             @Override
-            protected void onSuccess() {
-                finish(RESULT_OK, mIdpResponse.toIntent());
+            protected void onSuccess(@NonNull IdpResponse response) {
+                finish(RESULT_OK, response.toIntent());
             }
 
             @Override
             protected void onFailure(@NonNull Exception e) {
                 // RESULT_OK since we don't want to halt sign-in just because of a credential save
                 // error.
-                finish(RESULT_OK, mIdpResponse.toIntent());
+                finish(RESULT_OK, response.toIntent());
             }
         });
 
         // Avoid double-saving
-        Resource<Void> currentOp = mHandler.getOperation().getValue();
+        Resource<IdpResponse> currentOp = mHandler.getOperation().getValue();
         if (currentOp == null) {
             Log.d(TAG, "Launching save operation.");
             mHandler.saveCredentials(credential);

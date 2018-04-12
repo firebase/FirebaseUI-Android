@@ -17,18 +17,13 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
-import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,18 +31,13 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class EmailActivityTest {
-
     private EmailActivity createActivity() {
         Intent startIntent = EmailActivity.createIntent(
                 RuntimeEnvironment.application,
@@ -91,43 +81,5 @@ public class EmailActivityTest {
                                 .getInteger(R.integer.fui_min_password_length)
                 ),
                 passwordLayout.getError().toString());
-    }
-
-    @Test
-    @Config(shadows = {AuthHelperShadow.class})
-    public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
-        EmailActivity emailActivity = createActivity();
-
-        // Trigger new user UI (bypassing check email)
-        emailActivity.onNewUser(
-                new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
-                        .setName(TestConstants.NAME)
-                        .setPhotoUri(TestConstants.PHOTO_URI)
-                        .build());
-
-        EditText email = emailActivity.findViewById(R.id.email);
-        EditText name = emailActivity.findViewById(R.id.name);
-        EditText password = emailActivity.findViewById(R.id.password);
-
-        email.setText(TestConstants.EMAIL);
-        name.setText(TestConstants.NAME);
-        password.setText(TestConstants.PASSWORD);
-
-        AuthHelperShadow.sCanLinkAccounts = true;
-        when(AuthHelperShadow.getCurrentUser().linkWithCredential(any(EmailAuthCredential.class)))
-                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
-        when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
-                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
-
-        Button button = emailActivity.findViewById(R.id.button_create);
-        button.performClick();
-
-        // Verify create user request
-        verify(AuthHelperShadow.getCurrentUser())
-                .linkWithCredential(any(EmailAuthCredential.class));
-
-        // Check that Smart Lock is kicked off
-        TestHelper.verifyCredentialSaveStarted(emailActivity,
-                null, TestConstants.EMAIL, TestConstants.PASSWORD, null);
     }
 }

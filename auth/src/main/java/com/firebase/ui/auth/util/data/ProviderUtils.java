@@ -84,7 +84,7 @@ public final class ProviderUtils {
             case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
                 return EmailAuthProvider.PROVIDER_ID;
             default:
-                throw new IllegalStateException("Unknown method: + " + method);
+                throw new IllegalStateException("Unknown method: " + method);
         }
     }
 

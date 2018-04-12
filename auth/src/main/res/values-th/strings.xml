@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">กำลังลงชื่อสมัครใช้…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> <item quantity="other">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> </plurals>
     <string name="fui_email_account_creation_error">การลงทะเบียนบัญชีอีเมลไม่สำเร็จ</string>
-    <string name="fui_error_user_collision">มีบัญชีที่ใช้ที่อยู่อีเมลนี้อยู่แล้ว</string>
     <string name="fui_create_account_preamble_tos_and_pp">การแตะ%1$sแสดงว่าคุณยอมรับ%2$sและ%3$s</string>
     <string name="fui_create_account_preamble_tos_only">การแตะ%1$sแสดงว่าคุณยอมรับ%2$s</string>
     <string name="fui_create_account_preamble_pp_only">การแตะ%1$sแสดงว่าคุณยอมรับ%2$s</string>

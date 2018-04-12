@@ -180,7 +180,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
     }
 
     private void handleCredential(final Credential credential) {
-        final String email = credential.getId();
+        final String id = credential.getId();
         final String password = credential.getPassword();
         if (TextUtils.isEmpty(password)) {
             String identity = credential.getAccountType();
@@ -188,24 +188,25 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                 startAuthMethodChoice();
             } else {
                 redirectSignIn(
-                        ProviderUtils.accountTypeToProviderId(credential.getAccountType()), email);
+                        ProviderUtils.accountTypeToProviderId(credential.getAccountType()), id);
             }
         } else {
             // Because we are being called from Smart Lock,
             // we can assume that the account already exists and a user collision exception will be
             // thrown so we don't bother with linking credentials
             final IdpResponse response =
-                    new IdpResponse.Builder(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                    new IdpResponse.Builder(new User.Builder(EmailAuthProvider.PROVIDER_ID, id)
                             .setPrevUid(getUidForAccountLinking())
                             .build()).build();
 
+            setResult(Resource.<IdpResponse>forLoading());
             ManualMergeUtils.injectSignInTaskBetweenDataTransfer(getApplication(),
                     response,
                     getArguments(),
                     new Callable<Task<AuthResult>>() {
                         @Override
                         public Task<AuthResult> call() {
-                            return getAuth().signInWithEmailAndPassword(email, password);
+                            return getAuth().signInWithEmailAndPassword(id, password);
                         }
                     })
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
