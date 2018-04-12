@@ -35,16 +35,13 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     static {
         boolean available;
         try {
-            //noinspection unused to possibly throw
-            Class c = TwitterCore.class;
+            Class.forName("com.twitter.sdk.android.core.identity.TwitterAuthClient");
             available = true;
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException e) {
             available = false;
         }
-        //noinspection ConstantConditions IntelliJ is wrong
         IS_AVAILABLE = available;
 
-        //noinspection ConstantConditions IntelliJ is still wrong
         if (IS_AVAILABLE) {
             Context context = AuthUI.getApplicationContext();
             Twitter.initialize(new TwitterConfig.Builder(context)
