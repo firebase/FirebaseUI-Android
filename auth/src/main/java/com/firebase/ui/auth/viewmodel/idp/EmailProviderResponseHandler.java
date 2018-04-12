@@ -17,6 +17,7 @@ import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -41,7 +42,14 @@ public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse>
         setResult(Resource.<IdpResponse>forLoading());
 
         final String email = response.getEmail();
-        getAuth().createUserWithEmailAndPassword(email, password)
+        Task<AuthResult> registerTask;
+        if (canLinkAccounts()) {
+            registerTask = getCurrentUser()
+                    .linkWithCredential(EmailAuthProvider.getCredential(email, password));
+        } else {
+            registerTask = getAuth().createUserWithEmailAndPassword(email, password);
+        }
+        registerTask
                 .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
