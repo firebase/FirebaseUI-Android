@@ -171,10 +171,15 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
 
                 private void handleResponse(@NonNull IdpResponse response) {
-                    if (!response.isSuccessful()
-                            || AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+                    if (!response.isSuccessful()) {
+                        // We have no idea what provider this error stemmed from so just forward
+                        // this along to the handler.
+                        handler.startSignIn(response);
+                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
                         handler.startSignIn(response);
                     } else {
+                        // Email or phone: the credentials should have already been saved so simply
+                        // move along.
                         finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
                                 response.toIntent());
                     }
