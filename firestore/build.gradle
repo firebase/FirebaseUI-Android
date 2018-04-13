@@ -22,7 +22,7 @@ dependencies {
     api "com.android.support:recyclerview-v7:$supportLibraryVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 
-    compileOnly "android.arch.paging:runtime:1.0.0-beta1"
+    compileOnly "android.arch.paging:runtime:$pagingVersion"
 
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

@@ -16,7 +16,7 @@ Before using this library, you should be familiar with the following topics:
    1. [Using the FirestoreRecyclerAdapter](#using-the-firestorerecycleradapter)
        1. [Adapter lifecyle](#firestorerecycleradapter-lifecycle)
        1. [Events](#data-and-error-events)
-   1. [Using the FirestoreRecyclerAdapter](#using-the-firestorepagingadapter)
+   1. [Using the FirestorePagingAdapter](#using-the-firestorepagingadapter)
        1. [Adapter lifecyle](#firestorepagingadapter-lifecycle)
        1. [Events](#paging-events)
 
