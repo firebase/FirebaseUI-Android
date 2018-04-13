@@ -58,6 +58,9 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 }
             };
 
+    /**
+     * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
+     */
     public FirestorePagingAdapter(@NonNull FirestorePagingOptions<T> options) {
         super(options.getDiffCallback());
 
@@ -101,12 +104,18 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         source.retry();
     }
 
+    /**
+     * Start listening to paging / scrolling events and populating adapter data.
+     */
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         mSnapshots.observeForever(mDataObserver);
         mLoadingState.observeForever(mStateObserver);
     }
 
+    /**
+     * Unsubscribe from paging / scrolling events, no more data will be populated.
+     */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeObserver(mDataObserver);
@@ -119,8 +128,18 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         onBindViewHolder(holder, position, mParser.parseSnapshot(snapshot));
     }
 
+    /**
+     * @param model the model object containing the data that should be used to populate the view.
+     * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
+     */
     protected abstract void onBindViewHolder(@NonNull VH holder, int position, @NonNull T model);
 
+    /**
+     * Called whenever the loading state of the adapter changes.
+     *
+     * When the state is {@link LoadingState#ERROR} the adapter will stop loading any data unless
+     * {@link #retry()} is called.
+     */
     protected void onLoadingStateChanged(@NonNull LoadingState state) {
         // For overriding
     }

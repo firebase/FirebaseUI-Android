@@ -10,7 +10,6 @@ import com.firebase.ui.firestore.paging.LoadingState;
 import com.firebase.ui.firestore.paging.PageKey;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -21,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -33,9 +33,6 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class FirestoreDataSourceTest {
 
-    private static final String TAG = "DataSourceTest";
-
-    private FirebaseFirestore mFirestore;
     private FirestoreDataSource mDataSource;
 
     @Mock Query mMockQuery;
@@ -65,7 +62,7 @@ public class FirestoreDataSourceTest {
 
         // Should go from LOADING_INITIAL --> LOADED
         observer.await();
-        observer.assertResults(LoadingState.LOADING_INITIAL, LoadingState.LOADED);
+        observer.assertResults(Arrays.asList(LoadingState.LOADING_INITIAL, LoadingState.LOADED));
     }
 
     @Test
@@ -82,7 +79,7 @@ public class FirestoreDataSourceTest {
 
         // Should go from LOADING_INITIAL --> ERROR
         observer.await();
-        observer.assertResults(LoadingState.LOADING_INITIAL, LoadingState.ERROR);
+        observer.assertResults(Arrays.asList(LoadingState.LOADING_INITIAL, LoadingState.ERROR));
     }
 
     @Test
@@ -100,7 +97,7 @@ public class FirestoreDataSourceTest {
 
         // Should go from LOADING_MORE --> LOADED
         observer.await();
-        observer.assertResults(LoadingState.LOADING_MORE, LoadingState.LOADED);
+        observer.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.LOADED));
     }
 
     @Test
@@ -118,7 +115,7 @@ public class FirestoreDataSourceTest {
 
         // Should go from LOADING_MORE --> ERROR
         observer.await();
-        observer.assertResults(LoadingState.LOADING_MORE, LoadingState.ERROR);
+        observer.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.ERROR));
     }
 
     @Test
@@ -136,7 +133,7 @@ public class FirestoreDataSourceTest {
 
         // Should go from LOADING_MORE --> ERROR
         observer1.await();
-        observer1.assertResults(LoadingState.LOADING_MORE, LoadingState.ERROR);
+        observer1.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.ERROR));
 
         // Create a new observer
         TestObserver<LoadingState> observer2 = new TestObserver<>(3);
@@ -148,7 +145,8 @@ public class FirestoreDataSourceTest {
 
         // Should go from ERROR --> LOADING_MORE --> SUCCESS
         observer2.await();
-        observer2.assertResults(LoadingState.ERROR, LoadingState.LOADING_MORE, LoadingState.LOADED);
+        observer2.assertResults(
+                Arrays.asList(LoadingState.ERROR, LoadingState.LOADING_MORE, LoadingState.LOADED));
     }
 
     private void initMockQuery() {
@@ -194,11 +192,11 @@ public class FirestoreDataSourceTest {
             mLatch.await();
         }
 
-        public void assertResults(T... results) {
-            assertEquals(results.length, mResults.size());
+        public void assertResults(List<T> expected) {
+            assertEquals(expected.size(), mResults.size());
 
             for (int i = 0; i < mResults.size(); i++) {
-                assertEquals(mResults.get(i), results[i]);
+                assertEquals(mResults.get(i), expected.get(i));
             }
         }
 
