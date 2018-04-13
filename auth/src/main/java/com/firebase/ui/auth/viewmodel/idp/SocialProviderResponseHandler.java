@@ -28,7 +28,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
@@ -44,10 +43,9 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
             setResult(Resource.<IdpResponse>forFailure(response.getError()));
             return;
         }
-        if (response.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)
-                || response.getProviderType().equals(PhoneAuthProvider.PROVIDER_ID)) {
-            setResult(Resource.forSuccess(response));
-            return;
+        if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+            throw new IllegalStateException(
+                    "This handler cannot be used with email or phone providers");
         }
         setResult(Resource.<IdpResponse>forLoading());
 

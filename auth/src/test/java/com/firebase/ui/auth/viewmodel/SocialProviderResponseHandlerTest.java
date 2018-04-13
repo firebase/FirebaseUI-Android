@@ -91,8 +91,8 @@ public class SocialProviderResponseHandlerTest {
                 .onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
     }
 
-    @Test
-    public void testSignInNonIdp_success() {
+    @Test(expected = IllegalStateException.class)
+    public void testSignInNonIdp_failure() {
         mHandler.getOperation().observeForever(mResultObserver);
 
         IdpResponse response = new IdpResponse.Builder(new User.Builder(
@@ -100,8 +100,6 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
-
-        verify(mResultObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
     }
 
     @Test
