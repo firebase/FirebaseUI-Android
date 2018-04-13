@@ -67,7 +67,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                     protected void setResult(@NonNull QuerySnapshot snapshot) {
                         PageKey nextPage = getNextPageKey(snapshot);
                         callback.onResult(snapshot.getDocuments(), null, nextPage);
-
                     }
                 })
                 .addOnFailureListener(new OnLoadFailureListener() {
@@ -179,6 +178,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
         @Override
         public void onSuccess(QuerySnapshot snapshot) {
+            setResult(snapshot);
             mLoadingState.postValue(LoadingState.LOADED);
             mRetryRunnable = null;
         }
