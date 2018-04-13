@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Tilmelder…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> </plurals>
     <string name="fui_email_account_creation_error">Registrering af mailkonto mislykkedes</string>
-    <string name="fui_error_user_collision">Der findes allerede en konto med den mailadresse.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Ved at trykke på %1$s accepterer du %2$s og %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Ved at trykke på %1$s accepterer du %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Ved at trykke på %1$s accepterer du %2$s.</string>

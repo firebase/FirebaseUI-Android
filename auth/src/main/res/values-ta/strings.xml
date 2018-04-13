@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">பதிவு செய்கிறது…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
     <string name="fui_email_account_creation_error">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
-    <string name="fui_error_user_collision">அந்த மின்னஞ்சல் முகவரியுடன் ஏற்கனவே ஒரு கணக்கு உள்ளது.</string>
     <string name="fui_create_account_preamble_tos_and_pp">%1$s என்பதைத் தட்டுவதன் மூலம், %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
     <string name="fui_create_account_preamble_tos_only">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
     <string name="fui_create_account_preamble_pp_only">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>

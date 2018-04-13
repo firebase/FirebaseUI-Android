@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">A realizar a inscrição…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caráter e uma combinação de letras e números</item> <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item> </plurals>
     <string name="fui_email_account_creation_error">O registo da conta de email não foi bem-sucedido</string>
-    <string name="fui_error_user_collision">Já existe uma conta com o endereço de email em questão.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Ao tocar em %1$s, indica que aceita os %2$s e a %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Ao tocar em %1$s, indica que aceita os %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Ao tocar em %1$s, indica que aceita a %2$s.</string>
