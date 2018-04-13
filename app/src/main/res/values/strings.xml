@@ -10,7 +10,7 @@
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
     <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
-    <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paging data from Cloud Firestore.</string>
+    <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paged data from Cloud Firestore.</string>
     <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
     <string name="desc_storage">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 

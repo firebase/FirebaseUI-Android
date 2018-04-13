@@ -43,6 +43,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
     ProgressBar mProgressBar;
 
     private FirebaseFirestore mFirestore;
+    private CollectionReference mItemsCollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +52,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mFirestore = FirebaseFirestore.getInstance();
-        mProgressBar.setIndeterminate(true);
+        mItemsCollection = mFirestore.collection("items");
 
         setUpAdapter();
     }
 
     private void setUpAdapter() {
-        Query baseQuery = mFirestore.collection("items")
-                .orderBy("value", Query.Direction.ASCENDING);
+        Query baseQuery = mItemsCollection.orderBy("value", Query.Direction.ASCENDING);
 
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
@@ -101,6 +101,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
                                 break;
                             case ERROR:
                                 showToast("An error occurred.");
+                                retry();
                                 break;
                         }
                     }
@@ -113,7 +114,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_firestore_paging, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -138,17 +139,15 @@ public class FirestorePagingActivity extends AppCompatActivity {
     }
 
     private Task<Void> createItems() {
-
         WriteBatch writeBatch = mFirestore.batch();
-        CollectionReference collRef = mFirestore.collection("items");
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 250; i++) {
             String title = "Item " + i;
 
             String id = String.format(Locale.getDefault(), "item_%03d", i);
             Item item = new Item(title, i);
 
-            writeBatch.set(collRef.document(id), item);
+            writeBatch.set(mItemsCollection.document(id), item);
         }
 
         return writeBatch.commit();

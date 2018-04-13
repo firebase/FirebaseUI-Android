@@ -10,11 +10,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
  * Default diff callback implementation for Firestore snapshots.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SnapshotDiffCallback<T> extends DiffUtil.ItemCallback<DocumentSnapshot> {
+public class DefaultSnapshotDiffCallback<T> extends DiffUtil.ItemCallback<DocumentSnapshot> {
 
     private final SnapshotParser<T> mParser;
 
-    public SnapshotDiffCallback(SnapshotParser<T> parser) {
+    public DefaultSnapshotDiffCallback(SnapshotParser<T> parser) {
         mParser = parser;
     }
 

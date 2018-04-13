@@ -1,9 +1,12 @@
 package com.firebase.ui.firestore.paging;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.arch.lifecycle.Transformations;
 import android.arch.paging.PagedList;
 import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
@@ -26,7 +29,10 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     private static final String TAG = "FirestorePagingAdapter";
 
     private final SnapshotParser<T> mParser;
-    private final PagingData mData;
+
+    private final LiveData<PagedList<DocumentSnapshot>> mSnapshots;
+    private final LiveData<LoadingState> mLoadingState;
+    private final LiveData<FirestoreDataSource> mDataSource;
 
     private final Observer<LoadingState> mStateObserver =
             new Observer<LoadingState>() {
@@ -55,8 +61,26 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public FirestorePagingAdapter(@NonNull FirestorePagingOptions<T> options) {
         super(options.getDiffCallback());
 
+        mSnapshots = options.getData();
+
+        mLoadingState = Transformations.switchMap(mSnapshots,
+                new Function<PagedList<DocumentSnapshot>, LiveData<LoadingState>>() {
+                    @Override
+                    public LiveData<LoadingState> apply(PagedList<DocumentSnapshot> input) {
+                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
+                        return dataSource.getLoadingState();
+                    }
+                });
+
+        mDataSource = Transformations.map(mSnapshots,
+                new Function<PagedList<DocumentSnapshot>, FirestoreDataSource>() {
+                    @Override
+                    public FirestoreDataSource apply(PagedList<DocumentSnapshot> input) {
+                        return (FirestoreDataSource) input.getDataSource();
+                    }
+                });
+
         mParser = options.getParser();
-        mData = options.getData();
 
         if (options.getOwner() != null) {
             options.getOwner().getLifecycle().addObserver(this);
@@ -68,7 +92,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * to attempt to retry the most recent failure.
      */
     public void retry() {
-        FirestoreDataSource source = mData.getDataSource().getValue();
+        FirestoreDataSource source = mDataSource.getValue();
         if (source == null) {
             Log.w(TAG, "Called retry() when FirestoreDataSource is null!");
             return;
@@ -79,14 +103,14 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
-        mData.getSnapshots().observeForever(mDataObserver);
-        mData.getLoadingState().observeForever(mStateObserver);
+        mSnapshots.observeForever(mDataObserver);
+        mLoadingState.observeForever(mStateObserver);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
-        mData.getSnapshots().removeObserver(mDataObserver);
-        mData.getLoadingState().removeObserver(mStateObserver);
+        mSnapshots.removeObserver(mDataObserver);
+        mLoadingState.removeObserver(mStateObserver);
     }
 
     @Override
@@ -95,7 +119,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         onBindViewHolder(holder, position, mParser.parseSnapshot(snapshot));
     }
 
-    protected abstract void onBindViewHolder(@NonNull VH holder, int position, T model);
+    protected abstract void onBindViewHolder(@NonNull VH holder, int position, @NonNull T model);
 
     protected void onLoadingStateChanged(@NonNull LoadingState state) {
         // For overriding

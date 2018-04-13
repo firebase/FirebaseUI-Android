@@ -38,8 +38,8 @@ public class PageKey {
 
     @Override
     public String toString() {
-        String startAfter = mStartAfter == null ? "null" : mStartAfter.getId();
-        String endBefore = mEndBefore == null ? "null" : mEndBefore.getId();
+        String startAfter = mStartAfter == null ? null : mStartAfter.getId();
+        String endBefore = mEndBefore == null ? null : mEndBefore.getId();
         return "PageKey{" +
                 "StartAfter=" + startAfter +
                 ", EndBefore=" + endBefore +

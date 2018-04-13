@@ -178,7 +178,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     private abstract class OnLoadSuccessListener implements OnSuccessListener<QuerySnapshot> {
 
         @Override
-        public void onSuccess(QuerySnapshot snapshots) {
+        public void onSuccess(QuerySnapshot snapshot) {
             mLoadingState.postValue(LoadingState.LOADED);
             mRetryRunnable = null;
         }

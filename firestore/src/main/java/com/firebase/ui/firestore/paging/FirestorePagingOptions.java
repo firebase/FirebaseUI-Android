@@ -1,6 +1,7 @@
 package com.firebase.ui.firestore.paging;
 
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
@@ -17,12 +18,12 @@ import com.google.firebase.firestore.Query;
  */
 public class FirestorePagingOptions<T> {
 
-    private final PagingData mData;
+    private final LiveData<PagedList<DocumentSnapshot>> mData;
     private final SnapshotParser<T> mParser;
     private final DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
     private final LifecycleOwner mOwner;
 
-    private FirestorePagingOptions(@NonNull PagingData data,
+    private FirestorePagingOptions(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
                                    @NonNull SnapshotParser<T> parser,
                                    @NonNull DiffUtil.ItemCallback<DocumentSnapshot> diffCallback,
                                    @Nullable LifecycleOwner owner) {
@@ -33,7 +34,7 @@ public class FirestorePagingOptions<T> {
     }
 
     @NonNull
-    public PagingData getData() {
+    public LiveData<PagedList<DocumentSnapshot>> getData() {
         return mData;
     }
 
@@ -54,7 +55,7 @@ public class FirestorePagingOptions<T> {
 
     public static class Builder<T> {
 
-        private PagingData mData;
+        private LiveData<PagedList<DocumentSnapshot>> mData;
         private SnapshotParser<T> mParser;
         private LifecycleOwner mOwner;
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
@@ -72,15 +73,9 @@ public class FirestorePagingOptions<T> {
                                    @NonNull SnapshotParser<T> parser) {
             // Build paged list
             FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query);
-            mData = new PagingData(new LivePagedListBuilder<>(factory, config).build());
+            mData = new LivePagedListBuilder<>(factory, config).build();
 
             mParser = parser;
-            return this;
-        }
-
-        @NonNull
-        public Builder<T> setLifecycleOwner(@NonNull LifecycleOwner owner) {
-            mOwner = owner;
             return this;
         }
 
@@ -91,13 +86,19 @@ public class FirestorePagingOptions<T> {
         }
 
         @NonNull
+        public Builder<T> setLifecycleOwner(@NonNull LifecycleOwner owner) {
+            mOwner = owner;
+            return this;
+        }
+
+        @NonNull
         public FirestorePagingOptions<T> build() {
             if (mData == null || mParser == null) {
                 throw new IllegalStateException("Must call setQuery() before calling build().");
             }
 
             if (mDiffCallback == null) {
-                mDiffCallback = new SnapshotDiffCallback<T>(mParser);
+                mDiffCallback = new DefaultSnapshotDiffCallback<T>(mParser);
             }
 
             return new FirestorePagingOptions<>(mData, mParser, mDiffCallback, mOwner);
