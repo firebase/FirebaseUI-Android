@@ -4,11 +4,13 @@
     <!-- Chooser -->
     <string name="title_auth_activity">Auth UI demo</string>
     <string name="title_firestore_activity">Cloud Firestore Demo</string>
+    <string name="title_firestore_paging_activity">Cloud Firestore Paging Demo</string>
     <string name="title_realtime_database_activity">Real-time database demo</string>
     <string name="title_storage_activity">Storage Image Demo</string>
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
     <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
+    <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paged data from Cloud Firestore.</string>
     <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
     <string name="desc_storage">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
@@ -97,5 +99,7 @@
         Make sure your device is online and that Anonymous Auth is configured in your Firebase project
         (https://console.firebase.google.com/project/_/authentication/providers)
     </string>
+
+    <string name="menu_add_data">Add Data</string>
     <string name="hint_message">Say something…</string>
 </resources>
