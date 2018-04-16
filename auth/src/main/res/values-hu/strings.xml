@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Regisztráció…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> </plurals>
     <string name="fui_email_account_creation_error">Az e-mail-fiók regisztrációja sikertelen volt.</string>
-    <string name="fui_error_user_collision">Ezzel az e-mail-címmel már létezik fiók.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Ha a(z) %1$s gombra koppint, az azt jelenti, hogy elfogadja a következőket: %2$s és %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Ha a(z) %1$s gombra koppint, az azt jelenti, hogy elfogadja a következőt: %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Ha a(z) %1$s gombra koppint, az azt jelenti, hogy elfogadja a következőt: %2$s.</string>

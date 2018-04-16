@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Inscription…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item> <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item> </plurals>
     <string name="fui_email_account_creation_error">Échec de la création du compte avec une adresse e-mail</string>
-    <string name="fui_error_user_collision">Il existe déjà un compte associé à cette adresse e-mail.</string>
     <string name="fui_create_account_preamble_tos_and_pp">En appuyant sur %1$s, vous acceptez les %2$s et les %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">En appuyant sur %1$s, vous acceptez les %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">En appuyant sur %1$s, vous acceptez les %2$s.</string>
