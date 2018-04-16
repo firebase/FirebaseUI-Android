@@ -180,6 +180,13 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         public void onSuccess(QuerySnapshot snapshot) {
             setResult(snapshot);
             mLoadingState.postValue(LoadingState.LOADED);
+
+            // Post the 'FINISHED' state when no more pages will be loaded. The data source
+            // callbacks interpret and empty result list as a signal to cancel any future loads
+            if (snapshot.getDocuments().isEmpty()) {
+                mLoadingState.postValue(LoadingState.FINISHED);
+            }
+
             mRetryRunnable = null;
         }
 

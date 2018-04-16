@@ -99,6 +99,10 @@ public class FirestorePagingActivity extends AppCompatActivity {
                             case LOADED:
                                 mProgressBar.setVisibility(View.GONE);
                                 break;
+                            case FINISHED:
+                                mProgressBar.setVisibility(View.GONE);
+                                showToast("Reached end of data set,");
+                                break;
                             case ERROR:
                                 showToast("An error occurred.");
                                 retry();

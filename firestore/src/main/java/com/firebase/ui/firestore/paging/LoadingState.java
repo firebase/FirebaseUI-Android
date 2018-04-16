@@ -20,6 +20,11 @@ public enum LoadingState {
     LOADED,
 
     /**
+     * The last page loaded had zero documents, and therefore no further pages will be loaded.
+     */
+    FINISHED,
+
+    /**
      * The most recent load encountered an error.
      */
     ERROR
