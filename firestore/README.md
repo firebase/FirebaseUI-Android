@@ -118,7 +118,7 @@ Fear not, FirebaseUI does all of this for you automatically!
 
 FirebaseUI offers two types of RecyclerView adapters for Cloud Firestore:
 
-  * `FirestoreRecyclerAdapter` — binds a `Query` to a `RecyclerView` and respond to all real-time
+  * `FirestoreRecyclerAdapter` — binds a `Query` to a `RecyclerView` and responds to all real-time
     events included items being added, removed, moved, or changed. Best used with small result sets
     since all results are loaded at once.
   * `FirestorePagingAdapter` — binds a `Query` to a `RecyclerView` by loading data in pages. Best
