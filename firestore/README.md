@@ -118,10 +118,10 @@ Fear not, FirebaseUI does all of this for you automatically!
 
 FirebaseUI offers two types of RecyclerView adapters for Cloud Firestore:
 
-  * `FirestoreRecyclerAdapter` - bind a `Query` to a `RecyclerView` and respond to all real-time
+  * `FirestoreRecyclerAdapter` — binds a `Query` to a `RecyclerView` and respond to all real-time
     events included items being added, removed, moved, or changed. Best used with small result sets
     since all results are loaded at once.
-  * `FirestorePagingAdapter` - bind a `Query` to a `RecyclerView` by loading data in pages. Best
+  * `FirestorePagingAdapter` — binds a `Query` to a `RecyclerView` by loading data in pages. Best
     used with large, static data sets. Real-time events are not respected by this adapter, so it
     will not detect new/removed items or changes to items already loaded.
 
@@ -177,7 +177,7 @@ FirestoreRecyclerAdapter adapter = new FirestoreRecyclerAdapter<Chat, ChatHolder
 };
 ```
 
-Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()`.
+Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()` method.
 Don't forget to also set a `LayoutManager`!
 
 #### `FirestoreRecyclerAdapter` lifecycle
@@ -253,7 +253,7 @@ The `FirestorePagingAdapter` is built on top of the [Android Paging Support Libr
 Before using the adapter in your application, you must add a dependency on the support library:
 
 ```groovy
-implementation 'android.arch.paging:runtime:1.0.0-beta1'
+implementation 'android.arch.paging:runtime:1.x.x'
 ```
 
 First, configure the adapter by building `FirestorePagingOptions`. Since the paging adapter
@@ -293,7 +293,7 @@ If you need to customize how your model class is parsed, you can use a custom `S
 });
 ```
 
-Next create the `FirestorePagingAdapter` object. You should already have a `ViewHolder` subclass
+Next, create the `FirestorePagingAdapter` object. You should already have a `ViewHolder` subclass
 for displaying each item. In this case we will use a custom `ItemViewHolder` class:
 
 ```java
@@ -303,7 +303,7 @@ FirestorePagingAdapter<Item, ItemViewHolder> adapter =
             @Override
             public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 // Create the ItemViewHolder
-                // ,,,
+                // ...
             }
 
             @Override
@@ -316,7 +316,7 @@ FirestorePagingAdapter<Item, ItemViewHolder> adapter =
         };
 ```
 
-Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()`.
+Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()` method.
 Don't forget to also set a `LayoutManager`!
 
 #### `FirestorePagingAdapter` lifecycle
@@ -338,7 +338,9 @@ protected void onStart() {
 }
 ```
 
-Similarly, the `stopListening()` call removes the snapshot listener and all data in the adapter.
+Similarly, the `stopListening()` call freezes the data in the `RecyclerView` and prevents any future
+loading of data pages.
+
 Call this method when the containing Activity or Fragment stops:
 
 ```java
@@ -359,7 +361,7 @@ start and stop listening in `onStart()` and `onStop()`.
 
 #### Paging events
 
-When using the `FirestorePagingAdapter` you may want to perform some action every time data
+When using the `FirestorePagingAdapter`, you may want to perform some action every time data
 changes or when there is an error. To do this, override the `onLoadingStateChanged()`
 method of the adapter:
 

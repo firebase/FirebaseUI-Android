@@ -114,7 +114,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     }
 
     /**
-     * Unsubscribe from paging / scrolling events, no more data will be populated.
+     * Unsubscribe from paging / scrolling events, no more data will be populated, but the existing
+     * data will remain.
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
