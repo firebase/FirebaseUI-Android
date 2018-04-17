@@ -63,7 +63,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:3.3.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -365,6 +365,8 @@ Alternatively, you can register a listener for authentication state changes;
 see the Firebase Auth documentation to
 [get the currently signed-in user](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
 and [register an AuthStateListener](https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#addAuthStateListener(com.google.firebase.auth.FirebaseAuth.AuthStateListener)).
+
+Note: if you choose to use an `AuthStateListener`, make sure to unregister it before launching the FirebaseUI flow and re-register it after the flow returns. FirebaseUI performs auth operations internally which may trigger the listener before the flow is complete.
 
 #### ID tokens
 

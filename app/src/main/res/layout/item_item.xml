@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@drawable/ic_chat_message_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="My Text" />
+
+    <TextView
+        android:id="@+id/item_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="false"
+        android:textSize="12sp"
+        tools:text="1234" />
+
+</LinearLayout>

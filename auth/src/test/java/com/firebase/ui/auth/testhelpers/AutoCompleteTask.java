@@ -60,6 +60,11 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
     }
 
     @Override
+    public boolean isCanceled() {
+        return false;
+    }
+
+    @Override
     public TResult getResult() {
         if (mSuccess) {
             return mResult;
