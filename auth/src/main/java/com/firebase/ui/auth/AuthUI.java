@@ -299,8 +299,10 @@ public class AuthUI {
                     "Add either Google or email support.");
         }
 
-        GoogleSignInOptions googleOptions = null;
-        if (google != null) {
+        final GoogleSignInOptions googleOptions;
+        if (google == null) {
+            googleOptions = null;
+        } else {
             GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
             if (last != null && last.getIdToken() != null) {
                 return mAuth.signInWithCredential(GoogleAuthProvider.getCredential(
@@ -311,7 +313,6 @@ public class AuthUI {
                     .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
         }
 
-        final GoogleSignInOptions finalGoogleOptions = googleOptions;
         return GoogleApiUtils.getCredentialsClient(context)
                 .request(new CredentialRequest.Builder()
                         // We can support both email and Google at the same time here because they
@@ -331,7 +332,7 @@ public class AuthUI {
 
                         if (TextUtils.isEmpty(password)) {
                             return GoogleSignIn.getClient(appContext,
-                                    new GoogleSignInOptions.Builder(finalGoogleOptions)
+                                    new GoogleSignInOptions.Builder(googleOptions)
                                             .setAccountName(email)
                                             .build())
                                     .silentSignIn()
