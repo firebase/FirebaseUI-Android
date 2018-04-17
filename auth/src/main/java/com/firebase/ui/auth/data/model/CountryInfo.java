@@ -18,13 +18,26 @@
  */
 package com.firebase.ui.auth.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.RestrictTo;
 
 import java.text.Collator;
 import java.util.Locale;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public final class CountryInfo implements Comparable<CountryInfo> {
+public final class CountryInfo implements Comparable<CountryInfo>,Parcelable {
+
+    public static final Parcelable.Creator<CountryInfo> CREATOR = new Parcelable.Creator<CountryInfo>() {
+        @Override
+        public CountryInfo createFromParcel(Parcel source) {return new CountryInfo(source);}
+
+        @Override
+        public CountryInfo[] newArray(int size) {
+            return new CountryInfo[size];
+        }
+    };
+
     private final Collator mCollator;
     private final Locale mLocale;
     private final int mCountryCode;
@@ -34,6 +47,14 @@ public final class CountryInfo implements Comparable<CountryInfo> {
         mCollator.setStrength(Collator.PRIMARY);
         mLocale = locale;
         mCountryCode = countryCode;
+    }
+
+    protected CountryInfo(Parcel in) {
+        mCollator = Collator.getInstance(Locale.getDefault());
+        mCollator.setStrength(Collator.PRIMARY);
+
+        mLocale = (Locale) in.readSerializable();
+        mCountryCode = in.readInt();
     }
 
     public static String localeToEmoji(Locale locale) {
@@ -84,5 +105,14 @@ public final class CountryInfo implements Comparable<CountryInfo> {
     @Override
     public int compareTo(CountryInfo info) {
         return mCollator.compare(mLocale.getDisplayCountry(), info.mLocale.getDisplayCountry());
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(this.mLocale);
+        dest.writeInt(this.mCountryCode);
     }
 }
