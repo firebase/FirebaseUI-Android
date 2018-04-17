@@ -283,23 +283,9 @@ public class AuthUI {
      */
     @NonNull
     public Task<AuthResult> silentSignIn(@NonNull Context context,
-                                         @NonNull List<IdpConfig> desiredConfigs) {
+                                         @NonNull List<IdpConfig> configs) {
         if (mAuth.getCurrentUser() != null) {
             throw new IllegalArgumentException("User already signed in!");
-        }
-
-        List<IdpConfig> configs = new ArrayList<>();
-        for (IdpConfig config : desiredConfigs) {
-            String provider = config.getProviderId();
-            if (provider.equals(EmailAuthProvider.PROVIDER_ID)
-                    || provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
-                configs.add(config);
-            }
-        }
-
-        if (configs.isEmpty()) {
-            throw new IllegalArgumentException("No supported providers were supplied. " +
-                    "Add either Google or email support.");
         }
 
         final Context appContext = context.getApplicationContext();
@@ -307,6 +293,11 @@ public class AuthUI {
                 ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
         final IdpConfig email =
                 ProviderUtils.getConfigFromIdps(configs, EmailAuthProvider.PROVIDER_ID);
+
+        if (google == null && email == null) {
+            throw new IllegalArgumentException("No supported providers were supplied. " +
+                    "Add either Google or email support.");
+        }
 
         GoogleSignInOptions googleOptions = null;
         if (google != null) {
