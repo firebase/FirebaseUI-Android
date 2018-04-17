@@ -26,11 +26,13 @@ import java.text.Collator;
 import java.util.Locale;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public final class CountryInfo implements Comparable<CountryInfo>,Parcelable {
+public final class CountryInfo implements Comparable<CountryInfo>, Parcelable {
 
     public static final Parcelable.Creator<CountryInfo> CREATOR = new Parcelable.Creator<CountryInfo>() {
         @Override
-        public CountryInfo createFromParcel(Parcel source) {return new CountryInfo(source);}
+        public CountryInfo createFromParcel(Parcel source) {
+            return new CountryInfo(source);
+        }
 
         @Override
         public CountryInfo[] newArray(int size) {
@@ -108,11 +110,13 @@ public final class CountryInfo implements Comparable<CountryInfo>,Parcelable {
     }
 
     @Override
-    public int describeContents() { return 0; }
+    public int describeContents() {
+        return 0;
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(this.mLocale);
-        dest.writeInt(this.mCountryCode);
+        dest.writeSerializable(mLocale);
+        dest.writeInt(mCountryCode);
     }
 }
