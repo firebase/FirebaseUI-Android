@@ -17,6 +17,7 @@
     <!-- Auth UI -->
     <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in_start">Start</string>
+    <string name="sign_in_silent">Sign in silently</string>
 
     <string name="providers_header">Auth providers</string>
     <string name="providers_google">Google</string>
@@ -72,6 +73,7 @@
     <string name="sign_out">Sign out</string>
     <string name="delete_account_label">Delete account</string>
 
+    <string name="sign_in_failed">Sign in failed</string>
     <string name="sign_out_failed">Sign out failed</string>
     <string name="delete_account_failed">Delete account failed</string>
 
