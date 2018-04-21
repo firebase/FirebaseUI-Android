@@ -39,10 +39,11 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
         super(application);
     }
 
-    private static IdpResponse createIdpResponse(GoogleSignInAccount account,
+    private static IdpResponse createIdpResponse(String provider,
+                                                 GoogleSignInAccount account,
                                                  @NonNull String token) {
         return new IdpResponse.Builder(
-                new User.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                new User.Builder(provider, account.getEmail())
                         .setName(account.getDisplayName())
                         .setPhotoUri(account.getPhotoUrl())
                         .build())
@@ -88,16 +89,19 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
             GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data)
                     .getResult(ApiException.class);
 
+            String provider;
             String token;
             if (mConfig.getProviderId().equals(GoogleAuthProvider.PROVIDER_ID)) {
+                provider = GoogleAuthProvider.PROVIDER_ID;
                 token = account.getIdToken();
             } else if (mConfig.getProviderId().equals(PlayGamesAuthProvider.PROVIDER_ID)) {
+                provider = PlayGamesAuthProvider.PROVIDER_ID;
                 token = account.getServerAuthCode();
             } else {
                 throw new IllegalStateException("Unsupported provider: " + mConfig.getProviderId());
             }
 
-            setResult(Resource.forSuccess(createIdpResponse(account, token)));
+            setResult(Resource.forSuccess(createIdpResponse(provider, account, token)));
         } catch (ApiException e) {
             if (e.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
                 // If we get INVALID_ACCOUNT, it means the pre-set account was not available on the

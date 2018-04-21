@@ -78,6 +78,8 @@ public final class ProviderUtils {
         switch (method) {
             case GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD:
                 return GoogleAuthProvider.PROVIDER_ID;
+            case PlayGamesAuthProvider.PLAY_GAMES_SIGN_IN_METHOD:
+                return PlayGamesAuthProvider.PROVIDER_ID;
             case FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD:
                 return FacebookAuthProvider.PROVIDER_ID;
             case TwitterAuthProvider.TWITTER_SIGN_IN_METHOD:
