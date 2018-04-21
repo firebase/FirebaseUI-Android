@@ -12,6 +12,14 @@ android {
         versionName version
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    buildTypes {
+        release {
+            postprocessing {
+                consumerProguardFile 'proguard-rules.pro'
+            }
+        }
+    }
 }
 
 dependencies {
