@@ -16,5 +16,6 @@
 # Retrofit config
 -dontnote retrofit2.Platform
 -dontwarn retrofit2.** # Also keeps Twitter at bay as long as they keep using Retrofit
+-dontwarn okhttp3.**
 -dontwarn okio.**
 -keepattributes Exceptions
