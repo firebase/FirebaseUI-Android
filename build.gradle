@@ -117,6 +117,11 @@ allprojects { project ->
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
 
+        // We need to override the variables 'group' and 'version' on the 'Project' object in order
+        // to prevent the bintray plugin from creating 'unspecified' artifacts.
+        group = project.ext.group
+        version = project.ext.version
+
         def groupName = project.ext.group
         def versionName = project.ext.version
 

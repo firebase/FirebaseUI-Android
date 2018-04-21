@@ -171,12 +171,27 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     this, R.string.fui_progress_dialog_loading) {
                 @Override
                 protected void onSuccess(@NonNull IdpResponse response) {
-                    handler.startSignIn(response);
+                    handleResponse(response);
                 }
 
                 @Override
                 protected void onFailure(@NonNull Exception e) {
-                    handler.startSignIn(IdpResponse.from(e));
+                    handleResponse(IdpResponse.from(e));
+                }
+
+                private void handleResponse(@NonNull IdpResponse response) {
+                    if (!response.isSuccessful()) {
+                        // We have no idea what provider this error stemmed from so just forward
+                        // this along to the handler.
+                        handler.startSignIn(response);
+                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+                        handler.startSignIn(response);
+                    } else {
+                        // Email or phone: the credentials should have already been saved so simply
+                        // move along.
+                        finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
+                                response.toIntent());
+                    }
                 }
             });
 

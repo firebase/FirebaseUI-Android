@@ -202,13 +202,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         if (phoneNumber == null) {
             mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
         } else {
+            mPhoneInputLayout.setError(null);
             mVerifier.verifyPhoneNumber(phoneNumber, false);
         }
     }
 
     @Nullable
     private String getPseudoValidPhoneNumber() {
-        final CountryInfo countryInfo = (CountryInfo) mCountryListSpinner.getTag();
+        final CountryInfo countryInfo = mCountryListSpinner.getSelectedCountryInfo();
         final String everythingElse = mPhoneEditText.getText().toString();
 
         if (TextUtils.isEmpty(everythingElse)) {
