@@ -41,8 +41,11 @@ import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -51,6 +54,8 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -269,6 +274,85 @@ public class AuthUI {
     @StyleRes
     public static int getDefaultTheme() {
         return R.style.FirebaseUI;
+    }
+
+    /**
+     * Signs the user in without any UI if possible. If this operation fails, you can safely start a
+     * UI-based sign-in flow knowing it is required.
+     *
+     * @param context        requesting the user be signed in
+     * @param desiredConfigs to use for silent sign in. Only Google and email are currently
+     *                       supported, the rest will be ignored.
+     * @return a task which indicates whether or not the user was successfully signed in.
+     */
+    @NonNull
+    public Task<AuthResult> silentSignIn(@NonNull Context context,
+                                         @NonNull List<IdpConfig> configs) {
+        if (mAuth.getCurrentUser() != null) {
+            throw new IllegalArgumentException("User already signed in!");
+        }
+
+        final Context appContext = context.getApplicationContext();
+        final IdpConfig google =
+                ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
+        final IdpConfig email =
+                ProviderUtils.getConfigFromIdps(configs, EmailAuthProvider.PROVIDER_ID);
+
+        if (google == null && email == null) {
+            throw new IllegalArgumentException("No supported providers were supplied. " +
+                    "Add either Google or email support.");
+        }
+
+        final GoogleSignInOptions googleOptions;
+        if (google == null) {
+            googleOptions = null;
+        } else {
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
+            if (last != null && last.getIdToken() != null) {
+                return mAuth.signInWithCredential(GoogleAuthProvider.getCredential(
+                        last.getIdToken(), null));
+            }
+
+            googleOptions = google.getParams()
+                    .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
+        }
+
+        return GoogleApiUtils.getCredentialsClient(context)
+                .request(new CredentialRequest.Builder()
+                        // We can support both email and Google at the same time here because they
+                        // are mutually exclusive. If a user signs in with Google, their email
+                        // account will automatically be upgraded (a.k.a. replaced) with the Google
+                        // one, meaning Smart Lock won't have to show the picker UI.
+                        .setPasswordLoginSupported(email != null)
+                        .setAccountTypes(google == null ? null :
+                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider.PROVIDER_ID))
+                        .build())
+                .continueWithTask(new Continuation<CredentialRequestResponse, Task<AuthResult>>() {
+                    @Override
+                    public Task<AuthResult> then(@NonNull Task<CredentialRequestResponse> task) {
+                        Credential credential = task.getResult().getCredential();
+                        String email = credential.getId();
+                        String password = credential.getPassword();
+
+                        if (TextUtils.isEmpty(password)) {
+                            return GoogleSignIn.getClient(appContext,
+                                    new GoogleSignInOptions.Builder(googleOptions)
+                                            .setAccountName(email)
+                                            .build())
+                                    .silentSignIn()
+                                    .continueWithTask(new Continuation<GoogleSignInAccount, Task<AuthResult>>() {
+                                        @Override
+                                        public Task<AuthResult> then(@NonNull Task<GoogleSignInAccount> task) {
+                                            AuthCredential authCredential = GoogleAuthProvider.getCredential(
+                                                    task.getResult().getIdToken(), null);
+                                            return mAuth.signInWithCredential(authCredential);
+                                        }
+                                    });
+                        } else {
+                            return mAuth.signInWithEmailAndPassword(email, password);
+                        }
+                    }
+                });
     }
 
     /**

@@ -21,6 +21,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -37,11 +39,16 @@ import java.util.Locale;
 
 public final class CountryListSpinner extends AppCompatEditText implements
         View.OnClickListener, CountryListLoadTask.Listener {
+
+    private static final String KEY_SUPER_STATE = "KEY_SUPER_STATE";
+    private static final String KEY_COUNTRY_INFO = "KEY_COUNTRY_INFO";
+
     private final String mTextFormat;
     private final DialogPopup mDialogPopup;
     private final CountryListAdapter mCountryListAdapter;
     private OnClickListener mListener;
     private String mSelectedCountryName;
+    private CountryInfo mSelectedCountryInfo;
 
     public CountryListSpinner(Context context) {
         this(context, null, android.R.attr.spinnerStyle);
@@ -60,7 +67,32 @@ public final class CountryListSpinner extends AppCompatEditText implements
         mTextFormat = "%1$s  +%2$d";
         mSelectedCountryName = "";
         CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
-        setSpinnerText(countryInfo.getCountryCode(), countryInfo.getLocale());
+        setSelectedForCountry(countryInfo.getCountryCode(), countryInfo.getLocale());
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_SUPER_STATE, superState);
+        bundle.putParcelable(KEY_COUNTRY_INFO, mSelectedCountryInfo);
+
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if (!(state instanceof Bundle)) {
+            super.onRestoreInstanceState(state);
+            return;
+        }
+
+        Bundle bundle = (Bundle) state;
+        Parcelable superState = bundle.getParcelable(KEY_SUPER_STATE);
+        mSelectedCountryInfo = bundle.getParcelable(KEY_COUNTRY_INFO);
+
+        super.onRestoreInstanceState(superState);
     }
 
     private static void hideKeyboard(Context context, View view) {
@@ -70,17 +102,21 @@ public final class CountryListSpinner extends AppCompatEditText implements
         }
     }
 
-    private void setSpinnerText(int countryCode, Locale locale) {
+    private void setSelectedForCountry(int countryCode, Locale locale) {
         setText(String.format(mTextFormat, CountryInfo.localeToEmoji(locale), countryCode));
-        setTag(new CountryInfo(locale, countryCode));
+        mSelectedCountryInfo = new CountryInfo(locale, countryCode);
     }
 
     public void setSelectedForCountry(final Locale locale, String countryCode) {
         final String countryName = locale.getDisplayName();
         if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
             mSelectedCountryName = countryName;
-            setSpinnerText(Integer.parseInt(countryCode), locale);
+            setSelectedForCountry(Integer.parseInt(countryCode), locale);
         }
+    }
+
+    public CountryInfo getSelectedCountryInfo() {
+         return mSelectedCountryInfo;
     }
 
     @Override
@@ -169,7 +205,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         public void onClick(DialogInterface dialog, int which) {
             final CountryInfo countryInfo = listAdapter.getItem(which);
             mSelectedCountryName = countryInfo.getLocale().getDisplayCountry();
-            setSpinnerText(countryInfo.getCountryCode(), countryInfo.getLocale());
+            setSelectedForCountry(countryInfo.getCountryCode(), countryInfo.getLocale());
             dismiss();
         }
     }
