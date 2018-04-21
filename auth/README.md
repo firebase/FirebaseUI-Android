@@ -33,8 +33,9 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [Configuration](#configuration)
    1. [Provider config](#identity-provider-configuration)
 1. [Usage instructions](#using-firebaseui-for-authentication)
-   1. [Sign in](#sign-in)
+   1. [AuthUI sign-in](#authui-sign-in)
    1. [Handling responses](#handling-the-sign-in-response)
+   1. [Silent sign-in](#silent-sign-in)
    1. [Sign out](#sign-out)
    1. [Account deletion](#deleting-accounts)
    1. [Auth flow chart](#authentication-flow-chart)
@@ -62,7 +63,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:3.3.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -169,7 +170,7 @@ If an alternative app instance is required, call
 `AuthUI.getInstance(app)` instead, passing the appropriate `FirebaseApp`
 instance.
 
-### Sign in
+### AuthUI sign-in
 
 If a user is not currently signed in, as can be determined by checking
 `auth.getCurrentUser() != null` (where `auth` is the `FirebaseAuth` instance
@@ -372,7 +373,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
-        
+
             showSnackbar(R.string.unknown_error);
             Log.e(TAG, "Sign-in error: ", response.getError());
         }
@@ -384,6 +385,8 @@ Alternatively, you can register a listener for authentication state changes;
 see the Firebase Auth documentation to
 [get the currently signed-in user](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
 and [register an AuthStateListener](https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#addAuthStateListener(com.google.firebase.auth.FirebaseAuth.AuthStateListener)).
+
+Note: if you choose to use an `AuthStateListener`, make sure to unregister it before launching the FirebaseUI flow and re-register it after the flow returns. FirebaseUI performs auth operations internally which may trigger the listener before the flow is complete.
 
 #### Handling account link failures
 
@@ -489,6 +492,40 @@ if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
 } else {
     // This is an existing user, show them a welcome back screen.
 }
+```
+
+### Silent sign-in
+
+If a user is not currently signed in, then a silent sign-in process can be started first before
+displaying any UI to provide a seamless experience. Silent sign-in uses saved Smart Lock credentials
+and returns a successful `Task` only if the user has been fully signed in with Firebase.
+
+Here's an example of how you could use silent sign-in paired with Firebase anonymous sign-in to get
+your users up and running as fast as possible:
+
+```java
+List<IdpConfig> providers = getSelectedProviders();
+AuthUI.getInstance().silentSignIn(this, providers)
+        .continueWithTask(this, new Continuation<AuthResult, Task<AuthResult>>() {
+    @Override
+    public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            return task;
+        } else {
+            // Ignore any exceptions since we don't care about credential fetch errors.
+            return FirebaseAuth.getInstance().signInAnonymously();
+        }
+    }
+}).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+    @Override
+    public void onComplete(@NonNull Task<AuthResult> task) {
+        if (task.isSuccessful()) {
+            // Signed in! Start loading data
+        } else {
+            // Uh oh, show error message
+        }
+    }
+});
 ```
 
 ### Sign out

@@ -35,8 +35,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="16dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/sign_in_start" />
+
+            <Button
+                android:id="@+id/sign_in_silent"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"
+                android:text="@string/sign_in_silent" />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"

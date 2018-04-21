@@ -43,6 +43,11 @@
             android:name=".database.firestore.FirestoreChatActivity"
             android:label="@string/title_firestore_activity" />
 
+        <!-- Firestore paging demo -->
+        <activity
+            android:name=".database.firestore.FirestorePagingActivity"
+            android:label="@string/title_firestore_paging_activity" />
+
         <!-- Realtime database demo -->
         <activity
             android:name=".database.realtime.RealtimeDbChatActivity"

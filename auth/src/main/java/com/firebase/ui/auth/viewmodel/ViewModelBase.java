@@ -39,6 +39,5 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
     @Override
     protected void onCleared() {
         mIsInitialized.set(false);
-        mArguments = null;
     }
 }

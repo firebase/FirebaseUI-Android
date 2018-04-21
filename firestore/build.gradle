@@ -22,7 +22,12 @@ dependencies {
     api "com.android.support:recyclerview-v7:$supportLibraryVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 
+    compileOnly "android.arch.paging:runtime:$pagingVersion"
+
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    //noinspection GradleDynamicVersion
+    androidTestImplementation 'org.mockito:mockito-android:2.15.+'
+    androidTestImplementation 'android.arch.paging:runtime:1.0.0-beta1'
 }
