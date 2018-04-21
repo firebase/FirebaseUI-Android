@@ -71,10 +71,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
 
-    @BindView(R.id.default_theme) RadioButton mUseDefaultTheme;
-    @BindView(R.id.green_theme) RadioButton mUseGreenTheme;
-    @BindView(R.id.purple_theme) RadioButton mUsePurpleTheme;
-    @BindView(R.id.dark_theme) RadioButton mUseDarkTheme;
+    @BindView(R.id.green_theme) RadioButton mGreenTheme;
+    @BindView(R.id.purple_theme) RadioButton mPurpleTheme;
+    @BindView(R.id.dark_theme) RadioButton mDarkTheme;
 
     @BindView(R.id.firebase_logo) RadioButton mFirebaseLogo;
     @BindView(R.id.google_logo) RadioButton mGoogleLogo;
@@ -86,13 +85,13 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_privacy) RadioButton mUseGooglePrivacyPolicy;
     @BindView(R.id.firebase_privacy) RadioButton mUseFirebasePrivacyPolicy;
 
-    @BindView(R.id.google_scopes_header) TextView mGoogleScopesLabel;
+    @BindView(R.id.google_scopes_header) TextView mGoogleScopesHeader;
     @BindView(R.id.google_scope_drive_file) CheckBox mGoogleScopeDriveFile;
     @BindView(R.id.google_scope_youtube_data) CheckBox mGoogleScopeYoutubeData;
 
-    @BindView(R.id.facebook_permissions_header) TextView mFacebookScopesLabel;
-    @BindView(R.id.facebook_permission_friends) CheckBox mFacebookScopeFriends;
-    @BindView(R.id.facebook_permission_photos) CheckBox mFacebookScopePhotos;
+    @BindView(R.id.facebook_permissions_header) TextView mFacebookPermissionsHeader;
+    @BindView(R.id.facebook_permission_friends) CheckBox mFacebookPermissionFriends;
+    @BindView(R.id.facebook_permission_photos) CheckBox mFacebookPermissionPhotos;
 
     @BindView(R.id.credential_selector_enabled) CheckBox mEnableCredentialSelector;
     @BindView(R.id.hint_selector_enabled) CheckBox mEnableHintSelector;
@@ -132,13 +131,13 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseFacebookProvider.setChecked(false);
             mUseFacebookProvider.setEnabled(false);
             mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
-            setFacebookScopesEnabled(false);
+            setFacebookPermissionsEnabled(false);
         } else {
-            setFacebookScopesEnabled(mUseFacebookProvider.isChecked());
+            setFacebookPermissionsEnabled(mUseFacebookProvider.isChecked());
             mUseFacebookProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    setFacebookScopesEnabled(checked);
+                    setFacebookPermissionsEnabled(checked);
                 }
             });
         }
@@ -154,7 +153,7 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            mUseDarkTheme.setChecked(true);
+            mDarkTheme.setChecked(true);
         }
     }
 
@@ -237,7 +236,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @OnClick({R.id.default_theme, R.id.purple_theme, R.id.green_theme, R.id.dark_theme})
     public void toggleDarkTheme() {
-        int mode = mUseDarkTheme.isChecked() ?
+        int mode = mDarkTheme.isChecked() ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO;
         AppCompatDelegate.setDefaultNightMode(mode);
         getDelegate().setLocalNightMode(mode);
@@ -245,11 +244,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @StyleRes
     private int getSelectedTheme() {
-        if (mUseGreenTheme.isChecked()) {
+        if (mGreenTheme.isChecked()) {
             return R.style.GreenTheme;
         }
 
-        if (mUsePurpleTheme.isChecked()) {
+        if (mPurpleTheme.isChecked()) {
             return R.style.PurpleTheme;
         }
 
@@ -336,15 +335,15 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     private void setGoogleScopesEnabled(boolean enabled) {
-        mGoogleScopesLabel.setEnabled(enabled);
+        mGoogleScopesHeader.setEnabled(enabled);
         mGoogleScopeDriveFile.setEnabled(enabled);
         mGoogleScopeYoutubeData.setEnabled(enabled);
     }
 
-    private void setFacebookScopesEnabled(boolean enabled) {
-        mFacebookScopesLabel.setEnabled(enabled);
-        mFacebookScopeFriends.setEnabled(enabled);
-        mFacebookScopePhotos.setEnabled(enabled);
+    private void setFacebookPermissionsEnabled(boolean enabled) {
+        mFacebookPermissionsHeader.setEnabled(enabled);
+        mFacebookPermissionFriends.setEnabled(enabled);
+        mFacebookPermissionPhotos.setEnabled(enabled);
     }
 
     private List<String> getGoogleScopes() {
@@ -360,10 +359,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private List<String> getFacebookPermissions() {
         List<String> result = new ArrayList<>();
-        if (mFacebookScopeFriends.isChecked()) {
+        if (mFacebookPermissionFriends.isChecked()) {
             result.add("user_friends");
         }
-        if (mFacebookScopePhotos.isChecked()) {
+        if (mFacebookPermissionPhotos.isChecked()) {
             result.add("user_photos");
         }
         return result;
