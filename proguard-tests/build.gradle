@@ -29,7 +29,7 @@ android {
 
 dependencies {
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
-    implementation "android.arch.paging:runtime:$pagingVersion"
+    implementation "android.arch.lifecycle:extensions:$architectureVersion"
 
     implementation project(path: ':auth')
     implementation project(path: ':firestore')
