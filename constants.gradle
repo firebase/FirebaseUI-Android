@@ -9,8 +9,8 @@ project.ext {
     minSdk = 14
 
     firebaseVersion = '15.0.0'
-    supportLibraryVersion = '27.1.0'
+    supportLibraryVersion = '27.1.1'
     architectureVersion = '1.1.1'
-    kotlinVersion = '1.2.30'
+    kotlinVersion = '1.2.40'
     pagingVersion = '1.0.0-beta1'
 }
