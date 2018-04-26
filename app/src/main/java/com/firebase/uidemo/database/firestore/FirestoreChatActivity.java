@@ -78,6 +78,21 @@ public class FirestoreChatActivity extends AppCompatActivity
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(manager);
 
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    mRecyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecyclerView.smoothScrollToPosition(0);
+                        }
+                    }, 100);
+                }
+            }
+        });
+
         ImeHelper.setImeOnDoneListener(mMessageEdit, new ImeHelper.DonePressedListener() {
             @Override
             public void onDonePressed() {
