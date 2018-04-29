@@ -125,7 +125,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     google.init(new GoogleSignInHandler.Params(idpConfig));
                     provider = google;
 
-                    buttonLayout = R.layout.fui_idp_button_google;
+                    if (idpConfig.getProviderId().equals(GoogleAuthProvider.PROVIDER_ID)) {
+                        buttonLayout = R.layout.fui_idp_button_google;
+                    } else {
+                        buttonLayout = R.layout.fui_idp_button_play_games;
+                    }
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
                     FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);

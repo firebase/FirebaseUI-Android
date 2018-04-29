@@ -104,7 +104,11 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 google.init(new GoogleSignInHandler.Params(config, existingUser.getEmail()));
                 mProvider = google;
 
-                providerName = R.string.fui_idp_name_google;
+                if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                    providerName = R.string.fui_idp_name_google;
+                } else {
+                    providerName = R.string.fui_idp_name_play_games;
+                }
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
                 FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
