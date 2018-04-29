@@ -123,6 +123,17 @@ public class AuthUiActivity extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     setGoogleScopesEnabled(checked);
+                    if (checked) {
+                        mUsePlayGamesProvider.setChecked(false);
+                    }
+                }
+            });
+            mUsePlayGamesProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        mUseGoogleProvider.setChecked(false);
+                    }
                 }
             });
         }
