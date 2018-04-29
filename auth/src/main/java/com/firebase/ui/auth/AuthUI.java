@@ -31,14 +31,13 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -456,10 +455,10 @@ public class AuthUI {
     }
 
     private Task<Void> signOutIdps(@NonNull Context context) {
-        if (FacebookSignInHandler.IS_AVAILABLE) {
+        if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        if (TwitterSignInHandler.IS_AVAILABLE) {
+        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
             TwitterCore.getInstance().getSessionManager().clearActiveSession();
         }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
@@ -923,7 +922,7 @@ public class AuthUI {
             public FacebookBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(FacebookAuthProvider.PROVIDER_ID);
-                if (!FacebookSignInHandler.IS_AVAILABLE) {
+                if (!ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
                     throw new RuntimeException(
                             "Facebook provider cannot be configured " +
                                     "without dependency. Did you forget to add " +
@@ -961,7 +960,7 @@ public class AuthUI {
             public TwitterBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(TwitterAuthProvider.PROVIDER_ID);
-                if (!TwitterSignInHandler.IS_AVAILABLE) {
+                if (!ProviderAvailability.IS_TWITTER_AVAILABLE) {
                     throw new RuntimeException(
                             "Twitter provider cannot be configured " +
                                     "without dependency. Did you forget to add " +
