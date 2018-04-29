@@ -75,6 +75,7 @@ android {
     lintOptions {
         disable 'WrongConstant', // TODO it's being unruly, figure that out later
                 'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
+                'MissingTranslation', // TODO remove when translations come in
                 'IconExpectedSize',
                 'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
 
