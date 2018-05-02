@@ -31,6 +31,7 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -276,7 +277,7 @@ public class AuthUI {
      * UI-based sign-in flow knowing it is required.
      *
      * @param context        requesting the user be signed in
-     * @param desiredConfigs to use for silent sign in. Only Google and email are currently
+     * @param configs        to use for silent sign in. Only Google and email are currently
      *                       supported, the rest will be ignored.
      * @return a task which indicates whether or not the user was successfully signed in.
      */
@@ -455,6 +456,7 @@ public class AuthUI {
             LoginManager.getInstance().logOut();
         }
         if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
+            TwitterSignInHandler.initializeTwitter();
             TwitterCore.getInstance().getSessionManager().clearActiveSession();
         }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();

@@ -33,12 +33,7 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     static {
         if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            Context context = AuthUI.getApplicationContext();
-            Twitter.initialize(new TwitterConfig.Builder(context)
-                    .twitterAuthConfig(new TwitterAuthConfig(
-                            context.getString(R.string.twitter_consumer_key),
-                            context.getString(R.string.twitter_consumer_secret)))
-                    .build());
+            initializeTwitter();
         }
     }
 
@@ -48,6 +43,18 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     public TwitterSignInHandler(Application application) {
         super(application);
         mClient = new TwitterAuthClient();
+    }
+
+    public static void initializeTwitter() {
+        Context context = AuthUI.getApplicationContext();
+
+        // Note: this has no effect if Twitter is already initialized so it's safe to call
+        // multiple times.
+        Twitter.initialize(new TwitterConfig.Builder(context)
+                .twitterAuthConfig(new TwitterAuthConfig(
+                        context.getString(R.string.twitter_consumer_key),
+                        context.getString(R.string.twitter_consumer_secret)))
+                .build());
     }
 
     private static IdpResponse createIdpResponse(
