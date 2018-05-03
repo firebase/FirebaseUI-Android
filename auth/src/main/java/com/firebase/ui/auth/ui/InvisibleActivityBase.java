@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.firebase.ui.auth.R;
@@ -26,10 +30,21 @@ public class InvisibleActivityBase extends HelperActivityBase {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fui_activity_kickoff);
+        setContentView(R.layout.fui_activity_invisible);
 
-        // TODO: Set the color based on passed in theme
-        mProgressBar = findViewById(R.id.progress_spinner);
+        // Create an indeterminate, circular progress bar in the app's theme
+        mProgressBar = new ProgressBar(new ContextThemeWrapper(this, getFlowParams().themeId));
+        mProgressBar.setIndeterminate(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
+
+        // Set bar to float in the center
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER;
+
+        // Add to the container
+        FrameLayout container = findViewById(R.id.invisible_frame);
+        container.addView(mProgressBar, params);
     }
 
     @Override
