@@ -30,7 +30,9 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -55,6 +57,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private IdpResponse mIdpResponse;
     private WelcomeBackPasswordHandler mHandler;
 
+    private Button mDoneButton;
+    private ProgressBar mProgressBar;
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
 
@@ -75,6 +79,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         String email = mIdpResponse.getEmail();
 
+        mDoneButton = findViewById(R.id.button_done);
+        mProgressBar = findViewById(R.id.top_progress_bar);
         mPasswordLayout = findViewById(R.id.password_layout);
         mPasswordField = findViewById(R.id.password);
 
@@ -95,7 +101,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         bodyTextView.setText(spannableStringBuilder);
 
         // Click listeners
-        findViewById(R.id.button_done).setOnClickListener(this);
+        mDoneButton.setOnClickListener(this);
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
 
         // Initialize ViewModel with arguments
@@ -164,5 +170,17 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else if (id == R.id.trouble_signing_in) {
             onForgotPasswordClicked();
         }
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mDoneButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mDoneButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }
