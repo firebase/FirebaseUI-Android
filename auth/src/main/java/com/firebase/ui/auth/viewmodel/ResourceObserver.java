@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
+import android.util.Log;
 
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
@@ -34,10 +35,10 @@ public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
     @Override
     public final void onChanged(Resource<T> resource) {
         if (resource.getState() == State.LOADING) {
-            mActivity.getDialogHolder().showLoadingDialog(mLoadingMessage);
+            mActivity.showProgress(mLoadingMessage);
             return;
         }
-        mActivity.getDialogHolder().dismissDialog();
+        mActivity.hideProgress();
 
         if (resource.isUsed()) { return; }
 

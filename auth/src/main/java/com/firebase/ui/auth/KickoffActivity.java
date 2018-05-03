@@ -12,14 +12,14 @@ import android.support.annotation.RestrictTo;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
-import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.ui.InvisibleActivityBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class KickoffActivity extends HelperActivityBase {
+public class KickoffActivity extends InvisibleActivityBase {
     private SignInKickstarter mKickstarter;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {

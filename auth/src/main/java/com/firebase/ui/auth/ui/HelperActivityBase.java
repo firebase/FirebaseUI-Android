@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -74,10 +75,6 @@ public class HelperActivityBase extends AppCompatActivity {
         return mAuthHelper;
     }
 
-    public ProgressDialogHolder getDialogHolder() {
-        return mProgressDialogHolder;
-    }
-
     public void finish(int resultCode, @Nullable Intent intent) {
         setResult(resultCode, intent);
         finish();
@@ -96,5 +93,17 @@ public class HelperActivityBase extends AppCompatActivity {
         Intent intent = CredentialSaveActivity.createIntent(
                 this, getFlowParams(), credential, response);
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
+    }
+
+    public void showProgress(@StringRes int message) {
+        getDialogHolder().showLoadingDialog(message);
+    }
+
+    public void hideProgress() {
+        getDialogHolder().dismissDialog();
+    }
+
+    protected ProgressDialogHolder getDialogHolder() {
+        return mProgressDialogHolder;
     }
 }
