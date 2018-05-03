@@ -36,13 +36,13 @@ android {
 dependencies {
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta6'
+    implementation "com.android.support.constraint:constraint-layout:$constraintVersion"
 
     implementation "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 
-    api "com.google.firebase:firebase-auth:$firebaseVersion"
-    api "com.google.android.gms:play-services-auth:$firebaseVersion"
+    api "com.google.firebase:firebase-auth:$authVersion"
+    api "com.google.android.gms:play-services-auth:$playAuthVersion"
 
     compileOnly 'com.facebook.android:facebook-login:4.32.0'
     // Needed to override Facebook
