@@ -4,41 +4,52 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
-import android.util.Log;
 
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.ui.ProgressView;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
+
+    private final ProgressView mProgressView;
     private final HelperActivityBase mActivity;
     private final FragmentBase mFragment;
     private final int mLoadingMessage;
 
     protected ResourceObserver(@NonNull HelperActivityBase activity, @StringRes int message) {
-        this(activity, null, message);
+        this(activity, null, activity, message);
     }
 
     protected ResourceObserver(@NonNull FragmentBase fragment, @StringRes int message) {
-        this((HelperActivityBase) fragment.getActivity(), fragment, message);
+        this(null, fragment, fragment, message);
     }
 
-    private ResourceObserver(HelperActivityBase activity, FragmentBase fragment, int message) {
+    private ResourceObserver(HelperActivityBase activity,
+                             FragmentBase fragment,
+                             ProgressView progressView,
+                             int message) {
         mActivity = activity;
         mFragment = fragment;
+
+        if (mActivity == null && mFragment == null) {
+            throw new IllegalStateException("ResourceObserver must be attached to an Activity or a Fragment");
+        }
+
+        mProgressView = progressView;
         mLoadingMessage = message;
     }
 
     @Override
     public final void onChanged(Resource<T> resource) {
         if (resource.getState() == State.LOADING) {
-            mActivity.showProgress(mLoadingMessage);
+            mProgressView.showProgress(mLoadingMessage);
             return;
         }
-        mActivity.hideProgress();
+        mProgressView.hideProgress();
 
         if (resource.isUsed()) { return; }
 

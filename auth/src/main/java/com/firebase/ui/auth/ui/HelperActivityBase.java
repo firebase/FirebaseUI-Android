@@ -25,7 +25,7 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class HelperActivityBase extends AppCompatActivity {
+public class HelperActivityBase extends AppCompatActivity implements ProgressView {
     private FlowParameters mParams;
 
     private AuthHelper mAuthHelper;
@@ -95,10 +95,12 @@ public class HelperActivityBase extends AppCompatActivity {
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
     }
 
+    @Override
     public void showProgress(@StringRes int message) {
         getDialogHolder().showLoadingDialog(message);
     }
 
+    @Override
     public void hideProgress() {
         getDialogHolder().dismissDialog();
     }
