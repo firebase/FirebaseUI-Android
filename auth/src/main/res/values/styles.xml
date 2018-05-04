@@ -230,11 +230,12 @@
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.TopProgressBar" parent="Base.Widget.AppCompat.ProgressBar.Horizontal">
+    <style name="FirebaseUI.TopProgressBar" parent="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">-7dp</item>
+        <item name="android:layout_height">4dp</item>
         <item name="android:indeterminate">true</item>
+        <item name="mpb_progressStyle">horizontal</item>
+        <item name="mpb_useIntrinsicPadding">false</item>
     </style>
 
 </resources>
