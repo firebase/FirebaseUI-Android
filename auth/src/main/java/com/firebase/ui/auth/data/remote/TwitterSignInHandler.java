@@ -34,9 +34,6 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     static {
         if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
             Context context = AuthUI.getApplicationContext();
-
-            // Note: this has no effect if Twitter is already initialized so it's safe to call
-            // multiple times.
             Twitter.initialize(new TwitterConfig.Builder(context)
                     .twitterAuthConfig(new TwitterAuthConfig(
                             context.getString(R.string.twitter_consumer_key),
