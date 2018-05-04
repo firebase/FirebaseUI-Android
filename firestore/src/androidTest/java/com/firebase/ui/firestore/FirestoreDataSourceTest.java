@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,12 +41,12 @@ public class FirestoreDataSourceTest {
     @Mock PageKeyedDataSource.LoadCallback<PageKey, DocumentSnapshot> mAfterCallback;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         initMockQuery();
 
         // Create a testing data source
-        mDataSource = new FirestoreDataSource(mMockQuery);
+        mDataSource = new FirestoreDataSource(mMockQuery, Source.DEFAULT);
     }
 
     @Test
@@ -159,11 +160,11 @@ public class FirestoreDataSourceTest {
         QuerySnapshot mockSnapshot = mock(QuerySnapshot.class);
         when(mockSnapshot.getDocuments()).thenReturn(snapshots);
 
-        when(mMockQuery.get()).thenReturn(Tasks.forResult(mockSnapshot));
+        when(mMockQuery.get(Source.DEFAULT)).thenReturn(Tasks.forResult(mockSnapshot));
     }
 
     private void mockQueryFailure(String message) {
-        when(mMockQuery.get())
+        when(mMockQuery.get(Source.DEFAULT))
                 .thenReturn(Tasks.<QuerySnapshot>forException(new Exception(message)));
     }
 

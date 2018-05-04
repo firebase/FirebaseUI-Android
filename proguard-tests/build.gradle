@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: '../library/quality/quality.gradle'
 
 android {
     compileSdkVersion compileSdk
@@ -9,6 +10,7 @@ android {
         targetSdkVersion targetSdk
         versionCode 1
         versionName version
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -28,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation "com.google.firebase:firebase-core:$firestoreVersion"
+    implementation "com.google.firebase:firebase-core:$coreVersion"
     implementation "android.arch.lifecycle:extensions:$architectureVersion"
 
     implementation project(path: ':auth')
