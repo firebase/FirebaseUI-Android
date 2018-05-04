@@ -65,7 +65,7 @@ public final class FirestorePagingOptions<T> {
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
                                    @NonNull Class<T> modelClass) {
-            return setQuery(query, config, new ClassSnapshotParser<>(modelClass));
+            return setQuery(query, Source.DEFAULT, config, modelClass);
         }
 
         @NonNull
