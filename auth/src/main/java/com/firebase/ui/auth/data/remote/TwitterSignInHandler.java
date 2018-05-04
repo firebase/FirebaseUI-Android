@@ -33,7 +33,12 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     static {
         if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            initializeTwitter();
+            Context context = AuthUI.getApplicationContext();
+            Twitter.initialize(new TwitterConfig.Builder(context)
+                    .twitterAuthConfig(new TwitterAuthConfig(
+                            context.getString(R.string.twitter_consumer_key),
+                            context.getString(R.string.twitter_consumer_secret)))
+                    .build());
         }
     }
 
@@ -46,15 +51,11 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     }
 
     public static void initializeTwitter() {
-        Context context = AuthUI.getApplicationContext();
-
-        // Note: this has no effect if Twitter is already initialized so it's safe to call
-        // multiple times.
-        Twitter.initialize(new TwitterConfig.Builder(context)
-                .twitterAuthConfig(new TwitterAuthConfig(
-                        context.getString(R.string.twitter_consumer_key),
-                        context.getString(R.string.twitter_consumer_secret)))
-                .build());
+        // This method is intentionally empty, but calling it forces the static {} block of this
+        // class to be executed (if it wasn't already).
+        //
+        // Even though it's currently safe to initialize Twitter more than once, this protects
+        // against a future behavior change and gives a small efficiency gain.
     }
 
     private static IdpResponse createIdpResponse(
