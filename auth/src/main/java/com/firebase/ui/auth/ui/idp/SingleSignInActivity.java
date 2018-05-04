@@ -79,8 +79,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
                 throw new IllegalStateException("Invalid provider id: " + provider);
         }
 
-        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 mHandler.startSignIn(response);

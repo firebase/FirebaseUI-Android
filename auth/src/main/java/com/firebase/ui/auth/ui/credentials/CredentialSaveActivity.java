@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.InvisibleActivityBase;
@@ -47,8 +46,7 @@ public class CredentialSaveActivity extends InvisibleActivityBase {
         mHandler.init(getFlowParams());
         mHandler.setResponse(response);
 
-        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 finish(RESULT_OK, response.toIntent());

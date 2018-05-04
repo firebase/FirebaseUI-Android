@@ -130,8 +130,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 throw new IllegalStateException("Invalid provider id: " + providerId);
         }
 
-        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 handler.startSignIn(response);
@@ -155,8 +154,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         });
 
-        handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 finish(RESULT_OK, response.toIntent());

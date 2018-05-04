@@ -28,6 +28,7 @@ import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -57,8 +58,12 @@ import java.util.List;
 /** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
+
     private SocialProviderResponseHandler mHandler;
     private List<ProviderSignInBase<?>> mProviders;
+
+    private ProgressBar mProgressBar;
+    private ViewGroup mProviderHolder;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
@@ -68,6 +73,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
+
+        mProgressBar = findViewById(R.id.top_progress_bar);
+        mProviderHolder = findViewById(R.id.btn_holder);
 
         FlowParameters params = getFlowParams();
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
@@ -111,7 +119,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private void populateIdpList(List<IdpConfig> providerConfigs,
                                  final SocialProviderResponseHandler handler) {
         ViewModelProvider supplier = ViewModelProviders.of(this);
-        ViewGroup providerHolder = findViewById(R.id.btn_holder);
 
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
@@ -158,8 +165,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
             mProviders.add(provider);
 
-            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                    this, R.string.fui_progress_dialog_loading) {
+            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
                 @Override
                 protected void onSuccess(@NonNull IdpResponse response) {
                     handleResponse(response);
@@ -186,14 +192,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             });
 
-            View loginButton = getLayoutInflater().inflate(buttonLayout, providerHolder, false);
+            View loginButton = getLayoutInflater().inflate(buttonLayout, mProviderHolder, false);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     provider.startSignIn(AuthMethodPickerActivity.this);
                 }
             });
-            providerHolder.addView(loginButton);
+            mProviderHolder.addView(loginButton);
         }
     }
 
@@ -203,6 +209,26 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler.onActivityResult(requestCode, resultCode, data);
         for (ProviderSignInBase<?> provider : mProviders) {
             provider.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mProgressBar.setVisibility(View.VISIBLE);
+        for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
+            View child = mProviderHolder.getChildAt(i);
+            child.setEnabled(false);
+            child.setAlpha(0.75f);
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
+            View child = mProviderHolder.getChildAt(i);
+            child.setEnabled(true);
+            child.setAlpha(1.0f);
         }
     }
 }
