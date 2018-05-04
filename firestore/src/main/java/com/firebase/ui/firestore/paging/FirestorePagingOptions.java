@@ -12,11 +12,12 @@ import com.firebase.ui.firestore.ClassSnapshotParser;
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.Source;
 
 /**
- * Options to conifigure an {@link FirestorePagingAdapter}.
+ * Options to configure an {@link FirestorePagingAdapter}.
  */
-public class FirestorePagingOptions<T> {
+public final class FirestorePagingOptions<T> {
 
     private final LiveData<PagedList<DocumentSnapshot>> mData;
     private final SnapshotParser<T> mParser;
@@ -53,7 +54,7 @@ public class FirestorePagingOptions<T> {
         return mOwner;
     }
 
-    public static class Builder<T> {
+    public static final class Builder<T> {
 
         private LiveData<PagedList<DocumentSnapshot>> mData;
         private SnapshotParser<T> mParser;
@@ -64,15 +65,31 @@ public class FirestorePagingOptions<T> {
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
                                    @NonNull Class<T> modelClass) {
-            return setQuery(query, config, new ClassSnapshotParser<T>(modelClass));
+            return setQuery(query, config, new ClassSnapshotParser<>(modelClass));
         }
 
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
                                    @NonNull SnapshotParser<T> parser) {
+            return setQuery(query, Source.DEFAULT, config, parser);
+        }
+
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull Source source,
+                                   @NonNull PagedList.Config config,
+                                   @NonNull Class<T> modelClass) {
+            return setQuery(query, source, config, new ClassSnapshotParser<>(modelClass));
+        }
+
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull Source source,
+                                   @NonNull PagedList.Config config,
+                                   @NonNull SnapshotParser<T> parser) {
             // Build paged list
-            FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query);
+            FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query, source);
             mData = new LivePagedListBuilder<>(factory, config).build();
 
             mParser = parser;
