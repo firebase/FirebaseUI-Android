@@ -15,7 +15,7 @@ import static com.firebase.ui.common.Preconditions.assertNull;
  *
  * @see Builder
  */
-public class FirestoreRecyclerOptions<T> {
+public final class FirestoreRecyclerOptions<T> {
 
     private static final String ERR_SNAPSHOTS_SET = "Snapshot array already set. " +
             "Call only one of setSnapshotArray or setQuery";
@@ -52,7 +52,7 @@ public class FirestoreRecyclerOptions<T> {
      *
      * @param <T> the model class for the {@link FirestoreRecyclerAdapter}.
      */
-    public static class Builder<T> {
+    public static final class Builder<T> {
 
         private ObservableSnapshotArray<T> mSnapshots;
         private LifecycleOwner mOwner;
