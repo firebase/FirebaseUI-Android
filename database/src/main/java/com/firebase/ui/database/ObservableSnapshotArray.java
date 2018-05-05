@@ -16,7 +16,6 @@ import java.util.List;
  */
 public abstract class ObservableSnapshotArray<T>
         extends BaseObservableSnapshotArray<DataSnapshot, DatabaseError, ChangeEventListener, T> {
-
     /**
      * Create an ObservableSnapshotArray with a custom {@link SnapshotParser}.
      *
@@ -24,13 +23,5 @@ public abstract class ObservableSnapshotArray<T>
      */
     public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         super(new CachingSnapshotParser<>(parser));
-    }
-
-    /**
-     * Use {@link BaseObservableSnapshotArray#notifyOnError(Object)}.
-     */
-    @Deprecated
-    protected void notifyListenersOnCancelled(DatabaseError error) {
-        notifyOnError(error);
     }
 }

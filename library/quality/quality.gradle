@@ -73,10 +73,10 @@ task pmd(type: Pmd) {
 
 android {
     lintOptions {
-        disable 'WrongConstant', // TODO it's being unruly, figure that out later
-                'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
-                'IconExpectedSize',
+        disable 'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
                 'MissingTranslation', // TODO remove in future PR
+                'IconExpectedSize',
+                'InvalidPackage', // Firestore uses GRPC which makes lint mad
                 'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
 
         baseline file("$configDir/lint-baseline.xml")

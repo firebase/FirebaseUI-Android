@@ -16,6 +16,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
@@ -30,19 +31,8 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterSignInHandler extends ProviderSignInBase<Void> {
-    public static final boolean IS_AVAILABLE;
-
     static {
-        boolean available;
-        try {
-            Class.forName("com.twitter.sdk.android.core.identity.TwitterAuthClient");
-            available = true;
-        } catch (ClassNotFoundException e) {
-            available = false;
-        }
-        IS_AVAILABLE = available;
-
-        if (IS_AVAILABLE) {
+        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
             Context context = AuthUI.getApplicationContext();
             Twitter.initialize(new TwitterConfig.Builder(context)
                     .twitterAuthConfig(new TwitterAuthConfig(
@@ -58,6 +48,14 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     public TwitterSignInHandler(Application application) {
         super(application);
         mClient = new TwitterAuthClient();
+    }
+
+    public static void initializeTwitter() {
+        // This method is intentionally empty, but calling it forces the static {} block of this
+        // class to be executed (if it wasn't already).
+        //
+        // Even though it's currently safe to initialize Twitter more than once, this protects
+        // against a future behavior change and gives a small efficiency gain.
     }
 
     private static IdpResponse createIdpResponse(

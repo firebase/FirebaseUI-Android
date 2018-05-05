@@ -4,8 +4,8 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryListenOptions;
 
 import static com.firebase.ui.common.Preconditions.assertNonNull;
 import static com.firebase.ui.common.Preconditions.assertNull;
@@ -15,7 +15,7 @@ import static com.firebase.ui.common.Preconditions.assertNull;
  *
  * @see Builder
  */
-public class FirestoreRecyclerOptions<T> {
+public final class FirestoreRecyclerOptions<T> {
 
     private static final String ERR_SNAPSHOTS_SET = "Snapshot array already set. " +
             "Call only one of setSnapshotArray or setQuery";
@@ -52,7 +52,7 @@ public class FirestoreRecyclerOptions<T> {
      *
      * @param <T> the model class for the {@link FirestoreRecyclerAdapter}.
      */
-    public static class Builder<T> {
+    public static final class Builder<T> {
 
         private ObservableSnapshotArray<T> mSnapshots;
         private LifecycleOwner mOwner;
@@ -71,28 +71,19 @@ public class FirestoreRecyclerOptions<T> {
         }
 
         /**
-         * Set the query to use (with options) and provide a custom {@link SnapshotParser}.
-         * <p>
-         * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
-         */
-        @NonNull
-        public Builder<T> setQuery(@NonNull Query query,
-                                   @NonNull QueryListenOptions options,
-                                   @NonNull SnapshotParser<T> parser) {
-            assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
-
-            mSnapshots = new FirestoreArray<>(query, options, parser);
-            return this;
-        }
-
-
-        /**
-         * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default {@link
-         * QueryListenOptions}.
+         * Calls {@link #setQuery(Query, MetadataChanges, Class)} with metadata changes excluded.
          */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query, @NonNull SnapshotParser<T> parser) {
-            return setQuery(query, new QueryListenOptions(), parser);
+            return setQuery(query, MetadataChanges.EXCLUDE, parser);
+        }
+
+        /**
+         * Calls {@link #setQuery(Query, MetadataChanges, Class)} with metadata changes excluded.
+         */
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query, @NonNull Class<T> modelClass) {
+            return setQuery(query, MetadataChanges.EXCLUDE, modelClass);
         }
 
         /**
@@ -103,18 +94,24 @@ public class FirestoreRecyclerOptions<T> {
          */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
-                                   @NonNull QueryListenOptions options,
+                                   @NonNull MetadataChanges changes,
                                    @NonNull Class<T> modelClass) {
-            return setQuery(query, options, new ClassSnapshotParser<>(modelClass));
+            return setQuery(query, changes, new ClassSnapshotParser<>(modelClass));
         }
 
         /**
-         * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default {@link
-         * QueryListenOptions}.
+         * Set the query to use (with options) and provide a custom {@link SnapshotParser}.
+         * <p>
+         * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
         @NonNull
-        public Builder<T> setQuery(@NonNull Query query, @NonNull Class<T> modelClass) {
-            return setQuery(query, new QueryListenOptions(), modelClass);
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull MetadataChanges changes,
+                                   @NonNull SnapshotParser<T> parser) {
+            assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
+
+            mSnapshots = new FirestoreArray<>(query, changes, parser);
+            return this;
         }
 
         /**

@@ -37,19 +37,6 @@ import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
-    public static final boolean IS_AVAILABLE;
-
-    static {
-        boolean available;
-        try {
-            Class.forName("com.facebook.login.LoginManager");
-            available = true;
-        } catch (ClassNotFoundException e) {
-            available = false;
-        }
-        IS_AVAILABLE = available;
-    }
-
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
