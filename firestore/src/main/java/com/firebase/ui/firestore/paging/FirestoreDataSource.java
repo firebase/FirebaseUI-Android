@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.util.List;
 
@@ -32,25 +33,29 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     public static class Factory extends DataSource.Factory<PageKey, DocumentSnapshot> {
 
         private final Query mQuery;
+        private final Source mSource;
 
-        public Factory(Query query) {
+        public Factory(Query query, Source source) {
             mQuery = query;
+            mSource = source;
         }
 
         @Override
         public DataSource<PageKey, DocumentSnapshot> create() {
-            return new FirestoreDataSource(mQuery);
+            return new FirestoreDataSource(mQuery, mSource);
         }
     }
 
     private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
 
     private final Query mBaseQuery;
+    private final Source mSource;
 
     private Runnable mRetryRunnable;
 
-    public FirestoreDataSource(Query baseQuery) {
+    public FirestoreDataSource(Query baseQuery, Source source) {
         mBaseQuery = baseQuery;
+        mSource = source;
     }
 
     @Override
@@ -61,7 +66,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         mLoadingState.postValue(LoadingState.LOADING_INITIAL);
 
         mBaseQuery.limit(params.requestedLoadSize)
-                .get()
+                .get(mSource)
                 .addOnSuccessListener(new OnLoadSuccessListener() {
                     @Override
                     protected void setResult(@NonNull QuerySnapshot snapshot) {
@@ -97,7 +102,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         mLoadingState.postValue(LoadingState.LOADING_MORE);
 
         key.getPageQuery(mBaseQuery, params.requestedLoadSize)
-                .get()
+                .get(mSource)
                 .addOnSuccessListener(new OnLoadSuccessListener() {
                     @Override
                     protected void setResult(@NonNull QuerySnapshot snapshot) {

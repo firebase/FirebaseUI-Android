@@ -50,6 +50,14 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
         mClient = new TwitterAuthClient();
     }
 
+    public static void initializeTwitter() {
+        // This method is intentionally empty, but calling it forces the static {} block of this
+        // class to be executed (if it wasn't already).
+        //
+        // Even though it's currently safe to initialize Twitter more than once, this protects
+        // against a future behavior change and gives a small efficiency gain.
+    }
+
     private static IdpResponse createIdpResponse(
             TwitterSession session, String email, String name, Uri photoUri) {
         return new IdpResponse.Builder(

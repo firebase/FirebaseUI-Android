@@ -8,9 +8,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QueryListenOptions;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.List;
 public class FirestoreArray<T> extends ObservableSnapshotArray<T>
         implements EventListener<QuerySnapshot> {
     private final Query mQuery;
-    private final QueryListenOptions mOptions;
+    private final MetadataChanges mMetadataChanges;
     private ListenerRegistration mRegistration;
 
     private final List<DocumentSnapshot> mSnapshots = new ArrayList<>();
@@ -35,19 +35,19 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
      */
     public FirestoreArray(@NonNull Query query, @NonNull SnapshotParser<T> parser) {
-        this(query, new QueryListenOptions(), parser);
+        this(query, MetadataChanges.EXCLUDE, parser);
     }
 
     /**
-     * @param options options for the query listen.
+     * @param changes metadata options for the query listen.
      * @see #FirestoreArray(Query, SnapshotParser)
      */
     public FirestoreArray(@NonNull Query query,
-                          @NonNull QueryListenOptions options,
+                          @NonNull MetadataChanges changes,
                           @NonNull SnapshotParser<T> parser) {
         super(parser);
         mQuery = query;
-        mOptions = options;
+        mMetadataChanges = changes;
     }
 
     @NonNull
@@ -59,7 +59,7 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
     @Override
     protected void onCreate() {
         super.onCreate();
-        mRegistration = mQuery.addSnapshotListener(mOptions, this);
+        mRegistration = mQuery.addSnapshotListener(mMetadataChanges, this);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
         }
 
         // Break down each document event
-        List<DocumentChange> changes = snapshots.getDocumentChanges();
+        List<DocumentChange> changes = snapshots.getDocumentChanges(mMetadataChanges);
         for (DocumentChange change : changes) {
             switch (change.getType()) {
                 case ADDED:
