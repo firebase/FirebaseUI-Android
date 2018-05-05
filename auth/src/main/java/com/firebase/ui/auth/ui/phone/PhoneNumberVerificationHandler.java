@@ -24,6 +24,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneAuthC
     }
 
     public void verifyPhoneNumber(final String number, boolean force) {
+        setResult(Resource.<PhoneAuthCredential>forLoading());
         getPhoneAuth().verifyPhoneNumber(
                 number,
                 AUTO_RETRIEVAL_TIMEOUT_SECONDS,

@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -40,6 +39,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     public static final String TAG = "VerifyPhoneFragment";
 
     private PhoneNumberVerificationHandler mHandler;
+    private boolean mCalled;
 
     private CountryListSpinner mCountryListSpinner;
     private TextInputLayout mPhoneInputLayout;
@@ -88,17 +88,13 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
         getActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
         view.findViewById(R.id.send_code).setOnClickListener(this);
-        setupCountrySpinner();
-        setupTerms();
-    }
-
-    private void setupCountrySpinner() {
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPhoneInputLayout.setError(null);
             }
         });
+        setupTerms();
     }
 
     private void setupTerms() {
@@ -110,7 +106,10 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) { return; }
+        if (savedInstanceState != null || mCalled) { return; }
+        // Fragment back stacks are the stuff of nightmares (what's new?): the fragment isn't
+        // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
+        mCalled = true;
 
         // Check for phone
         // It is assumed that the phone number that are being wired in via Credential Selector
@@ -188,14 +187,14 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
     @Nullable
     private String getPseudoValidPhoneNumber() {
-        CountryInfo countryInfo = (CountryInfo) mCountryListSpinner.getTag();
         String everythingElse = mPhoneEditText.getText().toString();
 
         if (TextUtils.isEmpty(everythingElse)) {
             return null;
         }
 
-        return PhoneNumberUtils.format(everythingElse, countryInfo);
+        return PhoneNumberUtils.format(
+                everythingElse, mCountryListSpinner.getSelectedCountryInfo());
     }
 
     public String getPhoneNumber() {

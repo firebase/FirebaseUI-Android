@@ -34,7 +34,6 @@ import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -66,41 +65,7 @@ public class PhoneActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    FirebaseAuthError error = FirebaseAuthError.fromException(
-                            (FirebaseAuthInvalidCredentialsException) e);
-
-                    switch (error) {
-                        case ERROR_INVALID_VERIFICATION_CODE:
-//                            showAlertDialog(
-//                                    R.string.fui_incorrect_code_dialog_body,
-//                                    new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog,
-//                                                            int which) {
-//                                            getSubmitConfirmationCodeFragment()
-//                                                    .setConfirmationCode("");
-//                                        }
-//                                    });
-                            break;
-                        case ERROR_SESSION_EXPIRED:
-//                            showAlertDialog(
-//                                    R.string.fui_error_session_expired,
-//                                    new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog,
-//                                                            int which) {
-//                                            getSubmitConfirmationCodeFragment()
-//                                                    .setConfirmationCode("");
-//                                        }
-//                                    });
-                            break;
-                        default:
-//                            showAlertDialog(R.string.fui_error_unknown, null);
-                    }
-                } else {
-//                    showAlertDialog(R.string.fui_error_unknown, null);
-                }
+                handleError(e);
             }
         });
 
@@ -138,7 +103,7 @@ public class PhoneActivity extends AppCompatBase {
         Bundle params = getIntent().getExtras().getBundle(ExtraConstants.PARAMS);
         CheckPhoneNumberFragment fragment = CheckPhoneNumberFragment.newInstance(params);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_verify_phone, fragment, CheckPhoneNumberFragment.TAG)
+                .replace(R.id.fragment_phone, fragment, CheckPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
     }
@@ -186,10 +151,11 @@ public class PhoneActivity extends AppCompatBase {
         SubmitConfirmationCodeFragment submitFragment = (SubmitConfirmationCodeFragment)
                 getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
 
-        if (checkFragment != null) {
-            return checkFragment.getPhoneNumber();
-        } else if (submitFragment != null) {
+        // The submit fragment must come first since it's on top of the stack
+        if (submitFragment != null) {
             return submitFragment.getPhoneNumber();
+        } else if (checkFragment != null) {
+            return checkFragment.getPhoneNumber();
         } else {
             throw new IllegalStateException("No fragments added");
         }
@@ -215,7 +181,7 @@ public class PhoneActivity extends AppCompatBase {
     private void showSubmitCodeFragment(String number) {
         getSupportFragmentManager().beginTransaction()
                 .replace(
-                        R.id.fragment_verify_phone,
+                        R.id.fragment_phone,
                         SubmitConfirmationCodeFragment.newInstance(number),
                         SubmitConfirmationCodeFragment.TAG)
                 .addToBackStack(null)
