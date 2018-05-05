@@ -1,7 +1,7 @@
 project.ext {
     submodules = ['database', 'auth', 'storage', 'firestore', 'common']
     group = 'com.firebaseui'
-    version = '3.4.0-SNAPSHOT'
+    version = '4.0.0-SNAPSHOT'
     pomdesc = 'Firebase UI Android'
 
     compileSdk = 27
@@ -12,7 +12,7 @@ project.ext {
     authVersion = '15.1.0'          // firebase-auth
     playAuthVersion = '15.0.1'      // play-services-auth
     rtdbVersion = '15.0.1'          // firebase-database
-    firestoreVersion = '15.0.0'     // firebase-firestore
+    firestoreVersion = '16.0.0'     // firebase-firestore
     storageVersion = '15.0.2'       // firebase-storage
 
     supportLibraryVersion = '27.1.1'

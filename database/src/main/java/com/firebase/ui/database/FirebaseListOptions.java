@@ -16,7 +16,7 @@ import static com.firebase.ui.common.Preconditions.assertNull;
  *
  * @see Builder
  */
-public class FirebaseListOptions<T> {
+public final class FirebaseListOptions<T> {
 
     private static final String ERR_SNAPSHOTS_SET = "Snapshot array already set. " +
             "Call only one of setSnapshotArray, setQuery, or setIndexedQuery.";
@@ -62,7 +62,7 @@ public class FirebaseListOptions<T> {
      *
      * @param <T> the model class for the {@link FirebaseListAdapter}.
      */
-    public static class Builder<T> {
+    public static final class Builder<T> {
 
         private ObservableSnapshotArray<T> mSnapshots;
         private @LayoutRes Integer mLayout;
