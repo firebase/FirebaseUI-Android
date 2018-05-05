@@ -202,14 +202,14 @@ Just add the following to your `build.gradle`:
 
 ```groovy
 repositories {
-  maven { url "https://oss.jfrog.org/artifactory/oss-release-local" }
+  maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
 }
 ```
 
 Then you can depend on snapshot versions:
 
 ```groovy
-implementation 'com.firebaseui:firebase-ui-auth:3.2.2-SNAPSHOT`
+implementation 'com.firebaseui:firebase-ui-auth:4.0.0-SNAPSHOT`
 ```
 
 You can see which `SNAPSHOT` builds are avaiable here:
