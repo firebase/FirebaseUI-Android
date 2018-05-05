@@ -8,9 +8,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.google.gms:google-services:3.2.0'
+        classpath 'com.google.gms:google-services:3.2.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.5.4'
     }
@@ -116,6 +116,11 @@ allprojects { project ->
         // POM to meet maven specs
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
+
+        // We need to override the variables 'group' and 'version' on the 'Project' object in order
+        // to prevent the bintray plugin from creating 'unspecified' artifacts.
+        group = project.ext.group
+        version = project.ext.version
 
         def groupName = project.ext.group
         def versionName = project.ext.version

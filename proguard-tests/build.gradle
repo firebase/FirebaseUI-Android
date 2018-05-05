@@ -28,7 +28,8 @@ android {
 }
 
 dependencies {
-    implementation "com.google.firebase:firebase-core:$firebaseVersion"
+    implementation "com.google.firebase:firebase-core:$firestoreVersion"
+    implementation "android.arch.lifecycle:extensions:$architectureVersion"
 
     implementation project(path: ':auth')
     implementation project(path: ':firestore')
