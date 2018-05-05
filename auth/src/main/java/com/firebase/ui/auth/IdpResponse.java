@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -184,20 +183,6 @@ public class IdpResponse implements Parcelable {
      */
     public String getPrevUid() {
         return mUser.getPrevUid();
-    }
-
-    /**
-     * Get the error code for a failed sign in
-     *
-     * @deprecated use {@link #getError()} instead
-     */
-    @Deprecated
-    public int getErrorCode() {
-        if (isSuccessful()) {
-            return Activity.RESULT_OK;
-        } else {
-            return mException.getErrorCode();
-        }
     }
 
     /**

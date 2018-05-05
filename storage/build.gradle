@@ -15,7 +15,7 @@ android {
 dependencies {
     api 'com.github.bumptech.glide:glide:4.7.1'
 
-    api "com.google.firebase:firebase-storage:$firebaseVersion"
+    api "com.google.firebase:firebase-storage:$storageVersion"
     // Override Play Services
     implementation "com.android.support:support-v4:$supportLibraryVersion"
 }
