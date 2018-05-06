@@ -92,6 +92,9 @@ public class PhoneActivity extends AppCompatBase {
                         showSubmitCodeFragment(
                                 ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
                     }
+
+                    // Clear existing errors
+                    handleError(null);
                 } else {
                     handleError(e);
                 }
@@ -117,15 +120,17 @@ public class PhoneActivity extends AppCompatBase {
         }
     }
 
-    private void handleError(Exception e) {
+    private void handleError(@Nullable Exception e) {
         TextInputLayout errorView = getErrorView();
         if (errorView == null) { return; }
 
         if (e instanceof FirebaseAuthException) {
             errorView.setError(getErrorMessage(
                     FirebaseAuthError.fromException((FirebaseAuthException) e)));
-        } else {
+        } else if (e != null) {
             errorView.setError(e.getLocalizedMessage());
+        } else {
+            errorView.setError(null);
         }
     }
 

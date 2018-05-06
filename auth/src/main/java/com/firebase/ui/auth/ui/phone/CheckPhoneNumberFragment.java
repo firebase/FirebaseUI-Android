@@ -75,9 +75,12 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mPhoneEditText = view.findViewById(R.id.phone_number);
         mSmsTermsText = view.findViewById(R.id.send_sms_tos);
 
+        mSmsTermsText.setText(getString(R.string.fui_sms_terms_of_service,
+                getString(R.string.fui_verify_phone_number)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
             mPhoneEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
+        getActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
 
         ImeHelper.setImeOnDoneListener(mPhoneEditText, new ImeHelper.DonePressedListener() {
             @Override
@@ -85,8 +88,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 onNext();
             }
         });
-
-        getActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
         view.findViewById(R.id.send_code).setOnClickListener(this);
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,13 +95,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 mPhoneInputLayout.setError(null);
             }
         });
-        setupTerms();
-    }
-
-    private void setupTerms() {
-        String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
-        String terms = getString(R.string.fui_sms_terms_of_service, verifyPhoneButtonText);
-        mSmsTermsText.setText(terms);
     }
 
     @Override
@@ -142,23 +136,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         }
     }
 
-    private void start(PhoneNumber number) {
-        if (PhoneNumber.isValid(number)) {
-            mPhoneEditText.setText(number.getPhoneNumber());
-            mPhoneEditText.setSelection(number.getPhoneNumber().length());
-        }
-        if (PhoneNumber.isCountryValid(number)) {
-            setCountryCode(number);
-        }
-
-        onNext();
-    }
-
-    private void setCountryCode(PhoneNumber number) {
-        mCountryListSpinner.setSelectedForCountry(
-                new Locale("", number.getCountryIso()), number.getCountryCode());
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
@@ -173,6 +150,18 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
     @Override
     public void onClick(View v) {
+        onNext();
+    }
+
+    private void start(PhoneNumber number) {
+        if (PhoneNumber.isValid(number)) {
+            mPhoneEditText.setText(number.getPhoneNumber());
+            mPhoneEditText.setSelection(number.getPhoneNumber().length());
+        }
+        if (PhoneNumber.isCountryValid(number)) {
+            setCountryCode(number);
+        }
+
         onNext();
     }
 
@@ -195,6 +184,11 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
         return PhoneNumberUtils.format(
                 everythingElse, mCountryListSpinner.getSelectedCountryInfo());
+    }
+
+    private void setCountryCode(PhoneNumber number) {
+        mCountryListSpinner.setSelectedForCountry(
+                new Locale("", number.getCountryIso()), number.getCountryCode());
     }
 
     public String getPhoneNumber() {

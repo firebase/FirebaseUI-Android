@@ -158,8 +158,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : getArguments().providerInfo) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
-            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }

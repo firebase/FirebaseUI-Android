@@ -197,6 +197,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
             @Override
             public void onClick(View v) {
                 mHandler.verifyPhoneNumber(mPhoneNumber, true);
+
                 mResendCodeTextView.setVisibility(View.GONE);
                 mCountDownTextView.setVisibility(View.VISIBLE);
                 mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
