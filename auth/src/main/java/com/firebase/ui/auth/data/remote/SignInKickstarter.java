@@ -122,16 +122,16 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         }
     }
 
-    private void redirectSignIn(String provider, String email) {
+    private void redirectSignIn(String provider, String id) {
         switch (provider) {
             case EmailAuthProvider.PROVIDER_ID:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
-                        EmailActivity.createIntent(getApplication(), getArguments(), email),
+                        EmailActivity.createIntent(getApplication(), getArguments(), id),
                         RequestCodes.EMAIL_FLOW)));
                 break;
             case PhoneAuthProvider.PROVIDER_ID:
                 Bundle args = new Bundle();
-                args.putString(ExtraConstants.PHONE, email);
+                args.putString(ExtraConstants.PHONE, id);
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         PhoneActivity.createIntent(
                                 getApplication(),
@@ -146,7 +146,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                         SingleSignInActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
-                                new User.Builder(provider, email).build()),
+                                new User.Builder(provider, id).build()),
                         RequestCodes.PROVIDER_FLOW)));
                 break;
             default:

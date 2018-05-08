@@ -118,15 +118,19 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
         }
 
-        if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
+        // We can receive the phone number in one of two formats: split between the ISO or fully
+        // processed. If it's complete, we use it directly. Otherwise, we parse the ISO and national
+        // number combination or we just set the default ISO if there's no default number. If there
+        // are no defaults at all, we prompt the user for a phone number through Smart Lock.
+        if (!TextUtils.isEmpty(phone)) {
+            start(PhoneNumberUtils.getPhoneNumber(phone));
+        } else if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
             start(PhoneNumberUtils.getPhoneNumber(countryIso, nationalNumber));
         } else if (!TextUtils.isEmpty(countryIso)) {
             setCountryCode(new PhoneNumber(
                     "",
                     countryIso,
                     String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
-        } else if (!TextUtils.isEmpty(phone)) {
-            start(PhoneNumberUtils.getPhoneNumber(phone));
         } else if (getFlowParams().enableHints) {
             FlowUtils.unhandled(this, new PendingIntentRequiredException(
                     Credentials.getClient(mHandler.getApplication()).getHintPickerIntent(
@@ -157,11 +161,14 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         if (PhoneNumber.isValid(number)) {
             mPhoneEditText.setText(number.getPhoneNumber());
             mPhoneEditText.setSelection(number.getPhoneNumber().length());
+        } else {
+            mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
+            return;
         }
+
         if (PhoneNumber.isCountryValid(number)) {
             setCountryCode(number);
         }
-
         onNext();
     }
 

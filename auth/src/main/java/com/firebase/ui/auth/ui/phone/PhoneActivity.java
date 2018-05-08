@@ -69,10 +69,10 @@ public class PhoneActivity extends AppCompatBase {
             }
         });
 
-        final PhoneNumberVerificationHandler verificationHandler =
+        final PhoneNumberVerificationHandler phoneVerifier =
                 ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
-        verificationHandler.init(getFlowParams());
-        verificationHandler.getOperation().observe(this, new ResourceObserver<PhoneAuthCredential>(
+        phoneVerifier.init(getFlowParams());
+        phoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneAuthCredential>(
                 this, R.string.fui_verifying) {
             @Override
             protected void onSuccess(@NonNull PhoneAuthCredential credential) {
