@@ -4,7 +4,9 @@ import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
+import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -51,7 +53,10 @@ public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
             } else {
                 unhandled = FlowUtils.unhandled(mFragment, e);
             }
-            if (unhandled) { onFailure(e); }
+            if (unhandled) {
+                Log.e(AuthUI.TAG, "A sign-in error occurred.", e);
+                onFailure(e);
+            }
         }
     }
 
