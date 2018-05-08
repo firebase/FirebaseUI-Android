@@ -74,6 +74,7 @@ task pmd(type: Pmd) {
 android {
     lintOptions {
         disable 'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
+                'UnusedResources', // TODO fix in upcoming PR
                 'IconExpectedSize',
                 'InvalidPackage', // Firestore uses GRPC which makes lint mad
                 'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
