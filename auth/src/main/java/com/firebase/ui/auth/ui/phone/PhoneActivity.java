@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
+import android.util.Pair;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -72,13 +73,13 @@ public class PhoneActivity extends AppCompatBase {
         final PhoneNumberVerificationHandler phoneVerifier =
                 ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
         phoneVerifier.init(getFlowParams());
-        phoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneAuthCredential>(
+        phoneVerifier.getOperation().observe(this, new ResourceObserver<Pair<String,PhoneAuthCredential>>(
                 this, R.string.fui_verifying) {
             @Override
-            protected void onSuccess(@NonNull PhoneAuthCredential credential) {
-                handler.startSignIn(credential, new IdpResponse.Builder(
+            protected void onSuccess(@NonNull Pair<String,PhoneAuthCredential> result) {
+                handler.startSignIn(result.second, new IdpResponse.Builder(
                         new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
-                                .setPhoneNumber(getPhoneNumber())
+                                .setPhoneNumber(result.first)
                                 .build())
                         .build());
             }
@@ -147,22 +148,6 @@ public class PhoneActivity extends AppCompatBase {
             return submitFragment.getView().findViewById(R.id.confirmation_code_layout);
         } else {
             return null;
-        }
-    }
-
-    private String getPhoneNumber() {
-        CheckPhoneNumberFragment checkFragment = (CheckPhoneNumberFragment)
-                getSupportFragmentManager().findFragmentByTag(CheckPhoneNumberFragment.TAG);
-        SubmitConfirmationCodeFragment submitFragment = (SubmitConfirmationCodeFragment)
-                getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
-
-        // The submit fragment must come first since it's on top of the stack
-        if (submitFragment != null) {
-            return submitFragment.getPhoneNumber();
-        } else if (checkFragment != null) {
-            return checkFragment.getPhoneNumber();
-        } else {
-            throw new IllegalStateException("No fragments added");
         }
     }
 

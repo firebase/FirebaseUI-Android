@@ -209,10 +209,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void submitCode() {
-        mHandler.submitVerificationCode(mConfirmationCodeEditText.getUnspacedText().toString());
-    }
-
-    public String getPhoneNumber() {
-        return mPhoneNumber;
+        mHandler.submitVerificationCode(
+                mPhoneNumber, mConfirmationCodeEditText.getUnspacedText().toString());
     }
 }

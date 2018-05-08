@@ -197,8 +197,4 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mCountryListSpinner.setSelectedForCountry(
                 new Locale("", number.getCountryIso()), number.getCountryCode());
     }
-
-    public String getPhoneNumber() {
-        return mPhoneEditText.getText().toString();
-    }
 }

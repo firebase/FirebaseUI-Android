@@ -2,6 +2,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
@@ -13,7 +14,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
 
-public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneAuthCredential> {
+public class PhoneNumberVerificationHandler extends AuthViewModelBase<Pair<String, PhoneAuthCredential>> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
 
     private String mVerificationId;
@@ -24,7 +25,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneAuthC
     }
 
     public void verifyPhoneNumber(final String number, boolean force) {
-        setResult(Resource.<PhoneAuthCredential>forLoading());
+        setResult(Resource.<Pair<String, PhoneAuthCredential>>forLoading());
         getPhoneAuth().verifyPhoneNumber(
                 number,
                 AUTO_RETRIEVAL_TIMEOUT_SECONDS,
@@ -33,12 +34,12 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneAuthC
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
-                        setResult(Resource.forSuccess(credential));
+                        setResult(Resource.forSuccess(Pair.create(number, credential)));
                     }
 
                     @Override
                     public void onVerificationFailed(FirebaseException e) {
-                        setResult(Resource.<PhoneAuthCredential>forFailure(e));
+                        setResult(Resource.<Pair<String, PhoneAuthCredential>>forFailure(e));
                     }
 
                     @Override
@@ -46,14 +47,16 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneAuthC
                                            @NonNull PhoneAuthProvider.ForceResendingToken token) {
                         mVerificationId = verificationId;
                         mForceResendingToken = token;
-                        setResult(Resource.<PhoneAuthCredential>forFailure(
+                        setResult(Resource.<Pair<String, PhoneAuthCredential>>forFailure(
                                 new PhoneNumberVerificationRequiredException(number)));
                     }
                 },
                 force ? mForceResendingToken : null);
     }
 
-    public void submitVerificationCode(String code) {
-        setResult(Resource.forSuccess(PhoneAuthProvider.getCredential(mVerificationId, code)));
+    public void submitVerificationCode(String number, String code) {
+        setResult(Resource.forSuccess(Pair.create(
+                number,
+                PhoneAuthProvider.getCredential(mVerificationId, code))));
     }
 }
