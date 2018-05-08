@@ -90,7 +90,8 @@ import java.util.Set;
  */
 public final class AuthUI {
 
-    private static final String TAG = "AuthUI";
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String TAG = "AuthUI";
 
     @StringDef({
                        EmailAuthProvider.PROVIDER_ID,
