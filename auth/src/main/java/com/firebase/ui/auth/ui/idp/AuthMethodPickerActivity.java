@@ -117,7 +117,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         for (IdpConfig idpConfig : providerConfigs) {
             final ProviderSignInBase<?> provider;
             @LayoutRes int buttonLayout;
-            switch (idpConfig.getProviderId()) {
+
+            final String providerId = idpConfig.getProviderId();
+            switch (providerId) {
                 case GoogleAuthProvider.PROVIDER_ID:
                     GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
                     google.init(new GoogleSignInHandler.Params(idpConfig));
@@ -154,7 +156,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     buttonLayout = R.layout.fui_provider_button_phone;
                     break;
                 default:
-                    throw new IllegalStateException("Unknown provider: " + idpConfig.getProviderId());
+                    throw new IllegalStateException("Unknown provider: " + providerId);
             }
             mProviders.add(provider);
 
@@ -175,7 +177,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                         // We have no idea what provider this error stemmed from so just forward
                         // this along to the handler.
                         handler.startSignIn(response);
-                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
+                        // Don't use the response's provider since it can be different than the one
+                        // that launched the sign-in attempt. Ex: the email flow is started, but
+                        // ends up turning into a Google sign-in because that account already
+                        // existed. In the previous example, an extra sign-in would incorrectly
+                        // started.
                         handler.startSignIn(response);
                     } else {
                         // Email or phone: the credentials should have already been saved so simply
