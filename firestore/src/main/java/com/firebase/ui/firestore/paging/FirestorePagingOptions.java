@@ -16,6 +16,8 @@ import com.google.firebase.firestore.Source;
 
 /**
  * Options to configure an {@link FirestorePagingAdapter}.
+ *
+ * Use {@link Builder} to create a new instance.
  */
 public final class FirestorePagingOptions<T> {
 
@@ -54,6 +56,9 @@ public final class FirestorePagingOptions<T> {
         return mOwner;
     }
 
+    /**
+     * Builder for {@link FirestorePagingOptions}.
+     */
     public static final class Builder<T> {
 
         private LiveData<PagedList<DocumentSnapshot>> mData;
@@ -61,6 +66,12 @@ public final class FirestorePagingOptions<T> {
         private LifecycleOwner mOwner;
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
 
+        /**
+         * Sets the query using {@link Source#SERVER} and a {@link ClassSnapshotParser} based
+         * on the given Class.
+         *
+         * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
+         */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
@@ -68,6 +79,11 @@ public final class FirestorePagingOptions<T> {
             return setQuery(query, Source.DEFAULT, config, modelClass);
         }
 
+        /**
+         * Sets the query using {@link Source#SERVER} and a custom {@link SnapshotParser}.
+         *
+         * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
+         */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
@@ -75,6 +91,12 @@ public final class FirestorePagingOptions<T> {
             return setQuery(query, Source.DEFAULT, config, parser);
         }
 
+        /**
+         * Sets the query using a custom {@link Source} amd a {@link ClassSnapshotParser} based
+         * on the given class.
+         *
+         * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
+         */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull Source source,
@@ -83,6 +105,16 @@ public final class FirestorePagingOptions<T> {
             return setQuery(query, source, config, new ClassSnapshotParser<>(modelClass));
         }
 
+        /**
+         * Sets the Firestore query to page.
+         * @param query the Firestore query. This query should only contain where() and
+         *              orderBy() clauses. Any limit() pr pagination clauses will cause errors.
+         * @param source the data source to use for query data.
+         * @param config paging configuration, passed directly to the support paging library.
+         * @param parser the {@link SnapshotParser} to parse {@link DocumentSnapshot} into model
+         *               objects.
+         * @return this, for chaining.
+         */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull Source source,
@@ -96,18 +128,34 @@ public final class FirestorePagingOptions<T> {
             return this;
         }
 
+        /**
+         * Sets an optional custom {@link DiffUtil.ItemCallback} to compare
+         * {@link DocumentSnapshot} objects.
+         *
+         * The default implementation is {@link DefaultSnapshotDiffCallback}.
+         * @return this, for chaining.
+         */
         @NonNull
         public Builder<T> setDiffCallback(@NonNull DiffUtil.ItemCallback<DocumentSnapshot> diffCallback) {
             mDiffCallback = diffCallback;
             return this;
         }
 
+        /**
+         * Sets an optional {@link LifecycleOwner} to control the lifecycle of the view. Otherwise,
+         * developer must manually call {@link FirestorePagingAdapter#startListening()}
+         * and {@link FirestorePagingAdapter#stopListening()}.
+         * @return this, for chaining.
+         */
         @NonNull
         public Builder<T> setLifecycleOwner(@NonNull LifecycleOwner owner) {
             mOwner = owner;
             return this;
         }
 
+        /**
+         * Build the {@link FirestorePagingOptions} object.
+         */
         @NonNull
         public FirestorePagingOptions<T> build() {
             if (mData == null || mParser == null) {
