@@ -67,7 +67,7 @@ public final class FirestorePagingOptions<T> {
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
 
         /**
-         * Sets the query using {@link Source#SERVER} and a {@link ClassSnapshotParser} based
+         * Sets the query using {@link Source#DEFAULT} and a {@link ClassSnapshotParser} based
          * on the given Class.
          *
          * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
@@ -80,7 +80,7 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
-         * Sets the query using {@link Source#SERVER} and a custom {@link SnapshotParser}.
+         * Sets the query using {@link Source#DEFAULT} and a custom {@link SnapshotParser}.
          *
          * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
          */
@@ -92,7 +92,7 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
-         * Sets the query using a custom {@link Source} amd a {@link ClassSnapshotParser} based
+         * Sets the query using a custom {@link Source} and a {@link ClassSnapshotParser} based
          * on the given class.
          *
          * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
@@ -106,9 +106,10 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
-         * Sets the Firestore query to page.
+         * Sets the Firestore query to paginate.
+         *
          * @param query the Firestore query. This query should only contain where() and
-         *              orderBy() clauses. Any limit() pr pagination clauses will cause errors.
+         *              orderBy() clauses. Any limit() or pagination clauses will cause errors.
          * @param source the data source to use for query data.
          * @param config paging configuration, passed directly to the support paging library.
          * @param parser the {@link SnapshotParser} to parse {@link DocumentSnapshot} into model
@@ -133,6 +134,7 @@ public final class FirestorePagingOptions<T> {
          * {@link DocumentSnapshot} objects.
          *
          * The default implementation is {@link DefaultSnapshotDiffCallback}.
+         * 
          * @return this, for chaining.
          */
         @NonNull
@@ -142,9 +144,10 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
-         * Sets an optional {@link LifecycleOwner} to control the lifecycle of the view. Otherwise,
-         * developer must manually call {@link FirestorePagingAdapter#startListening()}
+         * Sets an optional {@link LifecycleOwner} to control the lifecycle of the adapter. Otherwise,
+         * you must manually call {@link FirestorePagingAdapter#startListening()}
          * and {@link FirestorePagingAdapter#stopListening()}.
+         *
          * @return this, for chaining.
          */
         @NonNull
