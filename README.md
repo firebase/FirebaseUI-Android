@@ -46,17 +46,17 @@ libraries.
 
 ```groovy
 dependencies {
-// FirebaseUI for Firebase Realtime Database
-implementation 'com.firebaseui:firebase-ui-database:3.3.1'
+    // FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:3.3.1'
 
-// FirebaseUI for Cloud Firestore
-implementation 'com.firebaseui:firebase-ui-firestore:3.3.1'
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:3.3.1'
 
-// FirebaseUI for Firebase Auth
-implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
+    // FirebaseUI for Firebase Auth
+    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
 
-// FirebaseUI for Cloud Storage
-implementation 'com.firebaseui:firebase-ui-storage:3.3.1'
+    // FirebaseUI for Cloud Storage
+    implementation 'com.firebaseui:firebase-ui-storage:3.3.1'
 }
 ```
 
@@ -202,14 +202,14 @@ Just add the following to your `build.gradle`:
 
 ```groovy
 repositories {
-  maven { url "https://oss.jfrog.org/artifactory/oss-release-local" }
+  maven { url "https://oss.jfrog.org/artifactory/oss-snapshot-local" }
 }
 ```
 
 Then you can depend on snapshot versions:
 
 ```groovy
-implementation 'com.firebaseui:firebase-ui-auth:3.2.2-SNAPSHOT`
+implementation 'com.firebaseui:firebase-ui-auth:4.0.0-SNAPSHOT`
 ```
 
 You can see which `SNAPSHOT` builds are avaiable here:
