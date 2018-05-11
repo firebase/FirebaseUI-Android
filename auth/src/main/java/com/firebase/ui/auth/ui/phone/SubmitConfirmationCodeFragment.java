@@ -56,7 +56,6 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private Button mSubmitConfirmationButton;
     private CustomCountDownTimer mCountdownTimer;
     private PhoneActivity mVerifier;
-    private TextView mAgreementText;
     private long mMillisUntilFinished;
 
     public static SubmitConfirmationCodeFragment newInstance(FlowParameters flowParameters,
@@ -83,7 +82,6 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mResendCodeTextView = v.findViewById(R.id.resend_code);
         mConfirmationCodeEditText = v.findViewById(R.id.confirmation_code);
         mSubmitConfirmationButton = v.findViewById(R.id.submit_confirmation_code);
-        mAgreementText = v.findViewById(R.id.create_account_tos);
 
         final String phoneNumber = getArguments().getString(ExtraConstants.PHONE);
 
@@ -93,7 +91,6 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         setupCountDown(RESEND_WAIT_MILLIS);
         setupSubmitConfirmationCodeButton();
         setupResendConfirmationCodeTextView(phoneNumber);
-        setUpTermsOfService();
         return v;
     }
 
@@ -219,13 +216,6 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         if (mCountdownTimer != null) {
             mCountdownTimer.cancel();
         }
-    }
-
-    private void setUpTermsOfService() {
-        PreambleHandler.setup(getContext(),
-                getFlowParams(),
-                R.string.fui_continue_phone_login,
-                mAgreementText);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

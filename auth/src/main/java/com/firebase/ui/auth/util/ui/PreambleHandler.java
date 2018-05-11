@@ -25,6 +25,7 @@ public class PreambleHandler {
     private static final String BTN_TARGET = "%BTN%";
     private static final String TOS_TARGET = "%TOS%";
     private static final String PP_TARGET = "%PP%";
+    private static final int NO_BUTTON = -1;
 
     private final Context mContext;
     private final FlowParameters mFlowParameters;
@@ -41,12 +42,30 @@ public class PreambleHandler {
                 R.color.fui_linkColor));
     }
 
+    private PreambleHandler(Context context, FlowParameters parameters) {
+        mContext = context;
+        mFlowParameters = parameters;
+        mButtonText = NO_BUTTON;
+        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext,
+                R.color.fui_linkColor));
+    }
+
     public static void setup(Context context,
                              FlowParameters parameters,
                              @StringRes int buttonText,
+                             @StringRes int textViewText,
                              TextView textView) {
         PreambleHandler handler = new PreambleHandler(context, parameters, buttonText);
-        handler.setupCreateAccountPreamble();
+        handler.setupPreamble(textViewText);
+        handler.setPreamble(textView);
+    }
+
+    public static void setup(Context context,
+                             FlowParameters parameters,
+                             @StringRes int textViewText,
+                             TextView textView) {
+        PreambleHandler handler = new PreambleHandler(context, parameters);
+        handler.setupPreamble(textViewText);
         handler.setPreamble(textView);
     }
 
@@ -55,8 +74,9 @@ public class PreambleHandler {
         textView.setText(mBuilder);
     }
 
-    private void setupCreateAccountPreamble() {
-        String withTargets = getPreambleStringWithTargets();
+    private void setupPreamble(@StringRes int textViewText) {
+        String withTargets = (mButtonText == NO_BUTTON) ? getPreambleStringWithTargetsNoButton(
+                textViewText) : getPreambleStringWithTargets(textViewText);
         if (withTargets == null) {
             return;
         }
@@ -92,23 +112,39 @@ public class PreambleHandler {
     }
 
     @Nullable
-    private String getPreambleStringWithTargets() {
+    private String getPreambleStringWithTargets(@StringRes int textViewText) {
         boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
         boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
-
         if (hasTos && hasPp) {
-            return mContext.getString(R.string.fui_create_account_preamble_tos_and_pp,
-                                      BTN_TARGET, TOS_TARGET, PP_TARGET);
+            return mContext.getString(textViewText,
+                    BTN_TARGET, TOS_TARGET, PP_TARGET);
         } else if (hasTos) {
-            return mContext.getString(R.string.fui_create_account_preamble_tos_only,
-                                      BTN_TARGET, TOS_TARGET);
+            return mContext.getString(textViewText,
+                    BTN_TARGET, TOS_TARGET);
         } else if (hasPp) {
-            return mContext.getString(R.string.fui_create_account_preamble_pp_only,
-                                      BTN_TARGET, PP_TARGET);
-        } else {
-            return null;
+            return mContext.getString(textViewText,
+                    BTN_TARGET, PP_TARGET);
         }
+        return null;
     }
+
+    @Nullable
+    private String getPreambleStringWithTargetsNoButton(@StringRes int textViewText) {
+        boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
+        boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
+        if (hasTos && hasPp) {
+            return mContext.getString(textViewText,
+                    TOS_TARGET, PP_TARGET);
+        } else if (hasTos) {
+            return mContext.getString(textViewText,
+                    TOS_TARGET);
+        } else if (hasPp) {
+            return mContext.getString(textViewText,
+                    PP_TARGET);
+        }
+        return null;
+    }
+
 
     private class CustomTabsSpan extends ClickableSpan {
         private final String mUrl;

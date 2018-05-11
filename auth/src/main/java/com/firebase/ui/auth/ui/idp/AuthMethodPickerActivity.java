@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -42,6 +44,7 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
@@ -106,6 +109,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             }
         });
+
+        setUpTermsOfService();
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
@@ -202,6 +207,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             });
             providerHolder.addView(loginButton);
         }
+    }
+
+    private void setUpTermsOfService() {
+        TextView view = (TextView) findViewById(R.id.main_tos_and_pp);
+        PreambleHandler.setup(AuthMethodPickerActivity.this,
+                getFlowParams(),
+                R.string.fui_tos_and_pp,
+                view);
     }
 
     @Override

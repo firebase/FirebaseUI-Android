@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -42,11 +43,14 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
+import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -55,7 +59,6 @@ import java.util.Locale;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
-
     private Context mAppContext;
 
     private CountryListSpinner mCountryListSpinner;
@@ -107,15 +110,13 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         parentActivity.setTitle(getString(R.string.fui_verify_phone_number_title));
         setupCountrySpinner();
         setupSendCodeButton();
-        setupTerms();
-
         return v;
     }
 
-    private void setupTerms() {
-        final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
-        final String terms = getString(R.string.fui_sms_terms_of_service, verifyPhoneButtonText);
-        mSmsTermsText.setText(terms);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpTermsOfService(view);
     }
 
     @Override
@@ -270,6 +271,21 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         if (PhoneNumber.isCountryValid(phoneNumber)) {
             mCountryListSpinner.setSelectedForCountry(new Locale("", phoneNumber.getCountryIso()),
                     phoneNumber.getCountryCode());
+        }
+    }
+
+    private void setUpTermsOfService(View view) {
+        List<AuthUI.IdpConfig> providers = getFlowParams().providerInfo;
+        if(providers.size() > 1) {
+            final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
+            final String terms = getString(R.string.fui_sms_terms_of_service, verifyPhoneButtonText);
+            mSmsTermsText.setText(terms);
+        } else {
+            PreambleHandler.setup(getContext(),
+                    getFlowParams(),
+                    R.string.fui_verify_phone_number,
+                    R.string.fui_sms_terms_of_service_extended,
+                    view.<TextView>findViewById(R.id.send_sms_tos));
         }
     }
 

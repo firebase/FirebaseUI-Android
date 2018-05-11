@@ -13,15 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.firebase.auth.EmailAuthProvider;
+
+import java.util.List;
 
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that email.
@@ -96,6 +101,7 @@ public class CheckEmailFragment extends FragmentBase implements
         }
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
+        setUpTermsOfService(view);
     }
 
     @Override
@@ -173,6 +179,16 @@ public class CheckEmailFragment extends FragmentBase implements
         String email = mEmailEditText.getText().toString();
         if (mEmailFieldValidator.validate(email)) {
             mHandler.fetchProvider(email);
+        }
+    }
+
+    private void setUpTermsOfService(View view) {
+        List<AuthUI.IdpConfig> providers = getFlowParams().providerInfo;
+        if (providers.size() == 1) {
+            PreambleHandler.setup(getContext(),
+                    getFlowParams(),
+                    R.string.fui_tos_and_pp,
+                    view.<TextView>findViewById(R.id.email_tos_and_pp_text));
         }
     }
 }

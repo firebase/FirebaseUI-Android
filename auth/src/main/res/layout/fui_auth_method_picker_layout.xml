@@ -9,6 +9,7 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+
     <ImageView
         android:id="@+id/logo"
         style="@style/FirebaseUI.AuthMethodPicker.Logo"
@@ -26,12 +27,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.9">
+        app:layout_constraintVertical_bias="0.7">
 
         <LinearLayout
             android:id="@+id/btn_holder"
-            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder" />
-
+            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"/>
     </ScrollView>
-
+    <TextView
+        android:id="@+id/main_tos_and_pp"
+        style="@style/FirebaseUI.Text.BodyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fui_field_padding_vert"
+        android:textColor="?android:textColorTertiary"
+        android:textIsSelectable="false"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/container"/>
 </android.support.constraint.ConstraintLayout>
+
+
+

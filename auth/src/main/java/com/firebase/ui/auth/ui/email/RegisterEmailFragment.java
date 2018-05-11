@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -140,11 +141,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         // Only show the name field if required
         nameInput.setVisibility(requireName ? View.VISIBLE : View.GONE);
 
-        PreambleHandler.setup(
-                getContext(),
-                getFlowParams(),
-                R.string.fui_button_text_save,
-                view.<TextView>findViewById(R.id.create_account_text));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableCredentials) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
@@ -170,6 +166,18 @@ public class RegisterEmailFragment extends FragmentBase implements
             safeRequestFocus(mNameEditText);
         } else {
             safeRequestFocus(mEmailEditText);
+        }
+    }
+
+    private @StringRes int getTermsStringResource() {
+        boolean hasTos = !TextUtils.isEmpty(getFlowParams().termsOfServiceUrl);
+        boolean hasPp = !TextUtils.isEmpty(getFlowParams().privacyPolicyUrl);
+        if(hasTos && hasPp) {
+            return R.string.fui_create_account_preamble_tos_and_pp;
+        } else if(hasTos) {
+            return R.string.fui_create_account_preamble_tos_only;
+        } else {
+            return R.string.fui_create_account_preamble_pp_only;
         }
     }
 
