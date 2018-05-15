@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -101,7 +101,9 @@ public class CheckEmailFragment extends FragmentBase implements
         }
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
-        setUpTermsOfService(view);
+
+        TextView termsView = view.<TextView>findViewById(R.id.email_tos_and_pp_text);
+        setUpTermsOfService(termsView);
     }
 
     @Override
@@ -182,13 +184,13 @@ public class CheckEmailFragment extends FragmentBase implements
         }
     }
 
-    private void setUpTermsOfService(View view) {
-        List<AuthUI.IdpConfig> providers = getFlowParams().providerInfo;
-        if (providers.size() == 1) {
+    private void setUpTermsOfService(TextView termsText) {
+        FlowParameters flowParameters = getFlowParams();
+        if (flowParameters.isSingleProviderFlow()) {
             PreambleHandler.setup(getContext(),
-                    getFlowParams(),
-                    R.string.fui_tos_and_pp,
-                    view.<TextView>findViewById(R.id.email_tos_and_pp_text));
+                    flowParameters,
+                    flowParameters.getGlobalTermsStringResource(),
+                    termsText);
         }
     }
 }

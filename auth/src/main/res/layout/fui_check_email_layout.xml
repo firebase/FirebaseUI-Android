@@ -28,18 +28,19 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <Button
+            android:id="@+id/button_next"
+            style="@style/FirebaseUI.Button"
+            android:text="@string/fui_next_default" />
+
         <TextView
             android:id="@+id/email_tos_and_pp_text"
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:textIsSelectable="false" />
-
-        <Button
-            android:id="@+id/button_next"
-            style="@style/FirebaseUI.Button"
-            android:text="@string/fui_next_default" />
+            android:textIsSelectable="false"
+            tools:text="Terms and Privacy Policy" />
 
     </LinearLayout>
 

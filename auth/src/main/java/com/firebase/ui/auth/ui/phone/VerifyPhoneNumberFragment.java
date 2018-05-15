@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -33,7 +34,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -48,9 +48,7 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
-import com.google.firebase.auth.PhoneAuthProvider;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -116,7 +114,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setUpTermsOfService(view);
+        TextView termsText = view.<TextView>findViewById(R.id.send_sms_tos);
+        setUpTermsOfService(termsText);
     }
 
     @Override
@@ -274,18 +273,31 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         }
     }
 
-    private void setUpTermsOfService(View view) {
-        List<AuthUI.IdpConfig> providers = getFlowParams().providerInfo;
-        if(providers.size() > 1) {
-            final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
-            final String terms = getString(R.string.fui_sms_terms_of_service, verifyPhoneButtonText);
-            mSmsTermsText.setText(terms);
-        } else {
+    private void setUpTermsOfService(TextView termsText) {
+        FlowParameters flowParameters = getFlowParams();
+        if (flowParameters.isSingleProviderFlow()) {
             PreambleHandler.setup(getContext(),
-                    getFlowParams(),
+                    flowParameters,
                     R.string.fui_verify_phone_number,
-                    R.string.fui_sms_terms_of_service_extended,
-                    view.<TextView>findViewById(R.id.send_sms_tos));
+                    getTermsSmsStringResource(),
+                    termsText);
+        } else {
+            final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
+            final String terms = getString(R.string.fui_sms_terms_of_service,
+                    verifyPhoneButtonText);
+            mSmsTermsText.setText(terms);
+        }
+    }
+
+    private @StringRes int getTermsSmsStringResource() {
+        boolean hasTos = !TextUtils.isEmpty(getFlowParams().termsOfServiceUrl);
+        boolean hasPp = !TextUtils.isEmpty(getFlowParams().privacyPolicyUrl);
+        if (hasTos && hasPp) {
+            return R.string.fui_sms_terms_of_service_and_privacy_policy_extended;
+        } else if (hasTos) {
+            return R.string.fui_sms_terms_of_service_only_extended;
+        } else {
+            return R.string.fui_sms_privacy_policy_only_extended;
         }
     }
 

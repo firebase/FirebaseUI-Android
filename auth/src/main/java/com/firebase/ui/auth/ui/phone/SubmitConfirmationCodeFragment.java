@@ -36,7 +36,6 @@ import com.firebase.ui.auth.util.CustomCountDownTimer;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
 
 /**
  * Display confirmation code to verify phone numbers input in {{@link VerifyPhoneNumberFragment}}

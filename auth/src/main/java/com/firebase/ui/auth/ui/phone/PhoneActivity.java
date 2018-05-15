@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -36,6 +37,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
@@ -103,6 +105,7 @@ public class PhoneActivity extends AppCompatBase {
                 .replace(R.id.fragment_verify_phone, fragment, VerifyPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
+        setUpTermsOfServiceFooter();
     }
 
     @Override
@@ -405,5 +408,15 @@ public class PhoneActivity extends AppCompatBase {
     private SubmitConfirmationCodeFragment getSubmitConfirmationCodeFragment() {
         return (SubmitConfirmationCodeFragment) getSupportFragmentManager().findFragmentByTag
                 (SubmitConfirmationCodeFragment.TAG);
+    }
+
+    private void setUpTermsOfServiceFooter() {
+        FlowParameters flowParameters = getFlowParams();
+        if(!flowParameters.isSingleProviderFlow()) {
+            PreambleHandler.setup(PhoneActivity.this,
+                    flowParameters,
+                    flowParameters.getGlobalTermsFooterStringResource(),
+                    (TextView) findViewById(R.id.email_footer_tos_and_pp_text));
+        }
     }
 }

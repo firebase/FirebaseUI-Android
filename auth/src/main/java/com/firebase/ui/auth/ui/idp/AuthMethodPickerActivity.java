@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -210,11 +209,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     }
 
     private void setUpTermsOfService() {
-        TextView view = (TextView) findViewById(R.id.main_tos_and_pp);
+        TextView termsText = (TextView) findViewById(R.id.main_tos_and_pp);
+        FlowParameters flowParameters = getFlowParams();
         PreambleHandler.setup(AuthMethodPickerActivity.this,
-                getFlowParams(),
-                R.string.fui_tos_and_pp,
-                view);
+                flowParameters,
+                flowParameters.getGlobalTermsStringResource(),
+                termsText);
     }
 
     @Override

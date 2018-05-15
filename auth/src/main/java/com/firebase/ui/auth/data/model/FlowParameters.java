@@ -20,9 +20,12 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
 
@@ -128,4 +131,24 @@ public class FlowParameters implements Parcelable {
             return new FlowParameters[size];
         }
     };
+
+    public boolean isSingleProviderFlow() {
+        return providerInfo.size() == 1;
+    }
+
+    public @StringRes int getGlobalTermsStringResource() {
+        boolean hasTos = !TextUtils.isEmpty(termsOfServiceUrl);
+        boolean hasPp = !TextUtils.isEmpty(privacyPolicyUrl);
+        if(hasTos && hasPp) {
+            return R.string.fui_tos_and_pp;
+        } else if(hasTos) {
+            return R.string.fui_tos_only;
+        } else {
+            return R.string.fui_pp_only;
+        }
+    }
+
+    public @StringRes int getGlobalTermsFooterStringResource() {
+        return R.string.fui_tos_and_pp_footer;
+    }
 }

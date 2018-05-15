@@ -22,6 +22,7 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -32,6 +33,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.EmailAuthProvider;
 
@@ -69,6 +71,8 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
                 .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
+
+        setUpTermsOfServiceFooter();
     }
 
     @Override
@@ -129,5 +133,15 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     private void setSlideAnimation() {
         // Make the next activity slide in
         overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
+    }
+
+    private void setUpTermsOfServiceFooter() {
+        FlowParameters flowParameters = getFlowParams();
+        if(!flowParameters.isSingleProviderFlow()) {
+            PreambleHandler.setup(EmailActivity.this,
+                    flowParameters,
+                    flowParameters.getGlobalTermsFooterStringResource(),
+                    (TextView) findViewById(R.id.email_footer_tos_and_pp_text));
+        }
     }
 }

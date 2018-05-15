@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -23,7 +21,6 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
@@ -166,18 +163,6 @@ public class RegisterEmailFragment extends FragmentBase implements
             safeRequestFocus(mNameEditText);
         } else {
             safeRequestFocus(mEmailEditText);
-        }
-    }
-
-    private @StringRes int getTermsStringResource() {
-        boolean hasTos = !TextUtils.isEmpty(getFlowParams().termsOfServiceUrl);
-        boolean hasPp = !TextUtils.isEmpty(getFlowParams().privacyPolicyUrl);
-        if(hasTos && hasPp) {
-            return R.string.fui_create_account_preamble_tos_and_pp;
-        } else if(hasTos) {
-            return R.string.fui_create_account_preamble_tos_only;
-        } else {
-            return R.string.fui_create_account_preamble_pp_only;
         }
     }
 

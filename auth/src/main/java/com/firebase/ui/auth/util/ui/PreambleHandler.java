@@ -56,7 +56,7 @@ public class PreambleHandler {
                              @StringRes int textViewText,
                              TextView textView) {
         PreambleHandler handler = new PreambleHandler(context, parameters, buttonText);
-        handler.setupPreamble(textViewText);
+        handler.setUpPreamble(textViewText);
         handler.setPreamble(textView);
     }
 
@@ -65,7 +65,7 @@ public class PreambleHandler {
                              @StringRes int textViewText,
                              TextView textView) {
         PreambleHandler handler = new PreambleHandler(context, parameters);
-        handler.setupPreamble(textViewText);
+        handler.setUpPreamble(textViewText);
         handler.setPreamble(textView);
     }
 
@@ -74,7 +74,7 @@ public class PreambleHandler {
         textView.setText(mBuilder);
     }
 
-    private void setupPreamble(@StringRes int textViewText) {
+    private void setUpPreamble(@StringRes int textViewText) {
         String withTargets = (mButtonText == NO_BUTTON) ? getPreambleStringWithTargetsNoButton(
                 textViewText) : getPreambleStringWithTargets(textViewText);
         if (withTargets == null) {
