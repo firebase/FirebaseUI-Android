@@ -18,6 +18,6 @@ project.ext {
     supportLibraryVersion = '27.1.1'
     architectureVersion = '1.1.1'
     kotlinVersion = '1.2.40'
-    pagingVersion = '1.0.0-beta1'
+    pagingVersion = '1.0.0'
     constraintVersion = '1.1.0'
 }
