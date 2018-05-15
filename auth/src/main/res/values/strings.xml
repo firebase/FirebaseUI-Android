@@ -5,11 +5,12 @@
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
-    <string name="fui_tos_and_pp" translation_description="Global ToS and Privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%2$s</xliff:g>.</string>
-    <string name="fui_tos_only" translation_description="Global ToS and Privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%1$s</xliff:g>.</string>
-    <string name="fui_pp_only" translation_description="Global ToS and Privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%1$s</xliff:g>.</string>
-    <string name="fui_tos_and_pp_footer" translation_description="Global ToS and Privacy footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="">%1$s</xliff:g> <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%2$s</xliff:g></string>
-
+    <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
+    <string name="fui_tos_only" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g>.</string>
+    <string name="fui_pp_only" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%1$s</xliff:g>.</string>
+    <string name="fui_tos_and_pp_footer" translation_description="Global ToS and Privacy policy footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="Footer ToS text">%1$s</xliff:g> \u00A0 \u00A0 <xliff:g example="https://google.com/privacy" id="pp" translation_description="Footer privacy policy text">%2$s</xliff:g></string>
+    <string name="fui_tos_footer" translation_description="Global ToS footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="Footer ToS only text">%1$s</xliff:g> </string>
+    <string name="fui_pp_footer" translation_description="Global privacy policy footer"><xliff:g example="https://google.com/privacy" id="pp" translation_description="Footer privacy policy only text">%1$s</xliff:g></string>
 
     <!-- Provider -->
     <string name="fui_idp_name_google">Google</string>
@@ -108,5 +109,4 @@
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%2$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%3$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
     <string name="fui_sms_terms_of_service_only_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%2$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
     <string name="fui_sms_privacy_policy_only_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, you are indicating that you accept our <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%2$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
-
 </resources>

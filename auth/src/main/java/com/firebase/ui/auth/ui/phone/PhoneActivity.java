@@ -28,7 +28,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -37,7 +36,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
@@ -93,7 +91,8 @@ public class PhoneActivity extends AppCompatBase {
             mPhoneNumber = savedInstanceState.getString(KEY_VERIFICATION_PHONE);
 
             if (savedInstanceState.getSerializable(KEY_STATE) != null) {
-                mVerificationState = (VerificationState) savedInstanceState.getSerializable(KEY_STATE);
+                mVerificationState = (VerificationState) savedInstanceState.getSerializable(
+                        KEY_STATE);
             }
             return;
         }
@@ -105,7 +104,6 @@ public class PhoneActivity extends AppCompatBase {
                 .replace(R.id.fragment_verify_phone, fragment, VerifyPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
-        setUpTermsOfServiceFooter();
     }
 
     @Override
@@ -168,7 +166,8 @@ public class PhoneActivity extends AppCompatBase {
             // See: https://github.com/firebase/FirebaseUI-Android/issues/922
             Log.w(PHONE_VERIFICATION_LOG_TAG,
                     String.format("submitConfirmationCode: mVerificationId is %s ; " +
-                            "confirmationCode is %s", TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
+                                    "confirmationCode is %s",
+                            TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
                             TextUtils.isEmpty(confirmationCode) ? "empty" : "not empty"));
             return;
         }
@@ -314,7 +313,8 @@ public class PhoneActivity extends AppCompatBase {
         String s = getString(messageId);
         mAlertDialog = new AlertDialog.Builder(this)
                 .setMessage(s)
-                .setPositiveButton(R.string.fui_incorrect_code_dialog_positive_button_text, onClickListener)
+                .setPositiveButton(R.string.fui_incorrect_code_dialog_positive_button_text,
+                        onClickListener)
                 .show();
     }
 
@@ -354,7 +354,8 @@ public class PhoneActivity extends AppCompatBase {
                                             R.string.fui_incorrect_code_dialog_body,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
                                                     getSubmitConfirmationCodeFragment()
                                                             .setConfirmationCode("");
                                                 }
@@ -365,7 +366,8 @@ public class PhoneActivity extends AppCompatBase {
                                             R.string.fui_error_session_expired,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
                                                     getSubmitConfirmationCodeFragment()
                                                             .setConfirmationCode("");
                                                 }
@@ -408,15 +410,5 @@ public class PhoneActivity extends AppCompatBase {
     private SubmitConfirmationCodeFragment getSubmitConfirmationCodeFragment() {
         return (SubmitConfirmationCodeFragment) getSupportFragmentManager().findFragmentByTag
                 (SubmitConfirmationCodeFragment.TAG);
-    }
-
-    private void setUpTermsOfServiceFooter() {
-        FlowParameters flowParameters = getFlowParams();
-        if(!flowParameters.isSingleProviderFlow()) {
-            PreambleHandler.setup(PhoneActivity.this,
-                    flowParameters,
-                    flowParameters.getGlobalTermsFooterStringResource(),
-                    (TextView) findViewById(R.id.email_footer_tos_and_pp_text));
-        }
     }
 }

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -19,6 +20,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
@@ -78,7 +80,9 @@ public class RegisterEmailFragment extends FragmentBase implements
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 startSaveCredentials(
-                        mHandler.getCurrentUser(), response, mPasswordEditText.getText().toString());
+                        mHandler.getCurrentUser(),
+                        response,
+                        mPasswordEditText.getText().toString());
             }
 
             @Override
@@ -164,6 +168,9 @@ public class RegisterEmailFragment extends FragmentBase implements
         } else {
             safeRequestFocus(mEmailEditText);
         }
+
+        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
     }
 
     private void safeRequestFocus(final View v) {
@@ -226,11 +233,11 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
             mHandler.startSignIn(new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
-                            .setName(name)
-                            .setPhotoUri(mUser.getPhotoUri())
-                            .build())
-                    .build(),
+                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                    .setName(name)
+                                    .setPhotoUri(mUser.getPhotoUri())
+                                    .build())
+                            .build(),
                     password);
         }
     }

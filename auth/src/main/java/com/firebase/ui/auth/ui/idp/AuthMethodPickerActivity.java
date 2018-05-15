@@ -43,7 +43,7 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
@@ -109,7 +109,10 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
         });
 
-        setUpTermsOfService();
+        TextView termsText = findViewById(R.id.main_tos_and_pp);
+        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(AuthMethodPickerActivity.this,
+                getFlowParams(),
+                termsText);
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
@@ -206,15 +209,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             });
             providerHolder.addView(loginButton);
         }
-    }
-
-    private void setUpTermsOfService() {
-        TextView termsText = (TextView) findViewById(R.id.main_tos_and_pp);
-        FlowParameters flowParameters = getFlowParams();
-        PreambleHandler.setup(AuthMethodPickerActivity.this,
-                flowParameters,
-                flowParameters.getGlobalTermsStringResource(),
-                termsText);
     }
 
     @Override

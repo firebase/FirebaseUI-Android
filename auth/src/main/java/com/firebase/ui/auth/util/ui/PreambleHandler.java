@@ -42,12 +42,11 @@ public class PreambleHandler {
                 R.color.fui_linkColor));
     }
 
-    private PreambleHandler(Context context, FlowParameters parameters) {
-        mContext = context;
-        mFlowParameters = parameters;
-        mButtonText = NO_BUTTON;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext,
-                R.color.fui_linkColor));
+    public static void setup(Context context,
+                             FlowParameters parameters,
+                             @StringRes int textViewText,
+                             TextView textView) {
+        setup(context, parameters, NO_BUTTON, textViewText, textView);
     }
 
     public static void setup(Context context,
@@ -56,16 +55,7 @@ public class PreambleHandler {
                              @StringRes int textViewText,
                              TextView textView) {
         PreambleHandler handler = new PreambleHandler(context, parameters, buttonText);
-        handler.setUpPreamble(textViewText);
-        handler.setPreamble(textView);
-    }
-
-    public static void setup(Context context,
-                             FlowParameters parameters,
-                             @StringRes int textViewText,
-                             TextView textView) {
-        PreambleHandler handler = new PreambleHandler(context, parameters);
-        handler.setUpPreamble(textViewText);
+        handler.setupPreamble(textViewText);
         handler.setPreamble(textView);
     }
 
@@ -74,9 +64,8 @@ public class PreambleHandler {
         textView.setText(mBuilder);
     }
 
-    private void setUpPreamble(@StringRes int textViewText) {
-        String withTargets = (mButtonText == NO_BUTTON) ? getPreambleStringWithTargetsNoButton(
-                textViewText) : getPreambleStringWithTargets(textViewText);
+    private void setupPreamble(@StringRes int textViewText) {
+        String withTargets = getPreambleStringWithTargets(textViewText, mButtonText != NO_BUTTON);
         if (withTargets == null) {
             return;
         }
@@ -112,18 +101,22 @@ public class PreambleHandler {
     }
 
     @Nullable
-    private String getPreambleStringWithTargets(@StringRes int textViewText) {
-        boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
-        boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
-        if (hasTos && hasPp) {
-            return mContext.getString(textViewText,
-                    BTN_TARGET, TOS_TARGET, PP_TARGET);
-        } else if (hasTos) {
-            return mContext.getString(textViewText,
-                    BTN_TARGET, TOS_TARGET);
-        } else if (hasPp) {
-            return mContext.getString(textViewText,
-                    BTN_TARGET, PP_TARGET);
+    private String getPreambleStringWithTargets(@StringRes int textViewText, boolean hasButton) {
+        boolean termsOfServiceUrlProvided = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
+        boolean privacyPolicyUrlProvided = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
+        if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
+            Object[] targets = hasButton ?
+                    new Object[]{BTN_TARGET, TOS_TARGET, PP_TARGET}
+                    : new Object[]{TOS_TARGET, PP_TARGET};
+            return mContext.getString(textViewText, targets);
+        } else if (termsOfServiceUrlProvided) {
+            Object[] targets = hasButton ?
+                    new Object[]{BTN_TARGET, TOS_TARGET} : new Object[]{TOS_TARGET};
+            return mContext.getString(textViewText, targets);
+        } else if (privacyPolicyUrlProvided) {
+            Object[] targets = hasButton ?
+                    new Object[]{BTN_TARGET, PP_TARGET} : new Object[]{PP_TARGET};
+            return mContext.getString(textViewText, targets);
         }
         return null;
     }

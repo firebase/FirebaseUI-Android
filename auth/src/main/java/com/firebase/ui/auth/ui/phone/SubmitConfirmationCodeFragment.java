@@ -34,6 +34,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.CustomCountDownTimer;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 
@@ -71,8 +72,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable
+                                     Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
 
@@ -91,6 +94,13 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         setupSubmitConfirmationCodeButton();
         setupResendConfirmationCodeTextView(phoneNumber);
         return v;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
     }
 
     @Override

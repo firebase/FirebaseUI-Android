@@ -20,13 +20,11 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.firebase.auth.EmailAuthProvider;
-
-import java.util.List;
 
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that email.
@@ -102,8 +100,18 @@ public class CheckEmailFragment extends FragmentBase implements
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
 
-        TextView termsView = view.<TextView>findViewById(R.id.email_tos_and_pp_text);
-        setUpTermsOfService(termsView);
+        TextView termsText = view.<TextView>findViewById(R.id.email_tos_and_pp_text);
+        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+        FlowParameters flowParameters = getFlowParams();
+        if (flowParameters.isSingleProviderFlow()) {
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(getContext(),
+                    getFlowParams(),
+                    termsText);
+        } else {
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
+                    getFlowParams(),
+                    footerText);
+        }
     }
 
     @Override
@@ -181,16 +189,6 @@ public class CheckEmailFragment extends FragmentBase implements
         String email = mEmailEditText.getText().toString();
         if (mEmailFieldValidator.validate(email)) {
             mHandler.fetchProvider(email);
-        }
-    }
-
-    private void setUpTermsOfService(TextView termsText) {
-        FlowParameters flowParameters = getFlowParams();
-        if (flowParameters.isSingleProviderFlow()) {
-            PreambleHandler.setup(getContext(),
-                    flowParameters,
-                    flowParameters.getGlobalTermsStringResource(),
-                    termsText);
         }
     }
 }
