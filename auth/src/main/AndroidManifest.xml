@@ -39,13 +39,13 @@
             android:name=".ui.email.EmailActivity"
             android:label="@string/fui_sign_in_default"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.phone.PhoneActivity"
             android:label="@string/fui_sign_in_with_phone_number"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan|stateAlwaysVisible" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
             android:name=".ui.idp.WelcomeBackIdpPrompt"

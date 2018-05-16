@@ -146,7 +146,13 @@ public class RegisterEmailFragment extends FragmentBase implements
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
-        if (savedInstanceState != null) { return; }
+        TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+
+        // WARNING: Nothing below this line will be executed on rotation
+        if (savedInstanceState != null) {
+            return;
+        }
 
         // If email is passed in, fill in the field and move down to the name field.
         String email = mUser.getEmail();
@@ -168,9 +174,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         } else {
             safeRequestFocus(mEmailEditText);
         }
-
-        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
-        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
     }
 
     private void safeRequestFocus(final View v) {
