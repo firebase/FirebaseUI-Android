@@ -21,10 +21,13 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class InvisibleActivityBase extends HelperActivityBase {
 
+    // Minimum time that the spinner will stay on screen, once it is shown.
     private static final long MIN_SPINNER_MS = 750;
 
     private Handler mHandler = new Handler();
     private MaterialProgressBar mProgressBar;
+
+    // Last time that the progress bar was actually shown
     private long mLastShownTime = 0;
 
     @Override
@@ -80,6 +83,13 @@ public class InvisibleActivityBase extends HelperActivityBase {
         });
     }
 
+    /**
+     * For certain actions (like finishing or hiding the progress dialog) we want to make sure
+     * that we have shown the progress state for at least MIN_SPINNER_MS to prevent flickering.
+     *
+     * This method performs some action after the window has passed, or immediately if we have
+     * already waited longer than that.
+     */
     private void doAfterTimeout(Runnable runnable) {
         long currentTime = System.currentTimeMillis();
         long diff = currentTime - mLastShownTime;
