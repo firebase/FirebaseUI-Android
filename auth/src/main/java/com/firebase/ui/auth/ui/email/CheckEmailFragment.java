@@ -100,14 +100,16 @@ public class CheckEmailFragment extends FragmentBase implements
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
 
-        TextView termsText = view.<TextView>findViewById(R.id.email_tos_and_pp_text);
-        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+        TextView termsText = view.findViewById(R.id.email_tos_and_pp_text);
+        TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
         FlowParameters flowParameters = getFlowParams();
+
         if (flowParameters.isSingleProviderFlow()) {
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(getContext(),
                     getFlowParams(),
                     termsText);
         } else {
+            termsText.setVisibility(View.GONE);
             PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
                     getFlowParams(),
                     footerText);

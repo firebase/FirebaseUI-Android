@@ -53,20 +53,14 @@
                 android:textIsSelectable="false"
                 app:layout_constraintTop_toBottomOf="@+id/send_code" />
 
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter"
+                app:layout_constraintTop_toBottomOf="@+id/send_sms_tos" />
+
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
 
-    <TextView
-        android:id="@+id/email_footer_tos_and_pp_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fui_field_padding_vert"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        android:gravity="end"
-        android:textIsSelectable="true"
-        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>
 

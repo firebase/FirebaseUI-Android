@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -95,24 +94,19 @@
                 tools:text="Resend code" />
 
             <android.support.constraint.Barrier
+                android:id="@+id/resend_barrier"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="ticker,resend_code" />
 
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                app:layout_constraintTop_toBottomOf="@+id/resend_barrier"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
         </android.support.constraint.ConstraintLayout>
 
     </ScrollView>
 
-    <TextView
-        android:id="@+id/email_footer_tos_and_pp_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fui_field_padding_vert"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        android:gravity="end"
-        android:textIsSelectable="true"
-        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>
