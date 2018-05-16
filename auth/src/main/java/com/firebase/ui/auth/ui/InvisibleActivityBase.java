@@ -10,10 +10,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import com.firebase.ui.auth.R;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Base classes for activities that are just simple overlays.
@@ -21,10 +21,10 @@ import com.firebase.ui.auth.R;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class InvisibleActivityBase extends HelperActivityBase {
 
-    private static final long MIN_SPINNER_MS = 1000;
+    private static final long MIN_SPINNER_MS = 750;
 
     private Handler mHandler = new Handler();
-    private ProgressBar mProgressBar;
+    private MaterialProgressBar mProgressBar;
     private long mLastShownTime = 0;
 
     @Override
@@ -33,9 +33,9 @@ public class InvisibleActivityBase extends HelperActivityBase {
         setContentView(R.layout.fui_activity_invisible);
 
         // Create an indeterminate, circular progress bar in the app's theme
-        mProgressBar = new ProgressBar(new ContextThemeWrapper(this, getFlowParams().themeId));
+        mProgressBar = new MaterialProgressBar(new ContextThemeWrapper(this, getFlowParams().themeId));
         mProgressBar.setIndeterminate(true);
-        mProgressBar.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.GONE);
 
         // Set bar to float in the center
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
@@ -64,7 +64,7 @@ public class InvisibleActivityBase extends HelperActivityBase {
             @Override
             public void run() {
                 mLastShownTime = 0;
-                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -83,6 +83,10 @@ public class InvisibleActivityBase extends HelperActivityBase {
     private void doAfterTimeout(Runnable runnable) {
         long currentTime = System.currentTimeMillis();
         long diff = currentTime - mLastShownTime;
+
+        // 'diff' is how long it's been since we showed the spinner, so in the
+        // case where diff is greater than our minimum spinner duration then our
+        // remaining wait time is 0.
         long remaining = Math.max(MIN_SPINNER_MS - diff, 0);
 
         mHandler.postDelayed(runnable, remaining);

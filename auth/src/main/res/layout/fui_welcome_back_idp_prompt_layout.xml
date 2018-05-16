@@ -13,7 +13,6 @@
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
             android:id="@+id/top_progress_bar"
             style="@style/FirebaseUI.TopProgressBar"
-            android:visibility="invisible"
             tools:visibility="visible" />
 
         <LinearLayout
