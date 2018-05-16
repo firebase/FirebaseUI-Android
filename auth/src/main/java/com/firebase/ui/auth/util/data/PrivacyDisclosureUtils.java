@@ -13,6 +13,7 @@ import com.firebase.ui.auth.util.ui.PreambleHandler;
 public class PrivacyDisclosureUtils {
 
     private static final int NO_TOS_OR_PP = -1;
+
     public static void setupTermsOfServiceAndPrivacyPolicyText(Context context,
                                                                FlowParameters flowParameters,
                                                                TextView termsText) {
@@ -33,21 +34,16 @@ public class PrivacyDisclosureUtils {
 
     public static void setupTermsOfServiceAndPrivacyPolicySmsText(Context context,
                                                                   FlowParameters flowParameters,
-                                                                  TextView termsText,
-                                                                  String multipleProviderFlowSmsMsg) {
-        if (flowParameters.isSingleProviderFlow()) {
-            PreambleHandler.setup(context,
-                    flowParameters,
-                    R.string.fui_verify_phone_number,
-                    getTermsSmsStringResource(flowParameters),
-                    termsText);
-        } else {
-            termsText.setText(multipleProviderFlowSmsMsg);
-        }
+                                                                  TextView termsText) {
+        PreambleHandler.setup(context,
+                flowParameters,
+                R.string.fui_verify_phone_number,
+                getTermsSmsStringResource(flowParameters),
+                termsText);
     }
 
-    private static @StringRes
-    int getGlobalTermsStringResource(FlowParameters flowParameters) {
+    @StringRes
+    private static int getGlobalTermsStringResource(FlowParameters flowParameters) {
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
@@ -60,8 +56,8 @@ public class PrivacyDisclosureUtils {
         return NO_TOS_OR_PP;
     }
 
-    private static @StringRes
-    int getGlobalTermsFooterStringResource(FlowParameters flowParameters) {
+    @StringRes
+    private static int getGlobalTermsFooterStringResource(FlowParameters flowParameters) {
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
@@ -74,8 +70,8 @@ public class PrivacyDisclosureUtils {
         return NO_TOS_OR_PP; // add constant
     }
 
-    private static @StringRes
-    int getTermsSmsStringResource(FlowParameters flowParameters) {
+    @StringRes
+    private static int getTermsSmsStringResource(FlowParameters flowParameters) {
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {

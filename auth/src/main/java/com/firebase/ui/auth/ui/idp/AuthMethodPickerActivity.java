@@ -110,7 +110,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         });
 
         TextView termsText = findViewById(R.id.main_tos_and_pp);
-        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(AuthMethodPickerActivity.this,
+        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
                 getFlowParams(),
                 termsText);
     }

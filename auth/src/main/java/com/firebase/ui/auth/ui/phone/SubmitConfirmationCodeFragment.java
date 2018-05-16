@@ -74,8 +74,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
-                             @Nullable
-                                     Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
 

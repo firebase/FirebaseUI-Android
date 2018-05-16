@@ -76,8 +76,9 @@ android {
         disable 'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
                 'IconExpectedSize',
                 'InvalidPackage', // Firestore uses GRPC which makes lint mad
-                'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
-                'MissingTranslation' // TODO remove in future PR
+                'NewerVersionAvailable', 'GradleDependency', // For reproducible builds
+                'MissingTranslation', // TODO remove in future PR
+                'UnusedResources' // TODO remove in future PR
 
         baseline file("$configDir/lint-baseline.xml")
         checkAllWarnings true
