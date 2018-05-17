@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        tools:visibility="visible" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-            android:id="@+id/top_progress_bar"
-            style="@style/FirebaseUI.TopProgressBar"
-            tools:visibility="visible" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             style="@style/FirebaseUI.WrapperStyle"
@@ -69,23 +73,19 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/create_account_text"
-                style="@style/FirebaseUI.Text.BodyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fui_field_padding_vert"
-                android:textIsSelectable="false"
-                tools:text="@string/fui_create_account_preamble_tos_and_pp" />
-
             <Button
                 android:id="@+id/button_create"
                 style="@style/FirebaseUI.Button"
                 android:text="@string/fui_button_text_save"
                 tools:ignore="RtlHardcoded" />
 
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+</LinearLayout>
+

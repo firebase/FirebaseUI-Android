@@ -91,7 +91,8 @@ public class PhoneActivity extends AppCompatBase {
             mPhoneNumber = savedInstanceState.getString(KEY_VERIFICATION_PHONE);
 
             if (savedInstanceState.getSerializable(KEY_STATE) != null) {
-                mVerificationState = (VerificationState) savedInstanceState.getSerializable(KEY_STATE);
+                mVerificationState = (VerificationState) savedInstanceState.getSerializable(
+                        KEY_STATE);
             }
             return;
         }
@@ -165,7 +166,8 @@ public class PhoneActivity extends AppCompatBase {
             // See: https://github.com/firebase/FirebaseUI-Android/issues/922
             Log.w(PHONE_VERIFICATION_LOG_TAG,
                     String.format("submitConfirmationCode: mVerificationId is %s ; " +
-                            "confirmationCode is %s", TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
+                                    "confirmationCode is %s",
+                            TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
                             TextUtils.isEmpty(confirmationCode) ? "empty" : "not empty"));
             return;
         }
@@ -311,7 +313,8 @@ public class PhoneActivity extends AppCompatBase {
         String s = getString(messageId);
         mAlertDialog = new AlertDialog.Builder(this)
                 .setMessage(s)
-                .setPositiveButton(R.string.fui_incorrect_code_dialog_positive_button_text, onClickListener)
+                .setPositiveButton(R.string.fui_incorrect_code_dialog_positive_button_text,
+                        onClickListener)
                 .show();
     }
 
@@ -351,7 +354,8 @@ public class PhoneActivity extends AppCompatBase {
                                             R.string.fui_incorrect_code_dialog_body,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
                                                     getSubmitConfirmationCodeFragment()
                                                             .setConfirmationCode("");
                                                 }
@@ -362,7 +366,8 @@ public class PhoneActivity extends AppCompatBase {
                                             R.string.fui_error_session_expired,
                                             new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
                                                     getSubmitConfirmationCodeFragment()
                                                             .setConfirmationCode("");
                                                 }
