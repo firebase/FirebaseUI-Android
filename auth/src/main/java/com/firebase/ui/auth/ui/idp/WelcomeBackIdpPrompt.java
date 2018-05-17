@@ -25,6 +25,8 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -51,6 +53,9 @@ import com.google.firebase.auth.TwitterAuthProvider;
 public class WelcomeBackIdpPrompt extends AppCompatBase {
     private ProviderSignInBase<?> mProvider;
 
+    private Button mDoneButton;
+    private ProgressBar mProgressBar;
+
     public static Intent createIntent(
             Context context, FlowParameters flowParams, User existingUser) {
         return createIntent(context, flowParams, existingUser, null);
@@ -70,6 +75,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
+
+        mDoneButton = findViewById(R.id.welcome_back_idp_button);
+        mProgressBar = findViewById(R.id.top_progress_bar);
 
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
@@ -122,8 +130,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 throw new IllegalStateException("Invalid provider id: " + providerId);
         }
 
-        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 handler.startSignIn(response);
@@ -140,15 +147,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 existingUser.getEmail(),
                 getString(providerName)));
 
-        findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
+        mDoneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 mProvider.startSignIn(WelcomeBackIdpPrompt.this);
             }
         });
 
-        handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 finish(RESULT_OK, response.toIntent());
@@ -165,5 +171,17 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mProvider.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mDoneButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mDoneButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

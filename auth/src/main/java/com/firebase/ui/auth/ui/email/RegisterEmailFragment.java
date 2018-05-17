@@ -11,7 +11,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -43,6 +45,9 @@ public class RegisterEmailFragment extends FragmentBase implements
     public static final String TAG = "RegisterEmailFragment";
 
     private EmailProviderResponseHandler mHandler;
+
+    private Button mNextButton;
+    private ProgressBar mProgressBar;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -112,6 +117,9 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mNextButton = view.findViewById(R.id.button_create);
+        mProgressBar = view.findViewById(R.id.top_progress_bar);
+
         mEmailEditText = view.findViewById(R.id.email);
         mNameEditText = view.findViewById(R.id.name);
         mPasswordEditText = view.findViewById(R.id.password);
@@ -137,7 +145,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailEditText.setOnFocusChangeListener(this);
         mNameEditText.setOnFocusChangeListener(this);
         mPasswordEditText.setOnFocusChangeListener(this);
-        view.findViewById(R.id.button_create).setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
 
         // Only show the name field if required
         nameInput.setVisibility(requireName ? View.VISIBLE : View.GONE);
@@ -224,6 +232,18 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onDonePressed() {
         validateAndRegisterUser();
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mNextButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mNextButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     private void validateAndRegisterUser() {

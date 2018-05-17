@@ -50,6 +50,9 @@ dependencies {
     implementation "com.android.support:customtabs:$supportLibraryVersion"
     compileOnly("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
+    // Material progress bar for loading indicators
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.4.2'
+
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
     testImplementation 'org.mockito:mockito-core:2.15.+'

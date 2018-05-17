@@ -9,6 +9,12 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/logo"
         style="@style/FirebaseUI.AuthMethodPicker.Logo"

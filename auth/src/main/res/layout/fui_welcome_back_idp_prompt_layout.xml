@@ -6,28 +6,40 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        style="@style/FirebaseUI.WrapperStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/FirebaseUI.Text.Heading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fui_welcome_back_idp_header" />
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/top_progress_bar"
+            style="@style/FirebaseUI.TopProgressBar"
+            tools:visibility="visible" />
 
-        <TextView
-            android:id="@+id/welcome_back_idp_prompt"
-            style="@style/FirebaseUI.Text.BodyText"
-            android:layout_width="match_parent"
+        <LinearLayout
+            style="@style/FirebaseUI.WrapperStyle"
             android:layout_height="wrap_content"
-            android:textIsSelectable="false"
-            tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/welcome_back_idp_button"
-            style="@style/FirebaseUI.Button"
-            android:text="@string/fui_sign_in_default" />
+            <TextView
+                style="@style/FirebaseUI.Text.Heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fui_welcome_back_idp_header" />
+
+            <TextView
+                android:id="@+id/welcome_back_idp_prompt"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="false"
+                tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp" />
+
+            <Button
+                android:id="@+id/welcome_back_idp_button"
+                style="@style/FirebaseUI.Button"
+                android:text="@string/fui_sign_in_default" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
