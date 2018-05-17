@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:paddingBottom="16dp"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             style="@style/FirebaseUI.WrapperStyle"
