@@ -1,38 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        style="@style/FirebaseUI.WrapperStyle"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/email_layout"
-            style="@style/FirebaseUI.TextInputLayout.EmailField"
-            android:layout_width="match_parent"
+        <LinearLayout
+            style="@style/FirebaseUI.WrapperStyle"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:transitionGroup="true"
-            android:transitionName="@string/fui_email_field_name"
-            app:errorEnabled="true"
-            tools:ignore="UnusedAttribute">
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/email"
-                style="@style/FirebaseUI.TextInputEditText.EmailField" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/email_layout"
+                style="@style/FirebaseUI.TextInputLayout.EmailField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:transitionGroup="true"
+                android:transitionName="@string/fui_email_field_name"
+                app:errorEnabled="true"
+                tools:ignore="UnusedAttribute">
 
-        </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/email"
+                    style="@style/FirebaseUI.TextInputEditText.EmailField" />
 
-        <Button
-            android:id="@+id/button_next"
-            style="@style/FirebaseUI.Button"
-            android:text="@string/fui_next_default" />
+            </android.support.design.widget.TextInputLayout>
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/button_next"
+                style="@style/FirebaseUI.Button"
+                android:text="@string/fui_next_default" />
 
-</ScrollView>
+            <!-- Terms of service and Privacy Policy message that is displayed to the user if -->
+            <!-- email is the only provider -->
+            <TextView
+                android:id="@+id/email_tos_and_pp_text"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:textIsSelectable="false"
+                tools:text="Terms and Privacy Policy" />
+
+            <!-- Terms of service and Privacy Policy footer links that is displayed when email -->
+            <!-- is not the only provider -->
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

@@ -41,6 +41,7 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -55,7 +56,6 @@ import java.util.Locale;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
-
     private Context mAppContext;
 
     private CountryListSpinner mCountryListSpinner;
@@ -107,15 +107,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         parentActivity.setTitle(getString(R.string.fui_verify_phone_number_title));
         setupCountrySpinner();
         setupSendCodeButton();
-        setupTerms();
-
         return v;
     }
 
-    private void setupTerms() {
-        final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
-        final String terms = getString(R.string.fui_sms_terms_of_service, verifyPhoneButtonText);
-        mSmsTermsText.setText(terms);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+        setupPrivacyDisclosures(footerText);
     }
 
     @Override
@@ -270,6 +269,24 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         if (PhoneNumber.isCountryValid(phoneNumber)) {
             mCountryListSpinner.setSelectedForCountry(new Locale("", phoneNumber.getCountryIso()),
                     phoneNumber.getCountryCode());
+        }
+    }
+
+    private void setupPrivacyDisclosures(TextView footerText) {
+        final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
+        final String multipleProviderFlowText = getString(R.string.fui_sms_terms_of_service,
+                verifyPhoneButtonText);
+        FlowParameters flowParameters = getFlowParams();
+
+        if (flowParameters.isSingleProviderFlow()) {
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicySmsText(getContext(),
+                    flowParameters,
+                    mSmsTermsText);
+        } else {
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
+                    flowParameters,
+                    footerText);
+            mSmsTermsText.setText(multipleProviderFlowText);
         }
     }
 

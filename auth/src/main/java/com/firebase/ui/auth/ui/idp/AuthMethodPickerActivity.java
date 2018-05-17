@@ -28,6 +28,7 @@ import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -42,6 +43,7 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
@@ -106,6 +108,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             }
         });
+
+        TextView termsText = findViewById(R.id.main_tos_and_pp);
+        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
+                getFlowParams(),
+                termsText);
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,

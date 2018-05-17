@@ -13,11 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
@@ -96,6 +99,21 @@ public class CheckEmailFragment extends FragmentBase implements
         }
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
+
+        TextView termsText = view.findViewById(R.id.email_tos_and_pp_text);
+        TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
+        FlowParameters flowParameters = getFlowParams();
+
+        if (flowParameters.isSingleProviderFlow()) {
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(getContext(),
+                    flowParameters,
+                    termsText);
+        } else {
+            termsText.setVisibility(View.GONE);
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
+                    flowParameters,
+                    footerText);
+        }
     }
 
     @Override
