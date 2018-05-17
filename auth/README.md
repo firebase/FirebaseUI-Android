@@ -135,7 +135,7 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 In addition, you must enable the "Request email addresses from users" permission
 in the "Permissions" tab of your Twitter app.
 
-In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
+In order to resolve the Twitter SDK, add the following repository to your `build.gradle(.kts)`:
 
 ```groovy
 allprojects {

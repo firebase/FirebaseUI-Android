@@ -1,2 +1,0 @@
-# See:
-# auth-proguard.pro

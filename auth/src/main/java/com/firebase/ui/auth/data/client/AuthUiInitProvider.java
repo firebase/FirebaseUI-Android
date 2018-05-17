@@ -18,7 +18,7 @@ public class AuthUiInitProvider extends ContentProvider {
         Preconditions.checkNotNull(info, "AuthUiInitProvider ProviderInfo cannot be null.");
         if ("com.firebase.ui.auth.authuiinitprovider".equals(info.authority)) {
             throw new IllegalStateException("Incorrect provider authority in manifest. Most" +
-                    " likely due to a missing applicationId variable in application's build.gradle.");
+                    " likely due to a missing applicationId variable in application's build.gradle(.kts).");
         } else {
             super.attachInfo(context, info);
         }
