@@ -41,6 +41,7 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
@@ -165,6 +166,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
             }
         });
+
+        TextView footerText = findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(this, getFlowParams(), footerText);
     }
 
     @Override
