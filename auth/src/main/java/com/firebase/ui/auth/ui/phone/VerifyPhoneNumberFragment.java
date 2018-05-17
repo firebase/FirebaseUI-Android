@@ -277,6 +277,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         final String multipleProviderFlowText = getString(R.string.fui_sms_terms_of_service,
                 verifyPhoneButtonText);
         FlowParameters flowParameters = getFlowParams();
+
         if (flowParameters.isSingleProviderFlow()) {
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicySmsText(getContext(),
                     flowParameters,

@@ -106,12 +106,12 @@ public class CheckEmailFragment extends FragmentBase implements
 
         if (flowParameters.isSingleProviderFlow()) {
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(getContext(),
-                    getFlowParams(),
+                    flowParameters,
                     termsText);
         } else {
             termsText.setVisibility(View.GONE);
             PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
-                    getFlowParams(),
+                    flowParameters,
                     footerText);
         }
     }

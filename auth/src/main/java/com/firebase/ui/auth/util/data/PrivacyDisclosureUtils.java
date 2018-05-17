@@ -46,6 +46,7 @@ public class PrivacyDisclosureUtils {
     private static int getGlobalTermsStringResource(FlowParameters flowParameters) {
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
+
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             return R.string.fui_tos_and_pp;
         } else if (termsOfServiceUrlProvided) {
@@ -53,6 +54,7 @@ public class PrivacyDisclosureUtils {
         } else if (privacyPolicyUrlProvided) {
             return R.string.fui_pp_only;
         }
+
         return NO_TOS_OR_PP;
     }
 
@@ -60,6 +62,7 @@ public class PrivacyDisclosureUtils {
     private static int getGlobalTermsFooterStringResource(FlowParameters flowParameters) {
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
+
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             return R.string.fui_tos_and_pp_footer;
         } else if (termsOfServiceUrlProvided) {
@@ -67,13 +70,15 @@ public class PrivacyDisclosureUtils {
         } else if (privacyPolicyUrlProvided) {
             return R.string.fui_pp_footer;
         }
-        return NO_TOS_OR_PP; // add constant
+
+        return NO_TOS_OR_PP;
     }
 
     @StringRes
     private static int getTermsSmsStringResource(FlowParameters flowParameters) {
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
+
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             return R.string.fui_sms_terms_of_service_and_privacy_policy_extended;
         } else if (termsOfServiceUrlProvided) {
@@ -81,6 +86,7 @@ public class PrivacyDisclosureUtils {
         } else if (privacyPolicyUrlProvided) {
             return R.string.fui_sms_privacy_policy_only_extended;
         }
+
         return NO_TOS_OR_PP;
     }
 }

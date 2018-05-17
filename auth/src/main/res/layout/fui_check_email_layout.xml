@@ -38,6 +38,8 @@
                 style="@style/FirebaseUI.Button"
                 android:text="@string/fui_next_default" />
 
+            <!-- Terms of service and Privacy Policy message that is displayed to the user if -->
+            <!-- email is the only provider -->
             <TextView
                 android:id="@+id/email_tos_and_pp_text"
                 style="@style/FirebaseUI.Text.BodyText"
@@ -47,6 +49,8 @@
                 android:textIsSelectable="false"
                 tools:text="Terms and Privacy Policy" />
 
+            <!-- Terms of service and Privacy Policy footer links that is displayed when email -->
+            <!-- is not the only provider -->
             <TextView
                 android:id="@+id/email_footer_tos_and_pp_text"
                 style="@style/FirebaseUI.PrivacyFooter" />

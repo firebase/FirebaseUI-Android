@@ -91,10 +91,9 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
     }
 
     private void startAuthMethodChoice() {
-        List<AuthUI.IdpConfig> idpConfigs = getArguments().providerInfo;
         // If there is only one provider selected, launch the flow directly
         if (getArguments().isSingleProviderFlow()) {
-            AuthUI.IdpConfig firstIdpConfig = idpConfigs.get(0);
+            AuthUI.IdpConfig firstIdpConfig = getArguments().providerInfo.get(0);
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
