@@ -1,0 +1,969 @@
+<!-- kind:binary;verdict:incompatible;affected:28.2;added:27;removed:3;type_problems_high:2;type_problems_medium:0;type_problems_low:1;method_problems_high:0;method_problems_medium:0;method_problems_low:0;checked_methods:66;checked_types:16;tool_version:2.1 -->
+<!-- kind:source;verdict:incompatible;affected:28.2;added:27;removed:3;type_problems_high:2;type_problems_medium:0;type_problems_low:0;method_problems_high:0;method_problems_medium:0;method_problems_low:0;checked_methods:66;checked_types:16;tool_version:2.1 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="firebase-ui-firestore, compatibility" />
+<meta name="description" content="Compatibility report for the firebase-ui-firestore library between 3.3.1 and 4.0.0 versions" />
+<title>firebase-ui-firestore: 3.3.1 to 4.0.0 compatibility report</title>
+<style type="text/css">
+body {
+    font-family:Arial, sans-serif;
+    background-color:White;
+    color:Black;
+}
+hr {
+    color:Black;
+    background-color:Black;
+    height:1px;
+    border:0;
+}
+h1 {
+    margin-bottom:0px;
+    padding-bottom:0px;
+    font-size:1.625em;
+}
+h2 {
+    margin-bottom:0px;
+    padding-bottom:0px;
+    font-size:1.25em;
+    white-space:nowrap;
+}
+div.symbols {
+    color:#003E69;
+}
+div.symbols i {
+    color:Brown;
+}
+span.section {
+    font-weight:bold;
+    cursor:pointer;
+    color:#003E69;
+    white-space:nowrap;
+    margin-left:0.3125em;
+}
+span:hover.section {
+    color:#336699;
+}
+span.sect_aff {
+    cursor:pointer;
+    padding-left:1.55em;
+    font-size:0.875em;
+    color:#cc3300;
+}
+span.ext {
+    font-weight:100;
+}
+span.jar {
+    color:#cc3300;
+    font-size:0.875em;
+    font-weight:bold;
+}
+div.jar_list {
+    padding-left:0.4em;
+    font-size:0.94em;
+}
+span.pkg_t {
+    color:#408080;
+    font-size:0.875em;
+}
+span.pkg {
+    color:#408080;
+    font-size:0.875em;
+    font-weight:bold;
+}
+span.cname {
+    color:Green;
+    font-size:0.875em;
+    font-weight:bold;
+}
+span.iname_b {
+    font-weight:bold;
+}
+span.iname_a {
+    color:#333333;
+    font-weight:bold;
+    font-size:0.94em;
+}
+span.sym_p {
+    font-weight:normal;
+    white-space:normal;
+}
+span.sym_pd {
+    white-space:normal;
+}
+span.sym_p span, span.sym_pd span {
+    white-space:nowrap;
+}
+span.attr {
+    color:Black;
+    font-weight:100;
+}
+span.deprecated {
+    color:Red;
+    font-weight:bold;
+    font-family:Monaco, monospace;
+}
+div.affect {
+    padding-left:1em;
+    padding-bottom:10px;
+    font-size:0.87em;
+    font-style:italic;
+    line-height:0.9em;
+}
+div.affected {
+    padding-left:2em;
+    padding-top:10px;
+}
+table.ptable {
+    border-collapse:collapse;
+    border:1px outset black;
+    margin-left:0.95em;
+    margin-top:3px;
+    margin-bottom:3px;
+    width:56.25em;
+}
+table.ptable td {
+    border:1px solid Gray;
+    padding:3px;
+    font-size:0.875em;
+    text-align:left;
+    vertical-align:top;
+    max-width:28em;
+    word-wrap:break-word;
+}
+table.ptable th {
+    background-color:#eeeeee;
+    font-weight:bold;
+    color:#333333;
+    font-family:Verdana, Arial;
+    font-size:0.875em;
+    border:1px solid Gray;
+    text-align:center;
+    vertical-align:top;
+    white-space:nowrap;
+    padding:3px;
+}
+table.summary {
+    border-collapse:collapse;
+    border:1px outset black;
+}
+table.summary th {
+    background-color:#eeeeee;
+    font-weight:100;
+    text-align:left;
+    font-size:0.94em;
+    white-space:nowrap;
+    border:1px inset Gray;
+    padding:3px;
+}
+table.summary td {
+    text-align:right;
+    white-space:nowrap;
+    border:1px inset Gray;
+    padding:3px 5px 3px 10px;
+}
+span.mngl {
+    padding-left:1em;
+    font-size:0.875em;
+    cursor:text;
+    color:#444444;
+    font-weight:bold;
+}
+span.pleft {
+    padding-left:2.5em;
+}
+span.color_p {
+    font-style:italic;
+    color:Brown;
+}
+span.param {
+    font-style:italic;
+}
+span.focus_p {
+    font-style:italic;
+    background-color:#DCDCDC;
+}
+span.ttype {
+    font-weight:100;
+}
+span.nowrap {
+    white-space:nowrap;
+}
+span.value {
+    white-space:nowrap;
+    font-weight:bold;
+}
+.passed {
+    background-color:#CCFFCC;
+    font-weight:100;
+}
+.warning {
+    background-color:#F4F4AF;
+    font-weight:100;
+}
+.failed {
+    background-color:#FFCCCC;
+    font-weight:100;
+}
+.new {
+    background-color:#C6DEFF;
+    font-weight:100;
+}
+
+.compatible {
+    background-color:#CCFFCC;
+    font-weight:100;
+}
+.almost_compatible {
+    background-color:#FFDAA3;
+    font-weight:100;
+}
+.incompatible {
+    background-color:#FFCCCC;
+    font-weight:100;
+}
+.gray {
+    background-color:#DCDCDC;
+    font-weight:100;
+}
+
+.top_ref {
+    font-size:0.69em;
+}
+.footer {
+    font-size:0.8125em;
+}
+.tabset {
+    float:left;
+}
+a.tab {
+    border:1px solid Black;
+    float:left;
+    margin:0px 5px -1px 0px;
+    padding:3px 5px 3px 5px;
+    position:relative;
+    font-size:0.875em;
+    background-color:#DDD;
+    text-decoration:none;
+    color:Black;
+}
+a.disabled:hover
+{
+    color:Black;
+    background:#EEE;
+}
+a.active:hover
+{
+    color:Black;
+    background:White;
+}
+a.active {
+    border-bottom-color:White;
+    background-color:White;
+}
+div.tab {
+    border-top:1px solid Black;
+    padding:0px;
+    width:100%;
+    clear:both;
+}
+
+</style>
+<script type="text/javascript" language="JavaScript">
+<!--
+function sC(header, id)
+{
+    e = document.getElementById(id);
+    if(e.style.display == 'none')
+    {
+        e.style.display = 'block';
+        e.style.visibility = 'visible';
+        header.innerHTML = header.innerHTML.replace(/\[[^0-9 ]\]/gi, "[&minus;]");
+    }
+    else
+    {
+        e.style.display = 'none';
+        e.style.visibility = 'hidden';
+        header.innerHTML = header.innerHTML.replace(/\[[^0-9 ]\]/gi, "[+]");
+    }
+}
+function initTabs()
+{
+    var url = window.location.href;
+    if(url.indexOf('_Source_')!=-1 || url.indexOf('#Source')!=-1)
+    {
+        var tab1 = document.getElementById('BinaryID');
+        var tab2 = document.getElementById('SourceID');
+        tab1.className='tab disabled';
+        tab2.className='tab active';
+    }
+    
+    var sets = document.getElementsByTagName('div');
+    for (var i = 0; i < sets.length; i++)
+    {
+        if (sets[i].className.indexOf('tabset') != -1)
+        {
+            var tabs = [];
+            var links = sets[i].getElementsByTagName('a');
+            for (var j = 0; j < links.length; j++)
+            {
+                if (links[j].className.indexOf('tab') != -1)
+                {
+                    tabs.push(links[j]);
+                    links[j].tabs = tabs;
+                    var tab = document.getElementById(links[j].href.substr(links[j].href.indexOf('#') + 1));
+                    //reset all tabs on start
+                    if (tab)
+                    {
+                        if (links[j].className.indexOf('active')!=-1) {
+                            tab.style.display = 'block';
+                        }
+                        else {
+                            tab.style.display = 'none';
+                        }
+                    }
+                    links[j].onclick = function()
+                    {
+                        var tab = document.getElementById(this.href.substr(this.href.indexOf('#') + 1));
+                        if (tab)
+                        {
+                            //reset all tabs before change
+                            for (var k = 0; k < this.tabs.length; k++)
+                            {
+                                document.getElementById(this.tabs[k].href.substr(this.tabs[k].href.indexOf('#') + 1)).style.display = 'none';
+                                this.tabs[k].className = this.tabs[k].className.replace('active', 'disabled');
+                            }
+                            this.className = 'tab active';
+                            tab.style.display = 'block';
+                            // window.location.hash = this.id.replace('ID', '');
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if(url.indexOf('#')!=-1) {
+        location.href=location.href;
+    }
+}
+
+if (window.addEventListener) window.addEventListener('load', initTabs, false);
+else if (window.attachEvent) window.attachEvent('onload', initTabs);
+
+-->
+</script>
+</head>
+<body><a name='Source'></a><a name='Binary'></a><a name='Top'></a><h1>API compatibility report for the <span style='color:Blue;'>firebase-ui-firestore</span> library between <span style='color:Red;'>3.3.1</span> and <span style='color:Red;'>4.0.0</span> versions</h1>
+<br/><div class='tabset'>
+<a id='BinaryID' href='#BinaryTab' class='tab active'>Binary<br/>Compatibility</a>
+<a id='SourceID' href='#SourceTab' style='margin-left:3px' class='tab disabled'>Source<br/>Compatibility</a>
+</div>
+<div id='BinaryTab' class='tab'>
+<h2>Test Info</h2><hr/>
+<table class='summary'>
+<tr><th>Library Name</th><td>firebase-ui-firestore</td></tr>
+<tr><th>Version #1</th><td>3.3.1</td></tr>
+<tr><th>Version #2</th><td>4.0.0</td></tr>
+<tr><th>Subject</th><td width='150px'>Binary Compatibility</td></tr>
+</table>
+<h2>Test Results</h2><hr/>
+<table class='summary'>
+<tr><th>Total JARs</th><td><a href='#Checked_Archives' style='color:Blue;'>1</a></td></tr>
+<tr><th>Total Methods / Classes</th><td>66 / 16</td></tr>
+<tr><th>Compatibility</th>
+<td class='incompatible'>71.8%</td>
+</tr>
+</table>
+<h2>Problem Summary</h2><hr/>
+<table class='summary'>
+<tr><th></th><th style='text-align:center;'>Severity</th><th style='text-align:center;'>Count</th></tr>
+<tr><th>Added Methods</th><td>-</td><td class='new'><a href='#Binary_Added' style='color:Blue;'>27</a></td></tr>
+<tr><th>Removed Methods</th><td>High</td><td class='failed'><a href='#Binary_Removed' style='color:Blue;'>3</a></td></tr>
+<tr><th rowspan='3'>Problems with<br/>Data Types</th><td>High</td><td class='failed'><a href='#Type_Binary_Problems_High' style='color:Blue;'>2</a></td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td class='warning'><a href='#Type_Binary_Problems_Low' style='color:Blue;'>1</a></td></tr>
+<tr><th rowspan='3'>Problems with<br/>Methods</th><td>High</td><td>0</td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td>0</td></tr>
+</table>
+
+<a name='Binary_Added'></a><h2>Added Methods <span class='new'>&nbsp;27&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_1')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>MetadataChanges <span class='color_p'>changes</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_1" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/MetadataChanges;Ljava/lang/Class;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_2')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>MetadataChanges <span class='color_p'>changes</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_2" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/MetadataChanges;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_3')">
+FirestorePagingOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions&lt;T&gt;</span></span>
+<br/>
+<div id="c_3" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.build:()Lcom/firebase/ui/firestore/paging/FirestorePagingOptions;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_4')">
+FirestorePagingOptions.Builder&lt;T&gt;.FirestorePagingOptions.Builder&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_4" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.com.firebase.ui.firestore.paging.FirestorePagingOptions.Builder:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_5')">
+FirestorePagingOptions.Builder&lt;T&gt;.setDiffCallback&#160;<span class='sym_p'><span>(&#160;DiffUtil.ItemCallback&lt;DocumentSnapshot&gt; <span class='color_p'>diffCallback</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_5" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setDiffCallback:(Landroid/support/v7/util/DiffUtil$ItemCallback;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_6')">
+FirestorePagingOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_6" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setLifecycleOwner:(Landroid/arch/lifecycle/LifecycleOwner;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_7')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_7" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Landroid/arch/paging/PagedList$Config;Ljava/lang/Class;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_8')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_8" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Landroid/arch/paging/PagedList$Config;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_9')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Source <span class='color_p'>source</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_9" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/Source;Landroid/arch/paging/PagedList$Config;Ljava/lang/Class;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_10')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Source <span class='color_p'>source</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_10" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/Source;Landroid/arch/paging/PagedList$Config;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Factory.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_11')">
+FirestoreDataSource.Factory.create&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DataSource&lt;PageKey,DocumentSnapshot&gt;</span></span>
+<br/>
+<div id="c_11" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestoreDataSource.Factory.create:()Landroid/arch/paging/DataSource;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_12')">
+FirestoreDataSource.Factory.FirestoreDataSource.Factory&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Source <span class='color_p'>source</span></span>&#160;)</span></span>
+<br/>
+<div id="c_12" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestoreDataSource.Factory.&quot;&lt;init&gt;&quot;:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/Source;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestoreArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_13')">
+FirestoreArray&lt;T&gt;.FirestoreArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>MetadataChanges <span class='color_p'>changes</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_13" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreArray&lt;T&gt;.com.firebase.ui.firestore.FirestoreArray:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/MetadataChanges;Lcom/firebase/ui/firestore/SnapshotParser;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestorePagingAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_14')">
+FirestorePagingAdapter&lt;T,VH&gt;.FirestorePagingAdapter&#160;<span class='sym_p'><span>(&#160;FirestorePagingOptions&lt;T&gt; <span class='color_p'>options</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_14" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.com.firebase.ui.firestore.paging.FirestorePagingAdapter:(Lcom/firebase/ui/firestore/paging/FirestorePagingOptions;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_15')">
+FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>holder</span></span>, <span>int <span class='color_p'>position</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_15" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;I)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_16')">
+FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>p1</span></span>, <span>int <span class='color_p'>p2</span></span>, <span>T <span class='color_p'>p3</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_16" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;ILjava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_17')">
+FirestorePagingAdapter&lt;T,VH&gt;.onLoadingStateChanged&#160;<span class='sym_p'><span>(&#160;LoadingState <span class='color_p'>state</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_17" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.onLoadingStateChanged:(Lcom/firebase/ui/firestore/paging/LoadingState;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_18')">
+FirestorePagingAdapter&lt;T,VH&gt;.retry&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_18" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.retry:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_19')">
+FirestorePagingAdapter&lt;T,VH&gt;.startListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_19" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.startListening:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_20')">
+FirestorePagingAdapter&lt;T,VH&gt;.stopListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_20" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.stopListening:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestorePagingAdapter_LifecycleAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_21')">
+FirestorePagingAdapter_LifecycleAdapter.callMethods&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>, <span>Lifecycle.Event <span class='color_p'>event</span></span>, <span>boolean <span class='color_p'>onAny</span></span>, <span>MethodCallsLogger <span class='color_p'>logger</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_21" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter_LifecycleAdapter.callMethods:(Landroid/arch/lifecycle/LifecycleOwner;Landroid/arch/lifecycle/Lifecycle$Event;ZLandroid/arch/lifecycle/MethodCallsLogger;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestorePagingOptions.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_22')">
+FirestorePagingOptions&lt;T&gt;.getData&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LiveData&lt;PagedList&lt;DocumentSnapshot&gt;&gt;</span></span>
+<br/>
+<div id="c_22" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getData:()Landroid/arch/lifecycle/LiveData;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_23')">
+FirestorePagingOptions&lt;T&gt;.getDiffCallback&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DiffUtil.ItemCallback&lt;DocumentSnapshot&gt;</span></span>
+<br/>
+<div id="c_23" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getDiffCallback:()Landroid/support/v7/util/DiffUtil$ItemCallback;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_24')">
+FirestorePagingOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LifecycleOwner</span></span>
+<br/>
+<div id="c_24" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getOwner:()Landroid/arch/lifecycle/LifecycleOwner;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_25')">
+FirestorePagingOptions&lt;T&gt;.getParser&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;SnapshotParser&lt;T&gt;</span></span>
+<br/>
+<div id="c_25" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getParser:()Lcom/firebase/ui/firestore/SnapshotParser;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>LoadingState.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_26')">
+LoadingState.valueOf&#160;<span class='sym_p'><span>(&#160;String <span class='color_p'>name</span></span>&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LoadingState</span></span>
+<br/>
+<div id="c_26" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/LoadingState.valueOf:(Ljava/lang/String;)Lcom/firebase/ui/firestore/paging/LoadingState;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_27')">
+LoadingState.values&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LoadingState[&#160;]</span></span>
+<br/>
+<div id="c_27" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/LoadingState.values:()[Lcom/firebase/ui/firestore/paging/LoadingState;</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Binary_Removed'></a><a name='Binary_Withdrawn'></a><h2>Removed Methods <span class='failed'>&nbsp;3&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_28')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>QueryListenOptions <span class='color_p'>options</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_28" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/QueryListenOptions;Ljava/lang/Class;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_29')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>QueryListenOptions <span class='color_p'>options</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_29" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/QueryListenOptions;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestoreArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_30')">
+FirestoreArray&lt;T&gt;.FirestoreArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>QueryListenOptions <span class='color_p'>options</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_30" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreArray&lt;T&gt;.com.firebase.ui.firestore.FirestoreArray:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/QueryListenOptions;Lcom/firebase/ui/firestore/SnapshotParser;)V</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='High_Risk_Binary_Problems'></a><a name='Type_Binary_Problems_High'></a>
+<h2>Problems with Data Types, High Severity <span class='failed'>&nbsp;2&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_31')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirestoreRecyclerOptions.Builder&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_31" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class became <b>final</b>.</td>
+<td>A client program may be interrupted by <b>VerifyError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_32')">
+[+] affected methods: 6 (9.1%)</span>
+<div id="c_32" style="display:none;">
+<div class='affected'><span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.FirestoreRecyclerOptions.Builder&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <i>query</i></span>, <span>SnapshotParser&lt;T&gt; <i>parser</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <i>query</i></span>, <span>Class&lt;T&gt; <i>modelClass</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setSnapshotArray&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <i>snapshots</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_33')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirestoreRecyclerOptions&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_33" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class became <b>final</b>.</td>
+<td>A client program may be interrupted by <b>VerifyError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_34')">
+[+] affected methods: 3 (4.5%)</span>
+<div id="c_34" style="display:none;">
+<div class='affected'><span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>Return value  of this method is of type 'FirestoreRecyclerOptions&lt;T&gt;'.</div>
+<span class='iname_a'>FirestoreRecyclerOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions&lt;T&gt;' class.</div>
+</div></div>
+<br/><br/></div>
+
+<br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Low_Risk_Binary_Problems'></a><a name='Type_Binary_Problems_Low'></a>
+<h2>Problems with Data Types, Low Severity <span class='warning'>&nbsp;1&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_35')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> BuildConfig <span class='warning'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_35" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>Value of final field <b>VERSION_NAME</b> of type <b>java.lang.String</b> has been changed from <b>&quot;3.3.1&quot;</b> to <b>&quot;4.0.0-SNAPSHOT&quot;</b>.</td>
+<td>Old value of the field will be inlined to the client code at compile-time and will be used instead of a new one.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_36')">
+[+] affected methods: 1 (1.5%)</span>
+<div id="c_36" style="display:none;">
+<div class='affected'><span class='iname_a'>BuildConfig.BuildConfig&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This constructor is from 'BuildConfig' class.</div>
+</div></div>
+<br/><br/></div>
+
+<br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Checked_Archives'></a><h2>Java Archives <span class='gray'>&nbsp;1&nbsp;</span></h2>
+<hr/><div class='jar_list'>
+classes.jar<br/>
+</div><br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<br/><br/><br/></div><div id='SourceTab' class='tab'>
+<h2>Test Info</h2><hr/>
+<table class='summary'>
+<tr><th>Library Name</th><td>firebase-ui-firestore</td></tr>
+<tr><th>Version #1</th><td>3.3.1</td></tr>
+<tr><th>Version #2</th><td>4.0.0</td></tr>
+<tr><th>Subject</th><td width='150px'>Source Compatibility</td></tr>
+</table>
+<h2>Test Results</h2><hr/>
+<table class='summary'>
+<tr><th>Total JARs</th><td><a href='#Checked_Archives' style='color:Blue;'>1</a></td></tr>
+<tr><th>Total Methods / Classes</th><td>66 / 16</td></tr>
+<tr><th>Compatibility</th>
+<td class='incompatible'>71.8%</td>
+</tr>
+</table>
+<h2>Problem Summary</h2><hr/>
+<table class='summary'>
+<tr><th></th><th style='text-align:center;'>Severity</th><th style='text-align:center;'>Count</th></tr>
+<tr><th>Added Methods</th><td>-</td><td class='new'><a href='#Source_Added' style='color:Blue;'>27</a></td></tr>
+<tr><th>Removed Methods</th><td>High</td><td class='failed'><a href='#Source_Removed' style='color:Blue;'>3</a></td></tr>
+<tr><th rowspan='3'>Problems with<br/>Data Types</th><td>High</td><td class='failed'><a href='#Type_Source_Problems_High' style='color:Blue;'>2</a></td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td>0</td></tr>
+<tr><th rowspan='3'>Problems with<br/>Methods</th><td>High</td><td>0</td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td>0</td></tr>
+</table>
+
+<a name='Source_Added'></a><h2>Added Methods <span class='new'>&nbsp;27&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_37')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>MetadataChanges <span class='color_p'>changes</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_37" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/MetadataChanges;Ljava/lang/Class;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_38')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>MetadataChanges <span class='color_p'>changes</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_38" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/MetadataChanges;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_39')">
+FirestorePagingOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions&lt;T&gt;</span></span>
+<br/>
+<div id="c_39" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.build:()Lcom/firebase/ui/firestore/paging/FirestorePagingOptions;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_40')">
+FirestorePagingOptions.Builder&lt;T&gt;.FirestorePagingOptions.Builder&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_40" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.com.firebase.ui.firestore.paging.FirestorePagingOptions.Builder:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_41')">
+FirestorePagingOptions.Builder&lt;T&gt;.setDiffCallback&#160;<span class='sym_p'><span>(&#160;DiffUtil.ItemCallback&lt;DocumentSnapshot&gt; <span class='color_p'>diffCallback</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_41" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setDiffCallback:(Landroid/support/v7/util/DiffUtil$ItemCallback;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_42')">
+FirestorePagingOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_42" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setLifecycleOwner:(Landroid/arch/lifecycle/LifecycleOwner;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_43')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_43" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Landroid/arch/paging/PagedList$Config;Ljava/lang/Class;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_44')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_44" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Landroid/arch/paging/PagedList$Config;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_45')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Source <span class='color_p'>source</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_45" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/Source;Landroid/arch/paging/PagedList$Config;Ljava/lang/Class;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_46')">
+FirestorePagingOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Source <span class='color_p'>source</span></span>, <span>PagedList.Config <span class='color_p'>config</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestorePagingOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_46" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/Source;Landroid/arch/paging/PagedList$Config;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/paging/FirestorePagingOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Factory.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_47')">
+FirestoreDataSource.Factory.create&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DataSource&lt;PageKey,DocumentSnapshot&gt;</span></span>
+<br/>
+<div id="c_47" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestoreDataSource.Factory.create:()Landroid/arch/paging/DataSource;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_48')">
+FirestoreDataSource.Factory.FirestoreDataSource.Factory&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Source <span class='color_p'>source</span></span>&#160;)</span></span>
+<br/>
+<div id="c_48" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestoreDataSource.Factory.&quot;&lt;init&gt;&quot;:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/Source;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestoreArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_49')">
+FirestoreArray&lt;T&gt;.FirestoreArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>MetadataChanges <span class='color_p'>changes</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_49" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreArray&lt;T&gt;.com.firebase.ui.firestore.FirestoreArray:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/MetadataChanges;Lcom/firebase/ui/firestore/SnapshotParser;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestorePagingAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_50')">
+FirestorePagingAdapter&lt;T,VH&gt;.FirestorePagingAdapter&#160;<span class='sym_p'><span>(&#160;FirestorePagingOptions&lt;T&gt; <span class='color_p'>options</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_50" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.com.firebase.ui.firestore.paging.FirestorePagingAdapter:(Lcom/firebase/ui/firestore/paging/FirestorePagingOptions;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_51')">
+FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>holder</span></span>, <span>int <span class='color_p'>position</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_51" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;I)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_52')">
+FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>p1</span></span>, <span>int <span class='color_p'>p2</span></span>, <span>T <span class='color_p'>p3</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_52" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.onBindViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;ILjava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_53')">
+FirestorePagingAdapter&lt;T,VH&gt;.onLoadingStateChanged&#160;<span class='sym_p'><span>(&#160;LoadingState <span class='color_p'>state</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_53" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.onLoadingStateChanged:(Lcom/firebase/ui/firestore/paging/LoadingState;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_54')">
+FirestorePagingAdapter&lt;T,VH&gt;.retry&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_54" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.retry:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_55')">
+FirestorePagingAdapter&lt;T,VH&gt;.startListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_55" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.startListening:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_56')">
+FirestorePagingAdapter&lt;T,VH&gt;.stopListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_56" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter&lt;T,VH&gt;.stopListening:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestorePagingAdapter_LifecycleAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_57')">
+FirestorePagingAdapter_LifecycleAdapter.callMethods&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>, <span>Lifecycle.Event <span class='color_p'>event</span></span>, <span>boolean <span class='color_p'>onAny</span></span>, <span>MethodCallsLogger <span class='color_p'>logger</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_57" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingAdapter_LifecycleAdapter.callMethods:(Landroid/arch/lifecycle/LifecycleOwner;Landroid/arch/lifecycle/Lifecycle$Event;ZLandroid/arch/lifecycle/MethodCallsLogger;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestorePagingOptions.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_58')">
+FirestorePagingOptions&lt;T&gt;.getData&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LiveData&lt;PagedList&lt;DocumentSnapshot&gt;&gt;</span></span>
+<br/>
+<div id="c_58" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getData:()Landroid/arch/lifecycle/LiveData;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_59')">
+FirestorePagingOptions&lt;T&gt;.getDiffCallback&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DiffUtil.ItemCallback&lt;DocumentSnapshot&gt;</span></span>
+<br/>
+<div id="c_59" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getDiffCallback:()Landroid/support/v7/util/DiffUtil$ItemCallback;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_60')">
+FirestorePagingOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LifecycleOwner</span></span>
+<br/>
+<div id="c_60" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getOwner:()Landroid/arch/lifecycle/LifecycleOwner;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_61')">
+FirestorePagingOptions&lt;T&gt;.getParser&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;SnapshotParser&lt;T&gt;</span></span>
+<br/>
+<div id="c_61" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/FirestorePagingOptions&lt;T&gt;.getParser:()Lcom/firebase/ui/firestore/SnapshotParser;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>LoadingState.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore.paging</span><br/>
+<span class="section" onclick="sC(this, 'c_62')">
+LoadingState.valueOf&#160;<span class='sym_p'><span>(&#160;String <span class='color_p'>name</span></span>&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LoadingState</span></span>
+<br/>
+<div id="c_62" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/LoadingState.valueOf:(Ljava/lang/String;)Lcom/firebase/ui/firestore/paging/LoadingState;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_63')">
+LoadingState.values&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LoadingState[&#160;]</span></span>
+<br/>
+<div id="c_63" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/paging/LoadingState.values:()[Lcom/firebase/ui/firestore/paging/LoadingState;</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Source_Removed'></a><a name='Source_Withdrawn'></a><h2>Removed Methods <span class='failed'>&nbsp;3&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_64')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>QueryListenOptions <span class='color_p'>options</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_64" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/QueryListenOptions;Ljava/lang/Class;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_65')">
+FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>QueryListenOptions <span class='color_p'>options</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirestoreRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_65" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/QueryListenOptions;Lcom/firebase/ui/firestore/SnapshotParser;)Lcom/firebase/ui/firestore/FirestoreRecyclerOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirestoreArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_66')">
+FirestoreArray&lt;T&gt;.FirestoreArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>QueryListenOptions <span class='color_p'>options</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_66" style="display:none;">
+<span class='mngl'>com/firebase/ui/firestore/FirestoreArray&lt;T&gt;.com.firebase.ui.firestore.FirestoreArray:(Lcom/google/firebase/firestore/Query;Lcom/google/firebase/firestore/QueryListenOptions;Lcom/firebase/ui/firestore/SnapshotParser;)V</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='High_Risk_Source_Problems'></a><a name='Type_Source_Problems_High'></a>
+<h2>Problems with Data Types, High Severity <span class='failed'>&nbsp;2&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.firestore</span><br/>
+<span class="section" onclick="sC(this, 'c_67')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirestoreRecyclerOptions.Builder&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_67" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class became <b>final</b>.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot inherit from final <b>FirestoreRecyclerOptions.Builder&lt;T&gt;</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_68')">
+[+] affected methods: 6 (9.1%)</span>
+<div id="c_68" style="display:none;">
+<div class='affected'><span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.FirestoreRecyclerOptions.Builder&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <i>query</i></span>, <span>SnapshotParser&lt;T&gt; <i>parser</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <i>query</i></span>, <span>Class&lt;T&gt; <i>modelClass</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.setSnapshotArray&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <i>snapshots</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions.Builder&lt;T&gt;' class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_69')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirestoreRecyclerOptions&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_69" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class became <b>final</b>.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot inherit from final <b>FirestoreRecyclerOptions&lt;T&gt;</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_70')">
+[+] affected methods: 3 (4.5%)</span>
+<div id="c_70" style="display:none;">
+<div class='affected'><span class='iname_a'>FirestoreRecyclerOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>Return value  of this method is of type 'FirestoreRecyclerOptions&lt;T&gt;'.</div>
+<span class='iname_a'>FirestoreRecyclerOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions&lt;T&gt;' class.</div>
+<span class='iname_a'>FirestoreRecyclerOptions&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'FirestoreRecyclerOptions&lt;T&gt;' class.</div>
+</div></div>
+<br/><br/></div>
+
+<br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Checked_Archives'></a><h2>Java Archives <span class='gray'>&nbsp;1&nbsp;</span></h2>
+<hr/><div class='jar_list'>
+classes.jar<br/>
+</div><br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<br/><br/><br/></div><hr/><div class='footer' align='right'><i>Generated by <a href='https://github.com/lvc/japi-compliance-checker'>Java API Compliance Checker</a> 2.1 &#160;</i></div><br/>
+</body></html>

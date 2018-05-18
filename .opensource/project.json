@@ -20,7 +20,8 @@
         "storage/README.md",
         "firestore/README.md",
         "docs/upgrade-to-2.0.md",
-        "docs/upgrade-to-3.0.md"
+        "docs/upgrade-to-3.0.md",
+        "docs/upgrade-to-4.0.md"
     ],
   
     // Related projects on Github, in the format $owner/$repo[/$subproject]
