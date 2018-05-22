@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">가입하는 중…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item> <item quantity="other">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item> </plurals>
     <string name="fui_email_account_creation_error">이메일 계정 등록 실패</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s을(를) 탭하면 %2$s 및 %3$s에 동의하는 것으로 간주됩니다.</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s을(를) 탭하면 %2$s에 동의하는 것으로 간주됩니다.</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s을(를) 탭하면 %2$s에 동의하는 것으로 간주됩니다.</string>
     <string name="fui_terms_of_service">서비스 약관</string>
     <string name="fui_privacy_policy">개인정보처리방침</string>
     <string name="fui_welcome_back_idp_header">계정이 이미 있음</string>

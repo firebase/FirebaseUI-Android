@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akaun e-mel tidak berjaya</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Dengan mengetik %1$s, anda menyatakan bahawa anda bersetuju dengan %2$s dan %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Dengan mengetik %1$s, anda menyatakan bahawa anda bersetuju dengan %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Dengan mengetik %1$s, anda menyatakan bahawa anda bersetuju dengan %2$s.</string>
     <string name="fui_terms_of_service">Syarat Perkhidmatan</string>
     <string name="fui_privacy_policy">Dasar Privasi</string>
     <string name="fui_welcome_back_idp_header">Anda sudah mempunyai akaun</string>

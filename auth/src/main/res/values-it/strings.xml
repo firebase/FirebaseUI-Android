@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Registrazione in corso…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">La password non è abbastanza efficace. Utilizza almeno %1$d carattere e una combinazione di lettere e numeri.</item> <item quantity="other">La password non è abbastanza efficace. Utilizza almeno %1$d caratteri e una combinazione di lettere e numeri.</item> </plurals>
     <string name="fui_email_account_creation_error">Registrazione account di posta elettronica non riuscita</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Se tocchi %1$s, accetti i %2$s e le %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Se tocchi %1$s, accetti i %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Se tocchi %1$s, accetti le %2$s.</string>
     <string name="fui_terms_of_service">Termini di servizio</string>
     <string name="fui_privacy_policy">Norme sulla privacy</string>
     <string name="fui_welcome_back_idp_header">Hai già un account</string>

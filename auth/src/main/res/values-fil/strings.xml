@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Nagsa-sign up…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Hindi masyadong malakas ang password. Gumamit ng %1$d character man lang at kumbinasyon ng mga titik at mga numero</item> <item quantity="other">Hindi masyadong malakas ang password. Gumamit ng %1$d na character man lang at kumbinasyon ng mga titik at mga numero</item> </plurals>
     <string name="fui_email_account_creation_error">Hindi nagtagumpay ang pagpaparehistro ng email account</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s at sa %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s.</string>
     <string name="fui_terms_of_service">Mga Tuntunin ng Serbisyo</string>
     <string name="fui_privacy_policy">Patakaran sa Privacy</string>
     <string name="fui_welcome_back_idp_header">Mayroon ka nang account</string>

@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">সাইন-আপ করা হচ্ছে…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> </plurals>
     <string name="fui_email_account_creation_error">ইমেল অ্যাকাউন্টটি রেজিস্টার করা যায়নি</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এবং %3$s এর সাথে সম্মত হন।</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এর সাথে সম্মত হন।</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এর সাথে সম্মত হন।</string>
     <string name="fui_terms_of_service">পরিষেবার শর্তাবলি</string>
     <string name="fui_privacy_policy">গোপনীয়তা নীতি</string>
     <string name="fui_welcome_back_idp_header">আপনার আগে থেকেই একটি অ্যাকাউন্ট আছে</string>

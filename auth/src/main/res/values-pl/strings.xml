@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Rejestruję…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item> <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item> <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item> <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item> </plurals>
     <string name="fui_email_account_creation_error">Rejestracja konta e-mail nie powiodła się</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Klikając %1$s, potwierdzasz, że znane Ci są %2$s oraz %3$s i akceptujesz je.</string>
-    <string name="fui_create_account_preamble_tos_only">Klikając %1$s, potwierdzasz że znane Ci są %2$s i akceptujesz je.</string>
-    <string name="fui_create_account_preamble_pp_only">Klikając %1$s, potwierdzasz że znana Ci jest %2$s i wyrażasz na nią zgodę.</string>
     <string name="fui_terms_of_service">Warunki korzystania z usługi</string>
     <string name="fui_privacy_policy">Polityka prywatności</string>
     <string name="fui_welcome_back_idp_header">Masz już konto</string>
