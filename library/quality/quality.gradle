@@ -78,7 +78,6 @@ android {
                 'InvalidPackage', // Firestore uses GRPC which makes lint mad
                 'NewerVersionAvailable', 'GradleDependency', // For reproducible builds
                 'SelectableText', // We almost never care about this
-                'MissingTranslation', // TODO remove in future PR
                 'UnusedResources' // TODO remove in future PR
 
         baseline file("$configDir/lint-baseline.xml")
