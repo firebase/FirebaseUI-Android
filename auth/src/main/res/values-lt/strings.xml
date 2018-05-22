@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Prisiregistruojama…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item> <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item> <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item> <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item> </plurals>
     <string name="fui_email_account_creation_error">El. pašto paskyros užregistruoti nepavyko</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Paliesdami %1$s nurodote, kad sutinkate su %2$s.</string>
     <string name="fui_terms_of_service">Paslaugų teikimo sąlygomis</string>
     <string name="fui_privacy_policy">Privatumo politika</string>
     <string name="fui_welcome_back_idp_header">Jūs jau turite paskyrą</string>

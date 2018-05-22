@@ -77,8 +77,7 @@ android {
                 'IconExpectedSize',
                 'InvalidPackage', // Firestore uses GRPC which makes lint mad
                 'NewerVersionAvailable', 'GradleDependency', // For reproducible builds
-                'SelectableText', // We almost never care about this
-                'UnusedResources' // TODO remove in future PR
+                'SelectableText' // We almost never care about this
 
         baseline file("$configDir/lint-baseline.xml")
         checkAllWarnings true

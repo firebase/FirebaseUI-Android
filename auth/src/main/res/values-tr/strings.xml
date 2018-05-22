@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Kaydolunuyor…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> </plurals>
     <string name="fui_email_account_creation_error">E-posta hesabı kaydı başarısız oldu</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s öğesine dokunarak şunları kabul ettiğinizi bildirirsiniz: %2$s ve %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s öğesine dokunarak şunu kabul ettiğinizi bildirirsiniz: %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s öğesine dokunarak şunu kabul ettiğinizi bildirirsiniz: %2$s.</string>
     <string name="fui_terms_of_service">Hizmet Şartları</string>
     <string name="fui_privacy_policy">Gizlilik Politikası</string>
     <string name="fui_welcome_back_idp_header">Zaten bir hesabınız var</string>

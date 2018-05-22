@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akun email tidak berhasil</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Dengan menge-tap %1$s Anda menyatakan setuju dengan %2$s dan %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Dengan menge-tap %1$s Anda menyatakan setuju dengan %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Dengan menge-tap %1$s Anda menyatakan setuju dengan %2$s.</string>
     <string name="fui_terms_of_service">Persyaratan Layanan</string>
     <string name="fui_privacy_policy">Kebijakan Privasi</string>
     <string name="fui_welcome_back_idp_header">Anda sudah memiliki akun</string>

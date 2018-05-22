@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Registrierung wird durchgeführt…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Das Passwort ist zu schwach. Verwenden Sie mindestens %1$d Zeichen und eine Mischung aus Buchstaben und Ziffern.</item> <item quantity="other">Das Passwort ist zu schwach. Verwenden Sie mindestens %1$d Zeichen und eine Mischung aus Buchstaben und Ziffern.</item> </plurals>
     <string name="fui_email_account_creation_error">Registrierung des E-Mail-Kontos fehlgeschlagen</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Durch Tippen auf %1$s stimmen Sie den %2$s und der %3$s zu.</string>
-    <string name="fui_create_account_preamble_tos_only">Durch Tippen auf %1$s stimmen Sie den %2$s zu.</string>
-    <string name="fui_create_account_preamble_pp_only">Durch Tippen auf %1$s stimmen Sie der %2$s zu.</string>
     <string name="fui_terms_of_service">Nutzungsbedingungen</string>
     <string name="fui_privacy_policy">Datenschutzerklärung</string>
     <string name="fui_welcome_back_idp_header">Sie haben bereits ein Konto</string>

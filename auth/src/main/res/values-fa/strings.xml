@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">در حال ثبت‌نام…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> <item quantity="other">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> </plurals>
     <string name="fui_email_account_creation_error">ثبت حساب رایانامه ناموفق بود</string>
-    <string name="fui_create_account_preamble_tos_and_pp">با ضربه زدن روی %1$s موافقتتان را با %2$s و %3$s اعلام می‌کنید.</string>
-    <string name="fui_create_account_preamble_tos_only">با ضربه زدن روی %1$s موافقتتان را با %2$s اعلام می‌کنید.</string>
-    <string name="fui_create_account_preamble_pp_only">با ضربه زدن روی %1$s موافقتتان را با %2$s اعلام می‌کنید.</string>
     <string name="fui_terms_of_service">شرایط خدمات</string>
     <string name="fui_privacy_policy">«خط‌مشی حریم خصوصی»</string>
     <string name="fui_welcome_back_idp_header">از قبل حسابی دارید</string>

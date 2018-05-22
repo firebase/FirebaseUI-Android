@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Реєстрація…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Пароль недостатньо надійний. Введіть принаймні %1$d символ та комбінацію літер і цифр</item> <item quantity="few">Пароль недостатньо надійний. Введіть принаймні %1$d символи та комбінацію літер і цифр</item> <item quantity="many">Пароль недостатньо надійний. Введіть принаймні %1$d символів та комбінацію літер і цифр</item> <item quantity="other">Пароль недостатньо надійний. Введіть принаймні %1$d символу та комбінацію літер і цифр</item> </plurals>
     <string name="fui_email_account_creation_error">Не вдалося зареєструвати обліковий запис електронної пошти</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Торкаючись кнопки “%1$s”, ви приймаєте %2$s та %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Торкаючись кнопки “%1$s”, ви приймаєте %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Торкаючись кнопки “%1$s”, ви приймаєте %2$s.</string>
     <string name="fui_terms_of_service">Умови використання</string>
     <string name="fui_privacy_policy">Політику конфіденційності</string>
     <string name="fui_welcome_back_idp_header">У вас уже є обліковий запис</string>

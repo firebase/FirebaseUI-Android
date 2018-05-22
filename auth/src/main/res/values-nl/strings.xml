@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Aanmelden…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Uw wachtwoord is niet sterk genoeg. Gebruik ten minste %1$d teken en een combinatie van letters en cijfers.</item> <item quantity="other">Uw wachtwoord is niet sterk genoeg. Gebruik ten minste %1$d tekens en een combinatie van letters en cijfers.</item> </plurals>
     <string name="fui_email_account_creation_error">Registratie van e-mailaccount is mislukt</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Door op %1$s te tikken, geeft u aan dat u akkoord gaat met de %2$s en het %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Door op %1$s te tikken, geeft u aan dat u akkoord gaat met de %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Door op %1$s te tikken, geeft u aan dat u akkoord gaat met het %2$s.</string>
     <string name="fui_terms_of_service">Servicevoorwaarden</string>
     <string name="fui_privacy_policy">Privacybeleid</string>
     <string name="fui_welcome_back_idp_header">U heeft al een account</string>

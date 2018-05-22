@@ -22,7 +22,7 @@ FILES = sys.argv[2:]
 # Remove any tags with the wrong name
 class RemoveStringScript(BaseStringScript):
 
-  def ProcessTag(self, line):
+  def ProcessTag(self, line, type):
     if QUERY in '\n'.join(line):
       return []
     else:

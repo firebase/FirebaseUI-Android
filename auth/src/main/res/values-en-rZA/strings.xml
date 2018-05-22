@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Signing up…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item> <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item> </plurals>
     <string name="fui_email_account_creation_error">Email account registration unsuccessful</string>
-    <string name="fui_create_account_preamble_tos_and_pp">By tapping %1$s you are indicating that you agree to the %2$s and the %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">By tapping %1$s you are indicating that you agree to the %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">By tapping %1$s you are indicating that you agree to the %2$s.</string>
     <string name="fui_terms_of_service">Terms of Service</string>
     <string name="fui_privacy_policy">Privacy Policy</string>
     <string name="fui_welcome_back_idp_header">You already have an account</string>

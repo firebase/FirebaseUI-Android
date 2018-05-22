@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">אנחנו רושמים אותך…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך תו אחד (%1$d) לפחות שמכילה אותיות ומספרים</item> <item quantity="two">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="many">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="other">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> </plurals>
     <string name="fui_email_account_creation_error">לא הצלחנו להשלים את הרישום לחשבון באמצעות כתובת האימייל</string>
-    <string name="fui_create_account_preamble_tos_and_pp">הקשה על %1$s תתפרש כהסכמה ל%2$s ול%3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">הקשה על %1$s תתפרש כהסכמה ל%2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">הקשה על %1$s תתפרש כהסכמה ל%2$s.</string>
     <string name="fui_terms_of_service">תנאים והגבלות</string>
     <string name="fui_privacy_policy">מדיניות הפרטיות</string>
     <string name="fui_welcome_back_idp_header">כבר יש לך חשבון</string>

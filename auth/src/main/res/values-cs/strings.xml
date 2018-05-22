@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Registrace…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Heslo není dostatečně silné. Použijte alespoň %1$d znak a kombinaci písmen a číslic</item> <item quantity="few">Heslo není dostatečně silné. Použijte alespoň %1$d znaky a kombinaci písmen a číslic</item> <item quantity="many">Heslo není dostatečně silné. Použijte alespoň %1$d znaku a kombinaci písmen a číslic</item> <item quantity="other">Heslo není dostatečně silné. Použijte alespoň %1$d znaků a kombinaci písmen a číslic</item> </plurals>
     <string name="fui_email_account_creation_error">Registrace e-mailového účtu se nezdařila</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Klepnutím na možnost %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Klepnutím na možnost %1$s vyjadřujete svůj souhlas s dokumentem %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Klepnutím na možnost %1$s vyjadřujete svůj souhlas s dokumentem %2$s.</string>
     <string name="fui_terms_of_service">Smluvní podmínky</string>
     <string name="fui_privacy_policy">Zásady ochrany soukromí</string>
     <string name="fui_welcome_back_idp_header">Již máte účet</string>

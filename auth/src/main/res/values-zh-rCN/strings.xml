@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">正在注册…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> </plurals>
     <string name="fui_email_account_creation_error">未能使用电子邮件地址注册帐号</string>
-    <string name="fui_create_account_preamble_tos_and_pp">点按“%1$s”即表示您同意 %2$s 和 %3$s。</string>
-    <string name="fui_create_account_preamble_tos_only">点按“%1$s”即表示您同意 %2$s。</string>
-    <string name="fui_create_account_preamble_pp_only">点按“%1$s”即表示您同意 %2$s。</string>
     <string name="fui_terms_of_service">服务条款</string>
     <string name="fui_privacy_policy">隐私权政策</string>
     <string name="fui_welcome_back_idp_header">您已经有帐号了</string>

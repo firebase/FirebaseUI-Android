@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">T\'estàs registrant…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcter i combina lletres i números.</item> <item quantity="other">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcters i combina lletres i números.</item> </plurals>
     <string name="fui_email_account_creation_error">No s\'ha pogut registrar el compte de correu electrònic</string>
-    <string name="fui_create_account_preamble_tos_and_pp">En tocar %1$s, indiques que acceptes les %2$s i la %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">En tocar %1$s, indiques que acceptes les %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">En tocar %1$s, indiques que acceptes la %2$s.</string>
     <string name="fui_terms_of_service">Condicions del servei</string>
     <string name="fui_privacy_policy">política de privadesa</string>
     <string name="fui_welcome_back_idp_header">Ja tens un compte</string>

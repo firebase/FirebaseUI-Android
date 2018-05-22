@@ -29,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Създава се регистрация…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Паролата не е достатъчно надеждна. Използвайте поне %1$d знак и комбинация от букви и цифри</item> <item quantity="other">Паролата не е достатъчно надеждна. Използвайте поне %1$d знака и комбинация от букви и цифри</item> </plurals>
     <string name="fui_email_account_creation_error">Регистрацията с имейл адрес не бе успешна</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Докосвайки %1$s, приемате %2$s и %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Докосвайки %1$s, приемате %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Докосвайки %1$s, приемате %2$s.</string>
     <string name="fui_terms_of_service">Общите условия</string>
     <string name="fui_privacy_policy">Декларацията за поверителност</string>
     <string name="fui_welcome_back_idp_header">Вече имате профил</string>
