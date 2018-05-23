@@ -209,7 +209,7 @@ repositories {
 Then you can depend on snapshot versions:
 
 ```groovy
-implementation 'com.firebaseui:firebase-ui-auth:4.0.0-SNAPSHOT`
+implementation 'com.firebaseui:firebase-ui-auth:4.0.0-SNAPSHOT'
 ```
 
 You can see which `SNAPSHOT` builds are avaiable here:
