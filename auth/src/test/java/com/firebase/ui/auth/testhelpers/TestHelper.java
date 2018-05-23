@@ -127,11 +127,13 @@ public class TestHelper {
                     instances.put(id, mock(FirebaseAuth.class));
                 }
 
+                FirebaseAuth auth = FirebaseAuth.getInstance(app);
                 break;
             }
         }
 
-        when(FirebaseAuth.getInstance(app).setFirebaseUIVersion(anyString()))
+        FirebaseAuth mockAuth = FirebaseAuth.getInstance(app);
+        when(mockAuth.setFirebaseUIVersion(anyString()))
                 .thenReturn(Tasks.<Void>forResult(null));
     }
 

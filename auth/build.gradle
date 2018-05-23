@@ -55,7 +55,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
-    testImplementation 'org.mockito:mockito-core:2.15.+'
+    testImplementation 'org.mockito:mockito-core:2.18.3'
     testImplementation 'org.robolectric:robolectric:3.7'
     testImplementation 'com.facebook.android:facebook-login:4.32.0'
     testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
