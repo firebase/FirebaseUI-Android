@@ -127,7 +127,6 @@ public class TestHelper {
                     instances.put(id, mock(FirebaseAuth.class));
                 }
 
-                FirebaseAuth auth = FirebaseAuth.getInstance(app);
                 break;
             }
         }
