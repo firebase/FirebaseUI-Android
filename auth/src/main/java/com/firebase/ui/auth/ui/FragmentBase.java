@@ -11,7 +11,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FragmentBase extends Fragment {
+public class FragmentBase extends Fragment implements ProgressView {
     private HelperActivityBase mActivity;
     private ProgressDialogHolder mProgressDialogHolder;
 
@@ -43,5 +43,15 @@ public class FragmentBase extends Fragment {
             IdpResponse response,
             @Nullable String password) {
         mActivity.startSaveCredentials(firebaseUser, response, password);
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mActivity.showProgress(message);
+    }
+
+    @Override
+    public void hideProgress() {
+        mActivity.hideProgress();
     }
 }

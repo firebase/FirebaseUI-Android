@@ -9,6 +9,12 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/logo"
         style="@style/FirebaseUI.AuthMethodPicker.Logo"
@@ -34,4 +40,19 @@
 
     </ScrollView>
 
+    <TextView
+        android:id="@+id/main_tos_and_pp"
+        style="@style/FirebaseUI.Text.BodyText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="@dimen/fui_field_padding_vert"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:textColor="?android:attr/textColorTertiary"
+        android:textIsSelectable="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/container"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>

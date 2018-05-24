@@ -26,12 +26,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
+import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
@@ -39,10 +39,14 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -51,6 +55,8 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,9 +89,13 @@ import java.util.Set;
  * See the <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#table-of-contents">README</a>
  * for examples on how to get started with FirebaseUI Auth.
  */
-public class AuthUI {
+public final class AuthUI {
 
-    private static final String TAG = "AuthUI";
+    @VisibleForTesting
+    protected static FirebaseAuth sDefaultAuth;
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String TAG = "AuthUI";
 
     @StringDef({
                        EmailAuthProvider.PROVIDER_ID,
@@ -96,79 +106,6 @@ public class AuthUI {
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
-
-    /**
-     * Provider identifier for email and password credentials, for use with {@link
-     * SignInIntentBuilder#setAvailableProviders(List)}.
-     *
-     * @deprecated this constant is no longer needed, use the {@link IdpConfig.EmailBuilder}
-     * directly or {@link EmailAuthProvider#PROVIDER_ID} if needed.
-     */
-    @Deprecated
-    public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
-
-    /**
-     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
-     *
-     * @deprecated this constant is no longer needed, use the {@link IdpConfig.GoogleBuilder}
-     * directly or {@link GoogleAuthProvider#PROVIDER_ID} if needed.
-     */
-    @Deprecated
-    public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
-
-    /**
-     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
-     *
-     * @deprecated this constant is no longer needed, use the {@link IdpConfig.FacebookBuilder}
-     * directly or {@link FacebookAuthProvider#PROVIDER_ID} if needed.
-     */
-    @Deprecated
-    public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
-
-    /**
-     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
-     *
-     * @deprecated this constant is no longer needed, use the {@link IdpConfig.TwitterBuilder}
-     * directly or {@link TwitterAuthProvider#PROVIDER_ID} if needed.
-     */
-    @Deprecated
-    public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
-
-    /**
-     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
-     *
-     * @deprecated this constant is no longer needed, use the {@link IdpConfig.PhoneBuilder}
-     * directly or {@link PhoneAuthProvider#PROVIDER_ID} if needed.
-     */
-    @Deprecated
-    public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
-
-    /**
-     * Bundle key for the default full phone number parameter.
-     *
-     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultNumber(String)}
-     * instead.
-     */
-    @Deprecated
-    public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.PHONE;
-
-    /**
-     * Bundle key for the default phone country code parameter.
-     *
-     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultNumber(String,
-     * String)} instead.
-     */
-    @Deprecated
-    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.COUNTRY_ISO;
-
-    /**
-     * Bundle key for the default national phone number parameter.
-     *
-     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultNumber(String,
-     * String)} instead.
-     */
-    @Deprecated
-    public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.NATIONAL_NUMBER;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -209,7 +146,13 @@ public class AuthUI {
 
     private AuthUI(FirebaseApp app) {
         mApp = app;
-        mAuth = FirebaseAuth.getInstance(mApp);
+
+        // TODO: This is a bad testing hack
+        if (sDefaultAuth != null) {
+            mAuth = sDefaultAuth;
+        } else {
+            mAuth = FirebaseAuth.getInstance(mApp);
+        }
 
         try {
             mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
@@ -265,6 +208,85 @@ public class AuthUI {
     @StyleRes
     public static int getDefaultTheme() {
         return R.style.FirebaseUI;
+    }
+
+    /**
+     * Signs the user in without any UI if possible. If this operation fails, you can safely start a
+     * UI-based sign-in flow knowing it is required.
+     *
+     * @param context        requesting the user be signed in
+     * @param configs        to use for silent sign in. Only Google and email are currently
+     *                       supported, the rest will be ignored.
+     * @return a task which indicates whether or not the user was successfully signed in.
+     */
+    @NonNull
+    public Task<AuthResult> silentSignIn(@NonNull Context context,
+                                         @NonNull List<IdpConfig> configs) {
+        if (mAuth.getCurrentUser() != null) {
+            throw new IllegalArgumentException("User already signed in!");
+        }
+
+        final Context appContext = context.getApplicationContext();
+        final IdpConfig google =
+                ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
+        final IdpConfig email =
+                ProviderUtils.getConfigFromIdps(configs, EmailAuthProvider.PROVIDER_ID);
+
+        if (google == null && email == null) {
+            throw new IllegalArgumentException("No supported providers were supplied. " +
+                    "Add either Google or email support.");
+        }
+
+        final GoogleSignInOptions googleOptions;
+        if (google == null) {
+            googleOptions = null;
+        } else {
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
+            if (last != null && last.getIdToken() != null) {
+                return mAuth.signInWithCredential(GoogleAuthProvider.getCredential(
+                        last.getIdToken(), null));
+            }
+
+            googleOptions = google.getParams()
+                    .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
+        }
+
+        return GoogleApiUtils.getCredentialsClient(context)
+                .request(new CredentialRequest.Builder()
+                        // We can support both email and Google at the same time here because they
+                        // are mutually exclusive. If a user signs in with Google, their email
+                        // account will automatically be upgraded (a.k.a. replaced) with the Google
+                        // one, meaning Smart Lock won't have to show the picker UI.
+                        .setPasswordLoginSupported(email != null)
+                        .setAccountTypes(google == null ? null :
+                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider.PROVIDER_ID))
+                        .build())
+                .continueWithTask(new Continuation<CredentialRequestResponse, Task<AuthResult>>() {
+                    @Override
+                    public Task<AuthResult> then(@NonNull Task<CredentialRequestResponse> task) {
+                        Credential credential = task.getResult().getCredential();
+                        String email = credential.getId();
+                        String password = credential.getPassword();
+
+                        if (TextUtils.isEmpty(password)) {
+                            return GoogleSignIn.getClient(appContext,
+                                    new GoogleSignInOptions.Builder(googleOptions)
+                                            .setAccountName(email)
+                                            .build())
+                                    .silentSignIn()
+                                    .continueWithTask(new Continuation<GoogleSignInAccount, Task<AuthResult>>() {
+                                        @Override
+                                        public Task<AuthResult> then(@NonNull Task<GoogleSignInAccount> task) {
+                                            AuthCredential authCredential = GoogleAuthProvider.getCredential(
+                                                    task.getResult().getIdToken(), null);
+                                            return mAuth.signInWithCredential(authCredential);
+                                        }
+                                    });
+                        } else {
+                            return mAuth.signInWithEmailAndPassword(email, password);
+                        }
+                    }
+                });
     }
 
     /**
@@ -368,10 +390,11 @@ public class AuthUI {
     }
 
     private Task<Void> signOutIdps(@NonNull Context context) {
-        if (FacebookSignInHandler.IS_AVAILABLE) {
+        if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        if (TwitterSignInHandler.IS_AVAILABLE) {
+        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
+            TwitterSignInHandler.initializeTwitter();
             TwitterCore.getInstance().getSessionManager().clearActiveSession();
         }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
@@ -417,7 +440,7 @@ public class AuthUI {
     /**
      * Configuration for an identity provider.
      */
-    public static class IdpConfig implements Parcelable {
+    public static final class IdpConfig implements Parcelable {
         public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
             @Override
             public IdpConfig createFromParcel(Parcel in) {
@@ -449,32 +472,6 @@ public class AuthUI {
         @SupportedProvider
         public String getProviderId() {
             return mProviderId;
-        }
-
-        /**
-         * @deprecated use the lists of scopes you passed in directly, or get a provider-specific
-         * implementation from {@link #getParams()}.
-         */
-        @Deprecated
-        @NonNull
-        public List<String> getScopes() {
-            List<String> permissions;
-            if (mProviderId.equals(GoogleAuthProvider.PROVIDER_ID)) {
-                Scope[] array = ((GoogleSignInOptions)
-                        mParams.getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS))
-                        .getScopeArray();
-
-                List<String> scopes = new ArrayList<>();
-                for (Scope scope : array) {
-                    scopes.add(scope.toString());
-                }
-                permissions = scopes;
-            } else if (mProviderId.equals(FacebookAuthProvider.PROVIDER_ID)) {
-                permissions = mParams.getStringArrayList(ExtraConstants.FACEBOOK_PERMISSIONS);
-            } else {
-                permissions = null;
-            }
-            return permissions == null ? Collections.<String>emptyList() : permissions;
         }
 
         /**
@@ -528,16 +525,7 @@ public class AuthUI {
             @SupportedProvider private final String mProviderId;
             private final Bundle mParams = new Bundle();
 
-            /**
-             * Builds the configuration parameters for an identity provider.
-             *
-             * @param providerId An ID of one of the supported identity providers. e.g. {@link
-             *                   AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for
-             *                   the complete list of supported Identity providers
-             * @deprecated use the provider's specific builder, for example, {@link GoogleBuilder}
-             */
-            @Deprecated
-            public Builder(@SupportedProvider @NonNull String providerId) {
+            protected Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
                 }
@@ -546,69 +534,13 @@ public class AuthUI {
 
             @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
             @NonNull
-            protected Bundle getParams() {
+            protected final Bundle getParams() {
                 return mParams;
-            }
-
-            /**
-             * @deprecated additional phone verification options are now available on the phone
-             * builder: {@link PhoneBuilder#setDefaultNumber(String, String)}.
-             */
-            @NonNull
-            @Deprecated
-            public Builder setParams(@Nullable Bundle params) {
-                mParams.clear();
-                mParams.putAll(params == null ? new Bundle() : params);
-                return this;
-            }
-
-            /**
-             * Specifies the additional permissions that the application will request for this
-             * identity provider.
-             * <p>
-             * For Facebook permissions see:
-             * https://developers.facebook.com/docs/facebook-login/android
-             * https://developers.facebook.com/docs/facebook-login/permissions
-             * <p>
-             * For Google permissions see:
-             * https://developers.google.com/identity/protocols/googlescopes
-             * <p>
-             * Twitter permissions are only configurable through the
-             * <a href="https://apps.twitter.com/">Twitter developer console</a>.
-             *
-             * @deprecated use the provider's specific builder. For Google, use {@link
-             * GoogleBuilder#setScopes(List)}. For Facebook, use {@link FacebookBuilder#setPermissions(List)}.
-             */
-            @NonNull
-            @Deprecated
-            public Builder setPermissions(@Nullable List<String> permissions) {
-                if (permissions == null) {
-                    mParams.clear();
-                    return this;
-                }
-
-                Bundle params;
-                if (mProviderId.equals(GOOGLE_PROVIDER)) {
-                    params = new GoogleBuilder().setScopes(permissions).build().getParams();
-                } else if (mProviderId.equals(FACEBOOK_PROVIDER)) {
-                    params = new FacebookBuilder().setPermissions(permissions).build().getParams();
-                } else {
-                    params = new Bundle();
-                }
-                setParams(params);
-                return this;
             }
 
             @CallSuper
             @NonNull
             public IdpConfig build() {
-                // Ensures deprecated Google provider builder backcompat
-                if (mProviderId.equals(GoogleAuthProvider.PROVIDER_ID)
-                        && getClass() == Builder.class
-                        && mParams.isEmpty()) {
-                    return new GoogleBuilder().build();
-                }
-
                 return new IdpConfig(mProviderId, mParams);
             }
         }
@@ -618,7 +550,6 @@ public class AuthUI {
          */
         public static final class EmailBuilder extends Builder {
             public EmailBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
                 super(EmailAuthProvider.PROVIDER_ID);
             }
 
@@ -651,7 +582,6 @@ public class AuthUI {
          */
         public static final class PhoneBuilder extends Builder {
             public PhoneBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
                 super(PhoneAuthProvider.PROVIDER_ID);
             }
 
@@ -724,7 +654,6 @@ public class AuthUI {
          */
         public static final class GoogleBuilder extends Builder {
             public GoogleBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
                 super(GoogleAuthProvider.PROVIDER_ID);
                 Preconditions.checkConfigured(getApplicationContext(),
                         "Check your google-services plugin configuration, the" +
@@ -788,9 +717,8 @@ public class AuthUI {
             private static final String TAG = "FacebookBuilder";
 
             public FacebookBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
                 super(FacebookAuthProvider.PROVIDER_ID);
-                if (!FacebookSignInHandler.IS_AVAILABLE) {
+                if (!ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
                     throw new RuntimeException(
                             "Facebook provider cannot be configured " +
                                     "without dependency. Did you forget to add " +
@@ -812,7 +740,6 @@ public class AuthUI {
              * Facebook Login SDK. Available permissions can be found <a
              * href="https://developers.facebook.com/docs/facebook-login/permissions">here</a>.
              */
-            @SuppressWarnings({"deprecation", "NullableProblems"}) // For backcompat
             @NonNull
             public FacebookBuilder setPermissions(@NonNull List<String> permissions) {
                 getParams().putStringArrayList(
@@ -826,9 +753,8 @@ public class AuthUI {
          */
         public static final class TwitterBuilder extends Builder {
             public TwitterBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
                 super(TwitterAuthProvider.PROVIDER_ID);
-                if (!TwitterSignInHandler.IS_AVAILABLE) {
+                if (!ProviderAvailability.IS_TWITTER_AVAILABLE) {
                     throw new RuntimeException(
                             "Twitter provider cannot be configured " +
                                     "without dependency. Did you forget to add " +
@@ -856,8 +782,6 @@ public class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
-
-        private AuthIntentBuilder() {}
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a default
@@ -929,34 +853,6 @@ public class AuthUI {
         }
 
         /**
-         * Specified the set of supported authentication providers. At least one provider must be
-         * specified. There may only be one instance of each provider.
-         * <p>
-         * <p>If no providers are explicitly specified by calling this method, then the email
-         * provider is the default supported provider.
-         *
-         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
-         *                   configuration parameters for the IDP.
-         * @see IdpConfig
-         * @deprecated because the order in which providers were displayed was the inverse of the
-         * order in which they were supplied. Use {@link #setAvailableProviders(List)} to display
-         * the providers in the order in which they were supplied.
-         */
-        @Deprecated
-        public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
-            setAvailableProviders(idpConfigs);
-
-            // Ensure email provider is at the bottom to keep backwards compatibility
-            int emailProviderIndex = mProviders.indexOf(new IdpConfig.Builder(EMAIL_PROVIDER).build());
-            if (emailProviderIndex != -1) {
-                mProviders.add(0, mProviders.remove(emailProviderIndex));
-            }
-            Collections.reverse(mProviders);
-
-            return (T) this;
-        }
-
-        /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow. To
          * (en)disable hint selector and credential selector independently use {@link
          * #setIsSmartLockEnabled(boolean, boolean)}
@@ -1003,43 +899,8 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
-        private Boolean mAllowNewEmailAccounts;
-
         private SignInIntentBuilder() {
             super();
-        }
-
-        /**
-         * Enables or disables creating new accounts in the email sign in flow.
-         * <p>
-         * <p>Account creation is enabled by default.
-         *
-         * @deprecated set this option directly on the email builder: {@link
-         * IdpConfig.EmailBuilder#setAllowNewAccounts(boolean)}.
-         */
-        @NonNull
-        @Deprecated
-        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
-            mAllowNewEmailAccounts = enabled;
-            return this;
-        }
-
-        @NonNull
-        @Override
-        public Intent build() {
-            if (mAllowNewEmailAccounts != null) {
-                // To ensure setAllowNewEmailAccounts backcompat
-                for (int i = 0; i < mProviders.size(); i++) {
-                    if (mProviders.get(i).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
-                        mProviders.set(i, new IdpConfig.EmailBuilder()
-                                .setAllowNewAccounts(mAllowNewEmailAccounts)
-                                .build());
-                        break;
-                    }
-                }
-            }
-
-            return super.build();
         }
 
         @Override

@@ -47,16 +47,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:3.3.1'
+    implementation 'com.firebaseui:firebase-ui-database:4.0.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:3.3.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.0.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.0.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:3.3.1'
+    implementation 'com.firebaseui:firebase-ui-storage:4.0.0'
 }
 ```
 
@@ -70,6 +70,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
+* [Upgrade from 3.3.1 to 4.x.x](./docs/upgrade-to-4.0.md)
 * [Upgrade from 2.3.0 to 3.x.x](./docs/upgrade-to-3.0.md)
 * [Upgrade from 1.2.0 to 2.x.x](./docs/upgrade-to-2.0.md)
 
@@ -93,24 +94,20 @@ firebase-ui-storage
 |--- com.google.firebase:firebase-storage
 ```
 
-Each version of FirebaseUI has dependency on a fixed version of these libraries, defined as the variable `firebase_version`
-in `common/constants.gradle`. If you are using any dependencies in your app of the form
-`implementation 'com.google.firebase:firebase-*:x.y.z'` or
-`implementation 'com.google.android.gms:play-services-*:x.y.z'`
-you need to make sure that you use the same version that your chosen version of FirebaseUI requires.
+As of version `15.0.0`, Firebase and Google Play services libraries have independent, semantic
+versions. This means that FirebaseUI has independent dependencies on each of the libraries above.
+For best results, your app should depend on a version of each dependency with the same major
+version number as the version used by FirebaseUI.
 
-For convenience, here are some recent examples:
+As of version `4.0.0`, FirebaseUI has the following dependency versions:
 
-| FirebaseUI Version | Firebase/Play Services Version |
-|--------------------|--------------------------------|
-| 3.3.1              | 15.0.0                         |
-| 3.3.0              | 12.0.1                         |
-| 3.2.2              | 11.8.0                         |
-| 3.1.3              | 11.8.0                         |
-| 3.0.0              | 11.4.2                         |
-| 2.4.0              | 11.4.0                         |
-| 1.1.1              | 10.0.0 or 10.0.1               |
-
+| Library              | Version                        |
+|----------------------|--------------------------------|
+| `firebase-auth`      | 15.1.0                         |
+| `play-services-auth` | 15.0.1                         |
+| `firebase-database`  | 15.0.1                         |
+| `firebase-firestore` | 16.0.0                         |
+| `firebase-storage`   | 15.0.2                         |
 
 ### Upgrading dependencies
 

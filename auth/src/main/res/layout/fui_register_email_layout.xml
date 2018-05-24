@@ -1,79 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        style="@style/FirebaseUI.WrapperStyle"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        tools:visibility="visible" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/email_layout"
-            style="@style/FirebaseUI.TextInputLayout.EmailField"
-            android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            style="@style/FirebaseUI.WrapperStyle"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:transitionGroup="true"
-            android:transitionName="@string/fui_email_field_name"
-            app:errorEnabled="true"
-            tools:ignore="UnusedAttribute">
+            android:orientation="vertical">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/email"
-                style="@style/FirebaseUI.TextInputEditText.EmailField" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/name_layout"
-            style="@style/FirebaseUI.TextInputLayout.NameField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            app:errorEnabled="true">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/name"
-                style="@style/FirebaseUI.TextInputEditText.NameField"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/email_layout"
+                style="@style/FirebaseUI.TextInputLayout.EmailField"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:transitionGroup="true"
+                android:transitionName="@string/fui_email_field_name"
+                app:errorEnabled="true"
+                tools:ignore="UnusedAttribute">
 
-        </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/email"
+                    style="@style/FirebaseUI.TextInputEditText.EmailField" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/password_layout"
-            style="@style/FirebaseUI.TextInputLayout.PasswordField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            app:errorEnabled="true"
-            app:passwordToggleEnabled="true">
+            </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/password"
-                style="@style/FirebaseUI.TextInputEditText.PasswordField" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/name_layout"
+                style="@style/FirebaseUI.TextInputLayout.NameField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                app:errorEnabled="true">
 
-        </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/name"
+                    style="@style/FirebaseUI.TextInputEditText.NameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/create_account_text"
-            style="@style/FirebaseUI.Text.BodyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:textIsSelectable="false"
-            tools:text="@string/fui_create_account_preamble_tos_and_pp" />
+            </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/button_create"
-            style="@style/FirebaseUI.Button"
-            android:text="@string/fui_button_text_save"
-            tools:ignore="RtlHardcoded" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_layout"
+                style="@style/FirebaseUI.TextInputLayout.PasswordField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                app:errorEnabled="true"
+                app:passwordToggleEnabled="true">
 
-    </LinearLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/password"
+                    style="@style/FirebaseUI.TextInputEditText.PasswordField" />
 
-</ScrollView>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/button_create"
+                style="@style/FirebaseUI.Button"
+                android:text="@string/fui_button_text_save"
+                tools:ignore="RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+
