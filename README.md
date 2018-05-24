@@ -103,11 +103,11 @@ As of version `4.0.0`, FirebaseUI has the following dependency versions:
 
 | Library              | Version                        |
 |----------------------|--------------------------------|
-| `firebase-auth`      | 15.1.0                         |
+| `firebase-auth`      | 16.0.1                         |
 | `play-services-auth` | 15.0.1                         |
-| `firebase-database`  | 15.0.1                         |
-| `firebase-firestore` | 16.0.0                         |
-| `firebase-storage`   | 15.0.2                         |
+| `firebase-database`  | 16.0.1                         |
+| `firebase-firestore` | 17.0.1                         |
+| `firebase-storage`   | 16.0.1                         |
 
 ### Upgrading dependencies
 
