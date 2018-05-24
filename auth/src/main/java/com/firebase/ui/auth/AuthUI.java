@@ -77,6 +77,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -214,9 +215,9 @@ public final class AuthUI {
      * Signs the user in without any UI if possible. If this operation fails, you can safely start a
      * UI-based sign-in flow knowing it is required.
      *
-     * @param context        requesting the user be signed in
-     * @param configs        to use for silent sign in. Only Google and email are currently
-     *                       supported, the rest will be ignored.
+     * @param context requesting the user be signed in
+     * @param configs to use for silent sign in. Only Google and email are currently supported, the
+     *                rest will be ignored.
      * @return a task which indicates whether or not the user was successfully signed in.
      */
     @NonNull
@@ -643,9 +644,122 @@ public final class AuthUI {
                     throw new IllegalStateException("Invalid country iso: " + iso);
                 }
 
-                getParams().putString(ExtraConstants.COUNTRY_ISO, iso);
+                getParams().putString(ExtraConstants.COUNTRY_ISO,
+                        iso.toUpperCase(Locale.getDefault()));
 
                 return this;
+            }
+
+
+            /**
+             * Sets the country codes available in the country code selector for phone
+             * authentication. This is not to be called with
+             * {@link #setBlacklistedPhoneAuthCountryCodes(List<String>)}.
+             * If both are called, an exception will be thrown.
+             * <p>
+             * For a list of country codes, see Alpha-2 codes here:
+             * http://www.nationsonline.org/oneworld/country_code_list.htm
+             *
+             * @param whitelistedPhoneAuthCountryCodes a case insensitive list of country codes to
+             *                                         be whitelisted
+             */
+            public PhoneBuilder setWhitelistedPhoneAuthCountryCodes(
+                    @Nullable List<String> whitelistedPhoneAuthCountryCodes) {
+                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRY_CODES)) {
+                    throw new RuntimeException(
+                            "You can either whitelist or blacklist country codes for phone " +
+                                    "authentication.");
+                }
+
+                addCountryCodesToBundle(whitelistedPhoneAuthCountryCodes,
+                        ExtraConstants.WHITELISTED_COUNTRY_CODES);
+                return this;
+            }
+
+            /**
+             * Sets the country codes to be removed from the country code selector for phone
+             * authentication. This is not to be called with
+             * {@link #setWhitelistedPhoneAuthCountryCodes(List<String>)}.
+             * If both are called, an exception will be thrown.
+             * <p>
+             * For a list of country codes, see Alpha-2 codes here:
+             * https://en.wikipedia.org/wiki/ISO_3166-1
+             *
+             * @param blacklistedPhoneAuthCountryCodes a case insensitive list of country codes to
+             *                                         be whitelisted
+             */
+            public PhoneBuilder setBlacklistedPhoneAuthCountryCodes(
+                    @Nullable List<String> blacklistedPhoneAuthCountryCodes) {
+                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRY_CODES)) {
+                    throw new RuntimeException(
+                            "You can either whitelist or blacklist country codes for phone " +
+                                    "authentication.");
+                }
+
+                addCountryCodesToBundle(blacklistedPhoneAuthCountryCodes,
+                        ExtraConstants.BLACKLISTED_COUNTRY_CODES);
+                return this;
+            }
+
+            private void addCountryCodesToBundle(List<String> countryCodes,
+                                                 String countryCodeType) {
+                ArrayList<String> uppercaseCodes = new ArrayList<>();
+                for (String code : countryCodes) {
+                    uppercaseCodes.add(code.toUpperCase(Locale.getDefault()));
+                }
+
+                getParams().putStringArrayList(countryCodeType, uppercaseCodes);
+            }
+
+            @Override
+            public IdpConfig build() {
+                validateInputs();
+                return super.build();
+            }
+
+            private void validateInputs() {
+                List<String> whitelistedCountryCodes = getParams().getStringArrayList(
+                        ExtraConstants.WHITELISTED_COUNTRY_CODES);
+                List<String> blacklistedCountryCodes = getParams().getStringArrayList(
+                        ExtraConstants.BLACKLISTED_COUNTRY_CODES);
+
+                if (whitelistedCountryCodes != null &&
+                        blacklistedCountryCodes != null) {
+                    throw new RuntimeException(
+                            "You can either whitelist or blacklist country codes for phone " +
+                                    "authentication.");
+                } else if (whitelistedCountryCodes != null) {
+                    validateCountryCodes(whitelistedCountryCodes);
+                    validateDefaultCountryCode(whitelistedCountryCodes, true);
+
+                } else if (blacklistedCountryCodes != null) {
+                    validateCountryCodes(blacklistedCountryCodes);
+                    validateDefaultCountryCode(blacklistedCountryCodes, false);
+                }
+            }
+
+            private void validateCountryCodes(List<String> codes) {
+                if (codes == null) {
+                    return;
+                }
+                for (String code : codes) {
+                    if (!PhoneNumberUtils.isValidIso(code)) {
+                        throw new RuntimeException("Invalid country iso code provided.");
+                    }
+                }
+            }
+
+            private void validateDefaultCountryCode(List<String> codes,
+                                                    boolean whitelisted) {
+                if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) && codes != null) {
+                    String defaultCode = getParams().getString(ExtraConstants.COUNTRY_ISO);
+                    if ((codes.contains(defaultCode) && !whitelisted)
+                            || (!codes.contains(defaultCode) && whitelisted)) {
+                        throw new RuntimeException("Invalid default country iso. Make sure it " +
+                                "is either part of the whitelisted country codes or that you " +
+                                "haven't blacklisted it.");
+                    }
+                }
             }
         }
 
@@ -679,8 +793,8 @@ public final class AuthUI {
             }
 
             /**
-             * Set the {@link GoogleSignInOptions} to be used for Google sign-in. Standard options
-             * like requesting the user's email will automatically be added.
+             * Set the {@link GoogleSignInOptions} to be used for Google sign-in. Standard
+             * options like requesting the user's email will automatically be added.
              *
              * @param options sign-in options
              */
@@ -784,8 +898,8 @@ public final class AuthUI {
         boolean mEnableHints = true;
 
         /**
-         * Specifies the theme to use for the application flow. If no theme is specified, a default
-         * theme will be used.
+         * Specifies the theme to use for the application flow. If no theme is specified, a
+         * default theme will be used.
          */
         @NonNull
         public T setTheme(@StyleRes int theme) {
@@ -825,8 +939,8 @@ public final class AuthUI {
         }
 
         /**
-         * Specified the set of supported authentication providers. At least one provider must be
-         * specified. There may only be one instance of each provider.
+         * Specified the set of supported authentication providers. At least one provider must
+         * be specified. There may only be one instance of each provider.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.

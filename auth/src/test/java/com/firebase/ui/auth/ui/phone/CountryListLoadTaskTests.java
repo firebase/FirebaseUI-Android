@@ -295,13 +295,13 @@ public class CountryListLoadTaskTests {
 
     @Before
     public void setUp() {
-        // Create task and mock dependencies
         mListener = mock(CountryListLoadTask.Listener.class);
-        mTask = new CountryListLoadTask(mListener);
     }
 
     @Test
-    public void testExecute() {
+    public void testExecute_withoutUserInput_expectAllCountriesAdded() {
+        mTask = new CountryListLoadTask(mListener, null, null);
+
         mTask.execute();
 
         try {
@@ -315,9 +315,56 @@ public class CountryListLoadTaskTests {
         }
     }
 
+
+    @Test
+    public void testExecute_withUserWhitelistInput_expectUserCountriesAddedOnly() {
+        List<String> whitelistedCountryCodes = new ArrayList<>();
+        whitelistedCountryCodes.add("US");
+
+        List<CountryInfo> expectedOutput = new ArrayList<>();
+        expectedOutput.add(new CountryInfo(new Locale("", "US"), 1));
+
+        mTask = new CountryListLoadTask(mListener, whitelistedCountryCodes, null);
+
+        mTask.execute();
+
+        try {
+            final List<CountryInfo> result = mTask.get();
+            Collections.sort(expectedOutput);
+            assertEquals(expectedOutput, result);
+        } catch (InterruptedException e) {
+            fail("Should not throw InterruptedException");
+        } catch (ExecutionException e) {
+            fail("Should not throw ExecutionException");
+        }
+    }
+
+    @Test
+    public void testExecute_withUserBlacklistInput_expectUserCountriesAddedOnly() {
+        List<String> blacklistedCountryCodes = new ArrayList<>();
+        blacklistedCountryCodes.add("US");
+
+        List<CountryInfo> expectedOutput = new ArrayList<>(COUNTRY_LIST);
+        expectedOutput.remove(new CountryInfo(new Locale("", "US"), 1));
+
+        mTask = new CountryListLoadTask(mListener, null, blacklistedCountryCodes);
+
+        mTask.execute();
+
+        try {
+            final List<CountryInfo> result = mTask.get();
+            Collections.sort(expectedOutput);
+            assertEquals(expectedOutput, result);
+        } catch (InterruptedException e) {
+            fail("Should not throw InterruptedException");
+        } catch (ExecutionException e) {
+            fail("Should not throw ExecutionException");
+        }
+    }
+
     @Test
     public void testOnPostExecute_nullListener() {
-        mTask = new CountryListLoadTask(null);
+        mTask = new CountryListLoadTask(null, null, null);
         try {
             mTask.onPostExecute(COUNTRY_LIST);
         } catch (NullPointerException ex) {
@@ -327,6 +374,7 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testOnPostExecute() {
+        mTask = new CountryListLoadTask(mListener, null, null);
         mTask.onPostExecute(COUNTRY_LIST);
         verify(mListener).onLoadComplete(COUNTRY_LIST);
     }
