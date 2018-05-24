@@ -30,12 +30,10 @@ import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -46,16 +44,11 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowActivity;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -67,8 +60,7 @@ public class TestHelper {
     public static void initialize() {
         spyContextAndResources();
         AuthUI.setApplicationContext(RuntimeEnvironment.application);
-        FirebaseApp app = initializeApp(RuntimeEnvironment.application);
-        injectMockFirebaseAuth(app);
+        initializeApp(RuntimeEnvironment.application);
         initializeProviders();
     }
 
@@ -92,48 +84,6 @@ public class TestHelper {
         } catch (IllegalStateException e) {
             return FirebaseApp.getInstance(FirebaseApp.DEFAULT_APP_NAME);
         }
-    }
-
-    /**
-     * This method finds the map of FirebaseAuth instances and injects of a mock instance associated
-     * with the given FirebaseApp for testing purposes.
-     */
-    private static void injectMockFirebaseAuth(FirebaseApp app) {
-        for (Field field : FirebaseAuth.class.getDeclaredFields()) {
-            field.setAccessible(true);
-
-            Object o;
-            try {
-                o = field.get(null);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            } catch (NullPointerException e) {
-                continue;
-            }
-
-            Type genericType = field.getGenericType();
-            if (o instanceof Map && genericType instanceof ParameterizedType) {
-                Type[] parameterTypes = ((ParameterizedType) genericType).getActualTypeArguments();
-                if (parameterTypes.length != 2 || parameterTypes[0] != String.class
-                        || parameterTypes[1] != FirebaseAuth.class) {
-                    continue;
-                }
-
-                //noinspection unchecked
-                Map<String, FirebaseAuth> instances = (Map<String, FirebaseAuth>) o;
-
-                FirebaseAuth.getInstance(app);
-                for (String id : instances.keySet()) {
-                    instances.put(id, mock(FirebaseAuth.class));
-                }
-
-                break;
-            }
-        }
-
-        FirebaseAuth mockAuth = FirebaseAuth.getInstance(app);
-        when(mockAuth.setFirebaseUIVersion(anyString()))
-                .thenReturn(Tasks.<Void>forResult(null));
     }
 
     private static void initializeProviders() {
