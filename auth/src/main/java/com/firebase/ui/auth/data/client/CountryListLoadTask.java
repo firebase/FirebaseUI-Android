@@ -19,6 +19,7 @@
 package com.firebase.ui.auth.data.client;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.CountryInfo;
@@ -49,17 +50,30 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
     List<String> blacklistedCountryIsos;
 
     public CountryListLoadTask(Listener listener,
-                               List<String> whitelistedCountryIsos,
-                               List<String> blacklistedCountryIsos) {
+                               List<String> whitelistedCountries,
+                               List<String> blacklistedCountries) {
         mListener = listener;
         countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
 
-        if (whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
-            this.whitelistedCountryIsos = new ArrayList<>(countryInfoMap.keySet());
+        if (whitelistedCountries != null) {
+            this.whitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
+        } else if (blacklistedCountries != null) {
+            this.blacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
         } else {
-            this.whitelistedCountryIsos = whitelistedCountryIsos;
-            this.blacklistedCountryIsos = blacklistedCountryIsos;
+            this.whitelistedCountryIsos = new ArrayList<>(countryInfoMap.keySet());
         }
+    }
+
+    private List<String> convertCodesToIsos(@NonNull List<String> codes) {
+        List<String> isos = new ArrayList<>();
+        for (String code : codes) {
+            if (PhoneNumberUtils.isValid(code)) {
+                isos.addAll(PhoneNumberUtils.getCountryIsosFromCountryCode(code));
+            } else {
+                isos.add(code);
+            }
+        }
+        return isos;
     }
 
     @Override

@@ -167,6 +167,12 @@ public final class PhoneNumberUtils {
         return DEFAULT_LOCALE.getCountry();
     }
 
+    @Nullable
+    public static List<String> getCountryIsosFromCountryCode(String countryCode) {
+        return !isValid(countryCode) ? null :
+                COUNTRY_TO_REGION_CODES.get(Integer.parseInt(countryCode.substring(1)));
+    }
+
     /**
      * Country code extracted using shortest matching prefix like libPhoneNumber. See:
      * https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com
@@ -185,7 +191,6 @@ public final class PhoneNumberUtils {
                 return potentialCountryCode;
             }
         }
-
         return null;
     }
 

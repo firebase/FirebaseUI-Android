@@ -653,62 +653,61 @@ public final class AuthUI {
 
             /**
              * Sets the country codes available in the country code selector for phone
-             * authentication. This is not to be called with
-             * {@link #setBlacklistedPhoneAuthCountryIsos(List<String>)}.
+             * authentication. Takes as input a List of both country isos and codes.
+             * This is not to be called with
+             * {@link #setBlacklistedPhoneAuthCountries(List<String>)}.
              * If both are called, an exception will be thrown.
              * <p>
-             * For a list of country codes, see Alpha-2 codes here:
-             * http://www.nationsonline.org/oneworld/country_code_list.htm
+             * Inputting an e-164 country code (e.g. '+1') will include all countries with
+             * +1 as its code.
+             * Example input: {'+52', 'us'}
+             * For a list of country iso or codes, see Alpha-2 isos here:
+             * https://en.wikipedia.org/wiki/ISO_3166-1
+             * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param whitelistedPhoneAuthCountryIsos a case insensitive list of country codes to
-             *                                         be whitelisted
+             * @param whitelistedPhoneAuthCountries a case insensitive list of country codes to be
+             *                                        whitelisted
              */
-            public PhoneBuilder setWhitelistedPhoneAuthCountryIsos(
-                    @NonNull List<String> whitelistedPhoneAuthCountryIsos) {
-                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRY_ISOS)) {
+            public PhoneBuilder setWhitelistedPhoneAuthCountries(
+                    @NonNull List<String> whitelistedPhoneAuthCountries) {
+                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRIES)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
 
-                addCountryIsosToBundle(whitelistedPhoneAuthCountryIsos,
-                        ExtraConstants.WHITELISTED_COUNTRY_ISOS);
+                addCountryIsosToBundle(whitelistedPhoneAuthCountries,
+                        ExtraConstants.WHITELISTED_COUNTRIES);
                 return this;
             }
 
             /**
-             * Sets the country codes to be removed from the country code selector for phone
-             * authentication. This is not to be called with
-             * {@link #setWhitelistedPhoneAuthCountryIsos(List<String>)}.
+             * Sets the countries to be removed from the country code selector for phone
+             * authentication. Takes as input a List of both country isos and codes.
+             * This is not to be called with
+             * {@link #setWhitelistedPhoneAuthCountries(List<String>)}.
              * If both are called, an exception will be thrown.
              * <p>
-             * For a list of country codes, see Alpha-2 codes here:
+             * Inputting an e-164 country code (e.g. '+1') will include all countries with
+             * +1 as its code.
+             * Example input: {'+52', 'us'}
+             * For a list of country iso or codes, see Alpha-2 codes here:
              * https://en.wikipedia.org/wiki/ISO_3166-1
-             *
-             * @param blacklistedPhoneAuthCountryIsos a case insensitive list of country codes to
-             *                                         be whitelisted
+             * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
+             * @param blacklistedPhoneAuthCountries a case insensitive list of country codes to be
+             *                                        whitelisted
              */
-            public PhoneBuilder setBlacklistedPhoneAuthCountryIsos(
-                    @NonNull List<String> blacklistedPhoneAuthCountryIsos) {
-                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRY_ISOS)) {
+            public PhoneBuilder setBlacklistedPhoneAuthCountries(
+                    @NonNull List<String> blacklistedPhoneAuthCountries) {
+                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRIES)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
 
-                addCountryIsosToBundle(blacklistedPhoneAuthCountryIsos,
-                        ExtraConstants.BLACKLISTED_COUNTRY_ISOS);
+                addCountryIsosToBundle(blacklistedPhoneAuthCountries,
+                        ExtraConstants.BLACKLISTED_COUNTRIES);
                 return this;
-            }
-
-            private void addCountryIsosToBundle(List<String> CountryIsos,
-                                                 String CountryIsoType) {
-                ArrayList<String> uppercaseCodes = new ArrayList<>();
-                for (String code : CountryIsos) {
-                    uppercaseCodes.add(code.toUpperCase(Locale.getDefault()));
-                }
-
-                getParams().putStringArrayList(CountryIsoType, uppercaseCodes);
             }
 
             @Override
@@ -717,49 +716,71 @@ public final class AuthUI {
                 return super.build();
             }
 
-            private void validateInputs() {
-                List<String> whitelistedCountryIsos = getParams().getStringArrayList(
-                        ExtraConstants.WHITELISTED_COUNTRY_ISOS);
-                List<String> blacklistedCountryIsos = getParams().getStringArrayList(
-                        ExtraConstants.BLACKLISTED_COUNTRY_ISOS);
+            private void addCountryIsosToBundle(List<String> CountryIsos, String CountryIsoType) {
+                ArrayList<String> uppercaseCodes = new ArrayList<>();
+                for (String code : CountryIsos) {
+                    uppercaseCodes.add(code.toUpperCase(Locale.getDefault()));
+                }
 
-                if (whitelistedCountryIsos != null &&
-                        blacklistedCountryIsos != null) {
+                getParams().putStringArrayList(CountryIsoType, uppercaseCodes);
+            }
+
+            private void validateInputs() {
+                List<String> whitelistedCountries = getParams().getStringArrayList(
+                        ExtraConstants.WHITELISTED_COUNTRIES);
+                List<String> blacklistedCountries = getParams().getStringArrayList(
+                        ExtraConstants.BLACKLISTED_COUNTRIES);
+
+                if (whitelistedCountries != null &&
+                        blacklistedCountries != null) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
-                } else if (whitelistedCountryIsos != null) {
-                    validateCountryIsos(whitelistedCountryIsos);
-                    validateDefaultCountryCode(whitelistedCountryIsos, true);
+                } else if (whitelistedCountries != null) {
+                    validateCountries(whitelistedCountries);
+                    validateDefaultCountryIso(whitelistedCountries, true);
 
-                } else if (blacklistedCountryIsos != null) {
-                    validateCountryIsos(blacklistedCountryIsos);
-                    validateDefaultCountryCode(blacklistedCountryIsos, false);
+                } else if (blacklistedCountries != null) {
+                    validateCountries(blacklistedCountries);
+                    validateDefaultCountryIso(blacklistedCountries, false);
                 }
             }
 
-            private void validateCountryIsos(List<String> codes) {
-                if (codes == null) {
-                    return;
-                }
+            private void validateCountries(List<String> codes) {
                 for (String code : codes) {
-                    if (!PhoneNumberUtils.isValidIso(code)) {
-                        throw new RuntimeException("Invalid country iso code provided.");
+                    if (!PhoneNumberUtils.isValidIso(code) && !PhoneNumberUtils.isValid(code)) {
+                        throw new RuntimeException("Invalid input: You must provide a valid " +
+                                "country iso (alpha-2) or code (e-164). e.g. 'us' or '+1'.");
                     }
                 }
             }
 
-            private void validateDefaultCountryCode(List<String> codes,
-                                                    boolean whitelisted) {
+            private void validateDefaultCountryIso(List<String> codes, boolean whitelisted) {
                 if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) && codes != null) {
-                    String defaultCode = getParams().getString(ExtraConstants.COUNTRY_ISO);
-                    if ((codes.contains(defaultCode) && !whitelisted)
-                            || (!codes.contains(defaultCode) && whitelisted)) {
+                    String defaultIso = getParams().getString(ExtraConstants.COUNTRY_ISO);
+                    boolean containsIso = containsCountryIso(codes, defaultIso);
+                    if (!containsIso && whitelisted || containsIso && !whitelisted) {
                         throw new RuntimeException("Invalid default country iso. Make sure it " +
-                                "is either part of the whitelisted country codes or that you " +
+                                "is either part of the whitelisted list or that you " +
                                 "haven't blacklisted it.");
                     }
                 }
+            }
+
+            private boolean containsCountryIso(List<String> codes, String iso) {
+                for (String code : codes) {
+                    if (PhoneNumberUtils.isValidIso(code)) {
+                        if (code.equals(iso)) {
+                            return true;
+                        }
+                    } else {
+                        List<String> isos = PhoneNumberUtils.getCountryIsosFromCountryCode(code);
+                        if (isos.contains(iso)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
         }
 
