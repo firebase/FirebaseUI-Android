@@ -664,7 +664,7 @@ public final class AuthUI {
              *                                         be whitelisted
              */
             public PhoneBuilder setWhitelistedPhoneAuthCountryCodes(
-                    @Nullable List<String> whitelistedPhoneAuthCountryCodes) {
+                    @NonNull List<String> whitelistedPhoneAuthCountryCodes) {
                 if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRY_CODES)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
@@ -689,7 +689,7 @@ public final class AuthUI {
              *                                         be whitelisted
              */
             public PhoneBuilder setBlacklistedPhoneAuthCountryCodes(
-                    @Nullable List<String> blacklistedPhoneAuthCountryCodes) {
+                    @NonNull List<String> blacklistedPhoneAuthCountryCodes) {
                 if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRY_CODES)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
