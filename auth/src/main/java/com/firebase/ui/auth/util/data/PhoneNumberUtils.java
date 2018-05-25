@@ -155,7 +155,7 @@ public final class PhoneNumberUtils {
                 ? null : COUNTRY_TO_ISO_CODES.get(countryIso.toUpperCase(Locale.getDefault()));
     }
 
-    public static Map<String, Integer> getCountryCodeMap() {
+    public static Map<String, Integer> getImmutableCountryCodeMap() {
         return COUNTRY_TO_ISO_CODES;
     }
 

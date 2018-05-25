@@ -63,7 +63,7 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
     }
 
     public List<CountryInfo> getAvailableCountryCodes() {
-        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getCountryCodeMap();
+        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryCodeMap();
         if (whitelistedCountryCodes == null && blacklistedCountryCodes == null) {
             whitelistedCountryCodes = new ArrayList<>(countryInfoMap.keySet());
         }
