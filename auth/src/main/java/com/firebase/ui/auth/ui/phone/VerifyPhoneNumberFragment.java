@@ -48,7 +48,6 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -135,8 +134,6 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         // It is assumed that the phone number that are being wired in via Credential Selector
         // are e164 since we store it.
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
-        List<String> whitelistedCountryCodes = null;
-        List<String> blacklistedCountryCodes = null;
         String phone = null;
         String countryIso = null;
         String nationalNumber = null;
@@ -224,10 +221,10 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private void setupCountrySpinner() {
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         if (params != null) {
-            mCountryListSpinner.setWhitelistedCountryCodes(
-                    params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRY_CODES));
-            mCountryListSpinner.setBlacklistedCountryCodes(
-                    params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRY_CODES));
+            mCountryListSpinner.setWhitelistedCountryIsos(
+                    params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRY_ISOS));
+            mCountryListSpinner.setBlacklistedCountryIsos(
+                    params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRY_ISOS));
         }
 
         //clear error when spinner is clicked on

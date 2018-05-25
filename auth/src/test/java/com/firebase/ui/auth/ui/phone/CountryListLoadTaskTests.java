@@ -318,13 +318,13 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testExecute_withUserWhitelistInput_expectUserCountriesAddedOnly() {
-        List<String> whitelistedCountryCodes = new ArrayList<>();
-        whitelistedCountryCodes.add("US");
+        List<String> whitelistedCountryIsos = new ArrayList<>();
+        whitelistedCountryIsos.add("US");
 
         List<CountryInfo> expectedOutput = new ArrayList<>();
         expectedOutput.add(new CountryInfo(new Locale("", "US"), 1));
 
-        mTask = new CountryListLoadTask(mListener, whitelistedCountryCodes, null);
+        mTask = new CountryListLoadTask(mListener, whitelistedCountryIsos, null);
 
         mTask.execute();
 
@@ -341,13 +341,13 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testExecute_withUserBlacklistInput_expectUserCountriesAddedOnly() {
-        List<String> blacklistedCountryCodes = new ArrayList<>();
-        blacklistedCountryCodes.add("US");
+        List<String> blacklistedCountryIsos = new ArrayList<>();
+        blacklistedCountryIsos.add("US");
 
         List<CountryInfo> expectedOutput = new ArrayList<>(COUNTRY_LIST);
         expectedOutput.remove(new CountryInfo(new Locale("", "US"), 1));
 
-        mTask = new CountryListLoadTask(mListener, null, blacklistedCountryCodes);
+        mTask = new CountryListLoadTask(mListener, null, blacklistedCountryIsos);
 
         mTask.execute();
 

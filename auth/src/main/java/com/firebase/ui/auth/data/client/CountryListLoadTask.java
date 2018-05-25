@@ -44,44 +44,44 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
 
     private final Listener mListener;
 
-    List<String> whitelistedCountryCodes;
-    List<String> blacklistedCountryCodes;
+    List<String> whitelistedCountryIsos;
+    List<String> blacklistedCountryIsos;
 
     public CountryListLoadTask(Listener listener,
-                               List<String> whitelistedCountryCodes,
-                               List<String> blacklistedCountryCodes) {
+                               List<String> whitelistedCountryIsos,
+                               List<String> blacklistedCountryIsos) {
         mListener = listener;
-        this.whitelistedCountryCodes = whitelistedCountryCodes;
-        this.blacklistedCountryCodes = blacklistedCountryCodes;
+        this.whitelistedCountryIsos = whitelistedCountryIsos;
+        this.blacklistedCountryIsos = blacklistedCountryIsos;
     }
 
     @Override
     protected List<CountryInfo> doInBackground(Void... params) {
-        List<CountryInfo> countryInfoList = getAvailableCountryCodes();
+        List<CountryInfo> countryInfoList = getAvailableCountryIsos();
         Collections.sort(countryInfoList);
         return countryInfoList;
     }
 
-    public List<CountryInfo> getAvailableCountryCodes() {
-        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryCodeMap();
-        if (whitelistedCountryCodes == null && blacklistedCountryCodes == null) {
-            whitelistedCountryCodes = new ArrayList<>(countryInfoMap.keySet());
+    public List<CountryInfo> getAvailableCountryIsos() {
+        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
+        if (whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
+            whitelistedCountryIsos = new ArrayList<>(countryInfoMap.keySet());
         }
 
         List<CountryInfo> countryInfoList = new ArrayList<>();
 
         Set<String> excludedCountries = new HashSet<>();
-        if (whitelistedCountryCodes == null) {
-            excludedCountries.addAll(blacklistedCountryCodes);
+        if (whitelistedCountryIsos == null) {
+            excludedCountries.addAll(blacklistedCountryIsos);
         } else {
             excludedCountries.addAll(countryInfoMap.keySet());
-            excludedCountries.removeAll(whitelistedCountryCodes);
+            excludedCountries.removeAll(whitelistedCountryIsos);
         }
 
-        for (String countryCode : countryInfoMap.keySet()) {
-            if (!excludedCountries.contains(countryCode)) {
-                countryInfoList.add(new CountryInfo(new Locale("", countryCode),
-                        countryInfoMap.get(countryCode)));
+        for (String countryIso : countryInfoMap.keySet()) {
+            if (!excludedCountries.contains(countryIso)) {
+                countryInfoList.add(new CountryInfo(new Locale("", countryIso),
+                        countryInfoMap.get(countryIso)));
             }
         }
 

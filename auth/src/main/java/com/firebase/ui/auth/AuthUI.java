@@ -654,61 +654,61 @@ public final class AuthUI {
             /**
              * Sets the country codes available in the country code selector for phone
              * authentication. This is not to be called with
-             * {@link #setBlacklistedPhoneAuthCountryCodes(List<String>)}.
+             * {@link #setBlacklistedPhoneAuthCountryIsos(List<String>)}.
              * If both are called, an exception will be thrown.
              * <p>
              * For a list of country codes, see Alpha-2 codes here:
              * http://www.nationsonline.org/oneworld/country_code_list.htm
              *
-             * @param whitelistedPhoneAuthCountryCodes a case insensitive list of country codes to
+             * @param whitelistedPhoneAuthCountryIsos a case insensitive list of country codes to
              *                                         be whitelisted
              */
-            public PhoneBuilder setWhitelistedPhoneAuthCountryCodes(
-                    @NonNull List<String> whitelistedPhoneAuthCountryCodes) {
-                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRY_CODES)) {
+            public PhoneBuilder setWhitelistedPhoneAuthCountryIsos(
+                    @NonNull List<String> whitelistedPhoneAuthCountryIsos) {
+                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRY_ISOS)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
 
-                addCountryCodesToBundle(whitelistedPhoneAuthCountryCodes,
-                        ExtraConstants.WHITELISTED_COUNTRY_CODES);
+                addCountryIsosToBundle(whitelistedPhoneAuthCountryIsos,
+                        ExtraConstants.WHITELISTED_COUNTRY_ISOS);
                 return this;
             }
 
             /**
              * Sets the country codes to be removed from the country code selector for phone
              * authentication. This is not to be called with
-             * {@link #setWhitelistedPhoneAuthCountryCodes(List<String>)}.
+             * {@link #setWhitelistedPhoneAuthCountryIsos(List<String>)}.
              * If both are called, an exception will be thrown.
              * <p>
              * For a list of country codes, see Alpha-2 codes here:
              * https://en.wikipedia.org/wiki/ISO_3166-1
              *
-             * @param blacklistedPhoneAuthCountryCodes a case insensitive list of country codes to
+             * @param blacklistedPhoneAuthCountryIsos a case insensitive list of country codes to
              *                                         be whitelisted
              */
-            public PhoneBuilder setBlacklistedPhoneAuthCountryCodes(
-                    @NonNull List<String> blacklistedPhoneAuthCountryCodes) {
-                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRY_CODES)) {
+            public PhoneBuilder setBlacklistedPhoneAuthCountryIsos(
+                    @NonNull List<String> blacklistedPhoneAuthCountryIsos) {
+                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRY_ISOS)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
 
-                addCountryCodesToBundle(blacklistedPhoneAuthCountryCodes,
-                        ExtraConstants.BLACKLISTED_COUNTRY_CODES);
+                addCountryIsosToBundle(blacklistedPhoneAuthCountryIsos,
+                        ExtraConstants.BLACKLISTED_COUNTRY_ISOS);
                 return this;
             }
 
-            private void addCountryCodesToBundle(List<String> countryCodes,
-                                                 String countryCodeType) {
+            private void addCountryIsosToBundle(List<String> CountryIsos,
+                                                 String CountryIsoType) {
                 ArrayList<String> uppercaseCodes = new ArrayList<>();
-                for (String code : countryCodes) {
+                for (String code : CountryIsos) {
                     uppercaseCodes.add(code.toUpperCase(Locale.getDefault()));
                 }
 
-                getParams().putStringArrayList(countryCodeType, uppercaseCodes);
+                getParams().putStringArrayList(CountryIsoType, uppercaseCodes);
             }
 
             @Override
@@ -718,27 +718,27 @@ public final class AuthUI {
             }
 
             private void validateInputs() {
-                List<String> whitelistedCountryCodes = getParams().getStringArrayList(
-                        ExtraConstants.WHITELISTED_COUNTRY_CODES);
-                List<String> blacklistedCountryCodes = getParams().getStringArrayList(
-                        ExtraConstants.BLACKLISTED_COUNTRY_CODES);
+                List<String> whitelistedCountryIsos = getParams().getStringArrayList(
+                        ExtraConstants.WHITELISTED_COUNTRY_ISOS);
+                List<String> blacklistedCountryIsos = getParams().getStringArrayList(
+                        ExtraConstants.BLACKLISTED_COUNTRY_ISOS);
 
-                if (whitelistedCountryCodes != null &&
-                        blacklistedCountryCodes != null) {
+                if (whitelistedCountryIsos != null &&
+                        blacklistedCountryIsos != null) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
-                } else if (whitelistedCountryCodes != null) {
-                    validateCountryCodes(whitelistedCountryCodes);
-                    validateDefaultCountryCode(whitelistedCountryCodes, true);
+                } else if (whitelistedCountryIsos != null) {
+                    validateCountryIsos(whitelistedCountryIsos);
+                    validateDefaultCountryCode(whitelistedCountryIsos, true);
 
-                } else if (blacklistedCountryCodes != null) {
-                    validateCountryCodes(blacklistedCountryCodes);
-                    validateDefaultCountryCode(blacklistedCountryCodes, false);
+                } else if (blacklistedCountryIsos != null) {
+                    validateCountryIsos(blacklistedCountryIsos);
+                    validateDefaultCountryCode(blacklistedCountryIsos, false);
                 }
             }
 
-            private void validateCountryCodes(List<String> codes) {
+            private void validateCountryIsos(List<String> codes) {
                 if (codes == null) {
                     return;
                 }

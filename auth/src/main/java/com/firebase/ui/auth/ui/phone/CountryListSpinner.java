@@ -50,8 +50,8 @@ public final class CountryListSpinner extends AppCompatEditText implements
     private String mSelectedCountryName;
     private CountryInfo mSelectedCountryInfo;
 
-    private List<String> whitelistedCountryCodes;
-    private List<String> blacklistedCountryCodes;
+    private List<String> whitelistedCountryIsos;
+    private List<String> blacklistedCountryIsos;
 
     public CountryListSpinner(Context context) {
         this(context, null, android.R.attr.spinnerStyle);
@@ -149,8 +149,8 @@ public final class CountryListSpinner extends AppCompatEditText implements
 
     private void loadCountryList() {
         new CountryListLoadTask(this,
-                whitelistedCountryCodes,
-                blacklistedCountryCodes).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                whitelistedCountryIsos,
+                blacklistedCountryIsos).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void executeUserClickListener(View view) {
@@ -159,12 +159,12 @@ public final class CountryListSpinner extends AppCompatEditText implements
         }
     }
 
-    public void setWhitelistedCountryCodes(List<String> whitelistedCountryCodes) {
-        this.whitelistedCountryCodes = whitelistedCountryCodes;
+    public void setWhitelistedCountryIsos(List<String> whitelistedCountryIsos) {
+        this.whitelistedCountryIsos = whitelistedCountryIsos;
     }
 
-    public void setBlacklistedCountryCodes(List<String> blacklistedCountryCodes) {
-        this.blacklistedCountryCodes = blacklistedCountryCodes;
+    public void setBlacklistedCountryIsos(List<String> blacklistedCountryIsos) {
+        this.blacklistedCountryIsos = blacklistedCountryIsos;
     }
 
     @Override
