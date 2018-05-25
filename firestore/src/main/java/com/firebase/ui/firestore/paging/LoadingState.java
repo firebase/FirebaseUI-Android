@@ -5,7 +5,7 @@ package com.firebase.ui.firestore.paging;
  */
 public enum LoadingState {
     /**
-     * Loading initial data.Pag
+     * Loading initial data.
      */
     LOADING_INITIAL,
 

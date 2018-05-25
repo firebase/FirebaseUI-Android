@@ -12,11 +12,11 @@
 
     <style name="FirebaseUI.Transparent" parent="FirebaseUI">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/fui_transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
     <style name="FirebaseUI.WrapperStyle">
@@ -228,6 +228,24 @@
         <item name="drawableStartCompat">@drawable/fui_ic_twitter_bird_white_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_twitter</item>
         <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+    <style name="FirebaseUI.TopProgressBar" parent="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:visibility">invisible</item>
+        <item name="mpb_progressStyle">horizontal</item>
+        <item name="mpb_useIntrinsicPadding">false</item>
+    </style>
+
+    <style name="FirebaseUI.PrivacyFooter">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">end</item>
+        <item name="android:textIsSelectable">true</item>
     </style>
 
 </resources>
