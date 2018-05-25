@@ -44,6 +44,7 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
 
     private final Listener mListener;
 
+    Map<String, Integer> countryInfoMap;
     List<String> whitelistedCountryIsos;
     List<String> blacklistedCountryIsos;
 
@@ -51,8 +52,14 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
                                List<String> whitelistedCountryIsos,
                                List<String> blacklistedCountryIsos) {
         mListener = listener;
-        this.whitelistedCountryIsos = whitelistedCountryIsos;
-        this.blacklistedCountryIsos = blacklistedCountryIsos;
+        countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
+
+        if (whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
+            this.whitelistedCountryIsos = new ArrayList<>(countryInfoMap.keySet());
+        } else {
+            this.whitelistedCountryIsos = whitelistedCountryIsos;
+            this.blacklistedCountryIsos = blacklistedCountryIsos;
+        }
     }
 
     @Override
@@ -63,21 +70,23 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
     }
 
     public List<CountryInfo> getAvailableCountryIsos() {
-        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
-        if (whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
-            whitelistedCountryIsos = new ArrayList<>(countryInfoMap.keySet());
-        }
-
         List<CountryInfo> countryInfoList = new ArrayList<>();
 
+        // At this point either whitelistedCountryIsos or blacklistedCountryIsos is null.
+        // We assume no countries are to be excluded. Here, we correct this assumption based on the
+        // contents of either lists.
         Set<String> excludedCountries = new HashSet<>();
         if (whitelistedCountryIsos == null) {
+            // Exclude all countries in the blacklistedCountryIsos list.
             excludedCountries.addAll(blacklistedCountryIsos);
         } else {
+            // Exclude all countries that are not present in the whitelistedCountryIsos list.
             excludedCountries.addAll(countryInfoMap.keySet());
             excludedCountries.removeAll(whitelistedCountryIsos);
         }
 
+        // Once we know which countries need to be excluded, we loop through the country isos,
+        // skipping those that have been excluded.
         for (String countryIso : countryInfoMap.keySet()) {
             if (!excludedCountries.contains(countryIso)) {
                 countryInfoList.add(new CountryInfo(new Locale("", countryIso),
