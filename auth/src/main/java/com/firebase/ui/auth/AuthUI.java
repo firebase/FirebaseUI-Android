@@ -655,7 +655,7 @@ public final class AuthUI {
              * Sets the country codes available in the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setBlacklistedPhoneAuthCountries(List<String>)}.
+             * {@link #setBlacklistedCountries(List<String>)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -665,18 +665,18 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param whitelistedPhoneAuthCountries a case insensitive list of country codes to be
-             *                                        whitelisted
+             * @param whitelistedCountries a case insensitive list of country codes and/or
+             *                                     isos to be whitelisted
              */
-            public PhoneBuilder setWhitelistedPhoneAuthCountries(
-                    @NonNull List<String> whitelistedPhoneAuthCountries) {
+            public PhoneBuilder setWhitelistedCountries(
+                    @NonNull List<String> whitelistedCountries) {
                 if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRIES)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
 
-                addCountryIsosToBundle(whitelistedPhoneAuthCountries,
+                addCountryIsosToBundle(whitelistedCountries,
                         ExtraConstants.WHITELISTED_COUNTRIES);
                 return this;
             }
@@ -685,7 +685,7 @@ public final class AuthUI {
              * Sets the countries to be removed from the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setWhitelistedPhoneAuthCountries(List<String>)}.
+             * {@link #setWhitelistedCountries(List<String>)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -694,18 +694,18 @@ public final class AuthUI {
              * For a list of country iso or codes, see Alpha-2 codes here:
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
-             * @param blacklistedPhoneAuthCountries a case insensitive list of country codes to be
-             *                                        whitelisted
+             * @param blacklistedCountries a case insensitive list of country codes and/or isos
+             *                             to be blacklisted
              */
-            public PhoneBuilder setBlacklistedPhoneAuthCountries(
-                    @NonNull List<String> blacklistedPhoneAuthCountries) {
+            public PhoneBuilder setBlacklistedCountries(
+                    @NonNull List<String> blacklistedCountries) {
                 if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRIES)) {
                     throw new RuntimeException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
 
-                addCountryIsosToBundle(blacklistedPhoneAuthCountries,
+                addCountryIsosToBundle(blacklistedCountries,
                         ExtraConstants.BLACKLISTED_COUNTRIES);
                 return this;
             }
