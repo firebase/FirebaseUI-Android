@@ -9,9 +9,17 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/logo"
         style="@style/FirebaseUI.AuthMethodPicker.Logo"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,13 +33,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.9">
+        app:layout_constraintBottom_toTopOf="@id/main_tos_and_pp"
+        app:layout_constraintVertical_bias="0.7">
 
         <LinearLayout
             android:id="@+id/btn_holder"
             style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder" />
 
     </ScrollView>
+
+    <TextView
+        android:id="@+id/main_tos_and_pp"
+        style="@style/FirebaseUI.Text.BodyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fui_field_padding_vert"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:textColor="?android:textColorTertiary"
+        android:textIsSelectable="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

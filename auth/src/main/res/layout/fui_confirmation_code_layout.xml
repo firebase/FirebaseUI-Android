@@ -1,111 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
-        style="@style/FirebaseUI.WrapperStyle"
-        android:layout_height="wrap_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/header"
-            style="@style/FirebaseUI.Text.T08"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/fui_enter_confirmation_code"
-            app:layout_constraintTop_toTopOf="parent" />
+        <android.support.constraint.ConstraintLayout
+            style="@style/FirebaseUI.WrapperStyle"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/edit_phone_number"
-            style="@style/FirebaseUI.Text.T08"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/fui_linkColor"
-            app:layout_constraintTop_toBottomOf="@+id/header"
-            tools:ignore="SelectableText" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/confirmation_code_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/fui_field_padding_vert"
-            app:layout_constraintTop_toBottomOf="@+id/edit_phone_number">
-
-            <com.firebase.ui.auth.ui.phone.SpacedEditText
-                android:id="@+id/confirmation_code"
+            <TextView
+                android:id="@+id/header"
+                style="@style/FirebaseUI.Text.T08"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/fui_transparent"
-                android:cursorVisible="false"
-                android:ems="10"
-                android:fontFamily="monospace"
-                android:gravity="center"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:textSize="32sp"
-                android:typeface="monospace"
-                app:spacingProportion="1.1" />
+                android:text="@string/fui_enter_confirmation_code"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:id="@+id/edit_phone_number"
+                style="@style/FirebaseUI.Text.T08"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/fui_linkColor"
+                app:layout_constraintTop_toBottomOf="@+id/header"
+                tools:ignore="SelectableText" />
 
-        <Button
-            android:id="@+id/submit_confirmation_code"
-            style="@style/FirebaseUI.VerifyPhoneButton"
-            android:layout_gravity="end"
-            android:text="@string/fui_continue_phone_login"
-            app:layout_constraintTop_toBottomOf="@+id/confirmation_code_layout" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/confirmation_code_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/fui_field_padding_vert"
+                app:layout_constraintTop_toBottomOf="@+id/edit_phone_number">
 
-        <TextView
-            android:id="@+id/ticker"
-            style="@style/FirebaseUI.Text.T08"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:enabled="false"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?attr/android:textColorSecondary"
-            android:textIsSelectable="false"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/submit_confirmation_code"
-            tools:text="Resend in 0:01" />
+                <com.firebase.ui.auth.ui.phone.SpacedEditText
+                    android:id="@+id/confirmation_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/fui_transparent"
+                    android:cursorVisible="false"
+                    android:ems="10"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:textSize="32sp"
+                    android:typeface="monospace"
+                    app:spacingProportion="1.1" />
 
-        <TextView
-            android:id="@+id/resend_code"
-            style="@style/FirebaseUI.Text.T08"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:text="@string/fui_resend_code"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/fui_linkColor"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ticker"
-            tools:text="Resend code" />
+            </android.support.design.widget.TextInputLayout>
 
-        <android.support.constraint.Barrier
-            android:id="@+id/tos_barrier"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="ticker,resend_code" />
+            <Button
+                android:id="@+id/submit_confirmation_code"
+                style="@style/FirebaseUI.VerifyPhoneButton"
+                android:layout_gravity="end"
+                android:text="@string/fui_continue_phone_login"
+                app:layout_constraintTop_toBottomOf="@+id/confirmation_code_layout" />
 
-        <TextView
-            android:id="@+id/create_account_tos"
-            style="@style/FirebaseUI.Text.BodyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:textIsSelectable="false"
-            app:layout_constraintTop_toBottomOf="@+id/tos_barrier"
-            tools:text="@string/fui_create_account_preamble_tos_and_pp" />
+            <TextView
+                android:id="@+id/ticker"
+                style="@style/FirebaseUI.Text.T08"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:enabled="false"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?attr/android:textColorSecondary"
+                android:textIsSelectable="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/submit_confirmation_code"
+                tools:text="Resend in 0:01" />
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/resend_code"
+                style="@style/FirebaseUI.Text.T08"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:text="@string/fui_resend_code"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/fui_linkColor"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ticker"
+                tools:text="Resend code" />
 
-</ScrollView>
+            <android.support.constraint.Barrier
+                android:id="@+id/resend_barrier"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="ticker,resend_code" />
+
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                app:layout_constraintTop_toBottomOf="@+id/resend_barrier"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

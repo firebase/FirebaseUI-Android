@@ -1,6 +1,12 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Đang tải…</string>
     <string name="fui_sign_in_default">Đăng nhập</string>
+    <string name="fui_tos_and_pp">Bằng cách tiếp tục, bạn cho biết rằng bạn chấp nhận %1$s và %2$s của chúng tôi.</string>
+    <string name="fui_tos_only">Bằng cách tiếp tục, bạn cho biết rằng bạn chấp nhận %1$s của chúng tôi.</string>
+    <string name="fui_pp_only">Bằng cách tiếp tục, bạn cho biết rằng bạn chấp nhận %1$s của chúng tôi.</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_tos_footer">%1$s</string>
+    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -23,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Đang đăng ký…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
     <string name="fui_email_account_creation_error">Đăng ký tài khoản email không thành công</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Bằng cách nhấn vào %1$s, bạn cho biết rằng bạn đồng ý với %2$s và %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Bằng cách nhấn vào %1$s, bạn cho biết rằng bạn đồng ý với %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Bằng cách nhấn vào %1$s, bạn cho biết rằng bạn đồng ý với %2$s.</string>
     <string name="fui_terms_of_service">Điều khoản dịch vụ</string>
     <string name="fui_privacy_policy">Chính sách bảo mật</string>
     <string name="fui_welcome_back_idp_header">Bạn đã có tài khoản</string>
@@ -65,4 +68,7 @@
     <string name="fui_verify_phone_number">Xác minh số điện thoại</string>
     <string name="fui_continue_phone_login">Tiếp tục</string>
     <string name="fui_sms_terms_of_service">Bằng cách nhấn vào “%1$s”, bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s và %3$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
+    <string name="fui_sms_terms_of_service_only_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
+    <string name="fui_sms_privacy_policy_only_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
 </resources>

@@ -7,7 +7,7 @@
     android:padding="8dp">
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/top_progress_bar"
         style="@style/Base.Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
