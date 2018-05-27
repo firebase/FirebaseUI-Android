@@ -675,9 +675,7 @@ public final class AuthUI {
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
-
-                addCountryIsosToBundle(whitelistedCountries,
-                        ExtraConstants.WHITELISTED_COUNTRIES);
+                addCountriesToBundle(whitelistedCountries, ExtraConstants.WHITELISTED_COUNTRIES);
                 return this;
             }
 
@@ -704,9 +702,7 @@ public final class AuthUI {
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
-
-                addCountryIsosToBundle(blacklistedCountries,
-                        ExtraConstants.BLACKLISTED_COUNTRIES);
+                addCountriesToBundle(blacklistedCountries, ExtraConstants.BLACKLISTED_COUNTRIES);
                 return this;
             }
 
@@ -716,7 +712,7 @@ public final class AuthUI {
                 return super.build();
             }
 
-            private void addCountryIsosToBundle(List<String> CountryIsos, String CountryIsoType) {
+            private void addCountriesToBundle(List<String> CountryIsos, String CountryIsoType) {
                 ArrayList<String> uppercaseCodes = new ArrayList<>();
                 for (String code : CountryIsos) {
                     uppercaseCodes.add(code.toUpperCase(Locale.getDefault()));
