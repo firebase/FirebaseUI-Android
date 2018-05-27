@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    implementation(Config.Libs.Firebase.analytics)
+    implementation(Config.Libs.Firebase.core)
     implementation(Config.Libs.Support.design)
     implementation(Config.Libs.Support.multidex)
 

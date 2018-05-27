@@ -25,7 +25,7 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":storage"))
 
-    implementation(Config.Libs.Firebase.analytics)
+    implementation(Config.Libs.Firebase.core)
     implementation(Config.Libs.Arch.extensions)
 }
 

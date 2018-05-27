@@ -24,6 +24,7 @@ dependencies {
     implementation(Config.Libs.Support.design)
     implementation(Config.Libs.Support.customTabs)
     implementation(Config.Libs.Support.constraint)
+    implementation(Config.Libs.Miscellaneous.materialProgress)
 
     implementation(Config.Libs.Arch.extensions)
     annotationProcessor(Config.Libs.Arch.compiler)

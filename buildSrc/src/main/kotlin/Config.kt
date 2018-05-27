@@ -49,17 +49,15 @@ object Config {
         }
 
         object Firebase {
-            const val analytics = "com.google.firebase:firebase-analytics:15.0.2"
-            const val auth = "com.google.firebase:firebase-auth:15.1.0"
-            const val firestore = "com.google.firebase:firebase-firestore:16.0.0"
-            const val database = "com.google.firebase:firebase-database:15.0.0"
-            const val storage = "com.google.firebase:firebase-storage:15.0.2"
+            const val core = "com.google.firebase:firebase-analytics:16.0.0"
+            const val auth = "com.google.firebase:firebase-auth:16.0.1"
+            const val firestore = "com.google.firebase:firebase-firestore:17.0.1"
+            const val database = "com.google.firebase:firebase-database:16.0.1"
+            const val storage = "com.google.firebase:firebase-storage:16.0.1"
         }
 
         object PlayServices {
-            private const val version = "15.0.0"
-
-            const val auth = "com.google.android.gms:play-services-auth:$version"
+            const val auth = "com.google.android.gms:play-services-auth:15.0.1"
         }
 
         object Provider {
@@ -81,11 +79,12 @@ object Config {
             const val butterKnife = "com.jakewharton:butterknife:$butterVersion"
             const val butterKnifeCompiler = "com.jakewharton:butterknife-compiler:$butterVersion"
             const val permissions = "pub.devrel:easypermissions:1.2.0"
+            const val materialProgress = "me.zhanghai.android.materialprogressbar:library:1.4.2"
         }
 
         object Test {
             const val junit = "junit:junit:4.12"
-            const val mockito = "org.mockito:mockito-android:2.15.+"
+            const val mockito = "org.mockito:mockito-android:2.18.3"
             const val robolectric = "org.robolectric:robolectric:3.8"
 
             const val runner = "com.android.support.test:runner:1.0.1"

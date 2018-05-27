@@ -62,7 +62,8 @@ fun Project.configureAndroid() {
                     "ObsoleteLintCustomCheck", // TODO ButterKnife will fix this in v9.0
                     "IconExpectedSize",
                     "InvalidPackage", // Firestore uses GRPC which makes lint mad
-                    "NewerVersionAvailable", "GradleDependency" // For reproducible builds
+                    "NewerVersionAvailable", "GradleDependency", // For reproducible builds
+                    "SelectableText" // We almost never care about this
             )
 
             baselineFile = file("$configDir/lint-baseline.xml")
