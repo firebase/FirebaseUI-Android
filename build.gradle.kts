@@ -1,4 +1,10 @@
 import com.android.build.gradle.BaseExtension
+import com.jfrog.bintray.gradle.BintrayExtension
+import com.jfrog.bintray.gradle.RecordingCopyTask
+import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
+import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
+import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
+import org.jfrog.gradle.plugin.artifactory.task.ArtifactoryTask
 
 buildscript {
     repositories {
@@ -27,10 +33,24 @@ allprojects {
         mavenCentral()
     }
 
+    // Skip Javadoc generation for Java 1.8 as it breaks build
+    if (JavaVersion.current().isJava8Compatible) {
+        tasks.withType<Javadoc> {
+            options {
+                this as StandardJavadocDocletOptions
+                addStringOption("Xdoclint:none", "-quiet")
+            }
+        }
+    }
+
     if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
         configureAndroid()
         configureQuality()
-        setupPublishing(name == "library")
+
+        val isLibrary = name == "library"
+        if (Config.submodules.contains(name) || isLibrary) {
+            setupPublishing(isLibrary)
+        }
     }
 }
 
@@ -82,7 +102,7 @@ fun Project.configureQuality() {
     configure<CheckstyleExtension> { toolVersion = "8.3" }
     check { dependsOn("checkstyle") }
 
-    task("checkstyle", Checkstyle::class) {
+    task<Checkstyle>("checkstyle") {
         configFile = file("$configDir/checkstyle.xml")
         source("src")
         include("**/*.java")
@@ -92,34 +112,82 @@ fun Project.configureQuality() {
 }
 
 fun Project.setupPublishing(isLibrary: Boolean) {
-    tasks.whenTaskAdded {
-        if (name.contains("publish") && name.contains("publication", true)) {
-            dependsOn("assemble")
-        }
-    }
+    val publicationName = if (isLibrary) "monolithLibrary" else "${name}Library"
+    val artifactName = "firebase-ui" + if (isLibrary) "" else "-${project.name}"
 
-    task("sourcesJar", Jar::class) {
+    val sourcesJar = task<Jar>("sourcesJar") {
         classifier = "sources"
-        from(project.the<BaseExtension>().sourceSets.getByName("main").java.srcDirs)
+        from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
     }
 
-    task("javadoc", Javadoc::class) {
-        setSource(project.the<BaseExtension>().sourceSets.getByName("main").java.srcDirs)
-        classpath += configurations.getByName("compile")
+    val javadoc = task<Javadoc>("javadoc") {
+        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+        classpath += configurations["compile"]
         classpath += project.files(project.the<BaseExtension>().bootClasspath)
     }
 
-    task("javadocJar", Jar::class) {
-        dependsOn("javadoc")
+    val javadocJar = task<Jar>("javadocJar") {
+        dependsOn(javadoc)
         classifier = "javadoc"
-        from(tasks.withType(Javadoc::class.java)["javadoc"].destinationDir)
+        from(javadoc.destinationDir)
     }
 
-    artifacts.add("archives", tasks["javadocJar"])
-    artifacts.add("archives", tasks["sourcesJar"])
+    artifacts.add("archives", javadocJar)
+    artifacts.add("archives", sourcesJar)
 
-    apply(plugin = "com.jfrog.artifactory")
+    tasks.whenTaskAdded {
+        if (name.contains("publish") && name.contains("publication", true)) {
+            dependsOn("assembleRelease")
+        }
+    }
+
+    afterEvaluate {
+        if (isLibrary) {
+            task("testAll") {
+                dependsOn(*Config.submodules.map {
+                    ":$it:testDebugUnitTest"
+                }.toTypedArray())
+            }
+
+            task("prepareArtifacts") {
+                dependsOn(javadocJar, sourcesJar, "assembleRelease")
+                dependsOn("generatePomFileForMonolithLibraryPublication")
+                dependsOn(*Config.submodules.map {
+                    ":$it:prepareArtifacts"
+                }.toTypedArray())
+            }
+
+            task("publishAllToMavenLocal") {
+                dependsOn("publishMonolithLibraryPublicationToMavenLocal")
+                dependsOn(*Config.submodules.map {
+                    ":$it:publish${it.capitalize()}LibraryPublicationToMavenLocal"
+                }.toTypedArray())
+            }
+
+            task("publishAllToCustomLocal") {
+                dependsOn("publishMonolithLibraryPublicationToCustomLocalRepository")
+                dependsOn(*Config.submodules.map {
+                    ":$it:publish${it.capitalize()}LibraryPublicationToCustomLocalRepository"
+                }.toTypedArray())
+            }
+
+            task("bintrayUploadAll") {
+                dependsOn("bintrayUpload")
+                dependsOn(*Config.submodules.map {
+                    ":$it:bintrayUpload"
+                }.toTypedArray())
+            }
+        } else {
+            val pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
+            task("prepareArtifacts") {
+                dependsOn(javadocJar, sourcesJar, "assembleRelease", pomTask)
+            }
+        }
+    }
+
     apply(plugin = "maven-publish")
+    apply(plugin = "com.jfrog.artifactory")
+    apply(plugin = "com.jfrog.bintray")
 
     configure<PublishingExtension> {
         repositories {
@@ -137,183 +205,136 @@ fun Project.setupPublishing(isLibrary: Boolean) {
             }
         }
 
-        // POM to meet maven specs
-        val publicationName = if (isLibrary) "monolithLibrary" else "${name}Library"
-        val archivesBaseName = if (isLibrary) "firebase-ui" else "firebase-ui-$name"
-        val groupName = "com.firebaseui"
-        val versionName = Config.version
-
         // We need to override the variables 'group' and 'version' on the 'Project' object in order
         // to prevent the bintray plugin from creating 'unspecified' artifacts.
+        val groupName = "com.firebaseui"
         group = groupName
-        version = versionName
+        version = Config.version
 
         publications {
+            create<MavenPublication>(publicationName) {
+                groupId = groupName
+                artifactId = artifactName
+                version = Config.version
 
+                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+                artifact(javadocJar)
+                artifact(sourcesJar)
+
+                pom {
+                    name.set("FirebaseUI ${project.name.capitalize()}")
+                    description.set("Firebase UI for Android")
+                    url.set("https://github.com/firebase/FirebaseUI-Android")
+
+                    organization {
+                        name.set("Firebase")
+                        url.set("https://github.com/firebase")
+                    }
+
+                    scm {
+                        val scmUrl = "scm:git:git@github.com/firebase/firebaseui-android.git"
+                        connection.set(scmUrl)
+                        developerConnection.set(scmUrl)
+                        url.set(this@pom.url)
+                        tag.set("HEAD")
+                    }
+
+                    developers {
+                        developer {
+                            id.set("samtstern")
+                            name.set("Sam Stern")
+                            email.set("samstern@google.com")
+                            organization.set("Firebase")
+                            organizationUrl.set("https://firebase.google.com")
+                            roles.set(listOf("Project-Administrator", "Developer"))
+                            timezone.set("-8")
+                        }
+
+                        developer {
+                            id.set("SUPERCILEX")
+                            name.set("Alex Saveau")
+                            email.set("saveau.alexandre@gmail.com")
+                            roles.set(listOf("Developer"))
+                            timezone.set("-8")
+                        }
+                    }
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+
+                    withXml {
+                        asNode().appendNode("dependencies").apply {
+                            fun Dependency.write(scope: String) = appendNode("dependency").apply {
+                                appendNode("groupId", group)
+                                appendNode("artifactId", if (group == groupName) {
+                                    "firebase-ui-$name"
+                                } else {
+                                    name
+                                })
+                                appendNode("version", version)
+                                appendNode("scope", scope)
+                            }
+
+                            for (dependency in configurations["api"].dependencies) {
+                                dependency.write("compile")
+                            }
+                            for (dependency in configurations["implementation"].dependencies) {
+                                dependency.write("runtime")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+
+    val bintrayUsername = System.getProperty("BINTRAY_USER") ?: System.getenv("BINTRAY_USER")
+    val bintrayKey = System.getProperty("BINTRAY_KEY") ?: System.getenv("BINTRAY_KEY")
+
+    configure<ArtifactoryPluginConvention> {
+        setContextUrl("https://oss.jfrog.org")
+        publish(closureOf<PublisherConfig> {
+            repository(closureOf<DoubleDelegateWrapper> {
+                invokeMethod("setRepoKey", "oss-snapshot-local")
+                invokeMethod("setUsername", bintrayUsername)
+                invokeMethod("setPassword", bintrayKey)
+            })
+        })
+    }
+
+    tasks.withType<ArtifactoryTask> { publications(publicationName) }
+
+    configure<BintrayExtension> {
+        user = bintrayUsername
+        key = bintrayKey
+        setPublications(publicationName)
+        setConfigurations("archives")
+
+        filesSpec(closureOf<RecordingCopyTask> {
+            from(if (isLibrary) {
+                "$buildDir/publications/monolithLibrary/pom-default.xml"
+            } else {
+                "$buildDir/publications/${project.name}Library/pom-default.xml"
+            })
+            into("com/firebaseui/$artifactName/${Config.version}/")
+
+            rename(KotlinClosure1<String, String>({ "$artifactName-${Config.version}.pom" }))
+        })
+
+        pkg(closureOf<BintrayExtension.PackageConfig> {
+            repo = "firebase-ui"
+            name = artifactName
+            userOrg = "firebaseui"
+            setLicenses("Apache-2.0")
+            vcsUrl = "https://github.com/firebase/FirebaseUI-Android.git"
+
+            version(closureOf<BintrayExtension.VersionConfig> {
+                name = Config.version
+            })
+        })
+    }
 }
-
-// publishing {
-//     publications {
-//         "${publicationName}"(MavenPublication) {
-
-//             groupId groupName
-//             artifactId archivesBaseName
-//             version versionName
-
-//             artifact "$buildDir/outputs/aar/${archivesBaseName}-release.aar"
-//             artifact javadocJar
-//             artifact sourcesJar
-
-//             pom.withXml {
-//                 // Dependencies
-//                 def dependenciesNode = asNode().getAt("dependencies")[0]
-//                 if (dependenciesNode == null) {
-//                     dependenciesNode = asNode().appendNode("dependencies")
-//                 }
-
-//                 configurations.api.dependencies.each {
-//                     def dependencyNode = dependenciesNode.appendNode('dependency')
-
-//                     if (submodules.contains(it.name)) {
-//                         dependencyNode.appendNode('groupId', groupName)
-//                         dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
-//                         dependencyNode.appendNode('version', versionName)
-//                     } else {
-//                         dependencyNode.appendNode('groupId', it.group)
-//                         dependencyNode.appendNode('artifactId', it.name)
-//                         dependencyNode.appendNode('version', it.version)
-//                     }
-
-//                     dependencyNode.appendNode('scope', 'compile')
-//                 }
-//                 configurations.implementation.dependencies.each {
-//                     def dependencyNode = dependenciesNode.appendNode('dependency')
-
-//                     if (submodules.contains(it.name)) {
-//                         dependencyNode.appendNode('groupId', groupName)
-//                         dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
-//                         dependencyNode.appendNode('version', versionName)
-//                     } else {
-//                         dependencyNode.appendNode('groupId', it.group)
-//                         dependencyNode.appendNode('artifactId', it.name)
-//                         dependencyNode.appendNode('version', it.version)
-//                     }
-
-//                     dependencyNode.appendNode('scope', 'runtime')
-//                 }
-
-//                 // Common values
-//                 def repoUrl = 'https://github.com/firebase/FirebaseUI-Android'
-//                 def scmUrl = 'scm:git:git@github.com/firebase/firebaseui-android.git'
-
-//                 // Name
-//                 asNode().appendNode('name', artifactId)
-
-//                 // Description
-//                 asNode().appendNode('description', 'Firebase UI for Android')
-
-//                 // Organization
-//                 def organization = asNode().appendNode('organization')
-//                 organization.appendNode('name', 'FirebaseUI')
-//                 organization.appendNode('url', repoUrl)
-
-//                 // URL
-//                 asNode().appendNode('url', repoUrl)
-
-//                 // SCM
-//                 def scm = asNode().appendNode('scm')
-//                 scm.appendNode('connection', scmUrl)
-//                 scm.appendNode('developerConnection', scmUrl)
-//                 scm.appendNode('url', repoUrl)
-//                 scm.appendNode('tag', 'HEAD')
-
-//                 // Developers
-//                 def developer = asNode().appendNode('developers').appendNode('developer')
-//                 developer.appendNode('id', 'samtstern')
-//                 developer.appendNode('email', 'samstern@google.com')
-//                 developer.appendNode('organization', 'Firebase')
-//                 developer.appendNode('organizationUrl', 'https://firebase.google.com')
-//                 def roles = developer.appendNode('roles')
-//                 roles.appendNode('role', 'Project-Administrator')
-//                 roles.appendNode('role', 'Developer')
-//                 developer.appendNode('timezone', '-8')
-
-//                 // Licenses
-//                 def license = asNode().appendNode('licenses').appendNode('license')
-//                 license.appendNode('name', 'The Apache License, Version 2.0')
-//                 license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
-//             }
-//         }
-//     }
-// }
-
-// def bintrayUsername = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
-// def bintrayKey = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
-
-// artifactory {
-//     contextUrl = 'https://oss.jfrog.org'
-//     publish {
-//         repository {
-//             repoKey = 'oss-snapshot-local'
-
-//             username = bintrayUsername
-//             password = bintrayKey
-//         }
-//     }
-// }
-
-// artifactoryPublish {
-//     publications(publishing.publications."$publicationName")
-// }
-
-// // Bintray Configuration (applies to submodule and the monolith)
-// project.apply plugin: 'com.jfrog.bintray'
-
-// def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
-
-// bintray {
-//     user = bintrayUsername
-//     key = bintrayKey
-//     publications = [publicationName]
-
-//     filesSpec {
-//         from pomLoc
-//         into "com/firebaseui/$archivesBaseName/$versionName/"
-//         rename { String fileName ->
-//             "${archivesBaseName}-${versionName}.pom"
-//         }
-//     }
-
-//     configurations = ['archives']
-
-//     pkg {
-//         repo = 'firebase-ui'
-//         name = archivesBaseName
-//         userOrg = 'firebaseui'
-//         licenses = ['Apache-2.0']
-//         vcsUrl = 'https://github.com/firebase/FirebaseUI-Android.git'
-
-//         version {
-//             name = versionName
-//         }
-//     }
-// }
-//     }
-// }
-
-// allprojects {
-//     afterEvaluate { project ->
-//         def isSubmodule = submodules.contains(project.name)
-
-//         if (isSubmodule) {
-//             // Only applies to submodules, not the library module
-//             def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
-
-//             // Convenience task to prepare everything we need for releases
-//             task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
-//         }
-
-//     }
-// }

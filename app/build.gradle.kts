@@ -19,7 +19,7 @@ android {
     }
 
     lintOptions {
-        disable("MissingTranslation")
+        disable("ResourceName", "MissingTranslation")
     }
 }
 
