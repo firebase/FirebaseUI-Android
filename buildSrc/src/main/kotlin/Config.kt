@@ -50,7 +50,7 @@ object Config {
         }
 
         object Firebase {
-            const val core = "com.google.firebase:firebase-analytics:16.0.0"
+            const val core = "com.google.firebase:firebase-core:16.0.0"
             const val auth = "com.google.firebase:firebase-auth:16.0.1"
             const val firestore = "com.google.firebase:firebase-firestore:17.0.1"
             const val database = "com.google.firebase:firebase-database:16.0.1"
@@ -77,8 +77,10 @@ object Config {
 
             const val glide = "com.github.bumptech.glide:glide:$glideVersion"
             const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
+
             const val butterKnife = "com.jakewharton:butterknife:$butterVersion"
             const val butterKnifeCompiler = "com.jakewharton:butterknife-compiler:$butterVersion"
+
             const val permissions = "pub.devrel:easypermissions:1.2.0"
             const val materialProgress = "me.zhanghai.android.materialprogressbar:library:1.4.2"
         }
@@ -93,7 +95,7 @@ object Config {
         }
 
         object Lint {
-            private const val version = "26.0.1"
+            private const val version = "26.2.0-alpha15"
 
             const val api = "com.android.tools.lint:lint-api:$version"
             const val tests = "com.android.tools.lint:lint-tests:$version"

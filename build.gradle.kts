@@ -30,7 +30,6 @@ allprojects {
         google()
         jcenter()
         mavenLocal()
-        mavenCentral()
     }
 
     // Skip Javadoc generation for Java 1.8 as it breaks build
@@ -73,6 +72,7 @@ fun Project.configureAndroid() {
 
             versionName = Config.version
             versionCode = 1
+
             resourcePrefix("fui_")
             vectorDrawables.useSupportLibrary = true
         }
@@ -86,10 +86,11 @@ fun Project.configureAndroid() {
                     "SelectableText" // We almost never care about this
             )
 
-            baselineFile = file("$configDir/lint-baseline.xml")
             isCheckAllWarnings = true
             isWarningsAsErrors = true
             isAbortOnError = true
+
+            baselineFile = file("$configDir/lint-baseline.xml")
             htmlOutput = file("$reportsDir/lint-results.html")
             xmlOutput = file("$reportsDir/lint-results.xml")
         }
@@ -99,7 +100,7 @@ fun Project.configureAndroid() {
 fun Project.configureQuality() {
     apply(plugin = "checkstyle")
 
-    configure<CheckstyleExtension> { toolVersion = "8.3" }
+    configure<CheckstyleExtension> { toolVersion = "8.10.1" }
     check { dependsOn("checkstyle") }
 
     task<Checkstyle>("checkstyle") {
@@ -112,8 +113,8 @@ fun Project.configureQuality() {
 }
 
 fun Project.setupPublishing(isLibrary: Boolean) {
-    val publicationName = if (isLibrary) "monolithLibrary" else "${name}Library"
-    val artifactName = "firebase-ui" + if (isLibrary) "" else "-${project.name}"
+    val publicationName = "${if (isLibrary) "monolith" else name}Library"
+    val artifactName = if (isLibrary) "firebase-ui" else "firebase-ui-${project.name}"
 
     val sourcesJar = task<Jar>("sourcesJar") {
         classifier = "sources"
@@ -321,7 +322,6 @@ fun Project.setupPublishing(isLibrary: Boolean) {
                 "$buildDir/publications/${project.name}Library/pom-default.xml"
             })
             into("com/firebaseui/$artifactName/${Config.version}/")
-
             rename(KotlinClosure1<String, String>({ "$artifactName-${Config.version}.pom" }))
         })
 
