@@ -59,7 +59,8 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(getActivity()).get(PhoneNumberVerificationHandler.class);
+        mHandler = ViewModelProviders.of(requireActivity())
+                .get(PhoneNumberVerificationHandler.class);
     }
 
     @Nullable
@@ -82,7 +83,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
             mPhoneEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
-        getActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
+        requireActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
 
         ImeHelper.setImeOnDoneListener(mPhoneEditText, new ImeHelper.DonePressedListener() {
             @Override

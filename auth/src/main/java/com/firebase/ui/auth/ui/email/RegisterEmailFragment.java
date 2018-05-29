@@ -155,7 +155,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
-        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(
+                requireContext(), getFlowParams(), footerText);
 
         // WARNING: Nothing below this line will be executed on rotation
         if (savedInstanceState != null) {
@@ -196,7 +197,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(R.string.fui_title_register_email);
+        requireActivity().setTitle(R.string.fui_title_register_email);
     }
 
     @Override

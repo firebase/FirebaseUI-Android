@@ -87,7 +87,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(getActivity()).get(PhoneNumberVerificationHandler.class);
+        mHandler = ViewModelProviders.of(requireActivity())
+                .get(PhoneNumberVerificationHandler.class);
         mPhoneNumber = getArguments().getString(ExtraConstants.PHONE);
         if (savedInstanceState != null) {
             mMillisUntilFinished = savedInstanceState.getLong(EXTRA_MILLIS_UNTIL_FINISHED);
@@ -110,14 +111,14 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mConfirmationCodeEditText = view.findViewById(R.id.confirmation_code);
         mSubmitConfirmationButton = view.findViewById(R.id.submit_confirmation_code);
 
-        getActivity().setTitle(getString(R.string.fui_verify_your_phone_title));
+        requireActivity().setTitle(getString(R.string.fui_verify_your_phone_title));
         mCountdown.run();
         setupSubmitConfirmationButton();
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView();
         setupResendConfirmationCodeTextView();
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(
-                getContext(),
+                requireContext(),
                 getFlowParams(),
                 view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
     }
@@ -126,7 +127,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     public void onStart() {
         super.onStart();
         mConfirmationCodeEditText.requestFocus();
-        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+        ((InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(mConfirmationCodeEditText, 0);
     }
 

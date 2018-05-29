@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.ContextThemeWrapper;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -19,13 +20,14 @@ public class FragmentBase extends Fragment implements ProgressView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!(getActivity() instanceof HelperActivityBase)) {
+        FragmentActivity activity = getActivity();
+        if (!(activity instanceof HelperActivityBase)) {
             throw new IllegalStateException("Cannot use this fragment without the helper activity");
         }
-        mActivity = (HelperActivityBase) getActivity();
+        mActivity = (HelperActivityBase) activity;
 
         mProgressDialogHolder = new ProgressDialogHolder(new ContextThemeWrapper(
-                getContext(), getFlowParams().themeId));
+                requireContext(), getFlowParams().themeId));
     }
 
     @Override
