@@ -42,7 +42,7 @@ dependencies {
     testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(Config.Libs.Provider.twitter)
+    testImplementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     debugImplementation(project(":internal:lintchecks"))
 }
