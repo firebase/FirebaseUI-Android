@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -60,6 +61,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private PhoneNumberVerificationHandler mHandler;
     private String mPhoneNumber;
 
+    private ProgressBar mProgressBar;
     private TextView mPhoneTextView;
     private TextView mResendCodeTextView;
     private TextView mCountDownTextView;
@@ -96,6 +98,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mProgressBar = view.findViewById(R.id.top_progress_bar);
         mPhoneTextView = view.findViewById(R.id.edit_phone_number);
         mCountDownTextView = view.findViewById(R.id.ticker);
         mResendCodeTextView = view.findViewById(R.id.resend_code);
@@ -215,5 +218,17 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private void submitCode() {
         mHandler.submitVerificationCode(
                 mPhoneNumber, mConfirmationCodeEditText.getUnspacedText().toString());
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mSubmitConfirmationButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mSubmitConfirmationButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

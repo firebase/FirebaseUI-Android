@@ -13,7 +13,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -43,6 +45,8 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private PhoneNumberVerificationHandler mHandler;
     private boolean mCalled;
 
+    private ProgressBar mProgressBar;
+    private Button mSubmitButton;
     private CountryListSpinner mCountryListSpinner;
     private TextInputLayout mPhoneInputLayout;
     private EditText mPhoneEditText;
@@ -73,6 +77,8 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mProgressBar = view.findViewById(R.id.top_progress_bar);
+        mSubmitButton = view.findViewById(R.id.send_code);
         mCountryListSpinner = view.findViewById(R.id.country_list);
         mPhoneInputLayout = view.findViewById(R.id.phone_layout);
         mPhoneEditText = view.findViewById(R.id.phone_number);
@@ -91,7 +97,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 onNext();
             }
         });
-        view.findViewById(R.id.send_code).setOnClickListener(this);
+        mSubmitButton.setOnClickListener(this);
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,5 +223,17 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private void setCountryCode(PhoneNumber number) {
         mCountryListSpinner.setSelectedForCountry(
                 new Locale("", number.getCountryIso()), number.getCountryCode());
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mSubmitButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mSubmitButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

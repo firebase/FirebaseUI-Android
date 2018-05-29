@@ -3,7 +3,6 @@ package com.firebase.ui.auth.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -22,12 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
-@SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class HelperActivityBase extends AppCompatActivity implements ProgressView {
+public abstract class HelperActivityBase extends AppCompatActivity implements ProgressView {
     private FlowParameters mParams;
-
-    private ProgressDialogHolder mProgressDialogHolder;
 
     protected static Intent createBaseIntent(
             @NonNull Context context,
@@ -38,18 +34,6 @@ public class HelperActivityBase extends AppCompatActivity implements ProgressVie
                 checkNotNull(target, "target activity cannot be null"))
                 .putExtra(ExtraConstants.FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mProgressDialogHolder = new ProgressDialogHolder(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mProgressDialogHolder.dismissDialog();
     }
 
     @Override
@@ -90,15 +74,13 @@ public class HelperActivityBase extends AppCompatActivity implements ProgressVie
 
     @Override
     public void showProgress(@StringRes int message) {
-        getDialogHolder().showLoadingDialog(message);
+        throw new UnsupportedOperationException(
+                "Either a fragment or activity must handle progress updates.");
     }
 
     @Override
     public void hideProgress() {
-        getDialogHolder().dismissDialog();
-    }
-
-    protected ProgressDialogHolder getDialogHolder() {
-        return mProgressDialogHolder;
+        throw new UnsupportedOperationException(
+                "Either a fragment or activity must handle progress updates.");
     }
 }

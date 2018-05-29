@@ -106,6 +106,7 @@ public class PreambleHandler {
     private String getPreambleStringWithTargets(@StringRes int textViewText, boolean hasButton) {
         boolean termsOfServiceUrlProvided = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
         boolean privacyPolicyUrlProvided = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
+
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             Object[] targets = hasButton ?
                     new Object[]{BTN_TARGET, TOS_TARGET, PP_TARGET}
@@ -120,23 +121,7 @@ public class PreambleHandler {
                     new Object[]{BTN_TARGET, PP_TARGET} : new Object[]{PP_TARGET};
             return mContext.getString(textViewText, targets);
         }
-        return null;
-    }
 
-    @Nullable
-    private String getPreambleStringWithTargetsNoButton(@StringRes int textViewText) {
-        boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
-        boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
-        if (hasTos && hasPp) {
-            return mContext.getString(textViewText,
-                    TOS_TARGET, PP_TARGET);
-        } else if (hasTos) {
-            return mContext.getString(textViewText,
-                    TOS_TARGET);
-        } else if (hasPp) {
-            return mContext.getString(textViewText,
-                    PP_TARGET);
-        }
         return null;
     }
 

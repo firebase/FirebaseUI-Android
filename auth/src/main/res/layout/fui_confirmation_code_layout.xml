@@ -6,6 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        tools:visibility="visible" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -102,8 +107,10 @@
 
             <TextView
                 android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter"
+                android:gravity="center_horizontal"
                 app:layout_constraintTop_toBottomOf="@+id/resend_barrier"
-                style="@style/FirebaseUI.PrivacyFooter" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
