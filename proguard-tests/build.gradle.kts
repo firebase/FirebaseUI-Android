@@ -17,6 +17,10 @@ android {
             }
         }
     }
+
+    variantFilter {
+        if (name == "debug") setIgnore(true)
+    }
 }
 
 dependencies {
