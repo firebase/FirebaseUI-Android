@@ -22,6 +22,7 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +32,14 @@ import org.robolectric.RobolectricTestRunner;
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthUITest {
     @Before
     public void setUp() {
         TestHelper.initialize();
+        AuthUI.sDefaultAuth = mock(FirebaseAuth.class);
     }
 
     @Test

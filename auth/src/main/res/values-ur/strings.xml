@@ -1,6 +1,12 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
     <string name="fui_sign_in_default">سائن ان کریں</string>
+    <string name="fui_tos_and_pp">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s اور %2$s کو قبول کرتے ہیں۔</string>
+    <string name="fui_tos_only">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s کو قبول کرتے ہیں۔</string>
+    <string name="fui_pp_only">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s کو قبول کرتے ہیں۔</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_tos_footer">%1$s</string>
+    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -23,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">سائن اپ ہو رہا ہے…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item> <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item> </plurals>
     <string name="fui_email_account_creation_error">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s اور %3$s سے اتفاق کرتے ہیں۔</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
     <string name="fui_terms_of_service">سروس کی شرائط</string>
     <string name="fui_privacy_policy">رازداری کی پالیسی</string>
     <string name="fui_welcome_back_idp_header">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ موجود ہے</string>
@@ -65,4 +68,7 @@
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
     <string name="fui_continue_phone_login">جاری رکھیں</string>
     <string name="fui_sms_terms_of_service">%1$s پر تھپتھپانے سے، ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا کی شرحوں کا اطلاق ہو سکتا ہے۔</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s اور %3$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
+    <string name="fui_sms_terms_of_service_only_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
+    <string name="fui_sms_privacy_policy_only_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
 </resources>

@@ -18,7 +18,6 @@ public class ProgressDialogHolder {
 
     private void showLoadingDialog(String message) {
         dismissDialog();
-
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setIndeterminate(true);
@@ -34,10 +33,11 @@ public class ProgressDialogHolder {
     }
 
     public void dismissDialog() {
-        if (mProgressDialog != null) {
+        if (isProgressDialogShowing()) {
             mProgressDialog.dismiss();
-            mProgressDialog = null;
         }
+
+        mProgressDialog = null;
     }
 
     public boolean isProgressDialogShowing() {

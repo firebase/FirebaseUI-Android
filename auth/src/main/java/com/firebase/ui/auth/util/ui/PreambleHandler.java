@@ -27,6 +27,7 @@ public class PreambleHandler {
     private static final String BTN_TARGET = "%BTN%";
     private static final String TOS_TARGET = "%TOS%";
     private static final String PP_TARGET = "%PP%";
+    private static final int NO_BUTTON = -1;
 
     private final Context mContext;
     private final FlowParameters mFlowParameters;
@@ -45,10 +46,18 @@ public class PreambleHandler {
 
     public static void setup(Context context,
                              FlowParameters parameters,
+                             @StringRes int textViewText,
+                             TextView textView) {
+        setup(context, parameters, NO_BUTTON, textViewText, textView);
+    }
+
+    public static void setup(Context context,
+                             FlowParameters parameters,
                              @StringRes int buttonText,
+                             @StringRes int textViewText,
                              TextView textView) {
         PreambleHandler handler = new PreambleHandler(context, parameters, buttonText);
-        handler.setupCreateAccountPreamble();
+        handler.initPreamble(textViewText);
         handler.setPreamble(textView);
     }
 
@@ -57,8 +66,8 @@ public class PreambleHandler {
         textView.setText(mBuilder);
     }
 
-    private void setupCreateAccountPreamble() {
-        String withTargets = getPreambleStringWithTargets();
+    private void initPreamble(@StringRes int textViewText) {
+        String withTargets = getPreambleStringWithTargets(textViewText, mButtonText != NO_BUTTON);
         if (withTargets == null) {
             return;
         }
@@ -94,23 +103,43 @@ public class PreambleHandler {
     }
 
     @Nullable
-    private String getPreambleStringWithTargets() {
+    private String getPreambleStringWithTargets(@StringRes int textViewText, boolean hasButton) {
+        boolean termsOfServiceUrlProvided = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
+        boolean privacyPolicyUrlProvided = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
+        if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
+            Object[] targets = hasButton ?
+                    new Object[]{BTN_TARGET, TOS_TARGET, PP_TARGET}
+                    : new Object[]{TOS_TARGET, PP_TARGET};
+            return mContext.getString(textViewText, targets);
+        } else if (termsOfServiceUrlProvided) {
+            Object[] targets = hasButton ?
+                    new Object[]{BTN_TARGET, TOS_TARGET} : new Object[]{TOS_TARGET};
+            return mContext.getString(textViewText, targets);
+        } else if (privacyPolicyUrlProvided) {
+            Object[] targets = hasButton ?
+                    new Object[]{BTN_TARGET, PP_TARGET} : new Object[]{PP_TARGET};
+            return mContext.getString(textViewText, targets);
+        }
+        return null;
+    }
+
+    @Nullable
+    private String getPreambleStringWithTargetsNoButton(@StringRes int textViewText) {
         boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
         boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
-
         if (hasTos && hasPp) {
-            return mContext.getString(R.string.fui_create_account_preamble_tos_and_pp,
-                                      BTN_TARGET, TOS_TARGET, PP_TARGET);
+            return mContext.getString(textViewText,
+                    TOS_TARGET, PP_TARGET);
         } else if (hasTos) {
-            return mContext.getString(R.string.fui_create_account_preamble_tos_only,
-                                      BTN_TARGET, TOS_TARGET);
+            return mContext.getString(textViewText,
+                    TOS_TARGET);
         } else if (hasPp) {
-            return mContext.getString(R.string.fui_create_account_preamble_pp_only,
-                                      BTN_TARGET, PP_TARGET);
-        } else {
-            return null;
+            return mContext.getString(textViewText,
+                    PP_TARGET);
         }
+        return null;
     }
+
 
     private static final class CustomTabsSpan extends ClickableSpan {
         private final WeakReference<Context> mContext;

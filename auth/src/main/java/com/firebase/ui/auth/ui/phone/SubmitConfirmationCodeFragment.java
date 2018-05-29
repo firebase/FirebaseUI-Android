@@ -31,9 +31,9 @@ import android.widget.TextView;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -116,11 +116,17 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView();
         setupResendConfirmationCodeTextView();
-        PreambleHandler.setup(
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(
                 getContext(),
                 getFlowParams(),
-                R.string.fui_continue_phone_login,
-                view.<TextView>findViewById(R.id.create_account_tos));
+                view.findViewById(R.id.email_footer_tos_and_pp_text));
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
     }
 
     @Override
