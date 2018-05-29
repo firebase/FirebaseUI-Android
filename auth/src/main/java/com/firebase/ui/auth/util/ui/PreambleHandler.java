@@ -125,7 +125,6 @@ public class PreambleHandler {
         return null;
     }
 
-
     private static final class CustomTabsSpan extends ClickableSpan {
         private final WeakReference<Context> mContext;
         private final String mUrl;
