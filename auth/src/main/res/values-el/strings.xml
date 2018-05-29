@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Γίνεται φόρτωση…</string>
     <string name="fui_sign_in_default">Σύνδεση</string>
     <string name="fui_tos_and_pp">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε τους %1$s και την %2$s.</string>
-    <string name="fui_tos_only">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε τους %1$s.</string>
-    <string name="fui_pp_only">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε την %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Συνέχεια</string>
     <string name="fui_sms_terms_of_service">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε τους %2$s και την %3$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε τους %2$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε την %2$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
 </resources>

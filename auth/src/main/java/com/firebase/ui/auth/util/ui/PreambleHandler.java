@@ -73,10 +73,7 @@ public class PreambleHandler {
         mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(
-                TOS_TARGET,
-                R.string.fui_terms_of_service,
-                mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
         replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 
@@ -109,35 +106,9 @@ public class PreambleHandler {
                     new Object[]{BTN_TARGET, TOS_TARGET, PP_TARGET}
                     : new Object[]{TOS_TARGET, PP_TARGET};
             return mContext.getString(textViewText, targets);
-        } else if (termsOfServiceUrlProvided) {
-            Object[] targets = hasButton ?
-                    new Object[]{BTN_TARGET, TOS_TARGET} : new Object[]{TOS_TARGET};
-            return mContext.getString(textViewText, targets);
-        } else if (privacyPolicyUrlProvided) {
-            Object[] targets = hasButton ?
-                    new Object[]{BTN_TARGET, PP_TARGET} : new Object[]{PP_TARGET};
-            return mContext.getString(textViewText, targets);
         }
         return null;
     }
-
-    @Nullable
-    private String getPreambleStringWithTargetsNoButton(@StringRes int textViewText) {
-        boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
-        boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
-        if (hasTos && hasPp) {
-            return mContext.getString(textViewText,
-                    TOS_TARGET, PP_TARGET);
-        } else if (hasTos) {
-            return mContext.getString(textViewText,
-                    TOS_TARGET);
-        } else if (hasPp) {
-            return mContext.getString(textViewText,
-                    PP_TARGET);
-        }
-        return null;
-    }
-
 
     private class CustomTabsSpan extends ClickableSpan {
         private final String mUrl;

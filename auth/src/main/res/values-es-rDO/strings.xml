@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Acceder</string>
     <string name="fui_tos_and_pp">Si continúas, indicas que aceptas nuestras %1$s y %2$s.</string>
-    <string name="fui_tos_only">Si continúas, indicas que aceptas nuestras %1$s.</string>
-    <string name="fui_pp_only">Si continúas, indicas que aceptas nuestras %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Continuar</string>
     <string name="fui_sms_terms_of_service">Si presionas “%1$s”, se enviará un SMS. Se aplicarán las tarifas de mensajes y datos.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Si presionas “%1$s”, indicas que aceptas nuestras %2$s y %3$s. Es posible que se te envíe un SMS. Podrían aplicarse las tarifas de mensajes y datos.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Si presionas “%1$s”, indicas que aceptas nuestras %2$s. Es posible que se te envíe un SMS. Podrían aplicarse las tarifas de mensajes y datos.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Si presionas “%1$s”, indicas que aceptas nuestras %2$s. Es posible que se te envíe un SMS. Podrían aplicarse las tarifas de mensajes y datos.</string>
 </resources>

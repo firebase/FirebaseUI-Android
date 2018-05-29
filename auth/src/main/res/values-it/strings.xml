@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Caricamento in corso…</string>
     <string name="fui_sign_in_default">Accedi</string>
     <string name="fui_tos_and_pp">Se continui, accetti le nostre %1$s e i nostri %2$s.</string>
-    <string name="fui_tos_only">Se continui, accetti i nostri %1$s.</string>
-    <string name="fui_pp_only">Se continui, accetti le nostre %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Continua</string>
     <string name="fui_sms_terms_of_service">Se tocchi “%1$s”, è possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Se tocchi “%1$s”, accetti le nostre %2$s e i nostri %3$s. È possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Se tocchi “%1$s”, accetti i nostri %2$s. È possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Se tocchi “%1$s”, accetti le nostre %2$s. È possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
 </resources>

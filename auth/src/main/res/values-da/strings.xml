@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Indlæser…</string>
     <string name="fui_sign_in_default">Log ind</string>
     <string name="fui_tos_and_pp">Ved at fortsætte indikerer du, at du accepterer vores %1$s og %2$s.</string>
-    <string name="fui_tos_only">Ved at fortsætte indikerer du, at du accepterer vores %1$s.</string>
-    <string name="fui_pp_only">Ved at fortsætte indikerer du, at du accepterer vores %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Fortsæt</string>
     <string name="fui_sms_terms_of_service">Når du trykker på “%1$s”, sendes der måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Når du trykker på “%1$s”, indikerer du, at du accepterer vores %2$s og %3$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Når du trykker på “%1$s”, indikerer du, at du accepterer vores %2$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Når du trykker på “%1$s”, indikerer du, at du accepterer vores %2$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
 </resources>

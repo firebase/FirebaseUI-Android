@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">로드 중…</string>
     <string name="fui_sign_in_default">로그인</string>
     <string name="fui_tos_and_pp">계속 진행하면 %1$s 및 %2$s에 동의하는 것으로 간주됩니다.</string>
-    <string name="fui_tos_only">계속 진행하면 %1$s에 동의하는 것으로 간주됩니다.</string>
-    <string name="fui_pp_only">계속 진행하면 %1$s에 동의하는 것으로 간주됩니다.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">계속</string>
     <string name="fui_sms_terms_of_service">“%1$s” 버튼을 탭하면 SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">‘%1$s’ 버튼을 탭하면 %2$s 및 %3$s에 동의하는 것으로 간주됩니다. SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
-    <string name="fui_sms_terms_of_service_only_extended">‘%1$s’ 버튼을 탭하면 %2$s에 동의하는 것으로 간주됩니다. SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
-    <string name="fui_sms_privacy_policy_only_extended">‘%1$s’ 버튼을 탭하면 %2$s에 동의하는 것으로 간주됩니다. SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
 </resources>
