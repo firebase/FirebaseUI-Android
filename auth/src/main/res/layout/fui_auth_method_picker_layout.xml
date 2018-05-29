@@ -6,7 +6,6 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
     android:clipToPadding="false">
 
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
@@ -29,11 +28,11 @@
     <ScrollView
         android:id="@+id/container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/main_tos_and_pp"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
         app:layout_constraintVertical_bias="0.7">
 
         <LinearLayout
@@ -52,6 +51,7 @@
         android:gravity="center"
         android:textColor="?android:textColorTertiary"
         android:textIsSelectable="true"
+        app:layout_constraintTop_toBottomOf="@+id/container"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
