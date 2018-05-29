@@ -85,7 +85,7 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
     public List<CountryInfo> getAvailableCountryIsos(Map<String, Integer> countryInfoMap) {
         // We consider all countries to be whitelisted if there are no whitelisted
         // or blacklisted countries given as input.
-        if(whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
+        if (whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
             this.whitelistedCountryIsos = new HashSet<>(countryInfoMap.keySet());
         }
 
