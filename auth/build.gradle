@@ -54,9 +54,12 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.4.0'
     compile 'com.squareup.retrofit2:converter-gson:2.4.0'
 
+    // Material progress bar for loading indicators
+    implementation 'me.zhanghai.android.materialprogressbar:library:1.4.2'
+
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
-    testImplementation 'org.mockito:mockito-core:2.15.+'
+    testImplementation 'org.mockito:mockito-core:2.18.3'
     testImplementation 'org.robolectric:robolectric:3.7'
     testImplementation 'com.facebook.android:facebook-login:4.32.0'
     testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }

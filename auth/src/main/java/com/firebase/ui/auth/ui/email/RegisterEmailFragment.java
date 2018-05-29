@@ -11,7 +11,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -20,9 +22,9 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
@@ -43,6 +45,9 @@ public class RegisterEmailFragment extends FragmentBase implements
     public static final String TAG = "RegisterEmailFragment";
 
     private EmailProviderResponseHandler mHandler;
+
+    private Button mNextButton;
+    private ProgressBar mProgressBar;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -80,7 +85,9 @@ public class RegisterEmailFragment extends FragmentBase implements
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 startSaveCredentials(
-                        mHandler.getCurrentUser(), response, mPasswordEditText.getText().toString());
+                        mHandler.getCurrentUser(),
+                        response,
+                        mPasswordEditText.getText().toString());
             }
 
             @Override
@@ -110,6 +117,9 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mNextButton = view.findViewById(R.id.button_create);
+        mProgressBar = view.findViewById(R.id.top_progress_bar);
+
         mEmailEditText = view.findViewById(R.id.email);
         mNameEditText = view.findViewById(R.id.name);
         mPasswordEditText = view.findViewById(R.id.password);
@@ -135,21 +145,22 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailEditText.setOnFocusChangeListener(this);
         mNameEditText.setOnFocusChangeListener(this);
         mPasswordEditText.setOnFocusChangeListener(this);
-        view.findViewById(R.id.button_create).setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
 
         // Only show the name field if required
         nameInput.setVisibility(requireName ? View.VISIBLE : View.GONE);
 
-        PreambleHandler.setup(
-                getContext(),
-                getFlowParams(),
-                R.string.fui_button_text_save,
-                view.<TextView>findViewById(R.id.create_account_text));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableCredentials) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
-        if (savedInstanceState != null) { return; }
+        TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+
+        // WARNING: Nothing below this line will be executed on rotation
+        if (savedInstanceState != null) {
+            return;
+        }
 
         // If email is passed in, fill in the field and move down to the name field.
         String email = mUser.getEmail();
@@ -223,6 +234,18 @@ public class RegisterEmailFragment extends FragmentBase implements
         validateAndRegisterUser();
     }
 
+    @Override
+    public void showProgress(int message) {
+        mNextButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mNextButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
     private void validateAndRegisterUser() {
         String email = mEmailEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
@@ -233,11 +256,11 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
             mHandler.startSignIn(new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
-                            .setName(name)
-                            .setPhotoUri(mUser.getPhotoUri())
-                            .build())
-                    .build(),
+                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                    .setName(name)
+                                    .setPhotoUri(mUser.getPhotoUri())
+                                    .build())
+                            .build(),
                     password);
         }
     }

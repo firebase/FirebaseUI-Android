@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -19,7 +20,7 @@ import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
-import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.ui.InvisibleActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
@@ -30,7 +31,8 @@ import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-public class SingleSignInActivity extends HelperActivityBase {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class SingleSignInActivity extends InvisibleActivityBase {
     private SocialProviderResponseHandler mHandler;
     private ProviderSignInBase<?> mProvider;
 
@@ -84,8 +86,7 @@ public class SingleSignInActivity extends HelperActivityBase {
                 throw new IllegalStateException("Invalid provider id: " + provider);
         }
 
-        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 mHandler.startSignIn(response);

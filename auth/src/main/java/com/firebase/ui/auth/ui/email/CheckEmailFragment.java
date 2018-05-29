@@ -12,12 +12,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
@@ -59,6 +64,9 @@ public class CheckEmailFragment extends FragmentBase implements
 
     private CheckEmailHandler mHandler;
 
+    private Button mNextButton;
+    private ProgressBar mProgressBar;
+
     private EditText mEmailEditText;
     private TextInputLayout mEmailLayout;
 
@@ -82,6 +90,9 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mNextButton = view.findViewById(R.id.button_next);
+        mProgressBar = view.findViewById(R.id.top_progress_bar);
+
         // Email field and validator
         mEmailLayout = view.findViewById(R.id.email_layout);
         mEmailEditText = view.findViewById(R.id.email);
@@ -95,7 +106,22 @@ public class CheckEmailFragment extends FragmentBase implements
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
-        view.findViewById(R.id.button_next).setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
+
+        TextView termsText = view.findViewById(R.id.email_tos_and_pp_text);
+        TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
+        FlowParameters flowParameters = getFlowParams();
+
+        if (flowParameters.isSingleProviderFlow()) {
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(getContext(),
+                    flowParameters,
+                    termsText);
+        } else {
+            termsText.setVisibility(View.GONE);
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
+                    flowParameters,
+                    footerText);
+        }
     }
 
     @Override
@@ -174,5 +200,17 @@ public class CheckEmailFragment extends FragmentBase implements
         if (mEmailFieldValidator.validate(email)) {
             mHandler.fetchProvider(email);
         }
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mNextButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+       mNextButton.setEnabled(true);
+       mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

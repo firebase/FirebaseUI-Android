@@ -1,6 +1,9 @@
 # Twitter and Facebook are optional
 -dontwarn com.facebook.**
 -dontwarn com.twitter.**
+# Keep the class names used to check for availablility
+-keepnames class com.facebook.login.LoginManager
+-keepnames class com.twitter.sdk.android.core.identity.TwitterAuthClient
 
 # Don't note a bunch of dynamically referenced classes
 -dontnote com.google.**

@@ -28,6 +28,8 @@ import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -43,6 +45,7 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
@@ -59,8 +62,12 @@ import java.util.List;
 /** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
+
     private SocialProviderResponseHandler mHandler;
     private List<ProviderSignInBase<?>> mProviders;
+
+    private ProgressBar mProgressBar;
+    private ViewGroup mProviderHolder;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
@@ -70,6 +77,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
+
+        mProgressBar = findViewById(R.id.top_progress_bar);
+        mProviderHolder = findViewById(R.id.btn_holder);
 
         FlowParameters params = getFlowParams();
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
@@ -108,18 +118,24 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             }
         });
+
+        TextView termsText = findViewById(R.id.main_tos_and_pp);
+        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
+                getFlowParams(),
+                termsText);
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
                                  final SocialProviderResponseHandler handler) {
         ViewModelProvider supplier = ViewModelProviders.of(this);
-        ViewGroup providerHolder = findViewById(R.id.btn_holder);
 
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             final ProviderSignInBase<?> provider;
             @LayoutRes int buttonLayout;
-            switch (idpConfig.getProviderId()) {
+
+            final String providerId = idpConfig.getProviderId();
+            switch (providerId) {
                 case GoogleAuthProvider.PROVIDER_ID:
                     GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
                     google.init(new GoogleSignInHandler.Params(idpConfig));
@@ -163,12 +179,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     buttonLayout = R.layout.fui_provider_button_phone;
                     break;
                 default:
-                    throw new IllegalStateException("Unknown provider: " + idpConfig.getProviderId());
+                    throw new IllegalStateException("Unknown provider: " + providerId);
             }
             mProviders.add(provider);
 
-            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                    this, R.string.fui_progress_dialog_loading) {
+            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
                 @Override
                 protected void onSuccess(@NonNull IdpResponse response) {
                     handleResponse(response);
@@ -184,7 +199,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                         // We have no idea what provider this error stemmed from so just forward
                         // this along to the handler.
                         handler.startSignIn(response);
-                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
+                        // Don't use the response's provider since it can be different than the one
+                        // that launched the sign-in attempt. Ex: the email flow is started, but
+                        // ends up turning into a Google sign-in because that account already
+                        // existed. In the previous example, an extra sign-in would incorrectly
+                        // started.
                         handler.startSignIn(response);
                     } else {
                         // Email or phone: the credentials should have already been saved so simply
@@ -195,14 +215,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             });
 
-            View loginButton = getLayoutInflater().inflate(buttonLayout, providerHolder, false);
+            View loginButton = getLayoutInflater().inflate(buttonLayout, mProviderHolder, false);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     provider.startSignIn(AuthMethodPickerActivity.this);
                 }
             });
-            providerHolder.addView(loginButton);
+            mProviderHolder.addView(loginButton);
         }
     }
 
@@ -212,6 +232,26 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler.onActivityResult(requestCode, resultCode, data);
         for (ProviderSignInBase<?> provider : mProviders) {
             provider.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mProgressBar.setVisibility(View.VISIBLE);
+        for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
+            View child = mProviderHolder.getChildAt(i);
+            child.setEnabled(false);
+            child.setAlpha(0.75f);
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
+            View child = mProviderHolder.getChildAt(i);
+            child.setEnabled(true);
+            child.setAlpha(1.0f);
         }
     }
 }
