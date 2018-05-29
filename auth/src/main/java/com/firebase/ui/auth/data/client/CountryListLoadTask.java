@@ -20,6 +20,7 @@ package com.firebase.ui.auth.data.client;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.CountryInfo;
@@ -45,27 +46,24 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
 
     private final Listener mListener;
 
-    Map<String, Integer> countryInfoMap;
-    List<String> whitelistedCountryIsos;
-    List<String> blacklistedCountryIsos;
+
+    Set<String> whitelistedCountryIsos;
+    Set<String> blacklistedCountryIsos;
 
     public CountryListLoadTask(Listener listener,
-                               List<String> whitelistedCountries,
-                               List<String> blacklistedCountries) {
+                               @Nullable List<String> whitelistedCountries,
+                               @Nullable List<String> blacklistedCountries) {
         mListener = listener;
-        countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
 
         if (whitelistedCountries != null) {
-            this.whitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
+            this.whitelistedCountryIsos = convertCodesToIsos(new HashSet<>(whitelistedCountries));
         } else if (blacklistedCountries != null) {
-            this.blacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
-        } else {
-            this.whitelistedCountryIsos = new ArrayList<>(countryInfoMap.keySet());
+            this.blacklistedCountryIsos = convertCodesToIsos(new HashSet<>(blacklistedCountries));
         }
     }
 
-    private List<String> convertCodesToIsos(@NonNull List<String> codes) {
-        List<String> isos = new ArrayList<>();
+    private Set<String> convertCodesToIsos(@NonNull Set<String> codes) {
+        Set<String> isos = new HashSet<>();
         for (String code : codes) {
             if (PhoneNumberUtils.isValid(code)) {
                 isos.addAll(PhoneNumberUtils.getCountryIsosFromCountryCode(code));
@@ -78,12 +76,19 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
 
     @Override
     protected List<CountryInfo> doInBackground(Void... params) {
-        List<CountryInfo> countryInfoList = getAvailableCountryIsos();
+        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
+        List<CountryInfo> countryInfoList = getAvailableCountryIsos(countryInfoMap);
         Collections.sort(countryInfoList);
         return countryInfoList;
     }
 
-    public List<CountryInfo> getAvailableCountryIsos() {
+    public List<CountryInfo> getAvailableCountryIsos(Map<String, Integer> countryInfoMap) {
+        // We consider all countries to be whitelisted if there are no whitelisted
+        // or blacklisted countries given as input.
+        if(whitelistedCountryIsos == null && blacklistedCountryIsos == null) {
+            this.whitelistedCountryIsos = new HashSet<>(countryInfoMap.keySet());
+        }
+
         List<CountryInfo> countryInfoList = new ArrayList<>();
 
         // At this point either whitelistedCountryIsos or blacklistedCountryIsos is null.
