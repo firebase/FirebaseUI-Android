@@ -119,14 +119,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(
                 getContext(),
                 getFlowParams(),
-                view.findViewById(R.id.email_footer_tos_and_pp_text));
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
-        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+                view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
     }
 
     @Override

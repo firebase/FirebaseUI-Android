@@ -17,11 +17,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -95,6 +97,8 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 mPhoneInputLayout.setError(null);
             }
         });
+
+        setupPrivacyDisclosures(view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
     }
 
     @Override
@@ -146,7 +150,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
         Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
         String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
-                credential.getId(), getContext());
+                credential.getId(), requireContext());
         if (formattedPhone != null) {
             start(PhoneNumberUtils.getPhoneNumber(formattedPhone));
         }
@@ -191,6 +195,23 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
         return PhoneNumberUtils.format(
                 everythingElse, mCountryListSpinner.getSelectedCountryInfo());
+    }
+
+    private void setupPrivacyDisclosures(TextView footerText) {
+        FlowParameters params = getFlowParams();
+
+        if (params.isSingleProviderFlow()) {
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicySmsText(requireContext(),
+                    params,
+                    mSmsTermsText);
+        } else {
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(),
+                    params,
+                    footerText);
+
+            String verifyText = getString(R.string.fui_verify_phone_number);
+            mSmsTermsText.setText(getString(R.string.fui_sms_terms_of_service, verifyText));
+        }
     }
 
     private void setCountryCode(PhoneNumber number) {
