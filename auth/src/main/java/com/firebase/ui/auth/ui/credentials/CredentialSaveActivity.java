@@ -9,10 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.ui.InvisibleActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
@@ -21,7 +20,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
 /**
  * Invisible Activity used for saving credentials to SmartLock.
  */
-public class CredentialSaveActivity extends HelperActivityBase {
+public class CredentialSaveActivity extends InvisibleActivityBase {
     private static final String TAG = "CredentialSaveActivity";
 
     private SmartLockHandler mHandler;
@@ -47,8 +46,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
         mHandler.init(getFlowParams());
         mHandler.setResponse(response);
 
-        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 finish(RESULT_OK, response.toIntent());

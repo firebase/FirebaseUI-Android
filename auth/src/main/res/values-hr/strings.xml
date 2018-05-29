@@ -1,6 +1,12 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Učitavanje…</string>
     <string name="fui_sign_in_default">Prijava</string>
+    <string name="fui_tos_and_pp">Ako nastavite, potvrđujete da prihvaćate odredbe koje sadrže %1$s i %2$s.</string>
+    <string name="fui_tos_only">Ako nastavite, potvrđujete da prihvaćate odredbe koje sadrži %1$s.</string>
+    <string name="fui_pp_only">Ako nastavite, potvrđujete da prihvaćate odredbe koje sadrži %1$s.</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_tos_footer">%1$s</string>
+    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -23,9 +29,6 @@
     <string name="fui_progress_dialog_signing_up">Registriranje….</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
     <string name="fui_email_account_creation_error">Registracija računa putem e-adrese nije uspjela</string>
-    <string name="fui_create_account_preamble_tos_and_pp">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s.</string>
     <string name="fui_terms_of_service">Uvjeti pružanja usluge</string>
     <string name="fui_privacy_policy">Pravila o privatnosti</string>
     <string name="fui_welcome_back_idp_header">Već imate račun</string>
@@ -65,4 +68,7 @@
     <string name="fui_verify_phone_number">Potvrda telefonskog broja</string>
     <string name="fui_continue_phone_login">Nastavi</string>
     <string name="fui_sms_terms_of_service">Dodirivanje gumba “%1$s” može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ako dodirnete “%1$s”, potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s. Možda ćemo vam poslati SMS. Moguća je naplata poruke i podatkovnog prometa.</string>
+    <string name="fui_sms_terms_of_service_only_extended">Ako dodirnete “%1$s”, potvrđujete da prihvaćate odredbe koje sadrži %2$s. Možda ćemo vam poslati SMS. Moguća je naplata poruke i podatkovnog prometa.</string>
+    <string name="fui_sms_privacy_policy_only_extended">Ako dodirnete “%1$s”, potvrđujete da prihvaćate odredbe koje sadrži %2$s. Možda ćemo vam poslati SMS. Moguća je naplata poruke i podatkovnog prometa.</string>
 </resources>

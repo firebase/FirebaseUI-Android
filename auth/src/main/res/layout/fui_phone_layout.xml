@@ -1,53 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
-        style="@style/FirebaseUI.WrapperStyle"
-        android:layout_height="wrap_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <com.firebase.ui.auth.ui.phone.CountryListSpinner
-            android:id="@+id/country_list"
-            style="@style/FirebaseUI.CountrySpinner"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout" />
+        <android.support.constraint.ConstraintLayout
+            style="@style/FirebaseUI.WrapperStyle"
+            android:layout_height="wrap_content">
 
-        <com.firebase.ui.auth.util.ui.BaselineTextInputLayout
-            android:id="@+id/phone_layout"
-            style="@style/FirebaseUI.TextInputLayout.PhoneField"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@+id/country_list"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            <com.firebase.ui.auth.ui.phone.CountryListSpinner
+                android:id="@+id/country_list"
+                style="@style/FirebaseUI.CountrySpinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/phone_number"
-                style="@style/FirebaseUI.TextInputEditText.PhoneField"
-                android:imeOptions="actionDone" />
+            <com.firebase.ui.auth.util.ui.BaselineTextInputLayout
+                android:id="@+id/phone_layout"
+                style="@style/FirebaseUI.TextInputLayout.PhoneField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/country_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </com.firebase.ui.auth.util.ui.BaselineTextInputLayout>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/phone_number"
+                    style="@style/FirebaseUI.TextInputEditText.PhoneField"
+                    android:imeOptions="actionDone" />
 
-        <Button
-            android:id="@+id/send_code"
-            style="@style/FirebaseUI.VerifyPhoneButton"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:text="@string/fui_verify_phone_number"
-            app:layout_constraintTop_toBottomOf="@+id/phone_layout" />
+            </com.firebase.ui.auth.util.ui.BaselineTextInputLayout>
 
-        <TextView
-            android:id="@+id/send_sms_tos"
-            style="@style/FirebaseUI.Text.BodyText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fui_field_padding_vert"
-            android:textColor="?android:textColorTertiary"
-            android:textIsSelectable="false"
-            app:layout_constraintTop_toBottomOf="@+id/send_code" />
+            <Button
+                android:id="@+id/send_code"
+                style="@style/FirebaseUI.VerifyPhoneButton"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:text="@string/fui_verify_phone_number"
+                app:layout_constraintTop_toBottomOf="@+id/phone_layout" />
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/send_sms_tos"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:textColor="?android:textColorTertiary"
+                android:textIsSelectable="false"
+                app:layout_constraintTop_toBottomOf="@+id/send_code" />
 
-</ScrollView>
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter"
+                app:layout_constraintTop_toBottomOf="@+id/send_sms_tos" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>
+

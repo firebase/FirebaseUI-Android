@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -128,4 +129,16 @@ public class FlowParameters implements Parcelable {
             return new FlowParameters[size];
         }
     };
+
+    public boolean isSingleProviderFlow() {
+        return providerInfo.size() == 1;
+    }
+
+    public boolean isTermsOfServiceUrlProvided() {
+        return !TextUtils.isEmpty(termsOfServiceUrl);
+    }
+
+    public boolean isPrivacyPolicyUrlProvided() {
+        return !TextUtils.isEmpty(privacyPolicyUrl);
+    }
 }

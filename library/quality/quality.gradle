@@ -77,7 +77,8 @@ android {
                 'MissingTranslation', // TODO remove when translations come in
                 'IconExpectedSize',
                 'InvalidPackage', // Firestore uses GRPC which makes lint mad
-                'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
+                'NewerVersionAvailable', 'GradleDependency', // For reproducible builds
+                'SelectableText' // We almost never care about this
 
         baseline file("$configDir/lint-baseline.xml")
         checkAllWarnings true

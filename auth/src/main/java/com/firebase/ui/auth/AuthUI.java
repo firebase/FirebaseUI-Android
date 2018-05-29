@@ -26,6 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
+import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -91,7 +92,11 @@ import java.util.Set;
  */
 public final class AuthUI {
 
-    private static final String TAG = "AuthUI";
+    @VisibleForTesting
+    protected static FirebaseAuth sDefaultAuth;
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String TAG = "AuthUI";
 
     @StringDef({
                        EmailAuthProvider.PROVIDER_ID,
@@ -145,7 +150,13 @@ public final class AuthUI {
 
     private AuthUI(FirebaseApp app) {
         mApp = app;
-        mAuth = FirebaseAuth.getInstance(mApp);
+
+        // TODO: This is a bad testing hack
+        if (sDefaultAuth != null) {
+            mAuth = sDefaultAuth;
+        } else {
+            mAuth = FirebaseAuth.getInstance(mApp);
+        }
 
         try {
             mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
