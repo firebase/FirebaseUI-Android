@@ -53,16 +53,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private final Runnable mCountdown = new Runnable() {
         @Override
         public void run() {
-            mMillisUntilFinished -= TICK_INTERVAL_MILLIS;
-            if (mMillisUntilFinished <= 0) {
-                mCountDownTextView.setText("");
-                mCountDownTextView.setVisibility(View.GONE);
-                mResendCodeTextView.setVisibility(View.VISIBLE);
-            } else {
-                mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
-                        TimeUnit.MILLISECONDS.toSeconds(mMillisUntilFinished) + 1));
-                mLooper.postDelayed(this, TICK_INTERVAL_MILLIS);
-            }
+            processCountdownTick();
         }
     };
 
@@ -112,7 +103,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mSubmitConfirmationButton = view.findViewById(R.id.submit_confirmation_code);
 
         requireActivity().setTitle(getString(R.string.fui_verify_your_phone_title));
-        mCountdown.run();
+        processCountdownTick();
         setupSubmitConfirmationButton();
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView();
@@ -206,6 +197,19 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
                 mLooper.postDelayed(mCountdown, TICK_INTERVAL_MILLIS);
             }
         });
+    }
+
+    private void processCountdownTick() {
+        mMillisUntilFinished -= TICK_INTERVAL_MILLIS;
+        if (mMillisUntilFinished <= 0) {
+            mCountDownTextView.setText("");
+            mCountDownTextView.setVisibility(View.GONE);
+            mResendCodeTextView.setVisibility(View.VISIBLE);
+        } else {
+            mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
+                    TimeUnit.MILLISECONDS.toSeconds(mMillisUntilFinished) + 1));
+            mLooper.postDelayed(mCountdown, TICK_INTERVAL_MILLIS);
+        }
     }
 
     private void submitCode() {

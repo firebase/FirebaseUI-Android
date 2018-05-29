@@ -163,13 +163,12 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     }
 
     private void start(PhoneNumber number) {
-        if (PhoneNumber.isValid(number)) {
-            mPhoneEditText.setText(number.getPhoneNumber());
-            mPhoneEditText.setSelection(number.getPhoneNumber().length());
-        } else {
+        if (!PhoneNumber.isValid(number)) {
             mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
             return;
         }
+        mPhoneEditText.setText(number.getPhoneNumber());
+        mPhoneEditText.setSelection(number.getPhoneNumber().length());
 
         if (PhoneNumber.isCountryValid(number)) {
             setCountryCode(number);
