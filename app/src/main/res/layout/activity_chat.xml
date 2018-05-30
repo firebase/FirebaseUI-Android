@@ -44,7 +44,9 @@
             android:layout_weight="1"
             android:hint="@string/hint_message"
             android:imeOptions="actionDone"
-            android:inputType="text" />
+            android:importantForAutofill="no"
+            android:inputType="text"
+            tools:ignore="UnusedAttribute" />
 
         <Button
             android:id="@+id/sendButton"

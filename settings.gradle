@@ -1,2 +1,0 @@
-include ':app', ':library', ':database', ':auth', ':storage', ':firestore', ':common',
-        ':proguard-tests', ':internal:lint', ':internal:lintchecks'
