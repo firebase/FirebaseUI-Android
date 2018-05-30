@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">लोड हो रहा है…</string>
     <string name="fui_sign_in_default">प्रवेश करें</string>
     <string name="fui_tos_and_pp">जारी रखकर, आप यह बताते हैं कि आप हमारी %1$s और %2$s को मंज़ूर करते हैं.</string>
-    <string name="fui_tos_only">जारी रखकर, आप यह बताते हैं कि आप हमारी %1$s मंज़ूर करते हैं.</string>
-    <string name="fui_pp_only">जारी रखकर, आप यह बताते हैं कि आप हमारी %1$s मंज़ूर करते हैं.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">जारी रखें</string>
     <string name="fui_sms_terms_of_service">“%1$s” पर टैप करने पर, एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” पर टैप करके, आप यह बताते हैं कि आप हमारी %2$s और %3$s को मंज़ूर करते हैं. एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
-    <string name="fui_sms_terms_of_service_only_extended">“%1$s” पर टैप करके, आप यह बताते हैं कि आप हमारी %2$s मंज़ूर करते हैं. एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
-    <string name="fui_sms_privacy_policy_only_extended">“%1$s” पर टैप करके, आप यह बताते हैं कि आप हमारी %2$s मंज़ूर करते हैं. एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
 </resources>

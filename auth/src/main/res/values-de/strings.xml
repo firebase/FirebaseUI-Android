@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Wird geladen…</string>
     <string name="fui_sign_in_default">Anmelden</string>
     <string name="fui_tos_and_pp">Indem Sie fortfahren, stimmen Sie unseren %1$s und unserer %2$s zu.</string>
-    <string name="fui_tos_only">Indem Sie fortfahren, stimmen Sie unseren %1$s zu.</string>
-    <string name="fui_pp_only">Indem Sie fortfahren, stimmen Sie unserer %1$s zu.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Weiter</string>
     <string name="fui_sms_terms_of_service">Wenn Sie auf “%1$s” tippen, erhalten Sie möglicherweise eine SMS. Es können Gebühren für SMS und Datenübertragung anfallen.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Indem Sie auf “%1$s” tippen, stimmen Sie unseren %2$s und unserer %3$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Indem Sie auf “%1$s” tippen, stimmen Sie unseren %2$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Indem Sie auf “%1$s” tippen, stimmen Sie unserer %2$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
 </resources>

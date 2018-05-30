@@ -939,8 +939,12 @@ public final class AuthUI {
 
         /**
          * Specifies the terms-of-service URL for the application.
+         *
+         * @deprecated Please use {@link #setTosAndPrivacyPolicyUrls(String, String)}
+         * For the Tos link to be displayed a Privacy Policy url must also be provided.
          */
         @NonNull
+        @Deprecated
         public T setTosUrl(@Nullable String tosUrl) {
             mTosUrl = tosUrl;
             return (T) this;
@@ -948,9 +952,23 @@ public final class AuthUI {
 
         /**
          * Specifies the privacy policy URL for the application.
+         *
+         * @deprecated Please use {@link #setTosAndPrivacyPolicyUrls(String, String)}
+         * For the Privacy Policy link to be displayed a Tos url must also be provided.
          */
         @NonNull
+        @Deprecated
         public T setPrivacyPolicyUrl(@Nullable String privacyPolicyUrl) {
+            mPrivacyPolicyUrl = privacyPolicyUrl;
+            return (T) this;
+        }
+
+        @NonNull
+        public T setTosAndPrivacyPolicyUrls(@NonNull String tosUrl,
+                                            @NonNull String privacyPolicyUrl) {
+            Preconditions.checkNotNull(tosUrl, "tosUrl cannot be null");
+            Preconditions.checkNotNull(privacyPolicyUrl, "privacyPolicyUrl cannot be null");
+            mTosUrl = tosUrl;
             mPrivacyPolicyUrl = privacyPolicyUrl;
             return (T) this;
         }

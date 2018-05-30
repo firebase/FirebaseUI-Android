@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Зарежда се…</string>
     <string name="fui_sign_in_default">Вход</string>
     <string name="fui_tos_and_pp">Продължавайки, приемате нашите %1$s и %2$s.</string>
-    <string name="fui_tos_only">Продължавайки, приемате нашите %1$s.</string>
-    <string name="fui_pp_only">Продължавайки, приемате нашата %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Напред</string>
     <string name="fui_sms_terms_of_service">Докосвайки „%1$s“, може да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Докосвайки „%1$s“, приемате нашите %2$s и %3$s. Възможно е да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Докосвайки „%1$s“, приемате нашите %2$s. Възможно е да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Докосвайки „%1$s“, приемате нашата %2$s. Възможно е да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
 </resources>

@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">S\'està carregant…</string>
     <string name="fui_sign_in_default">Inicia la sessió</string>
     <string name="fui_tos_and_pp">En continuar, acceptes les nostres %1$s i la nostra %2$s.</string>
-    <string name="fui_tos_only">En continuar, acceptes les nostres %1$s.</string>
-    <string name="fui_pp_only">En continuar, acceptes la nostra %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Continua</string>
     <string name="fui_sms_terms_of_service">En tocar %1$s, és possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En tocar %1$s, acceptes les nostres %2$s i la nostra %3$s. És possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
-    <string name="fui_sms_terms_of_service_only_extended">En tocar %1$s, acceptes les nostres %2$s. És possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
-    <string name="fui_sms_privacy_policy_only_extended">En tocar %1$s, acceptes la nostra %2$s. És possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
 </resources>
