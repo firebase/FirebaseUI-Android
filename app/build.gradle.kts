@@ -1,3 +1,6 @@
+// NOTE: this project uses Gradle Kotlin DSL. More common build.gradle instructions can be found in
+// the main README.
+
 android {
     defaultConfig {
         multiDexEnabled = true
@@ -39,8 +42,8 @@ dependencies {
     implementation(Config.Libs.Support.customTabs)
     implementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
-    implementation(Config.Libs.Miscellaneous.glide)
-    annotationProcessor(Config.Libs.Miscellaneous.glideCompiler)
+    implementation(Config.Libs.Misc.glide)
+    annotationProcessor(Config.Libs.Misc.glideCompiler)
 
     // Used for FirestorePagingActivity
     implementation(Config.Libs.Arch.paging)
@@ -48,12 +51,12 @@ dependencies {
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
-    implementation(Config.Libs.Miscellaneous.permissions)
-    implementation(Config.Libs.Miscellaneous.butterKnife)
-    annotationProcessor(Config.Libs.Miscellaneous.butterKnifeCompiler)
-    debugImplementation(Config.Libs.Miscellaneous.leakCanary)
-    releaseImplementation(Config.Libs.Miscellaneous.leakCanaryNoop)
-    testImplementation(Config.Libs.Miscellaneous.leakCanaryNoop)
+    implementation(Config.Libs.Misc.permissions)
+    implementation(Config.Libs.Misc.butterKnife)
+    annotationProcessor(Config.Libs.Misc.butterKnifeCompiler)
+    debugImplementation(Config.Libs.Misc.leakCanary)
+    releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
+    testImplementation(Config.Libs.Misc.leakCanaryNoop)
 }
 
 apply(plugin = "com.google.gms.google-services")

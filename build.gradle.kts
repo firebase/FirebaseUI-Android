@@ -57,11 +57,11 @@ val Project.configDir get() = "$rootDir/library/quality"
 val Project.reportsDir get() = "$buildDir/reports"
 
 fun Project.configureAndroid() {
-    apply(plugin = "com.android.${if (name == "app" || name == "proguard-tests") {
-        "application"
+    if (name == "app" || name == "proguard-tests") {
+        apply(plugin = "com.android.application")
     } else {
-        "library"
-    }}")
+        apply(plugin = "com.android.library")
+    }
 
     configure<BaseExtension> {
         compileSdkVersion(Config.SdkVersions.compile)
@@ -114,7 +114,7 @@ fun Project.configureQuality() {
 }
 
 fun Project.setupPublishing(isLibrary: Boolean) {
-    val publicationName = "${if (isLibrary) "monolith" else name}Library"
+    val publicationName = if (isLibrary) "monolithLibrary" else "${name}Library"
     val artifactName = if (isLibrary) "firebase-ui" else "firebase-ui-${project.name}"
 
     val sourcesJar = task<Jar>("sourcesJar") {

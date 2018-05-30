@@ -1,5 +1,5 @@
 dependencies {
-    api(Config.Libs.Miscellaneous.glide)
+    api(Config.Libs.Misc.glide)
 
     api(Config.Libs.Firebase.storage)
     // Override Play Services

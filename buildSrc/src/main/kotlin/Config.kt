@@ -66,7 +66,7 @@ object Config {
             const val twitter = "com.twitter.sdk.android:twitter-core:3.1.1@aar"
         }
 
-        object Miscellaneous {
+        object Misc {
             private const val leakCanaryVersion = "1.5.4"
             private const val glideVersion = "4.7.1"
             private const val butterVersion = "8.8.1"
