@@ -20,6 +20,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import com.firebase.ui.auth.data.client.CountryListLoadTask;
 import com.firebase.ui.auth.data.model.CountryInfo;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -295,13 +296,13 @@ public class CountryListLoadTaskTests {
 
     @Before
     public void setUp() {
-        // Create task and mock dependencies
         mListener = mock(CountryListLoadTask.Listener.class);
-        mTask = new CountryListLoadTask(mListener);
     }
 
     @Test
-    public void testExecute() {
+    public void testExecute_withoutUserInput_expectAllCountriesAdded() {
+        mTask = new CountryListLoadTask(mListener, null, null);
+
         mTask.execute();
 
         try {
@@ -315,9 +316,110 @@ public class CountryListLoadTaskTests {
         }
     }
 
+
+    @Test
+    public void testExecute_withUserWhitelistInput_expectUserCountriesAddedOnly() {
+        List<String> whitelistedCountryIsos = new ArrayList<>();
+        whitelistedCountryIsos.add("US");
+
+        List<CountryInfo> expectedOutput = new ArrayList<>();
+        expectedOutput.add(new CountryInfo(new Locale("", "US"), 1));
+
+        mTask = new CountryListLoadTask(mListener, whitelistedCountryIsos, null);
+
+        mTask.execute();
+
+        try {
+            final List<CountryInfo> result = mTask.get();
+            Collections.sort(expectedOutput);
+            assertEquals(expectedOutput, result);
+        } catch (InterruptedException e) {
+            fail("Should not throw InterruptedException");
+        } catch (ExecutionException e) {
+            fail("Should not throw ExecutionException");
+        }
+    }
+
+    @Test
+    public void testExecute_withUserBlacklistInput_expectUserCountriesRemoved() {
+        List<String> blacklistedCountryIsos = new ArrayList<>();
+        blacklistedCountryIsos.add("US");
+
+        List<CountryInfo> expectedOutput = new ArrayList<>(COUNTRY_LIST);
+        expectedOutput.remove(new CountryInfo(new Locale("", "US"), 1));
+
+        mTask = new CountryListLoadTask(mListener, null, blacklistedCountryIsos);
+
+        mTask.execute();
+
+        try {
+            final List<CountryInfo> result = mTask.get();
+            Collections.sort(expectedOutput);
+            assertEquals(expectedOutput, result);
+        } catch (InterruptedException e) {
+            fail("Should not throw InterruptedException");
+        } catch (ExecutionException e) {
+            fail("Should not throw ExecutionException");
+        }
+    }
+
+    @Test
+    public void testExecute_withCodeWhitelistInput_expectUserCodeCountriesAddedOnly() {
+        List<String> whitelistedCountries = new ArrayList<>();
+        whitelistedCountries.add("+1");
+
+        List<CountryInfo> expectedOutput = new ArrayList<>();
+        for (String iso : PhoneNumberUtils.getCountryIsosFromCountryCode("+1")) {
+            expectedOutput.add(new CountryInfo(new Locale("", iso), 1));
+        }
+
+        mTask = new CountryListLoadTask(mListener, whitelistedCountries, null);
+
+        mTask.execute();
+
+        try {
+            final List<CountryInfo> result = mTask.get();
+            Collections.sort(expectedOutput);
+            assertEquals(expectedOutput, result);
+        } catch (InterruptedException e) {
+            fail("Should not throw InterruptedException");
+        } catch (ExecutionException e) {
+            fail("Should not throw ExecutionException");
+        }
+    }
+
+    @Test
+    public void testExecute_withCodeBlacklistInput_expectUserCodeCountriesRemoved() {
+        List<String> blacklistedCountries = new ArrayList<>();
+        blacklistedCountries.add("+1");
+
+        List<CountryInfo> excludedCountries = new ArrayList<>();
+        for (String iso : PhoneNumberUtils.getCountryIsosFromCountryCode("+1")) {
+            excludedCountries.add(new CountryInfo(new Locale("", iso), 1));
+        }
+
+        List<CountryInfo> expectedOutput = new ArrayList<>(COUNTRY_LIST);
+        expectedOutput.removeAll(excludedCountries);
+
+        mTask = new CountryListLoadTask(mListener, null, blacklistedCountries);
+
+        mTask.execute();
+
+        try {
+            final List<CountryInfo> result = mTask.get();
+            Collections.sort(expectedOutput);
+            assertEquals(expectedOutput, result);
+        } catch (InterruptedException e) {
+            fail("Should not throw InterruptedException");
+        } catch (ExecutionException e) {
+            fail("Should not throw ExecutionException");
+        }
+    }
+
+
     @Test
     public void testOnPostExecute_nullListener() {
-        mTask = new CountryListLoadTask(null);
+        mTask = new CountryListLoadTask(null, null, null);
         try {
             mTask.onPostExecute(COUNTRY_LIST);
         } catch (NullPointerException ex) {
@@ -327,6 +429,7 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testOnPostExecute() {
+        mTask = new CountryListLoadTask(mListener, null, null);
         mTask.onPostExecute(COUNTRY_LIST);
         verify(mListener).onLoadComplete(COUNTRY_LIST);
     }

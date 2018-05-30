@@ -77,6 +77,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -214,9 +215,9 @@ public final class AuthUI {
      * Signs the user in without any UI if possible. If this operation fails, you can safely start a
      * UI-based sign-in flow knowing it is required.
      *
-     * @param context        requesting the user be signed in
-     * @param configs        to use for silent sign in. Only Google and email are currently
-     *                       supported, the rest will be ignored.
+     * @param context requesting the user be signed in
+     * @param configs to use for silent sign in. Only Google and email are currently supported, the
+     *                rest will be ignored.
      * @return a task which indicates whether or not the user was successfully signed in.
      */
     @NonNull
@@ -646,9 +647,139 @@ public final class AuthUI {
                     throw new IllegalStateException("Invalid country iso: " + iso);
                 }
 
-                getParams().putString(ExtraConstants.COUNTRY_ISO, iso);
+                getParams().putString(ExtraConstants.COUNTRY_ISO,
+                        iso.toUpperCase(Locale.getDefault()));
 
                 return this;
+            }
+
+
+            /**
+             * Sets the country codes available in the country code selector for phone
+             * authentication. Takes as input a List of both country isos and codes.
+             * This is not to be called with
+             * {@link #setBlacklistedCountries(List<String>)}.
+             * If both are called, an exception will be thrown.
+             * <p>
+             * Inputting an e-164 country code (e.g. '+1') will include all countries with
+             * +1 as its code.
+             * Example input: {'+52', 'us'}
+             * For a list of country iso or codes, see Alpha-2 isos here:
+             * https://en.wikipedia.org/wiki/ISO_3166-1
+             * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
+             *
+             * @param whitelistedCountries a case insensitive list of country codes and/or
+             *                                     isos to be whitelisted
+             */
+            public PhoneBuilder setWhitelistedCountries(
+                    @NonNull List<String> whitelistedCountries) {
+                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRIES)) {
+                    throw new RuntimeException(
+                            "You can either whitelist or blacklist country codes for phone " +
+                                    "authentication.");
+                }
+                addCountriesToBundle(whitelistedCountries, ExtraConstants.WHITELISTED_COUNTRIES);
+                return this;
+            }
+
+            /**
+             * Sets the countries to be removed from the country code selector for phone
+             * authentication. Takes as input a List of both country isos and codes.
+             * This is not to be called with
+             * {@link #setWhitelistedCountries(List<String>)}.
+             * If both are called, an exception will be thrown.
+             * <p>
+             * Inputting an e-164 country code (e.g. '+1') will include all countries with
+             * +1 as its code.
+             * Example input: {'+52', 'us'}
+             * For a list of country iso or codes, see Alpha-2 codes here:
+             * https://en.wikipedia.org/wiki/ISO_3166-1
+             * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
+             * @param blacklistedCountries a case insensitive list of country codes and/or isos
+             *                             to be blacklisted
+             */
+            public PhoneBuilder setBlacklistedCountries(
+                    @NonNull List<String> blacklistedCountries) {
+                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRIES)) {
+                    throw new RuntimeException(
+                            "You can either whitelist or blacklist country codes for phone " +
+                                    "authentication.");
+                }
+                addCountriesToBundle(blacklistedCountries, ExtraConstants.BLACKLISTED_COUNTRIES);
+                return this;
+            }
+
+            @Override
+            public IdpConfig build() {
+                validateInputs();
+                return super.build();
+            }
+
+            private void addCountriesToBundle(List<String> CountryIsos, String CountryIsoType) {
+                ArrayList<String> uppercaseCodes = new ArrayList<>();
+                for (String code : CountryIsos) {
+                    uppercaseCodes.add(code.toUpperCase(Locale.getDefault()));
+                }
+
+                getParams().putStringArrayList(CountryIsoType, uppercaseCodes);
+            }
+
+            private void validateInputs() {
+                List<String> whitelistedCountries = getParams().getStringArrayList(
+                        ExtraConstants.WHITELISTED_COUNTRIES);
+                List<String> blacklistedCountries = getParams().getStringArrayList(
+                        ExtraConstants.BLACKLISTED_COUNTRIES);
+
+                if (whitelistedCountries != null &&
+                        blacklistedCountries != null) {
+                    throw new RuntimeException(
+                            "You can either whitelist or blacklist country codes for phone " +
+                                    "authentication.");
+                } else if (whitelistedCountries != null) {
+                    validateCountries(whitelistedCountries);
+                    validateDefaultCountryIso(whitelistedCountries, true);
+
+                } else if (blacklistedCountries != null) {
+                    validateCountries(blacklistedCountries);
+                    validateDefaultCountryIso(blacklistedCountries, false);
+                }
+            }
+
+            private void validateCountries(List<String> codes) {
+                for (String code : codes) {
+                    if (!PhoneNumberUtils.isValidIso(code) && !PhoneNumberUtils.isValid(code)) {
+                        throw new RuntimeException("Invalid input: You must provide a valid " +
+                                "country iso (alpha-2) or code (e-164). e.g. 'us' or '+1'.");
+                    }
+                }
+            }
+
+            private void validateDefaultCountryIso(List<String> codes, boolean whitelisted) {
+                if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) && codes != null) {
+                    String defaultIso = getParams().getString(ExtraConstants.COUNTRY_ISO);
+                    boolean containsIso = containsCountryIso(codes, defaultIso);
+                    if (!containsIso && whitelisted || containsIso && !whitelisted) {
+                        throw new RuntimeException("Invalid default country iso. Make sure it " +
+                                "is either part of the whitelisted list or that you " +
+                                "haven't blacklisted it.");
+                    }
+                }
+            }
+
+            private boolean containsCountryIso(List<String> codes, String iso) {
+                for (String code : codes) {
+                    if (PhoneNumberUtils.isValidIso(code)) {
+                        if (code.equals(iso)) {
+                            return true;
+                        }
+                    } else {
+                        List<String> isos = PhoneNumberUtils.getCountryIsosFromCountryCode(code);
+                        if (isos.contains(iso)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
         }
 
@@ -682,8 +813,8 @@ public final class AuthUI {
             }
 
             /**
-             * Set the {@link GoogleSignInOptions} to be used for Google sign-in. Standard options
-             * like requesting the user's email will automatically be added.
+             * Set the {@link GoogleSignInOptions} to be used for Google sign-in. Standard
+             * options like requesting the user's email will automatically be added.
              *
              * @param options sign-in options
              */
@@ -787,8 +918,8 @@ public final class AuthUI {
         boolean mEnableHints = true;
 
         /**
-         * Specifies the theme to use for the application flow. If no theme is specified, a default
-         * theme will be used.
+         * Specifies the theme to use for the application flow. If no theme is specified, a
+         * default theme will be used.
          */
         @NonNull
         public T setTheme(@StyleRes int theme) {
@@ -828,8 +959,8 @@ public final class AuthUI {
         }
 
         /**
-         * Specified the set of supported authentication providers. At least one provider must be
-         * specified. There may only be one instance of each provider.
+         * Specified the set of supported authentication providers. At least one provider must
+         * be specified. There may only be one instance of each provider.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
