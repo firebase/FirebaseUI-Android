@@ -219,6 +219,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     }
 
     private void setupCountrySpinner() {
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
+        if (params != null) {
+            mCountryListSpinner.setWhitelistedCountries(
+                    params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRIES));
+            mCountryListSpinner.setBlacklistedCountries(
+                    params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRIES));
+        }
+
         //clear error when spinner is clicked on
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
