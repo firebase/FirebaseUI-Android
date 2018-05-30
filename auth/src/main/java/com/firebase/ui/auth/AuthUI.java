@@ -835,6 +835,8 @@ public final class AuthUI {
         @NonNull
         public T setTosAndPrivacyPolicyUrls(@NonNull String tosUrl,
                                             @NonNull String privacyPolicyUrl) {
+            Preconditions.checkNotNull(tosUrl, "tosUrl cannot be null");
+            Preconditions.checkNotNull(privacyPolicyUrl, "privacyPolicyUrl cannot be null");
             mTosUrl = tosUrl;
             mPrivacyPolicyUrl = privacyPolicyUrl;
             return (T) this;
