@@ -97,6 +97,7 @@
     <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Sign in with phone number</string>
     <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Done</string>
     <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Verified!</string>
+    <string name="fui_auto_verified" translation_description="Popup informing the user that their phone number was automatically verified">Phone number automatically verified</string>
     <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Code sent!</string>
     <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Resending…</string>
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Resend Code</string>

@@ -92,7 +92,9 @@ public class PhoneActivity extends AppCompatBase {
             @Override
             protected void onFailure(@NonNull Exception e) {
                 if (e instanceof PhoneNumberVerificationRequiredException) {
-                    // Ignore if resending verification code
+                    // Only boot up the submit code fragment if it isn't already being shown to the
+                    // user. If the user requests another verification code, the fragment will
+                    // already be visible so we have nothing to do.
                     if (getSupportFragmentManager()
                             .findFragmentByTag(SubmitConfirmationCodeFragment.TAG) == null) {
                         showSubmitCodeFragment(
@@ -185,22 +187,16 @@ public class PhoneActivity extends AppCompatBase {
 
     @Override
     public void showProgress(int message) {
-        FragmentBase fragment = (CheckPhoneNumberFragment)
-                getSupportFragmentManager().findFragmentByTag(CheckPhoneNumberFragment.TAG);
-        if (fragment == null || fragment.getView() == null) {
-            fragment = (SubmitConfirmationCodeFragment)
-                    getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
-        }
-
-        if (fragment == null || fragment.getView() == null) {
-            throw new IllegalStateException("No fragments added");
-        } else {
-            fragment.showProgress(message);
-        }
+        getActiveFragment().showProgress(message);
     }
 
     @Override
     public void hideProgress() {
+        getActiveFragment().hideProgress();
+    }
+
+    @NonNull
+    private FragmentBase getActiveFragment() {
         FragmentBase fragment = (CheckPhoneNumberFragment)
                 getSupportFragmentManager().findFragmentByTag(CheckPhoneNumberFragment.TAG);
         if (fragment == null || fragment.getView() == null) {
@@ -211,7 +207,7 @@ public class PhoneActivity extends AppCompatBase {
         if (fragment == null || fragment.getView() == null) {
             throw new IllegalStateException("No fragments added");
         } else {
-            fragment.hideProgress();
+            return fragment;
         }
     }
 }
