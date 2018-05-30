@@ -218,6 +218,12 @@
         <item name="android:textColor">#757575</item>
     </style>
 
+    <style name="FirebaseUI.Button.AccountChooser.PlayGamesButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_play_games_color_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_play_games</item>
+        <item name="android:textColor">#757575</item>
+    </style>
+
     <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
         <item name="drawableStartCompat">@drawable/fui_ic_facebook_white_22dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_facebook</item>

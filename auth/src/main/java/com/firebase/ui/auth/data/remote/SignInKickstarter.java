@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
@@ -126,6 +127,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                         RequestCodes.EMAIL_FLOW)));
                 break;
             case GoogleAuthProvider.PROVIDER_ID:
+            case PlayGamesAuthProvider.PROVIDER_ID:
             case FacebookAuthProvider.PROVIDER_ID:
             case TwitterAuthProvider.PROVIDER_ID:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
@@ -144,7 +146,8 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : getArguments().providerInfo) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
-            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                    || providerId.equals(PlayGamesAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }

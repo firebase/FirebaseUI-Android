@@ -31,6 +31,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -38,6 +39,7 @@ import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ProviderUtils {
+    private static final String GAMES_IDENTITY = "https://play.games";
     private static final String PHONE_IDENTITY = "https://phone.firebase";
 
     private ProviderUtils() {
@@ -49,6 +51,8 @@ public final class ProviderUtils {
         switch (response.getProviderType()) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+            case PlayGamesAuthProvider.PROVIDER_ID:
+                return PlayGamesAuthProvider.getCredential(response.getIdpToken());
             case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookAuthProvider.getCredential(response.getIdpToken());
             case TwitterAuthProvider.PROVIDER_ID:
@@ -74,6 +78,8 @@ public final class ProviderUtils {
         switch (method) {
             case GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD:
                 return GoogleAuthProvider.PROVIDER_ID;
+            case PlayGamesAuthProvider.PLAY_GAMES_SIGN_IN_METHOD:
+                return PlayGamesAuthProvider.PROVIDER_ID;
             case FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD:
                 return FacebookAuthProvider.PROVIDER_ID;
             case TwitterAuthProvider.TWITTER_SIGN_IN_METHOD:
@@ -96,6 +102,8 @@ public final class ProviderUtils {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return IdentityProviders.GOOGLE;
+            case PlayGamesAuthProvider.PROVIDER_ID:
+                return GAMES_IDENTITY;
             case FacebookAuthProvider.PROVIDER_ID:
                 return IdentityProviders.FACEBOOK;
             case TwitterAuthProvider.PROVIDER_ID:
@@ -114,6 +122,8 @@ public final class ProviderUtils {
         switch (accountType) {
             case IdentityProviders.GOOGLE:
                 return GoogleAuthProvider.PROVIDER_ID;
+            case GAMES_IDENTITY:
+                return PlayGamesAuthProvider.PROVIDER_ID;
             case IdentityProviders.FACEBOOK:
                 return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:

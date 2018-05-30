@@ -48,6 +48,7 @@ import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -107,11 +108,16 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         @StringRes int providerName;
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
+            case PlayGamesAuthProvider.PROVIDER_ID:
                 GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
                 google.init(new GoogleSignInHandler.Params(config, existingUser.getEmail()));
                 mProvider = google;
 
-                providerName = R.string.fui_idp_name_google;
+                if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                    providerName = R.string.fui_idp_name_google;
+                } else {
+                    providerName = R.string.fui_idp_name_play_games;
+                }
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
                 FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);

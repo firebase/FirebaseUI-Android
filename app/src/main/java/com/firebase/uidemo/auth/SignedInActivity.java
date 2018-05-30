@@ -44,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
@@ -161,6 +162,9 @@ public class SignedInActivity extends AppCompatActivity {
                 switch (info.getProviderId()) {
                     case GoogleAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_google));
+                        break;
+                    case PlayGamesAuthProvider.PROVIDER_ID:
+                        providers.add(getString(R.string.providers_play_games));
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_facebook));
