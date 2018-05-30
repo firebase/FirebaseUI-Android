@@ -79,12 +79,13 @@ fun Project.configureAndroid() {
 
         lintOptions {
             disable(
-                    "ObsoleteLintCustomCheck", // TODO ButterKnife will fix this in v9.0
+                    "ObsoleteLintCustomCheck", // ButterKnife will fix this in v9.0
                     "IconExpectedSize",
                     "InvalidPackage", // Firestore uses GRPC which makes lint mad
                     "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-                    "SelectableText" // We almost never care about this
+                    "SelectableText", "SyntheticAccessor" // We almost never care about this
             )
+            disable("UnknownNullness") // TODO fix in future PR
 
             isCheckAllWarnings = true
             isWarningsAsErrors = true
