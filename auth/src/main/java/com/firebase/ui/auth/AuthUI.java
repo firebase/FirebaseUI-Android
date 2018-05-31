@@ -594,6 +594,7 @@ public final class AuthUI {
             public PhoneBuilder setDefaultNumber(@NonNull String number) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set phone number",
+                        ExtraConstants.PHONE,
                         ExtraConstants.COUNTRY_ISO,
                         ExtraConstants.NATIONAL_NUMBER);
                 if (!PhoneNumberUtils.isValid(number)) {
@@ -616,7 +617,9 @@ public final class AuthUI {
             public PhoneBuilder setDefaultNumber(@NonNull String iso, @NonNull String number) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set phone number",
-                        ExtraConstants.PHONE);
+                        ExtraConstants.PHONE,
+                        ExtraConstants.COUNTRY_ISO,
+                        ExtraConstants.NATIONAL_NUMBER);
                 if (!PhoneNumberUtils.isValidIso(iso)) {
                     throw new IllegalStateException("Invalid country iso: " + iso);
                 }

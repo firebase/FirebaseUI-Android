@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 
+import java.lang.ref.WeakReference;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PreambleHandler {
     private static final String BTN_TARGET = "%BTN%";
@@ -93,7 +95,7 @@ public class PreambleHandler {
 
             int end = targetIndex + replacement.length();
             mBuilder.setSpan(mLinkSpan, targetIndex, end, 0);
-            mBuilder.setSpan(new CustomTabsSpan(url), targetIndex, end, 0);
+            mBuilder.setSpan(new CustomTabsSpan(mContext, url), targetIndex, end, 0);
         }
     }
 
@@ -101,25 +103,29 @@ public class PreambleHandler {
     private String getPreambleStringWithTargets(@StringRes int textViewText, boolean hasButton) {
         boolean termsOfServiceUrlProvided = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
         boolean privacyPolicyUrlProvided = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
+
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             Object[] targets = hasButton ?
                     new Object[]{BTN_TARGET, TOS_TARGET, PP_TARGET}
                     : new Object[]{TOS_TARGET, PP_TARGET};
             return mContext.getString(textViewText, targets);
         }
+
         return null;
     }
 
-    private class CustomTabsSpan extends ClickableSpan {
+    private static final class CustomTabsSpan extends ClickableSpan {
+        private final WeakReference<Context> mContext;
         private final String mUrl;
         private final CustomTabsIntent mCustomTabsIntent;
 
-        public CustomTabsSpan(String url) {
+        public CustomTabsSpan(Context context, String url) {
+            mContext = new WeakReference<>(context);
             mUrl = url;
 
             // Getting default color
             TypedValue typedValue = new TypedValue();
-            mContext.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
             @ColorInt int color = typedValue.data;
 
             mCustomTabsIntent = new CustomTabsIntent.Builder()
@@ -130,7 +136,10 @@ public class PreambleHandler {
 
         @Override
         public void onClick(View widget) {
-            mCustomTabsIntent.launchUrl(mContext, Uri.parse(mUrl));
+            Context context = mContext.get();
+            if (context != null) {
+                mCustomTabsIntent.launchUrl(context, Uri.parse(mUrl));
+            }
         }
     }
 }
