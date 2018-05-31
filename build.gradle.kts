@@ -32,29 +32,43 @@ allprojects {
         mavenLocal()
     }
 
-    // Skip Javadoc generation for Java 1.8 as it breaks build
-    if (JavaVersion.current().isJava8Compatible) {
-        tasks.withType<Javadoc> {
-            options {
-                this as StandardJavadocDocletOptions
-                addStringOption("Xdoclint:none", "-quiet")
-            }
-        }
-    }
-
     if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
         configureAndroid()
         configureQuality()
 
-        val isLibrary = name == "library"
         if (Config.submodules.contains(name) || isLibrary) {
-            setupPublishing(isLibrary)
+            setupPublishing()
+        }
+    }
+}
+
+// Skip Javadoc generation for Java 1.8 as it breaks build
+if (JavaVersion.current().isJava8Compatible) {
+    tasks.withType<Javadoc> {
+        options {
+            this as StandardJavadocDocletOptions
+            addStringOption("Xdoclint:none", "-quiet")
         }
     }
 }
 
 val Project.configDir get() = "$rootDir/library/quality"
 val Project.reportsDir get() = "$buildDir/reports"
+
+/**
+ * Extension property to determine if a Project is the 'library' module
+ */
+val Project.isLibrary get() = name == "library"
+
+/**
+ * Extension property to get the maven artifact name for a Project.
+ */
+val Project.artifactName get() = if (isLibrary) "firebase-ui" else "firebase-ui-${this.name}"
+
+/**
+ * Extension property to get the name for a Project's maven publication.
+ */
+val Project.publicationName get() = if (isLibrary) "monolithLibrary" else "${name}Library"
 
 fun Project.configureAndroid() {
     if (name == "app" || name == "proguard-tests") {
@@ -113,9 +127,8 @@ fun Project.configureQuality() {
     }
 }
 
-fun Project.setupPublishing(isLibrary: Boolean) {
-    val publicationName = if (isLibrary) "monolithLibrary" else "${name}Library"
-    val artifactName = if (isLibrary) "firebase-ui" else "firebase-ui-${project.name}"
+fun Project.setupPublishing() {
+    println("Configuring publishing for ${this}")
 
     val sourcesJar = task<Jar>("sourcesJar") {
         classifier = "sources"
@@ -138,7 +151,7 @@ fun Project.setupPublishing(isLibrary: Boolean) {
     artifacts.add("archives", sourcesJar)
 
     tasks.whenTaskAdded {
-        if (name.contains("publish") && name.contains("publication", true)) {
+        if (name.toLowerCase().contains("publish") && name.contains("publication", true)) {
             dependsOn("assembleRelease")
         }
     }
@@ -189,7 +202,6 @@ fun Project.setupPublishing(isLibrary: Boolean) {
 
     apply(plugin = "maven-publish")
     apply(plugin = "com.jfrog.artifactory")
-    apply(plugin = "com.jfrog.bintray")
 
     configure<PublishingExtension> {
         repositories {
@@ -210,6 +222,7 @@ fun Project.setupPublishing(isLibrary: Boolean) {
         // We need to override the variables 'group' and 'version' on the 'Project' object in order
         // to prevent the bintray plugin from creating 'unspecified' artifacts.
         val groupName = "com.firebaseui"
+        val projectName = name
         group = groupName
         version = Config.version
 
@@ -219,9 +232,17 @@ fun Project.setupPublishing(isLibrary: Boolean) {
                 artifactId = artifactName
                 version = Config.version
 
-                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+                val releaseAar = "$buildDir/outputs/aar/${projectName}-release.aar"
+
+                artifact(releaseAar)
                 artifact(javadocJar)
                 artifact(sourcesJar)
+
+                println("Creating maven publication $publicationName")
+                println("\tgroup: $groupName")
+                println("\tartifact: $artifactName")
+                println("\tversion: $version")
+                println("\taar: $releaseAar")
 
                 pom {
                     name.set("FirebaseUI ${project.name.capitalize()}")
@@ -310,20 +331,50 @@ fun Project.setupPublishing(isLibrary: Boolean) {
 
     tasks.withType<ArtifactoryTask> { publications(publicationName) }
 
+    apply(plugin = "com.jfrog.bintray")
+
     configure<BintrayExtension> {
+
         user = bintrayUsername
         key = bintrayKey
         setPublications(publicationName)
         setConfigurations("archives")
 
+        println("Bintray configuration for ${publicationName}")
+        println("\tartifact: ${artifactName}")
+        publications.forEach { pubName ->
+            println("\tpub: $pubName")
+
+            val publ = project.extensions
+                    .getByType(PublishingExtension::class.java)
+                    .publications.findByName(pubName) as MavenPublication
+
+            publ.artifacts.forEach { art ->
+                println("\t\tpub_artifact: $art")
+            }
+        }
+        configurations.forEach { config ->
+            println("\tconfig: $config")
+
+            project.configurations.findByName(config)?.allArtifacts?.forEach { art ->
+                println("\t\tconfig_artifact: $art")
+            }
+        }
+
+        // When uploading, move and rename the generated POM
+        val pomSrc = "$buildDir/publications/$publicationName/pom-default.xml"
+        val pomDst = "com/firebaseui/$artifactName/${Config.version}/"
+        val pomName = "$artifactName-${Config.version}.pom"
+
+        println("POM Transformation")
+        println("\tsrc: ${pomSrc}")
+        println("\tdst: ${pomDst}")
+        println("\tname: ${pomName}")
+
         filesSpec(closureOf<RecordingCopyTask> {
-            from(if (isLibrary) {
-                "$buildDir/publications/monolithLibrary/pom-default.xml"
-            } else {
-                "$buildDir/publications/${project.name}Library/pom-default.xml"
-            })
-            into("com/firebaseui/$artifactName/${Config.version}/")
-            rename(KotlinClosure1<String, String>({ "$artifactName-${Config.version}.pom" }))
+            from(pomSrc)
+            into(pomDst)
+            rename(KotlinClosure1<String, String>({ pomName }))
         })
 
         pkg(closureOf<BintrayExtension.PackageConfig> {
