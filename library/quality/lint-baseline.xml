@@ -9,24 +9,21 @@
     </issue>
 
     <issue
-        id="UnusedResources"
+        id="LambdaLast"
         severity="Error"
-        message="The resource `R.string.project_id` appears to be unused"
-        category="Performance"
-        priority="3"
-        summary="Unused resources"
-        explanation="Unused resources make applications larger and slow down builds."
-        errorLine1="    &lt;string name=&quot;project_id&quot; translatable=&quot;false&quot;>fir-ui-playground&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~"
-        quickfix="studio">
+        message="Functional interface parameters (such as parameter 1, &quot;listener&quot;, in com.firebase.ui.auth.data.client.CountryListLoadTask.CountryListLoadTask) should be last to improve Kotlin interoperability; see https://kotlinlang.org/docs/reference/java-interop.html#sam-conversions"
+        category="Interoperability:Kotlin Interoperability"
+        priority="6"
+        summary="Lambda Parameters Last"
+        explanation="To improve calling this code from Kotlin,&#xA;parameter types eligible for SAM conversion should be last."
+        url="https://android.github.io/kotlin-guides/interop.html#lambda-parameters-last"
+        urls="https://android.github.io/kotlin-guides/interop.html#lambda-parameters-last"
+        errorLine1="                               @Nullable List&lt;String> blacklistedCountries) {"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="build/generated/res/google-services/debug/values/values.xml"
-            line="10"
-            column="13"/>
-        <location
-            file="build/generated/res/google-services/release/values/values.xml"
-            line="10"
-            column="13"/>
+            file="/usr/local/google/home/samstern/Projects/firebase/firebaseui-android/auth/src/main/java/com/firebase/ui/auth/data/client/CountryListLoadTask.java"
+            line="55"
+            column="32"/>
     </issue>
 
 </issues>

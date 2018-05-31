@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Hantar semula kod dalam 0:%02d</string>
     <string name="fui_verify_your_phone_title">Sahkan nombor telefon anda</string>
     <string name="fui_verifying">Mengesahkan…</string>
-    <string name="fui_retrieving_sms">Mendapatkan SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Kod salah. Cuba lagi.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">Nombor telefon ini terlalu kerap digunakan</string>
     <string name="fui_error_quota_exceeded">Terdapat masalah sewaktu mengesahkan nombor telefon anda</string>
     <string name="fui_error_session_expired">Kod ini tidak sah lagi</string>
     <string name="fui_sign_in_with_phone_number">Log masuk dengan nombor telefon</string>
-    <string name="fui_done">Selesai</string>
-    <string name="fui_verified">Disahkan!</string>
-    <string name="fui_code_sent">Kod dihantar!</string>
-    <string name="fui_resending">Menghantar semula…</string>
     <string name="fui_resend_code">Hantar Semula Kod</string>
     <string name="fui_verify_phone_number">Sahkan Nombor Telefon</string>
     <string name="fui_continue_phone_login">Teruskan</string>

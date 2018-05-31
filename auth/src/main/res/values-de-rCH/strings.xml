@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Code in 0:%02d erneut senden</string>
     <string name="fui_verify_your_phone_title">Telefonnummer bestätigen</string>
     <string name="fui_verifying">Wird verifiziert…</string>
-    <string name="fui_retrieving_sms">SMS werden abgerufen…</string>
     <string name="fui_incorrect_code_dialog_body">Falscher Code. Versuchen Sie es noch einmal.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">Diese Telefonnummer wurde schon zu oft verwendet</string>
     <string name="fui_error_quota_exceeded">Bei der Bestätigung Ihrer Telefonnummer ist ein Problem aufgetreten</string>
     <string name="fui_error_session_expired">Dieser Code ist nicht mehr gültig</string>
     <string name="fui_sign_in_with_phone_number">Mit einer Telefonnummer anmelden</string>
-    <string name="fui_done">Fertig</string>
-    <string name="fui_verified">Bestätigt</string>
-    <string name="fui_code_sent">Code gesendet</string>
-    <string name="fui_resending">Wird erneut gesendet…</string>
     <string name="fui_resend_code">Code erneut senden</string>
     <string name="fui_verify_phone_number">Telefonnummer bestätigen</string>
     <string name="fui_continue_phone_login">Weiter</string>

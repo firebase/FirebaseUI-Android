@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Επανάληψη αποστολής κωδικού σε 0:%02d</string>
     <string name="fui_verify_your_phone_title">Επαλήθευση του τηλεφώνου σας</string>
     <string name="fui_verifying">Επαλήθευση…</string>
-    <string name="fui_retrieving_sms">Γίνεται ανάκτηση SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Εσφαλμένος κωδικός. Δοκιμάστε ξανά.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ΟΚ</string>
     <string name="fui_error_too_many_attempts">Αυτός ο αριθμός τηλεφώνου χρησιμοποιήθηκε πάρα πολλές φορές</string>
     <string name="fui_error_quota_exceeded">Παρουσιάστηκε πρόβλημα με την επαλήθευση του αριθμού τηλεφώνου</string>
     <string name="fui_error_session_expired">Αυτός ο κωδικός δεν είναι πλέον έγκυρος</string>
     <string name="fui_sign_in_with_phone_number">Σύνδεση με αριθμό τηλεφώνου</string>
-    <string name="fui_done">Τέλος</string>
-    <string name="fui_verified">Επαληθεύτηκε!</string>
-    <string name="fui_code_sent">Ο κωδικός στάλθηκε!</string>
-    <string name="fui_resending">Επανάληψη αποστολής…</string>
     <string name="fui_resend_code">Επανάληψη αποστολής κωδικού</string>
     <string name="fui_verify_phone_number">Επαλήθευση αριθμού τηλεφώνου</string>
     <string name="fui_continue_phone_login">Συνέχεια</string>

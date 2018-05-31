@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Kirimkan ulang kode dalam 0.%02d</string>
     <string name="fui_verify_your_phone_title">Verifikasi nomor telepon Anda</string>
     <string name="fui_verifying">Memverifikasi…</string>
-    <string name="fui_retrieving_sms">Mengambil sms…</string>
     <string name="fui_incorrect_code_dialog_body">Kode salah. Coba lagi.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Oke</string>
     <string name="fui_error_too_many_attempts">Nomor telepon ini sudah terlalu sering digunakan</string>
     <string name="fui_error_quota_exceeded">Ada masalah saat memverifikasi nomor telepon Anda</string>
     <string name="fui_error_session_expired">Kode ini sudah tidak valid</string>
     <string name="fui_sign_in_with_phone_number">Login dengan nomor telepon</string>
-    <string name="fui_done">Selesai</string>
-    <string name="fui_verified">Terverifikasi!</string>
-    <string name="fui_code_sent">Kode terkirim!</string>
-    <string name="fui_resending">Mengirim ulang…</string>
     <string name="fui_resend_code">Kirim Ulang Kode</string>
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
     <string name="fui_continue_phone_login">Lanjutkan</string>

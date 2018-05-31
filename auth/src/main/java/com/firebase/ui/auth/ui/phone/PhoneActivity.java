@@ -79,7 +79,7 @@ public class PhoneActivity extends AppCompatBase {
             protected void onSuccess(@NonNull PhoneVerification verification) {
                 if (verification.isAutoVerified()) {
                     Toast.makeText(
-                            PhoneActivity.this, R.string.fui_verified, Toast.LENGTH_LONG).show();
+                            PhoneActivity.this, R.string.fui_auto_verified, Toast.LENGTH_LONG).show();
                 }
 
                 handler.startSignIn(verification.getCredential(), new IdpResponse.Builder(

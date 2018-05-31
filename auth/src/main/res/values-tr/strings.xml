@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">0:%02d içinde kodu yeniden gönder</string>
     <string name="fui_verify_your_phone_title">Telefon numaranızı doğrulayın</string>
     <string name="fui_verifying">Doğrulanıyor…</string>
-    <string name="fui_retrieving_sms">SMS alınıyor…</string>
     <string name="fui_incorrect_code_dialog_body">Yanlış kod. Tekrar deneyin.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Tamam</string>
     <string name="fui_error_too_many_attempts">Bu telefon numarası çok fazla kez kullanıldı</string>
     <string name="fui_error_quota_exceeded">Telefon numaranız doğrulanırken bir sorun oluştu</string>
     <string name="fui_error_session_expired">Bu kod artık geçerli değil</string>
     <string name="fui_sign_in_with_phone_number">Telefon numarasıyla oturum açın</string>
-    <string name="fui_done">Bitti</string>
-    <string name="fui_verified">Doğrulandı!</string>
-    <string name="fui_code_sent">Kod gönderildi!</string>
-    <string name="fui_resending">Yeniden gönderiliyor…</string>
     <string name="fui_resend_code">Kodu Yeniden Gönder</string>
     <string name="fui_verify_phone_number">Telefon Numarasını Doğrula</string>
     <string name="fui_continue_phone_login">Devam</string>

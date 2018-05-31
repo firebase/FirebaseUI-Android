@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน 0:%02d</string>
     <string name="fui_verify_your_phone_title">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_verifying">กำลังยืนยัน…</string>
-    <string name="fui_retrieving_sms">กำลังเรียกข้อมูล SMS…</string>
     <string name="fui_incorrect_code_dialog_body">รหัสไม่ถูกต้อง โปรดลองอีกครั้ง</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ตกลง</string>
     <string name="fui_error_too_many_attempts">มีการใช้หมายเลขโทรศัพท์นี้หลายครั้งเกินไป</string>
     <string name="fui_error_quota_exceeded">เกิดปัญหาในการยืนยันหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_error_session_expired">ไม่สามารถใช้รหัสนี้ได้อีกต่อไป</string>
     <string name="fui_sign_in_with_phone_number">ลงชื่อเข้าใช้ด้วยหมายเลขโทรศัพท์</string>
-    <string name="fui_done">เสร็จสิ้น</string>
-    <string name="fui_verified">ยืนยันแล้ว</string>
-    <string name="fui_code_sent">ส่งรหัสแล้ว</string>
-    <string name="fui_resending">กำลังส่งอีกครั้ง…</string>
     <string name="fui_resend_code">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_continue_phone_login">ต่อไป</string>

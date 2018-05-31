@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Повторно надіслати код через 0:%02d</string>
     <string name="fui_verify_your_phone_title">Підтвердити номер телефону</string>
     <string name="fui_verifying">Підтвердження…</string>
-    <string name="fui_retrieving_sms">Отримання SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Неправильний код. Повторіть спробу.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ОК</string>
     <string name="fui_error_too_many_attempts">Цей номер телефону використовувався забагато разів</string>
     <string name="fui_error_quota_exceeded">Не вдалося підтвердити ваш номер телефону</string>
     <string name="fui_error_session_expired">Цей код уже не дійсний</string>
     <string name="fui_sign_in_with_phone_number">Увійти, використовуючи номер телефону</string>
-    <string name="fui_done">Готово</string>
-    <string name="fui_verified">Підтверджено</string>
-    <string name="fui_code_sent">Код надіслано</string>
-    <string name="fui_resending">Повторне надсилання…</string>
     <string name="fui_resend_code">Повторно надіслати код</string>
     <string name="fui_verify_phone_number">Підтвердити номер телефону</string>
     <string name="fui_continue_phone_login">Продовжити</string>
