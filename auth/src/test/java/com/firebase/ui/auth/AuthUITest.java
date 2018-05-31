@@ -70,8 +70,7 @@ public class AuthUITest {
                         new IdpConfig.EmailBuilder().build(),
                         new IdpConfig.GoogleBuilder().build(),
                         new IdpConfig.FacebookBuilder().build()))
-                .setTosUrl(TestConstants.TOS_URL)
-                .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
+                .setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, TestConstants.PRIVACY_URL)
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
@@ -80,5 +79,17 @@ public class AuthUITest {
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCreatingStartIntent_withNullTos_expectEnforcesNonNullTosUrl() {
+        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
+        startIntent.setTosAndPrivacyPolicyUrls(null, TestConstants.PRIVACY_URL);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCreatingStartIntent_withNullPp_expectEnforcesNonNullPpUrl() {
+        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
+        startIntent.setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, null);
     }
 }

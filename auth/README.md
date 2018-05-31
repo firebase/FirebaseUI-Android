@@ -231,15 +231,15 @@ startActivityForResult(
 
 ##### Adding a ToS and privacy policy
 
-If a terms of service URL and privacy policy URL are required:
+A terms of service URL and privacy policy URL are generally required:
 
 ```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setAvailableProviders(...)
-        .setTosUrl("https://superapp.example.com/terms-of-service.html")
-        .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
+        .setTosAndPrivacyPolicyUrls("https://superapp.example.com/terms-of-service.html",
+                                    "https://superapp.example.com/privacy-policy.html")
         .build(),
     RC_SIGN_IN);
 ```

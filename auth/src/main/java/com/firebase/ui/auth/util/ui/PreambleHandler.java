@@ -75,10 +75,7 @@ public class PreambleHandler {
         mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(
-                TOS_TARGET,
-                R.string.fui_terms_of_service,
-                mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
         replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 
@@ -112,19 +109,10 @@ public class PreambleHandler {
                     new Object[]{BTN_TARGET, TOS_TARGET, PP_TARGET}
                     : new Object[]{TOS_TARGET, PP_TARGET};
             return mContext.getString(textViewText, targets);
-        } else if (termsOfServiceUrlProvided) {
-            Object[] targets = hasButton ?
-                    new Object[]{BTN_TARGET, TOS_TARGET} : new Object[]{TOS_TARGET};
-            return mContext.getString(textViewText, targets);
-        } else if (privacyPolicyUrlProvided) {
-            Object[] targets = hasButton ?
-                    new Object[]{BTN_TARGET, PP_TARGET} : new Object[]{PP_TARGET};
-            return mContext.getString(textViewText, targets);
         }
 
         return null;
     }
-
 
     private static final class CustomTabsSpan extends ClickableSpan {
         private final WeakReference<Context> mContext;

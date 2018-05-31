@@ -1,9 +1,1 @@
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.firebase.ui">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <application android:supportsRtl="true" />
-
-</manifest>
+<manifest package="com.firebase.ui" />

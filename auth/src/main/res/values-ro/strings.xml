@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Se încarcă…</string>
     <string name="fui_sign_in_default">Conectați-vă</string>
     <string name="fui_tos_and_pp">Dacă alegeți să continuați, sunteți de acord cu %1$s și cu %2$s.</string>
-    <string name="fui_tos_only">Dacă alegeți să continuați, sunteți de acord cu %1$s.</string>
-    <string name="fui_pp_only">Dacă alegeți să continuați, sunteți de acord cu %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">Continuați</string>
     <string name="fui_sms_terms_of_service">Dacă atingeți „%1$s”, poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dacă atingeți „%1$s”, sunteți de acord cu %2$s și cu %3$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Dacă atingeți „%1$s”, sunteți de acord cu %2$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Dacă atingeți „%1$s”, sunteți de acord cu %2$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
 </resources>

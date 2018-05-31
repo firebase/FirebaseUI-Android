@@ -1,13 +1,13 @@
 package com.firebaseui.lint
 
 import com.android.tools.lint.detector.api.Category
-import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.LayoutDetector
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.XmlContext
+import com.android.tools.lint.detector.api.XmlScannerConstants
 import org.w3c.dom.Element
 
 /**
@@ -15,7 +15,7 @@ import org.w3c.dom.Element
  * "@+id" instead.
  */
 class NonGlobalIdDetector : LayoutDetector() {
-    override fun getApplicableElements(): List<String> = Detector.XmlScanner.ALL
+    override fun getApplicableElements(): List<String> = XmlScannerConstants.ALL
 
     override fun visitElement(context: XmlContext, element: Element) {
         (0 until element.attributes.length)

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -70,17 +69,5 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
         Intent intent = CredentialSaveActivity.createIntent(
                 this, getFlowParams(), credential, response);
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
-    }
-
-    @Override
-    public void showProgress(@StringRes int message) {
-        throw new UnsupportedOperationException(
-                "Either a fragment or activity must handle progress updates.");
-    }
-
-    @Override
-    public void hideProgress() {
-        throw new UnsupportedOperationException(
-                "Either a fragment or activity must handle progress updates.");
     }
 }

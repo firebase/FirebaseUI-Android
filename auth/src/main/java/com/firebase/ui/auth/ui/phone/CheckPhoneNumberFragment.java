@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.phone;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
@@ -20,18 +19,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
-import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.HintRequest;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 
 import java.util.Locale;
 
@@ -42,7 +36,8 @@ import java.util.Locale;
 public class CheckPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
 
-    private PhoneNumberVerificationHandler mHandler;
+    private PhoneNumberVerificationHandler mVerificationHandler;
+    private CheckPhoneHandler mCheckPhoneHandler;
     private boolean mCalled;
 
     private ProgressBar mProgressBar;
@@ -63,8 +58,10 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(requireActivity())
+        mVerificationHandler = ViewModelProviders.of(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
+        mCheckPhoneHandler = ViewModelProviders.of(requireActivity())
+                .get(CheckPhoneHandler.class);
     }
 
     @Nullable
@@ -111,6 +108,18 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mCheckPhoneHandler.getOperation().observe(this, new ResourceObserver<PhoneNumber>(this) {
+            @Override
+            protected void onSuccess(@NonNull PhoneNumber number) {
+                start(number);
+            }
+
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                // Just let the user enter their data
+            }
+        });
+
         if (savedInstanceState != null || mCalled) { return; }
         // Fragment back stacks are the stuff of nightmares (what's new?): the fragment isn't
         // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
@@ -143,24 +152,13 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                     countryIso,
                     String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
         } else if (getFlowParams().enableHints) {
-            FlowUtils.unhandled(this, new PendingIntentRequiredException(
-                    Credentials.getClient(mHandler.getApplication()).getHintPickerIntent(
-                            new HintRequest.Builder().setPhoneNumberIdentifierSupported(true)
-                                    .build()),
-                    RequestCodes.CRED_HINT));
+            mCheckPhoneHandler.fetchCredential();
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
-
-        Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-        String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
-                credential.getId(), requireContext());
-        if (formattedPhone != null) {
-            start(PhoneNumberUtils.getPhoneNumber(formattedPhone));
-        }
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mCheckPhoneHandler.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -187,7 +185,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         if (phoneNumber == null) {
             mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
         } else {
-            mHandler.verifyPhoneNumber(phoneNumber, false);
+            mVerificationHandler.verifyPhoneNumber(phoneNumber, false);
         }
     }
 
