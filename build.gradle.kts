@@ -48,7 +48,8 @@ allprojects {
 
         val isLibrary = name == "library"
         if (Config.submodules.contains(name) || isLibrary) {
-            setupPublishing(isLibrary)
+            // TODO: Re-enable this in the future
+            // setupPublishing(isLibrary)
         }
     }
 }
@@ -339,3 +340,6 @@ fun Project.setupPublishing(isLibrary: Boolean) {
         })
     }
 }
+
+// TODO: Remove this
+apply(from = "publishing.gradle")
