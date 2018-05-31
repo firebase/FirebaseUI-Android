@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">กำลังโหลด…</string>
     <string name="fui_sign_in_default">ลงชื่อเข้าใช้</string>
     <string name="fui_tos_and_pp">การดำเนินการต่อแสดงว่าคุณยอมรับ %1$s และ %2$s</string>
-    <string name="fui_tos_only">การดำเนินการต่อแสดงว่าคุณยอมรับ %1$s</string>
-    <string name="fui_pp_only">การดำเนินการต่อแสดงว่าคุณยอมรับ %1$s</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -69,6 +65,4 @@
     <string name="fui_continue_phone_login">ต่อไป</string>
     <string name="fui_sms_terms_of_service">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s และ %3$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
-    <string name="fui_sms_terms_of_service_only_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
-    <string name="fui_sms_privacy_policy_only_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 </resources>
