@@ -56,17 +56,17 @@ val Project.configDir get() = "$rootDir/library/quality"
 val Project.reportsDir get() = "$buildDir/reports"
 
 /**
- * Extension property to determine if a Project is the 'library' module
+ * Determines if a Project is the 'library' module
  */
 val Project.isLibrary get() = name == "library"
 
 /**
- * Extension property to get the maven artifact name for a Project.
+ * Returns the maven artifact name for a Project.
  */
 val Project.artifactName get() = if (isLibrary) "firebase-ui" else "firebase-ui-${this.name}"
 
 /**
- * Extension property to get the name for a Project's maven publication.
+ * Returns the name for a Project's maven publication.
  */
 val Project.publicationName get() = if (isLibrary) "monolithLibrary" else "${name}Library"
 
