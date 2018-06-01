@@ -1,7 +1,5 @@
 import com.android.build.gradle.BaseExtension
-import com.jfrog.bintray.gradle.Artifact
 import com.jfrog.bintray.gradle.BintrayExtension
-import com.jfrog.bintray.gradle.BintrayUploadTask
 import com.jfrog.bintray.gradle.RecordingCopyTask
 import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
 import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
@@ -368,26 +366,6 @@ fun Project.setupPublishing() {
                 |    Dest: $pomDest
                 |    Name: $pomName
             """.trimMargin())
-        tasks.withType<BintrayUploadTask> {
-            doLast {
-                fun Any.prettyString() = "[" + javaClass.declaredFields.mapNotNull {
-                    it.isAccessible = true
-
-                    if (it.name.contains("$") || it.name == "metaClass") {
-                        null
-                    } else {
-                        "${it.name}=${it.get(this)}"
-                    }
-                }.joinToString() + "]"
-
-                logger.info("""
-                    |Upload task config
-                    |    publications: ${publicationUploads?.joinToString { it.prettyString() }}
-                    |    configurations: ${configurationUploads?.joinToString { it.prettyString() }}
-                    |    fileUploads: ${fileUploads?.joinToString { it.prettyString() }}
-                """.trimMargin())
-            }
-        }
 
         filesSpec(closureOf<RecordingCopyTask> {
             from(pomSrc)
