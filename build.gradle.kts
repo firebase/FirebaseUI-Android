@@ -376,7 +376,7 @@ fun Project.setupPublishing() {
         pkg(closureOf<BintrayExtension.PackageConfig> {
             repo = "firebase-ui"
             name = artifactName
-            user = "supercilex"
+            userOrg = "firebaseui"
             setLicenses("Apache-2.0")
             vcsUrl = "https://github.com/firebase/FirebaseUI-Android.git"
 
