@@ -32,22 +32,22 @@ allprojects {
         mavenLocal()
     }
 
+    // Skip Javadoc generation for Java 1.8 as it breaks build
+    if (JavaVersion.current().isJava8Compatible) {
+        tasks.withType<Javadoc> {
+            options {
+                this as StandardJavadocDocletOptions
+                addStringOption("Xdoclint:none", "-quiet")
+            }
+        }
+    }
+
     if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
         configureAndroid()
         configureQuality()
 
         if (Config.submodules.contains(name) || isLibrary) {
             setupPublishing()
-        }
-    }
-}
-
-// Skip Javadoc generation for Java 1.8 as it breaks build
-if (JavaVersion.current().isJava8Compatible) {
-    tasks.withType<Javadoc> {
-        options {
-            this as StandardJavadocDocletOptions
-            addStringOption("Xdoclint:none", "-quiet")
         }
     }
 }
