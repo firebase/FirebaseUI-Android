@@ -237,18 +237,3 @@ allprojects { project ->
         }
     }
 }
-
-allprojects {
-    afterEvaluate { project ->
-        def isSubmodule = submodules.contains(project.name)
-
-        if (isSubmodule) {
-            // Only applies to submodules, not the library module
-            def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
-
-            // Convenience task to prepare everything we need for releases
-            task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
-        }
-
-    }
-}
