@@ -1,39 +1,3 @@
-buildscript {
-    apply from: 'constants.gradle'
-
-    repositories {
-        google()
-        jcenter()
-        mavenLocal()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.google.gms:google-services:3.2.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.5.4'
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        mavenLocal()
-        mavenCentral()
-    }
-}
-
-//Skip Javadoc generation for Java 1.8 as it breaks build
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
-    }
-}
-
 /**
  * Configure common tasks on all the submodules
  */
@@ -271,20 +235,5 @@ allprojects { project ->
                 }
             }
         }
-    }
-}
-
-allprojects {
-    afterEvaluate { project ->
-        def isSubmodule = submodules.contains(project.name)
-
-        if (isSubmodule) {
-            // Only applies to submodules, not the library module
-            def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
-
-            // Convenience task to prepare everything we need for releases
-            task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
-        }
-
     }
 }
