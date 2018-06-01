@@ -47,7 +47,9 @@ allprojects {
         configureQuality()
 
         if (Config.submodules.contains(name) || isLibrary) {
-            setupPublishing()
+            // TODO: Re-enable this in the future
+            // setupPublishing()
+            setupTasks()
         }
     }
 }
@@ -127,35 +129,7 @@ fun Project.configureQuality() {
     }
 }
 
-fun Project.setupPublishing() {
-    println("Configuring publishing for ${this}")
-
-    val sourcesJar = task<Jar>("sourcesJar") {
-        classifier = "sources"
-        from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-    }
-
-    val javadoc = task<Javadoc>("javadoc") {
-        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-        classpath += configurations["compile"]
-        classpath += project.files(project.the<BaseExtension>().bootClasspath)
-    }
-
-    val javadocJar = task<Jar>("javadocJar") {
-        dependsOn(javadoc)
-        classifier = "javadoc"
-        from(javadoc.destinationDir)
-    }
-
-    artifacts.add("archives", javadocJar)
-    artifacts.add("archives", sourcesJar)
-
-    tasks.whenTaskAdded {
-        if (name.toLowerCase().contains("publish") && name.contains("publication", true)) {
-            dependsOn("assembleRelease")
-        }
-    }
-
+fun Project.setupTasks() {
     afterEvaluate {
         if (isLibrary) {
             task("testAll") {
@@ -165,7 +139,7 @@ fun Project.setupPublishing() {
             }
 
             task("prepareArtifacts") {
-                dependsOn(javadocJar, sourcesJar, "assembleRelease")
+                dependsOn("javadocJar", "sourcesJar", "assembleRelease")
                 dependsOn("generatePomFileForMonolithLibraryPublication")
                 dependsOn(*Config.submodules.map {
                     ":$it:prepareArtifacts"
@@ -195,8 +169,38 @@ fun Project.setupPublishing() {
         } else {
             val pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
             task("prepareArtifacts") {
-                dependsOn(javadocJar, sourcesJar, "assembleRelease", pomTask)
+                dependsOn("javadocJar", "sourcesJar", "assembleRelease", pomTask)
             }
+        }
+    }
+}
+
+fun Project.setupPublishing() {
+    println("Configuring publishing for ${this}")
+
+    val sourcesJar = task<Jar>("sourcesJar") {
+        classifier = "sources"
+        from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+    }
+
+    val javadoc = task<Javadoc>("javadoc") {
+        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+        classpath += configurations["compile"]
+        classpath += project.files(project.the<BaseExtension>().bootClasspath)
+    }
+
+    val javadocJar = task<Jar>("javadocJar") {
+        dependsOn(javadoc)
+        classifier = "javadoc"
+        from(javadoc.destinationDir)
+    }
+
+    artifacts.add("archives", javadocJar)
+    artifacts.add("archives", sourcesJar)
+
+    tasks.whenTaskAdded {
+        if (name.toLowerCase().contains("publish") && name.contains("publication", true)) {
+            dependsOn("assembleRelease")
         }
     }
 
@@ -394,3 +398,6 @@ fun Project.setupPublishing() {
         })
     }
 }
+
+// TODO: Remove this
+apply(from = "publishing.gradle")
