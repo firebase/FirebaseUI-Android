@@ -31,9 +31,9 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -44,19 +44,21 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowActivity;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class TestHelper {
-    private static final String APPLICATION_ID = "testAppId";
-    private static final String API_KEY = "fakeKey";
-
     public static void initialize() {
         spyContextAndResources();
         AuthUI.setApplicationContext(RuntimeEnvironment.application);
@@ -72,18 +74,42 @@ public class TestHelper {
         when(RuntimeEnvironment.application.getResources()).thenReturn(spiedResources);
     }
 
-    private static FirebaseApp initializeApp(Context context) {
-        try {
-            return FirebaseApp.initializeApp(
-                    context,
-                    new FirebaseOptions.Builder()
-                            .setApiKey(API_KEY)
-                            .setApplicationId(APPLICATION_ID)
-                            .build(),
-                    FirebaseApp.DEFAULT_APP_NAME);
-        } catch (IllegalStateException e) {
-            return FirebaseApp.getInstance(FirebaseApp.DEFAULT_APP_NAME);
+    private static void initializeApp(Context context) {
+        if (!FirebaseApp.getApps(context).isEmpty()) { return; }
+
+        for (Field field : FirebaseApp.class.getDeclaredFields()) {
+            field.setAccessible(true);
+
+            Object o;
+            try {
+                o = field.get(null);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            } catch (NullPointerException e) {
+                continue; // Instance field, move on
+            }
+
+            Type genericType = field.getGenericType();
+            if (o instanceof Map && genericType instanceof ParameterizedType) {
+                Type[] parameterTypes = ((ParameterizedType) genericType).getActualTypeArguments();
+                if (parameterTypes.length != 2 || parameterTypes[0] != String.class
+                        || parameterTypes[1] != FirebaseApp.class) {
+                    continue;
+                }
+
+                //noinspection unchecked
+                Map<String, FirebaseApp> instances = (Map<String, FirebaseApp>) o;
+
+                instances.put(FirebaseApp.DEFAULT_APP_NAME, mock(FirebaseApp.class));
+
+                break;
+            }
         }
+
+        FirebaseApp app = FirebaseApp.getInstance();
+        when(app.get(eq(FirebaseAuth.class))).thenReturn(mock(FirebaseAuth.class));
+        when(app.getApplicationContext()).thenReturn(context);
+        when(app.getName()).thenReturn(FirebaseApp.DEFAULT_APP_NAME);
     }
 
     private static void initializeProviders() {
@@ -138,7 +164,7 @@ public class TestHelper {
                 true);
     }
 
-    public static void verifyCredentialSaveStarted(@NonNull  Activity activity,
+    public static void verifyCredentialSaveStarted(@NonNull Activity activity,
                                                    @Nullable String providerId,
                                                    @Nullable String email,
                                                    @Nullable String password,
