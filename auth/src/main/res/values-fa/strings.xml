@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">کد پس از %02d:0 مجدداً ارسال می‌شود</string>
     <string name="fui_verify_your_phone_title">تأیید شماره تلفن</string>
     <string name="fui_verifying">درحال تأیید…</string>
-    <string name="fui_retrieving_sms">در حال بازیابی پیامک…</string>
     <string name="fui_incorrect_code_dialog_body">کد اشتباه است. دوباره امتحان کنید.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">تأیید</string>
     <string name="fui_error_too_many_attempts">از این شماره تلفن به دفعات زیاد استفاده شده است</string>
     <string name="fui_error_quota_exceeded">هنگام تأیید شماره تلفنتان مشکلی پیش آمد</string>
     <string name="fui_error_session_expired">این کد دیگر معتبر نیست</string>
     <string name="fui_sign_in_with_phone_number">ورود به سیستم با شماره تلفن</string>
-    <string name="fui_done">انجام شد</string>
-    <string name="fui_verified">تأیید شد!</string>
-    <string name="fui_code_sent">کد ارسال شد!</string>
-    <string name="fui_resending">در حال ارسال مجدد…</string>
     <string name="fui_resend_code">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number">تأیید شماره تلفن</string>
     <string name="fui_continue_phone_login">ادامه</string>

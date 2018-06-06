@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Znovu zaslat kód za 0:%02d</string>
     <string name="fui_verify_your_phone_title">Ověřit telefonní číslo</string>
     <string name="fui_verifying">Ověřování…</string>
-    <string name="fui_retrieving_sms">Načítání SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Špatný kód. Zkuste to znovu.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">V pořádku</string>
     <string name="fui_error_too_many_attempts">Toto telefonní číslo již bylo použito příliš mnohokrát</string>
     <string name="fui_error_quota_exceeded">Při ověřování vašeho telefonního čísla došlo k potížím</string>
     <string name="fui_error_session_expired">Platnost kódu vypršela</string>
     <string name="fui_sign_in_with_phone_number">Přihlášení pomocí telefonního čísla</string>
-    <string name="fui_done">Hotovo</string>
-    <string name="fui_verified">Ověřeno!</string>
-    <string name="fui_code_sent">Kód odeslán!</string>
-    <string name="fui_resending">Opakované odesílání…</string>
     <string name="fui_resend_code">Znovu poslat kód</string>
     <string name="fui_verify_phone_number">Ověřit telefonní číslo</string>
     <string name="fui_continue_phone_login">Pokračovat</string>

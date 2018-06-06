@@ -301,7 +301,7 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testExecute_withoutUserInput_expectAllCountriesAdded() {
-        mTask = new CountryListLoadTask(mListener, null, null);
+        mTask = new CountryListLoadTask(null, null, mListener);
 
         mTask.execute();
 
@@ -325,7 +325,7 @@ public class CountryListLoadTaskTests {
         List<CountryInfo> expectedOutput = new ArrayList<>();
         expectedOutput.add(new CountryInfo(new Locale("", "US"), 1));
 
-        mTask = new CountryListLoadTask(mListener, whitelistedCountryIsos, null);
+        mTask = new CountryListLoadTask(whitelistedCountryIsos, null, mListener);
 
         mTask.execute();
 
@@ -348,7 +348,7 @@ public class CountryListLoadTaskTests {
         List<CountryInfo> expectedOutput = new ArrayList<>(COUNTRY_LIST);
         expectedOutput.remove(new CountryInfo(new Locale("", "US"), 1));
 
-        mTask = new CountryListLoadTask(mListener, null, blacklistedCountryIsos);
+        mTask = new CountryListLoadTask(null, blacklistedCountryIsos, mListener);
 
         mTask.execute();
 
@@ -373,7 +373,7 @@ public class CountryListLoadTaskTests {
             expectedOutput.add(new CountryInfo(new Locale("", iso), 1));
         }
 
-        mTask = new CountryListLoadTask(mListener, whitelistedCountries, null);
+        mTask = new CountryListLoadTask(whitelistedCountries, null, mListener);
 
         mTask.execute();
 
@@ -401,7 +401,7 @@ public class CountryListLoadTaskTests {
         List<CountryInfo> expectedOutput = new ArrayList<>(COUNTRY_LIST);
         expectedOutput.removeAll(excludedCountries);
 
-        mTask = new CountryListLoadTask(mListener, null, blacklistedCountries);
+        mTask = new CountryListLoadTask(null, blacklistedCountries, mListener);
 
         mTask.execute();
 
@@ -429,7 +429,7 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testOnPostExecute() {
-        mTask = new CountryListLoadTask(mListener, null, null);
+        mTask = new CountryListLoadTask(null, null, mListener);
         mTask.onPostExecute(COUNTRY_LIST);
         verify(mListener).onLoadComplete(COUNTRY_LIST);
     }

@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Code opnieuw verzenden over 0:%02d</string>
     <string name="fui_verify_your_phone_title">Uw telefoonnummer verifiëren</string>
     <string name="fui_verifying">Verifiëren…</string>
-    <string name="fui_retrieving_sms">Sms ophalen…</string>
     <string name="fui_incorrect_code_dialog_body">Onjuiste code. Probeer het opnieuw.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">Dit telefoonnummer is te vaak gebruikt</string>
     <string name="fui_error_quota_exceeded">Er is een probleem met de verificatie van uw telefoonnummer</string>
     <string name="fui_error_session_expired">Deze code is niet meer geldig</string>
     <string name="fui_sign_in_with_phone_number">Inloggen met telefoonnummer</string>
-    <string name="fui_done">Gereed</string>
-    <string name="fui_verified">Geverifieerd</string>
-    <string name="fui_code_sent">Code verzonden</string>
-    <string name="fui_resending">Opnieuw verzenden…</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
     <string name="fui_continue_phone_login">Doorgaan</string>

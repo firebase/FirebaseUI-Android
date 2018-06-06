@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng 0:%02d</string>
     <string name="fui_verify_your_phone_title">I-verify ang numero ng iyong telepono</string>
     <string name="fui_verifying">Bine-verify…</string>
-    <string name="fui_retrieving_sms">Kinukuha ang sms…</string>
     <string name="fui_incorrect_code_dialog_body">Maling code. Subukang muli.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">Masyadong maraming beses nang nagamit ang numero ng teleponong ito</string>
     <string name="fui_error_quota_exceeded">Nagkaproblema sa pag-verify ng numero ng iyong telepono</string>
     <string name="fui_error_session_expired">Wala nang bisa ang code na ito</string>
     <string name="fui_sign_in_with_phone_number">Mag-sign in gamit ang numero ng telepono</string>
-    <string name="fui_done">Tapos Na</string>
-    <string name="fui_verified">Na-verify!</string>
-    <string name="fui_code_sent">Naipadala ang code!</string>
-    <string name="fui_resending">Ipinapadalang muli…</string>
     <string name="fui_resend_code">Ipadala Muli ang Code</string>
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
     <string name="fui_continue_phone_login">Magpatuloy</string>

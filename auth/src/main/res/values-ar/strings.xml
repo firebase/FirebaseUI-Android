@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">إعادة إرسال الرمز بعد 0:%02d</string>
     <string name="fui_verify_your_phone_title">إثبات ملكية رقم هاتفك</string>
     <string name="fui_verifying">جارٍ التحقق…</string>
-    <string name="fui_retrieving_sms">جارٍ استرداد الرسائل القصيرة SMS…</string>
     <string name="fui_incorrect_code_dialog_body">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">موافق</string>
     <string name="fui_error_too_many_attempts">تم استخدام رقم الهاتف هذا لعدد كبير جدًا من المرات</string>
     <string name="fui_error_quota_exceeded">حدثت مشكلة أثناء إثبات ملكية رقم هاتفك</string>
     <string name="fui_error_session_expired">لم يعد هذا الرمز صالحًا</string>
     <string name="fui_sign_in_with_phone_number">تسجيل الدخول عبر رقم الهاتف</string>
-    <string name="fui_done">تم</string>
-    <string name="fui_verified">اكتملت عملية إثبات الملكية!</string>
-    <string name="fui_code_sent">تم إرسال الرمز!</string>
-    <string name="fui_resending">جارٍ إعادة الإرسال…</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
     <string name="fui_continue_phone_login">متابعة</string>

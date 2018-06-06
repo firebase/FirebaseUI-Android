@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Torna a enviar el codi d\'aquí a 0:%02d</string>
     <string name="fui_verify_your_phone_title">Verifica el número de telèfon</string>
     <string name="fui_verifying">S\'està verificant…</string>
-    <string name="fui_retrieving_sms">S\'està recuperant l\'SMS…</string>
     <string name="fui_incorrect_code_dialog_body">El codi no és correcte. Torna-ho a provar.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">D\'acord</string>
     <string name="fui_error_too_many_attempts">Aquest número de telèfon s\'ha utilitzat massa vegades</string>
     <string name="fui_error_quota_exceeded">Hi ha hagut un problema en verificar el número de telèfon</string>
     <string name="fui_error_session_expired">Aquest codi ja no és vàlid</string>
     <string name="fui_sign_in_with_phone_number">Inicia la sessió amb el número de telèfon</string>
-    <string name="fui_done">Fet</string>
-    <string name="fui_verified">S\'ha verificat.</string>
-    <string name="fui_code_sent">S\'ha enviat el codi.</string>
-    <string name="fui_resending">S\'està tornant a enviar…</string>
     <string name="fui_resend_code">Torna a enviar el codi</string>
     <string name="fui_verify_phone_number">Verifica el número de telèfon</string>
     <string name="fui_continue_phone_login">Continua</string>

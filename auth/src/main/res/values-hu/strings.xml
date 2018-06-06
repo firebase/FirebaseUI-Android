@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Kód újraküldése ennyi idő elteltével: 0:%02d</string>
     <string name="fui_verify_your_phone_title">Telefonszám igazolása</string>
     <string name="fui_verifying">Ellenőrzés…</string>
-    <string name="fui_retrieving_sms">SMS lekérése…</string>
     <string name="fui_incorrect_code_dialog_body">Hibás kód. Próbálja újra.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Rendben</string>
     <string name="fui_error_too_many_attempts">Ezt a telefonszámot már túl sokszor használták.</string>
     <string name="fui_error_quota_exceeded">Hiba történt a telefonszám ellenőrzésekor.</string>
     <string name="fui_error_session_expired">Ez a kód már nem érvényes.</string>
     <string name="fui_sign_in_with_phone_number">Bejelentkezés telefonszámmal</string>
-    <string name="fui_done">Kész</string>
-    <string name="fui_verified">Ellenőrzött!</string>
-    <string name="fui_code_sent">A kódot elküldtük.</string>
-    <string name="fui_resending">Újraküldés…</string>
     <string name="fui_resend_code">Kód újraküldése</string>
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
     <string name="fui_continue_phone_login">Folytatás</string>

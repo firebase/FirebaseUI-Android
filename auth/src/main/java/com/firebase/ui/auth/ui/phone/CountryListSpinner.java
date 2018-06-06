@@ -148,9 +148,8 @@ public final class CountryListSpinner extends AppCompatEditText implements
     }
 
     private void loadCountryList() {
-        new CountryListLoadTask(this,
-                whitelistedCountries,
-                blacklistedCountries).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new CountryListLoadTask(whitelistedCountries, blacklistedCountries, this
+        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void executeUserClickListener(View view) {

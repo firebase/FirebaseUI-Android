@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">0:%02d 秒後にコードを再送信します</string>
     <string name="fui_verify_your_phone_title">電話番号を確認</string>
     <string name="fui_verifying">確認しています…</string>
-    <string name="fui_retrieving_sms">SMS を取得しています…</string>
     <string name="fui_incorrect_code_dialog_body">コードが間違っています。もう一度お試しください。</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">この電話番号は何度も使用されています</string>
     <string name="fui_error_quota_exceeded">電話番号の確認中に問題が発生しました</string>
     <string name="fui_error_session_expired">このコードは無効になりました</string>
     <string name="fui_sign_in_with_phone_number">電話番号でログイン</string>
-    <string name="fui_done">完了</string>
-    <string name="fui_verified">確認済み</string>
-    <string name="fui_code_sent">コード送信完了</string>
-    <string name="fui_resending">再送信しています…</string>
     <string name="fui_resend_code">コードを再送信</string>
     <string name="fui_verify_phone_number">電話番号を確認</string>
     <string name="fui_continue_phone_login">続行</string>
