@@ -47,16 +47,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:4.0.0'
+    implementation 'com.firebaseui:firebase-ui-database:4.0.1'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:4.0.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.0.1'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:4.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:4.0.0'
+    implementation 'com.firebaseui:firebase-ui-storage:4.0.1'
 }
 ```
 
@@ -206,7 +206,7 @@ repositories {
 Then you can depend on snapshot versions:
 
 ```groovy
-implementation 'com.firebaseui:firebase-ui-auth:4.0.0-SNAPSHOT'
+implementation 'com.firebaseui:firebase-ui-auth:x.y.z-SNAPSHOT'
 ```
 
 You can see which `SNAPSHOT` builds are avaiable here:

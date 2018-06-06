@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Siųsti kodą iš naujo po 0:%02d</string>
     <string name="fui_verify_your_phone_title">Patvirtinti telefono numerį</string>
     <string name="fui_verifying">Patvirtinama…</string>
-    <string name="fui_retrieving_sms">Gaunama SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Klaidingas kodas. Bandykite dar kartą.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Gerai</string>
     <string name="fui_error_too_many_attempts">Šis telefono numeris panaudotas per daug kartų</string>
     <string name="fui_error_quota_exceeded">Patvirtinant telefono numerį kilo problema</string>
     <string name="fui_error_session_expired">Šis kodas nebegalioja</string>
     <string name="fui_sign_in_with_phone_number">Prisijungti nurodant telefono numerį</string>
-    <string name="fui_done">Atlikta</string>
-    <string name="fui_verified">Patvirtinta.</string>
-    <string name="fui_code_sent">Kodas išsiųstas.</string>
-    <string name="fui_resending">Siunčiama iš naujo…</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
     <string name="fui_continue_phone_login">Tęsti</string>

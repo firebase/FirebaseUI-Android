@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">שולח קוד חדש בעוד %02d:0</string>
     <string name="fui_verify_your_phone_title">אמת את מספר הטלפון</string>
     <string name="fui_verifying">מאמת…</string>
-    <string name="fui_retrieving_sms">מאחזר SMS…</string>
     <string name="fui_incorrect_code_dialog_body">הקוד שגוי. נסה שוב.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">אישור</string>
     <string name="fui_error_too_many_attempts">למספר הטלפון הזה כבר נשלחו יותר מדי קודים</string>
     <string name="fui_error_quota_exceeded">אירעה בעיה באימות של מספר הטלפון</string>
     <string name="fui_error_session_expired">הקוד הזה כבר לא בתוקף</string>
     <string name="fui_sign_in_with_phone_number">כניסה באמצעות מספר טלפון</string>
-    <string name="fui_done">סיום</string>
-    <string name="fui_verified">אומת.</string>
-    <string name="fui_code_sent">הקוד נשלח.</string>
-    <string name="fui_resending">שולח קוד חדש…</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
     <string name="fui_continue_phone_login">המשך</string>
