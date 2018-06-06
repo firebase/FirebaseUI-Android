@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">%02d 后可重新发送验证码</string>
     <string name="fui_verify_your_phone_title">验证您的电话号码</string>
     <string name="fui_verifying">正在验证…</string>
-    <string name="fui_retrieving_sms">正在检索短信…</string>
     <string name="fui_incorrect_code_dialog_body">验证码有误，请重试。</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">确定</string>
     <string name="fui_error_too_many_attempts">此电话号码的使用次数过多</string>
     <string name="fui_error_quota_exceeded">验证您的电话号码时出现问题</string>
     <string name="fui_error_session_expired">此验证码已失效</string>
     <string name="fui_sign_in_with_phone_number">使用电话号码登录</string>
-    <string name="fui_done">完成</string>
-    <string name="fui_verified">已验证！</string>
-    <string name="fui_code_sent">验证码已发送！</string>
-    <string name="fui_resending">正在重新发送…</string>
     <string name="fui_resend_code">重新发送验证码</string>
     <string name="fui_verify_phone_number">验证电话号码</string>
     <string name="fui_continue_phone_login">继续</string>

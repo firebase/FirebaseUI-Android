@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Send koden igen om 0:%02d</string>
     <string name="fui_verify_your_phone_title">Bekræft dit telefonnummer</string>
     <string name="fui_verifying">Bekræfter…</string>
-    <string name="fui_retrieving_sms">Henter sms…</string>
     <string name="fui_incorrect_code_dialog_body">Koden er forkert. Prøv igen.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">Dette telefonnummer er blevet brugt for mange gange</string>
     <string name="fui_error_quota_exceeded">Dit telefonnummer kunne ikke bekræftes</string>
     <string name="fui_error_session_expired">Denne kode er ikke længere gyldig</string>
     <string name="fui_sign_in_with_phone_number">Log ind med telefonnummer</string>
-    <string name="fui_done">Udført</string>
-    <string name="fui_verified">Bekræftet!</string>
-    <string name="fui_code_sent">Kode sendt.</string>
-    <string name="fui_resending">Sender igen…</string>
     <string name="fui_resend_code">Send koden igen</string>
     <string name="fui_verify_phone_number">Bekræft telefonnummer</string>
     <string name="fui_continue_phone_login">Fortsæt</string>

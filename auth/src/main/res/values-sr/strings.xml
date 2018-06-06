@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Кôд ће бити поново послат за 0:%02d</string>
     <string name="fui_verify_your_phone_title">Верификујте број телефона</string>
     <string name="fui_verifying">Верификује се…</string>
-    <string name="fui_retrieving_sms">SMS се преузима…</string>
     <string name="fui_incorrect_code_dialog_body">Кôд није тачан. Пробајте поново.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Потврди</string>
     <string name="fui_error_too_many_attempts">Овај број телефона је употребљен превише пута</string>
     <string name="fui_error_quota_exceeded">Дошло је до проблема при верификацији броја телефона</string>
     <string name="fui_error_session_expired">Тај кôд више не важи</string>
     <string name="fui_sign_in_with_phone_number">Пријавите се помоћу броја телефона</string>
-    <string name="fui_done">Готово</string>
-    <string name="fui_verified">Потврђено је!</string>
-    <string name="fui_code_sent">Кôд је послат!</string>
-    <string name="fui_resending">Поново се шаље…</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
     <string name="fui_continue_phone_login">Настави</string>

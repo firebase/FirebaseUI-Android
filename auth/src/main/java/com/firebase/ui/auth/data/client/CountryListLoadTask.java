@@ -50,9 +50,9 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
     Set<String> whitelistedCountryIsos;
     Set<String> blacklistedCountryIsos;
 
-    public CountryListLoadTask(Listener listener,
-                               @Nullable List<String> whitelistedCountries,
-                               @Nullable List<String> blacklistedCountries) {
+    public CountryListLoadTask(@Nullable List<String> whitelistedCountries,
+                               @Nullable List<String> blacklistedCountries,
+                               Listener listener) {
         mListener = listener;
 
         if (whitelistedCountries != null) {

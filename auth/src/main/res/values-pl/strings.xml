@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">Kod można ponownie wysłać za 0:%02d</string>
     <string name="fui_verify_your_phone_title">Zweryfikuj swój numer telefonu</string>
     <string name="fui_verifying">Weryfikuję…</string>
-    <string name="fui_retrieving_sms">Odbieranie SMS-a…</string>
     <string name="fui_incorrect_code_dialog_body">Nieprawidłowy kod. Spróbuj jeszcze raz.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
     <string name="fui_error_too_many_attempts">Ten numer telefonu został użyty zbyt wiele razy.</string>
     <string name="fui_error_quota_exceeded">Podczas weryfikacji Twojego numeru telefonu wystąpił problem.</string>
     <string name="fui_error_session_expired">Ten kod stracił ważność.</string>
     <string name="fui_sign_in_with_phone_number">Zaloguj się z użyciem numeru telefonu</string>
-    <string name="fui_done">Gotowe</string>
-    <string name="fui_verified">Zweryfikowano.</string>
-    <string name="fui_code_sent">Kod wysłany.</string>
-    <string name="fui_resending">Wysyłam ponownie…</string>
     <string name="fui_resend_code">Wyślij kod ponownie</string>
     <string name="fui_verify_phone_number">Zweryfikuj numer telefonu</string>
     <string name="fui_continue_phone_login">Dalej</string>

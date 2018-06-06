@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ 0:%02d</string>
     <string name="fui_verify_your_phone_title">ನಿಮ್ಮ ಪೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_verifying">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="fui_retrieving_sms">ಎಸ್‌ಎಂಎಸ್‌ ಹಿಂಪಡೆಯಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_incorrect_code_dialog_body">ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ಸರಿ</string>
     <string name="fui_error_too_many_attempts">ಈ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಈಗಾಗಲೇ ಹಲವಾರು ಬಾರಿ ಬಳಸಲಾಗಿದೆ</string>
     <string name="fui_error_quota_exceeded">ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸುವಲ್ಲಿ ತೊಂದರೆ ಇದೆ</string>
     <string name="fui_error_session_expired">ಈ ಕೋಡ್ ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿರುವುದಿಲ್ಲ</string>
     <string name="fui_sign_in_with_phone_number">ಫೋನ್‌ ಸಂಖ್ಯೆಯ ಮೂಲಕ ಸೈನ್‌ ಇನ್‌ ಮಾಡಿ</string>
-    <string name="fui_done">ಮುಗಿದಿದೆ</string>
-    <string name="fui_verified">ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
-    <string name="fui_code_sent">ಕೋಡ್‌ ಕಳುಹಿಸಲಾಗಿದೆ!</string>
-    <string name="fui_resending">ಪುನಃ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_resend_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_verify_phone_number">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_continue_phone_login">ಮುಂದುವರಿಸಿ</string>

@@ -84,18 +84,12 @@
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
     <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Retrieving sms…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">This phone number has been used too many times</string>
     <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">There was a problem verifying your phone number</string>
     <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">This code is no longer valid</string>
     <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Sign in with phone number</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Done</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Verified!</string>
     <string name="fui_auto_verified" translation_description="Popup informing the user that their phone number was automatically verified">Phone number automatically verified</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Code sent!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Resending…</string>
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Resend Code</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verify Phone Number</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Continue</string>

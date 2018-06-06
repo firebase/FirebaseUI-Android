@@ -49,17 +49,11 @@
     <string name="fui_resend_code_in">0:%02d 후에 코드 재전송</string>
     <string name="fui_verify_your_phone_title">전화번호 인증</string>
     <string name="fui_verifying">인증 중…</string>
-    <string name="fui_retrieving_sms">SMS 검색 중…</string>
     <string name="fui_incorrect_code_dialog_body">코드가 잘못되었습니다. 다시 시도하세요.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">확인</string>
     <string name="fui_error_too_many_attempts">이 전화번호로 전송 시도를 너무 많이 했습니다.</string>
     <string name="fui_error_quota_exceeded">전화번호를 인증하는 중에 문제가 발생했습니다.</string>
     <string name="fui_error_session_expired">더 이상 유효하지 않은 코드입니다.</string>
     <string name="fui_sign_in_with_phone_number">전화번호로 로그인</string>
-    <string name="fui_done">완료</string>
-    <string name="fui_verified">인증되었습니다.</string>
-    <string name="fui_code_sent">코드가 전송되었습니다.</string>
-    <string name="fui_resending">다시 전송하는 중…</string>
     <string name="fui_resend_code">코드 재전송</string>
     <string name="fui_verify_phone_number">전화번호 인증</string>
     <string name="fui_continue_phone_login">계속</string>
