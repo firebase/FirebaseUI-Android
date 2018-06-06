@@ -8,22 +8,4 @@
         <location file="src/main/AndroidManifest.xml" />
     </issue>
 
-    <issue
-        id="LambdaLast"
-        severity="Error"
-        message="Functional interface parameters (such as parameter 1, &quot;listener&quot;, in com.firebase.ui.auth.data.client.CountryListLoadTask.CountryListLoadTask) should be last to improve Kotlin interoperability; see https://kotlinlang.org/docs/reference/java-interop.html#sam-conversions"
-        category="Interoperability:Kotlin Interoperability"
-        priority="6"
-        summary="Lambda Parameters Last"
-        explanation="To improve calling this code from Kotlin,&#xA;parameter types eligible for SAM conversion should be last."
-        url="https://android.github.io/kotlin-guides/interop.html#lambda-parameters-last"
-        urls="https://android.github.io/kotlin-guides/interop.html#lambda-parameters-last"
-        errorLine1="                               @Nullable List&lt;String> blacklistedCountries) {"
-        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="/usr/local/google/home/samstern/Projects/firebase/firebaseui-android/auth/src/main/java/com/firebase/ui/auth/data/client/CountryListLoadTask.java"
-            line="55"
-            column="32"/>
-    </issue>
-
 </issues>
