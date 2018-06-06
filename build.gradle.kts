@@ -47,9 +47,7 @@ allprojects {
         configureQuality()
 
         if (Config.submodules.contains(name) || isLibrary) {
-            // TODO: Re-enable this in the future
-            // setupPublishing()
-            setupTasks()
+            setupPublishing()
         }
     }
 }
@@ -65,7 +63,7 @@ val Project.isLibrary get() = name == "library"
 /**
  * Returns the maven artifact name for a Project.
  */
-val Project.artifactName get() = if (isLibrary) "firebase-ui" else "firebase-ui-${this.name}"
+val Project.artifactName get() = if (isLibrary) "firebase-ui" else "firebase-ui-$name"
 
 /**
  * Returns the name for a Project's maven publication.
@@ -129,7 +127,33 @@ fun Project.configureQuality() {
     }
 }
 
-fun Project.setupTasks() {
+fun Project.setupPublishing() {
+    val sourcesJar = task<Jar>("sourcesJar") {
+        classifier = "sources"
+        from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+    }
+
+    val javadoc = task<Javadoc>("javadoc") {
+        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+        classpath += configurations["compile"]
+        classpath += project.files(project.the<BaseExtension>().bootClasspath)
+    }
+
+    val javadocJar = task<Jar>("javadocJar") {
+        dependsOn(javadoc)
+        classifier = "javadoc"
+        from(javadoc.destinationDir)
+    }
+
+    artifacts.add("archives", javadocJar)
+    artifacts.add("archives", sourcesJar)
+
+    tasks.whenTaskAdded {
+        if (name.contains("publish") && name.contains("publication", true)) {
+            dependsOn("assembleRelease")
+        }
+    }
+
     afterEvaluate {
         if (isLibrary) {
             task("testAll") {
@@ -139,7 +163,7 @@ fun Project.setupTasks() {
             }
 
             task("prepareArtifacts") {
-                dependsOn("javadocJar", "sourcesJar", "assembleRelease")
+                dependsOn(javadocJar, sourcesJar, "assembleRelease")
                 dependsOn("generatePomFileForMonolithLibraryPublication")
                 dependsOn(*Config.submodules.map {
                     ":$it:prepareArtifacts"
@@ -169,43 +193,16 @@ fun Project.setupTasks() {
         } else {
             val pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
             task("prepareArtifacts") {
-                dependsOn("javadocJar", "sourcesJar", "assembleRelease", pomTask)
+                dependsOn(javadocJar, sourcesJar, "assembleRelease", pomTask)
             }
         }
-    }
-}
 
-fun Project.setupPublishing() {
-    println("Configuring publishing for ${this}")
-
-    val sourcesJar = task<Jar>("sourcesJar") {
-        classifier = "sources"
-        from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-    }
-
-    val javadoc = task<Javadoc>("javadoc") {
-        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-        classpath += configurations["compile"]
-        classpath += project.files(project.the<BaseExtension>().bootClasspath)
-    }
-
-    val javadocJar = task<Jar>("javadocJar") {
-        dependsOn(javadoc)
-        classifier = "javadoc"
-        from(javadoc.destinationDir)
-    }
-
-    artifacts.add("archives", javadocJar)
-    artifacts.add("archives", sourcesJar)
-
-    tasks.whenTaskAdded {
-        if (name.toLowerCase().contains("publish") && name.contains("publication", true)) {
-            dependsOn("assembleRelease")
-        }
+        tasks["bintrayUpload"].dependsOn("prepareArtifacts")
     }
 
     apply(plugin = "maven-publish")
     apply(plugin = "com.jfrog.artifactory")
+    apply(plugin = "com.jfrog.bintray")
 
     configure<PublishingExtension> {
         repositories {
@@ -226,7 +223,6 @@ fun Project.setupPublishing() {
         // We need to override the variables 'group' and 'version' on the 'Project' object in order
         // to prevent the bintray plugin from creating 'unspecified' artifacts.
         val groupName = "com.firebaseui"
-        val projectName = name
         group = groupName
         version = Config.version
 
@@ -236,17 +232,19 @@ fun Project.setupPublishing() {
                 artifactId = artifactName
                 version = Config.version
 
-                val releaseAar = "$buildDir/outputs/aar/${projectName}-release.aar"
+                val releaseAar = "$buildDir/outputs/aar/${project.name}-release.aar"
+
+                logger.info("""
+                    |Creating maven publication '$publicationName'
+                    |    Group: $groupName
+                    |    Artifact: $artifactName
+                    |    Version: $version
+                    |    Aar: $releaseAar
+                """.trimMargin())
 
                 artifact(releaseAar)
                 artifact(javadocJar)
                 artifact(sourcesJar)
-
-                println("Creating maven publication $publicationName")
-                println("\tgroup: $groupName")
-                println("\tartifact: $artifactName")
-                println("\tversion: $version")
-                println("\taar: $releaseAar")
 
                 pom {
                     withXml {
@@ -323,8 +321,10 @@ fun Project.setupPublishing() {
         }
     }
 
-    val bintrayUsername = System.getProperty("BINTRAY_USER") ?: System.getenv("BINTRAY_USER")
-    val bintrayKey = System.getProperty("BINTRAY_KEY") ?: System.getenv("BINTRAY_KEY")
+    val bintrayUsername = properties["bintrayUser"] as String?
+            ?: System.getProperty("BINTRAY_USER") ?: System.getenv("BINTRAY_USER")
+    val bintrayKey = properties["bintrayKey"] as String?
+            ?: System.getProperty("BINTRAY_KEY") ?: System.getenv("BINTRAY_KEY")
 
     configure<ArtifactoryPluginConvention> {
         setContextUrl("https://oss.jfrog.org")
@@ -339,49 +339,37 @@ fun Project.setupPublishing() {
 
     tasks.withType<ArtifactoryTask> { publications(publicationName) }
 
-    apply(plugin = "com.jfrog.bintray")
-
     configure<BintrayExtension> {
-
         user = bintrayUsername
         key = bintrayKey
         setPublications(publicationName)
-        setConfigurations("archives")
-
-        println("Bintray configuration for ${publicationName}")
-        println("\tartifact: ${artifactName}")
-        publications.forEach { pubName ->
-            println("\tpub: $pubName")
-
-            val publ = project.extensions
-                    .getByType(PublishingExtension::class.java)
-                    .publications.findByName(pubName) as MavenPublication
-
-            publ.artifacts.forEach { art ->
-                println("\t\tpub_artifact: $art")
-            }
-        }
-        configurations.forEach { config ->
-            println("\tconfig: $config")
-
-            project.configurations.findByName(config)?.allArtifacts?.forEach { art ->
-                println("\t\tconfig_artifact: $art")
-            }
-        }
 
         // When uploading, move and rename the generated POM
         val pomSrc = "$buildDir/publications/$publicationName/pom-default.xml"
-        val pomDst = "com/firebaseui/$artifactName/${Config.version}/"
+        val pomDest = "com/firebaseui/$artifactName/${Config.version}/"
         val pomName = "$artifactName-${Config.version}.pom"
 
-        println("POM Transformation")
-        println("\tsrc: ${pomSrc}")
-        println("\tdst: ${pomDst}")
-        println("\tname: ${pomName}")
+        val pubLog: (String) -> String = { name ->
+            val publishing = project.extensions
+                    .getByType(PublishingExtension::class.java)
+                    .publications[name] as MavenPublication
+            "'$name': ${publishing.artifacts}"
+        }
+        logger.info("""
+                |Bintray configuration for '$publicationName'
+                |    Artifact name: $artifactName
+                |    Artifacts: ${publications.joinToString(transform = pubLog)}
+            """.trimMargin())
+        logger.info("""
+                |POM transformation
+                |    Src: $pomSrc
+                |    Dest: $pomDest
+                |    Name: $pomName
+            """.trimMargin())
 
         filesSpec(closureOf<RecordingCopyTask> {
             from(pomSrc)
-            into(pomDst)
+            into(pomDest)
             rename(KotlinClosure1<String, String>({ pomName }))
         })
 
@@ -398,6 +386,3 @@ fun Project.setupPublishing() {
         })
     }
 }
-
-// TODO: Remove this
-apply(from = "publishing.gradle")
