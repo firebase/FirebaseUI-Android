@@ -1,5 +1,5 @@
 object Config {
-    const val version = "4.0.1-SNAPSHOT"
+    const val version = "4.0.1"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.2.41"
@@ -15,7 +15,7 @@ object Config {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.0.1"
 
-        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.3"
     }
 
