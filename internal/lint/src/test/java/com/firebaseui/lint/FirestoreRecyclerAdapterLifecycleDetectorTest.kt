@@ -1,7 +1,6 @@
 package com.firebaseui.lint
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.java
-import com.firebaseui.lint.FirestoreRecyclerAdapterLifecycleDetector.Companion.ISSUE_MISSING_LIFECYCLE_OWNER_METHODS
 import com.firebaseui.lint.FirestoreRecyclerAdapterLifecycleDetector.Companion.ISSUE_MISSING_LISTENING_START_METHOD
 import com.firebaseui.lint.FirestoreRecyclerAdapterLifecycleDetector.Companion.ISSUE_MISSING_LISTENING_STOP_METHOD
 import com.firebaseui.lint.LintTestHelper.configuredLint
@@ -66,41 +65,6 @@ class FirestoreRecyclerAdapterLifecycleDetectorTest {
           |}
           """.trimMargin()))
         .issues(ISSUE_MISSING_LISTENING_START_METHOD, ISSUE_MISSING_LISTENING_STOP_METHOD)
-        .run()
-        .expectClean()
-  }
-
-  @Test
-  fun `Checks missing setLifecycleOwner() method call`() {
-    configuredLint()
-        .files(java("""
-          |public class MissingSetLifecycleOwnerMethodCall {
-          | private FirestoreRecyclerOptions.Builder builder;
-          |}
-          """.trimMargin()))
-        .issues(ISSUE_MISSING_LIFECYCLE_OWNER_METHODS)
-        .run()
-        .expect("""
-          |src/MissingSetLifecycleOwnerMethodCall.java:2: Warning: Have not called .setLifecycleOwner() on FirestoreRecyclerOptions. [FirestoreRecyclerOptionsMissingLifecycleOwnerMethod]
-          | private FirestoreRecyclerOptions.Builder builder;
-          | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          |0 errors, 1 warnings
-          """.trimMargin())
-  }
-
-  @Test
-  fun `Checks no warnings when setLifecycleOwner() has been called`() {
-    configuredLint()
-        .files(java("""
-          |public class HasCalledSetLifecyleOwnerMethod {
-          | private FirestoreRecyclerOptions.Builder builder;
-          |
-          | public void initializer() {
-          |   builder.setLifecycleOwner(this);
-          | }
-          |}
-          """.trimMargin()))
-        .issues(ISSUE_MISSING_LIFECYCLE_OWNER_METHODS)
         .run()
         .expectClean()
   }

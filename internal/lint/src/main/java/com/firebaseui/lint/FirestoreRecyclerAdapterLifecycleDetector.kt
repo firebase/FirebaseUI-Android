@@ -25,8 +25,6 @@ class FirestoreRecyclerAdapterLifecycleDetector : Detector(), Detector.UastScann
   ) : UElementHandler() {
     private val FIRESTORE_RECYCLER_ADAPTER_TYPE =
         "FirestoreRecyclerAdapter"
-    private val FIRESTORE_REYCLER_OPTIONS_BUILDER_TYPE =
-        "FirestoreRecyclerOptions.Builder"
 
     override fun visitClass(node: UClass) {
       val adapterReferences = node
@@ -34,14 +32,8 @@ class FirestoreRecyclerAdapterLifecycleDetector : Detector(), Detector.UastScann
           .filter { FIRESTORE_RECYCLER_ADAPTER_TYPE == it.type.canonicalText }
           .map { AdapterReference(it) }
 
-      val recyclerOptionsReferences = node
-          .fields
-          .filter { FIRESTORE_REYCLER_OPTIONS_BUILDER_TYPE == it.type.canonicalText }
-          .toMutableSet()
-
       node.accept(AdapterStartListeningMethodVisitor(adapterReferences))
       node.accept(AdapterStopListeningMethodVisitor(adapterReferences))
-      node.accept(LifecycleOwnerMethodVisitor(recyclerOptionsReferences))
 
       adapterReferences.forEach {
         if (it.hasCalledStart && !it.hasCalledStop) {
@@ -59,15 +51,6 @@ class FirestoreRecyclerAdapterLifecycleDetector : Detector(), Detector.UastScann
               "Have not called .startListening()."
           )
         }
-      }
-
-      recyclerOptionsReferences.forEach {
-        context.report(
-            ISSUE_MISSING_LIFECYCLE_OWNER_METHODS,
-            it,
-            context.getLocation(it),
-            "Have not called .setLifecycleOwner() on FirestoreRecyclerOptions."
-        )
       }
     }
   }
@@ -108,41 +91,7 @@ class FirestoreRecyclerAdapterLifecycleDetector : Detector(), Detector.UastScann
         }
   }
 
-  class LifecycleOwnerMethodVisitor(
-      private val recyclerOptionsReferences: MutableSet<UField>
-  ) : AbstractUastVisitor() {
-
-    private val SET_LIFECYCLE_OWNER_METHOD_NAME = "setLifecycleOwner"
-
-    override fun visitCallExpression(node: UCallExpression): Boolean =
-        if (SET_LIFECYCLE_OWNER_METHOD_NAME == node.methodName) {
-          val iterator = recyclerOptionsReferences.iterator()
-          while (iterator.hasNext()) {
-            if (node.receiver?.asRenderString() == iterator.next().name) {
-              iterator.remove()
-            }
-          }
-
-          true
-        } else {
-          super.visitCallExpression(node)
-        }
-  }
-
   companion object {
-    val ISSUE_MISSING_LIFECYCLE_OWNER_METHODS = Issue.create(
-        "FirestoreRecyclerOptionsMissingLifecycleOwnerMethod",
-        "Checks if FirestoreRecyclerOptions has called .setLifecycleOwner().",
-        "If a class is using a FirestoreAdapter with FirestoreRecyclerOptions and " +
-            "has not called .setLifecycleOwner() on FirestoreRecyclerOptions, it won't be " +
-            "notified on changes.",
-        CORRECTNESS, 10, WARNING,
-        Implementation(
-            FirestoreRecyclerAdapterLifecycleDetector::class.java,
-            EnumSet.of(Scope.JAVA_FILE)
-        )
-    )
-
     val ISSUE_MISSING_LISTENING_START_METHOD = Issue.create(
         "FirestoreAdapterMissingStartListeningMethod",
         "Checks if FirestoreAdapter has called .startListening() method.",
