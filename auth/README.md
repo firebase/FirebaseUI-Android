@@ -357,6 +357,11 @@ The country code selector will exclude all countries with a country code of +1 a
 Note: You can't provide both a list of countries to whitelist and blacklist. If you do, a runtime
 exception will be thrown. 
 
+This change is purely UI based. We do not restrict users from signing in with their phone number.
+They will simply be unable to choose their country in the selector, but there may be another country
+sharing the same country code (e.g. US and CA are +1).
+
+
 #####
 
 ### Handling the sign-in response

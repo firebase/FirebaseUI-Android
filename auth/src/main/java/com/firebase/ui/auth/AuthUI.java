@@ -668,13 +668,13 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param whitelistedCountries a case insensitive list of country codes and/or
-             *                                     isos to be whitelisted
+             * @param whitelistedCountries a case insensitive list of country codes and/or isos to
+             *                             be whitelisted
              */
             public PhoneBuilder setWhitelistedCountries(
                     @NonNull List<String> whitelistedCountries) {
                 if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRIES)) {
-                    throw new RuntimeException(
+                    throw new IllegalStateException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
@@ -695,13 +695,14 @@ public final class AuthUI {
              * For a list of country iso or codes, see Alpha-2 codes here:
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
-             * @param blacklistedCountries a case insensitive list of country codes and/or isos
-             *                             to be blacklisted
+             *
+             * @param blacklistedCountries a case insensitive list of country codes and/or isos to
+             *                             be blacklisted
              */
             public PhoneBuilder setBlacklistedCountries(
                     @NonNull List<String> blacklistedCountries) {
                 if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRIES)) {
-                    throw new RuntimeException(
+                    throw new IllegalStateException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
@@ -732,41 +733,67 @@ public final class AuthUI {
 
                 if (whitelistedCountries != null &&
                         blacklistedCountries != null) {
-                    throw new RuntimeException(
+                    throw new IllegalStateException(
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 } else if (whitelistedCountries != null) {
                     validateCountries(whitelistedCountries);
-                    validateDefaultCountryIso(whitelistedCountries, true);
+                    validateDefaultCountryInput(whitelistedCountries, true);
 
                 } else if (blacklistedCountries != null) {
                     validateCountries(blacklistedCountries);
-                    validateDefaultCountryIso(blacklistedCountries, false);
+                    validateDefaultCountryInput(blacklistedCountries, false);
                 }
             }
 
             private void validateCountries(List<String> codes) {
                 for (String code : codes) {
                     if (!PhoneNumberUtils.isValidIso(code) && !PhoneNumberUtils.isValid(code)) {
-                        throw new RuntimeException("Invalid input: You must provide a valid " +
-                                "country iso (alpha-2) or code (e-164). e.g. 'us' or '+1'.");
+                        throw new IllegalArgumentException("Invalid input: You must provide a " +
+                                "valid country iso (alpha-2) or code (e-164). e.g. 'us' or '+1'.");
                     }
                 }
             }
 
-            private void validateDefaultCountryIso(List<String> codes, boolean whitelisted) {
-                if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) && codes != null) {
-                    String defaultIso = getParams().getString(ExtraConstants.COUNTRY_ISO);
-                    boolean containsIso = containsCountryIso(codes, defaultIso);
-                    if (!containsIso && whitelisted || containsIso && !whitelisted) {
-                        throw new RuntimeException("Invalid default country iso. Make sure it " +
-                                "is either part of the whitelisted list or that you " +
-                                "haven't blacklisted it.");
+            private void validateDefaultCountryInput(List<String> codes, boolean whitelisted) {
+                // A default iso/code can be set via #setDefaultCountryIso() or #setDefaultNumber()
+                if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) ||
+                        getParams().containsKey(ExtraConstants.PHONE)) {
+
+                    if (!validateDefaultCountryIso(codes, whitelisted)
+                            || !validateDefaultPhoneIsos(codes, whitelisted)) {
+                        throw new IllegalArgumentException("Invalid default country iso. Make " +
+                                "sure it is either part of the whitelisted list or that you "
+                                + "haven't blacklisted it.");
                     }
                 }
+
+            }
+
+            private boolean validateDefaultCountryIso(List<String> codes, boolean whitelisted) {
+                String defaultIso = getDefaultIso();
+                return isValidDefaultIso(codes, defaultIso, whitelisted);
+            }
+
+            private boolean validateDefaultPhoneIsos(List<String> codes, boolean whitelisted) {
+                List<String> phoneIsos = getPhoneIsosFromCode();
+                for (String iso : phoneIsos) {
+                    if (isValidDefaultIso(codes, iso, whitelisted)) {
+                        return true;
+                    }
+                }
+                return phoneIsos.isEmpty();
+            }
+
+            private boolean isValidDefaultIso(List<String> codes, String iso, boolean whitelisted) {
+                if (iso == null) return true;
+                boolean containsIso = containsCountryIso(codes, iso);
+                return containsIso && whitelisted || !containsIso && !whitelisted;
+
             }
 
             private boolean containsCountryIso(List<String> codes, String iso) {
+                iso = iso.toUpperCase(Locale.getDefault());
                 for (String code : codes) {
                     if (PhoneNumberUtils.isValidIso(code)) {
                         if (code.equals(iso)) {
@@ -780,6 +807,26 @@ public final class AuthUI {
                     }
                 }
                 return false;
+            }
+
+            private List<String> getPhoneIsosFromCode() {
+                List<String> isos = new ArrayList<>();
+                String phone = getParams().getString(ExtraConstants.PHONE);
+                if (phone != null && phone.startsWith("+")) {
+                    String countryCode = "+" + PhoneNumberUtils.getPhoneNumber(phone)
+                            .getCountryCode();
+                    List<String> isosToAdd = PhoneNumberUtils.
+                            getCountryIsosFromCountryCode(countryCode);
+                    if (isosToAdd != null) {
+                        isos.addAll(isosToAdd);
+                    }
+                }
+                return isos;
+            }
+
+            private String getDefaultIso() {
+                return getParams().containsKey(ExtraConstants.COUNTRY_ISO) ?
+                        getParams().getString(ExtraConstants.COUNTRY_ISO) : null;
             }
         }
 
@@ -943,8 +990,8 @@ public final class AuthUI {
         /**
          * Specifies the terms-of-service URL for the application.
          *
-         * @deprecated Please use {@link #setTosAndPrivacyPolicyUrls(String, String)}
-         * For the Tos link to be displayed a Privacy Policy url must also be provided.
+         * @deprecated Please use {@link #setTosAndPrivacyPolicyUrls(String, String)} For the Tos
+         * link to be displayed a Privacy Policy url must also be provided.
          */
         @NonNull
         @Deprecated
@@ -956,8 +1003,8 @@ public final class AuthUI {
         /**
          * Specifies the privacy policy URL for the application.
          *
-         * @deprecated Please use {@link #setTosAndPrivacyPolicyUrls(String, String)}
-         * For the Privacy Policy link to be displayed a Tos url must also be provided.
+         * @deprecated Please use {@link #setTosAndPrivacyPolicyUrls(String, String)} For the
+         * Privacy Policy link to be displayed a Tos url must also be provided.
          */
         @NonNull
         @Deprecated

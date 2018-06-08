@@ -20,7 +20,6 @@ package com.firebase.ui.auth.ui.phone;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.AppCompatEditText;
@@ -30,15 +29,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
-import com.firebase.ui.auth.data.client.CountryListLoadTask;
 import com.firebase.ui.auth.data.model.CountryInfo;
-import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 
 import java.util.List;
 import java.util.Locale;
 
-public final class CountryListSpinner extends AppCompatEditText implements
-        View.OnClickListener, CountryListLoadTask.Listener {
+public final class CountryListSpinner extends AppCompatEditText implements View.OnClickListener {
 
     private static final String KEY_SUPER_STATE = "KEY_SUPER_STATE";
     private static final String KEY_COUNTRY_INFO = "KEY_COUNTRY_INFO";
@@ -49,9 +45,6 @@ public final class CountryListSpinner extends AppCompatEditText implements
     private OnClickListener mListener;
     private String mSelectedCountryName;
     private CountryInfo mSelectedCountryInfo;
-
-    private List<String> whitelistedCountries;
-    private List<String> blacklistedCountries;
 
     public CountryListSpinner(Context context) {
         this(context, null, android.R.attr.spinnerStyle);
@@ -69,8 +62,6 @@ public final class CountryListSpinner extends AppCompatEditText implements
         mDialogPopup = new DialogPopup(mCountryListAdapter);
         mTextFormat = "%1$s  +%2$d";
         mSelectedCountryName = "";
-        CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
-        setSelectedForCountry(countryInfo.getCountryCode(), countryInfo.getLocale());
     }
 
     @Override
@@ -105,7 +96,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         }
     }
 
-    private void setSelectedForCountry(int countryCode, Locale locale) {
+    public void setSelectedForCountry(int countryCode, Locale locale) {
         setText(String.format(mTextFormat, CountryInfo.localeToEmoji(locale), countryCode));
         mSelectedCountryInfo = new CountryInfo(locale, countryCode);
     }
@@ -138,38 +129,19 @@ public final class CountryListSpinner extends AppCompatEditText implements
 
     @Override
     public void onClick(View view) {
-        if (mCountryListAdapter.getCount() == 0) {
-            loadCountryList();
-        } else {
-            mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
-        }
+        mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
         hideKeyboard(getContext(), this);
         executeUserClickListener(view);
     }
 
-    private void loadCountryList() {
-        new CountryListLoadTask(whitelistedCountries, blacklistedCountries, this
-        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public void setCountryInfoList(List<CountryInfo> countryInfoList) {
+        mCountryListAdapter.setData(countryInfoList);
     }
 
     private void executeUserClickListener(View view) {
         if (mListener != null) {
             mListener.onClick(view);
         }
-    }
-
-    public void setWhitelistedCountries(List<String> whitelistedCountries) {
-        this.whitelistedCountries = whitelistedCountries;
-    }
-
-    public void setBlacklistedCountries(List<String> blacklistedCountries) {
-        this.blacklistedCountries = blacklistedCountries;
-    }
-
-    @Override
-    public void onLoadComplete(List<CountryInfo> result) {
-        mCountryListAdapter.setData(result);
-        mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
     }
 
     public class DialogPopup implements DialogInterface.OnClickListener {
