@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,12 +114,12 @@ public class CheckEmailFragment extends FragmentBase implements
         FlowParameters flowParameters = getFlowParams();
 
         if (flowParameters.isSingleProviderFlow()) {
-            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(getContext(),
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(requireContext(),
                     flowParameters,
                     termsText);
         } else {
             termsText.setVisibility(View.GONE);
-            PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(),
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(),
                     flowParameters,
                     footerText);
         }
@@ -130,10 +131,11 @@ public class CheckEmailFragment extends FragmentBase implements
         mHandler = ViewModelProviders.of(this).get(CheckEmailHandler.class);
         mHandler.init(getFlowParams());
 
-        if (!(getActivity() instanceof CheckEmailListener)) {
+        FragmentActivity activity = getActivity();
+        if (!(activity instanceof CheckEmailListener)) {
             throw new IllegalStateException("Activity must implement CheckEmailListener");
         }
-        mListener = (CheckEmailListener) getActivity();
+        mListener = (CheckEmailListener) activity;
 
         mHandler.getOperation().observe(this, new ResourceObserver<User>(
                 this, R.string.fui_progress_dialog_checking_accounts) {

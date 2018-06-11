@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
@@ -129,5 +130,15 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     private void setSlideAnimation() {
         // Make the next activity slide in
         overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
+    }
+
+    @Override
+    public void showProgress(@StringRes int message) {
+        throw new UnsupportedOperationException("Email fragments must handle progress updates.");
+    }
+
+    @Override
+    public void hideProgress() {
+        throw new UnsupportedOperationException("Email fragments must handle progress updates.");
     }
 }

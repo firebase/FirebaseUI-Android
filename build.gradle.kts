@@ -354,36 +354,16 @@ fun Project.setupPublishing() {
             "'$name': ${publishing.artifacts}"
         }
         logger.info("""
-                |Bintray configuration for '$publicationName'
-                |    Artifact name: $artifactName
-                |    Artifacts: ${publications.joinToString(transform = pubLog)}
-            """.trimMargin())
+            |Bintray configuration for '$publicationName'
+            |    Artifact name: $artifactName
+            |    Artifacts: ${publications.joinToString(transform = pubLog)}
+        """.trimMargin())
         logger.info("""
-                |POM transformation
-                |    Src: $pomSrc
-                |    Dest: $pomDest
-                |    Name: $pomName
-            """.trimMargin())
-        tasks.withType<BintrayUploadTask> {
-            doLast {
-                fun Any.prettyString() = "[" + javaClass.declaredFields.mapNotNull {
-                    it.isAccessible = true
-
-                    if (it.name.contains("$") || it.name == "metaClass") {
-                        null
-                    } else {
-                        "${it.name}=${it.get(this)}"
-                    }
-                }.joinToString() + "]"
-
-                logger.info("""
-                    |Upload task config
-                    |    publications: ${publicationUploads?.joinToString { it.prettyString() }}
-                    |    configurations: ${configurationUploads?.joinToString { it.prettyString() }}
-                    |    fileUploads: ${fileUploads?.joinToString { it.prettyString() }}
-                """.trimMargin())
-            }
-        }
+            |POM transformation
+            |    Src: $pomSrc
+            |    Dest: $pomDest
+            |    Name: $pomName
+        """.trimMargin())
 
         filesSpec(closureOf<RecordingCopyTask> {
             from(pomSrc)

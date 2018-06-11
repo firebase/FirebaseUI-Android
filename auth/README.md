@@ -231,15 +231,15 @@ startActivityForResult(
 
 ##### Adding a ToS and privacy policy
 
-If a terms of service URL and privacy policy URL are required:
+A terms of service URL and privacy policy URL are generally required:
 
 ```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setAvailableProviders(...)
-        .setTosUrl("https://superapp.example.com/terms-of-service.html")
-        .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
+        .setTosAndPrivacyPolicyUrls("https://superapp.example.com/terms-of-service.html",
+                                    "https://superapp.example.com/privacy-policy.html")
         .build(),
     RC_SIGN_IN);
 ```
@@ -291,6 +291,7 @@ startActivityForResult(
 
 ##### Phone number authentication customization
 
+###### Setting a default phone number
 When using the phone verification provider and the number is known in advance, it is possible to
 provide a default phone number (in international format) that will be used to prepopulate the
 country code and phone number input fields. The user is still able to edit the number if desired.
@@ -301,7 +302,7 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
         .build();
 ```
 
-Alternatively, you can set only the default phone number country.
+Alternatively, you can set the default country (alpha-2 format) to be shown in the country selector.
 
 ```java
 IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
@@ -318,6 +319,45 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
         .setDefaultNumber("ca", "23456789")
         .build();
 ```
+
+###### Limiting the list of available countries in the country selector
+
+You can limit the countries shown in the country selector list. By default, all countries are shown. 
+
+You can provide a list of countries to whitelist or blacklist. You can populate these lists with 
+ISO (alpha-2) and E164 formatted country codes. 
+
+```java
+List<String> whitelistedCountries = new ArrayList<String>();
+whitelistedCountries.add("+1");
+whitelistedCountries.add("gr");
+
+IdpConfig phoneConfigWithWhitelistedCountries = new IdpConfig.PhoneBuilder()
+        .setWhitelistedCountries(whitelistedCountries)
+        .build();
+```
+All countries with the country code +1 will be present in the selector as well as Greece ('gr'). 
+
+You may want to exclude a few countries from the list and avoid creating a whitelist with
+many countries. You can instead provide a list of countries to blacklist. By doing so, all countries 
+excluding the ones you provide will be in the selector. 
+
+```java
+List<String> blacklistedCountries = new ArrayList<String>();
+blacklistedCountries.add("+1");
+blacklistedCountries.add("gr");
+
+IdpConfig phoneConfigWithBlacklistedCountries = new IdpConfig.PhoneBuilder()
+        .setBlacklistedCountries(blacklistedCountries)
+        .build();
+```
+
+The country code selector will exclude all countries with a country code of +1 and Greece ('gr'). 
+
+Note: You can't provide both a list of countries to whitelist and blacklist. If you do, a runtime
+exception will be thrown. 
+
+#####
 
 ### Handling the sign-in response
 

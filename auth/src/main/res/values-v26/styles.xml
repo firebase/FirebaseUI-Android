@@ -15,11 +15,7 @@
 
     <style name="FirebaseUI.TextInputEditText.PhoneField">
         <item name="android:autofillHints">phone</item>
-        <item name="android:hint">@string/fui_phone_hint</item>
         <item name="android:inputType">phone</item>
-        <item name="android:imeOptions">actionNext</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:paddingTop">16dp</item>
     </style>
 
     <style name="FirebaseUI.TextInputEditText.PasswordField">
