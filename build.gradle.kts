@@ -1,8 +1,6 @@
 import com.android.build.gradle.BaseExtension
-import com.jfrog.bintray.gradle.Artifact
 import com.jfrog.bintray.gradle.BintrayExtension
-import com.jfrog.bintray.gradle.BintrayUploadTask
-import com.jfrog.bintray.gradle.RecordingCopyTask
+import com.jfrog.bintray.gradle.tasks.RecordingCopyTask
 import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
 import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
 import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
@@ -52,6 +50,10 @@ allprojects {
             setupPublishing()
         }
     }
+}
+
+tasks.withType<Wrapper> {
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 val Project.configDir get() = "$rootDir/library/quality"

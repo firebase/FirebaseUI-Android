@@ -11,11 +11,11 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:3.2.0-alpha15"
+        const val android = "com.android.tools.build:gradle:3.2.0-alpha17"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.0.1"
 
-        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0"
+        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.1"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.3"
     }
 
@@ -35,7 +35,7 @@ object Config {
             const val cardView = "com.android.support:cardview-v7:$version"
             const val customTabs = "com.android.support:customtabs:$version"
 
-            const val constraint = "com.android.support.constraint:constraint-layout:1.1.0"
+            const val constraint = "com.android.support.constraint:constraint-layout:1.1.1"
         }
 
         object Arch {
@@ -95,7 +95,7 @@ object Config {
         }
 
         object Lint {
-            private const val version = "26.2.0-alpha15"
+            private const val version = "26.2.0-alpha17"
 
             const val api = "com.android.tools.lint:lint-api:$version"
             const val tests = "com.android.tools.lint:lint-tests:$version"
