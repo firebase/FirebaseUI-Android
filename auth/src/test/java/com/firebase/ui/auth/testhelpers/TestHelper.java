@@ -71,12 +71,10 @@ public final class TestHelper {
     private static void initializeApp(Context context) {
         if (!FirebaseApp.getApps(context).isEmpty()) return;
 
-        FirebaseApp.initializeApp(
-                context,
-                new FirebaseOptions.Builder()
-                        .setApiKey("fake")
-                        .setApplicationId("fake")
-                        .build());
+        FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
+                .setApiKey("fake")
+                .setApplicationId("fake")
+                .build());
     }
 
     private static void initializeProviders() {
