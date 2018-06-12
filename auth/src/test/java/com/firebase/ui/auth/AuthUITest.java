@@ -20,7 +20,6 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;
@@ -34,15 +33,17 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthUITest {
+    private AuthUI mAuthUi;
+
     @Before
     public void setUp() {
         TestHelper.initialize();
+        mAuthUi = AuthUI.getInstance(TestHelper.MOCK_APP);
     }
 
     @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
-        FlowParameters flowParameters = AuthUI
-                .getInstance()
+        FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
@@ -53,7 +54,7 @@ public class AuthUITest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
-        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
         startIntent.setAvailableProviders(Arrays.asList(
                 new IdpConfig.EmailBuilder().build(),
                 new IdpConfig.EmailBuilder().build()));
@@ -61,7 +62,7 @@ public class AuthUITest {
 
     @Test
     public void testCreatingStartIntent() {
-        FlowParameters flowParameters = AuthUI.getInstance()
+        FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
                         new IdpConfig.EmailBuilder().build(),
@@ -72,7 +73,7 @@ public class AuthUITest {
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
         assertEquals(3, flowParameters.providerInfo.size());
-        assertEquals(FirebaseApp.getInstance().getName(), flowParameters.appName);
+        assertEquals(TestHelper.MOCK_APP.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
@@ -80,13 +81,13 @@ public class AuthUITest {
 
     @Test(expected = NullPointerException.class)
     public void testCreatingStartIntent_withNullTos_expectEnforcesNonNullTosUrl() {
-        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
         startIntent.setTosAndPrivacyPolicyUrls(null, TestConstants.PRIVACY_URL);
     }
 
     @Test(expected = NullPointerException.class)
     public void testCreatingStartIntent_withNullPp_expectEnforcesNonNullPpUrl() {
-        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
         startIntent.setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, null);
     }
 }
