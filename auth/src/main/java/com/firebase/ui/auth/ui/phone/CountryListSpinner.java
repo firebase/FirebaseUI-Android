@@ -20,9 +20,9 @@ package com.firebase.ui.auth.ui.phone;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -30,15 +30,19 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
-import com.firebase.ui.auth.data.client.CountryListLoadTask;
 import com.firebase.ui.auth.data.model.CountryInfo;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
-public final class CountryListSpinner extends AppCompatEditText implements
-        View.OnClickListener, CountryListLoadTask.Listener {
+public final class CountryListSpinner extends AppCompatEditText implements View.OnClickListener {
 
     private static final String KEY_SUPER_STATE = "KEY_SUPER_STATE";
     private static final String KEY_COUNTRY_INFO = "KEY_COUNTRY_INFO";
@@ -50,8 +54,8 @@ public final class CountryListSpinner extends AppCompatEditText implements
     private String mSelectedCountryName;
     private CountryInfo mSelectedCountryInfo;
 
-    private List<String> whitelistedCountries;
-    private List<String> blacklistedCountries;
+    private Set<String> mWhitelistedCountryIsos;
+    private Set<String> mBlacklistedCountryIsos;
 
     public CountryListSpinner(Context context) {
         this(context, null, android.R.attr.spinnerStyle);
@@ -69,8 +73,99 @@ public final class CountryListSpinner extends AppCompatEditText implements
         mDialogPopup = new DialogPopup(mCountryListAdapter);
         mTextFormat = "%1$s  +%2$d";
         mSelectedCountryName = "";
+    }
+
+    public void init(Bundle params) {
+        if (params != null) {
+            List<CountryInfo> countries = getCountriesToDisplayInSpinner(params);
+            setCountriesToDisplay(countries);
+            setDefaultCountryForSpinner(countries);
+        }
+    }
+
+    private List<CountryInfo> getCountriesToDisplayInSpinner(Bundle params) {
+        initCountrySpinnerIsosFromParams(params);
+
+        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
+        // We consider all countries to be whitelisted if there are no whitelisted
+        // or blacklisted countries given as input.
+        if (mWhitelistedCountryIsos == null && mBlacklistedCountryIsos == null) {
+            this.mWhitelistedCountryIsos = new HashSet<>(countryInfoMap.keySet());
+        }
+
+        List<CountryInfo> countryInfoList = new ArrayList<>();
+
+        // At this point either mWhitelistedCountryIsos or mBlacklistedCountryIsos is null.
+        // We assume no countries are to be excluded. Here, we correct this assumption based on the
+        // contents of either lists.
+        Set<String> excludedCountries = new HashSet<>();
+        if (mWhitelistedCountryIsos == null) {
+            // Exclude all countries in the mBlacklistedCountryIsos list.
+            excludedCountries.addAll(mBlacklistedCountryIsos);
+        } else {
+            // Exclude all countries that are not present in the mWhitelistedCountryIsos list.
+            excludedCountries.addAll(countryInfoMap.keySet());
+            excludedCountries.removeAll(mWhitelistedCountryIsos);
+        }
+
+        // Once we know which countries need to be excluded, we loop through the country isos,
+        // skipping those that have been excluded.
+        for (String countryIso : countryInfoMap.keySet()) {
+            if (!excludedCountries.contains(countryIso)) {
+                countryInfoList.add(new CountryInfo(new Locale("", countryIso),
+                        countryInfoMap.get(countryIso)));
+            }
+        }
+        Collections.sort(countryInfoList);
+        return countryInfoList;
+    }
+
+    private void initCountrySpinnerIsosFromParams(@NonNull Bundle params) {
+        List<String> whitelistedCountries =
+                params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRIES);
+        List<String> blacklistedCountries =
+                params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRIES);
+
+        if (whitelistedCountries != null) {
+            mWhitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
+        } else if (blacklistedCountries != null) {
+            mBlacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
+        }
+    }
+
+    private Set<String> convertCodesToIsos(@NonNull List<String> codes) {
+        Set<String> isos = new HashSet<>();
+        for (String code : codes) {
+            if (PhoneNumberUtils.isValid(code)) {
+                isos.addAll(PhoneNumberUtils.getCountryIsosFromCountryCode(code));
+            } else {
+                isos.add(code);
+            }
+        }
+        return isos;
+    }
+
+    public void setCountriesToDisplay(List<CountryInfo> countries) {
+        mCountryListAdapter.setData(countries);
+    }
+
+    private void setDefaultCountryForSpinner(List<CountryInfo> countries) {
         CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
-        setSelectedForCountry(countryInfo.getCountryCode(), countryInfo.getLocale());
+        if (isValidIso(countryInfo.getLocale().getCountry())) {
+            setSelectedForCountry(countryInfo.getCountryCode(),
+                    countryInfo.getLocale());
+        } else if (countries.iterator().hasNext()) {
+            countryInfo = countries.iterator().next();
+            setSelectedForCountry(countryInfo.getCountryCode(),
+                    countryInfo.getLocale());
+        }
+    }
+
+    public boolean isValidIso(String iso) {
+        iso = iso.toUpperCase(Locale.getDefault());
+        return ((mWhitelistedCountryIsos == null && mBlacklistedCountryIsos == null)
+                || (mWhitelistedCountryIsos != null && mWhitelistedCountryIsos.contains(iso))
+                || (mBlacklistedCountryIsos != null && !mBlacklistedCountryIsos.contains(iso)));
     }
 
     @Override
@@ -105,16 +200,18 @@ public final class CountryListSpinner extends AppCompatEditText implements
         }
     }
 
-    private void setSelectedForCountry(int countryCode, Locale locale) {
+    public void setSelectedForCountry(int countryCode, Locale locale) {
         setText(String.format(mTextFormat, CountryInfo.localeToEmoji(locale), countryCode));
         mSelectedCountryInfo = new CountryInfo(locale, countryCode);
     }
 
     public void setSelectedForCountry(final Locale locale, String countryCode) {
-        final String countryName = locale.getDisplayName();
-        if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
-            mSelectedCountryName = countryName;
-            setSelectedForCountry(Integer.parseInt(countryCode), locale);
+        if (isValidIso(locale.getCountry())) {
+            final String countryName = locale.getDisplayName();
+            if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
+                mSelectedCountryName = countryName;
+                setSelectedForCountry(Integer.parseInt(countryCode), locale);
+            }
         }
     }
 
@@ -138,38 +235,15 @@ public final class CountryListSpinner extends AppCompatEditText implements
 
     @Override
     public void onClick(View view) {
-        if (mCountryListAdapter.getCount() == 0) {
-            loadCountryList();
-        } else {
-            mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
-        }
+        mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
         hideKeyboard(getContext(), this);
         executeUserClickListener(view);
-    }
-
-    private void loadCountryList() {
-        new CountryListLoadTask(whitelistedCountries, blacklistedCountries, this
-        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private void executeUserClickListener(View view) {
         if (mListener != null) {
             mListener.onClick(view);
         }
-    }
-
-    public void setWhitelistedCountries(List<String> whitelistedCountries) {
-        this.whitelistedCountries = whitelistedCountries;
-    }
-
-    public void setBlacklistedCountries(List<String> blacklistedCountries) {
-        this.blacklistedCountries = blacklistedCountries;
-    }
-
-    @Override
-    public void onLoadComplete(List<CountryInfo> result) {
-        mCountryListAdapter.setData(result);
-        mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
     }
 
     public class DialogPopup implements DialogInterface.OnClickListener {

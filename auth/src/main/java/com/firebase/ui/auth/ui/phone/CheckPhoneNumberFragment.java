@@ -47,6 +47,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private EditText mPhoneEditText;
     private TextView mSmsTermsText;
 
+
     public static CheckPhoneNumberFragment newInstance(Bundle params) {
         CheckPhoneNumberFragment fragment = new CheckPhoneNumberFragment();
         Bundle args = new Bundle();
@@ -95,12 +96,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             }
         });
         mSubmitButton.setOnClickListener(this);
-        mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPhoneInputLayout.setError(null);
-            }
-        });
 
         setupPrivacyDisclosures(view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
     }
@@ -125,35 +120,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
         mCalled = true;
 
-        // Check for phone
-        // It is assumed that the phone number that are being wired in via Credential Selector
-        // are e164 since we store it.
-        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
-        String phone = null;
-        String countryIso = null;
-        String nationalNumber = null;
-        if (params != null) {
-            phone = params.getString(ExtraConstants.PHONE);
-            countryIso = params.getString(ExtraConstants.COUNTRY_ISO);
-            nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
-        }
-
-        // We can receive the phone number in one of two formats: split between the ISO or fully
-        // processed. If it's complete, we use it directly. Otherwise, we parse the ISO and national
-        // number combination or we just set the default ISO if there's no default number. If there
-        // are no defaults at all, we prompt the user for a phone number through Smart Lock.
-        if (!TextUtils.isEmpty(phone)) {
-            start(PhoneNumberUtils.getPhoneNumber(phone));
-        } else if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
-            start(PhoneNumberUtils.getPhoneNumber(countryIso, nationalNumber));
-        } else if (!TextUtils.isEmpty(countryIso)) {
-            setCountryCode(new PhoneNumber(
-                    "",
-                    countryIso,
-                    String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
-        } else if (getFlowParams().enableHints) {
-            mCheckPhoneHandler.fetchCredential();
-        }
+        setupCountrySpinner();
     }
 
     @Override
@@ -174,10 +141,12 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mPhoneEditText.setText(number.getPhoneNumber());
         mPhoneEditText.setSelection(number.getPhoneNumber().length());
 
-        if (PhoneNumber.isCountryValid(number)) {
+        String iso = number.getCountryIso();
+
+        if (PhoneNumber.isCountryValid(number) && mCountryListSpinner.isValidIso(iso)) {
             setCountryCode(number);
+            onNext();
         }
-        onNext();
     }
 
     private void onNext() {
@@ -221,6 +190,53 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private void setCountryCode(PhoneNumber number) {
         mCountryListSpinner.setSelectedForCountry(
                 new Locale("", number.getCountryIso()), number.getCountryCode());
+    }
+
+    private void setupCountrySpinner() {
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
+        mCountryListSpinner.init(params);
+
+        setDefaultCountryForSpinner();
+
+        // Clear error when spinner is clicked on
+        mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPhoneInputLayout.setError(null);
+            }
+        });
+    }
+
+    private void setDefaultCountryForSpinner() {
+        // Check for phone
+        // It is assumed that the phone number that are being wired in via Credential Selector
+        // are e164 since we store it.
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
+        String phone = null;
+        String countryIso = null;
+        String nationalNumber = null;
+        if (params != null) {
+            phone = params.getString(ExtraConstants.PHONE);
+            countryIso = params.getString(ExtraConstants.COUNTRY_ISO);
+            nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
+        }
+
+        // We can receive the phone number in one of two formats: split between the ISO or fully
+        // processed. If it's complete, we use it directly. Otherwise, we parse the ISO and national
+        // number combination or we just set the default ISO if there's no default number. If there
+        // are no defaults at all, we prompt the user for a phone number through Smart Lock.
+        if (!TextUtils.isEmpty(phone)) {
+            start(PhoneNumberUtils.getPhoneNumber(phone));
+        } else if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
+            start(PhoneNumberUtils.getPhoneNumber(countryIso, nationalNumber));
+        } else if (!TextUtils.isEmpty(countryIso)) {
+            setCountryCode(new PhoneNumber(
+                    "",
+                    countryIso,
+                    String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
+        } else if (getFlowParams().enableHints) {
+            mCheckPhoneHandler.fetchCredential();
+        }
     }
 
     @Override

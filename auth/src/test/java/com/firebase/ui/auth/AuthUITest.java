@@ -27,7 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -89,5 +91,115 @@ public class AuthUITest {
     public void testCreatingStartIntent_withNullPp_expectEnforcesNonNullPpUrl() {
         SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
         startIntent.setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_withBlacklistedDefaultNumberCode_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setBlacklistedCountries(Arrays.asList("+1"))
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_withBlacklistedDefaultIso_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setBlacklistedCountries(Arrays.asList("us"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withWhitelistedDefaultIso_expectSuccess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setWhitelistedCountries(Arrays.asList("us"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withWhitelistedDefaultNumberCode_expectSuccess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setWhitelistedCountries(Arrays.asList("+1"))
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_whiteInvalidDefaultNumberCode_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setWhitelistedCountries(Arrays.asList("gr"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withValidDefaultNumberCode_expectSuccess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setWhitelistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withBlacklistedCountryWithSameCountryCode_expectSucess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setBlacklistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_withInvalidDefaultIso_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setWhitelistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withValidDefaultIso_expectSucess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setBlacklistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testPhoneBuilder_setBothBlacklistedAndWhitelistedCountries_expectIllegalStateException() {
+        List<String> countries = Arrays.asList("ca");
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(countries)
+                .setWhitelistedCountries(countries)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_passEmptyListForWhitelistedCountries_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setWhitelistedCountries(new ArrayList<String>())
+                .build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPhoneBuilder_passNullForWhitelistedCountries_expectNullPointerException() {
+        new IdpConfig.PhoneBuilder()
+                .setWhitelistedCountries(null)
+                .build();
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_passEmptyListForBlacklistedCountries_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(new ArrayList<String>())
+                .build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPhoneBuilder_passNullForBlacklistedCountries_expectNullPointerException() {
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(null)
+                .build();
     }
 }
