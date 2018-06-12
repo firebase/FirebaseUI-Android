@@ -668,8 +668,8 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param whitelistedCountries a case insensitive list of country codes and/or isos to
-             *                             be whitelisted
+             * @param whitelistedCountries a non empty case insensitive list of country codes
+             *                             and/or isos to be whitelisted
              */
             public PhoneBuilder setWhitelistedCountries(
                     @NonNull List<String> whitelistedCountries) {
@@ -678,6 +678,12 @@ public final class AuthUI {
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
+
+                String message = "Invalid argument: The whitelist is %s. For this case, " +
+                        "don't use this method.";
+                Preconditions.checkNotNull(whitelistedCountries, String.format(message, "null"));
+                Preconditions.checkArgument(!whitelistedCountries.isEmpty(), String.format(message, "empty"));
+
                 addCountriesToBundle(whitelistedCountries, ExtraConstants.WHITELISTED_COUNTRIES);
                 return this;
             }
@@ -696,8 +702,8 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param blacklistedCountries a case insensitive list of country codes and/or isos to
-             *                             be blacklisted
+             * @param blacklistedCountries a non empty case insensitive list of country codes
+             *                             and/or isos to be blacklisted
              */
             public PhoneBuilder setBlacklistedCountries(
                     @NonNull List<String> blacklistedCountries) {
@@ -706,6 +712,12 @@ public final class AuthUI {
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 }
+
+                String message = "Invalid argument: The blacklist is %s. For this case, " +
+                        "don't use this method.";
+                Preconditions.checkNotNull(blacklistedCountries, String.format(message, "null"));
+                Preconditions.checkArgument(!blacklistedCountries.isEmpty(), String.format(message, "empty"));
+
                 addCountriesToBundle(blacklistedCountries, ExtraConstants.BLACKLISTED_COUNTRIES);
                 return this;
             }

@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -175,4 +176,32 @@ public class AuthUITest {
                 .build();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_passEmptyListForWhitelistedCountries_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setWhitelistedCountries(new ArrayList<String>())
+                .build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPhoneBuilder_passNullForWhitelistedCountries_expectNullPointerException() {
+        new IdpConfig.PhoneBuilder()
+                .setWhitelistedCountries(null)
+                .build();
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_passEmptyListForBlacklistedCountries_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(new ArrayList<String>())
+                .build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPhoneBuilder_passNullForBlacklistedCountries_expectNullPointerException() {
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(null)
+                .build();
+    }
 }
