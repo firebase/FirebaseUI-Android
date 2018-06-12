@@ -670,6 +670,8 @@ public final class AuthUI {
              *
              * @param whitelistedCountries a non empty case insensitive list of country codes
              *                             and/or isos to be whitelisted
+             * @throws IllegalArgumentException if an empty whitelist is provided.
+             * @throws NullPointerException if a null whitelist is provided.
              */
             public PhoneBuilder setWhitelistedCountries(
                     @NonNull List<String> whitelistedCountries) {
@@ -679,8 +681,8 @@ public final class AuthUI {
                                     "authentication.");
                 }
 
-                String message = "Invalid argument: The whitelist is %s. For this case, " +
-                        "don't use this method.";
+                String message = "Invalid argument: Only non-%s whitelists are valid. " +
+                        "To specify no whitelist, do not call this method.";
                 Preconditions.checkNotNull(whitelistedCountries, String.format(message, "null"));
                 Preconditions.checkArgument(!whitelistedCountries.isEmpty(), String.format(message, "empty"));
 
@@ -704,6 +706,8 @@ public final class AuthUI {
              *
              * @param blacklistedCountries a non empty case insensitive list of country codes
              *                             and/or isos to be blacklisted
+             * @throws IllegalArgumentException if an empty blacklist is provided.
+             * @throws NullPointerException if a null blacklist is provided.
              */
             public PhoneBuilder setBlacklistedCountries(
                     @NonNull List<String> blacklistedCountries) {
@@ -713,8 +717,8 @@ public final class AuthUI {
                                     "authentication.");
                 }
 
-                String message = "Invalid argument: The blacklist is %s. For this case, " +
-                        "don't use this method.";
+                String message = "Invalid argument: Only non-%s blacklists are valid. " +
+                        "To specify no blacklist, do not call this method.";
                 Preconditions.checkNotNull(blacklistedCountries, String.format(message, "null"));
                 Preconditions.checkArgument(!blacklistedCountries.isEmpty(), String.format(message, "empty"));
 
