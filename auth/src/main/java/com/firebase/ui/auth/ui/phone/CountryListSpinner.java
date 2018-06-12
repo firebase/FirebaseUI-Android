@@ -83,35 +83,8 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
         }
     }
 
-    private void getCountrySpinnerIsosFromParams(Bundle params) {
-        if (params != null) {
-            List<String> whitelistedCountries =
-                    params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRIES);
-            List<String> blacklistedCountries =
-                    params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRIES);
-
-            if (whitelistedCountries != null) {
-                mWhitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
-            } else if (blacklistedCountries != null) {
-                mBlacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
-            }
-        }
-    }
-
-    private Set<String> convertCodesToIsos(@NonNull List<String> codes) {
-        Set<String> isos = new HashSet<>();
-        for (String code : codes) {
-            if (PhoneNumberUtils.isValid(code)) {
-                isos.addAll(PhoneNumberUtils.getCountryIsosFromCountryCode(code));
-            } else {
-                isos.add(code);
-            }
-        }
-        return isos;
-    }
-
     private List<CountryInfo> getCountriesToDisplayInSpinner(Bundle params) {
-        getCountrySpinnerIsosFromParams(params);
+        initCountrySpinnerIsosFromParams(params);
 
         Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
         // We consider all countries to be whitelisted if there are no whitelisted
@@ -145,6 +118,31 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
         }
         Collections.sort(countryInfoList);
         return countryInfoList;
+    }
+
+    private void initCountrySpinnerIsosFromParams(@NonNull Bundle params) {
+        List<String> whitelistedCountries =
+                params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRIES);
+        List<String> blacklistedCountries =
+                params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRIES);
+
+        if (whitelistedCountries != null) {
+            mWhitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
+        } else if (blacklistedCountries != null) {
+            mBlacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
+        }
+    }
+
+    private Set<String> convertCodesToIsos(@NonNull List<String> codes) {
+        Set<String> isos = new HashSet<>();
+        for (String code : codes) {
+            if (PhoneNumberUtils.isValid(code)) {
+                isos.addAll(PhoneNumberUtils.getCountryIsosFromCountryCode(code));
+            } else {
+                isos.add(code);
+            }
+        }
+        return isos;
     }
 
     public void setCountriesToDisplay(List<CountryInfo> countries) {
@@ -216,7 +214,6 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
             }
         }
     }
-
 
     public CountryInfo getSelectedCountryInfo() {
         return mSelectedCountryInfo;

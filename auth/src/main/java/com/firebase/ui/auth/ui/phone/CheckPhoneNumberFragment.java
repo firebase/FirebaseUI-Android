@@ -97,7 +97,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         });
         mSubmitButton.setOnClickListener(this);
 
-        setupCountrySpinner();
         setupPrivacyDisclosures(view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
     }
 
@@ -121,6 +120,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
         mCalled = true;
 
+        setupCountrySpinner();
     }
 
     @Override
