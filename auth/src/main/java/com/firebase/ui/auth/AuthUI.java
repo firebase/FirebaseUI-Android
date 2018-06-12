@@ -737,16 +737,19 @@ public final class AuthUI {
                             "You can either whitelist or blacklist country codes for phone " +
                                     "authentication.");
                 } else if (whitelistedCountries != null) {
-                    validateCountries(whitelistedCountries);
-                    validateDefaultCountryInput(whitelistedCountries, true);
+                    validateInputs(whitelistedCountries, true);
 
                 } else if (blacklistedCountries != null) {
-                    validateCountries(blacklistedCountries);
-                    validateDefaultCountryInput(blacklistedCountries, false);
+                    validateInputs(blacklistedCountries, false);
                 }
             }
 
-            private void validateCountries(List<String> codes) {
+            private void validateInputs(List<String> countries, boolean whitelisted) {
+                validateCountryInput(countries);
+                validateDefaultCountryInput(countries, whitelisted);
+            }
+
+            private void validateCountryInput(List<String> codes) {
                 for (String code : codes) {
                     if (!PhoneNumberUtils.isValidIso(code) && !PhoneNumberUtils.isValid(code)) {
                         throw new IllegalArgumentException("Invalid input: You must provide a " +

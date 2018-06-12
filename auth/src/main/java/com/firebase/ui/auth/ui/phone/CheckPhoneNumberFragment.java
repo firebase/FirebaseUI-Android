@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -28,13 +27,7 @@ import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Displays country selector and phone number input form for users
@@ -54,8 +47,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private EditText mPhoneEditText;
     private TextView mSmsTermsText;
 
-    private Set<String> mWhitelistedCountryIsos;
-    private Set<String> mBlacklistedCountryIsos;
 
     public static CheckPhoneNumberFragment newInstance(Bundle params) {
         CheckPhoneNumberFragment fragment = new CheckPhoneNumberFragment();
@@ -152,7 +143,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
         String iso = number.getCountryIso();
 
-        if (PhoneNumber.isCountryValid(number) && isValidIsoBasedOnCountrySelectorConfig(iso)) {
+        if (PhoneNumber.isCountryValid(number) && mCountryListSpinner.isValidIso(iso)) {
             setCountryCode(number);
             onNext();
         }
@@ -197,29 +188,15 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     }
 
     private void setCountryCode(PhoneNumber number) {
-        String iso = number.getCountryIso();
-        if (isValidIsoBasedOnCountrySelectorConfig(iso)) {
-            mCountryListSpinner.setSelectedForCountry(
-                    new Locale("", iso), number.getCountryCode());
-        }
-    }
-
-    private boolean isValidIsoBasedOnCountrySelectorConfig(String iso) {
-        iso = iso.toUpperCase(Locale.getDefault());
-        return ((mWhitelistedCountryIsos == null && mBlacklistedCountryIsos == null)
-                || (mWhitelistedCountryIsos != null && mWhitelistedCountryIsos.contains(iso))
-                || (mBlacklistedCountryIsos != null && !mBlacklistedCountryIsos.contains(iso)));
+        mCountryListSpinner.setSelectedForCountry(
+                new Locale("", number.getCountryIso()), number.getCountryCode());
     }
 
     private void setupCountrySpinner() {
-        getCountrySpinnerIsosFromParams();
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
+        mCountryListSpinner.init(params);
 
-        List<CountryInfo> countryInfoList = getCountriesToDisplayInSpinner();
-        Collections.sort(countryInfoList);
-
-        mCountryListSpinner.setCountryInfoList(countryInfoList);
-
-        setDefaultCountryForSpinner(countryInfoList);
+        setDefaultCountryForSpinner();
 
         // Clear error when spinner is clicked on
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +207,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         });
     }
 
-    private void setDefaultCountryForSpinner(List<CountryInfo> countryInfoList) {
+    private void setDefaultCountryForSpinner() {
         // Check for phone
         // It is assumed that the phone number that are being wired in via Credential Selector
         // are e164 since we store it.
@@ -257,85 +234,9 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                     "",
                     countryIso,
                     String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
-        } else {
-            CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
-            if (isValidIsoBasedOnCountrySelectorConfig(countryInfo.getLocale().getCountry())) {
-                mCountryListSpinner.setSelectedForCountry(countryInfo.getCountryCode(),
-                        countryInfo.getLocale());
-            } else {
-                if (countryInfoList.iterator().hasNext()) {
-                    countryInfo = countryInfoList.iterator().next();
-                    mCountryListSpinner.setSelectedForCountry(countryInfo.getCountryCode(),
-                            countryInfo.getLocale());
-                }
-            }
-            if (getFlowParams().enableHints) {
-                mCheckPhoneHandler.fetchCredential();
-            }
+        } else if (getFlowParams().enableHints) {
+            mCheckPhoneHandler.fetchCredential();
         }
-    }
-
-    private void getCountrySpinnerIsosFromParams() {
-        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
-        if (params != null) {
-            List<String> whitelistedCountries =
-                    params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRIES);
-            List<String> blacklistedCountries =
-                    params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRIES);
-
-            if (whitelistedCountries != null) {
-                this.mWhitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
-            } else if (blacklistedCountries != null) {
-                this.mBlacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
-            }
-        }
-    }
-
-    private Set<String> convertCodesToIsos(@NonNull List<String> codes) {
-        Set<String> isos = new HashSet<>();
-        for (String code : codes) {
-            if (PhoneNumberUtils.isValid(code)) {
-                isos.addAll(PhoneNumberUtils.getCountryIsosFromCountryCode(code));
-            } else {
-                isos.add(code);
-            }
-        }
-        return isos;
-    }
-
-    public List<CountryInfo> getCountriesToDisplayInSpinner() {
-        Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
-        // We consider all countries to be whitelisted if there are no whitelisted
-        // or blacklisted countries given as input.
-        if (mWhitelistedCountryIsos == null && mBlacklistedCountryIsos == null) {
-            this.mWhitelistedCountryIsos = new HashSet<>(countryInfoMap.keySet());
-        }
-
-        List<CountryInfo> countryInfoList = new ArrayList<>();
-
-        // At this point either mWhitelistedCountryIsos or mBlacklistedCountryIsos is null.
-        // We assume no countries are to be excluded. Here, we correct this assumption based on the
-        // contents of either lists.
-        Set<String> excludedCountries = new HashSet<>();
-        if (mWhitelistedCountryIsos == null) {
-            // Exclude all countries in the mBlacklistedCountryIsos list.
-            excludedCountries.addAll(mBlacklistedCountryIsos);
-        } else {
-            // Exclude all countries that are not present in the mWhitelistedCountryIsos list.
-            excludedCountries.addAll(countryInfoMap.keySet());
-            excludedCountries.removeAll(mWhitelistedCountryIsos);
-        }
-
-        // Once we know which countries need to be excluded, we loop through the country isos,
-        // skipping those that have been excluded.
-        for (String countryIso : countryInfoMap.keySet()) {
-            if (!excludedCountries.contains(countryIso)) {
-                countryInfoList.add(new CountryInfo(new Locale("", countryIso),
-                        countryInfoMap.get(countryIso)));
-            }
-        }
-
-        return countryInfoList;
     }
 
     @Override
