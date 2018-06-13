@@ -48,7 +48,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(response));
+                        setResult(Resource.forSuccess(response.withResult(result)));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

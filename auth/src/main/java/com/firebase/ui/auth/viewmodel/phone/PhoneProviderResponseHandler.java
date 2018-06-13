@@ -36,7 +36,7 @@ public class PhoneProviderResponseHandler extends AuthViewModelBase<IdpResponse>
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            setResult(Resource.forSuccess(response));
+                            setResult(Resource.forSuccess(response.withResult(task.getResult())));
                         } else {
                             setResult(Resource.<IdpResponse>forFailure(task.getException()));
                         }

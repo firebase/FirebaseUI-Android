@@ -88,7 +88,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase<IdpResponse> {
                             return;
                         }
 
-                        setResult(Resource.forSuccess(outputResponse));
+                        setResult(Resource.forSuccess(outputResponse.withResult(task.getResult())));
                     }
                 })
                 .addOnFailureListener(
