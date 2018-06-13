@@ -10,7 +10,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,7 +25,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * SmartLock.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackPasswordHandler extends AuthViewModelBase<IdpResponse> {
+public class WelcomeBackPasswordHandler extends SignInViewModelBase {
     private static final String TAG = "WBPasswordHandler";
 
     private String mPendingPassword;
@@ -88,7 +88,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase<IdpResponse> {
                             return;
                         }
 
-                        setResult(Resource.forSuccess(outputResponse.withResult(task.getResult())));
+                        handleSuccess(outputResponse, task.getResult());
                     }
                 })
                 .addOnFailureListener(

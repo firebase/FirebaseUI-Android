@@ -9,7 +9,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
     private AuthCredential mRequestedSignInCredential;
 
     public LinkingSocialProviderResponseHandler(Application application) {
@@ -73,8 +73,7 @@ public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpR
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                setResult(Resource.forSuccess(
-                                        response.withResult(task.getResult())));
+                                handleSuccess(response, task.getResult());
                             } else {
                                 setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             }
@@ -87,7 +86,7 @@ public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpR
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             // I'm not sure why we ignore failures here, but this mirrors previous
                             // behavior.
-                            setResult(Resource.forSuccess(response.withResult(task.getResult())));
+                            handleSuccess(response, task.getResult());
                         }
                     });
         }
