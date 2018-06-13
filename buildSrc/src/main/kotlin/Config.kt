@@ -67,9 +67,13 @@ object Config {
         }
 
         object Misc {
+            private const val retrofitVersion = "2.4.0"
             private const val leakCanaryVersion = "1.5.4"
             private const val glideVersion = "4.7.1"
             private const val butterVersion = "8.8.1"
+
+            const val retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
+            const val retrofitGson = "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
             const val leakCanaryNoop =
