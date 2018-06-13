@@ -982,7 +982,6 @@ public final class AuthUI {
              * Specifies the additional permissions to be requested. Available permissions can be
              * found <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
              */
-            @SuppressWarnings({"deprecation", "NullableProblems"}) // For backcompat
             @NonNull
             public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
                 getParams().putStringArrayList(

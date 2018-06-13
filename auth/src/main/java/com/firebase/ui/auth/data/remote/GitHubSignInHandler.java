@@ -19,8 +19,8 @@ import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.GitHubLoginActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.gson.JsonObject;
 

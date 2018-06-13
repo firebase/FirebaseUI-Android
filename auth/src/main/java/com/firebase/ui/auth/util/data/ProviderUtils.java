@@ -82,6 +82,8 @@ public final class ProviderUtils {
                 return FacebookAuthProvider.PROVIDER_ID;
             case TwitterAuthProvider.TWITTER_SIGN_IN_METHOD:
                 return TwitterAuthProvider.PROVIDER_ID;
+            case GithubAuthProvider.GITHUB_SIGN_IN_METHOD:
+                return GithubAuthProvider.PROVIDER_ID;
             case PhoneAuthProvider.PHONE_SIGN_IN_METHOD:
                 return PhoneAuthProvider.PROVIDER_ID;
             case EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD:

@@ -77,4 +77,16 @@ public class GitHubLoginActivity extends HelperActivityBase {
                 .setAction(REFRESH_ACTION)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
     }
+
+    @Override
+    public void showProgress(int message) {
+        throw new UnsupportedOperationException(
+                "GitHubLoginActivity is just a wrapper around Chrome Custom Tabs");
+    }
+
+    @Override
+    public void hideProgress() {
+        throw new UnsupportedOperationException(
+                "GitHubLoginActivity is just a wrapper around Chrome Custom Tabs");
+    }
 }
