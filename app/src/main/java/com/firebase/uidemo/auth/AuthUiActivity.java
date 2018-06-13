@@ -181,8 +181,8 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setTheme(getSelectedTheme())
                         .setLogo(getSelectedLogo())
                         .setAvailableProviders(getSelectedProviders())
-                        .setTosUrl(getSelectedTosUrl())
-                        .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
+                        .setTosAndPrivacyPolicyUrls(getSelectedTosUrl(),
+                                getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                                 mEnableHintSelector.isChecked())
                         .build(),

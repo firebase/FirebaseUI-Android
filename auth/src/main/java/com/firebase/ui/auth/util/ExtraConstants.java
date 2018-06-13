@@ -38,6 +38,9 @@ public final class ExtraConstants {
     public static final String COUNTRY_ISO = "extra_country_iso";
     public static final String NATIONAL_NUMBER = "extra_national_number";
 
+    public static final String WHITELISTED_COUNTRIES = "whitelisted_countries";
+    public static final String BLACKLISTED_COUNTRIES = "blacklisted_countries";
+
     private ExtraConstants() {
         throw new AssertionError("No instance for you!");
     }

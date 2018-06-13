@@ -20,32 +20,32 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthUITest {
+    private AuthUI mAuthUi;
+
     @Before
     public void setUp() {
         TestHelper.initialize();
-        AuthUI.sDefaultAuth = mock(FirebaseAuth.class);
+        mAuthUi = AuthUI.getInstance(TestHelper.MOCK_APP);
     }
 
     @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
-        FlowParameters flowParameters = AuthUI
-                .getInstance()
+        FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
@@ -56,7 +56,7 @@ public class AuthUITest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
-        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
         startIntent.setAvailableProviders(Arrays.asList(
                 new IdpConfig.EmailBuilder().build(),
                 new IdpConfig.EmailBuilder().build()));
@@ -64,21 +64,142 @@ public class AuthUITest {
 
     @Test
     public void testCreatingStartIntent() {
-        FlowParameters flowParameters = AuthUI.getInstance()
+        FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
                         new IdpConfig.EmailBuilder().build(),
                         new IdpConfig.GoogleBuilder().build(),
                         new IdpConfig.FacebookBuilder().build()))
-                .setTosUrl(TestConstants.TOS_URL)
-                .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
+                .setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, TestConstants.PRIVACY_URL)
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
         assertEquals(3, flowParameters.providerInfo.size());
-        assertEquals(FirebaseApp.getInstance().getName(), flowParameters.appName);
+        assertEquals(TestHelper.MOCK_APP.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCreatingStartIntent_withNullTos_expectEnforcesNonNullTosUrl() {
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
+        startIntent.setTosAndPrivacyPolicyUrls(null, TestConstants.PRIVACY_URL);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCreatingStartIntent_withNullPp_expectEnforcesNonNullPpUrl() {
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
+        startIntent.setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_withBlacklistedDefaultNumberCode_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setBlacklistedCountries(Arrays.asList("+1"))
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_withBlacklistedDefaultIso_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setBlacklistedCountries(Arrays.asList("us"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withWhitelistedDefaultIso_expectSuccess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setWhitelistedCountries(Arrays.asList("us"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withWhitelistedDefaultNumberCode_expectSuccess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setWhitelistedCountries(Arrays.asList("+1"))
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_whiteInvalidDefaultNumberCode_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setWhitelistedCountries(Arrays.asList("gr"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withValidDefaultNumberCode_expectSuccess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setWhitelistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withBlacklistedCountryWithSameCountryCode_expectSucess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("+1123456789")
+                .setBlacklistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_withInvalidDefaultIso_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setWhitelistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test
+    public void testPhoneBuilder_withValidDefaultIso_expectSucess() {
+        new IdpConfig.PhoneBuilder()
+                .setDefaultNumber("us", "123456789")
+                .setBlacklistedCountries(Arrays.asList("ca"))
+                .build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testPhoneBuilder_setBothBlacklistedAndWhitelistedCountries_expectIllegalStateException() {
+        List<String> countries = Arrays.asList("ca");
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(countries)
+                .setWhitelistedCountries(countries)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_passEmptyListForWhitelistedCountries_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setWhitelistedCountries(new ArrayList<String>())
+                .build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPhoneBuilder_passNullForWhitelistedCountries_expectNullPointerException() {
+        new IdpConfig.PhoneBuilder()
+                .setWhitelistedCountries(null)
+                .build();
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPhoneBuilder_passEmptyListForBlacklistedCountries_expectIllegalArgumentException() {
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(new ArrayList<String>())
+                .build();
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPhoneBuilder_passNullForBlacklistedCountries_expectNullPointerException() {
+        new IdpConfig.PhoneBuilder()
+                .setBlacklistedCountries(null)
+                .build();
     }
 }

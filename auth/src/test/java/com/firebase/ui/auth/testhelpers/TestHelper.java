@@ -14,49 +14,45 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
-import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-import org.junit.Assert;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
-import org.robolectric.shadows.ShadowActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-public class TestHelper {
-    private static final String APPLICATION_ID = "testAppId";
-    private static final String API_KEY = "fakeKey";
+public final class TestHelper {
+    public static final FirebaseApp MOCK_APP;
+
+    static {
+        FirebaseApp app = mock(FirebaseApp.class);
+        when(app.get(eq(FirebaseAuth.class))).thenReturn(mock(FirebaseAuth.class));
+        when(app.getApplicationContext()).thenReturn(RuntimeEnvironment.application);
+        when(app.getName()).thenReturn(FirebaseApp.DEFAULT_APP_NAME);
+        MOCK_APP = app;
+    }
 
     public static void initialize() {
         spyContextAndResources();
@@ -73,18 +69,13 @@ public class TestHelper {
         when(RuntimeEnvironment.application.getResources()).thenReturn(spiedResources);
     }
 
-    private static FirebaseApp initializeApp(Context context) {
-        try {
-            return FirebaseApp.initializeApp(
-                    context,
-                    new FirebaseOptions.Builder()
-                            .setApiKey(API_KEY)
-                            .setApplicationId(APPLICATION_ID)
-                            .build(),
-                    FirebaseApp.DEFAULT_APP_NAME);
-        } catch (IllegalStateException e) {
-            return FirebaseApp.getInstance(FirebaseApp.DEFAULT_APP_NAME);
-        }
+    private static void initializeApp(Context context) {
+        if (!FirebaseApp.getApps(context).isEmpty()) return;
+
+        FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
+                .setApiKey("fake")
+                .setApplicationId("fake")
+                .build());
     }
 
     private static void initializeProviders() {
@@ -144,36 +135,4 @@ public class TestHelper {
                 true);
     }
 
-    public static void verifyCredentialSaveStarted(@NonNull  Activity activity,
-                                                   @Nullable String providerId,
-                                                   @Nullable String email,
-                                                   @Nullable String password,
-                                                   @Nullable String phoneNumber) {
-
-        ShadowActivity shadowActivity = Shadows.shadowOf(activity);
-        Intent startedIntent = shadowActivity.getNextStartedActivity();
-
-        // Verify that CredentialSaveActivity is next up
-        Assert.assertEquals(startedIntent.getComponent().getClassName(),
-                CredentialSaveActivity.class.getName());
-
-        // Check the credential passed
-        Credential credential = startedIntent.getParcelableExtra(ExtraConstants.CREDENTIAL);
-
-        // Check the password
-        assertEquals(credential.getPassword(), password);
-
-        // Non-password credentials have a provider ID
-        if (TextUtils.isEmpty(password)) {
-            assertEquals(credential.getAccountType(),
-                    ProviderUtils.providerIdToAccountType(providerId));
-        }
-
-        // ID can either be email or phone number
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            assertEquals(credential.getId(), phoneNumber);
-        } else {
-            assertEquals(credential.getId(), email);
-        }
-    }
 }

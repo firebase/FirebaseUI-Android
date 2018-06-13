@@ -20,9 +20,8 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.R;
 
-@SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class AppCompatBase extends HelperActivityBase {
+public abstract class AppCompatBase extends HelperActivityBase {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
