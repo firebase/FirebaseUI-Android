@@ -42,7 +42,7 @@ public final class FakeAuthResult implements AuthResult {
 
     @Override
     public AdditionalUserInfo getAdditionalUserInfo() {
-        return null;
+        return FakeAdditionalUserInfo.INSTANCE;
     }
 
     @Override
