@@ -23,6 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/container"
+        app:layout_constraintHeight_percent="0.25"
         tools:ignore="ContentDescription" /> <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
 
     <ScrollView
@@ -32,8 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
-        app:layout_constraintVertical_bias="0.7">
+        app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp">
 
         <LinearLayout
             android:id="@+id/btn_holder"
