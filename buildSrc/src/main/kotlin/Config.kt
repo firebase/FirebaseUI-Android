@@ -35,7 +35,7 @@ object Config {
             const val cardView = "com.android.support:cardview-v7:$version"
             const val customTabs = "com.android.support:customtabs:$version"
 
-            const val constraint = "com.android.support.constraint:constraint-layout:1.1.1"
+            const val constraint = "com.android.support.constraint:constraint-layout:1.1.2"
         }
 
         object Arch {
