@@ -20,8 +20,17 @@ import java.util.UUID;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AnonymousUpgradeUtils {
 
-    private static FirebaseAppManager mScratchAppManager;
+    private static String firebaseAppName = "ScratchApp";
 
+    public static synchronized FirebaseApp getFirebaseApp(Context context) {
+        try {
+            FirebaseApp scratchApp = FirebaseApp.getInstance(firebaseAppName);
+            return scratchApp;
+        } catch (IllegalStateException e){
+            FirebaseApp app = FirebaseApp.getInstance();
+            return FirebaseApp.initializeApp(context, app.getOptions(), firebaseAppName);
+        }
+    }
 
     public static Task<AuthResult> createOrLinkUserWithEmailAndPassword(@NonNull FirebaseAuth auth,
                                                                         @NonNull FlowParameters flowParameters,
@@ -42,14 +51,11 @@ public class AnonymousUpgradeUtils {
 
     @NonNull
     public static Task<AuthResult> validateCredential(AuthCredential credential) {
-        if (mScratchAppManager == null) {
-            mScratchAppManager = new FirebaseAppManager();
-        }
         // Use a different FirebaseApp so that the anonymous user state is not lost in our
         // original FirebaseAuth instance.
         FirebaseApp app = FirebaseApp.getInstance();
         FirebaseAuth scratchAuth = FirebaseAuth
-                .getInstance(mScratchAppManager.getFirebaseApp(app.getApplicationContext()));
+                .getInstance(getFirebaseApp(app.getApplicationContext()));
         return scratchAuth.signInWithCredential(credential);
     }
 
