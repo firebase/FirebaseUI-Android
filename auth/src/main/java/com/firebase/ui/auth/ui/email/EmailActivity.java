@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -42,7 +43,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener {
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener, RegisterEmailFragment.AnonymousUpgradeListener {
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -125,6 +126,13 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         } else {
             emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
+    }
+
+    @Override
+    public void onMergeFailure(IdpResponse response) {
+        Intent data = new Intent();
+        data.putExtra(ExtraConstants.IDP_RESPONSE, response);
+        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, data);
     }
 
     private void setSlideAnimation() {

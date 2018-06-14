@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -44,7 +45,8 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readInt() == 1,
-                    (FirebaseUiException) in.readSerializable()
+                    (FirebaseUiException) in.readSerializable(),
+                    in.<AuthCredential>readParcelable(AuthCredential.class.getClassLoader())
             );
         }
 
@@ -55,6 +57,7 @@ public class IdpResponse implements Parcelable {
     };
 
     private final User mUser;
+    private final AuthCredential mPendingCredential;
 
     private final String mToken;
     private final String mSecret;
@@ -63,7 +66,7 @@ public class IdpResponse implements Parcelable {
     private final FirebaseUiException mException;
 
     private IdpResponse(@NonNull FirebaseUiException e) {
-        this(null, null, null, false, e);
+        this(null, null, null, false, e, null);
     }
 
     private IdpResponse(
@@ -71,7 +74,11 @@ public class IdpResponse implements Parcelable {
             @Nullable String token,
             @Nullable String secret,
             boolean isNewUser) {
-        this(user, token, secret, isNewUser, null);
+        this(user, token, secret, isNewUser, null, null);
+    }
+
+    private IdpResponse(AuthCredential credential, FirebaseUiException e) {
+        this(null, null, null, false, e, credential);
     }
 
     private IdpResponse(
@@ -79,12 +86,14 @@ public class IdpResponse implements Parcelable {
             String token,
             String secret,
             boolean isNewUser,
-            FirebaseUiException e) {
+            FirebaseUiException e,
+            AuthCredential credential) {
         mUser = user;
         mToken = token;
         mSecret = secret;
         mIsNewUser = isNewUser;
         mException = e;
+        mPendingCredential = credential;
     }
 
     /**
@@ -207,6 +216,11 @@ public class IdpResponse implements Parcelable {
         return mException;
     }
 
+    @Nullable
+    public AuthCredential getCredentialForLinking() {
+        return mPendingCredential;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -218,7 +232,6 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mToken);
         dest.writeString(mSecret);
         dest.writeInt(mIsNewUser ? 1 : 0);
-
         ObjectOutputStream oos = null;
         try {
             oos = new ObjectOutputStream(new ByteArrayOutputStream());
@@ -241,6 +254,7 @@ public class IdpResponse implements Parcelable {
                 } catch (IOException ignored) {}
             }
         }
+        dest.writeParcelable(mPendingCredential, 0);
     }
 
     @Override
@@ -281,6 +295,7 @@ public class IdpResponse implements Parcelable {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
         private final User mUser;
+        private final AuthCredential mPendingCredential;
 
         private String mToken;
         private String mSecret;
@@ -288,6 +303,12 @@ public class IdpResponse implements Parcelable {
 
         public Builder(@NonNull User user) {
             mUser = user;
+            mPendingCredential = null;
+        }
+
+        public Builder(@NonNull AuthCredential pendingCredential) {
+            mUser = null;
+            mPendingCredential = pendingCredential;
         }
 
         public Builder(@NonNull IdpResponse response) {
@@ -295,6 +316,7 @@ public class IdpResponse implements Parcelable {
             mToken = response.mToken;
             mSecret = response.mSecret;
             mIsNewUser = response.mIsNewUser;
+            mPendingCredential = response.mPendingCredential;
         }
 
         public Builder setNewUser(boolean newUser) {
@@ -305,7 +327,7 @@ public class IdpResponse implements Parcelable {
         public Builder setToken(String token) {
             mToken = token;
             return this;
-        }
+    }
 
         public Builder setSecret(String secret) {
             mSecret = secret;
@@ -313,21 +335,24 @@ public class IdpResponse implements Parcelable {
         }
 
         public IdpResponse build() {
-            String providerId = mUser.getProviderId();
-            if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
-                throw new IllegalStateException("Unknown provider: " + providerId);
+            if (mPendingCredential != null) {
+                return new IdpResponse(mPendingCredential, new FirebaseUiException(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT));
+            } else {
+                String providerId = mUser.getProviderId();
+                if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
+                    throw new IllegalStateException("Unknown provider: " + providerId);
+                }
+                if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
+                    throw new IllegalStateException(
+                            "Token cannot be null when using a non-email provider.");
+                }
+                if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                        && TextUtils.isEmpty(mSecret)) {
+                    throw new IllegalStateException(
+                            "Secret cannot be null when using the Twitter provider.");
+                }
+                return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
             }
-            if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
-                throw new IllegalStateException(
-                        "Token cannot be null when using a non-email provider.");
-            }
-            if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
-                    && TextUtils.isEmpty(mSecret)) {
-                throw new IllegalStateException(
-                        "Secret cannot be null when using the Twitter provider.");
-            }
-
-            return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
         }
     }
 }

@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
@@ -182,7 +184,13 @@ public class SignInKickstarter extends SignInViewModelBase {
                 } else if (response.isSuccessful()) {
                     setResult(Resource.forSuccess(response));
                 } else {
-                    setResult(Resource.<IdpResponse>forFailure(response.getError()));
+                    if (response.getError().getErrorCode() ==
+                            ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                        setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
+                                ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response)));
+                    } else {
+                        setResult(Resource.<IdpResponse>forFailure(response.getError()));
+                    }
                 }
         }
     }

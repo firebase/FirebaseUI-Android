@@ -41,6 +41,7 @@ import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -155,17 +156,25 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @OnClick(R.id.sign_in)
     public void signIn(View view) {
-        startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setTheme(getSelectedTheme())
-                        .setLogo(getSelectedLogo())
-                        .setAvailableProviders(getSelectedProviders())
-                        .setTosAndPrivacyPolicyUrls(getSelectedTosUrl(),
-                                getSelectedPrivacyPolicyUrl())
-                        .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
-                                mEnableHintSelector.isChecked())
-                        .build(),
-                RC_SIGN_IN);
+        FirebaseAuth.getInstance()
+                .signInAnonymously()
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        startActivityForResult(
+                                AuthUI.getInstance().createSignInIntentBuilder()
+                                        .setTheme(getSelectedTheme())
+                                        .setLogo(getSelectedLogo())
+                                        .setAvailableProviders(getSelectedProviders())
+                                        .setTosAndPrivacyPolicyUrls(getSelectedTosUrl(),
+                                                getSelectedPrivacyPolicyUrl())
+                                        .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
+                                                mEnableHintSelector.isChecked())
+                                        .setAutoUpgradeAnonymousUsers()
+                                        .build(),
+                                RC_SIGN_IN);
+                    }
+                });
     }
 
     @OnClick(R.id.sign_in_silent)
@@ -194,15 +203,15 @@ public class AuthUiActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            startSignedInActivity(null);
-            finish();
-        }
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        if (auth.getCurrentUser() != null) {
+//            startSignedInActivity(null);
+//            finish();
+//        }
     }
 
     private void handleSignInResponse(int resultCode, Intent data) {
-        IdpResponse response = IdpResponse.fromResultIntent(data);
+        final IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
         if (resultCode == RESULT_OK) {
@@ -218,6 +227,25 @@ public class AuthUiActivity extends AppCompatActivity {
 
             if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
+                return;
+            }
+
+            if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                AuthCredential credential = response.getCredentialForLinking();
+                // take data from anon user
+                // log in with credential
+                // update user
+                FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    startSignedInActivity(response);
+                                } else {
+                                    // cry
+                                }
+                            }
+                        });
                 return;
             }
 

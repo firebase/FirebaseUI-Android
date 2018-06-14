@@ -19,7 +19,8 @@ public final class ErrorCodes {
                     NO_NETWORK,
                     PLAY_SERVICES_UPDATE_CANCELLED,
                     DEVELOPER_ERROR,
-                    PROVIDER_ERROR
+                    PROVIDER_ERROR,
+                    ANONYMOUS_UPGRADE_MERGE_CONFLICT
             })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {}
@@ -49,6 +50,11 @@ public final class ErrorCodes {
      */
     public static final int PROVIDER_ERROR = 4;
 
+    /**
+     * Anonymous account linking failed.
+     */
+    public static final int ANONYMOUS_UPGRADE_MERGE_CONFLICT = 5;
+
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
     }
@@ -67,6 +73,8 @@ public final class ErrorCodes {
                 return "Developer error";
             case PROVIDER_ERROR:
                 return "Provider error";
+            case ANONYMOUS_UPGRADE_MERGE_CONFLICT:
+                return "Merge conflict";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }

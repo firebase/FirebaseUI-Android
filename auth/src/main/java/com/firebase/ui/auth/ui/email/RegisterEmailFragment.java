@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -61,6 +62,18 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     private User mUser;
 
+    /**
+     * Interface to be implemented by Activities hosting this Fragment.
+     */
+    interface AnonymousUpgradeListener {
+
+        /**
+         * Email belongs to an existing user - failed to merge anonymous user.
+         */
+        void onMergeFailure(IdpResponse response);
+
+    }
+
     public static RegisterEmailFragment newInstance(User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
         Bundle args = new Bundle();
@@ -98,6 +111,9 @@ public class RegisterEmailFragment extends FragmentBase implements
                             R.integer.fui_min_password_length));
                 } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     mEmailInput.setError(getString(R.string.fui_invalid_email_address));
+                } else if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+                    ((AnonymousUpgradeListener) getActivity()).onMergeFailure(response);
                 } else {
                     // General error message, this branch should not be invoked but
                     // covers future API changes
