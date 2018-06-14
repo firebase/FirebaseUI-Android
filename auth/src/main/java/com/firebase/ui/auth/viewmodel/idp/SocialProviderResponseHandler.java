@@ -18,8 +18,8 @@ import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -27,7 +27,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+public class SocialProviderResponseHandler extends SignInViewModelBase {
     public SocialProviderResponseHandler(Application application) {
         super(application);
     }
@@ -48,7 +48,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(response));
+                        handleSuccess(response, result);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
