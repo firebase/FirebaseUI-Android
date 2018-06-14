@@ -18,7 +18,6 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -71,10 +70,10 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
         if (AnonymousUpgradeUtils.canUpgradeAnonymous(getAuth(), getArguments())) {
             final AuthCredential credToValidate = EmailAuthProvider.getCredential(email, password);
 
-            AnonymousUpgradeUtils.validateCredential(FirebaseApp.getInstance(), credToValidate)
-                    .continueWith(new Continuation<AuthResult, Void>() {
+            AnonymousUpgradeUtils.validateCredential(credToValidate).addOnCompleteListener(
+                    new OnCompleteListener<AuthResult>() {
                         @Override
-                        public Void then(@NonNull Task<AuthResult> task) throws Exception {
+                        public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 IdpResponse mergeResponse = new IdpResponse.Builder(credToValidate)
                                         .build();
@@ -84,9 +83,9 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
                             } else {
                                 setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             }
-                            return null;
                         }
                     });
+
         } else {
             // Kick off the flow including signing in, linking accounts, and saving with SmartLock
             getAuth().signInWithEmailAndPassword(email, password)

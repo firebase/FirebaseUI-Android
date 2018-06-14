@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     private PasswordFieldValidator mPasswordFieldValidator;
     private BaseValidator mNameValidator;
 
+    private AnonymousUpgradeListener mListener;
     private User mUser;
 
     /**
@@ -113,7 +115,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                     mEmailInput.setError(getString(R.string.fui_invalid_email_address));
                 } else if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
-                    ((AnonymousUpgradeListener) getActivity()).onMergeFailure(response);
+                    mListener.onMergeFailure(response);
                 } else {
                     // General error message, this branch should not be invoked but
                     // covers future API changes
@@ -214,6 +216,9 @@ public class RegisterEmailFragment extends FragmentBase implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         requireActivity().setTitle(R.string.fui_title_register_email);
+        FragmentActivity activity = getActivity();
+        mListener = (AnonymousUpgradeListener) activity;
+
     }
 
     @Override

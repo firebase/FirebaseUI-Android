@@ -1,10 +1,10 @@
 package com.firebase.ui.auth.util.data;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
@@ -20,7 +20,10 @@ import java.util.UUID;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AnonymousUpgradeUtils {
 
-    public static Task<AuthResult> createUserWithEmailAndPasswordOrLink(@NonNull FirebaseAuth auth,
+    private static FirebaseAppManager mScratchAppManager;
+
+
+    public static Task<AuthResult> createOrLinkUserWithEmailAndPassword(@NonNull FirebaseAuth auth,
                                                                         @NonNull FlowParameters flowParameters,
                                                                         @NonNull String email,
                                                                         @NonNull String password) {
@@ -38,13 +41,17 @@ public class AnonymousUpgradeUtils {
     }
 
     @NonNull
-    public static Task<AuthResult> validateCredential(FirebaseApp app, AuthCredential credential) {
-        // Create a new FirebaseApp so that the anonymous user state is not lost in our
+    public static Task<AuthResult> validateCredential(AuthCredential credential) {
+        if (mScratchAppManager == null) {
+            mScratchAppManager = new FirebaseAppManager();
+        }
+        // Use a different FirebaseApp so that the anonymous user state is not lost in our
         // original FirebaseAuth instance.
-        String randomName = UUID.randomUUID().toString();
-        FirebaseApp scratchApp = FirebaseApp.initializeApp(
-                app.getApplicationContext(), app.getOptions(), randomName);
-        FirebaseAuth scratchAuth = FirebaseAuth.getInstance(scratchApp);
+        FirebaseApp app = FirebaseApp.getInstance();
+        FirebaseAuth scratchAuth = FirebaseAuth
+                .getInstance(mScratchAppManager.getFirebaseApp(app.getApplicationContext()));
         return scratchAuth.signInWithCredential(credential);
     }
+
+
 }

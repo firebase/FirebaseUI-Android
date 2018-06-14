@@ -45,7 +45,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
         setResult(Resource.<IdpResponse>forLoading());
 
         final String email = response.getEmail();
-        AnonymousUpgradeUtils.createUserWithEmailAndPasswordOrLink(getAuth(),
+        AnonymousUpgradeUtils.createOrLinkUserWithEmailAndPassword(getAuth(),
                 getArguments(),
                 email,
                 password)

@@ -278,6 +278,7 @@ public class IdpResponse implements Parcelable {
         result = 31 * result + (mSecret == null ? 0 : mSecret.hashCode());
         result = 31 * result + (mIsNewUser ? 1 : 0);
         result = 31 * result + (mException == null ? 0 : mException.hashCode());
+        result = 31 * result + (mPendingCredential == null ? 0 : mPendingCredential.getProvider().hashCode());
         return result;
     }
 
@@ -289,6 +290,7 @@ public class IdpResponse implements Parcelable {
                 ", mSecret='" + mSecret + '\'' +
                 ", mIsNewUser='" + mIsNewUser + '\'' +
                 ", mException=" + mException +
+                ", mPendingCredential=" + mPendingCredential +
                 '}';
     }
 
@@ -327,7 +329,7 @@ public class IdpResponse implements Parcelable {
         public Builder setToken(String token) {
             mToken = token;
             return this;
-    }
+        }
 
         public Builder setSecret(String secret) {
             mSecret = secret;
