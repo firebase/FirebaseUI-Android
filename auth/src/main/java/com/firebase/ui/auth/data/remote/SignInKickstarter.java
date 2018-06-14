@@ -22,8 +22,8 @@ import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
@@ -47,7 +47,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
+public class SignInKickstarter extends SignInViewModelBase {
     public SignInKickstarter(Application application) {
         super(application);
     }
@@ -209,7 +209,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult result) {
-                            setResult(Resource.forSuccess(response));
+                            handleSuccess(response, result);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

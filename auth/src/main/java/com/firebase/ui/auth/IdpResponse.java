@@ -24,6 +24,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -42,6 +43,7 @@ public class IdpResponse implements Parcelable {
                     in.<User>readParcelable(User.class.getClassLoader()),
                     in.readString(),
                     in.readString(),
+                    in.readInt() == 1,
                     (FirebaseUiException) in.readSerializable()
             );
         }
@@ -56,28 +58,32 @@ public class IdpResponse implements Parcelable {
 
     private final String mToken;
     private final String mSecret;
+    private final boolean mIsNewUser;
 
     private final FirebaseUiException mException;
 
     private IdpResponse(@NonNull FirebaseUiException e) {
-        this(null, null, null, e);
+        this(null, null, null, false, e);
     }
 
     private IdpResponse(
             @NonNull User user,
             @Nullable String token,
-            @Nullable String secret) {
-        this(user, token, secret, null);
+            @Nullable String secret,
+            boolean isNewUser) {
+        this(user, token, secret, isNewUser, null);
     }
 
     private IdpResponse(
             User user,
             String token,
             String secret,
+            boolean isNewUser,
             FirebaseUiException e) {
         mUser = user;
         mToken = token;
         mSecret = secret;
+        mIsNewUser = isNewUser;
         mException = e;
     }
 
@@ -94,6 +100,12 @@ public class IdpResponse implements Parcelable {
         } else {
             return null;
         }
+    }
+
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public IdpResponse withResult(AuthResult result) {
+        return mutate().setNewUser(result.getAdditionalUserInfo().isNewUser()).build();
     }
 
     @NonNull
@@ -120,6 +132,15 @@ public class IdpResponse implements Parcelable {
         return new Intent().putExtra(ExtraConstants.IDP_RESPONSE, this);
     }
 
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public Builder mutate() {
+        if (!isSuccessful()) {
+            throw new IllegalStateException("Cannot mutate an unsuccessful response.");
+        }
+        return new Builder(this);
+    }
+
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public boolean isSuccessful() {
         return mException == null;
@@ -137,6 +158,13 @@ public class IdpResponse implements Parcelable {
     @AuthUI.SupportedProvider
     public String getProviderType() {
         return mUser.getProviderId();
+    }
+
+    /**
+     * Returns true if this user has just signed up, false otherwise.
+     */
+    public boolean isNewUser() {
+        return mIsNewUser;
     }
 
     /**
@@ -189,6 +217,7 @@ public class IdpResponse implements Parcelable {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
         dest.writeString(mSecret);
+        dest.writeInt(mIsNewUser ? 1 : 0);
 
         ObjectOutputStream oos = null;
         try {
@@ -224,6 +253,7 @@ public class IdpResponse implements Parcelable {
         return (mUser == null ? response.mUser == null : mUser.equals(response.mUser))
                 && (mToken == null ? response.mToken == null : mToken.equals(response.mToken))
                 && (mSecret == null ? response.mSecret == null : mSecret.equals(response.mSecret))
+                && (mIsNewUser == response.mIsNewUser)
                 && (mException == null ? response.mException == null : mException.equals(response.mException));
     }
 
@@ -232,6 +262,7 @@ public class IdpResponse implements Parcelable {
         int result = mUser == null ? 0 : mUser.hashCode();
         result = 31 * result + (mToken == null ? 0 : mToken.hashCode());
         result = 31 * result + (mSecret == null ? 0 : mSecret.hashCode());
+        result = 31 * result + (mIsNewUser ? 1 : 0);
         result = 31 * result + (mException == null ? 0 : mException.hashCode());
         return result;
     }
@@ -242,6 +273,7 @@ public class IdpResponse implements Parcelable {
                 "mUser=" + mUser +
                 ", mToken='" + mToken + '\'' +
                 ", mSecret='" + mSecret + '\'' +
+                ", mIsNewUser='" + mIsNewUser + '\'' +
                 ", mException=" + mException +
                 '}';
     }
@@ -252,9 +284,22 @@ public class IdpResponse implements Parcelable {
 
         private String mToken;
         private String mSecret;
+        private boolean mIsNewUser;
 
         public Builder(@NonNull User user) {
             mUser = user;
+        }
+
+        public Builder(@NonNull IdpResponse response) {
+            mUser = response.mUser;
+            mToken = response.mToken;
+            mSecret = response.mSecret;
+            mIsNewUser = response.mIsNewUser;
+        }
+
+        public Builder setNewUser(boolean newUser) {
+            mIsNewUser = newUser;
+            return this;
         }
 
         public Builder setToken(String token) {
@@ -282,7 +327,7 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mUser, mToken, mSecret);
+            return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
         }
     }
 }

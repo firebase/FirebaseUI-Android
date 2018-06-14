@@ -9,7 +9,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
     private AuthCredential mRequestedSignInCredential;
 
     public LinkingSocialProviderResponseHandler(Application application) {
@@ -45,31 +45,35 @@ public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpR
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser == null) {
             getAuth().signInWithCredential(credential)
-                    .continueWithTask(new Continuation<AuthResult, Task<Void>>() {
+                    .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
                         @Override
-                        public Task<Void> then(@NonNull Task<AuthResult> task) {
-                            AuthResult result = task.getResult();
+                        public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
+                            final AuthResult result = task.getResult();
                             if (mRequestedSignInCredential == null) {
-                                return Tasks.forResult(null);
+                                return Tasks.forResult(result);
                             } else {
                                 return result.getUser()
                                         .linkWithCredential(mRequestedSignInCredential)
-                                        .continueWith(new Continuation<AuthResult, Void>() {
+                                        .continueWith(new Continuation<AuthResult, AuthResult>() {
                                             @Override
-                                            public Void then(@NonNull Task<AuthResult> task) {
-                                                // Since we've already signed in, it's too late to
-                                                // backtrack so we just ignore any errors.
-                                                return null;
+                                            public AuthResult then(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) {
+                                                    return task.getResult();
+                                                } else {
+                                                    // Since we've already signed in, it's too late
+                                                    // to backtrack so we just ignore any errors.
+                                                    return result;
+                                                }
                                             }
                                         });
                             }
                         }
                     })
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+                        public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                setResult(Resource.forSuccess(response));
+                                handleSuccess(response, task.getResult());
                             } else {
                                 setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             }
@@ -82,7 +86,7 @@ public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpR
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             // I'm not sure why we ignore failures here, but this mirrors previous
                             // behavior.
-                            setResult(Resource.forSuccess(response));
+                            handleSuccess(response, task.getResult());
                         }
                     });
         }
