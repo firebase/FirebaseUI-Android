@@ -150,7 +150,7 @@ allprojects {
 #### GitHub
 
 WARNING: GitHub OAuth is not for the faint of heart. Getting it setup correctly is an invested
-process and may take a half-hour or two. Ready? Lets begin.
+process and may take a half-hour or two. Ready? Let's begin.
 
 ##### Adding secrets
 
@@ -181,14 +181,14 @@ in the form `project-id.firebaseapp.com`:
 JDK's installation folder to get a SHA-256 hash of your release keystore.
 
 Protip: you might as well also grab the release SHA-1 hash and the debug hashes to add them to the
-Firebase Console since they're useful in other contexts. Adding debug hashes will let you test all
-this without having to run a release build.
+Firebase Console since they're useful in other contexts. Also, adding debug hashes will let you test
+all this without having to use a release build.
 
 ##### Deploying a Firebase Hosting solution
 
 If you're already using Firebase Hosting, give yourself a pat on the back and move on. Otherwise,
-tough luck. Go through [this tutorial](https://firebase.google.com/docs/hosting/quickstart) and make
-sure to say no when asked to
+tough luck. 🤷‍♂️ Go through [this tutorial](https://firebase.google.com/docs/hosting/quickstart) and
+make sure to say no when asked to
 [redirect](https://firebase.google.com/docs/hosting/url-redirects-rewrites) everything to a single
 page. If you're already doing that, exclude `.well-known/assetlinks.json`.
 
@@ -196,8 +196,8 @@ page. If you're already doing that, exclude `.well-known/assetlinks.json`.
 
 So close, you're almost there! Follow step 1 of
 [this tutorial](https://developers.google.com/digital-asset-links/v1/getting-started#quick-usage-example)
-with your own package name and SHA-256 hash gathered earlier. Now add the resulting JSON to the
-`.well-known/assetlinks.json` path of your Firebase Hosting website and re-deploy it.
+with your own package name and SHA-256 hash gathered earlier. Now add the resulting JSON to
+`.well-known/assetlinks.json` on your Firebase Hosting website and re-deploy it.
 
 ##### Putting it all together
 

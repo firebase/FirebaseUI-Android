@@ -136,12 +136,8 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     @Override
     public void onFailure(Call<GitHubTokenResponse> call, Throwable throwable) {
-        onFailure(throwable);
-    }
-
-    private void onFailure(Throwable t) {
         setResult(Resource.<IdpResponse>forFailure(
-                new FirebaseUiException(ErrorCodes.PROVIDER_ERROR, t)));
+                new FirebaseUiException(ErrorCodes.PROVIDER_ERROR, throwable)));
     }
 
     private final class ProfileRequest implements Callback<GitHubProfile> {
@@ -156,14 +152,15 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
             if (response.isSuccessful()) {
                 setResult(Resource.forSuccess(createIdpResponse(mToken, response.body())));
             } else {
-                setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
-                        ErrorCodes.PROVIDER_ERROR, response.message())));
+                onFailure(call, new FirebaseUiException(
+                        ErrorCodes.PROVIDER_ERROR, response.message()));
             }
         }
 
         @Override
         public void onFailure(Call<GitHubProfile> call, Throwable throwable) {
-            GitHubSignInHandler.this.onFailure(throwable);
+            // Ignore profile request failures since we can still sign in
+            setResult(Resource.forSuccess(createIdpResponse(mToken, new GitHubProfile())));
         }
     }
 
