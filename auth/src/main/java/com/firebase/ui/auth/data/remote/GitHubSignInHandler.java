@@ -41,7 +41,6 @@ import retrofit2.http.Query;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
         implements Callback<JsonObject> {
-    public static final String REDIRECT_ACTION = "github_redirect";
     public static final String RESULT_CODE = "result_code";
     public static final String KEY_GITHUB_CODE = "github_code";
 

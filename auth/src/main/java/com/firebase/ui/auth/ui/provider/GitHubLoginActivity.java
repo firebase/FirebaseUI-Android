@@ -19,6 +19,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GitHubLoginActivity extends HelperActivityBase {
     private static final String REFRESH_ACTION = "refresh_action";
+    private static final String SHOULD_CLOSE_CCT_KEY = "should_close_cct_key";
 
     private boolean mShouldCloseCustomTab;
 
@@ -37,8 +38,11 @@ public class GitHubLoginActivity extends HelperActivityBase {
                     .enableUrlBarHiding()
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .build()
-                    .launchUrl(this, (Uri) getIntent().getParcelableExtra(ExtraConstants.GITHUB_URL));
+                    .launchUrl(this,
+                            (Uri) getIntent().getParcelableExtra(ExtraConstants.GITHUB_URL));
             mShouldCloseCustomTab = false;
+        } else {
+            mShouldCloseCustomTab = savedInstanceState.getBoolean(SHOULD_CLOSE_CCT_KEY);
         }
     }
 
@@ -52,6 +56,12 @@ public class GitHubLoginActivity extends HelperActivityBase {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SHOULD_CLOSE_CCT_KEY, mShouldCloseCustomTab);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         mShouldCloseCustomTab = false;
@@ -61,7 +71,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
             return;
         }
 
-        Intent result = new Intent().setAction(GitHubSignInHandler.REDIRECT_ACTION);
+        Intent result = new Intent();
 
         String code = intent.getData().getQueryParameter("code");
         if (code == null) {
