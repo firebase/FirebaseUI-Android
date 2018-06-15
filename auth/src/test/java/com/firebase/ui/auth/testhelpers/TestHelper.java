@@ -80,6 +80,7 @@ public final class TestHelper {
 
     private static void initializeProviders() {
         Context context = RuntimeEnvironment.application;
+        when(context.getString(R.string.firebase_web_host)).thenReturn("abc");
         when(context.getString(R.string.default_web_client_id)).thenReturn("abc");
         when(context.getString(R.string.facebook_application_id)).thenReturn("abc");
         when(context.getString(R.string.twitter_consumer_key)).thenReturn("abc");
