@@ -91,8 +91,6 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
                                     FirebaseAuthUserCollisionException){
                                 handleMergeFailure(credential);
                             }
-                            // I'm not sure why we ignore other failures here, but this mirrors
-                            // previous behavior.
                         }
                     });
         }

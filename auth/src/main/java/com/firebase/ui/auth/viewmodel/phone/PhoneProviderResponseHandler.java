@@ -6,12 +6,10 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
+import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -35,7 +33,7 @@ public class PhoneProviderResponseHandler extends SignInViewModelBase {
         }
         setResult(Resource.<IdpResponse>forLoading());
 
-        AnonymousUpgradeUtils.signInAndLinkWithPhoneNumber(getAuth(), getArguments(), credential)
+        AuthOperationManager.signInAndLinkWithCredential(getAuth(), getArguments(), credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {

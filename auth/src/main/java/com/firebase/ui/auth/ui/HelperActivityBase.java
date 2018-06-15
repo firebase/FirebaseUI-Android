@@ -75,4 +75,8 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
                 this, getFlowParams(), credential, response);
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
     }
+
+    public void onMergeFailure(IdpResponse response) {
+        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
+    }
 }

@@ -29,9 +29,7 @@ public abstract class SignInViewModelBase extends AuthViewModelBase<IdpResponse>
     protected void handleMergeFailure(@NonNull AuthCredential credential) {
         IdpResponse failureResponse = new IdpResponse.Builder(credential)
                 .build();
-        setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
-                ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
-                failureResponse)));
+        handleMergeFailure(failureResponse);
     }
 
     protected void handleMergeFailure(@NonNull IdpResponse failureResponse) {

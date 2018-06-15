@@ -217,6 +217,9 @@ public class RegisterEmailFragment extends FragmentBase implements
         super.onActivityCreated(savedInstanceState);
         requireActivity().setTitle(R.string.fui_title_register_email);
         FragmentActivity activity = getActivity();
+        if (!(activity instanceof AnonymousUpgradeListener)) {
+            throw new IllegalStateException("Activity must implement CheckEmailListener");
+        }
         mListener = (AnonymousUpgradeListener) activity;
 
     }

@@ -11,7 +11,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
-import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
+import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -43,7 +43,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
         setResult(Resource.<IdpResponse>forLoading());
 
         final String email = response.getEmail();
-        AnonymousUpgradeUtils.createOrLinkUserWithEmailAndPassword(getAuth(),
+        AuthOperationManager.createOrLinkUserWithEmailAndPassword(getAuth(),
                 getArguments(),
                 email,
                 password)
@@ -59,7 +59,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthUserCollisionException) {
-                            if (AnonymousUpgradeUtils.canUpgradeAnonymous(getAuth(),
+                            if (AuthOperationManager.canUpgradeAnonymous(getAuth(),
                                     getArguments())) {
                                 AuthCredential credential = EmailAuthProvider.getCredential(email,
                                         password);

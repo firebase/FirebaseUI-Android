@@ -42,7 +42,6 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
@@ -176,11 +175,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         TextView footerText = findViewById(R.id.email_footer_tos_and_pp_text);
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(this, getFlowParams(), footerText);
-    }
-
-    public void onMergeFailure(IdpResponse response) {
-        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, AnonymousUpgradeUtils.
-                onMergeFailureIntent(response));
     }
 
     @Override

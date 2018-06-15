@@ -35,14 +35,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -134,11 +132,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         TextView footerText = findViewById(R.id.email_footer_tos_and_pp_text);
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(this, getFlowParams(), footerText);
-    }
-
-    public void onMergeFailure(IdpResponse response) {
-        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, AnonymousUpgradeUtils.
-                onMergeFailureIntent(response));
     }
 
     @StringRes

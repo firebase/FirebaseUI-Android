@@ -339,22 +339,22 @@ public class IdpResponse implements Parcelable {
         public IdpResponse build() {
             if (mPendingCredential != null) {
                 return new IdpResponse(mPendingCredential, new FirebaseUiException(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT));
-            } else {
-                String providerId = mUser.getProviderId();
-                if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
-                    throw new IllegalStateException("Unknown provider: " + providerId);
-                }
-                if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
-                    throw new IllegalStateException(
-                            "Token cannot be null when using a non-email provider.");
-                }
-                if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
-                        && TextUtils.isEmpty(mSecret)) {
-                    throw new IllegalStateException(
-                            "Secret cannot be null when using the Twitter provider.");
-                }
-                return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
             }
+
+            String providerId = mUser.getProviderId();
+            if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
+                throw new IllegalStateException("Unknown provider: " + providerId);
+            }
+            if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
+                throw new IllegalStateException(
+                        "Token cannot be null when using a non-email provider.");
+            }
+            if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                    && TextUtils.isEmpty(mSecret)) {
+                throw new IllegalStateException(
+                        "Secret cannot be null when using the Twitter provider.");
+            }
+            return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
         }
     }
 }

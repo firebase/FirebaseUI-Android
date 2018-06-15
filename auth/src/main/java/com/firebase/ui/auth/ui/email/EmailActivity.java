@@ -25,7 +25,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -33,7 +32,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -44,7 +42,8 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener, RegisterEmailFragment.AnonymousUpgradeListener {
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener,
+        RegisterEmailFragment.AnonymousUpgradeListener {
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -127,12 +126,6 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         } else {
             emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
-    }
-
-    @Override
-    public void onMergeFailure(IdpResponse response) {
-        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, AnonymousUpgradeUtils.
-                onMergeFailureIntent(response));
     }
 
     private void setSlideAnimation() {
