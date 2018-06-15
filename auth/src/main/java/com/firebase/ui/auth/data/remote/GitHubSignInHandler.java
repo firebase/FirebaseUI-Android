@@ -14,6 +14,7 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.GitHubProfile;
+import com.firebase.ui.auth.data.model.GitHubTokenResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
@@ -23,7 +24,6 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.GithubAuthProvider;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import retrofit2.http.Query;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
-        implements Callback<JsonObject> {
+        implements Callback<GitHubTokenResponse> {
     public static final String RESULT_CODE = "result_code";
     public static final String KEY_GITHUB_CODE = "github_code";
 
@@ -125,9 +125,9 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     }
 
     @Override
-    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+    public void onResponse(Call<GitHubTokenResponse> call, Response<GitHubTokenResponse> response) {
         if (response.isSuccessful()) {
-            String token = response.body().get(KEY_ACCESS_TOKEN).getAsString();
+            String token = response.body().getToken();
             RETROFIT_GITHUB.getUser("token " + token).enqueue(new ProfileRequest(token));
         } else {
             setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
@@ -136,7 +136,7 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     }
 
     @Override
-    public void onFailure(Call<JsonObject> call, Throwable throwable) {
+    public void onFailure(Call<GitHubTokenResponse> call, Throwable throwable) {
         onFailure(throwable);
     }
 
@@ -170,10 +170,10 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     private interface GitHubOAuth {
         @POST(KEY_ACCESS_TOKEN)
-        Call<JsonObject> getAuthToken(@Header("Accept") String header,
-                                      @Query("client_id") String id,
-                                      @Query("client_secret") String secret,
-                                      @Query("code") String code);
+        Call<GitHubTokenResponse> getAuthToken(@Header("Accept") String header,
+                                               @Query("client_id") String id,
+                                               @Query("client_secret") String secret,
+                                               @Query("code") String code);
     }
 
     private interface GitHubApi {
