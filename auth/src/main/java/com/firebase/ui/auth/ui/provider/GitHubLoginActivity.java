@@ -25,7 +25,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
     @NonNull
     public static Intent createIntent(Context context, Uri starter) {
         return new Intent(context, GitHubLoginActivity.class)
-                .putExtra(ExtraConstants.PARAMS, starter);
+                .putExtra(ExtraConstants.GITHUB_URL, starter);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
                     .enableUrlBarHiding()
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .build()
-                    .launchUrl(this, (Uri) getIntent().getParcelableExtra(ExtraConstants.PARAMS));
+                    .launchUrl(this, (Uri) getIntent().getParcelableExtra(ExtraConstants.GITHUB_URL));
             mShouldCloseCustomTab = false;
         }
     }

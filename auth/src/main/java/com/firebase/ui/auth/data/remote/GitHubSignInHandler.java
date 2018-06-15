@@ -13,6 +13,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.GitHubProfile;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
@@ -69,13 +70,11 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     private static IdpResponse createIdpResponse(
             @NonNull String token,
-            @Nullable String email,
-            @Nullable String name,
-            @Nullable Uri photoUri) {
+            @NonNull GitHubProfile profile) {
         return new IdpResponse.Builder(
-                new User.Builder(GithubAuthProvider.PROVIDER_ID, email)
-                        .setName(name)
-                        .setPhotoUri(photoUri)
+                new User.Builder(GithubAuthProvider.PROVIDER_ID, profile.getEmail())
+                        .setName(profile.getName())
+                        .setPhotoUri(profile.getAvatarUri())
                         .build())
                 .setToken(token)
                 .build();
@@ -139,11 +138,15 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     @Override
     public void onFailure(Call<JsonObject> call, Throwable throwable) {
-        setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
-                ErrorCodes.PROVIDER_ERROR, throwable)));
+        onFailure(throwable);
     }
 
-    private class ProfileRequest implements Callback<JsonObject> {
+    private void onFailure(Throwable t) {
+        setResult(Resource.<IdpResponse>forFailure(
+                new FirebaseUiException(ErrorCodes.PROVIDER_ERROR, t)));
+    }
+
+    private final class ProfileRequest implements Callback<GitHubProfile> {
         private final String mToken;
 
         public ProfileRequest(String token) {
@@ -151,24 +154,9 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
         }
 
         @Override
-        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+        public void onResponse(Call<GitHubProfile> call, Response<GitHubProfile> response) {
             if (response.isSuccessful()) {
-                JsonObject body = response.body();
-
-                String email = null;
-                if (body.get("email") != null) {
-                    email = body.get("email").getAsString();
-                }
-                String name = null;
-                if (body.get("name") != null) {
-                    name = body.get("name").getAsString();
-                }
-                Uri profileUri = null;
-                if (body.get("avatar_url") != null) {
-                    profileUri = Uri.parse(body.get("avatar_url").getAsString());
-                }
-
-                setResult(Resource.forSuccess(createIdpResponse(mToken, email, name, profileUri)));
+                setResult(Resource.forSuccess(createIdpResponse(mToken, response.body())));
             } else {
                 setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
                         ErrorCodes.PROVIDER_ERROR, response.message())));
@@ -176,8 +164,8 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
         }
 
         @Override
-        public void onFailure(Call<JsonObject> call, Throwable throwable) {
-            GitHubSignInHandler.this.onFailure(call, throwable);
+        public void onFailure(Call<GitHubProfile> call, Throwable throwable) {
+            GitHubSignInHandler.this.onFailure(throwable);
         }
     }
 
@@ -191,6 +179,6 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     private interface GitHubApi {
         @GET("user")
-        Call<JsonObject> getUser(@Header("Authorization") String token);
+        Call<GitHubProfile> getUser(@Header("Authorization") String token);
     }
 }
