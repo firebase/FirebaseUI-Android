@@ -42,7 +42,9 @@
             android:launchMode="singleTop"
             android:theme="@style/FirebaseUI.Transparent">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter
+                android:autoVerify="true"
+                tools:ignore="UnusedAttribute">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -51,7 +53,8 @@
                 <data
                     android:host="@string/firebase_web_host"
                     android:path="/__/auth/handler"
-                    android:scheme="https" />
+                    android:scheme="https"
+                    tools:ignore="AppLinksAutoVerifyWarning" />
             </intent-filter>
 
         </activity>
