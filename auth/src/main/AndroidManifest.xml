@@ -42,15 +42,16 @@
             android:launchMode="singleTop"
             android:theme="@style/FirebaseUI.Transparent">
 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="authorize"
-                    android:scheme="@string/project_id" />
+                    android:host="@string/firebase_web_host"
+                    android:path="/__/auth/handler"
+                    android:scheme="https" />
             </intent-filter>
 
         </activity>

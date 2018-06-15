@@ -1,4 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Example: project-id.firebaseapp.com. Used for OAuth redirects -->
+    <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
+
     <!--
     The Facebook Application ID associated with this Android application. To
     use Facebook accounts with the demo application, register an application

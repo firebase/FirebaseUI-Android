@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
-    <!-- Get access to the google-services project id. -->
-    <item name="project_id" type="string"/>
+    <!-- Example: project-id.firebaseapp.com. Used for OAuth redirects -->
+    <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
 
     <!--
     The Facebook Application ID associated with this Android application. This

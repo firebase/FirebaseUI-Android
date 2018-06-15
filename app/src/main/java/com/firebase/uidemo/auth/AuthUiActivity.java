@@ -355,6 +355,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private boolean isGitHubMisconfigured() {
         List<String> gitHubConfigs = Arrays.asList(
+                getString(R.string.firebase_web_host),
                 getString(R.string.github_client_id),
                 getString(R.string.github_client_secret)
         );

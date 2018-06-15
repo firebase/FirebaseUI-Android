@@ -149,8 +149,13 @@ allprojects {
 
 #### GitHub
 
-If support for GitHub OAuth is also required, define the resource strings `github_client_id` and
-`github_client_secret` found in your [GitHub app](https://github.com/settings/developers):
+WARNING: GitHub OAuth is not for the faint of heart. Getting it setup correctly is an invested
+process and may take a half-hour or two. Ready? Lets begin.
+
+##### Adding secrets
+
+Hop over to your [GitHub app](https://github.com/settings/developers) and grab its client ID and
+Secret to put them in your resources:
 
 ```xml
 <resources>
@@ -158,6 +163,50 @@ If support for GitHub OAuth is also required, define the resource strings `githu
     <string name="github_client_secret" translatable="false">YOUR_CLIENT_SECRET</string>
 </resources>
 ```
+
+##### Adding your Firebase web host
+
+Next, find your project id in the Firebase Console's project settings and add it to your resources
+in the form `project-id.firebaseapp.com`:
+
+```xml
+<resources>
+    <string name="firebase_web_host" translatable="false">project-id.firebaseapp.com</string>
+</resources>
+```
+
+##### Getting a SHA-256 hash of your keystore
+
+[Run the `keytool` utility](https://developers.google.com/android/guides/client-auth) found in your
+JDK's installation folder to get a SHA-256 hash of your release keystore.
+
+Protip: you might as well also grab the release SHA-1 hash and the debug hashes to add them to the
+Firebase Console since they're useful in other contexts. Adding debug hashes will let you test all
+this without having to run a release build.
+
+##### Deploying a Firebase Hosting solution
+
+If you're already using Firebase Hosting, give yourself a pat on the back and move on. Otherwise,
+tough luck. Go through [this tutorial](https://firebase.google.com/docs/hosting/quickstart) and make
+sure to say no when asked to
+[redirect](https://firebase.google.com/docs/hosting/url-redirects-rewrites) everything to a single
+page. If you're already doing that, exclude `.well-known/assetlinks.json`.
+
+##### Adding asset links
+
+So close, you're almost there! Follow step 1 of
+[this tutorial](https://developers.google.com/digital-asset-links/v1/getting-started#quick-usage-example)
+with your own package name and SHA-256 hash gathered earlier. Now add the resulting JSON to the
+`.well-known/assetlinks.json` path of your Firebase Hosting website and re-deploy it.
+
+##### Putting it all together
+
+You should now have:
+- String resources with your secrets and Firebase web host
+- SHA hashes in the Firebase Console
+- A Firebase Hosting website with asset links
+
+Congrats, you did it! All that's left to do is [kick off the sign-in flow](#authui-sign-in).
 
 ## Using FirebaseUI for authentication
 
@@ -336,10 +385,10 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
 
 ###### Limiting the list of available countries in the country selector
 
-You can limit the countries shown in the country selector list. By default, all countries are shown. 
+You can limit the countries shown in the country selector list. By default, all countries are shown.
 
-You can provide a list of countries to whitelist or blacklist. You can populate these lists with 
-ISO (alpha-2) and E164 formatted country codes. 
+You can provide a list of countries to whitelist or blacklist. You can populate these lists with
+ISO (alpha-2) and E164 formatted country codes.
 
 ```java
 List<String> whitelistedCountries = new ArrayList<String>();
@@ -350,11 +399,11 @@ IdpConfig phoneConfigWithWhitelistedCountries = new IdpConfig.PhoneBuilder()
         .setWhitelistedCountries(whitelistedCountries)
         .build();
 ```
-All countries with the country code +1 will be present in the selector as well as Greece ('gr'). 
+All countries with the country code +1 will be present in the selector as well as Greece ('gr').
 
 You may want to exclude a few countries from the list and avoid creating a whitelist with
-many countries. You can instead provide a list of countries to blacklist. By doing so, all countries 
-excluding the ones you provide will be in the selector. 
+many countries. You can instead provide a list of countries to blacklist. By doing so, all countries
+excluding the ones you provide will be in the selector.
 
 ```java
 List<String> blacklistedCountries = new ArrayList<String>();
@@ -366,10 +415,10 @@ IdpConfig phoneConfigWithBlacklistedCountries = new IdpConfig.PhoneBuilder()
         .build();
 ```
 
-The country code selector will exclude all countries with a country code of +1 and Greece ('gr'). 
+The country code selector will exclude all countries with a country code of +1 and Greece ('gr').
 
 Note: You can't provide both a list of countries to whitelist and blacklist. If you do, a runtime
-exception will be thrown. 
+exception will be thrown.
 
 This change is purely UI based. We do not restrict users from signing in with their phone number.
 They will simply be unable to choose their country in the selector, but there may be another country

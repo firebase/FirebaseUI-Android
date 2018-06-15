@@ -974,6 +974,7 @@ public final class AuthUI {
                         "GitHub provider unconfigured. Make sure to add your client id and secret." +
                                 " See the docs for more info:" +
                                 " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#github",
+                        R.string.firebase_web_host,
                         R.string.github_client_id,
                         R.string.github_client_secret);
             }
