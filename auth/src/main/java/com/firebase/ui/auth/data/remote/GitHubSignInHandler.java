@@ -58,7 +58,6 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
             .build()
             .create(GitHubApi.class);
 
-    private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String EMAIL_PERMISSION = "user:email";
 
     private List<String> mPermissions;
@@ -169,7 +168,7 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     }
 
     private interface GitHubOAuth {
-        @POST(KEY_ACCESS_TOKEN)
+        @POST("access_token")
         Call<GitHubTokenResponse> getAuthToken(@Header("Accept") String header,
                                                @Query("client_id") String id,
                                                @Query("client_secret") String secret,
