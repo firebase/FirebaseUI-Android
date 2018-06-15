@@ -65,21 +65,16 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
         }
 
         // We first check if we are trying to upgrade an anonymous user
-        // Calling linkWithCredential will fail, so we can save an RPC call
+        // Calling linkWithCredential will fail since the email exists, so we can save an RPC call
         // We just need to validate the credential
         if (AnonymousUpgradeUtils.canUpgradeAnonymous(getAuth(), getArguments())) {
             final AuthCredential credToValidate = EmailAuthProvider.getCredential(email, password);
-
             AnonymousUpgradeUtils.validateCredential(credToValidate).addOnCompleteListener(
                     new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                IdpResponse mergeResponse = new IdpResponse.Builder(credToValidate)
-                                        .build();
-                                setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
-                                        ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
-                                        mergeResponse)));
+                                handleMergeFailure(credToValidate);
                             } else {
                                 setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             }

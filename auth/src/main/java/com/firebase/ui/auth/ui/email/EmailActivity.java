@@ -33,6 +33,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -130,9 +131,8 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
     @Override
     public void onMergeFailure(IdpResponse response) {
-        Intent data = new Intent();
-        data.putExtra(ExtraConstants.IDP_RESPONSE, response);
-        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, data);
+        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, AnonymousUpgradeUtils.
+                onMergeFailureIntent(response));
     }
 
     private void setSlideAnimation() {

@@ -24,6 +24,8 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -33,6 +35,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -47,6 +50,11 @@ public class PhoneActivity extends AppCompatBase {
     public static Intent createIntent(Context context, FlowParameters params, Bundle args) {
         return createBaseIntent(context, PhoneActivity.class, params)
                 .putExtra(ExtraConstants.PARAMS, args);
+    }
+
+    private void onMergeFailure(IdpResponse response) {
+        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, AnonymousUpgradeUtils.
+                onMergeFailureIntent(response));
     }
 
     @Override
@@ -66,7 +74,12 @@ public class PhoneActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                handleError(e);
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+                    onMergeFailure(response);
+                } else {
+                    handleError(e);
+                }
             }
         });
 

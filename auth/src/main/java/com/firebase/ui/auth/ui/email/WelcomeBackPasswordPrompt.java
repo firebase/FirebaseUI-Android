@@ -42,6 +42,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -136,9 +137,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     }
 
     public void onMergeFailure(IdpResponse response) {
-        Intent data = new Intent();
-        data.putExtra(ExtraConstants.IDP_RESPONSE, response);
-        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, data);
+        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, AnonymousUpgradeUtils.
+                onMergeFailureIntent(response));
     }
 
     @StringRes

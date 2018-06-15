@@ -185,10 +185,8 @@ public class SignInKickstarter extends SignInViewModelBase {
                     setResult(Resource.forSuccess(response));
                 } else if (response.getError().getErrorCode() ==
                         ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
-                    setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
-                            ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response)));
-                }
-                else {
+                    handleMergeFailure(response);
+                } else {
                     setResult(Resource.<IdpResponse>forFailure(response.getError()));
                 }
         }

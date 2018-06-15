@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -41,7 +42,7 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
         }
         setResult(Resource.<IdpResponse>forLoading());
 
-        AuthCredential credential = ProviderUtils.getAuthCredential(response);
+        final AuthCredential credential = ProviderUtils.getAuthCredential(response);
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser == null) {
             getAuth().signInWithCredential(credential)
@@ -84,9 +85,14 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            // I'm not sure why we ignore failures here, but this mirrors previous
-                            // behavior.
-                            handleSuccess(response, task.getResult());
+                            if (task.isSuccessful()) {
+                                handleSuccess(response, task.getResult());
+                            } else if (task.getException() instanceof
+                                    FirebaseAuthUserCollisionException){
+                                handleMergeFailure(credential);
+                            }
+                            // I'm not sure why we ignore other failures here, but this mirrors
+                            // previous behavior.
                         }
                     });
         }
