@@ -154,16 +154,16 @@ process and may take a half-hour or two. Ready? Let's begin.
 
 ##### Wait, but _why_?
 
-Short answer: it's GitHub's fault. 😉 Long answer: GitHub requires that override redirect URIs only
-extend the base URI configured in the dashboard. What does this mean? For GitHub auth to work on the
-web, the full `https://project-id.firebaseapp.com/__/auth/handler` redirect URI must be specified,
-thus preventing us Android devs from using a custom scheme (since we can only extend the base URI
-with extra path elements).
+GitHub requires that override redirect URIs only extend the base URI configured in the dashboard for
+[security reasons](https://tools.ietf.org/html/rfc6749#section-10.6). What does this mean? For
+GitHub auth to work on the web, the full `https://project-id.firebaseapp.com/__/auth/handler`
+redirect URI must be specified, thus preventing us Android devs from using a custom scheme (since we
+can only extend the base URI with extra path elements).
 
 As a side note, if you don't care about Web or iOS support, you can
 simply override our `GitHubLoginActivity`'s intent filters with your custom scheme to skip all these
-steps... However, you'd kinda be shooting yourself in the foot if you ever needed to support Web or
-iOS so we don't officially support this method.
+steps... However, this will make adding support for Web or iOS difficult should you decided to do so
+in the future—hence us not officially support this method.
 
 ##### Adding secrets
 
@@ -209,8 +209,8 @@ all this without having to use a release build.
 ##### Deploying a Firebase Hosting solution
 
 If you're already using Firebase Hosting, give yourself a pat on the back and move on. Otherwise,
-tough luck. 🤷‍♂️ Go through [this tutorial](https://firebase.google.com/docs/hosting/quickstart) and
-make sure to say no when asked to
+read on! Go through [this tutorial](https://firebase.google.com/docs/hosting/quickstart) and make
+sure to say no when asked to
 [redirect](https://firebase.google.com/docs/hosting/url-redirects-rewrites) everything to a single
 page. If you're already doing that, exclude `.well-known/assetlinks.json`.
 
