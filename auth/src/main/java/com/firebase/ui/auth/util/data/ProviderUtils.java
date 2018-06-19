@@ -21,6 +21,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -137,7 +139,7 @@ public final class ProviderUtils {
 
     @Nullable
     public static AuthUI.IdpConfig getConfigFromIdps(List<AuthUI.IdpConfig> idps, String id) {
-        for (AuthUI.IdpConfig idp : idps) {
+        for (AuthUI.IdpConfig idp: idps) {
             if (idp.getProviderId().equals(id)) { return idp; }
         }
         return null;
@@ -153,7 +155,9 @@ public final class ProviderUtils {
         return config;
     }
 
-    public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {
+    public static Task<String> fetchTopProvider(@NonNull FirebaseAuth auth,
+                                                @NonNull final FlowParameters params,
+                                                @NonNull String email) {
         if (TextUtils.isEmpty(email)) {
             return Tasks.forException(new NullPointerException("Email cannot be empty"));
         }
@@ -165,18 +169,21 @@ public final class ProviderUtils {
                         if (!task.isSuccessful()) return null;
 
                         List<String> methods = task.getResult().getSignInMethods();
-                        return methods == null || methods.isEmpty()
-                                ? null : methods.get(methods.size() - 1);
-                    }
-                }).continueWith(new Continuation<String, String>() {
-                    @Override
-                    public String then(@NonNull Task<String> task) {
-                        String method = task.getResult();
-                        if (method == null) {
-                            return null;
-                        } else {
-                            return signInMethodToProviderId(method);
+                        if (methods == null) { methods = new ArrayList<>(); }
+
+                        List<String> providers = new ArrayList<>(methods.size());
+                        for (String method: methods) {
+                            providers.add(signInMethodToProviderId(method));
                         }
+
+                        for (AuthUI.IdpConfig config: params.providers) {
+                            String id = config.getProviderId();
+                            if (providers.contains(id)) {
+                                return id;
+                            }
+                        }
+
+                        return null;
                     }
                 });
     }

@@ -129,7 +129,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         // Get configuration
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-                getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
+                getFlowParams().providers, EmailAuthProvider.PROVIDER_ID);
         boolean requireName = emailConfig.getParams()
                 .getBoolean(ExtraConstants.REQUIRE_NAME, true);
         mPasswordFieldValidator = new PasswordFieldValidator(

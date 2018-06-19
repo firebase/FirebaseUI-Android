@@ -57,7 +57,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                         String email = response.getEmail();
                         if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
-                                ProviderUtils.fetchTopProvider(getAuth(), email)
+                                ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
                                         .addOnSuccessListener(
                                                 new StartWelcomeBackFlow(response))
                                         .addOnFailureListener(new OnFailureListener() {

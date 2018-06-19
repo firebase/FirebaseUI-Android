@@ -56,7 +56,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                         if (e instanceof FirebaseAuthUserCollisionException) {
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
-                            ProviderUtils.fetchTopProvider(getAuth(), email)
+                            ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
                                     .addOnSuccessListener(new StartWelcomeBackFlow(email))
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
