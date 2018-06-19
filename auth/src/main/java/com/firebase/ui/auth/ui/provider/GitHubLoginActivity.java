@@ -15,6 +15,29 @@ import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 
+/**
+ * These are our goals for GitHub login:
+ * <p>- Launch CCT
+ * <p>- If user presses back, close resources related to CCT
+ * <p>- Same for success and failure, but send result data too
+ * <p>
+ * Given that CCT is going to redirect to our activity, we need a wrapper with special stuff like
+ * `singleTop` and ignored config changes so the stack doesn't nest itself—hence this activity. Now
+ * that we're guaranteed to have a single activity with a CCT layer on top, we can safely assume
+ * that `onCreate` is the only place to start CCT. So the current flow now looks like this:
+ * <p>- Launch CCT in `onCreate`
+ * <p>- Receive redirects in `onNewIntent`
+ * <p>
+ * That flow creates a problem though: how do we close CCT? Android doesn't give you a nice way to
+ * close all activities on top of the stack, so we're forced to relaunch our wrapper activity with
+ * the CLEAR_TOP flag. That will recurse while killing CCT to bring us back to `onNewIntent` again
+ * where we check for the refresh action. At that point, we can finally finish with our result.
+ * <p>
+ * Now for the `onResume` stuff. Remember how we always have a CCT layer on top? That means
+ * `onResume` will only ever be called once... unless the user presses back. At that point, our
+ * wrapper activity gains focus for the second time and we can safely kill it knowing it was a back
+ * event.
+ */
 @SuppressLint("GoogleAppIndexingApiWarning")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GitHubLoginActivity extends HelperActivityBase {

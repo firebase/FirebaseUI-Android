@@ -152,6 +152,19 @@ allprojects {
 WARNING: GitHub OAuth is not for the faint of heart. Getting it setup correctly is an invested
 process and may take a half-hour or two. Ready? Let's begin.
 
+##### Wait, but _why_?
+
+Short answer: it's GitHub's fault. 😉 Long answer: GitHub requires that override redirect URIs only
+extend the base URI configured in the dashboard. What does this mean? For GitHub auth to work on the
+web, the full `https://project-id.firebaseapp.com/__/auth/handler` redirect URI must be specified,
+thus preventing us Android devs from using a custom scheme (since we can only extend the base URI
+with extra path elements).
+
+As a side note, if you don't care about Web or iOS support, you can
+simply override our `GitHubLoginActivity`'s intent filters with your custom scheme to skip all these
+steps... However, you'd kinda be shooting yourself in the foot if you ever needed to support Web or
+iOS so we don't officially support this method.
+
 ##### Adding secrets
 
 Hop over to your [GitHub app](https://github.com/settings/developers) and grab its client ID and
@@ -178,7 +191,16 @@ in the form `project-id.firebaseapp.com`:
 ##### Getting a SHA-256 hash of your keystore
 
 [Run the `keytool` utility](https://developers.google.com/android/guides/client-auth) found in your
-JDK's installation folder to get a SHA-256 hash of your release keystore.
+JDK's installation folder to get a SHA-256 hash of your release keystore. The command should look
+something like this (but for your release keystore):
+
+```sh
+keytool -list -v \
+    -keystore ~/.android/debug.keystore \
+    -alias androiddebugkey \
+    -storepass android \
+    -keypass android
+```
 
 Protip: you might as well also grab the release SHA-1 hash and the debug hashes to add them to the
 Firebase Console since they're useful in other contexts. Also, adding debug hashes will let you test
@@ -197,7 +219,19 @@ page. If you're already doing that, exclude `.well-known/assetlinks.json`.
 So close, you're almost there! Follow step 1 of
 [this tutorial](https://developers.google.com/digital-asset-links/v1/getting-started#quick-usage-example)
 with your own package name and SHA-256 hash gathered earlier. Now add the resulting JSON to
-`.well-known/assetlinks.json` on your Firebase Hosting website and re-deploy it.
+`.well-known/assetlinks.json` on your Firebase Hosting website and re-deploy it. Your JSON should
+look something like this:
+
+```js
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : {
+    "namespace": "android_app",
+    "package_name": "com.your.package.name",
+    "sha256_cert_fingerprints": ["your_sha_256_fingerprint"]
+  }
+}]
+```
 
 ##### Putting it all together
 
