@@ -272,7 +272,7 @@ public class IdpResponse implements Parcelable {
                 && (mIsNewUser == response.mIsNewUser)
                 && (mException == null ? response.mException == null : mException.equals(response.mException))
                 && (mPendingCredential == null ? response.mPendingCredential == null :
-                mPendingCredential.equals(response.mPendingCredential));
+                mPendingCredential.getProvider().equals(response.mPendingCredential.getProvider()));
     }
 
     @Override
