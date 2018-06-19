@@ -37,6 +37,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -47,6 +48,7 @@ import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -126,6 +128,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 mProvider = twitter;
 
                 providerName = R.string.fui_idp_name_twitter;
+                break;
+            case GithubAuthProvider.PROVIDER_ID:
+                GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                github.init(config);
+                mProvider = github;
+
+                providerName = R.string.fui_idp_name_github;
                 break;
             default:
                 throw new IllegalStateException("Invalid provider id: " + providerId);

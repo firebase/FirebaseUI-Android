@@ -12,11 +12,13 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
 
     <!-- Auth method picker -->
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Sign in with Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Sign in with Twitter</string>
+    <string name="fui_sign_in_with_github" translation_description="Sign in button text">Sign in with GitHub</string>
     <string name="fui_sign_in_with_email" translation_description="Sign in button text">Sign in with email</string>
     <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Sign in with phone</string>
 
