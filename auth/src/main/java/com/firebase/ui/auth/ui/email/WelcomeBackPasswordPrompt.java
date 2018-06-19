@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -123,7 +124,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             protected void onFailure(@NonNull Exception e) {
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
-                    onMergeFailure(response);
+                    finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
                 } else {
                     mPasswordLayout.setError(getString(getErrorMessage(e)));
                 }

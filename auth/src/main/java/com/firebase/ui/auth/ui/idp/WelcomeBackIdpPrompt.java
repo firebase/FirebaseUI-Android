@@ -167,7 +167,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             protected void onFailure(@NonNull Exception e) {
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
-                    onMergeFailure(response);
+                    finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
                 } else {
                     finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                 }
