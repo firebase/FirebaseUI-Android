@@ -11,6 +11,7 @@ android {
 
     lintOptions {
         disable("UnusedQuantity")
+        disable("MissingTranslation") // TODO: Translate fui_auto_verified
     }
 
     testOptions {
@@ -37,6 +38,9 @@ dependencies {
     implementation(Config.Libs.Support.cardView)
     implementation(Config.Libs.Support.customTabs)
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
+
+    implementation(Config.Libs.Misc.retrofit)
+    implementation(Config.Libs.Misc.retrofitGson)
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.mockito)

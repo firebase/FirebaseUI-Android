@@ -17,17 +17,23 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.SignInMethodQueryResult;
+
+import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+public class SocialProviderResponseHandler extends SignInViewModelBase {
     public SocialProviderResponseHandler(Application application) {
         super(application);
     }
@@ -43,12 +49,21 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
         setResult(Resource.<IdpResponse>forLoading());
 
-        getAuth().signInWithCredential(ProviderUtils.getAuthCredential(response))
-                .continueWithTask(new ProfileMerger(response))
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
+        Task<AuthResult> signInTask;
+        if (canLinkAccounts()) {
+            signInTask = getCurrentUser()
+                    .linkWithCredential(credential)
+                    .continueWithTask(new ProfileMerger(response));
+        } else {
+            signInTask = getAuth().signInWithCredential(credential);
+        }
+
+        signInTask.continueWithTask(new ProfileMerger(response))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(response));
+                        handleSuccess(response, result);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -57,9 +72,8 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                         String email = response.getEmail();
                         if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
-                                ProviderUtils.fetchTopProvider(getAuth(), email)
-                                        .addOnSuccessListener(
-                                                new StartWelcomeBackFlow(response))
+                                getAuth().fetchSignInMethodsForEmail(email)
+                                        .addOnSuccessListener(new StartWelcomeBackFlow(response))
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
@@ -92,7 +106,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
     }
 
-    private class StartWelcomeBackFlow implements OnSuccessListener<String> {
+    private class StartWelcomeBackFlow implements OnSuccessListener<SignInMethodQueryResult> {
         private final IdpResponse mResponse;
 
         public StartWelcomeBackFlow(IdpResponse response) {
@@ -100,13 +114,36 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
 
         @Override
-        public void onSuccess(String provider) {
+        public void onSuccess(SignInMethodQueryResult result) {
+            List<String> methods = result.getSignInMethods();
+            AuthCredential credential = ProviderUtils.getAuthCredential(mResponse);
+            if (canLinkAccounts() && credential != null
+                    && methods != null && methods.contains(credential.getSignInMethod())) {
+                // We don't want to show the welcome back dialog since the user selected
+                // an existing account and we can just link the two accounts without knowing
+                // prevCredential.
+                AccountLinker.linkWithCurrentUser(
+                        SocialProviderResponseHandler.this, mResponse, credential)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult result) {
+                                setResult(Resource.forSuccess(mResponse));
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                setResult(Resource.<IdpResponse>forFailure(e));
+                            }
+                        });
+                return;
+            }
+
+            @AuthUI.SupportedProvider String provider = ProviderUtils.getLastUsedProvider(result);
             if (provider == null) {
                 throw new IllegalStateException(
                         "No provider even though we received a FirebaseAuthUserCollisionException");
-            }
-
-            if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+            } else if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(

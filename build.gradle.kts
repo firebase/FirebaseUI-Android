@@ -1,6 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import com.jfrog.bintray.gradle.BintrayExtension
-import com.jfrog.bintray.gradle.RecordingCopyTask
+import com.jfrog.bintray.gradle.tasks.RecordingCopyTask
 import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
 import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
 import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
@@ -50,6 +50,10 @@ allprojects {
             setupPublishing()
         }
     }
+}
+
+tasks.withType<Wrapper> {
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 val Project.configDir get() = "$rootDir/library/quality"
@@ -247,6 +251,50 @@ fun Project.setupPublishing() {
                 artifact(sourcesJar)
 
                 pom {
+                    name.set("FirebaseUI ${project.name.capitalize()}")
+                    description.set("Firebase UI for Android")
+                    url.set("https://github.com/firebase/FirebaseUI-Android")
+
+                    organization {
+                        name.set("Firebase")
+                        url.set("https://github.com/firebase")
+                    }
+
+                    scm {
+                        val scmUrl = "scm:git:git@github.com/firebase/firebaseui-android.git"
+                        connection.set(scmUrl)
+                        developerConnection.set(scmUrl)
+                        url.set(this@pom.url)
+                        tag.set("HEAD")
+                    }
+
+                    developers {
+                        developer {
+                            id.set("samtstern")
+                            name.set("Sam Stern")
+                            email.set("samstern@google.com")
+                            organization.set("Firebase")
+                            organizationUrl.set("https://firebase.google.com")
+                            roles.set(listOf("Project-Administrator", "Developer"))
+                            timezone.set("-8")
+                        }
+
+                        developer {
+                            id.set("SUPERCILEX")
+                            name.set("Alex Saveau")
+                            email.set("saveau.alexandre@gmail.com")
+                            roles.set(listOf("Developer"))
+                            timezone.set("-8")
+                        }
+                    }
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                        }
+                    }
+
                     withXml {
                         asNode().appendNode("dependencies").apply {
                             fun Dependency.write(scope: String) = appendNode("dependency").apply {
@@ -266,54 +314,6 @@ fun Project.setupPublishing() {
                             for (dependency in configurations["implementation"].dependencies) {
                                 dependency.write("runtime")
                             }
-                        }
-
-                        // Common values
-                        val repoUrl = "https://github.com/firebase/FirebaseUI-Android"
-                        val scmUrl = "scm:git:git@github.com/firebase/firebaseui-android.git"
-
-                        // Name
-                        asNode().appendNode("name", artifactId)
-
-                        // Description
-                        asNode().appendNode("description", "Firebase UI for Android")
-
-                        // Organization
-                        asNode().appendNode("organization").apply {
-                            appendNode("name", "FirebaseUI")
-                            appendNode("url", repoUrl)
-                        }
-
-                        // URL
-                        asNode().appendNode("url", repoUrl)
-
-                        // SCM
-                        asNode().appendNode("scm").apply {
-                            appendNode("connection", scmUrl)
-                            appendNode("developerConnection", scmUrl)
-                            appendNode("url", repoUrl)
-                            appendNode("tag", "HEAD")
-                        }
-
-                        // Developers
-                        asNode().appendNode("developers").appendNode("developer").apply {
-                            appendNode("id", "samtstern")
-                            appendNode("email", "samstern@google.com")
-                            appendNode("organization", "Firebase")
-                            appendNode("organizationUrl", "https://firebase.google.com")
-
-                            appendNode("roles").apply {
-                                appendNode("role", "Project-Administrator")
-                                appendNode("role", "Developer")
-                            }
-
-                            appendNode("timezone", "-8")
-                        }
-
-                        // Licenses
-                        asNode().appendNode("licenses").appendNode("license").apply {
-                            appendNode("name", "The Apache License, Version 2.0")
-                            appendNode("url", "http://www.apache.org/licenses/LICENSE-2.0.txt")
                         }
                     }
                 }
@@ -356,16 +356,16 @@ fun Project.setupPublishing() {
             "'$name': ${publishing.artifacts}"
         }
         logger.info("""
-                |Bintray configuration for '$publicationName'
-                |    Artifact name: $artifactName
-                |    Artifacts: ${publications.joinToString(transform = pubLog)}
-            """.trimMargin())
+            |Bintray configuration for '$publicationName'
+            |    Artifact name: $artifactName
+            |    Artifacts: ${publications.joinToString(transform = pubLog)}
+        """.trimMargin())
         logger.info("""
-                |POM transformation
-                |    Src: $pomSrc
-                |    Dest: $pomDest
-                |    Name: $pomName
-            """.trimMargin())
+            |POM transformation
+            |    Src: $pomSrc
+            |    Dest: $pomDest
+            |    Name: $pomName
+        """.trimMargin())
 
         filesSpec(closureOf<RecordingCopyTask> {
             from(pomSrc)

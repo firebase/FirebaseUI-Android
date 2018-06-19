@@ -1,4 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Example: project-id.firebaseapp.com. Used for OAuth redirects -->
+    <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
+
     <!--
     The Facebook Application ID associated with this Android application. To
     use Facebook accounts with the demo application, register an application
@@ -6,9 +9,7 @@
     -->
     <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
 
-    <!--
-    Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs.
-    -->
+    <!-- Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs. -->
     <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fbYOUR_APP_ID</string>
 
 
@@ -19,11 +20,27 @@
     <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
 
     <!--
-    Your Twitter Consumer Secret
+    Your Twitter Consumer Secret.
 
     WARNING: By obtaining your Consumer Key and Consumer Secret other programs can perform API
     operations as your app. Embedding the Consumer Key and Consumer Secret in your app, no matter
     how obfuscated, makes it vulnerable to being stolen.
     -->
     <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
+
+
+    <!--
+    Your GitHub Client ID. To use GitHub accounts with the demo application, register an
+    application with GitHub and provide the following two values.
+    -->
+    <string name="github_client_id" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your GitHub Client Secret.
+
+    WARNING: By obtaining your Client ID and Client Secret other programs can perform API
+    operations as your app. Embedding the Client ID and Client Secret in your app, no matter
+    how obfuscated, makes it vulnerable to being stolen.
+    -->
+    <string name="github_client_secret" translatable="false">CHANGE-ME</string>
 </resources>

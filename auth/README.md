@@ -47,6 +47,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
    1. [Google](#google-1)
    1. [Facebook](#facebook-1)
    1. [Twitter](#twitter-1)
+   1. [GitHub](#github-1)
 
 ## Demo
 
@@ -127,8 +128,8 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 
 ```xml
 <resources>
-  <string name="twitter_consumer_key" translatable="false">YOURCONSUMERKEY</string>
-  <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
+  <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
+  <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
 </resources>
 ```
 
@@ -145,6 +146,107 @@ allprojects {
     }
 }
 ```
+
+#### GitHub
+
+WARNING: GitHub OAuth is not for the faint of heart. Getting it setup correctly is an invested
+process and may take a half-hour or two. Ready? Let's begin.
+
+##### Wait, but _why_?
+
+GitHub requires that override redirect URIs only extend the base URI configured in the dashboard for
+[security reasons](https://tools.ietf.org/html/rfc6749#section-10.6). What does this mean? For
+GitHub auth to work on the web, the full `https://project-id.firebaseapp.com/__/auth/handler`
+redirect URI must be specified, thus preventing us Android devs from using a custom scheme (since we
+can only extend the base URI with extra path elements).
+
+As a side note, if you don't care about Web or iOS support, you can
+simply override our `GitHubLoginActivity`'s intent filters with your custom scheme to skip all these
+steps... However, this will make adding support for Web or iOS difficult should you decided to do so
+in the future—hence us not officially support this method.
+
+##### Adding secrets
+
+Hop over to your [GitHub app](https://github.com/settings/developers) and grab its client ID and
+Secret to put them in your resources:
+
+```xml
+<resources>
+    <string name="github_client_id" translatable="false">YOUR_CLIENT_ID</string>
+    <string name="github_client_secret" translatable="false">YOUR_CLIENT_SECRET</string>
+</resources>
+```
+
+##### Adding your Firebase web host
+
+Next, find your project id in the Firebase Console's project settings and add it to your resources
+in the form `project-id.firebaseapp.com`:
+
+```xml
+<resources>
+    <string name="firebase_web_host" translatable="false">project-id.firebaseapp.com</string>
+</resources>
+```
+
+##### Getting a SHA-256 hash of your keystore
+
+[Run the `keytool` utility](https://developers.google.com/android/guides/client-auth) found in your
+JDK's installation folder to get a SHA-256 hash of your release keystore. The command should look
+something like this (but for your release keystore):
+
+```sh
+keytool -list -v \
+    -keystore ~/.android/debug.keystore \
+    -alias androiddebugkey \
+    -storepass android \
+    -keypass android
+```
+
+Protip: you might as well also grab the release SHA-1 hash and the debug hashes to add them to the
+Firebase Console since they're useful in other contexts. Also, adding debug hashes will let you test
+all this without having to use a release build.
+
+##### Deploying a Firebase Hosting solution
+
+If you're already using Firebase Hosting, give yourself a pat on the back and move on. Otherwise,
+read on! Go through [this tutorial](https://firebase.google.com/docs/hosting/quickstart) and make
+sure to say no when asked to
+[redirect](https://firebase.google.com/docs/hosting/url-redirects-rewrites) everything to a single
+page. If you're already doing that, exclude `.well-known/assetlinks.json`.
+
+##### Adding asset links
+
+So close, you're almost there! Follow step 1 of
+[this tutorial](https://developers.google.com/digital-asset-links/v1/getting-started#quick-usage-example)
+with your own package name and SHA-256 hash gathered earlier. Now add the resulting JSON to
+`.well-known/assetlinks.json` on your Firebase Hosting website and re-deploy it. Your JSON should
+look something like this:
+
+```js
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : {
+    "namespace": "android_app",
+    "package_name": "com.your.package.name",
+    "sha256_cert_fingerprints": ["your_sha_256_fingerprint"]
+  }
+}]
+```
+
+##### Putting it all together
+
+You should now have:
+- String resources with your secrets and Firebase web host
+- SHA hashes in the Firebase Console
+- A Firebase Hosting website with asset links
+
+Congrats, you did it! All that's left to do is [kick off the sign-in flow](#authui-sign-in).
+
+##### Help, I'm stuck!
+
+In all likelihood, your [asset links](#adding-asset-links) aren't configured correctly. Make sure
+that `https://project-id.firebaseapp.com/.well-known/assetlinks.json` resolves without redirects. If
+all else fails, FUI team members will help you out on StackOverflow with the `FirebaseUI` tag.
 
 ## Using FirebaseUI for authentication
 
@@ -220,26 +322,27 @@ startActivityForResult(
         AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
-                        new AuthUI.IdpConfig.EmailBuilder().build(),
-                        new AuthUI.IdpConfig.PhoneBuilder().build(),
                         new AuthUI.IdpConfig.GoogleBuilder().build(),
                         new AuthUI.IdpConfig.FacebookBuilder().build(),
-                        new AuthUI.IdpConfig.TwitterBuilder().build()))
+                        new AuthUI.IdpConfig.TwitterBuilder().build(),
+                        new AuthUI.IdpConfig.GitHubBuilder().build(),
+                        new AuthUI.IdpConfig.EmailBuilder().build(),
+                        new AuthUI.IdpConfig.PhoneBuilder().build()))
                 .build(),
         RC_SIGN_IN);
 ```
 
 ##### Adding a ToS and privacy policy
 
-If a terms of service URL and privacy policy URL are required:
+A terms of service URL and privacy policy URL are generally required:
 
 ```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setAvailableProviders(...)
-        .setTosUrl("https://superapp.example.com/terms-of-service.html")
-        .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
+        .setTosAndPrivacyPolicyUrls("https://superapp.example.com/terms-of-service.html",
+                                    "https://superapp.example.com/privacy-policy.html")
         .build(),
     RC_SIGN_IN);
 ```
@@ -291,6 +394,7 @@ startActivityForResult(
 
 ##### Phone number authentication customization
 
+###### Setting a default phone number
 When using the phone verification provider and the number is known in advance, it is possible to
 provide a default phone number (in international format) that will be used to prepopulate the
 country code and phone number input fields. The user is still able to edit the number if desired.
@@ -301,7 +405,7 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
         .build();
 ```
 
-Alternatively, you can set only the default phone number country.
+Alternatively, you can set the default country (alpha-2 format) to be shown in the country selector.
 
 ```java
 IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
@@ -318,6 +422,67 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
         .setDefaultNumber("ca", "23456789")
         .build();
 ```
+
+###### Limiting the list of available countries in the country selector
+
+You can limit the countries shown in the country selector list. By default, all countries are shown.
+
+You can provide a list of countries to whitelist or blacklist. You can populate these lists with
+ISO (alpha-2) and E164 formatted country codes.
+
+```java
+List<String> whitelistedCountries = new ArrayList<String>();
+whitelistedCountries.add("+1");
+whitelistedCountries.add("gr");
+
+IdpConfig phoneConfigWithWhitelistedCountries = new IdpConfig.PhoneBuilder()
+        .setWhitelistedCountries(whitelistedCountries)
+        .build();
+```
+All countries with the country code +1 will be present in the selector as well as Greece ('gr').
+
+You may want to exclude a few countries from the list and avoid creating a whitelist with
+many countries. You can instead provide a list of countries to blacklist. By doing so, all countries
+excluding the ones you provide will be in the selector.
+
+```java
+List<String> blacklistedCountries = new ArrayList<String>();
+blacklistedCountries.add("+1");
+blacklistedCountries.add("gr");
+
+IdpConfig phoneConfigWithBlacklistedCountries = new IdpConfig.PhoneBuilder()
+        .setBlacklistedCountries(blacklistedCountries)
+        .build();
+```
+
+The country code selector will exclude all countries with a country code of +1 and Greece ('gr').
+
+Note: You can't provide both a list of countries to whitelist and blacklist. If you do, a runtime
+exception will be thrown.
+
+This change is purely UI based. We do not restrict users from signing in with their phone number.
+They will simply be unable to choose their country in the selector, but there may be another country
+sharing the same country code (e.g. US and CA are +1).
+
+##### Account linking
+
+The default FirebaseUI sign-in flow shows UI to either create a new account or sign into an existing account.
+If you are using
+[anonymous authentication](https://firebase.google.com/docs/auth/android/anonymous-auth)
+in your application before calling FirebaseUI,
+you may want to link the anonymous account to the permanent account the user selects in the UI flow.
+
+```java
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setIsAccountLinkingEnabled(true, MyManualMergeService.class) // Any two accounts can be linked together using this method.
+        .build(),
+    RC_SIGN_IN);
+```
+
+**There is a caveat associated with using the `setIsAccountLinkingEnabled` method**, see
+[handling account link failures](#handling-account-link-failures).
 
 ### Handling the sign-in response
 
@@ -369,6 +534,78 @@ and [register an AuthStateListener](https://firebase.google.com/docs/reference/a
 Note: if you choose to use an `AuthStateListener`, make sure to unregister it before launching
 the FirebaseUI flow and re-register it after the flow returns. FirebaseUI performs auth operations
 internally which may trigger the listener before the flow is complete.
+
+#### Handling account link failures
+
+_Only applies to developers using `setIsAccountLinkingEnabled(true, Class)`._
+
+Imagine the following scenario: a user already has an existing account and uid in your app.
+Eventually, they switch devices and you automatically sign them in anonymously to give your users a
+frictionless UX by letting users interact with your app without being forced to log in immediately.
+Now, your anonymously signed in user quickly enters some data into your app before signing into
+their existing account so as not to forget why they came to your app in the first place. This UX is
+great for users, but problematic for us developers: your user now has two different ids that match
+the same person! The above example isn't just limited to anonymous accounts; **anytime a user has
+two existing accounts, a user collision will occur and you will have to manually merge those
+accounts together**. To help you do this, FirebaseUI provides a service to guide you through to
+process of loading and the transferring the user's data.
+
+The following is an example of how you would move data from the user's previous uid to their new one
+using the Firebase Realtime database, thus merging the two accounts.
+The example assumes you are using data structured similarly to the
+[sample](https://github.com/firebase/FirebaseUI-Android/blob/master/app/src/main/java/com/firebase/uidemo/database/ChatHolder.java):
+
+```java
+public class MyManualMergeService extends ManualMergeService {
+    private Iterable<DataSnapshot> mChatKeys;
+
+    @Override
+    public Task<Void> onLoadData() {
+        final TaskCompletionSource<Void> loadTask = new TaskCompletionSource<>();
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("chatIndices")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        mChatKeys = snapshot.getChildren();
+                        loadTask.setResult(null);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        FirebaseCrash.report(error.toException());
+                    }
+                });
+        return loadTask.getTask();
+    }
+
+    @Override
+    public Task<Void> onTransferData(IdpResponse response) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference chatIndices = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("chatIndices")
+                .child(uid);
+        for (DataSnapshot snapshot : mChatKeys) {
+            chatIndices.child(snapshot.getKey()).setValue(true);
+            DatabaseReference chat = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("chats")
+                    .child(snapshot.getKey());
+            chat.child("uid").setValue(uid);
+            chat.child("name").setValue("User " + uid.substring(0, 6));
+        }
+        return null;
+    }
+}
+```
+
+You'll also need to add the service to your `AndroidManifest.xml`:
+```xml
+<service android:name=".MyManualMergeService" />
+```
 
 #### ID tokens
 
@@ -600,7 +837,6 @@ By default, FirebaseUI requests the `email` and `profile` scopes when using Goog
 would like to request additional scopes from the user, call `setScopes` on the
 `AuthUI.IdpConfig.GoogleBuilder` when initializing FirebaseUI.
 
-
 ```java
 // For a list of all scopes, see:
 // https://developers.google.com/identity/protocols/googlescopes
@@ -615,7 +851,6 @@ startActivityForResult(
                 .build(),
         RC_SIGN_IN);
 ```
-
 
 ### Facebook
 
@@ -642,3 +877,25 @@ startActivityForResult(
 ### Twitter
 
 Twitter permissions can only be configured through [Twitter's developer console](https://apps.twitter.com/).
+
+### GitHub
+
+By default, FirebaseUI requests the `user:email` permission when performing OAuth. If you would like
+to request additional permissions from the user, call `setPermissions` on the
+`AuthUI.IdpConfig.GitHubBuilder` when initializing FirebaseUI.
+
+```java
+// For a list of permissions, see:
+// https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes
+
+AuthUI.IdpConfig gitHubIdp = new AuthUI.IdpConfig.GitHubBuilder()
+        .setPermissions(Arrays.asList("gist"))
+        .build();
+
+startActivityForResult(
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(gitHubIdp, ...))
+                .build(),
+        RC_SIGN_IN);
+```

@@ -83,16 +83,17 @@ public class WelcomeBackPasswordHandlerTest {
         // Mock linking to always succeed
         when(FakeAuthResult.INSTANCE.getUser().linkWithCredential(credential))
                 .thenReturn(new AutoContinueTask<>(FakeAuthResult.INSTANCE,
-                        FakeAuthResult.INSTANCE,
-                        true,
-                        null));
+                                                   FakeAuthResult.INSTANCE,
+                                                   true,
+                                                   null));
 
         // Mock smartlock save to always succeed
         when(mMockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential
+        );
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));

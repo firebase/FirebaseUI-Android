@@ -22,7 +22,8 @@ public class User implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    in.<Uri>readParcelable(Uri.class.getClassLoader()));
+                    in.<Uri>readParcelable(Uri.class.getClassLoader()),
+                    in.readString());
         }
 
         @Override
@@ -37,12 +38,20 @@ public class User implements Parcelable {
     private final String mName;
     private final Uri mPhotoUri;
 
-    private User(String providerId, String email, String phoneNumber, String name, Uri photoUri) {
+    private String mPrevUid;
+
+    private User(String providerId,
+                 String email,
+                 String phoneNumber,
+                 String name,
+                 Uri photoUri,
+                 String prevUid) {
         mProviderId = providerId;
         mEmail = email;
         mPhoneNumber = phoneNumber;
         mName = name;
         mPhotoUri = photoUri;
+        mPrevUid = prevUid;
     }
 
     public static User getUser(Intent intent) {
@@ -79,6 +88,15 @@ public class User implements Parcelable {
         return mPhotoUri;
     }
 
+    @Nullable
+    public String getPrevUid() {
+        return mPrevUid;
+    }
+
+    public void setPrevUid(@Nullable String prevUid) {
+        mPrevUid = prevUid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,7 +108,8 @@ public class User implements Parcelable {
                 && (mEmail == null ? user.mEmail == null : mEmail.equals(user.mEmail))
                 && (mPhoneNumber == null ? user.mPhoneNumber == null : mPhoneNumber.equals(user.mPhoneNumber))
                 && (mName == null ? user.mName == null : mName.equals(user.mName))
-                && (mPhotoUri == null ? user.mPhotoUri == null : mPhotoUri.equals(user.mPhotoUri));
+                && (mPhotoUri == null ? user.mPhotoUri == null : mPhotoUri.equals(user.mPhotoUri))
+                && (mPrevUid == null ? user.mPrevUid == null : mPrevUid.equals(user.mPrevUid));
     }
 
     @Override
@@ -100,6 +119,7 @@ public class User implements Parcelable {
         result = 31 * result + (mPhoneNumber == null ? 0 : mPhoneNumber.hashCode());
         result = 31 * result + (mName == null ? 0 : mName.hashCode());
         result = 31 * result + (mPhotoUri == null ? 0 : mPhotoUri.hashCode());
+        result = 31 * result + (mPrevUid == null ? 0 : mPrevUid.hashCode());
         return result;
     }
 
@@ -111,6 +131,7 @@ public class User implements Parcelable {
                 ", mPhoneNumber='" + mPhoneNumber + '\'' +
                 ", mName='" + mName + '\'' +
                 ", mPhotoUri=" + mPhotoUri +
+                ", mPrevUid=" + mPrevUid +
                 '}';
     }
 
@@ -126,6 +147,7 @@ public class User implements Parcelable {
         dest.writeString(mPhoneNumber);
         dest.writeString(mName);
         dest.writeParcelable(mPhotoUri, flags);
+        dest.writeString(mPrevUid);
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -135,6 +157,8 @@ public class User implements Parcelable {
         private String mPhoneNumber;
         private String mName;
         private Uri mPhotoUri;
+
+        private String mPrevUid;
 
         public Builder(@AuthUI.SupportedProvider @NonNull String providerId,
                        @Nullable String email) {
@@ -157,8 +181,13 @@ public class User implements Parcelable {
             return this;
         }
 
+        public Builder setPrevUid(String prevUid) {
+            mPrevUid = prevUid;
+            return this;
+        }
+
         public User build() {
-            return new User(mProviderId, mEmail, mPhoneNumber, mName, mPhotoUri);
+            return new User(mProviderId, mEmail, mPhoneNumber, mName, mPhotoUri, mPrevUid);
         }
     }
 }

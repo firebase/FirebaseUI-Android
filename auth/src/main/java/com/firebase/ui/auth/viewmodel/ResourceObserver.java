@@ -6,8 +6,8 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.util.Log;
 
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -29,6 +29,10 @@ public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
 
     protected ResourceObserver(@NonNull HelperActivityBase activity, @StringRes int message) {
         this(activity, null, activity, message);
+    }
+
+    protected ResourceObserver(@NonNull FragmentBase fragment) {
+        this(null, fragment, fragment, R.string.fui_progress_dialog_loading);
     }
 
     protected ResourceObserver(@NonNull FragmentBase fragment, @StringRes int message) {

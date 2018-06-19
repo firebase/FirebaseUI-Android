@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.viewmodel.idp;
+package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
@@ -13,16 +13,17 @@ import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+public class EmailProviderResponseHandler extends SignInViewModelBase {
     private static final String TAG = "EmailProviderResponseHa";
 
     public EmailProviderResponseHandler(Application application) {
@@ -41,13 +42,20 @@ public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse>
         setResult(Resource.<IdpResponse>forLoading());
 
         final String email = response.getEmail();
-        getAuth().createUserWithEmailAndPassword(email, password)
+        Task<AuthResult> registerTask;
+        if (canLinkAccounts()) {
+            registerTask = getCurrentUser()
+                    .linkWithCredential(EmailAuthProvider.getCredential(email, password));
+        } else {
+            registerTask = getAuth().createUserWithEmailAndPassword(email, password);
+        }
+        registerTask
                 .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(response));
+                        handleSuccess(response, result);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

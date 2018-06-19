@@ -37,7 +37,7 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
         return mAuth.getCurrentUser();
     }
 
-    protected FirebaseAuth getAuth() {
+    public FirebaseAuth getAuth() {
         return mAuth;
     }
 

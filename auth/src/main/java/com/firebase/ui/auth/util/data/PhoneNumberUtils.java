@@ -51,8 +51,8 @@ public final class PhoneNumberUtils {
 
     private static final SparseArray<List<String>> COUNTRY_TO_REGION_CODES =
             createCountryCodeToRegionCodeMap();
-    private static final Map<String, Integer> COUNTRY_TO_ISO_CODES =
-            Collections.unmodifiableMap(createCountryCodeByIsoMap());
+
+    private static Map<String, Integer> COUNTRY_TO_ISO_CODES;
 
     /**
      * This method works as follow: <ol><li>When the android version is LOLLIPOP or greater, the
@@ -151,8 +151,18 @@ public final class PhoneNumberUtils {
 
     @Nullable
     public static Integer getCountryCode(String countryIso) {
+        if (COUNTRY_TO_ISO_CODES == null) {
+            initCountryCodeByIsoMap();
+        }
         return countryIso == null
                 ? null : COUNTRY_TO_ISO_CODES.get(countryIso.toUpperCase(Locale.getDefault()));
+    }
+
+    public static Map<String, Integer> getImmutableCountryIsoMap() {
+        if (COUNTRY_TO_ISO_CODES == null) {
+            initCountryCodeByIsoMap();
+        }
+        return COUNTRY_TO_ISO_CODES;
     }
 
     private static String getCountryIsoForCountryCode(String countryCode) {
@@ -161,6 +171,12 @@ public final class PhoneNumberUtils {
             return countries.get(0);
         }
         return DEFAULT_LOCALE.getCountry();
+    }
+
+    @Nullable
+    public static List<String> getCountryIsosFromCountryCode(String countryCode) {
+        return !isValid(countryCode) ? null :
+                COUNTRY_TO_REGION_CODES.get(Integer.parseInt(countryCode.substring(1)));
     }
 
     /**
@@ -181,7 +197,6 @@ public final class PhoneNumberUtils {
                 return potentialCountryCode;
             }
         }
-
         return null;
     }
 
@@ -433,7 +448,7 @@ public final class PhoneNumberUtils {
         return map;
     }
 
-    private static Map<String, Integer> createCountryCodeByIsoMap() {
+    private static void initCountryCodeByIsoMap() {
         Map<String, Integer> map = new HashMap<>(MAX_COUNTRIES);
 
         for (int i = 0; i < COUNTRY_TO_REGION_CODES.size(); i++) {
@@ -457,6 +472,6 @@ public final class PhoneNumberUtils {
         map.put("GS", 500);
         map.put("XK", 381);
 
-        return map;
+        COUNTRY_TO_ISO_CODES = Collections.unmodifiableMap(map);
     }
 }

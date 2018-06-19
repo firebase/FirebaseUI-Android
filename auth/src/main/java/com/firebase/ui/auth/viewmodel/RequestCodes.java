@@ -37,6 +37,9 @@ public final class RequestCodes {
     /** Request code for retrieving a Google credential. */
     public static final int GOOGLE_PROVIDER = 110;
 
+    /** Request code for retrieving a GitHub credential. */
+    public static final int GITHUB_PROVIDER = 111;
+
     private RequestCodes() {
         throw new AssertionError("No instance for you!");
     }

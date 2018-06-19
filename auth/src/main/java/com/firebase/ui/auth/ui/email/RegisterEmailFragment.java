@@ -31,7 +31,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
-import com.firebase.ui.auth.viewmodel.idp.EmailProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.email.EmailProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -155,7 +155,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
-        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(
+                requireContext(), getFlowParams(), footerText);
 
         // WARNING: Nothing below this line will be executed on rotation
         if (savedInstanceState != null) {
@@ -196,7 +197,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(R.string.fui_title_register_email);
+        requireActivity().setTitle(R.string.fui_title_register_email);
     }
 
     @Override

@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Загрузка…</string>
     <string name="fui_sign_in_default">Войти</string>
     <string name="fui_tos_and_pp">Продолжая, вы принимаете %1$s и %2$s.</string>
-    <string name="fui_tos_only">Продолжая, вы принимаете %1$s.</string>
-    <string name="fui_pp_only">Продолжая, вы принимаете %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s  %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -53,22 +49,14 @@
     <string name="fui_resend_code_in">Отправить код ещё раз можно будет через 0:%02d.</string>
     <string name="fui_verify_your_phone_title">Подтвердить номер телефона</string>
     <string name="fui_verifying">Проверка…</string>
-    <string name="fui_retrieving_sms">Получение SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Неверный код. Повторите попытку.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ОК</string>
     <string name="fui_error_too_many_attempts">Этот номер телефона использовался слишком много раз.</string>
     <string name="fui_error_quota_exceeded">Не удалось подтвердить номер телефона.</string>
     <string name="fui_error_session_expired">Этот код уже неактивен.</string>
     <string name="fui_sign_in_with_phone_number">Войти по номеру телефона</string>
-    <string name="fui_done">Готово</string>
-    <string name="fui_verified">Проверка выполнена.</string>
-    <string name="fui_code_sent">Код отправлен</string>
-    <string name="fui_resending">Повторная отправка…</string>
     <string name="fui_resend_code">Отправить код ещё раз</string>
     <string name="fui_verify_phone_number">Подтвердить номер телефона</string>
     <string name="fui_continue_phone_login">Продолжить</string>
     <string name="fui_sms_terms_of_service">Нажимая кнопку “%1$s”, вы соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Нажимая кнопку “%1$s”, вы принимаете %2$s и %3$s, а также соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Нажимая кнопку “%1$s”, вы принимаете %2$s и соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Нажимая кнопку “%1$s”, вы принимаете %2$s и соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
 </resources>

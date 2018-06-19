@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Γίνεται φόρτωση…</string>
     <string name="fui_sign_in_default">Σύνδεση</string>
     <string name="fui_tos_and_pp">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε τους %1$s και την %2$s.</string>
-    <string name="fui_tos_only">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε τους %1$s.</string>
-    <string name="fui_pp_only">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε την %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -53,22 +49,14 @@
     <string name="fui_resend_code_in">Επανάληψη αποστολής κωδικού σε 0:%02d</string>
     <string name="fui_verify_your_phone_title">Επαλήθευση του τηλεφώνου σας</string>
     <string name="fui_verifying">Επαλήθευση…</string>
-    <string name="fui_retrieving_sms">Γίνεται ανάκτηση SMS…</string>
     <string name="fui_incorrect_code_dialog_body">Εσφαλμένος κωδικός. Δοκιμάστε ξανά.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ΟΚ</string>
     <string name="fui_error_too_many_attempts">Αυτός ο αριθμός τηλεφώνου χρησιμοποιήθηκε πάρα πολλές φορές</string>
     <string name="fui_error_quota_exceeded">Παρουσιάστηκε πρόβλημα με την επαλήθευση του αριθμού τηλεφώνου</string>
     <string name="fui_error_session_expired">Αυτός ο κωδικός δεν είναι πλέον έγκυρος</string>
     <string name="fui_sign_in_with_phone_number">Σύνδεση με αριθμό τηλεφώνου</string>
-    <string name="fui_done">Τέλος</string>
-    <string name="fui_verified">Επαληθεύτηκε!</string>
-    <string name="fui_code_sent">Ο κωδικός στάλθηκε!</string>
-    <string name="fui_resending">Επανάληψη αποστολής…</string>
     <string name="fui_resend_code">Επανάληψη αποστολής κωδικού</string>
     <string name="fui_verify_phone_number">Επαλήθευση αριθμού τηλεφώνου</string>
     <string name="fui_continue_phone_login">Συνέχεια</string>
     <string name="fui_sms_terms_of_service">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε τους %2$s και την %3$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε τους %2$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε την %2$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
 </resources>

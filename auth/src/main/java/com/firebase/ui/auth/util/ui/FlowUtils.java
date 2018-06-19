@@ -63,7 +63,7 @@ public final class FlowUtils {
             fragment.startIntentSenderForResult(
                     intent.getIntentSender(), requestCode, null, 0, 0, 0, null);
         } catch (IntentSender.SendIntentException e) {
-            HelperActivityBase activity = (HelperActivityBase) fragment.getActivity();
+            HelperActivityBase activity = (HelperActivityBase) fragment.requireActivity();
             activity.finish(Activity.RESULT_CANCELED, IdpResponse.getErrorIntent(e));
         }
     }

@@ -22,6 +22,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;

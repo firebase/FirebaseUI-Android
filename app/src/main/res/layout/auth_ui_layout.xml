@@ -76,6 +76,13 @@
                 android:text="@string/providers_twitter" />
 
             <CheckBox
+                android:id="@+id/github_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/providers_github"/>
+
+            <CheckBox
                 android:id="@+id/email_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -263,6 +270,29 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:text="@string/facebook_permission_photos" />
+
+            <TextView
+                android:id="@+id/github_permissions_header"
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/github_permissions_header" />
+
+            <CheckBox
+                android:id="@+id/github_permission_repo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/github_permission_repo" />
+
+            <CheckBox
+                android:id="@+id/github_permission_gist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/github_permission_gist" />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"

@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Yükleniyor…</string>
     <string name="fui_sign_in_default">Oturum aç</string>
     <string name="fui_tos_and_pp">Devam ederek %1$s ve %2$s hükümlerimizi kabul ettiğinizi bildirirsiniz.</string>
-    <string name="fui_tos_only">Devam ederek %1$s hükümlerimizi kabul ettiğinizi bildirirsiniz.</string>
-    <string name="fui_pp_only">Devam ederek %1$s hükümlerimizi kabul ettiğinizi bildirirsiniz.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -53,22 +49,14 @@
     <string name="fui_resend_code_in">0:%02d içinde kodu yeniden gönder</string>
     <string name="fui_verify_your_phone_title">Telefon numaranızı doğrulayın</string>
     <string name="fui_verifying">Doğrulanıyor…</string>
-    <string name="fui_retrieving_sms">SMS alınıyor…</string>
     <string name="fui_incorrect_code_dialog_body">Yanlış kod. Tekrar deneyin.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Tamam</string>
     <string name="fui_error_too_many_attempts">Bu telefon numarası çok fazla kez kullanıldı</string>
     <string name="fui_error_quota_exceeded">Telefon numaranız doğrulanırken bir sorun oluştu</string>
     <string name="fui_error_session_expired">Bu kod artık geçerli değil</string>
     <string name="fui_sign_in_with_phone_number">Telefon numarasıyla oturum açın</string>
-    <string name="fui_done">Bitti</string>
-    <string name="fui_verified">Doğrulandı!</string>
-    <string name="fui_code_sent">Kod gönderildi!</string>
-    <string name="fui_resending">Yeniden gönderiliyor…</string>
     <string name="fui_resend_code">Kodu Yeniden Gönder</string>
     <string name="fui_verify_phone_number">Telefon Numarasını Doğrula</string>
     <string name="fui_continue_phone_login">Devam</string>
     <string name="fui_sms_terms_of_service">“%1$s” öğesine dokunarak SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” öğesine dokunarak %2$s ve %3$s hükümlerimizi kabul ettiğinizi bildirirsiniz. SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
-    <string name="fui_sms_terms_of_service_only_extended">%1$s öğesine dokunarak %2$s hükümlerimizi kabul ettiğinizi bildirirsiniz. SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
-    <string name="fui_sms_privacy_policy_only_extended">%1$s öğesine dokunarak %2$s hükümlerimizi kabul ettiğinizi bildirirsiniz. SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
 </resources>

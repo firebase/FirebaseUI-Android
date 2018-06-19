@@ -42,6 +42,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -57,6 +58,8 @@ import butterknife.OnClick;
 public class SignedInActivity extends AppCompatActivity {
     private static final String TAG = "SignedInActivity";
 
+    private static final int RC_LINK_ACCOUNT = 4433;
+
     @BindView(android.R.id.content) View mRootView;
 
     @BindView(R.id.user_profile_picture) ImageView mUserProfilePicture;
@@ -64,6 +67,7 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name) TextView mUserDisplayName;
     @BindView(R.id.user_phone_number) TextView mUserPhoneNumber;
     @BindView(R.id.user_enabled_providers) TextView mEnabledProviders;
+    @BindView(R.id.user_is_new) TextView mIsNewUser;
 
     public static Intent createIntent(Context context, IdpResponse idpResponse) {
         return new Intent().setClass(context, SignedInActivity.class)
@@ -76,7 +80,7 @@ public class SignedInActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            startActivity(AuthUiActivity.createIntent(this));
+            startActivity(AuthUiActivity.createIntent(this, false));
             finish();
             return;
         }
@@ -85,8 +89,17 @@ public class SignedInActivity extends AppCompatActivity {
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
-        populateProfile();
+        populateProfile(response);
         populateIdpToken(response);
+        populatePrevUid(response);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_LINK_ACCOUNT && resultCode == RESULT_OK) {
+            finish();
+        }
     }
 
     @OnClick(R.id.sign_out)
@@ -97,7 +110,7 @@ public class SignedInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this, false));
                             finish();
                         } else {
                             Log.w(TAG, "signOut:failure", task.getException());
@@ -105,6 +118,11 @@ public class SignedInActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @OnClick(R.id.link_account)
+    public void linkAccount() {
+        startActivityForResult(AuthUiActivity.createIntent(this, true), RC_LINK_ACCOUNT);
     }
 
     @OnClick(R.id.delete_account)
@@ -117,7 +135,7 @@ public class SignedInActivity extends AppCompatActivity {
                         deleteAccount();
                     }
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
@@ -128,7 +146,7 @@ public class SignedInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this, false));
                             finish();
                         } else {
                             showSnackbar(R.string.delete_account_failed);
@@ -137,7 +155,7 @@ public class SignedInActivity extends AppCompatActivity {
                 });
     }
 
-    private void populateProfile() {
+    private void populateProfile(@Nullable IdpResponse response) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
             GlideApp.with(this)
@@ -153,6 +171,13 @@ public class SignedInActivity extends AppCompatActivity {
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
+        if (response == null) {
+            mIsNewUser.setVisibility(View.GONE);
+        } else {
+            mIsNewUser.setVisibility(View.VISIBLE);
+            mIsNewUser.setText(response.isNewUser() ? "New user" : "Existing user");
+        }
+
         List<String> providers = new ArrayList<>();
         if (user.getProviderData().isEmpty()) {
             providers.add("Anonymous");
@@ -167,6 +192,9 @@ public class SignedInActivity extends AppCompatActivity {
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_twitter));
+                        break;
+                    case GithubAuthProvider.PROVIDER_ID:
+                        providers.add(getString(R.string.providers_github));
                         break;
                     case EmailAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_email));
@@ -209,6 +237,16 @@ public class SignedInActivity extends AppCompatActivity {
         } else {
             idpSecretLayout.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.idp_secret)).setText(secret);
+        }
+    }
+
+    private void populatePrevUid(IdpResponse response) {
+        String prevUid = response == null ? null : response.getPrevUid();
+
+        if (prevUid == null) {
+            findViewById(R.id.prev_uid_layout).setVisibility(View.GONE);
+        } else {
+            ((TextView) findViewById(R.id.prev_uid)).setText(prevUid);
         }
     }
 

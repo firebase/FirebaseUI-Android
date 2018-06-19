@@ -18,7 +18,6 @@ import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-@SuppressWarnings("WrongConstant")
 public class CheckEmailHandler extends AuthViewModelBase<User> {
     public CheckEmailHandler(Application application) {
         super(application);
