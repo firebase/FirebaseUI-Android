@@ -107,8 +107,8 @@ public final class AccountLinker {
     private final class ExistingUser implements Continuation<AuthResult, Task<AuthResult>> {
         @Override
         public Task<AuthResult> then(@NonNull final Task<AuthResult> task) {
-            if (task.getException() instanceof FirebaseAuthUserCollisionException
-                    && mHandler.canLinkAccounts()) {
+            final Exception e = task.getException();
+            if (e instanceof FirebaseAuthUserCollisionException && mHandler.canLinkAccounts()) {
                 mIdpResponse.getUser()
                         .setPrevUid(mHandler.getUidForAccountLinking());
 
@@ -122,8 +122,13 @@ public final class AccountLinker {
                         new Callable<Task<AuthResult>>() {
                             @Override
                             public Task<AuthResult> call() {
+                                AuthCredential existingCred =
+                                        ((FirebaseAuthUserCollisionException) e)
+                                                .getUpdatedCredential();
+                                if (existingCred == null) { existingCred = mExistingCredential; }
+
                                 return mHandler.getAuth()
-                                        .signInWithCredential(mExistingCredential)
+                                        .signInWithCredential(existingCred)
                                         .continueWithTask(new ProfileMerger(mIdpResponse))
                                         .continueWithTask(new ExceptionWrapper(task));
                             }

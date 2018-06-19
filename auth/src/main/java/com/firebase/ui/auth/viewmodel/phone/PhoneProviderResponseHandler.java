@@ -6,6 +6,7 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,16 +32,22 @@ public class PhoneProviderResponseHandler extends SignInViewModelBase {
         }
         setResult(Resource.<IdpResponse>forLoading());
 
-        getAuth().signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            handleSuccess(response, task.getResult());
-                        } else {
-                            setResult(Resource.<IdpResponse>forFailure(task.getException()));
-                        }
-                    }
-                });
+        Task<AuthResult> signInTask;
+        if (canLinkAccounts()) {
+            signInTask = AccountLinker.linkWithCurrentUser(this, response, credential);
+        } else {
+            signInTask = getAuth().signInWithCredential(credential);
+        }
+
+        signInTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    handleSuccess(response, task.getResult());
+                } else {
+                    setResult(Resource.<IdpResponse>forFailure(task.getException()));
+                }
+            }
+        });
     }
 }
