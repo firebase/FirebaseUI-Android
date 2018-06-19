@@ -27,6 +27,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -79,10 +80,13 @@ public final class TestHelper {
 
     private static void initializeProviders() {
         Context context = RuntimeEnvironment.application;
+        when(context.getString(R.string.firebase_web_host)).thenReturn("abc");
         when(context.getString(R.string.default_web_client_id)).thenReturn("abc");
         when(context.getString(R.string.facebook_application_id)).thenReturn("abc");
         when(context.getString(R.string.twitter_consumer_key)).thenReturn("abc");
         when(context.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
+        when(context.getString(R.string.github_client_id)).thenReturn("abc");
+        when(context.getString(R.string.github_client_secret)).thenReturn("abc");
     }
 
     public static FirebaseUser getMockFirebaseUser() {
@@ -107,6 +111,9 @@ public final class TestHelper {
                     break;
                 case TwitterAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.TwitterBuilder().build());
+                    break;
+                case GithubAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.GitHubBuilder().build());
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.EmailBuilder().build());

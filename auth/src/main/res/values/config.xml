@@ -1,5 +1,7 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-           tools:ignore="ResourceName">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
+    <!-- Example: project-id.firebaseapp.com. Used for OAuth redirects -->
+    <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
+
     <!--
     The Facebook Application ID associated with this Android application. This
     must be overridden by users of FirebaseUI auth in order to support Facebook
@@ -30,15 +32,13 @@
     -->
     <string name="default_web_client_id" translatable="false">CHANGE-ME</string>
 
-
-    <!--
-    Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
-    application with Twitter and provide the following two values.
-    -->
+    <!-- Your Twitter Consumer Key. -->
     <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
-
-    <!--
-    Your Twitter Consumer Secret
-    -->
+    <!-- Your Twitter Consumer Secret. -->
     <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
+
+    <!-- Your GitHub Client ID. -->
+    <string name="github_client_id" translatable="false">CHANGE-ME</string>
+    <!-- Your GitHub Client Secret. -->
+    <string name="github_client_secret" translatable="false">CHANGE-ME</string>
 </resources>

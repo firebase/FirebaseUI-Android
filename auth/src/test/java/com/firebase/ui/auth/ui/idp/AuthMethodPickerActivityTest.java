@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.ui.idp;
 
 import android.content.Intent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -64,8 +63,6 @@ public class AuthMethodPickerActivityTest {
         assertEquals(providers.size(),
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
-        Button emailButton = authMethodPickerActivity.findViewById(R.id.email_button);
-        assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
 
     @Test
