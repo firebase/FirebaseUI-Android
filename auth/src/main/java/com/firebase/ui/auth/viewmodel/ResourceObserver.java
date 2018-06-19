@@ -31,6 +31,10 @@ public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
         this(activity, null, activity, message);
     }
 
+    protected ResourceObserver(@NonNull FragmentBase fragment) {
+        this(null, fragment, fragment, R.string.fui_progress_dialog_loading);
+    }
+
     protected ResourceObserver(@NonNull FragmentBase fragment, @StringRes int message) {
         this(null, fragment, fragment, message);
     }

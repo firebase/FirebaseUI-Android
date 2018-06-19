@@ -3,6 +3,7 @@ package com.firebase.ui.auth.data.remote;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -18,11 +19,12 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
@@ -46,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
+public class SignInKickstarter extends SignInViewModelBase {
     public SignInKickstarter(Application application) {
         super(application);
     }
@@ -120,12 +122,22 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         }
     }
 
-    private void redirectSignIn(String provider, String email) {
+    private void redirectSignIn(String provider, String id) {
         switch (provider) {
             case EmailAuthProvider.PROVIDER_ID:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
-                        EmailActivity.createIntent(getApplication(), getArguments(), email),
+                        EmailActivity.createIntent(getApplication(), getArguments(), id),
                         RequestCodes.EMAIL_FLOW)));
+                break;
+            case PhoneAuthProvider.PROVIDER_ID:
+                Bundle args = new Bundle();
+                args.putString(ExtraConstants.PHONE, id);
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                        PhoneActivity.createIntent(
+                                getApplication(),
+                                getArguments(),
+                                args),
+                        RequestCodes.PHONE_FLOW)));
                 break;
             case GoogleAuthProvider.PROVIDER_ID:
             case FacebookAuthProvider.PROVIDER_ID:
@@ -134,7 +146,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                         SingleSignInActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
-                                new User.Builder(provider, email).build()),
+                                new User.Builder(provider, id).build()),
                         RequestCodes.PROVIDER_FLOW)));
                 break;
             default:
@@ -210,7 +222,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult result) {
-                            setResult(Resource.forSuccess(response));
+                            handleSuccess(response, result);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

@@ -25,7 +25,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
+import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;

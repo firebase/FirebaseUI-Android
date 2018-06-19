@@ -66,6 +66,7 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name) TextView mUserDisplayName;
     @BindView(R.id.user_phone_number) TextView mUserPhoneNumber;
     @BindView(R.id.user_enabled_providers) TextView mEnabledProviders;
+    @BindView(R.id.user_is_new) TextView mIsNewUser;
 
     public static Intent createIntent(Context context, IdpResponse idpResponse) {
         return new Intent().setClass(context, SignedInActivity.class)
@@ -87,7 +88,7 @@ public class SignedInActivity extends AppCompatActivity {
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
-        populateProfile();
+        populateProfile(response);
         populateIdpToken(response);
         populatePrevUid(response);
     }
@@ -153,7 +154,7 @@ public class SignedInActivity extends AppCompatActivity {
                 });
     }
 
-    private void populateProfile() {
+    private void populateProfile(@Nullable IdpResponse response) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
             GlideApp.with(this)
@@ -168,6 +169,13 @@ public class SignedInActivity extends AppCompatActivity {
                 TextUtils.isEmpty(user.getPhoneNumber()) ? "No phone number" : user.getPhoneNumber());
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
+
+        if (response == null) {
+            mIsNewUser.setVisibility(View.GONE);
+        } else {
+            mIsNewUser.setVisibility(View.VISIBLE);
+            mIsNewUser.setText(response.isNewUser() ? "New user" : "Existing user");
+        }
 
         List<String> providers = new ArrayList<>();
         if (user.getProviderData().isEmpty()) {

@@ -2,11 +2,7 @@
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Iniciar sesión</string>
     <string name="fui_tos_and_pp">Si continúas, confirmas que aceptas nuestras %1$s y nuestra %2$s.</string>
-    <string name="fui_tos_only">Si continúas, confirmas que aceptas nuestras %1$s.</string>
-    <string name="fui_pp_only">Si continúas, confirmas que aceptas nuestra %1$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
-    <string name="fui_tos_footer">%1$s</string>
-    <string name="fui_pp_footer">%1$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -53,22 +49,14 @@
     <string name="fui_resend_code_in">Volver a enviar el código en 0:%02d</string>
     <string name="fui_verify_your_phone_title">Verificar el número de teléfono</string>
     <string name="fui_verifying">Verificando…</string>
-    <string name="fui_retrieving_sms">Recuperando SMS…</string>
     <string name="fui_incorrect_code_dialog_body">El código es incorrecto. Vuelve a intentarlo.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">Aceptar</string>
     <string name="fui_error_too_many_attempts">Este número de teléfono se ha usado demasiadas veces</string>
     <string name="fui_error_quota_exceeded">No se ha podido verificar el número de teléfono</string>
     <string name="fui_error_session_expired">Este código ya no es válido</string>
     <string name="fui_sign_in_with_phone_number">Iniciar sesión con el número de teléfono</string>
-    <string name="fui_done">Listo</string>
-    <string name="fui_verified">Verificado</string>
-    <string name="fui_code_sent">Se ha enviado el código.</string>
-    <string name="fui_resending">Enviándolo de nuevo…</string>
     <string name="fui_resend_code">Volver a enviar código</string>
     <string name="fui_verify_phone_number">Verificar número de teléfono</string>
     <string name="fui_continue_phone_login">Continuar</string>
     <string name="fui_sms_terms_of_service">Al tocar %1$s, podría enviarse un SMS. Es posible que se apliquen cargos de mensajería y de uso de datos.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Si tocas %1$s, confirmas que aceptas nuestras %2$s y nuestra %3$s. Podría enviarse un SMS, por lo que es posible que se apliquen cargos de mensajería y de uso de datos.</string>
-    <string name="fui_sms_terms_of_service_only_extended">Si tocas %1$s, confirmas que aceptas nuestras %2$s. Podría enviarse un SMS, por lo que es posible que se apliquen cargos de mensajería y de uso de datos.</string>
-    <string name="fui_sms_privacy_policy_only_extended">Si tocas %1$s, confirmas que aceptas nuestra %2$s. Podría enviarse un SMS, por lo que es posible que se apliquen cargos de mensajería y de uso de datos.</string>
 </resources>
