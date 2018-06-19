@@ -32,8 +32,7 @@ public class EmailSignInHandler extends ProviderSignInBase<Void> {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
             // The activity deals with this case. This conflict is handled by the developer.
-        }
-        if (requestCode == RequestCodes.EMAIL_FLOW) {
+        } else if (requestCode == RequestCodes.EMAIL_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
                 setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));

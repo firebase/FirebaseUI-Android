@@ -89,8 +89,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 supplier.get(LinkingSocialProviderResponseHandler.class);
         handler.init(getFlowParams());
         if (requestedUserResponse != null) {
-            handler.setRequestedSignInCredential(
-                    ProviderUtils.getAuthCredential(requestedUserResponse));
+            handler.setRequestedSignInCredentialForEmail(
+                    ProviderUtils.getAuthCredential(requestedUserResponse),
+                    existingUser.getEmail());
         }
 
         String providerId = existingUser.getProviderId();

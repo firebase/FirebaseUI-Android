@@ -170,4 +170,9 @@ public final class ProviderUtils {
                     }
                 });
     }
+
+    public static String getTopProvider(@NonNull List<String> providers) {
+        return providers == null || providers.isEmpty() ? null :
+                providers.get(providers.size() - 1);
+    }
 }

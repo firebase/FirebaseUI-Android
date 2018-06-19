@@ -232,6 +232,7 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mToken);
         dest.writeString(mSecret);
         dest.writeInt(mIsNewUser ? 1 : 0);
+
         ObjectOutputStream oos = null;
         try {
             oos = new ObjectOutputStream(new ByteArrayOutputStream());
@@ -254,6 +255,7 @@ public class IdpResponse implements Parcelable {
                 } catch (IOException ignored) {}
             }
         }
+
         dest.writeParcelable(mPendingCredential, 0);
     }
 
@@ -268,7 +270,9 @@ public class IdpResponse implements Parcelable {
                 && (mToken == null ? response.mToken == null : mToken.equals(response.mToken))
                 && (mSecret == null ? response.mSecret == null : mSecret.equals(response.mSecret))
                 && (mIsNewUser == response.mIsNewUser)
-                && (mException == null ? response.mException == null : mException.equals(response.mException));
+                && (mException == null ? response.mException == null : mException.equals(response.mException))
+                && (mPendingCredential == null ? response.mPendingCredential == null :
+                mPendingCredential.equals(response.mPendingCredential));
     }
 
     @Override

@@ -34,6 +34,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -109,9 +111,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                if (!(e instanceof UserCancellationException)) {
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    onMergeFailure(((FirebaseAuthAnonymousUpgradeException) e).getResponse());
+                } else if ( (!(e instanceof UserCancellationException))) {
+                    String text = e instanceof FirebaseUiException ? e.getMessage() :
+                            getString(R.string.fui_error_unknown);
                     Toast.makeText(AuthMethodPickerActivity.this,
-                            R.string.fui_error_unknown,
+                            text,
                             Toast.LENGTH_SHORT).show();
                 }
             }

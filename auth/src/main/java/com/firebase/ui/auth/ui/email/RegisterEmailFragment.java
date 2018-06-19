@@ -215,8 +215,8 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        requireActivity().setTitle(R.string.fui_title_register_email);
-        FragmentActivity activity = getActivity();
+        FragmentActivity activity = requireActivity();
+        activity.setTitle(R.string.fui_title_register_email);
         if (!(activity instanceof AnonymousUpgradeListener)) {
             throw new IllegalStateException("Activity must implement CheckEmailListener");
         }

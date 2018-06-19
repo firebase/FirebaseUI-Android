@@ -65,10 +65,6 @@ public final class Resource<T> {
         return mValue;
     }
 
-    public boolean hasValue() {
-        return mValue != null;
-    }
-
     public boolean isUsed() {
         return mIsUsed;
     }

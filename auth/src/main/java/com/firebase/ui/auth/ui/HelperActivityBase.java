@@ -40,11 +40,8 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Forward the results of Smart Lock saving
-        if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
-            finish(resultCode, data);
-        }
-
-        if (resultCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+        if (requestCode == RequestCodes.CRED_SAVE_FLOW
+                || resultCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
             finish(resultCode, data);
         }
     }
