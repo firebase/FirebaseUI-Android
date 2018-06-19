@@ -43,8 +43,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
     public void startSignIn(@NonNull final String email,
                             @NonNull final String password,
                             @NonNull final IdpResponse inputResponse,
-                            @Nullable final AuthCredential credential,
-                            @Nullable final String prevUid) {
+                            @Nullable final AuthCredential credential) {
         setResult(Resource.<IdpResponse>forLoading());
 
         // Store the password before signing in so it can be used for later credential building
@@ -56,7 +55,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
             // New credential for the email provider
             outputResponse = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
-                            .setPrevUid(prevUid).build())
+                            .setPrevUid(getUidForAccountLinking()).build())
                     .build();
         } else {
             // New credential for an IDP (Phone or Social)
@@ -64,7 +63,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
                     .setToken(inputResponse.getIdpToken())
                     .setSecret(inputResponse.getIdpSecret())
                     .build();
-            outputResponse.getUser().setPrevUid(prevUid);
+            outputResponse.getUser().setPrevUid(getUidForAccountLinking());
         }
 
         // Kick off the flow including signing in, linking accounts, and saving with SmartLock

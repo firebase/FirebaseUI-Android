@@ -92,8 +92,8 @@ public class WelcomeBackPasswordHandlerTest {
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential,
-                             null);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential
+        );
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
@@ -118,7 +118,7 @@ public class WelcomeBackPasswordHandlerTest {
                 .thenReturn(AutoContinueTask.<AuthResult>forFailure(new Exception("FAILED")));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null, null);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));

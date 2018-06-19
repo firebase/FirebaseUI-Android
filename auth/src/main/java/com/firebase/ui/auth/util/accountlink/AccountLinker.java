@@ -7,7 +7,7 @@ import android.support.annotation.RestrictTo;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 public final class AccountLinker {
     private static final String TAG = "AccountLinker";
 
-    private final AuthViewModelBase<?> mHandler;
+    private final SignInViewModelBase mHandler;
     private final IdpResponse mIdpResponse;
 
     /** The credential of the user's existing account. */
@@ -40,7 +40,7 @@ public final class AccountLinker {
 
     private final Task<AuthResult> mTask;
 
-    private AccountLinker(AuthViewModelBase<?> handler,
+    private AccountLinker(SignInViewModelBase handler,
                           IdpResponse response,
                           @NonNull AuthCredential existingCredential,
                           @Nullable AuthCredential newCredential) {
@@ -52,13 +52,13 @@ public final class AccountLinker {
         mTask = start();
     }
 
-    public static Task<AuthResult> linkWithCurrentUser(AuthViewModelBase<?> handler,
+    public static Task<AuthResult> linkWithCurrentUser(SignInViewModelBase handler,
                                                        IdpResponse response,
                                                        AuthCredential existingCredential) {
         return new AccountLinker(handler, response, existingCredential, null).mTask;
     }
 
-    public static Task<AuthResult> linkToNewUser(AuthViewModelBase<?> handler,
+    public static Task<AuthResult> linkToNewUser(SignInViewModelBase handler,
                                                  IdpResponse response,
                                                  AuthCredential existingCredential,
                                                  AuthCredential newCredential) {

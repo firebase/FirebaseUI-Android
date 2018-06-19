@@ -49,15 +49,6 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
         return mCredentialsClient;
     }
 
-    public boolean canLinkAccounts() {
-        return getArguments().accountLinkingEnabled && getCurrentUser() != null;
-    }
-
-    @Nullable
-    public String getUidForAccountLinking() {
-        return canLinkAccounts() ? getCurrentUser().getUid() : null;
-    }
-
     @VisibleForTesting
     public void initializeForTesting(FlowParameters parameters,
                                      FirebaseAuth auth,

@@ -10,7 +10,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
