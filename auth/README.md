@@ -242,6 +242,12 @@ You should now have:
 
 Congrats, you did it! All that's left to do is [kick off the sign-in flow](#authui-sign-in).
 
+##### Help, I'm stuck!
+
+In all likelihood, your [asset links](#adding-asset-links) aren't configured correctly. Make sure
+that `https://project-id.firebaseapp.com/.well-known/assetlinks.json` resolves without redirects. If
+all else fails, FUI team members will help you out on StackOverflow with the `FirebaseUI` tag.
+
 ## Using FirebaseUI for authentication
 
 Before invoking the FirebaseUI authentication flow, your app should check
