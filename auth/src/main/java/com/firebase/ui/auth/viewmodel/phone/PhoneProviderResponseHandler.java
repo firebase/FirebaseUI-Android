@@ -31,9 +31,11 @@ public class PhoneProviderResponseHandler extends SignInViewModelBase {
             throw new IllegalStateException(
                     "This handler cannot be used without a phone response.");
         }
+
         setResult(Resource.<IdpResponse>forLoading());
 
-        AuthOperationManager.signInAndLinkWithCredential(getAuth(), getArguments(), credential)
+        AuthOperationManager.getInstance()
+                .signInAndLinkWithCredential(getAuth(), getArguments(), credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {

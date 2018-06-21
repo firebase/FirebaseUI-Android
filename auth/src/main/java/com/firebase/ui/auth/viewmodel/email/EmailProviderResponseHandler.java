@@ -42,8 +42,9 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
         }
         setResult(Resource.<IdpResponse>forLoading());
 
+        final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
         final String email = response.getEmail();
-        AuthOperationManager.createOrLinkUserWithEmailAndPassword(getAuth(),
+        authOperationManager.createOrLinkUserWithEmailAndPassword(getAuth(),
                 getArguments(),
                 email,
                 password)
@@ -59,7 +60,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthUserCollisionException) {
-                            if (AuthOperationManager.canUpgradeAnonymous(getAuth(),
+                            if (authOperationManager.canUpgradeAnonymous(getAuth(),
                                     getArguments())) {
                                 AuthCredential credential = EmailAuthProvider.getCredential(email,
                                         password);

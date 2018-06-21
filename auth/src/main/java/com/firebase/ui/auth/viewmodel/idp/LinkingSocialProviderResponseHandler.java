@@ -52,8 +52,11 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
         }
 
         setResult(Resource.<IdpResponse>forLoading());
+
+        final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
         final AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        if (AuthOperationManager.canUpgradeAnonymous(getAuth(), getArguments())) {
+
+        if (authOperationManager.canUpgradeAnonymous(getAuth(), getArguments())) {
             if (mRequestedSignInCredential == null) {
                 // The user has provided a valid credential by signing in with a federated
                 // idp. linkWithCredential will fail because the user is anonymous and the account
@@ -67,7 +70,7 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
                 // present on the account.
                 // These IDPs belong to the same account - they must be linked, but we can't lose
                 // our anonymous user session
-                AuthOperationManager.safeLink(credential, mRequestedSignInCredential, getArguments())
+                authOperationManager.safeLink(credential, mRequestedSignInCredential, getArguments())
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult result) {

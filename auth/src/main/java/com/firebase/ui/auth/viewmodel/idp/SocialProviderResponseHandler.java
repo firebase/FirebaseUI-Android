@@ -50,7 +50,8 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
         setResult(Resource.<IdpResponse>forLoading());
 
         final AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        AuthOperationManager.signInAndLinkWithCredential(
+
+        AuthOperationManager.getInstance().signInAndLinkWithCredential(
                 getAuth(),
                 getArguments(),
                 credential)

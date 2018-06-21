@@ -65,14 +65,14 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
                     .build();
         }
 
-
-        if (AuthOperationManager.canUpgradeAnonymous(getAuth(), getArguments())) {
+        final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
+        if (authOperationManager.canUpgradeAnonymous(getAuth(), getArguments())) {
             final AuthCredential credToValidate = EmailAuthProvider.getCredential(email, password);
 
             // Check to see if we need to link (for social providers with the same email)
             if (AuthUI.SOCIAL_PROVIDERS.contains(inputResponse.getProviderType())) {
                 // Add the provider to the same account before triggering a merge failure.
-                AuthOperationManager.safeLink(credToValidate, credential, getArguments())
+                authOperationManager.safeLink(credToValidate, credential, getArguments())
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult result) {
@@ -90,7 +90,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
                 // In this case, we just need to verify that the credential they provided is valid.
                 // No linking is done for non-federated IDPs.
                 // A merge failure occurs because the account exists and the user is anonymous.
-                AuthOperationManager.validateCredential(credToValidate, getArguments())
+                authOperationManager.validateCredential(credToValidate, getArguments())
                         .addOnCompleteListener(
                                 new OnCompleteListener<AuthResult>() {
                                     @Override
