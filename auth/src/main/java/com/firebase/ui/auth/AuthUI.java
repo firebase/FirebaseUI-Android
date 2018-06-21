@@ -1115,8 +1115,8 @@ public final class AuthUI {
         }
 
         /**
-         * Enables or disables upgrading anonymous accounts to full accounts during the sign-in
-         * flow. This is disabled by default.
+         * Enables upgrading anonymous accounts to full accounts during the sign-in flow.
+         * This is disabled by default.
          */
         @NonNull
         public SignInIntentBuilder setAutoUpgradeAnonymousUsers() {
