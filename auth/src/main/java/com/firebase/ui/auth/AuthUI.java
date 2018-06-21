@@ -1119,7 +1119,7 @@ public final class AuthUI {
          * This is disabled by default.
          */
         @NonNull
-        public SignInIntentBuilder setAutoUpgradeAnonymousUsers() {
+        public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {
             mEnableAnonymousUpgrade = true;
             return this;
         }

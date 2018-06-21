@@ -1,6 +1,4 @@
 
-import Config.Libs.Lint.api
-import Config.Plugins.android
 import com.android.build.gradle.internal.dsl.TestOptions
 
 android {

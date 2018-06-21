@@ -88,7 +88,7 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
                 .setAvailableProviders(providers)
                 .setIsSmartLockEnabled(false)
-                .setAutoUpgradeAnonymousUsers()
+                .enableAnonymousUsersAutoUpgrade()
                 .build();
 
         startActivityForResult(intent, RC_SIGN_IN);
