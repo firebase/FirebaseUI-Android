@@ -1,3 +1,4 @@
+
 import com.android.build.gradle.internal.dsl.TestOptions
 
 android {
@@ -43,6 +44,7 @@ dependencies {
     implementation(Config.Libs.Misc.retrofitGson)
 
     testImplementation(Config.Libs.Test.junit)
+    testImplementation(Config.Libs.Test.truth)
     testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)

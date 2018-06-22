@@ -38,6 +38,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
    1. [Silent sign-in](#silent-sign-in)
    1. [Sign out](#sign-out)
    1. [Account deletion](#deleting-accounts)
+   1. [Upgrading Anonymous Users](#upgrading-anonymous-users)
    1. [Auth flow chart](#authentication-flow-chart)
 1. [Customization](#ui-customization)
    1. [Required setup](#required-setup)
@@ -645,6 +646,87 @@ AuthUI.getInstance()
                 }
             }
         });
+```
+
+### Upgrading anonymous users
+
+#### Enabling anonymous user upgrade
+
+When an anonymous user signs in or signs up with a permanent account, you want
+to be sure that the user can continue with what they were doing before signing up.
+For example, an anonymous user might have items in their shopping cart.
+At check-out, you prompt the user to sign in or sign up. After the user is
+signed in, the user's shopping cart should contain any items the user added
+while signed in anonymously.
+
+To support this behavior, FirebaseUI makes it easy to "upgrade" an anonymous
+account to a permanent account. To do so, simply call `enableAnonymousUsersAutoUpgrade()`
+when you configure the sign-in UI (this option is disabled by default).
+
+For example: 
+```java
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        enableAnonymousUsersAutoUpgrade()
+        ...
+        .build(),
+    RC_SIGN_IN);
+```
+
+With this enabled, FirebaseUI will link the credential on sign-in with the anonymous account
+using Firebase Auth's `linkWithCredential` method: 
+```java
+FirebaseAuth.getInstance().getCurrentUser().linkWithCredential(permanentCredential);
+```
+
+#### Handling anonymous user upgrade merge conflicts
+
+There is an issue when an anonymous user tries to upgrade to an existing Firebase user. 
+
+For example, a user may have previously signed up with a Google credential on a different device. 
+If they are signed in anonymously and they attempt to upgrade with the existing Google account, 
+a `FirebaseAuthUserCollisionException` will be thrown by Firebase Auth as an existing user
+cannot be linked to another existing user. No two users can share the same credential. In this case, 
+we need to merge the data from both users before we can upgrade the anonymous user.
+ 
+The process of storing the anonymous users data, signing in with the credential, and copying the
+data over to the existing account is left to the developer. 
+
+When linking is unsuccessful due to user collision, an error with code 
+`ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT` will be returned to `onActivityResult()`. A valid 
+non-anonymous credential can be obtained from the `IdpResponse` via `getCredentialForLinking()`.
+
+**Example:**
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == RC_SIGN_IN) {
+        IdpResponse response = IdpResponse.fromResultIntent(data);
+        if (resultCode == RESULT_OK) {
+            // Successful sign in
+        } else {
+            // Sign in failed
+            if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                // Store relevant anonymous user data
+                ...
+                // Get the non-anoymous credential from the response
+                AuthCredential nonAnonymousCredential = response.getCredentialForLinking();
+                // Sign in with credential 
+                FirebaseAuth.getInstance().signInWithCredential(nonAnonymousCredential);
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult result) {
+                            // Copy over anonymous user data to signed in user
+                            ...
+                        }
+                    });
+            }
+        }
+        updateUI();
+    }
+}
 ```
 
 ### Authentication flow chart

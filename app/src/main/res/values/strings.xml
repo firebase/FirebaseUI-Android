@@ -9,6 +9,7 @@
     <string name="title_storage_activity">Storage Image Demo</string>
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
+    <string name="desc_anonymous_upgrade">Demonstrates upgrading an anonymous account using FirebaseUI.</string>
     <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
     <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paged data from Cloud Firestore.</string>
     <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
@@ -73,6 +74,11 @@
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="unknown_error">An unknown error occurred</string>
+
+    <string name="title_anonymous_upgrade">FirebaseUI Anonymous Account Linking</string>
+    <string name="anonymous_sign_in">Anonymous Sign In</string>
+    <string name="launch_auth_ui">Launch Auth UI</string>
+    <string name="resolve_merge_conflict">Resolve Merge Conflict</string>
 
     <!-- Auth UI - Signed in -->
     <string name="signed_in_header">You are signed in!</string>

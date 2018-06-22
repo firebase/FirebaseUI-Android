@@ -24,6 +24,8 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -132,7 +134,10 @@ public class PhoneActivity extends AppCompatBase {
         TextInputLayout errorView = getErrorView();
         if (errorView == null) { return; }
 
-        if (e instanceof FirebaseAuthException) {
+        if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+            IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+            finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
+        } else if (e instanceof FirebaseAuthException) {
             errorView.setError(getErrorMessage(
                     FirebaseAuthError.fromException((FirebaseAuthException) e)));
         } else if (e != null) {

@@ -212,7 +212,7 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Override
     public void hideProgress() {
-       mNextButton.setEnabled(true);
-       mProgressBar.setVisibility(View.INVISIBLE);
+        mNextButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

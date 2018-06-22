@@ -100,6 +100,11 @@ public final class TestHelper {
     }
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds) {
+        return getFlowParameters(providerIds, false);
+    }
+
+    public static FlowParameters getFlowParameters(Collection<String> providerIds,
+                                                   boolean enableAnonymousUpgrade) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -133,7 +138,9 @@ public final class TestHelper {
                 null,
                 null,
                 true,
-                true);
+                true,
+                enableAnonymousUpgrade);
     }
+
 
 }

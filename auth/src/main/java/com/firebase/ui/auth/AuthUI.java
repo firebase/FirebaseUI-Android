@@ -1139,8 +1139,21 @@ public final class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+
+        private boolean mEnableAnonymousUpgrade;
+
         private SignInIntentBuilder() {
             super();
+        }
+
+        /**
+         * Enables upgrading anonymous accounts to full accounts during the sign-in flow.
+         * This is disabled by default.
+         */
+        @NonNull
+        public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {
+            mEnableAnonymousUpgrade = true;
+            return this;
         }
 
         @Override
@@ -1153,7 +1166,8 @@ public final class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
-                    mEnableHints);
+                    mEnableHints,
+                    mEnableAnonymousUpgrade);
         }
     }
 }

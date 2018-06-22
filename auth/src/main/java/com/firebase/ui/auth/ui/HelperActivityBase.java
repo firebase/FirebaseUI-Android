@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
@@ -39,7 +40,8 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Forward the results of Smart Lock saving
-        if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
+        if (requestCode == RequestCodes.CRED_SAVE_FLOW
+                || resultCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
             finish(resultCode, data);
         }
     }
