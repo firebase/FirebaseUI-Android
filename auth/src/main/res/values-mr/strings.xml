@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">तुमच्‍या फोन नंबरची पडताळणी करण्‍यात एक समस्या होती</string>
     <string name="fui_error_session_expired">हा कोड यापुढे वैध नसेल</string>
     <string name="fui_sign_in_with_phone_number">फोन नंबरने साइन इन करा</string>
+    <string name="fui_auto_verified">फोन नंबरची अपोआप पडताळणी केली आहे</string>
     <string name="fui_resend_code">कोड पुन्हा पाठवा</string>
     <string name="fui_verify_phone_number">फोन नंबरची पडताळणी करा</string>
     <string name="fui_continue_phone_login">सुरू ठेवा</string>

@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Дошло је до проблема при верификацији броја телефона</string>
     <string name="fui_error_session_expired">Тај кôд више не важи</string>
     <string name="fui_sign_in_with_phone_number">Пријавите се помоћу броја телефона</string>
+    <string name="fui_auto_verified">Број телефона је аутоматски верификован</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
     <string name="fui_continue_phone_login">Настави</string>
