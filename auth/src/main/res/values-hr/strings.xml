@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Došlo je do problema s potvrdom vašeg telefonskog broja</string>
     <string name="fui_error_session_expired">Kôd više nije važeći</string>
     <string name="fui_sign_in_with_phone_number">Prijava putem telefonskog broja</string>
+    <string name="fui_auto_verified">Telefonski je broj automatski potvrđen</string>
     <string name="fui_resend_code">Ponovo pošalji kôd</string>
     <string name="fui_verify_phone_number">Potvrda telefonskog broja</string>
     <string name="fui_continue_phone_login">Nastavi</string>

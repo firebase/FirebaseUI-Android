@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Pri preverjanju telefonske številke je prišlo do težave</string>
     <string name="fui_error_session_expired">Koda ni več veljavna</string>
     <string name="fui_sign_in_with_phone_number">Prijava s telefonsko številko</string>
+    <string name="fui_auto_verified">Telefonska številka je bila samodejno preverjena</string>
     <string name="fui_resend_code">Ponovno pošlji kodo</string>
     <string name="fui_verify_phone_number">Preverjanje telefonske številke</string>
     <string name="fui_continue_phone_login">Naprej</string>

@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">No se ha podido verificar el número de teléfono</string>
     <string name="fui_error_session_expired">Este código ya no es válido</string>
     <string name="fui_sign_in_with_phone_number">Iniciar sesión con el número de teléfono</string>
+    <string name="fui_auto_verified">Se ha verificado automáticamente el número de teléfono</string>
     <string name="fui_resend_code">Volver a enviar código</string>
     <string name="fui_verify_phone_number">Verificar número de teléfono</string>
     <string name="fui_continue_phone_login">Continuar</string>

@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">هنگام تأیید شماره تلفنتان مشکلی پیش آمد</string>
     <string name="fui_error_session_expired">این کد دیگر معتبر نیست</string>
     <string name="fui_sign_in_with_phone_number">ورود به سیستم با شماره تلفن</string>
+    <string name="fui_auto_verified">شماره تلفن به‌طور خودکار به‌تأیید رسید</string>
     <string name="fui_resend_code">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number">تأیید شماره تلفن</string>
     <string name="fui_continue_phone_login">ادامه</string>

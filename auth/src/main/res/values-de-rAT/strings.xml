@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Bei der Bestätigung Ihrer Telefonnummer ist ein Problem aufgetreten</string>
     <string name="fui_error_session_expired">Dieser Code ist nicht mehr gültig</string>
     <string name="fui_sign_in_with_phone_number">Mit einer Telefonnummer anmelden</string>
+    <string name="fui_auto_verified">Telefonnummer wurde automatisch bestätigt</string>
     <string name="fui_resend_code">Code erneut senden</string>
     <string name="fui_verify_phone_number">Telefonnummer bestätigen</string>
     <string name="fui_continue_phone_login">Weiter</string>

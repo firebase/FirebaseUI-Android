@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Не вдалося підтвердити ваш номер телефону</string>
     <string name="fui_error_session_expired">Цей код уже не дійсний</string>
     <string name="fui_sign_in_with_phone_number">Увійти, використовуючи номер телефону</string>
+    <string name="fui_auto_verified">Номер телефону підтверджено автоматично</string>
     <string name="fui_resend_code">Повторно надіслати код</string>
     <string name="fui_verify_phone_number">Підтвердити номер телефону</string>
     <string name="fui_continue_phone_login">Продовжити</string>

@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">A apărut o problemă la confirmarea numărului de telefon</string>
     <string name="fui_error_session_expired">Codul nu mai este valid</string>
     <string name="fui_sign_in_with_phone_number">Conectați-vă cu numărul de telefon</string>
+    <string name="fui_auto_verified">Numărul de telefon este verificat automat</string>
     <string name="fui_resend_code">Retrimiteți codul</string>
     <string name="fui_verify_phone_number">Confirmați numărul de telefon</string>
     <string name="fui_continue_phone_login">Continuați</string>
