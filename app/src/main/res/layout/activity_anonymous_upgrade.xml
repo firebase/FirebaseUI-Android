@@ -12,7 +12,6 @@
     android:orientation="vertical"
     tools:context=".auth.AuthUiActivity">
 
-
     <TextView
         style="@style/Base.TextAppearance.AppCompat.Headline"
         android:layout_width="wrap_content"

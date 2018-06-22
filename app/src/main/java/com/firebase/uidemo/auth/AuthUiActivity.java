@@ -38,6 +38,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.util.ConfigurationUtils;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -108,7 +109,7 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        if (isGoogleMisconfigured()) {
+        if (ConfigurationUtils.isGoogleMisconfigured(this)) {
             mUseGoogleProvider.setChecked(false);
             mUseGoogleProvider.setEnabled(false);
             mUseGoogleProvider.setText(R.string.google_label_missing_config);
@@ -123,7 +124,7 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (isFacebookMisconfigured()) {
+        if (ConfigurationUtils.isFacebookMisconfigured(this)) {
             mUseFacebookProvider.setChecked(false);
             mUseFacebookProvider.setEnabled(false);
             mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
@@ -138,13 +139,15 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (isTwitterMisconfigured()) {
+        if (ConfigurationUtils.isTwitterMisconfigured(this)) {
             mUseTwitterProvider.setChecked(false);
             mUseTwitterProvider.setEnabled(false);
             mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
         }
 
-        if (isGoogleMisconfigured() || isFacebookMisconfigured() || isTwitterMisconfigured()) {
+        if (ConfigurationUtils.isGoogleMisconfigured(this)
+                || ConfigurationUtils.isFacebookMisconfigured(this)
+                || ConfigurationUtils.isTwitterMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
         }
 
@@ -307,23 +310,6 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         return FIREBASE_PRIVACY_POLICY_URL;
-    }
-
-    private boolean isGoogleMisconfigured() {
-        return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
-    }
-
-    private boolean isFacebookMisconfigured() {
-        return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
-    }
-
-    private boolean isTwitterMisconfigured() {
-        List<String> twitterConfigs = Arrays.asList(
-                getString(R.string.twitter_consumer_key),
-                getString(R.string.twitter_consumer_secret)
-        );
-
-        return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
     private void setGoogleScopesEnabled(boolean enabled) {
