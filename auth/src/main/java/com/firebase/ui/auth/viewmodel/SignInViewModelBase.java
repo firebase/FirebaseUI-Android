@@ -27,8 +27,7 @@ public abstract class SignInViewModelBase extends AuthViewModelBase<IdpResponse>
     }
 
     protected void handleMergeFailure(@NonNull AuthCredential credential) {
-        IdpResponse failureResponse = new IdpResponse.Builder(credential)
-                .build();
+        IdpResponse failureResponse = new IdpResponse.Builder(credential).build();
         handleMergeFailure(failureResponse);
     }
 

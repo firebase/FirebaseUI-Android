@@ -40,6 +40,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -191,12 +192,12 @@ public class SocialProviderResponseHandlerTest {
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
                         new FirebaseAuthUserCollisionException("foo", "bar")));
 
-        // Case 1: trying to link with an account that has 1 idp, which is the same one
-        // that we're trying to log in with
+        // Case 1: Anon user signing in with a Google credential that belongs to an existing user.
         when(mMockAuth.fetchSignInMethodsForEmail(any(String.class)))
                 .thenReturn(AutoCompleteTask.<SignInMethodQueryResult>forSuccess(
-                        new FakeSignInMethodQueryResult(Collections.singletonList(
-                                GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD))));
+                        new FakeSignInMethodQueryResult(Arrays.asList(
+                                GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD,
+                                FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD))));
 
 
         IdpResponse response = new IdpResponse.Builder(new User.Builder(
@@ -307,7 +308,6 @@ public class SocialProviderResponseHandlerTest {
 
         assertThat(IdpResponse.fromResultIntent(e.getIntent())).isEqualTo(response);
     }
-
 
     private void setupAnonymousUpgrade() {
         // enableAnonymousUpgrade must be set to true

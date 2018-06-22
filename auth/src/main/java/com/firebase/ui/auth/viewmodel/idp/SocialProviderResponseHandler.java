@@ -72,15 +72,20 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                 return;
                             }
                             // There can be a collision due to:
-                            // CASE 1: Anon user + 1 idp
-                            // CASE 2: non - anon user + 2 idp -> double merge
-                            // CASE 3: Anon user + 2 idp -> triple merge
+                            // CASE 1: Anon user signing in with a credential that belongs to an
+                            // existing user.
+                            // CASE 2: non - anon user signing in with a credential that does not
+                            // belong to an existing user, but the email matches an existing user
+                            // that has another social IDP. We need to link this new IDP to this
+                            // existing user.
+                            // CASE 3: CASE 2 with an anonymous user. We link the new IDP to the
+                            // same account before handling invoking a merge failure.
                             getAuth().fetchSignInMethodsForEmail(email)
                                     .addOnSuccessListener(new OnSuccessListener<SignInMethodQueryResult>() {
                                         @Override
                                         public void onSuccess(SignInMethodQueryResult result) {
                                             List<String> providers = result.getSignInMethods();
-                                            if (providers.size() == 1 && providers.get(0).equals(
+                                            if (ProviderUtils.isExistingProvider(providers,
                                                     response.getProviderType())) {
                                                 // Case 1
                                                 handleMergeFailure(credential);
