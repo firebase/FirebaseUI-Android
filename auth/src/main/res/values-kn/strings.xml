@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸುವಲ್ಲಿ ತೊಂದರೆ ಇದೆ</string>
     <string name="fui_error_session_expired">ಈ ಕೋಡ್ ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿರುವುದಿಲ್ಲ</string>
     <string name="fui_sign_in_with_phone_number">ಫೋನ್‌ ಸಂಖ್ಯೆಯ ಮೂಲಕ ಸೈನ್‌ ಇನ್‌ ಮಾಡಿ</string>
+    <string name="fui_auto_verified">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
     <string name="fui_resend_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_verify_phone_number">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_continue_phone_login">ಮುಂದುವರಿಸಿ</string>

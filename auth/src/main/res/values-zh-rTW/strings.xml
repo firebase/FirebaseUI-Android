@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">驗證電話號碼時發生問題</string>
     <string name="fui_error_session_expired">這個代碼已經失效</string>
     <string name="fui_sign_in_with_phone_number">使用電話號碼登入</string>
+    <string name="fui_auto_verified">已自動驗證電話號碼</string>
     <string name="fui_resend_code">重新傳送驗證碼</string>
     <string name="fui_verify_phone_number">驗證電話號碼</string>
     <string name="fui_continue_phone_login">繼續</string>

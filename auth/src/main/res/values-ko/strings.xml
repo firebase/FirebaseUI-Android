@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">전화번호를 인증하는 중에 문제가 발생했습니다.</string>
     <string name="fui_error_session_expired">더 이상 유효하지 않은 코드입니다.</string>
     <string name="fui_sign_in_with_phone_number">전화번호로 로그인</string>
+    <string name="fui_auto_verified">전화번호가 자동으로 확인되었습니다.</string>
     <string name="fui_resend_code">코드 재전송</string>
     <string name="fui_verify_phone_number">전화번호 인증</string>
     <string name="fui_continue_phone_login">계속</string>

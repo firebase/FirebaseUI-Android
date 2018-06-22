@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Er is een probleem met de verificatie van uw telefoonnummer</string>
     <string name="fui_error_session_expired">Deze code is niet meer geldig</string>
     <string name="fui_sign_in_with_phone_number">Inloggen met telefoonnummer</string>
+    <string name="fui_auto_verified">Telefoonnummer is automatisch geverifieerd</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
     <string name="fui_continue_phone_login">Doorgaan</string>

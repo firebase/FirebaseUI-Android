@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Παρουσιάστηκε πρόβλημα με την επαλήθευση του αριθμού τηλεφώνου</string>
     <string name="fui_error_session_expired">Αυτός ο κωδικός δεν είναι πλέον έγκυρος</string>
     <string name="fui_sign_in_with_phone_number">Σύνδεση με αριθμό τηλεφώνου</string>
+    <string name="fui_auto_verified">Ο αριθμός τηλεφώνου επαληθεύτηκε αυτόματα</string>
     <string name="fui_resend_code">Επανάληψη αποστολής κωδικού</string>
     <string name="fui_verify_phone_number">Επαλήθευση αριθμού τηλεφώνου</string>
     <string name="fui_continue_phone_login">Συνέχεια</string>
