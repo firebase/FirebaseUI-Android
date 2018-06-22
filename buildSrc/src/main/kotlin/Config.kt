@@ -11,7 +11,7 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:3.2.0-alpha17"
+        const val android = "com.android.tools.build:gradle:3.2.0-beta01"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.0.1"
 
@@ -35,7 +35,7 @@ object Config {
             const val cardView = "com.android.support:cardview-v7:$version"
             const val customTabs = "com.android.support:customtabs:$version"
 
-            const val constraint = "com.android.support.constraint:constraint-layout:1.1.1"
+            const val constraint = "com.android.support.constraint:constraint-layout:1.1.2"
         }
 
         object Arch {
@@ -67,9 +67,13 @@ object Config {
         }
 
         object Misc {
+            private const val retrofitVersion = "2.4.0"
             private const val leakCanaryVersion = "1.5.4"
             private const val glideVersion = "4.7.1"
             private const val butterVersion = "8.8.1"
+
+            const val retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
+            const val retrofitGson = "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
             const val leakCanaryNoop =

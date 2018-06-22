@@ -30,6 +30,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
@@ -39,6 +40,7 @@ import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ProviderUtils {
+    private static final String GITHUB_IDENTITY = "https://github.com";
     private static final String PHONE_IDENTITY = "https://phone.firebase";
 
     private ProviderUtils() {
@@ -55,6 +57,8 @@ public final class ProviderUtils {
             case TwitterAuthProvider.PROVIDER_ID:
                 return TwitterAuthProvider.getCredential(response.getIdpToken(),
                         response.getIdpSecret());
+            case GithubAuthProvider.PROVIDER_ID:
+                return GithubAuthProvider.getCredential(response.getIdpToken());
             default:
                 return null;
         }
@@ -79,6 +83,8 @@ public final class ProviderUtils {
                 return FacebookAuthProvider.PROVIDER_ID;
             case TwitterAuthProvider.TWITTER_SIGN_IN_METHOD:
                 return TwitterAuthProvider.PROVIDER_ID;
+            case GithubAuthProvider.GITHUB_SIGN_IN_METHOD:
+                return GithubAuthProvider.PROVIDER_ID;
             case PhoneAuthProvider.PHONE_SIGN_IN_METHOD:
                 return PhoneAuthProvider.PROVIDER_ID;
             case EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD:
@@ -101,6 +107,8 @@ public final class ProviderUtils {
                 return IdentityProviders.FACEBOOK;
             case TwitterAuthProvider.PROVIDER_ID:
                 return IdentityProviders.TWITTER;
+            case GithubAuthProvider.PROVIDER_ID:
+                return GITHUB_IDENTITY;
             case PhoneAuthProvider.PROVIDER_ID:
                 return PHONE_IDENTITY;
             // The account type for email/password creds is null
@@ -119,6 +127,8 @@ public final class ProviderUtils {
                 return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:
                 return TwitterAuthProvider.PROVIDER_ID;
+            case GITHUB_IDENTITY:
+                return GithubAuthProvider.PROVIDER_ID;
             case PHONE_IDENTITY:
                 return PhoneAuthProvider.PROVIDER_ID;
             default:

@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Ada masalah saat memverifikasi nomor telepon Anda</string>
     <string name="fui_error_session_expired">Kode ini sudah tidak valid</string>
     <string name="fui_sign_in_with_phone_number">Login dengan nomor telepon</string>
+    <string name="fui_auto_verified">Nomor telepon terverifikasi secara otomatis</string>
     <string name="fui_resend_code">Kirim Ulang Kode</string>
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
     <string name="fui_continue_phone_login">Lanjutkan</string>

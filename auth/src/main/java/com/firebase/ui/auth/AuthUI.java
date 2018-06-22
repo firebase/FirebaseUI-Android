@@ -62,6 +62,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -95,11 +96,12 @@ public final class AuthUI {
     public static final String TAG = "AuthUI";
 
     @StringDef({
-                       EmailAuthProvider.PROVIDER_ID,
-                       PhoneAuthProvider.PROVIDER_ID,
                        GoogleAuthProvider.PROVIDER_ID,
                        FacebookAuthProvider.PROVIDER_ID,
-                       TwitterAuthProvider.PROVIDER_ID
+                       TwitterAuthProvider.PROVIDER_ID,
+                       GithubAuthProvider.PROVIDER_ID,
+                       EmailAuthProvider.PROVIDER_ID,
+                       PhoneAuthProvider.PROVIDER_ID
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
@@ -117,6 +119,7 @@ public final class AuthUI {
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
                     TwitterAuthProvider.PROVIDER_ID,
+                    GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID
             )));
@@ -129,7 +132,8 @@ public final class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
-                    TwitterAuthProvider.PROVIDER_ID)));
+                    TwitterAuthProvider.PROVIDER_ID,
+                    GithubAuthProvider.PROVIDER_ID)));
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String UNCONFIGURED_CONFIG_VALUE = "CHANGE-ME";
@@ -956,6 +960,34 @@ public final class AuthUI {
                                 " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#twitter",
                         R.string.twitter_consumer_key,
                         R.string.twitter_consumer_secret);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the GitHub provider.
+         */
+        public static final class GitHubBuilder extends Builder {
+            public GitHubBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
+                super(GithubAuthProvider.PROVIDER_ID);
+                Preconditions.checkConfigured(getApplicationContext(),
+                        "GitHub provider unconfigured. Make sure to add your client id and secret." +
+                                " See the docs for more info:" +
+                                " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#github",
+                        R.string.firebase_web_host,
+                        R.string.github_client_id,
+                        R.string.github_client_secret);
+            }
+
+            /**
+             * Specifies the additional permissions to be requested. Available permissions can be
+             * found <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
+             */
+            @NonNull
+            public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
+                getParams().putStringArrayList(
+                        ExtraConstants.GITHUB_PERMISSIONS, new ArrayList<>(permissions));
+                return this;
             }
         }
     }

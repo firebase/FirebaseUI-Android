@@ -40,6 +40,9 @@ dependencies {
     implementation(Config.Libs.Support.customTabs)
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
+    implementation(Config.Libs.Misc.retrofit)
+    implementation(Config.Libs.Misc.retrofitGson)
+
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
     testImplementation(Config.Libs.Test.mockito)

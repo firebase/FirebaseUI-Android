@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">உங்கள் ஃபோன் எண்ணைச் சரிபார்ப்பதில் சிக்கல் ஏற்பட்டது</string>
     <string name="fui_error_session_expired">இந்தக் குறியீடு இனி செல்லுபடியாகாது</string>
     <string name="fui_sign_in_with_phone_number">ஃபோன் எண் மூலம் உள்நுழையவும்</string>
+    <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_continue_phone_login">தொடர்க</string>

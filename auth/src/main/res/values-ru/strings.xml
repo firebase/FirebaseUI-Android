@@ -2,7 +2,7 @@
     <string name="fui_progress_dialog_loading">Загрузка…</string>
     <string name="fui_sign_in_default">Войти</string>
     <string name="fui_tos_and_pp">Продолжая, вы принимаете %1$s и %2$s.</string>
-    <string name="fui_tos_and_pp_footer">%1$s  %2$s</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Не удалось подтвердить номер телефона.</string>
     <string name="fui_error_session_expired">Этот код уже неактивен.</string>
     <string name="fui_sign_in_with_phone_number">Войти по номеру телефона</string>
+    <string name="fui_auto_verified">Номер телефона был подтвержден автоматически</string>
     <string name="fui_resend_code">Отправить код ещё раз</string>
     <string name="fui_verify_phone_number">Подтвердить номер телефона</string>
     <string name="fui_continue_phone_login">Продолжить</string>

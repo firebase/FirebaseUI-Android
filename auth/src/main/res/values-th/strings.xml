@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">เกิดปัญหาในการยืนยันหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_error_session_expired">ไม่สามารถใช้รหัสนี้ได้อีกต่อไป</string>
     <string name="fui_sign_in_with_phone_number">ลงชื่อเข้าใช้ด้วยหมายเลขโทรศัพท์</string>
+    <string name="fui_auto_verified">ยืนยันหมายเลขโทรศัพท์โดยอัตโนมัติแล้ว</string>
     <string name="fui_resend_code">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_continue_phone_login">ต่อไป</string>

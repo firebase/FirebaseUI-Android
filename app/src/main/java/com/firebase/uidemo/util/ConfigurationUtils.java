@@ -32,6 +32,16 @@ public class ConfigurationUtils {
         return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
+    public static boolean isGitHubMisconfigured(Context context) {
+        List<String> gitHubConfigs = Arrays.asList(
+                context.getString(R.string.firebase_web_host),
+                context.getString(R.string.github_client_id),
+                context.getString(R.string.github_client_secret)
+        );
+
+        return gitHubConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
+    }
+
     public static List<AuthUI.IdpConfig> getConfiguredProviders(Context context) {
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
         providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
@@ -49,8 +59,10 @@ public class ConfigurationUtils {
             providers.add(new AuthUI.IdpConfig.TwitterBuilder().build());
         }
 
+        if (!isGitHubMisconfigured(context)) {
+            providers.add(new AuthUI.IdpConfig.GitHubBuilder().build());
+        }
+
         return providers;
     }
-
-
 }

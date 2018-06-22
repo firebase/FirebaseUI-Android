@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Verificējot jūsu tālruņa numuru, radās problēma</string>
     <string name="fui_error_session_expired">Šis kods vairs nav derīgs</string>
     <string name="fui_sign_in_with_phone_number">Pierakstieties ar tālruņa numuru</string>
+    <string name="fui_auto_verified">Tālruņa numurs tika automātiski verificēts</string>
     <string name="fui_resend_code">Vēlreiz nosūtīt kodu</string>
     <string name="fui_verify_phone_number">Verificēt tālruņa numuru</string>
     <string name="fui_continue_phone_login">Turpināt</string>

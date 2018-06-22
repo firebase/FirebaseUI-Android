@@ -131,6 +131,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
+            if (response == null) {
+                // User pressed back button
+                return;
+            }
             if (resultCode == RESULT_OK) {
                 setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance().getCurrentUser()));
             } else {

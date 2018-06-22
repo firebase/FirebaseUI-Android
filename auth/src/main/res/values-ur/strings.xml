@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">آپ کے فون نمبر کی توثیق کرنے میں ایک مسئلہ تھا</string>
     <string name="fui_error_session_expired">یہ کوڈ اب جائز نہیں رہا</string>
     <string name="fui_sign_in_with_phone_number">فون نمبر کے ساتھ سائن ان کریں</string>
+    <string name="fui_auto_verified">فون نمبر کی خودکار طور پر توثیق ہو گئی</string>
     <string name="fui_resend_code">کوڈ دوبارہ بھیجیں</string>
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
     <string name="fui_continue_phone_login">جاری رکھیں</string>

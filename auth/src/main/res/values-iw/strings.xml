@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">אירעה בעיה באימות של מספר הטלפון</string>
     <string name="fui_error_session_expired">הקוד הזה כבר לא בתוקף</string>
     <string name="fui_sign_in_with_phone_number">כניסה באמצעות מספר טלפון</string>
+    <string name="fui_auto_verified">מספר הטלפון אומת באופן אוטומטי</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
     <string name="fui_continue_phone_login">המשך</string>

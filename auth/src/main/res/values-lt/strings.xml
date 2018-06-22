@@ -54,6 +54,7 @@
     <string name="fui_error_quota_exceeded">Patvirtinant telefono numerį kilo problema</string>
     <string name="fui_error_session_expired">Šis kodas nebegalioja</string>
     <string name="fui_sign_in_with_phone_number">Prisijungti nurodant telefono numerį</string>
+    <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
     <string name="fui_continue_phone_login">Tęsti</string>

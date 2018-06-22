@@ -23,21 +23,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/container"
+        app:layout_constraintVertical_weight="1"
         tools:ignore="ContentDescription" /> <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
 
     <ScrollView
         android:id="@+id/container"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo"
         app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
-        app:layout_constraintVertical_bias="0.7">
+        app:layout_constraintVertical_weight="2">
 
         <LinearLayout
             android:id="@+id/btn_holder"
-            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder" />
+            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
+            android:gravity="bottom" />
 
     </ScrollView>
 
