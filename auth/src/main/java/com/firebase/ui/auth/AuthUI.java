@@ -782,6 +782,7 @@ public final class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
+        boolean mEnableTermsCheckbox = false;
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a default
@@ -882,6 +883,19 @@ public final class AuthUI {
             return (T) this;
         }
 
+        /**
+         * Enables or disables the checkbox to ensure User's agreement for ToS and/or PP.
+         * <p>
+         * <p> Checkbox disabled by default
+         *
+         * @param enableCheckbox enables checkbox to ensure user's agreement
+         */
+        @NonNull
+        public T setEnableTermsCheckbox(boolean enableCheckbox) {
+            mEnableTermsCheckbox = enableCheckbox;
+            return (T) this;
+        }
+
         @CallSuper
         @NonNull
         public Intent build() {
@@ -913,7 +927,8 @@ public final class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
-                    mEnableHints);
+                    mEnableHints,
+                    mEnableTermsCheckbox);
         }
     }
 }
