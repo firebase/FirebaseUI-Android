@@ -56,7 +56,7 @@ public class FlowParameters implements Parcelable {
 
     public final boolean enableCredentials;
     public final boolean enableHints;
-    public final boolean enableTermsCheckbox;
+    public final boolean explicitAcceptance;
 
     public FlowParameters(
             @NonNull String appName,
@@ -77,7 +77,7 @@ public class FlowParameters implements Parcelable {
         this.privacyPolicyUrl = privacyPolicyUrl;
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
-        this.enableTermsCheckbox = enableTermsCheckbox;
+        this.explicitAcceptance = enableTermsCheckbox;
     }
 
     /**
@@ -97,7 +97,7 @@ public class FlowParameters implements Parcelable {
         dest.writeString(privacyPolicyUrl);
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
-        dest.writeInt(enableTermsCheckbox ? 1 : 0);
+        dest.writeInt(explicitAcceptance ? 1 : 0);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class FlowParameters implements Parcelable {
             String privacyPolicyUrl = in.readString();
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
-            boolean enableTermsCheckbox = in.readInt() != 0;
+            boolean explicitAcceptance = in.readInt() != 0;
 
             return new FlowParameters(
                     appName,
@@ -127,7 +127,7 @@ public class FlowParameters implements Parcelable {
                     privacyPolicyUrl,
                     enableCredentials,
                     enableHints,
-                    enableTermsCheckbox);
+                    explicitAcceptance);
         }
 
         @Override

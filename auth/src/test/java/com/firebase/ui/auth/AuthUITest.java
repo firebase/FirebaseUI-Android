@@ -72,7 +72,7 @@ public class AuthUITest {
                         new IdpConfig.FacebookBuilder().build()))
                 .setTosUrl(TestConstants.TOS_URL)
                 .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
-                .setEnableTermsCheckbox(true)
+                .setRequireExplicitAcceptance(true)
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
@@ -80,7 +80,7 @@ public class AuthUITest {
         assertEquals(FirebaseApp.getInstance().getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
-        assertEquals(true, flowParameters.enableTermsCheckbox);
+        assertEquals(true, flowParameters.explicitAcceptance);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
     }
 }

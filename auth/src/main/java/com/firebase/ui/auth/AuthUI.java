@@ -782,7 +782,7 @@ public final class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
-        boolean mEnableTermsCheckbox = false;
+        boolean mExplicitAcceptance = false;
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a default
@@ -884,15 +884,15 @@ public final class AuthUI {
         }
 
         /**
-         * Enables or disables the checkbox to ensure User's agreement for ToS and/or PP.
+         * Enables or disables the checkbox to ensure User's explicit agreement for ToS and/or PP.
          * <p>
          * <p> Checkbox disabled by default
          *
-         * @param enableCheckbox enables checkbox to ensure user's agreement
+         * @param explicitAcceptance enables checkbox to ensure user's explicit agreement
          */
         @NonNull
-        public T setEnableTermsCheckbox(boolean enableCheckbox) {
-            mEnableTermsCheckbox = enableCheckbox;
+        public T setRequireExplicitAcceptance(boolean explicitAcceptance) {
+            mExplicitAcceptance = explicitAcceptance;
             return (T) this;
         }
 
@@ -928,7 +928,7 @@ public final class AuthUI {
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
-                    mEnableTermsCheckbox);
+                    mExplicitAcceptance);
         }
     }
 }
