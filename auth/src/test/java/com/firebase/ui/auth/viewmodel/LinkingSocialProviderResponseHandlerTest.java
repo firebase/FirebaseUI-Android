@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.PhoneAuthCredential;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +58,6 @@ public class LinkingSocialProviderResponseHandlerTest {
     @Mock FirebaseAuth mScratchMockAuth;
 
     @Mock FirebaseUser mMockUser;
-    @Mock PhoneAuthCredential mCredential;
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
 
     private LinkingSocialProviderResponseHandler mHandler;

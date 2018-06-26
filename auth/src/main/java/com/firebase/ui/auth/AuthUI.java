@@ -101,7 +101,8 @@ public final class AuthUI {
                        TwitterAuthProvider.PROVIDER_ID,
                        GithubAuthProvider.PROVIDER_ID,
                        EmailAuthProvider.PROVIDER_ID,
-                       PhoneAuthProvider.PROVIDER_ID
+                       PhoneAuthProvider.PROVIDER_ID,
+                       AnonymousAuthProvider.PROVIDER_ID
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
@@ -121,7 +122,8 @@ public final class AuthUI {
                     TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
-                    PhoneAuthProvider.PROVIDER_ID
+                    PhoneAuthProvider.PROVIDER_ID,
+                    AnonymousAuthProvider.PROVIDER_ID
             )));
 
     /**
@@ -990,6 +992,16 @@ public final class AuthUI {
                 return this;
             }
         }
+
+        /**
+         * {@link IdpConfig} builder for the Anonymous provider.
+         */
+
+        public static final class AnonymousBuilder extends Builder {
+            public AnonymousBuilder() {
+                super(AnonymousAuthProvider.PROVIDER_ID);
+            }
+        }
     }
 
     /**
@@ -1066,7 +1078,8 @@ public final class AuthUI {
 
         /**
          * Specified the set of supported authentication providers. At least one provider must
-         * be specified. There may only be one instance of each provider.
+         * be specified. There may only be one instance of each provider. Anonymous provider cannot
+         * be the only provider specified.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
@@ -1074,9 +1087,19 @@ public final class AuthUI {
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
          *                   configuration parameters for the IDP.
          * @see IdpConfig
+         *
+         * @throws IllegalStateException if anonymous provider is the only specified provider.
          */
         @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
+            Preconditions.checkNotNull(idpConfigs, "idpConfigs cannot be null");
+            if (idpConfigs.size() == 1 &&
+                    idpConfigs.get(0).getProviderId().equals(AnonymousAuthProvider.PROVIDER_ID)) {
+                throw new IllegalStateException("Sign in as guest cannot be the only sign in " +
+                        "method. In this case, sign the user in anonymously your self; " +
+                        "no UI is needed.");
+            }
+
             mProviders.clear();
 
             for (IdpConfig config : idpConfigs) {
@@ -1169,5 +1192,9 @@ public final class AuthUI {
                     mEnableHints,
                     mEnableAnonymousUpgrade);
         }
+    }
+
+    public class AnonymousAuthProvider {
+        public static final String PROVIDER_ID = "anonymous";
     }
 }

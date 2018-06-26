@@ -41,6 +41,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
+import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
@@ -117,7 +118,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
                             ((FirebaseAuthAnonymousUpgradeException) e).getResponse().toIntent());
-                } else if ( (!(e instanceof UserCancellationException))) {
+                } else if ((!(e instanceof UserCancellationException))) {
                     String text = e instanceof FirebaseUiException ? e.getMessage() :
                             getString(R.string.fui_error_unknown);
                     Toast.makeText(AuthMethodPickerActivity.this,
@@ -185,6 +186,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     provider = phone;
 
                     buttonLayout = R.layout.fui_provider_button_phone;
+                    break;
+                case AuthUI.AnonymousAuthProvider.PROVIDER_ID:
+                    AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
+                    anonymous.init(getFlowParams());
+                    provider = anonymous;
+
+                    buttonLayout = R.layout.fui_provider_button_anonymous;
                     break;
                 default:
                     throw new IllegalStateException("Unknown provider: " + providerId);
