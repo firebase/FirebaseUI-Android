@@ -1,0 +1,4 @@
+<com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FirebaseUI.Button.AccountChooser.GitHubButton"
+    android:text="@string/fui_sign_in_with_github" />

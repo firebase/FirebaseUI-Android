@@ -34,22 +34,27 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
+import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
-import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -109,9 +114,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                if (!(e instanceof UserCancellationException)) {
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
+                            ((FirebaseAuthAnonymousUpgradeException) e).getResponse().toIntent());
+                } else if ( (!(e instanceof UserCancellationException))) {
+                    String text = e instanceof FirebaseUiException ? e.getMessage() :
+                            getString(R.string.fui_error_unknown);
                     Toast.makeText(AuthMethodPickerActivity.this,
-                            R.string.fui_error_unknown,
+                            text,
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -154,6 +164,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     provider = twitter;
 
                     buttonLayout = R.layout.fui_idp_button_twitter;
+                    break;
+                case GithubAuthProvider.PROVIDER_ID:
+                    GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                    github.init(idpConfig);
+                    provider = github;
+
+                    buttonLayout = R.layout.fui_idp_button_github;
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
                     EmailSignInHandler email = supplier.get(EmailSignInHandler.class);

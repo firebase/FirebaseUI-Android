@@ -103,6 +103,12 @@
                     android:layout_height="wrap_content"
                     android:textIsSelectable="true" />
 
+                <TextView
+                    android:id="@+id/user_is_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="false" />
+
             </LinearLayout>
 
         </LinearLayout>

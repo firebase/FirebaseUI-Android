@@ -1,3 +1,4 @@
+
 import com.android.build.gradle.internal.dsl.TestOptions
 
 android {
@@ -11,6 +12,7 @@ android {
 
     lintOptions {
         disable("UnusedQuantity")
+        disable("MissingTranslation") // TODO: Translate fui_auto_verified
     }
 
     testOptions {
@@ -38,7 +40,11 @@ dependencies {
     implementation(Config.Libs.Support.customTabs)
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
+    implementation(Config.Libs.Misc.retrofit)
+    implementation(Config.Libs.Misc.retrofitGson)
+
     testImplementation(Config.Libs.Test.junit)
+    testImplementation(Config.Libs.Test.truth)
     testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)

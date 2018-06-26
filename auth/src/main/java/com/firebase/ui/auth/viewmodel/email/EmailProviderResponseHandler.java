@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.viewmodel.idp;
+package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
@@ -11,25 +11,27 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+public class EmailProviderResponseHandler extends SignInViewModelBase {
     private static final String TAG = "EmailProviderResponseHa";
 
     public EmailProviderResponseHandler(Application application) {
         super(application);
     }
 
-    public void startSignIn(@NonNull final IdpResponse response, @NonNull String password) {
+    public void startSignIn(@NonNull final IdpResponse response, @NonNull final String password) {
         if (!response.isSuccessful()) {
             setResult(Resource.<IdpResponse>forFailure(response.getError()));
             return;
@@ -40,30 +42,42 @@ public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse>
         }
         setResult(Resource.<IdpResponse>forLoading());
 
+        final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
         final String email = response.getEmail();
-        getAuth().createUserWithEmailAndPassword(email, password)
+        authOperationManager.createOrLinkUserWithEmailAndPassword(getAuth(),
+                getArguments(),
+                email,
+                password)
                 .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(response));
+                        handleSuccess(response, result);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthUserCollisionException) {
-                            // Collision with existing user email, it should be very hard for
-                            // the user to even get to this error due to CheckEmailFragment.
-                            ProviderUtils.fetchTopProvider(getAuth(), email)
-                                    .addOnSuccessListener(new StartWelcomeBackFlow(email))
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            setResult(Resource.<IdpResponse>forFailure(e));
-                                        }
-                                    });
+                            if (authOperationManager.canUpgradeAnonymous(getAuth(),
+                                    getArguments())) {
+                                AuthCredential credential = EmailAuthProvider.getCredential(email,
+                                        password);
+                                handleMergeFailure(credential);
+                            } else {
+                                // Collision with existing user email without anonymous upgrade
+                                // it should be very hard for the user to even get to this error
+                                // due to CheckEmailFragment.
+                                ProviderUtils.fetchTopProvider(getAuth(), email)
+                                        .addOnSuccessListener(new StartWelcomeBackFlow(email))
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                setResult(Resource.<IdpResponse>forFailure(e));
+                                            }
+                                        });
+                            }
                         } else {
                             setResult(Resource.<IdpResponse>forFailure(e));
                         }
