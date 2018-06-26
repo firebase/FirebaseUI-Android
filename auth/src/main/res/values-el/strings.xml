@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Σύνδεση μέσω Google</string>
     <string name="fui_sign_in_with_facebook">Σύνδεση μέσω Facebook</string>
     <string name="fui_sign_in_with_twitter">Σύνδεση μέσω Twitter</string>
+    <string name="fui_sign_in_with_github">Σύνδεση μέσω GitHub</string>
     <string name="fui_sign_in_with_email">Σύνδεση μέσω ηλεκτρονικού ταχυδρομείου</string>
     <string name="fui_sign_in_with_phone">Σύνδεση μέσω τηλεφώνου</string>
     <string name="fui_next_default">Επόμενο</string>

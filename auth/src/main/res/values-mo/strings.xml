@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Conectați-vă cu Google</string>
     <string name="fui_sign_in_with_facebook">Conectați-vă cu Facebook</string>
     <string name="fui_sign_in_with_twitter">Conectați-vă cu Twitter</string>
+    <string name="fui_sign_in_with_github">Conectați-vă cu GitHub</string>
     <string name="fui_sign_in_with_email">Conectați-vă cu adresa de e-mail</string>
     <string name="fui_sign_in_with_phone">Conectați-vă cu numărul de telefon</string>
     <string name="fui_next_default">Înainte</string>

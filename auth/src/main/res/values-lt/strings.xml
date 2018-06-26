@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Prisijungti per „Google“</string>
     <string name="fui_sign_in_with_facebook">Prisijungti per „Facebook“</string>
     <string name="fui_sign_in_with_twitter">Prisijungti per „Twitter“</string>
+    <string name="fui_sign_in_with_github">Prisijungti per „GitHub“</string>
     <string name="fui_sign_in_with_email">Prisijungti nurodant el. pašto adresą</string>
     <string name="fui_sign_in_with_phone">Prisijungti nurodant telefono numerį</string>
     <string name="fui_next_default">Kitas</string>

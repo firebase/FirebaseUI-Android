@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Prihlásiť sa cez Google</string>
     <string name="fui_sign_in_with_facebook">Prihlásiť sa cez Facebook</string>
     <string name="fui_sign_in_with_twitter">Prihlásiť sa cez Twitter</string>
+    <string name="fui_sign_in_with_github">Prihlásiť sa cez GitHub</string>
     <string name="fui_sign_in_with_email">Prihlásiť sa e-mailom</string>
     <string name="fui_sign_in_with_phone">Prihlásiť sa telefónom</string>
     <string name="fui_next_default">Ďalej</string>

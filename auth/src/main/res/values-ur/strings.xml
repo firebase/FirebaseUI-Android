@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">Github</string>
     <string name="fui_sign_in_with_google">Google کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_facebook">Facebook کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_twitter">Twitter کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_github">GitHub کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_email">ای میل کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_phone">فون کے ساتھ سائں ان کریں</string>
     <string name="fui_next_default">اگلا</string>

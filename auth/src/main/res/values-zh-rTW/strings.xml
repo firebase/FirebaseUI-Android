@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">使用 Google 帳戶登入</string>
     <string name="fui_sign_in_with_facebook">使用 Facebook 帳戶登入</string>
     <string name="fui_sign_in_with_twitter">使用 Twitter 帳戶登入</string>
+    <string name="fui_sign_in_with_github">使用 GitHub 登入</string>
     <string name="fui_sign_in_with_email">使用電子郵件地址登入</string>
     <string name="fui_sign_in_with_phone">使用電話號碼登入</string>
     <string name="fui_next_default">繼續</string>

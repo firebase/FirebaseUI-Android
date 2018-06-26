@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Fecebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Mag-sign in sa Google</string>
     <string name="fui_sign_in_with_facebook">Mag-sign in sa Facebook</string>
     <string name="fui_sign_in_with_twitter">Mag-sign in sa Twitter</string>
+    <string name="fui_sign_in_with_github">Mag-sign in sa GitHub</string>
     <string name="fui_sign_in_with_email">Mag-sign in gamit ang email</string>
     <string name="fui_sign_in_with_phone">Mag-sign in gamit ang telepono</string>
     <string name="fui_next_default">Susunod</string>
