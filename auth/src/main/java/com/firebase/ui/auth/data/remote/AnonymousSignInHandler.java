@@ -38,7 +38,7 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
 
     @Override
     public void startSignIn(@NonNull HelperActivityBase activity) {
-        showTopProgressBar();
+        setResult(Resource.<IdpResponse>forLoading());
 
         // Calling signInAnonymously() will always return the same anonymous user if already
         // available. This is enforced by the client SDK.
@@ -46,7 +46,7 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.<IdpResponse>forSuccess(getResponse(
+                        setResult(Resource.<IdpResponse>forSuccess(initResponse(
                                 result.getAdditionalUserInfo().isNewUser())));
                     }
                 })
@@ -59,7 +59,10 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
 
     }
 
-    public IdpResponse getResponse(boolean isNewUser) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {}
+
+    private IdpResponse initResponse(boolean isNewUser) {
         return new IdpResponse.Builder(
                 new User.Builder(AuthUI.AnonymousAuthProvider.PROVIDER_ID, null)
                         .build())
@@ -67,15 +70,9 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
                 .build();
     }
 
-    private void showTopProgressBar() {
-        setResult(Resource.<IdpResponse>forLoading());
-    }
-
+    // TODO: Change ProviderSignInBase to extend from AuthViewModelBase
     private FirebaseAuth getAuth() {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         return FirebaseAuth.getInstance(app);
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {}
 }

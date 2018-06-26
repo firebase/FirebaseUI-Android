@@ -101,8 +101,7 @@ fun Project.configureAndroid() {
                     "IconExpectedSize",
                     "InvalidPackage", // Firestore uses GRPC which makes lint mad
                     "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-                    "SelectableText", "SyntheticAccessor", // We almost never care about this
-                    "InvalidVectorPath" // false positive for fui_ic_anonymous_white_24dp
+                    "SelectableText", "SyntheticAccessor" // We almost never care about this
             )
             disable("UnknownNullness") // TODO fix in future PR
 
