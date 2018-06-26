@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Đăng nhập bằng Google</string>
     <string name="fui_sign_in_with_facebook">Đăng nhập bằng Facebook</string>
     <string name="fui_sign_in_with_twitter">Đăng nhập bằng Twitter</string>
+    <string name="fui_sign_in_with_github">Đăng nhập bằng GitHub</string>
     <string name="fui_sign_in_with_email">Đăng nhập bằng email</string>
     <string name="fui_sign_in_with_phone">Đăng nhập bằng điện thoại</string>
     <string name="fui_next_default">Tiếp</string>

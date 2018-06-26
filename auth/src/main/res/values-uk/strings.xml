@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Увійти через Google</string>
     <string name="fui_sign_in_with_facebook">Увійти через Facebook</string>
     <string name="fui_sign_in_with_twitter">Увійти через Twitter</string>
+    <string name="fui_sign_in_with_github">Увійти через GitHub</string>
     <string name="fui_sign_in_with_email">Увійти, використовуючи електронну адресу</string>
     <string name="fui_sign_in_with_phone">Увійти, використовуючи телефон</string>
     <string name="fui_next_default">Далі</string>

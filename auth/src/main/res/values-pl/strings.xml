@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Zaloguj się przez Google</string>
     <string name="fui_sign_in_with_facebook">Zaloguj się przez Facebooka</string>
     <string name="fui_sign_in_with_twitter">Zaloguj się przez Twittera</string>
+    <string name="fui_sign_in_with_github">Zaloguj się przez GitHuba</string>
     <string name="fui_sign_in_with_email">Zaloguj się za pomocą e-maila</string>
     <string name="fui_sign_in_with_phone">Zaloguj się z użyciem numeru telefonu</string>
     <string name="fui_next_default">Dalej</string>

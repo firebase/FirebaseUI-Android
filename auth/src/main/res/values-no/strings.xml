@@ -6,9 +6,11 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Logg på med Google</string>
     <string name="fui_sign_in_with_facebook">Logg på med Facebook</string>
     <string name="fui_sign_in_with_twitter">Logg på med Twitter</string>
+    <string name="fui_sign_in_with_github">Logg på med GitHub</string>
     <string name="fui_sign_in_with_email">Logg på med e-postadresse</string>
     <string name="fui_sign_in_with_phone">Logg på med telefonnummeret ditt</string>
     <string name="fui_next_default">Neste</string>
