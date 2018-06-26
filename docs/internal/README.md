@@ -6,4 +6,5 @@ owner of this project.
 Contents:
 
   * [Branching Strategy](branching.md)
+  * [Releasing](releasing.md)
   * [Translations](translations.md)
