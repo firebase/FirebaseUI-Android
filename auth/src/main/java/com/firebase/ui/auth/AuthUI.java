@@ -996,7 +996,6 @@ public final class AuthUI {
         /**
          * {@link IdpConfig} builder for the Anonymous provider.
          */
-
         public static final class AnonymousBuilder extends Builder {
             public AnonymousBuilder() {
                 super(AnonymousAuthProvider.PROVIDER_ID);

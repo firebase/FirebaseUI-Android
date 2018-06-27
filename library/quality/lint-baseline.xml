@@ -7,10 +7,4 @@
         message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location file="src/main/AndroidManifest.xml" />
     </issue>
-
-    <issue
-        id="InvalidVectorPath"
-        message="Use 0.94 instead of .94 to avoid crashes on some devices">
-        <location file="src/main/res/drawable/fui_ic_anonymous_white_24dp.xml"></location>
-    </issue>
 </issues>
