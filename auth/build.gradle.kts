@@ -10,7 +10,7 @@ android {
     }
 
     lintOptions {
-        disable("UnusedQuantity")
+        disable("UnusedQuantity", "MissingTranslation")
     }
 
     testOptions {
