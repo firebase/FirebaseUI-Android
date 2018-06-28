@@ -126,7 +126,7 @@ public final class TestHelper {
                 case PhoneAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.PhoneBuilder().build());
                     break;
-                case AuthUI.AnonymousAuthProvider.PROVIDER_ID:
+                case AuthUI.ANONYMOUS_PROVIDER:
                     idpConfigs.add(new IdpConfig.AnonymousBuilder().build());
                     break;
                 default:

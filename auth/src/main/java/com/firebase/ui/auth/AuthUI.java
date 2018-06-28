@@ -95,6 +95,12 @@ public final class AuthUI {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String TAG = "AuthUI";
 
+    /**
+     * Provider for anonymous users.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String ANONYMOUS_PROVIDER = "anonymous";
+
     @StringDef({
                        GoogleAuthProvider.PROVIDER_ID,
                        FacebookAuthProvider.PROVIDER_ID,
@@ -102,7 +108,7 @@ public final class AuthUI {
                        GithubAuthProvider.PROVIDER_ID,
                        EmailAuthProvider.PROVIDER_ID,
                        PhoneAuthProvider.PROVIDER_ID,
-                       AnonymousAuthProvider.PROVIDER_ID
+                       ANONYMOUS_PROVIDER
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
@@ -123,7 +129,7 @@ public final class AuthUI {
                     GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID,
-                    AnonymousAuthProvider.PROVIDER_ID
+                    ANONYMOUS_PROVIDER
             )));
 
     /**
@@ -998,7 +1004,7 @@ public final class AuthUI {
          */
         public static final class AnonymousBuilder extends Builder {
             public AnonymousBuilder() {
-                super(AnonymousAuthProvider.PROVIDER_ID);
+                super(ANONYMOUS_PROVIDER);
             }
         }
     }
@@ -1093,7 +1099,7 @@ public final class AuthUI {
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
             Preconditions.checkNotNull(idpConfigs, "idpConfigs cannot be null");
             if (idpConfigs.size() == 1 &&
-                    idpConfigs.get(0).getProviderId().equals(AnonymousAuthProvider.PROVIDER_ID)) {
+                    idpConfigs.get(0).getProviderId().equals(ANONYMOUS_PROVIDER)) {
                 throw new IllegalStateException("Sign in as guest cannot be the only sign in " +
                         "method. In this case, sign the user in anonymously your self; " +
                         "no UI is needed.");
@@ -1191,9 +1197,5 @@ public final class AuthUI {
                     mEnableHints,
                     mEnableAnonymousUpgrade);
         }
-    }
-
-    public class AnonymousAuthProvider {
-        public static final String PROVIDER_ID = "anonymous";
     }
 }

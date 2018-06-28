@@ -58,7 +58,7 @@ public class AuthMethodPickerActivityTest {
                 TwitterAuthProvider.PROVIDER_ID,
                 EmailAuthProvider.PROVIDER_ID,
                 PhoneAuthProvider.PROVIDER_ID,
-                AuthUI.AnonymousAuthProvider.PROVIDER_ID);
+                AuthUI.ANONYMOUS_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 

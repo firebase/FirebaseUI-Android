@@ -187,7 +187,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
                     buttonLayout = R.layout.fui_provider_button_phone;
                     break;
-                case AuthUI.AnonymousAuthProvider.PROVIDER_ID:
+                case AuthUI.ANONYMOUS_PROVIDER:
                     AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
                     anonymous.init(getFlowParams());
                     provider = anonymous;
@@ -223,8 +223,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                         // started.
                         handler.startSignIn(response);
                     } else {
-                        // Email or phone: the credentials should have already been saved so simply
-                        // move along.
+                        // Email or phone: the credentials should have already been saved so
+                        // simply move along. Anononymous sign in also does not require any
+                        // other operations.
                         finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
                                 response.toIntent());
                     }

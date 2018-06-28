@@ -64,13 +64,14 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
 
     private IdpResponse initResponse(boolean isNewUser) {
         return new IdpResponse.Builder(
-                new User.Builder(AuthUI.AnonymousAuthProvider.PROVIDER_ID, null)
+                new User.Builder(AuthUI.ANONYMOUS_PROVIDER, null)
                         .build())
                 .setNewUser(isNewUser)
                 .build();
     }
 
-    // TODO: Change ProviderSignInBase to extend from AuthViewModelBase
+    // TODO: We need to centralize the auth logic. ProviderSignInBase classes were originally
+    // meant to only retrieve remote provider data.
     private FirebaseAuth getAuth() {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         return FirebaseAuth.getInstance(app);
