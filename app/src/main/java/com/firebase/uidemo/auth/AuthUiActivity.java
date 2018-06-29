@@ -70,6 +70,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
     @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
+    @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
 
     @BindView(R.id.default_theme) RadioButton mDefaultTheme;
     @BindView(R.id.green_theme) RadioButton mGreenTheme;
@@ -317,6 +318,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUsePhoneProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.PhoneBuilder().build());
+        }
+
+        if (mUseAnonymousProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.AnonymousBuilder().build());
         }
 
         return selectedProviders;

@@ -328,7 +328,8 @@ startActivityForResult(
                         new AuthUI.IdpConfig.TwitterBuilder().build(),
                         new AuthUI.IdpConfig.GitHubBuilder().build(),
                         new AuthUI.IdpConfig.EmailBuilder().build(),
-                        new AuthUI.IdpConfig.PhoneBuilder().build()))
+                        new AuthUI.IdpConfig.PhoneBuilder().build(),
+                        new AuthUI.IdpConfig.AnonymousBuilder().build()))
                 .build(),
         RC_SIGN_IN);
 ```

@@ -164,7 +164,7 @@ public class SignedInActivity extends AppCompatActivity {
 
         List<String> providers = new ArrayList<>();
         if (user.getProviderData().isEmpty()) {
-            providers.add("Anonymous");
+            providers.add(getString(R.string.providers_anonymous));
         } else {
             for (UserInfo info : user.getProviderData()) {
                 switch (info.getProviderId()) {
