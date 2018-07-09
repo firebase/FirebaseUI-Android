@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Prihlásiť sa cez GitHub</string>
     <string name="fui_sign_in_with_email">Prihlásiť sa e-mailom</string>
     <string name="fui_sign_in_with_phone">Prihlásiť sa telefónom</string>
+    <string name="fui_sign_in_anonymously">Pokračovať ako hosť</string>
     <string name="fui_next_default">Ďalej</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefónne číslo</string>

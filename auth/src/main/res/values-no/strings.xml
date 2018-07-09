@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Logg på med GitHub</string>
     <string name="fui_sign_in_with_email">Logg på med e-postadresse</string>
     <string name="fui_sign_in_with_phone">Logg på med telefonnummeret ditt</string>
+    <string name="fui_sign_in_anonymously">Fortsett som gjest</string>
     <string name="fui_next_default">Neste</string>
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>

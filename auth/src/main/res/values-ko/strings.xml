@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">GitHub로 로그인</string>
     <string name="fui_sign_in_with_email">이메일로 로그인</string>
     <string name="fui_sign_in_with_phone">전화로 로그인</string>
+    <string name="fui_sign_in_anonymously">비회원으로 진행</string>
     <string name="fui_next_default">다음</string>
     <string name="fui_email_hint">이메일</string>
     <string name="fui_phone_hint">전화번호</string>

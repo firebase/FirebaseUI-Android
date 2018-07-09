@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Prisijungti per „GitHub“</string>
     <string name="fui_sign_in_with_email">Prisijungti nurodant el. pašto adresą</string>
     <string name="fui_sign_in_with_phone">Prisijungti nurodant telefono numerį</string>
+    <string name="fui_sign_in_anonymously">Tęsti kaip svečiui</string>
     <string name="fui_next_default">Kitas</string>
     <string name="fui_email_hint">El. pašto adresas</string>
     <string name="fui_phone_hint">Telefono numeris</string>

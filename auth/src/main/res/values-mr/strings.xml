@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">GitHub सह साइन इन करा</string>
     <string name="fui_sign_in_with_email">ईमेलने साइन इन करा</string>
     <string name="fui_sign_in_with_phone">फोनने साइन इन करा</string>
+    <string name="fui_sign_in_anonymously">अतिथी म्हणून सुरू ठेवा</string>
     <string name="fui_next_default">पुढील</string>
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फोन नंबर</string>

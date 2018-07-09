@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Đăng nhập bằng GitHub</string>
     <string name="fui_sign_in_with_email">Đăng nhập bằng email</string>
     <string name="fui_sign_in_with_phone">Đăng nhập bằng điện thoại</string>
+    <string name="fui_sign_in_anonymously">Tiếp tục với vai trò người dùng khách</string>
     <string name="fui_next_default">Tiếp</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>

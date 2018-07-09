@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Kirjaudu GitHub-tilillä</string>
     <string name="fui_sign_in_with_email">Kirjaudu sähköpostilla</string>
     <string name="fui_sign_in_with_phone">Kirjaudu puhelimella</string>
+    <string name="fui_sign_in_anonymously">Jatka vieraana</string>
     <string name="fui_next_default">Seuraava</string>
     <string name="fui_email_hint">Sähköposti</string>
     <string name="fui_phone_hint">Puhelinnumero</string>
