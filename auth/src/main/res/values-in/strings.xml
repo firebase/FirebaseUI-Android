@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Login dengan GitHub</string>
     <string name="fui_sign_in_with_email">Login dengan email</string>
     <string name="fui_sign_in_with_phone">Login dengan nomor telepon</string>
+    <string name="fui_sign_in_anonymously">Lanjutkan sebagai tamu</string>
     <string name="fui_next_default">Berikutnya</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Nomor Telepon</string>

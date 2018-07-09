@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Prijava z računom za GitHub</string>
     <string name="fui_sign_in_with_email">Prijava z e-poštnim naslovom</string>
     <string name="fui_sign_in_with_phone">Prijava s telefonom</string>
+    <string name="fui_sign_in_anonymously">Nadaljuj kot gost</string>
     <string name="fui_next_default">Naprej</string>
     <string name="fui_email_hint">E-pošta</string>
     <string name="fui_phone_hint">Telefonska številka</string>

@@ -74,5 +74,5 @@ way to run an equivalent formatter at the command line.
 Third, run the following from your project root:
 
 ```
-/scripts/translations/clean_up_translations.sh
+./scripts/translations/clean_up_translations.sh
 ```

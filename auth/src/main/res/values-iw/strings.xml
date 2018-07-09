@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">כניסה באמצעות GitHub</string>
     <string name="fui_sign_in_with_email">כניסה באמצעות אימייל</string>
     <string name="fui_sign_in_with_phone">כניסה באמצעות הטלפון</string>
+    <string name="fui_sign_in_anonymously">המשך כאורח</string>
     <string name="fui_next_default">הבא‏</string>
     <string name="fui_email_hint">אימייל</string>
     <string name="fui_phone_hint">מספר טלפון</string>

@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">GitHub کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_email">ای میل کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_phone">فون کے ساتھ سائں ان کریں</string>
+    <string name="fui_sign_in_anonymously">مہمان کے طور پر جاری رکھیں</string>
     <string name="fui_next_default">اگلا</string>
     <string name="fui_email_hint">ای میل</string>
     <string name="fui_phone_hint">فون نمبر</string>

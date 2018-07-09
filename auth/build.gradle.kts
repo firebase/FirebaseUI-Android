@@ -12,7 +12,6 @@ android {
 
     lintOptions {
         disable("UnusedQuantity")
-        disable("MissingTranslation") // TODO: Translate fui_auto_verified
     }
 
     testOptions {
