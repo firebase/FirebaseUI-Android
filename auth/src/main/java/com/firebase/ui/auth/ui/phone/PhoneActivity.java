@@ -46,6 +46,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneActivity extends AppCompatBase {
+    private PhoneNumberVerificationHandler mPhoneVerifier;
+
     public static Intent createIntent(Context context, FlowParameters params, Bundle args) {
         return createBaseIntent(context, PhoneActivity.class, params)
                 .putExtra(ExtraConstants.PARAMS, args);
@@ -72,10 +74,10 @@ public class PhoneActivity extends AppCompatBase {
             }
         });
 
-        final PhoneNumberVerificationHandler phoneVerifier =
-                ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
-        phoneVerifier.init(getFlowParams());
-        phoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneVerification>(
+        mPhoneVerifier = ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
+        mPhoneVerifier.init(getFlowParams());
+        mPhoneVerifier.onRestoreInstanceState(savedInstanceState);
+        mPhoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneVerification>(
                 this, R.string.fui_verifying) {
             @Override
             protected void onSuccess(@NonNull PhoneVerification verification) {
@@ -119,6 +121,12 @@ public class PhoneActivity extends AppCompatBase {
                 .replace(R.id.fragment_phone, fragment, CheckPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mPhoneVerifier.onSaveInstanceState(outState);
     }
 
     @Override
