@@ -1,7 +1,9 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.app.Application;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
@@ -15,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerification> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
+    private static final String VERIFICATION_ID_KEY = "verification_id";
 
     private String mVerificationId;
     private PhoneAuthProvider.ForceResendingToken mForceResendingToken;
@@ -59,5 +62,15 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
                 number,
                 PhoneAuthProvider.getCredential(mVerificationId, code),
                 false)));
+    }
+
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(VERIFICATION_ID_KEY, mVerificationId);
+    }
+
+    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
+        if (mVerificationId == null && savedInstanceState != null) {
+            mVerificationId = savedInstanceState.getString(VERIFICATION_ID_KEY);
+        }
     }
 }
