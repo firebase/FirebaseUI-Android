@@ -1,5 +1,8 @@
 # FirebaseUI for Android — UI Bindings for Firebase
 
+[![FirebaseOpensource.com](https://img.shields.io/badge/Docs-firebaseopensource.com-orange.svg)](
+https://firebaseopensource.com/projects/firebase/firebaseui-android
+)
 [![Build Status](https://travis-ci.org/firebase/FirebaseUI-Android.svg?branch=master)](https://travis-ci.org/firebase/FirebaseUI-Android)
 
 FirebaseUI is an open-source library for Android that allows you to
