@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Bejelentkezés Google-fiókkal</string>
     <string name="fui_sign_in_with_facebook">Bejelentkezés Facebook-fiókkal</string>
     <string name="fui_sign_in_with_twitter">Bejelentkezés Twitter-fiókkal</string>
+    <string name="fui_sign_in_with_github">Bejelentkezés GitHubbal</string>
     <string name="fui_sign_in_with_email">Bejelentkezés e-mail-fiókkal</string>
     <string name="fui_sign_in_with_phone">Bejelentkezés telefonnal</string>
+    <string name="fui_sign_in_anonymously">Folytatás vendégként</string>
     <string name="fui_next_default">Következő</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">Hiba történt a telefonszám ellenőrzésekor.</string>
     <string name="fui_error_session_expired">Ez a kód már nem érvényes.</string>
     <string name="fui_sign_in_with_phone_number">Bejelentkezés telefonszámmal</string>
+    <string name="fui_auto_verified">A telefonszám automatikusan ellenőrizve</string>
     <string name="fui_resend_code">Kód újraküldése</string>
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
     <string name="fui_continue_phone_login">Folytatás</string>

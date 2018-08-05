@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Fecebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Mag-sign in sa Google</string>
     <string name="fui_sign_in_with_facebook">Mag-sign in sa Facebook</string>
     <string name="fui_sign_in_with_twitter">Mag-sign in sa Twitter</string>
+    <string name="fui_sign_in_with_github">Mag-sign in sa GitHub</string>
     <string name="fui_sign_in_with_email">Mag-sign in gamit ang email</string>
     <string name="fui_sign_in_with_phone">Mag-sign in gamit ang telepono</string>
+    <string name="fui_sign_in_anonymously">Magpatuloy bilang bisita</string>
     <string name="fui_next_default">Susunod</string>
     <string name="fui_email_hint">Mag-email</string>
     <string name="fui_phone_hint">Numero ng Telepono</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">Nagkaproblema sa pag-verify ng numero ng iyong telepono</string>
     <string name="fui_error_session_expired">Wala nang bisa ang code na ito</string>
     <string name="fui_sign_in_with_phone_number">Mag-sign in gamit ang numero ng telepono</string>
+    <string name="fui_auto_verified">Awtomatikong na-verify ang numero ng telepono</string>
     <string name="fui_resend_code">Ipadala Muli ang Code</string>
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
     <string name="fui_continue_phone_login">Magpatuloy</string>

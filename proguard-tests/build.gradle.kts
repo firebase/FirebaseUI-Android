@@ -13,7 +13,6 @@ android {
                 isRemoveUnusedCode = true
                 isRemoveUnusedResources = true
                 isObfuscate = true
-                isOptimizeCode = true
             }
         }
     }

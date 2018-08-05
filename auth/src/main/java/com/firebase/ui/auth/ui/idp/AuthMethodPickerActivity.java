@@ -38,6 +38,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
+import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
@@ -178,6 +179,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
                     buttonLayout = R.layout.fui_provider_button_phone;
                     break;
+                case AuthUI.ANONYMOUS_PROVIDER:
+                    AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
+                    anonymous.init(getFlowParams());
+                    provider = anonymous;
+
+                    buttonLayout = R.layout.fui_provider_button_anonymous;
+                    break;
                 default:
                     throw new IllegalStateException("Unknown provider: " + providerId);
             }
@@ -207,8 +215,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                         // started.
                         handler.startSignIn(response);
                     } else {
-                        // Email or phone: the credentials should have already been saved so simply
-                        // move along.
+                        // Email or phone: the credentials should have already been saved so
+                        // simply move along. Anononymous sign in also does not require any
+                        // other operations.
                         finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
                                 response.toIntent());
                     }

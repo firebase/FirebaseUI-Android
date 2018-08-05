@@ -121,6 +121,9 @@ public final class TestHelper {
                 case PhoneAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.PhoneBuilder().build());
                     break;
+                case AuthUI.ANONYMOUS_PROVIDER:
+                    idpConfigs.add(new IdpConfig.AnonymousBuilder().build());
+                    break;
                 default:
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
             }

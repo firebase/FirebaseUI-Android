@@ -47,16 +47,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-database:4.1.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.1.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-storage:4.1.0'
 }
 ```
 
@@ -99,7 +99,7 @@ versions. This means that FirebaseUI has independent dependencies on each of the
 For best results, your app should depend on a version of each dependency with the same major
 version number as the version used by FirebaseUI.
 
-As of version `4.0.0`, FirebaseUI has the following dependency versions:
+As of version `4.1.0`, FirebaseUI has the following dependency versions:
 
 | Library              | Version                        |
 |----------------------|--------------------------------|

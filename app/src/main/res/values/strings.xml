@@ -26,6 +26,7 @@
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
     <string name="providers_phone">Phone</string>
+    <string name="providers_anonymous">Anonymous</string>
 
     <string name="theme_header">Theme</string>
     <string name="theme_default">Default theme</string>

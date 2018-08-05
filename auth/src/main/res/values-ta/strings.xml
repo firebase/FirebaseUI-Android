@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">Github</string>
     <string name="fui_sign_in_with_google">Google மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_facebook">Facebook மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_twitter">Twitter மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_github">GitHub பயன்படுத்தி உள்நுழைக</string>
     <string name="fui_sign_in_with_email">மின்னஞ்சல் மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_phone">ஃபோன் எண் மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_anonymously">விருந்தினராகத் தொடர்க</string>
     <string name="fui_next_default">அடுத்து</string>
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">உங்கள் ஃபோன் எண்ணைச் சரிபார்ப்பதில் சிக்கல் ஏற்பட்டது</string>
     <string name="fui_error_session_expired">இந்தக் குறியீடு இனி செல்லுபடியாகாது</string>
     <string name="fui_sign_in_with_phone_number">ஃபோன் எண் மூலம் உள்நுழையவும்</string>
+    <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_continue_phone_login">தொடர்க</string>

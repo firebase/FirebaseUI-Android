@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="3dp" />
+            <solid android:color="@color/fui_buttonShadow" />
+        </shape>
+    </item>
+    <item
+        android:bottom="@dimen/fui_button_inset_bottom"
+        android:left="@dimen/fui_button_inset_left"
+        android:right="@dimen/fui_button_inset_right"
+        android:top="@dimen/fui_button_inset_top">
+        <shape android:shape="rectangle">
+            <corners android:radius="3dp" />
+            <solid android:color="@color/fui_bgAnonymous" />
+        </shape>
+    </item>
+</layer-list>
