@@ -91,7 +91,6 @@ object Config {
 
         object Test {
             const val junit = "junit:junit:4.12"
-            const val truth = "com.google.truth:truth:0.40"
             const val mockito = "org.mockito:mockito-android:2.18.3"
             const val robolectric = "org.robolectric:robolectric:3.8"
 

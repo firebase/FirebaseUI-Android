@@ -25,7 +25,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -43,8 +42,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener,
-        RegisterEmailFragment.AnonymousUpgradeListener {
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener {
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -142,10 +140,5 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     @Override
     public void hideProgress() {
         throw new UnsupportedOperationException("Email fragments must handle progress updates.");
-    }
-
-    @Override
-    public void onMergeFailure(IdpResponse response) {
-        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
     }
 }

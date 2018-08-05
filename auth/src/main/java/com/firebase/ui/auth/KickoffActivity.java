@@ -13,7 +13,6 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.InvisibleActivityBase;
-import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,9 +41,6 @@ public class KickoffActivity extends InvisibleActivityBase {
             protected void onFailure(@NonNull Exception e) {
                 if (e instanceof UserCancellationException) {
                     finish(RESULT_CANCELED, null);
-                } else if (e instanceof FirebaseAuthAnonymousUpgradeException) {
-                    IdpResponse res = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
-                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE, res));
                 } else {
                     finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                 }
