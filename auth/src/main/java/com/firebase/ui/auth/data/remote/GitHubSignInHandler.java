@@ -80,8 +80,15 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     @Override
     protected void onCreate() {
-        List<String> permissions = new ArrayList<>(getArguments().getParams()
-                .getStringArrayList(ExtraConstants.GITHUB_PERMISSIONS));
+        List<String> permissions = getArguments().getParams()
+                .getStringArrayList(ExtraConstants.GITHUB_PERMISSIONS);
+
+        if (permissions == null) {
+            permissions = new ArrayList<>();
+        } else {
+            permissions = new ArrayList<>(permissions);
+        }
+
         if (!permissions.contains(EMAIL_PERMISSION)) {
             permissions.add(EMAIL_PERMISSION);
         }
