@@ -63,7 +63,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull final Exception e) {
+                    public void onFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthUserCollisionException) {
                             final String email = response.getEmail();
                             if (email == null) {
@@ -87,9 +87,16 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                                 // Case 1
                                                 handleMergeFailure(credential);
                                             } else {
-                                                // Case 2 & 3 - we need to link
-                                                startWelcomeBackFlowForLinking(
-                                                        providers.get(0), response);
+                                                if (providers.isEmpty()) {
+                                                    setResult(Resource.<IdpResponse>forFailure(
+                                                            new FirebaseUiException(
+                                                                    ErrorCodes.DEVELOPER_ERROR,
+                                                                    "No supported providers.")));
+                                                } else {
+                                                    // Case 2 & 3 - we need to link
+                                                    startWelcomeBackFlowForLinking(
+                                                            providers.get(0), response);
+                                                }
                                             }
                                         }
                                     })

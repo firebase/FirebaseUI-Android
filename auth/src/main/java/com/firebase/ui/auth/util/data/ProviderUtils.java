@@ -194,7 +194,7 @@ public final class ProviderUtils {
 
     public static Task<String> fetchTopProvider(
             @NonNull FirebaseAuth auth,
-            @NonNull final FlowParameters params,
+            @NonNull FlowParameters params,
             @NonNull String email) {
         return fetchSortedProviders(auth, params, email)
                 .continueWith(new Continuation<List<String>, String>() {
