@@ -27,7 +27,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
 
@@ -80,20 +79,17 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                             // existing user.
                             // CASE 3: CASE 2 with an anonymous user. We link the new IDP to the
                             // same account before handling invoking a merge failure.
-                            getAuth().fetchSignInMethodsForEmail(email)
-                                    .addOnSuccessListener(new OnSuccessListener<SignInMethodQueryResult>() {
+                            ProviderUtils.fetchSortedProviders(getAuth(), getArguments(), email)
+                                    .addOnSuccessListener(new OnSuccessListener<List<String>>() {
                                         @Override
-                                        public void onSuccess(SignInMethodQueryResult result) {
-                                            List<String> providers = result.getSignInMethods();
-                                            if (ProviderUtils.isExistingProvider(providers,
-                                                    response.getProviderType())) {
+                                        public void onSuccess(List<String> providers) {
+                                            if (providers.contains(response.getProviderType())) {
                                                 // Case 1
                                                 handleMergeFailure(credential);
                                             } else {
                                                 // Case 2 & 3 - we need to link
                                                 startWelcomeBackFlowForLinking(
-                                                        ProviderUtils.getTopProvider(providers),
-                                                        response);
+                                                        providers.get(0), response);
                                             }
                                         }
                                     })

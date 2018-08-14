@@ -21,7 +21,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.Preconditions;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -139,7 +139,7 @@ public final class ProviderUtils {
 
     @Nullable
     public static AuthUI.IdpConfig getConfigFromIdps(List<AuthUI.IdpConfig> idps, String id) {
-        for (AuthUI.IdpConfig idp: idps) {
+        for (AuthUI.IdpConfig idp : idps) {
             if (idp.getProviderId().equals(id)) { return idp; }
         }
         return null;
@@ -155,46 +155,60 @@ public final class ProviderUtils {
         return config;
     }
 
-    public static Task<String> fetchTopProvider(@NonNull FirebaseAuth auth,
-                                                @NonNull final FlowParameters params,
-                                                @NonNull String email) {
+    public static Task<List<String>> fetchSortedProviders(@NonNull FirebaseAuth auth,
+                                                          @NonNull final FlowParameters params,
+                                                          @NonNull String email) {
         if (TextUtils.isEmpty(email)) {
             return Tasks.forException(new NullPointerException("Email cannot be empty"));
         }
 
         return auth.fetchSignInMethodsForEmail(email)
-                .continueWith(new Continuation<SignInMethodQueryResult, String>() {
+                .continueWith(new Continuation<SignInMethodQueryResult, List<String>>() {
                     @Override
-                    public String then(@NonNull Task<SignInMethodQueryResult> task) {
-                        if (!task.isSuccessful()) return null;
-
+                    public List<String> then(@NonNull Task<SignInMethodQueryResult> task) {
                         List<String> methods = task.getResult().getSignInMethods();
                         if (methods == null) { methods = new ArrayList<>(); }
 
-                        List<String> providers = new ArrayList<>(methods.size());
-                        for (String method: methods) {
-                            providers.add(signInMethodToProviderId(method));
+                        List<String> allowedProviders = new ArrayList<>(params.providers.size());
+                        for (AuthUI.IdpConfig provider : params.providers) {
+                            allowedProviders.add(provider.getProviderId());
                         }
 
-                        for (AuthUI.IdpConfig config: params.providers) {
-                            String id = config.getProviderId();
-                            if (providers.contains(id)) {
-                                return id;
+                        List<String> lastSignedInProviders = new ArrayList<>(methods.size());
+                        for (String method : methods) {
+                            String id = signInMethodToProviderId(method);
+                            if (allowedProviders.contains(id)) {
+                                lastSignedInProviders.add(0, id);
                             }
                         }
 
-                        return null;
+                        if (lastSignedInProviders.contains(GoogleAuthProvider.PROVIDER_ID)) {
+                            lastSignedInProviders.remove(GoogleAuthProvider.PROVIDER_ID);
+                            lastSignedInProviders.add(0, GoogleAuthProvider.PROVIDER_ID);
+                        }
+
+                        return lastSignedInProviders;
                     }
                 });
     }
 
-    public static String getTopProvider(@NonNull List<String> providers) {
-        return providers == null || providers.isEmpty() ? null :
-                providers.get(providers.size() - 1);
-    }
+    public static Task<String> fetchTopProvider(
+            @NonNull FirebaseAuth auth,
+            @NonNull final FlowParameters params,
+            @NonNull String email) {
+        return fetchSortedProviders(auth, params, email)
+                .continueWith(new Continuation<List<String>, String>() {
+                    @Override
+                    public String then(@NonNull Task<List<String>> task) {
+                        if (!task.isSuccessful()) return null;
+                        List<String> providers = task.getResult();
 
-    public static boolean isExistingProvider(@NonNull List<String> providers, String provider) {
-        if (providers == null) throw new IllegalArgumentException("The list of providers is null.");
-        return providers.contains(provider);
+                        if (providers.isEmpty()) {
+                            return null;
+                        } else {
+                            return providers.get(0);
+                        }
+                    }
+                });
     }
 }
