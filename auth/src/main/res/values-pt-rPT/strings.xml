@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Iniciar sessão com o Google</string>
     <string name="fui_sign_in_with_facebook">Iniciar sessão com o Facebook</string>
     <string name="fui_sign_in_with_twitter">Iniciar sessão com o Twitter</string>
+    <string name="fui_sign_in_with_github">Iniciar sessão com o GitHub</string>
     <string name="fui_sign_in_with_email">Iniciar sessão com o email</string>
     <string name="fui_sign_in_with_phone">Iniciar sessão com o telemóvel</string>
+    <string name="fui_sign_in_anonymously">Continuar como convidado</string>
     <string name="fui_next_default">Seguinte</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Número de telefone</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">Ocorreu um problema ao validar o número de telefone</string>
     <string name="fui_error_session_expired">Este código já não é válido</string>
     <string name="fui_sign_in_with_phone_number">Iniciar sessão com o número de telefone</string>
+    <string name="fui_auto_verified">Número de telefone verificado automaticamente</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Validar número de telefone</string>
     <string name="fui_continue_phone_login">Continuar</string>

@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Login dengan Google</string>
     <string name="fui_sign_in_with_facebook">Login dengan Facebook</string>
     <string name="fui_sign_in_with_twitter">Login dengan Twitter</string>
+    <string name="fui_sign_in_with_github">Login dengan GitHub</string>
     <string name="fui_sign_in_with_email">Login dengan email</string>
     <string name="fui_sign_in_with_phone">Login dengan nomor telepon</string>
+    <string name="fui_sign_in_anonymously">Lanjutkan sebagai tamu</string>
     <string name="fui_next_default">Berikutnya</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Nomor Telepon</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">Ada masalah saat memverifikasi nomor telepon Anda</string>
     <string name="fui_error_session_expired">Kode ini sudah tidak valid</string>
     <string name="fui_sign_in_with_phone_number">Login dengan nomor telepon</string>
+    <string name="fui_auto_verified">Nomor telepon terverifikasi secara otomatis</string>
     <string name="fui_resend_code">Kirim Ulang Kode</string>
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
     <string name="fui_continue_phone_login">Lanjutkan</string>

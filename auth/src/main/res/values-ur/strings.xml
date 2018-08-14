@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">Github</string>
     <string name="fui_sign_in_with_google">Google کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_facebook">Facebook کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_twitter">Twitter کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_github">GitHub کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_email">ای میل کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_phone">فون کے ساتھ سائں ان کریں</string>
+    <string name="fui_sign_in_anonymously">مہمان کے طور پر جاری رکھیں</string>
     <string name="fui_next_default">اگلا</string>
     <string name="fui_email_hint">ای میل</string>
     <string name="fui_phone_hint">فون نمبر</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">آپ کے فون نمبر کی توثیق کرنے میں ایک مسئلہ تھا</string>
     <string name="fui_error_session_expired">یہ کوڈ اب جائز نہیں رہا</string>
     <string name="fui_sign_in_with_phone_number">فون نمبر کے ساتھ سائن ان کریں</string>
+    <string name="fui_auto_verified">فون نمبر کی خودکار طور پر توثیق ہو گئی</string>
     <string name="fui_resend_code">کوڈ دوبارہ بھیجیں</string>
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
     <string name="fui_continue_phone_login">جاری رکھیں</string>

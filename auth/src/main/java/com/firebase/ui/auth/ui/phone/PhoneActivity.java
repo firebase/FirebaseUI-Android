@@ -24,6 +24,8 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -44,6 +46,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneActivity extends AppCompatBase {
+    private PhoneNumberVerificationHandler mPhoneVerifier;
+
     public static Intent createIntent(Context context, FlowParameters params, Bundle args) {
         return createBaseIntent(context, PhoneActivity.class, params)
                 .putExtra(ExtraConstants.PARAMS, args);
@@ -70,10 +74,10 @@ public class PhoneActivity extends AppCompatBase {
             }
         });
 
-        final PhoneNumberVerificationHandler phoneVerifier =
-                ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
-        phoneVerifier.init(getFlowParams());
-        phoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneVerification>(
+        mPhoneVerifier = ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
+        mPhoneVerifier.init(getFlowParams());
+        mPhoneVerifier.onRestoreInstanceState(savedInstanceState);
+        mPhoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneVerification>(
                 this, R.string.fui_verifying) {
             @Override
             protected void onSuccess(@NonNull PhoneVerification verification) {
@@ -120,6 +124,12 @@ public class PhoneActivity extends AppCompatBase {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mPhoneVerifier.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
@@ -132,7 +142,10 @@ public class PhoneActivity extends AppCompatBase {
         TextInputLayout errorView = getErrorView();
         if (errorView == null) { return; }
 
-        if (e instanceof FirebaseAuthException) {
+        if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+            IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+            finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
+        } else if (e instanceof FirebaseAuthException) {
             errorView.setError(getErrorMessage(
                     FirebaseAuthError.fromException((FirebaseAuthException) e)));
         } else if (e != null) {

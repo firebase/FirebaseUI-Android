@@ -21,7 +21,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.util.Preconditions;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -186,5 +186,15 @@ public final class ProviderUtils {
                         return null;
                     }
                 });
+    }
+
+    public static String getTopProvider(@NonNull List<String> providers) {
+        return providers == null || providers.isEmpty() ? null :
+                providers.get(providers.size() - 1);
+    }
+
+    public static boolean isExistingProvider(@NonNull List<String> providers, String provider) {
+        if (providers == null) throw new IllegalArgumentException("The list of providers is null.");
+        return providers.contains(provider);
     }
 }

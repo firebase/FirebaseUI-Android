@@ -7,5 +7,4 @@
         message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location file="src/main/AndroidManifest.xml" />
     </issue>
-
 </issues>

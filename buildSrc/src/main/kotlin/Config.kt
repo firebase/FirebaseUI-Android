@@ -1,5 +1,5 @@
 object Config {
-    const val version = "4.1.0-SNAPSHOT"
+    const val version = "4.2.0-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.2.41"
@@ -11,7 +11,7 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:3.2.0-alpha17"
+        const val android = "com.android.tools.build:gradle:3.2.0-beta01"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.0.1"
 
@@ -91,6 +91,7 @@ object Config {
 
         object Test {
             const val junit = "junit:junit:4.12"
+            const val truth = "com.google.truth:truth:0.40"
             const val mockito = "org.mockito:mockito-android:2.18.3"
             const val robolectric = "org.robolectric:robolectric:3.8"
 

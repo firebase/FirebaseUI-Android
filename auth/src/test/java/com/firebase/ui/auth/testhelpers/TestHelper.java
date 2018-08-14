@@ -100,6 +100,11 @@ public final class TestHelper {
     }
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds) {
+        return getFlowParameters(providerIds, false);
+    }
+
+    public static FlowParameters getFlowParameters(Collection<String> providerIds,
+                                                   boolean enableAnonymousUpgrade) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -121,6 +126,9 @@ public final class TestHelper {
                 case PhoneAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.PhoneBuilder().build());
                     break;
+                case AuthUI.ANONYMOUS_PROVIDER:
+                    idpConfigs.add(new IdpConfig.AnonymousBuilder().build());
+                    break;
                 default:
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
             }
@@ -133,7 +141,9 @@ public final class TestHelper {
                 null,
                 null,
                 true,
-                true);
+                true,
+                enableAnonymousUpgrade);
     }
+
 
 }

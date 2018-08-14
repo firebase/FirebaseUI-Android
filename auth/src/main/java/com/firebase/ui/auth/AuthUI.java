@@ -95,13 +95,20 @@ public final class AuthUI {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String TAG = "AuthUI";
 
+    /**
+     * Provider for anonymous users.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String ANONYMOUS_PROVIDER = "anonymous";
+
     @StringDef({
                        GoogleAuthProvider.PROVIDER_ID,
                        FacebookAuthProvider.PROVIDER_ID,
                        TwitterAuthProvider.PROVIDER_ID,
                        GithubAuthProvider.PROVIDER_ID,
                        EmailAuthProvider.PROVIDER_ID,
-                       PhoneAuthProvider.PROVIDER_ID
+                       PhoneAuthProvider.PROVIDER_ID,
+                       ANONYMOUS_PROVIDER
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
@@ -121,7 +128,8 @@ public final class AuthUI {
                     TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
-                    PhoneAuthProvider.PROVIDER_ID
+                    PhoneAuthProvider.PROVIDER_ID,
+                    ANONYMOUS_PROVIDER
             )));
 
     /**
@@ -990,6 +998,15 @@ public final class AuthUI {
                 return this;
             }
         }
+
+        /**
+         * {@link IdpConfig} builder for the Anonymous provider.
+         */
+        public static final class AnonymousBuilder extends Builder {
+            public AnonymousBuilder() {
+                super(ANONYMOUS_PROVIDER);
+            }
+        }
     }
 
     /**
@@ -1066,7 +1083,8 @@ public final class AuthUI {
 
         /**
          * Specified the set of supported authentication providers. At least one provider must
-         * be specified. There may only be one instance of each provider.
+         * be specified. There may only be one instance of each provider. Anonymous provider cannot
+         * be the only provider specified.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
@@ -1074,9 +1092,19 @@ public final class AuthUI {
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
          *                   configuration parameters for the IDP.
          * @see IdpConfig
+         *
+         * @throws IllegalStateException if anonymous provider is the only specified provider.
          */
         @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
+            Preconditions.checkNotNull(idpConfigs, "idpConfigs cannot be null");
+            if (idpConfigs.size() == 1 &&
+                    idpConfigs.get(0).getProviderId().equals(ANONYMOUS_PROVIDER)) {
+                throw new IllegalStateException("Sign in as guest cannot be the only sign in " +
+                        "method. In this case, sign the user in anonymously your self; " +
+                        "no UI is needed.");
+            }
+
             mProviders.clear();
 
             for (IdpConfig config : idpConfigs) {
@@ -1139,8 +1167,21 @@ public final class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+
+        private boolean mEnableAnonymousUpgrade;
+
         private SignInIntentBuilder() {
             super();
+        }
+
+        /**
+         * Enables upgrading anonymous accounts to full accounts during the sign-in flow.
+         * This is disabled by default.
+         */
+        @NonNull
+        public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {
+            mEnableAnonymousUpgrade = true;
+            return this;
         }
 
         @Override
@@ -1153,7 +1194,8 @@ public final class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
-                    mEnableHints);
+                    mEnableHints,
+                    mEnableAnonymousUpgrade);
         }
     }
 }

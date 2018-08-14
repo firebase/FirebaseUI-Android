@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Conectați-vă cu Google</string>
     <string name="fui_sign_in_with_facebook">Conectați-vă cu Facebook</string>
     <string name="fui_sign_in_with_twitter">Conectați-vă cu Twitter</string>
+    <string name="fui_sign_in_with_github">Conectați-vă cu GitHub</string>
     <string name="fui_sign_in_with_email">Conectați-vă cu adresa de e-mail</string>
     <string name="fui_sign_in_with_phone">Conectați-vă cu numărul de telefon</string>
+    <string name="fui_sign_in_anonymously">Continuați ca invitat</string>
     <string name="fui_next_default">Înainte</string>
     <string name="fui_email_hint">Adresă de e-mail</string>
     <string name="fui_phone_hint">Număr de telefon</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">A apărut o problemă la confirmarea numărului de telefon</string>
     <string name="fui_error_session_expired">Codul nu mai este valid</string>
     <string name="fui_sign_in_with_phone_number">Conectați-vă cu numărul de telefon</string>
+    <string name="fui_auto_verified">Numărul de telefon este verificat automat</string>
     <string name="fui_resend_code">Retrimiteți codul</string>
     <string name="fui_verify_phone_number">Confirmați numărul de telefon</string>
     <string name="fui_continue_phone_login">Continuați</string>

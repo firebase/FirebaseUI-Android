@@ -6,11 +6,14 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Google વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_facebook">Facebook વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_twitter">Twitter વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_with_github">GitHub વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_email">ઇમેઇલ વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_phone">ફોન વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_anonymously">અતિથિ તરીકે ચાલુ રાખો</string>
     <string name="fui_next_default">આગળ</string>
     <string name="fui_email_hint">ઇમેઇલ</string>
     <string name="fui_phone_hint">ફોન નંબર</string>
@@ -54,6 +57,7 @@
     <string name="fui_error_quota_exceeded">તમારો ફોન નંબર ચકાસવામાં સમસ્યા આવી હતી</string>
     <string name="fui_error_session_expired">આ કોડ હવે માન્ય નથી</string>
     <string name="fui_sign_in_with_phone_number">ફોન નંબર વડે સાઇન ઇન કરો</string>
+    <string name="fui_auto_verified">ફોન નંબર આપમેળે ચકાસવામાં આવ્યો</string>
     <string name="fui_resend_code">કોડ ફરીથી મોકલો</string>
     <string name="fui_verify_phone_number">ફોન નંબર ચકાસો</string>
     <string name="fui_continue_phone_login">આગળ વધો</string>

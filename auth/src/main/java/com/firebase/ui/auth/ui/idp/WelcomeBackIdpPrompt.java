@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -90,8 +91,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 supplier.get(LinkingSocialProviderResponseHandler.class);
         handler.init(getFlowParams());
         if (requestedUserResponse != null) {
-            handler.setRequestedSignInCredential(
-                    ProviderUtils.getAuthCredential(requestedUserResponse));
+            handler.setRequestedSignInCredentialForEmail(
+                    ProviderUtils.getAuthCredential(requestedUserResponse),
+                    existingUser.getEmail());
         }
 
         String providerId = existingUser.getProviderId();
@@ -172,7 +174,12 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+                    finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
+                } else {
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                }
             }
         });
 
