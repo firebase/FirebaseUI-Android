@@ -133,7 +133,7 @@ fun Project.configureQuality() {
     tasks.named("check").configure { dependsOn("checkstyle") }
 
     tasks.register<Checkstyle>("checkstyle") {
-        configFile = file("$configDir/checkstyle.xml")
+        configFile = file("${project.configDir}/checkstyle.xml")
         source("src")
         include("**/*.java")
         exclude("**/gen/**")
@@ -327,8 +327,8 @@ fun Project.setupPublishing() {
 
     tasks.matching {
         it.name.contains("publish") && it.name.contains("publication", true)
-    }.forEach {
-        it.dependsOn("assembleRelease")
+    }.configureEach {
+        dependsOn("assembleRelease")
     }
 
     val bintrayUsername = properties["bintrayUser"] as String?
