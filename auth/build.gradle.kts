@@ -1,4 +1,3 @@
-
 import com.android.build.gradle.internal.dsl.TestOptions
 
 android {
@@ -34,13 +33,7 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
-    // Needed to override Facebook
-    implementation(Config.Libs.Support.cardView)
-    implementation(Config.Libs.Support.customTabs)
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
-
-    implementation(Config.Libs.Misc.retrofit)
-    implementation(Config.Libs.Misc.retrofitGson)
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)

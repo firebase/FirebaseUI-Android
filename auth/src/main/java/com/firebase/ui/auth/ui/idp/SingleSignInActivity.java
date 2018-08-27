@@ -16,7 +16,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
-import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.InvisibleActivityBase;
@@ -77,7 +77,8 @@ public class SingleSignInActivity extends InvisibleActivityBase {
                 mProvider = twitter;
                 break;
             case GithubAuthProvider.PROVIDER_ID:
-                GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                ProviderSignInBase<AuthUI.IdpConfig> github =
+                        supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
                 github.init(providerConfig);
                 mProvider = github;
                 break;

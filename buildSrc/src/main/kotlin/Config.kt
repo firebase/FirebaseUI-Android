@@ -1,6 +1,6 @@
 object Config {
     const val version = "4.2.0-SNAPSHOT"
-    val submodules = listOf("auth", "common", "firestore", "database", "storage")
+    val submodules = listOf("auth", "auth-github", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.2.61"
 
@@ -30,6 +30,7 @@ object Config {
             const val multidex = "com.android.support:multidex:1.0.3"
             const val annotations = "com.android.support:support-annotations:$version"
             const val v4 = "com.android.support:support-v4:$version"
+            const val appCompat = "com.android.support:appcompat-v7:$version"
             const val design = "com.android.support:design:$version"
             const val recyclerView = "com.android.support:recyclerview-v7:$version"
             const val cardView = "com.android.support:cardview-v7:$version"

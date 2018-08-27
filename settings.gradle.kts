@@ -1,7 +1,7 @@
 include(
         ":app", ":library",
 
-        ":auth",
+        ":auth", ":auth-github",
         ":common", ":firestore", ":database",
         ":storage",
 

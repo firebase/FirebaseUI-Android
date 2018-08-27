@@ -32,6 +32,7 @@ dependencies {
     implementation(Config.Libs.Support.multidex)
 
     implementation(project(":auth"))
+    implementation(project(":auth-github"))
     implementation(project(":firestore"))
     implementation(project(":database"))
     implementation(project(":storage"))
