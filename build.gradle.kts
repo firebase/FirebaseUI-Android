@@ -53,7 +53,7 @@ allprojects {
     }
 }
 
-tasks.withType<Wrapper> {
+tasks.withType<Wrapper>().configureEach {
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -139,14 +139,12 @@ fun Project.setupPublishing() {
     }
 
     val javadoc = tasks.register<Javadoc>("javadoc") {
-        afterEvaluate {
-            dependsOn(project.the<LibraryExtension>().libraryVariants.map { it.assemble })
+        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+        classpath += files(project.the<BaseExtension>().bootClasspath)
 
-            setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-            classpath += files(project.the<BaseExtension>().bootClasspath)
-            classpath += files(project.the<LibraryExtension>().libraryVariants.map {
-                (it.javaCompiler as AbstractCompile).classpath
-            })
+        project.the<LibraryExtension>().libraryVariants.configureEach {
+            dependsOn(assemble)
+            classpath += files((javaCompiler as AbstractCompile).classpath)
         }
 
         // Ignore warnings about incomplete documentation
@@ -347,7 +345,7 @@ fun Project.setupPublishing() {
         })
     }
 
-    tasks.withType<ArtifactoryTask> { publications(publicationName) }
+    tasks.withType<ArtifactoryTask>().configureEach { publications(publicationName) }
 
     configure<BintrayExtension> {
         user = bintrayUsername

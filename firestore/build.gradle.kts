@@ -6,7 +6,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("release").configure {
             postprocessing {
                 consumerProguardFiles("proguard-rules.pro")
             }
