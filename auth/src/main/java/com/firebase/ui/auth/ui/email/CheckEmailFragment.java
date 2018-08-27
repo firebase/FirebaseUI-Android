@@ -32,7 +32,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that email.
  * <p>
- * Host Activities should implement {@link CheckEmailListener}.
+ * Host Activities should implement {@link CheckEmailFragment.CheckEmailListener}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CheckEmailFragment extends FragmentBase implements

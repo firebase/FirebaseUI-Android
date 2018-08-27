@@ -660,7 +660,7 @@ public final class AuthUI {
              * Sets the country codes available in the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setBlacklistedCountries(List<String>)}.
+             * {@link #setBlacklistedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -696,7 +696,7 @@ public final class AuthUI {
              * Sets the countries to be removed from the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setWhitelistedCountries(List<String>)}.
+             * {@link #setWhitelistedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
