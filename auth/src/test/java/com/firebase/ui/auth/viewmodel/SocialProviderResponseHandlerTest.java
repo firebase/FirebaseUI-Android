@@ -27,6 +27,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
@@ -40,8 +41,10 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +71,9 @@ public class SocialProviderResponseHandlerTest {
 
         mHandler = new SocialProviderResponseHandler(RuntimeEnvironment.application);
 
-        FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
+        List<String> allExceptGitHub = new ArrayList<>(AuthUI.SUPPORTED_PROVIDERS);
+        allExceptGitHub.remove(GithubAuthProvider.PROVIDER_ID);
+        FlowParameters testParams = TestHelper.getFlowParameters(allExceptGitHub);
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
     }
