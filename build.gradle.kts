@@ -22,6 +22,10 @@ buildscript {
     }
 }
 
+plugins {
+    id("com.github.ben-manes.versions") version "0.20.0"
+}
+
 // See https://github.com/gradle/kotlin-dsl/issues/607#issuecomment-375687119
 subprojects { parent!!.path.takeIf { it != rootProject.path }?.let { evaluationDependsOn(it) } }
 
