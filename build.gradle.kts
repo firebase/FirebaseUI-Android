@@ -1,4 +1,5 @@
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryExtension
 import com.jfrog.bintray.gradle.BintrayExtension
 import com.jfrog.bintray.gradle.tasks.RecordingCopyTask
 import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
@@ -40,16 +41,6 @@ allprojects {
         google()
         jcenter()
         mavenLocal()
-    }
-
-    // Skip Javadoc generation for Java 1.8 as it breaks build
-    if (JavaVersion.current().isJava8Compatible) {
-        tasks.withType<Javadoc> {
-            options {
-                this as StandardJavadocDocletOptions
-                addStringOption("Xdoclint:none", "-quiet")
-            }
-        }
     }
 
     if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
@@ -148,9 +139,18 @@ fun Project.setupPublishing() {
     }
 
     val javadoc = tasks.register<Javadoc>("javadoc") {
-        setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-        classpath += configurations["compile"]
-        classpath += project.files(project.the<BaseExtension>().bootClasspath)
+        afterEvaluate {
+            dependsOn(project.the<LibraryExtension>().libraryVariants.map { it.assemble })
+
+            setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
+            classpath += files(project.the<BaseExtension>().bootClasspath)
+            classpath += files(project.the<LibraryExtension>().libraryVariants.map {
+                (it.javaCompiler as AbstractCompile).classpath
+            })
+        }
+
+        // Ignore warnings about incomplete documentation
+        (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 
     val javadocJar = tasks.register<Jar>("javadocJar") {
@@ -199,7 +199,7 @@ fun Project.setupPublishing() {
                 }.toTypedArray())
             }
         } else {
-            val pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
+            val pomTask = "generatePomFileFor${name.capitalize()}LibraryPublication"
             tasks.register("prepareArtifacts") {
                 dependsOn(javadocJar, sourcesJar, "assembleRelease", pomTask)
             }
