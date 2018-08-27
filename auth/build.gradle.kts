@@ -1,9 +1,8 @@
-
 import com.android.build.gradle.internal.dsl.TestOptions
 
 android {
     buildTypes {
-        getByName("release") {
+        named("release").configure {
             postprocessing {
                 consumerProguardFiles("auth-proguard.pro")
             }

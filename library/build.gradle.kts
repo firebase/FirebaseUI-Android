@@ -1,4 +1,4 @@
-check { dependsOn("testAll", "prepareArtifacts") }
+tasks.named("check").configure { dependsOn("testAll", "prepareArtifacts") }
 
 android {
     lintOptions {

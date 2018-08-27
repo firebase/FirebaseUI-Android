@@ -7,7 +7,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("release").configure {
             // For the purposes of the sample, allow testing of a proguarded release build
             // using the debug key
             signingConfig = signingConfigs["debug"]
