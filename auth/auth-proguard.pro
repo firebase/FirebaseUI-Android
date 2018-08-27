@@ -22,3 +22,6 @@
 -dontwarn okhttp3.**
 -dontwarn okio.**
 -keepattributes Exceptions
+
+# TODO remove https://github.com/google/gson/issues/1174
+-dontwarn com.google.gson.Gson$6
