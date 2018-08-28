@@ -2,12 +2,12 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.firebase.ui.auth.github">
+    package="com.firebase.ui.auth">
 
     <application>
 
         <activity
-            android:name=".GitHubLoginActivity"
+            android:name=".ui.github.GitHubLoginActivity"
             android:label=""
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:launchMode="singleTop"

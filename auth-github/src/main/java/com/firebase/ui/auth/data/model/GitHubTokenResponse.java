@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.github.model;
+package com.firebase.ui.auth.data.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
