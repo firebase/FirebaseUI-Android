@@ -1,5 +1,6 @@
 dependencies {
-    compileOnly(project(":auth"))
+    compileOnly(project(":auth")) { isTransitive = false }
+    compileOnly(Config.Libs.Firebase.auth) { isTransitive = false }
 
     implementation(Config.Libs.Support.appCompat)
     implementation(Config.Libs.Support.customTabs)

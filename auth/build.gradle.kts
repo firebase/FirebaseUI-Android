@@ -33,6 +33,7 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
+    implementation(Config.Libs.Support.cardView) // Needed to override Facebook
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
     testImplementation(Config.Libs.Test.junit)
