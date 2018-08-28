@@ -104,7 +104,6 @@ fun Project.configureAndroid() {
                     "NewerVersionAvailable", "GradleDependency", // For reproducible builds
                     "SelectableText", "SyntheticAccessor" // We almost never care about this
             )
-            disable("UnknownNullness") // TODO fix in future PR
 
             isCheckAllWarnings = true
             isWarningsAsErrors = true

@@ -55,6 +55,7 @@ dependencies {
     implementation(Config.Libs.Misc.butterKnife)
     annotationProcessor(Config.Libs.Misc.butterKnifeCompiler)
     debugImplementation(Config.Libs.Misc.leakCanary)
+    debugImplementation(Config.Libs.Misc.leakCanaryFragments)
     releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
     testImplementation(Config.Libs.Misc.leakCanaryNoop)
 }

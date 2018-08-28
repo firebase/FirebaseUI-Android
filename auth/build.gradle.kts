@@ -11,6 +11,7 @@ android {
 
     lintOptions {
         disable("UnusedQuantity")
+        disable("UnknownNullness") // TODO fix in future PR
     }
 
     testOptions {
