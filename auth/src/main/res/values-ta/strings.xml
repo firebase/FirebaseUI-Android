@@ -1,12 +1,16 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">ஏற்றுகிறது…</string>
     <string name="fui_sign_in_default">உள்நுழைக</string>
+    <string name="fui_tos_and_pp">தொடர்வதன் மூலம், எங்கள் %1$s மற்றும் %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">Github</string>
     <string name="fui_sign_in_with_google">Google மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_facebook">Facebook மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_twitter">Twitter மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_github">GitHub பயன்படுத்தி உள்நுழைக</string>
     <string name="fui_sign_in_with_email">மின்னஞ்சல் மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_phone">ஃபோன் எண் மூலம் உள்நுழைக</string>
     <string name="fui_next_default">அடுத்து</string>
@@ -23,9 +27,6 @@
     <string name="fui_progress_dialog_signing_up">பதிவு செய்கிறது…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
     <string name="fui_email_account_creation_error">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s என்பதைத் தட்டுவதன் மூலம், %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s என்பதைத் தட்டுவதன் மூலம், %2$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள்.</string>
     <string name="fui_terms_of_service">சேவை விதிமுறைகள்</string>
     <string name="fui_privacy_policy">தனியுரிமைக் கொள்கை</string>
     <string name="fui_welcome_back_idp_header">ஏற்கனவே உங்களிடம் கணக்கு உள்ளது</string>
@@ -50,19 +51,15 @@
     <string name="fui_resend_code_in">குறியீட்டை 0:%02d நேரத்தில் மீண்டும் அனுப்பவும்</string>
     <string name="fui_verify_your_phone_title">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_verifying">சரிபார்க்கிறது…</string>
-    <string name="fui_retrieving_sms">smsஐ மீட்டெடுக்கிறது…</string>
     <string name="fui_incorrect_code_dialog_body">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">சரி</string>
     <string name="fui_error_too_many_attempts">இந்த ஃபோன் எண் பலமுறை பயன்படுத்தப்பட்டுள்ளது</string>
     <string name="fui_error_quota_exceeded">உங்கள் ஃபோன் எண்ணைச் சரிபார்ப்பதில் சிக்கல் ஏற்பட்டது</string>
     <string name="fui_error_session_expired">இந்தக் குறியீடு இனி செல்லுபடியாகாது</string>
     <string name="fui_sign_in_with_phone_number">ஃபோன் எண் மூலம் உள்நுழையவும்</string>
-    <string name="fui_done">முடிந்தது</string>
-    <string name="fui_verified">சரிபார்க்கப்பட்டது!</string>
-    <string name="fui_code_sent">குறியீடு அனுப்பப்பட்டது!</string>
-    <string name="fui_resending">மீண்டும் அனுப்புகிறது…</string>
+    <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_continue_phone_login">தொடர்க</string>
     <string name="fui_sms_terms_of_service">“%1$s” என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” என்பதைத் தட்டுவதன் மூலம், எங்கள் %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள். SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
 </resources>

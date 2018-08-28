@@ -35,11 +35,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
@@ -119,9 +122,17 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                mPasswordLayout.setError(getString(getErrorMessage(e)));
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+                    finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
+                } else {
+                    mPasswordLayout.setError(getString(getErrorMessage(e)));
+                }
             }
         });
+
+        TextView footerText = findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(this, getFlowParams(), footerText);
     }
 
     @StringRes

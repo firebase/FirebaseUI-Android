@@ -1,12 +1,16 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">লোড হচ্ছে…</string>
     <string name="fui_sign_in_default">সাইন-ইন করুন</string>
+    <string name="fui_tos_and_pp">চালিয়ে যাওয়ার অর্থ, আপনি আমাদের %1$s এবং %2$s-এর সাথে সম্মত।</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">Github</string>
     <string name="fui_sign_in_with_google">Google দিয়ে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_facebook">Facebook দিয়ে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_twitter">Twitter দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_github">GitHub ব্যবহার করে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_email">ইমেল দিয়ে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_phone">ফোন দিয়ে সাইন-ইন করুন</string>
     <string name="fui_next_default">পরবর্তী</string>
@@ -23,9 +27,6 @@
     <string name="fui_progress_dialog_signing_up">সাইন-আপ করা হচ্ছে…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> </plurals>
     <string name="fui_email_account_creation_error">ইমেল অ্যাকাউন্টটি রেজিস্টার করা যায়নি</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এবং %3$s এর সাথে সম্মত হন।</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এর সাথে সম্মত হন।</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এর সাথে সম্মত হন।</string>
     <string name="fui_terms_of_service">পরিষেবার শর্তাবলি</string>
     <string name="fui_privacy_policy">গোপনীয়তা নীতি</string>
     <string name="fui_welcome_back_idp_header">আপনার আগে থেকেই একটি অ্যাকাউন্ট আছে</string>
@@ -50,19 +51,15 @@
     <string name="fui_resend_code_in">0:%02d এ কোডটি আবার পাঠান</string>
     <string name="fui_verify_your_phone_title">আপনার ফোন নম্বর যাচাই করুন</string>
     <string name="fui_verifying">যাচাই করা হচ্ছে…</string>
-    <string name="fui_retrieving_sms">এসএমএসটি পুনরুদ্ধার করা হচ্ছে…</string>
     <string name="fui_incorrect_code_dialog_body">কোডটি ভুল। আবার চেষ্টা করুন।</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ঠিক আছে</string>
     <string name="fui_error_too_many_attempts">এই ফোন নম্বরটি অনেকবার ব্যবহার করা হয়েছে</string>
     <string name="fui_error_quota_exceeded">আপনার ফোন নম্বরটি যাচাই করতে সমস্যা হয়েছে</string>
     <string name="fui_error_session_expired">এই কোডটি আর ব্যবহার করা যাবে না</string>
     <string name="fui_sign_in_with_phone_number">ফোন নম্বর দিয়ে সাইন-ইন করুন</string>
-    <string name="fui_done">সম্পন্ন হয়েছে</string>
-    <string name="fui_verified">যাচাই করা হয়েছে!</string>
-    <string name="fui_code_sent">কোডটি পাঠানো হয়েছে!</string>
-    <string name="fui_resending">আবার পাঠানো হচ্ছে…</string>
+    <string name="fui_auto_verified">ফোন নম্বরটি নিজে থেকে যাচাই করা হয়েছে</string>
     <string name="fui_resend_code">কোডটি আবার পাঠান</string>
     <string name="fui_verify_phone_number">ফোন নম্বর যাচাই করুন</string>
     <string name="fui_continue_phone_login">চালিয়ে যান</string>
     <string name="fui_sms_terms_of_service">%1$s এ ট্যাপ করলে আপনি একটি এসএমএস পাঠাতে পারেন। মেসেজ ও ডেটার চার্জ প্রযোজ্য।</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” বোতামে ট্যাপ করার অর্থ, আপনি আমাদের %2$s এবং %3$s-এর সাথে সম্মত। একটি এসএমএস পাঠানো হতে পারে। মেসেজ এবং ডেটার উপরে প্রযোজ্য চার্জ লাগতে পারে।</string>
 </resources>

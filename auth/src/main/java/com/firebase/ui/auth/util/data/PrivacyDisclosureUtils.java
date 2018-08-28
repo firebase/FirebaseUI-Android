@@ -49,10 +49,6 @@ public class PrivacyDisclosureUtils {
 
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             return R.string.fui_tos_and_pp;
-        } else if (termsOfServiceUrlProvided) {
-            return R.string.fui_tos_only;
-        } else if (privacyPolicyUrlProvided) {
-            return R.string.fui_pp_only;
         }
 
         return NO_TOS_OR_PP;
@@ -65,10 +61,6 @@ public class PrivacyDisclosureUtils {
 
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             return R.string.fui_tos_and_pp_footer;
-        } else if (termsOfServiceUrlProvided) {
-            return R.string.fui_tos_footer;
-        } else if (privacyPolicyUrlProvided) {
-            return R.string.fui_pp_footer;
         }
 
         return NO_TOS_OR_PP;
@@ -81,10 +73,6 @@ public class PrivacyDisclosureUtils {
 
         if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
             return R.string.fui_sms_terms_of_service_and_privacy_policy_extended;
-        } else if (termsOfServiceUrlProvided) {
-            return R.string.fui_sms_terms_of_service_only_extended;
-        } else if (privacyPolicyUrlProvided) {
-            return R.string.fui_sms_privacy_policy_only_extended;
         }
 
         return NO_TOS_OR_PP;

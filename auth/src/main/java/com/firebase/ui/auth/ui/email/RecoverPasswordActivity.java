@@ -25,12 +25,16 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
@@ -46,6 +50,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         ImeHelper.DonePressedListener {
     private RecoverPasswordHandler mHandler;
 
+    private ProgressBar mProgressBar;
+    private Button mSubmitButton;
     private TextInputLayout mEmailInputLayout;
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
@@ -83,6 +89,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
             }
         });
 
+        mProgressBar = findViewById(R.id.top_progress_bar);
+        mSubmitButton = findViewById(R.id.button_done);
         mEmailInputLayout = findViewById(R.id.email_layout);
         mEmailEditText = findViewById(R.id.email);
         mEmailFieldValidator = new EmailFieldValidator(mEmailInputLayout);
@@ -93,7 +101,10 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         }
 
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
-        findViewById(R.id.button_done).setOnClickListener(this);
+        mSubmitButton.setOnClickListener(this);
+
+        TextView footerText = findViewById(R.id.email_footer_tos_and_pp_text);
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(this, getFlowParams(), footerText);
     }
 
     @Override
@@ -121,5 +132,17 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 })
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    @Override
+    public void showProgress(int message) {
+        mSubmitButton.setEnabled(false);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mSubmitButton.setEnabled(true);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

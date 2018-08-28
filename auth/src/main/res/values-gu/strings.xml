@@ -1,12 +1,16 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">લોડ કરી રહ્યું છે…</string>
     <string name="fui_sign_in_default">સાઇન ઇન કરો</string>
+    <string name="fui_tos_and_pp">ચાલુ રાખીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %1$s અને %2$sને સ્વીકારો છો.</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">Google વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_facebook">Facebook વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_twitter">Twitter વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_with_github">GitHub વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_email">ઇમેઇલ વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_phone">ફોન વડે સાઇન ઇન કરો</string>
     <string name="fui_next_default">આગળ</string>
@@ -23,9 +27,6 @@
     <string name="fui_progress_dialog_signing_up">સાઇન અપ કરી રહ્યાં છીએ…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">પાસવર્ડ પૂરતો સશક્ત નથી. ઓછામાં ઓછા %1$d અક્ષર અને વર્ણ તથા સંખ્યાઓના સંયોજનનો ઉપયોગ કરો</item> <item quantity="other">પાસવર્ડ પૂરતો સશક્ત નથી. ઓછામાં ઓછા %1$d અક્ષર અને વર્ણ તથા સંખ્યાઓના સંયોજનનો ઉપયોગ કરો</item> </plurals>
     <string name="fui_email_account_creation_error">ઇમેઇલ એકાઉન્ટની નોંધણી અસફળ</string>
-    <string name="fui_create_account_preamble_tos_and_pp">%1$s ટૅપ કરીને, તમે સૂચવો છો કે તમે %2$s અને %3$s સાથે સંમત થાઓ છો.</string>
-    <string name="fui_create_account_preamble_tos_only">%1$s ટૅપ કરીને, તમે સૂચવો છો કે તમે %2$s સાથે સંમત થાઓ છો.</string>
-    <string name="fui_create_account_preamble_pp_only">%1$s ટૅપ કરીને, તમે સૂચવો છો કે તમે %2$s સાથે સંમત થાઓ છો.</string>
     <string name="fui_terms_of_service">સેવાની શરતો</string>
     <string name="fui_privacy_policy">ગોપનીયતા નીતિ</string>
     <string name="fui_welcome_back_idp_header">તમારી પાસે પહેલેથી જ એક એકાઉન્ટ છે</string>
@@ -50,19 +51,15 @@
     <string name="fui_resend_code_in">0 માં કોડ ફરીથી મોકલો:%02d</string>
     <string name="fui_verify_your_phone_title">તમારો ફોન નંબર ચકાસો</string>
     <string name="fui_verifying">ચકાસી રહ્યાં છીએ…</string>
-    <string name="fui_retrieving_sms">SMS પુનઃપ્રાપ્ત કરી રહ્યાં છીએ…</string>
     <string name="fui_incorrect_code_dialog_body">કોડ ખોટો છે. ફરી પ્રયાસ કરો.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">ઓકે</string>
     <string name="fui_error_too_many_attempts">આ ફોન નંબરનો ઉપયોગ ઘણી બધી વખત થઇ ગયો છે</string>
     <string name="fui_error_quota_exceeded">તમારો ફોન નંબર ચકાસવામાં સમસ્યા આવી હતી</string>
     <string name="fui_error_session_expired">આ કોડ હવે માન્ય નથી</string>
     <string name="fui_sign_in_with_phone_number">ફોન નંબર વડે સાઇન ઇન કરો</string>
-    <string name="fui_done">થઈ ગયું</string>
-    <string name="fui_verified">ચકાસેલ!</string>
-    <string name="fui_code_sent">કોડ મોકલ્યો!</string>
-    <string name="fui_resending">ફરીથી મોકલી રહ્યાં છીએ…</string>
+    <string name="fui_auto_verified">ફોન નંબર આપમેળે ચકાસવામાં આવ્યો</string>
     <string name="fui_resend_code">કોડ ફરીથી મોકલો</string>
     <string name="fui_verify_phone_number">ફોન નંબર ચકાસો</string>
     <string name="fui_continue_phone_login">આગળ વધો</string>
     <string name="fui_sms_terms_of_service">“%1$s”ને ટૅપ કરવાથી, કદાચ એક SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ટૅપ કરીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %2$s અને %3$sને સ્વીકારો છો. SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
 </resources>

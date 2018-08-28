@@ -1,12 +1,16 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">載入中…</string>
     <string name="fui_sign_in_default">登入</string>
+    <string name="fui_tos_and_pp">選擇繼續即表示您同意接受我們的《%1$s》和《%2$s》。</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">使用 Google 帳戶登入</string>
     <string name="fui_sign_in_with_facebook">使用 Facebook 帳戶登入</string>
     <string name="fui_sign_in_with_twitter">使用 Twitter 帳戶登入</string>
+    <string name="fui_sign_in_with_github">使用 GitHub 登入</string>
     <string name="fui_sign_in_with_email">使用電子郵件地址登入</string>
     <string name="fui_sign_in_with_phone">使用電話號碼登入</string>
     <string name="fui_next_default">繼續</string>
@@ -23,9 +27,6 @@
     <string name="fui_progress_dialog_signing_up">註冊中…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> <item quantity="other">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> </plurals>
     <string name="fui_email_account_creation_error">電子郵件帳戶註冊失敗</string>
-    <string name="fui_create_account_preamble_tos_and_pp">輕觸 [%1$s] 即表示您同意《%2$s》和《%3$s》。</string>
-    <string name="fui_create_account_preamble_tos_only">輕觸 [%1$s] 即表示您同意《%2$s》。</string>
-    <string name="fui_create_account_preamble_pp_only">輕觸 [%1$s] 即表示您同意《%2$s》。</string>
     <string name="fui_terms_of_service">服務條款</string>
     <string name="fui_privacy_policy">隱私權政策</string>
     <string name="fui_welcome_back_idp_header">您已經有帳戶</string>
@@ -50,19 +51,15 @@
     <string name="fui_resend_code_in">0:%02d 秒後將重新發送驗證碼</string>
     <string name="fui_verify_your_phone_title">驗證您的電話號碼</string>
     <string name="fui_verifying">驗證中…</string>
-    <string name="fui_retrieving_sms">擷取簡訊中…</string>
     <string name="fui_incorrect_code_dialog_body">驗證碼錯誤，請再試一次。</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">確定</string>
     <string name="fui_error_too_many_attempts">使用這個電話號碼的次數過多</string>
     <string name="fui_error_quota_exceeded">驗證電話號碼時發生問題</string>
     <string name="fui_error_session_expired">這個代碼已經失效</string>
     <string name="fui_sign_in_with_phone_number">使用電話號碼登入</string>
-    <string name="fui_done">完成</string>
-    <string name="fui_verified">已驗證！</string>
-    <string name="fui_code_sent">已發送驗證碼！</string>
-    <string name="fui_resending">重新發送中…</string>
+    <string name="fui_auto_verified">已自動驗證電話號碼</string>
     <string name="fui_resend_code">重新傳送驗證碼</string>
     <string name="fui_verify_phone_number">驗證電話號碼</string>
     <string name="fui_continue_phone_login">繼續</string>
     <string name="fui_sms_terms_of_service">輕觸 [%1$s] 後，系統將會傳送一封簡訊。您可能需支付簡訊和數據傳輸費用。</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">輕觸 [%1$s] 即表示您同意接受我們的《%2$s》和《%3$s》。系統將會傳送簡訊給您，不過您可能需要支付簡訊和數據傳輸費用。</string>
 </resources>

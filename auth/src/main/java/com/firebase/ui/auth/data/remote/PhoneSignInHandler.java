@@ -12,8 +12,8 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {

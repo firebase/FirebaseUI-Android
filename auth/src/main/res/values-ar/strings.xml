@@ -1,12 +1,16 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">جارٍ التحميل…</string>
     <string name="fui_sign_in_default">تسجيل الدخول</string>
+    <string name="fui_tos_and_pp">تشير المتابعة إلى موافقتك على %1$s و%2$s.</string>
+    <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_sign_in_with_google">تسجيل الدخول عبر Google</string>
     <string name="fui_sign_in_with_facebook">تسجيل الدخول عبر Facebook</string>
     <string name="fui_sign_in_with_twitter">تسجيل الدخول عبر Twitter</string>
+    <string name="fui_sign_in_with_github">تسجيل الدخول باستخدام GitHub</string>
     <string name="fui_sign_in_with_email">تسجيل الدخول عبر البريد الإلكتروني</string>
     <string name="fui_sign_in_with_phone">تسجيل الدخول عبر رقم الهاتف</string>
     <string name="fui_next_default">التالي</string>
@@ -23,9 +27,6 @@
     <string name="fui_progress_dialog_signing_up">جارٍ الاشتراك…</string>
     <plurals name="fui_error_weak_password"> <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> </plurals>
     <string name="fui_email_account_creation_error">فشل تسجيل حساب البريد الإلكتروني</string>
-    <string name="fui_create_account_preamble_tos_and_pp">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s و%3$s.</string>
-    <string name="fui_create_account_preamble_tos_only">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s.</string>
     <string name="fui_terms_of_service">بنود الخدمة</string>
     <string name="fui_privacy_policy">سياسة الخصوصية</string>
     <string name="fui_welcome_back_idp_header">لديك حساب حاليًا</string>
@@ -50,19 +51,15 @@
     <string name="fui_resend_code_in">إعادة إرسال الرمز بعد 0:%02d</string>
     <string name="fui_verify_your_phone_title">إثبات ملكية رقم هاتفك</string>
     <string name="fui_verifying">جارٍ التحقق…</string>
-    <string name="fui_retrieving_sms">جارٍ استرداد الرسائل القصيرة SMS…</string>
     <string name="fui_incorrect_code_dialog_body">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text">موافق</string>
     <string name="fui_error_too_many_attempts">تم استخدام رقم الهاتف هذا لعدد كبير جدًا من المرات</string>
     <string name="fui_error_quota_exceeded">حدثت مشكلة أثناء إثبات ملكية رقم هاتفك</string>
     <string name="fui_error_session_expired">لم يعد هذا الرمز صالحًا</string>
     <string name="fui_sign_in_with_phone_number">تسجيل الدخول عبر رقم الهاتف</string>
-    <string name="fui_done">تم</string>
-    <string name="fui_verified">اكتملت عملية إثبات الملكية!</string>
-    <string name="fui_code_sent">تم إرسال الرمز!</string>
-    <string name="fui_resending">جارٍ إعادة الإرسال…</string>
+    <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
     <string name="fui_continue_phone_login">متابعة</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على “%1$s” إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
 </resources>
