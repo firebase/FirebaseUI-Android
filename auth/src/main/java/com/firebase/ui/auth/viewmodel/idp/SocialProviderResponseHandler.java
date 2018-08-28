@@ -86,17 +86,15 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                             if (providers.contains(response.getProviderType())) {
                                                 // Case 1
                                                 handleMergeFailure(credential);
+                                            } else if (providers.isEmpty()) {
+                                                setResult(Resource.<IdpResponse>forFailure(
+                                                        new FirebaseUiException(
+                                                                ErrorCodes.DEVELOPER_ERROR,
+                                                                "No supported providers.")));
                                             } else {
-                                                if (providers.isEmpty()) {
-                                                    setResult(Resource.<IdpResponse>forFailure(
-                                                            new FirebaseUiException(
-                                                                    ErrorCodes.DEVELOPER_ERROR,
-                                                                    "No supported providers.")));
-                                                } else {
-                                                    // Case 2 & 3 - we need to link
-                                                    startWelcomeBackFlowForLinking(
-                                                            providers.get(0), response);
-                                                }
+                                                // Case 2 & 3 - we need to link
+                                                startWelcomeBackFlowForLinking(
+                                                        providers.get(0), response);
                                             }
                                         }
                                     })
