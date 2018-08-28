@@ -89,7 +89,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
-        populateIdpList(params.providerInfo, mHandler);
+        populateIdpList(params.providers, mHandler);
 
         int logoId = params.logoId;
         if (logoId == AuthUI.NO_LOGO) {

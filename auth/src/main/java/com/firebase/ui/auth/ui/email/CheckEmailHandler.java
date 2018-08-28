@@ -33,7 +33,7 @@ public class CheckEmailHandler extends AuthViewModelBase<User> {
 
     public void fetchProvider(final String email) {
         setResult(Resource.<User>forLoading());
-        ProviderUtils.fetchTopProvider(getAuth(), email)
+        ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
@@ -53,7 +53,7 @@ public class CheckEmailHandler extends AuthViewModelBase<User> {
         setResult(Resource.<User>forLoading());
         final Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
         final String email = credential.getId();
-        ProviderUtils.fetchTopProvider(getAuth(), email)
+        ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {

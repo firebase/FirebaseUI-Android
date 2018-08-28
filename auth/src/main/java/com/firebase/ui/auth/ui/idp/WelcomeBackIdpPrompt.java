@@ -98,7 +98,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         String providerId = existingUser.getProviderId();
         AuthUI.IdpConfig config =
-                ProviderUtils.getConfigFromIdps(getFlowParams().providerInfo, providerId);
+                ProviderUtils.getConfigFromIdps(getFlowParams().providers, providerId);
         if (config == null) {
             finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
                     ErrorCodes.DEVELOPER_ERROR,

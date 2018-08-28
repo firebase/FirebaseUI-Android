@@ -47,7 +47,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         String provider = user.getProviderId();
 
         AuthUI.IdpConfig providerConfig =
-                ProviderUtils.getConfigFromIdps(getFlowParams().providerInfo, provider);
+                ProviderUtils.getConfigFromIdps(getFlowParams().providers, provider);
         if (providerConfig == null) {
             finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
                     ErrorCodes.DEVELOPER_ERROR,

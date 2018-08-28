@@ -49,9 +49,9 @@ public class AuthUITest {
                 .createSignInIntentBuilder()
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
-        assertEquals(1, flowParameters.providerInfo.size());
+        assertEquals(1, flowParameters.providers.size());
         assertEquals(EmailAuthProvider.PROVIDER_ID,
-                flowParameters.providerInfo.get(0).getProviderId());
+                flowParameters.providers.get(0).getProviderId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -75,7 +75,7 @@ public class AuthUITest {
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
-        assertEquals(4, flowParameters.providerInfo.size());
+        assertEquals(4, flowParameters.providers.size());
         assertEquals(TestHelper.MOCK_APP.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);

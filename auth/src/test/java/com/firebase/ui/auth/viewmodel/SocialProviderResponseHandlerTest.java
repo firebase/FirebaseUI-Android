@@ -311,8 +311,7 @@ public class SocialProviderResponseHandlerTest {
 
     private void setupAnonymousUpgrade() {
         // enableAnonymousUpgrade must be set to true
-        FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
-                EmailAuthProvider.PROVIDER_ID), /* enableAnonymousUpgrade */ true);
+        FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS, /* enableAnonymousUpgrade */ true);
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
 
         when(mUser.isAnonymous()).thenReturn(true);

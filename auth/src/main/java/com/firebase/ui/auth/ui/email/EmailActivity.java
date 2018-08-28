@@ -111,7 +111,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-                getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
+                getFlowParams().providers, EmailAuthProvider.PROVIDER_ID);
         if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
