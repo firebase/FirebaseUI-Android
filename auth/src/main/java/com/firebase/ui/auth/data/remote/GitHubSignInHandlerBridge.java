@@ -13,7 +13,7 @@ public final class GitHubSignInHandlerBridge {
         try {
             //noinspection unchecked
             HANDLER_CLASS = (Class<ProviderSignInBase<AuthUI.IdpConfig>>)
-                    Class.forName("com.firebase.ui.auth.github.GitHubSignInHandler");
+                    Class.forName("com.firebase.ui.auth.data.remote.GitHubSignInHandler");
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(
                     "Check for availability with ProviderAvailability first.", e);

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
     <!-- See auth/src/main/res/values/config.xml for documentation -->
 
     <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
