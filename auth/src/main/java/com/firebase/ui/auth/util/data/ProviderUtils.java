@@ -182,12 +182,15 @@ public final class ProviderUtils {
                             }
                         }
 
-                        if (lastSignedInProviders.contains(GoogleAuthProvider.PROVIDER_ID)) {
-                            lastSignedInProviders.remove(GoogleAuthProvider.PROVIDER_ID);
-                            lastSignedInProviders.add(0, GoogleAuthProvider.PROVIDER_ID);
-                        }
+                        // Reorder providers from most to least usable. Usability is determined by
+                        // how many steps a user needs to perform to log in.
+                        maximizePriority(lastSignedInProviders, GoogleAuthProvider.PROVIDER_ID);
 
                         return lastSignedInProviders;
+                    }
+
+                    private void maximizePriority(List<String> providers, String id) {
+                        if (providers.remove(id)) { providers.add(0, id); }
                     }
                 });
     }
