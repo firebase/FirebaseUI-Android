@@ -7,8 +7,7 @@ import com.android.tools.lint.client.api.IssueRegistry
  */
 class LintIssueRegistry : IssueRegistry() {
     override val issues = listOf(
-        NonGlobalIdDetector.NON_GLOBAL_ID,
-        FirestoreRecyclerAdapterLifecycleDetector.ISSUE_MISSING_LISTENING_START_METHOD,
-        FirestoreRecyclerAdapterLifecycleDetector.ISSUE_MISSING_LISTENING_STOP_METHOD
+            FirestoreRecyclerAdapterLifecycleDetector.ISSUE_MISSING_LISTENING_START_METHOD,
+            FirestoreRecyclerAdapterLifecycleDetector.ISSUE_MISSING_LISTENING_STOP_METHOD
     )
 }

@@ -24,6 +24,8 @@ dependencies {
 
     compileOnly(Config.Libs.Arch.paging)
 
+    lintChecks(project(":lint"))
+
     androidTestImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.runner)
     androidTestImplementation(Config.Libs.Test.rules)

@@ -4,6 +4,14 @@ android {
     }
 
     buildTypes {
+        named("debug").configure {
+            postprocessing {
+                isRemoveUnusedCode = true
+                isRemoveUnusedResources = true
+                isObfuscate = true
+            }
+        }
+
         named("release").configure {
             // For the purposes of the sample, allow testing of a proguarded release build
             // using the debug key
