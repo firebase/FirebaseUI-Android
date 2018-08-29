@@ -2,7 +2,7 @@ package com.firebaseui.lint.internal
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.xml
 import com.android.tools.lint.checks.infrastructure.TestLintTask
-import com.firebaseui.lint.NonGlobalIdDetector.Companion.NON_GLOBAL_ID
+import com.firebaseui.lint.internal.NonGlobalIdDetector.Companion.NON_GLOBAL_ID
 import org.junit.Test
 import java.io.File
 
