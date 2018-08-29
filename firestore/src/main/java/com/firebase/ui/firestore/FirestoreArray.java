@@ -1,6 +1,7 @@
 package com.firebase.ui.firestore;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentChange;
@@ -70,7 +71,7 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
+    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
         if (e != null) {
             notifyOnError(e);
             return;

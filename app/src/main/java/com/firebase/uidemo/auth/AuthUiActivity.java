@@ -104,7 +104,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.allow_new_email_accounts) CheckBox mAllowNewEmailAccounts;
     @BindView(R.id.require_name) CheckBox mRequireName;
 
-    public static Intent createIntent(Context context) {
+    @NonNull
+    public static Intent createIntent(@NonNull Context context) {
         return new Intent(context, AuthUiActivity.class);
     }
 
@@ -178,7 +179,7 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.sign_in)
-    public void signIn(View view) {
+    public void signIn() {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
@@ -193,7 +194,7 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.sign_in_silent)
-    public void silentSignIn(View view) {
+    public void silentSignIn() {
         AuthUI.getInstance().silentSignIn(this, getSelectedProviders())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -208,7 +209,7 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             handleSignInResponse(resultCode, data);
@@ -225,8 +226,8 @@ public class AuthUiActivity extends AppCompatActivity {
         }
     }
 
-    private void handleSignInResponse(int resultCode, Intent data) {
-        final IdpResponse response = IdpResponse.fromResultIntent(data);
+    private void handleSignInResponse(int resultCode, @Nullable Intent data) {
+        IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
         if (resultCode == RESULT_OK) {
@@ -250,7 +251,7 @@ public class AuthUiActivity extends AppCompatActivity {
         }
     }
 
-    private void startSignedInActivity(IdpResponse response) {
+    private void startSignedInActivity(@Nullable IdpResponse response) {
         startActivity(SignedInActivity.createIntent(this, response));
     }
 

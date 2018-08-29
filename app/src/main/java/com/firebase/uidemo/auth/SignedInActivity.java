@@ -67,9 +67,10 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_enabled_providers) TextView mEnabledProviders;
     @BindView(R.id.user_is_new) TextView mIsNewUser;
 
-    public static Intent createIntent(Context context, IdpResponse idpResponse) {
+    @NonNull
+    public static Intent createIntent(@NonNull Context context, @Nullable IdpResponse response) {
         return new Intent().setClass(context, SignedInActivity.class)
-                .putExtra(ExtraConstants.IDP_RESPONSE, idpResponse);
+                .putExtra(ExtraConstants.IDP_RESPONSE, response);
     }
 
     @Override

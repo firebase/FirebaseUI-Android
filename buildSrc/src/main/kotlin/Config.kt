@@ -79,6 +79,8 @@ object Config {
             const val retrofitGson = "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+            const val leakCanaryFragments =
+                    "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
             const val leakCanaryNoop =
                     "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 

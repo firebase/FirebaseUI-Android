@@ -3,6 +3,8 @@ package com.firebase.uidemo.database;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -26,7 +28,7 @@ public class ChatHolder extends RecyclerView.ViewHolder {
     private final int mGreen300;
     private final int mGray300;
 
-    public ChatHolder(View itemView) {
+    public ChatHolder(@NonNull View itemView) {
         super(itemView);
         mNameField = itemView.findViewById(R.id.name_text);
         mTextField = itemView.findViewById(R.id.message_text);
@@ -38,19 +40,19 @@ public class ChatHolder extends RecyclerView.ViewHolder {
         mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
     }
 
-    public void bind(AbstractChat chat) {
+    public void bind(@NonNull AbstractChat chat) {
         setName(chat.getName());
-        setText(chat.getMessage());
+        setMessage(chat.getMessage());
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         setIsSender(currentUser != null && chat.getUid().equals(currentUser.getUid()));
     }
 
-    private void setName(String name) {
+    private void setName(@Nullable String name) {
         mNameField.setText(name);
     }
 
-    private void setText(String text) {
+    private void setMessage(@Nullable String text) {
         mTextField.setText(text);
     }
 

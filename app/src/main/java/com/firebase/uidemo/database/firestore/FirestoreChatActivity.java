@@ -155,7 +155,8 @@ public class FirestoreChatActivity extends AppCompatActivity
         mMessageEdit.setText("");
     }
 
-    protected RecyclerView.Adapter newAdapter() {
+    @NonNull
+    private RecyclerView.Adapter newAdapter() {
         FirestoreRecyclerOptions<Chat> options =
                 new FirestoreRecyclerOptions.Builder<Chat>()
                         .setQuery(sChatQuery, Chat.class)
@@ -163,8 +164,9 @@ public class FirestoreChatActivity extends AppCompatActivity
                         .build();
 
         return new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
+            @NonNull
             @Override
-            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public ChatHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 return new ChatHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.message, parent, false));
             }
@@ -182,7 +184,7 @@ public class FirestoreChatActivity extends AppCompatActivity
         };
     }
 
-    protected void onAddMessage(Chat chat) {
+    private void onAddMessage(@NonNull Chat chat) {
         sChatCollection.add(chat).addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

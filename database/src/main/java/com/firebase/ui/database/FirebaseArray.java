@@ -15,6 +15,7 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.ChildEventListener;
@@ -62,7 +63,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
+    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildKey) {
         int index = 0;
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
@@ -73,7 +74,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
+    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
 
         mSnapshots.set(index, snapshot);
@@ -81,7 +82,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildRemoved(DataSnapshot snapshot) {
+    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
 
         mSnapshots.remove(index);
@@ -89,7 +90,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
+    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildKey) {
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
 
@@ -100,16 +101,16 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
+    public void onDataChange(@NonNull DataSnapshot snapshot) {
         notifyOnDataChanged();
     }
 
     @Override
-    public void onCancelled(DatabaseError error) {
+    public void onCancelled(@NonNull DatabaseError error) {
         notifyOnError(error);
     }
 
-    private int getIndexForKey(String key) {
+    private int getIndexForKey(@NonNull String key) {
         int index = 0;
         for (DataSnapshot snapshot : mSnapshots) {
             if (snapshot.getKey().equals(key)) {
