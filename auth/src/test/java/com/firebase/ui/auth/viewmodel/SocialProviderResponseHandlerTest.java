@@ -44,7 +44,6 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,16 +63,19 @@ public class SocialProviderResponseHandlerTest {
 
     private SocialProviderResponseHandler mHandler;
 
+    private static final ArrayList<String> NON_GITHUB_PROVIDERS = new ArrayList<>();
+    static {
+        NON_GITHUB_PROVIDERS.addAll(AuthUI.SUPPORTED_PROVIDERS);
+        NON_GITHUB_PROVIDERS.remove(GithubAuthProvider.PROVIDER_ID);
+    }
+
     @Before
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
         mHandler = new SocialProviderResponseHandler(RuntimeEnvironment.application);
-
-        List<String> allExceptGitHub = new ArrayList<>(AuthUI.SUPPORTED_PROVIDERS);
-        allExceptGitHub.remove(GithubAuthProvider.PROVIDER_ID);
-        FlowParameters testParams = TestHelper.getFlowParameters(allExceptGitHub);
+        FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS);
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
     }
@@ -316,7 +318,8 @@ public class SocialProviderResponseHandlerTest {
 
     private void setupAnonymousUpgrade() {
         // enableAnonymousUpgrade must be set to true
-        FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS, /* enableAnonymousUpgrade */ true);
+        FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS,
+                /* enableAnonymousUpgrade */ true);
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
 
         when(mUser.isAnonymous()).thenReturn(true);
