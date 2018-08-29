@@ -120,13 +120,15 @@ public final class AuthUI {
 
     /**
      * The set of authentication providers supported in Firebase Auth UI.
+     *
+     * TODO: the Github provider is not included because these tests do not
+     *       depend on the required auth-github module.
      */
     public static final Set<String> SUPPORTED_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
                     TwitterAuthProvider.PROVIDER_ID,
-                    GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID,
                     ANONYMOUS_PROVIDER
