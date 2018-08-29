@@ -1,4 +1,4 @@
-# Twitter and Facebook are optional
+# 3P providers are optional
 -dontwarn com.facebook.**
 -dontwarn com.twitter.**
 # Keep the class names used to check for availablility

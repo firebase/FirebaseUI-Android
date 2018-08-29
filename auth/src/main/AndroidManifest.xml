@@ -36,30 +36,6 @@
             android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
-            android:name=".ui.provider.GitHubLoginActivity"
-            android:label=""
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:launchMode="singleTop"
-            android:theme="@style/FirebaseUI.Transparent">
-
-            <intent-filter
-                android:autoVerify="true"
-                tools:ignore="UnusedAttribute">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/firebase_web_host"
-                    android:path="/__/auth/handler"
-                    android:scheme="https"
-                    tools:ignore="AppLinksAutoVerifyWarning" />
-            </intent-filter>
-
-        </activity>
-
-        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/fui_title_recover_password_activity"
             android:exported="false"

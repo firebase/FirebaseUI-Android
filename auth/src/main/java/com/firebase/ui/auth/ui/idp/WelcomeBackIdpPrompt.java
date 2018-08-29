@@ -38,7 +38,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
-import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -132,7 +132,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 providerName = R.string.fui_idp_name_twitter;
                 break;
             case GithubAuthProvider.PROVIDER_ID:
-                GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                ProviderSignInBase<AuthUI.IdpConfig> github =
+                        supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
                 github.init(config);
                 mProvider = github;
 

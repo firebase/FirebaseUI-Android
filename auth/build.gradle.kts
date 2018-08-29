@@ -33,13 +33,8 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
-    // Needed to override Facebook
-    implementation(Config.Libs.Support.cardView)
-    implementation(Config.Libs.Support.customTabs)
+    implementation(Config.Libs.Support.cardView) // Needed to override Facebook
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
-
-    implementation(Config.Libs.Misc.retrofit)
-    implementation(Config.Libs.Misc.retrofitGson)
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)

@@ -978,6 +978,12 @@ public final class AuthUI {
             public GitHubBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(GithubAuthProvider.PROVIDER_ID);
+                if (!ProviderAvailability.IS_GITHUB_AVAILABLE) {
+                    throw new RuntimeException(
+                            "GitHub provider cannot be configured " +
+                                    "without dependency. Did you forget to add " +
+                                    "'com.firebaseui:firebase-ui-auth-github:VERSION' dependency?");
+                }
                 Preconditions.checkConfigured(getApplicationContext(),
                         "GitHub provider unconfigured. Make sure to add your client id and secret." +
                                 " See the docs for more info:" +
