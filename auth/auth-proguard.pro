@@ -25,3 +25,7 @@
 
 # TODO remove https://github.com/google/gson/issues/1174
 -dontwarn com.google.gson.Gson$6
+
+# https://issuetracker.google.com/113513217
+-keep class com.twitter.sdk.android.core.identity.TwitterAuthClient { * ; }
+-keep class com.firebase.ui.auth.data.remote.TwitterSignInHandler { *; }
