@@ -5,11 +5,8 @@ android {
 
     buildTypes {
         named("debug").configure {
-            postprocessing {
-                isRemoveUnusedCode = true
-                isRemoveUnusedResources = true
-                isObfuscate = true
-            }
+            // This empty config is only here to make Android Studio happy.
+            // This build type is later ignored in the variantFilter section
         }
 
         named("release").configure {
