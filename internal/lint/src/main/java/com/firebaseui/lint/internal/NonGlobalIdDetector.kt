@@ -1,4 +1,4 @@
-package com.firebaseui.lint
+package com.firebaseui.lint.internal
 
 import com.android.tools.lint.detector.api.Category
 import com.android.tools.lint.detector.api.Implementation

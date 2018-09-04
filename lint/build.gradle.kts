@@ -10,8 +10,8 @@ dependencies {
     testImplementation(Config.Libs.Lint.tests)
 }
 
-tasks.withType<Jar>().configureEach {
-    manifest {
-        attributes(mapOf("Lint-Registry-v2" to "com.firebaseui.lint.internal.LintIssueRegistry"))
-    }
-}
+ tasks.withType<Jar>().configureEach {
+     manifest {
+         attributes(mapOf("Lint-Registry-v2" to "com.firebaseui.lint.LintIssueRegistry"))
+     }
+ }

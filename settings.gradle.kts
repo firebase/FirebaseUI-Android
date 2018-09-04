@@ -5,5 +5,8 @@ include(
         ":common", ":firestore", ":database",
         ":storage",
 
+
+        ":lint",
+
         ":proguard-tests", ":internal:lint", ":internal:lintchecks"
 )
