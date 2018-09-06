@@ -193,6 +193,14 @@ and Gradle while trying to run the sample app, try disabling the Instant
 Run feature of Android Studio. Alternatively, update Android Studio and
 Gradle to their latest versions.
 
+A note on importing the project using Android Studio: Using 'Project from 
+Version Control' will not automatically link the project with Gradle 
+(issue [#1349](https://github.com/firebase/FirebaseUI-Android/issues/1349)). 
+When doing so and opening any `build.gradle.kts` file, an error shows up: 
+`Project 'FirebaseUI-Android' isn't linked with Gradle`. To resolve this 
+issue, please `git checkout` the project manually and import with `Import 
+from external model`.
+
 ## Snapshot builds
 
 Like to live on the cutting edge?  Want to try the next release of FirebaseUI before anyone else? As of version `3.2.2`
