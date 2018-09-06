@@ -24,8 +24,8 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -244,8 +244,9 @@ public class IdpResponse implements Parcelable {
             // Somewhere down the line, the exception is holding on to an object that isn't
             // serializable so default to some exception. It's the best we can do in this case.
             FirebaseUiException fake = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
-                    "Fake exception created, original: " + mException
-                            + ", original cause: " + mException.getCause());
+                    "Exception serialization error, forced wrapping. " +
+                            "Original: " + mException +
+                            ", original cause: " + mException.getCause());
             fake.setStackTrace(mException.getStackTrace());
             dest.writeSerializable(fake);
         } finally {
