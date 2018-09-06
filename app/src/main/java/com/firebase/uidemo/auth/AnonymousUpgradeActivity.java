@@ -83,7 +83,6 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
             .setLogo(R.drawable.firebase_auth_120dp)
             .setAvailableProviders(providers)
-            .setIsSmartLockEnabled(false)
             .enableAnonymousUsersAutoUpgrade()
             .build();
         startActivityForResult(intent, RC_SIGN_IN);
@@ -138,12 +137,13 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
             }
             if (resultCode == RESULT_OK) {
                 setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance().getCurrentUser()));
+            } else if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                setStatus("Merge conflict: user already exists.");
+                mResolveMergeButton.setEnabled(true);
+                mPendingCredential = response.getCredentialForLinking();
             } else {
-                if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
-                    setStatus("Merge conflict: user already exists.");
-                    mResolveMergeButton.setEnabled(true);
-                    mPendingCredential = response.getCredentialForLinking();
-                }
+                Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
+                Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
             }
 
             updateUI();
