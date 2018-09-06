@@ -83,7 +83,6 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
             .setLogo(R.drawable.firebase_auth_120dp)
             .setAvailableProviders(providers)
-//            .setIsSmartLockEnabled(false)
             .enableAnonymousUsersAutoUpgrade()
             .build();
         startActivityForResult(intent, RC_SIGN_IN);
