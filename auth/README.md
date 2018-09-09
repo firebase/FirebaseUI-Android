@@ -668,7 +668,7 @@ For example:
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        enableAnonymousUsersAutoUpgrade()
+        .enableAnonymousUsersAutoUpgrade()
         ...
         .build(),
     RC_SIGN_IN);
