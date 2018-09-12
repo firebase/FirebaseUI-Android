@@ -97,10 +97,9 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
                 // Hack for https://github.com/googlesamples/google-services/issues/345
                 // Google remembers the account so the picker doesn't appear twice for the user.
                 start();
-            }else if(e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED){
+            } else if (e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
                 setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
-            }
-            else {
+            } else {
                 if (e.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
                     Log.w(TAG, "Developer error: this application is misconfigured. " +
                             "Check your SHA1 and package name in the Firebase console.");
