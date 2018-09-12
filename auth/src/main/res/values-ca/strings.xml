@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Inicia la sessió amb GitHub</string>
     <string name="fui_sign_in_with_email">Inicia la sessió amb l\'adreça electrònica</string>
     <string name="fui_sign_in_with_phone">Inicia la sessió amb el telèfon</string>
+    <string name="fui_sign_in_anonymously">Continua com a convidat</string>
     <string name="fui_next_default">Següent</string>
     <string name="fui_email_hint">Adreça electrònica</string>
     <string name="fui_phone_hint">Número de telèfon</string>

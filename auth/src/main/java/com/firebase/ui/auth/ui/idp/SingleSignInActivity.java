@@ -11,12 +11,13 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
-import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.InvisibleActivityBase;
@@ -47,7 +48,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         String provider = user.getProviderId();
 
         AuthUI.IdpConfig providerConfig =
-                ProviderUtils.getConfigFromIdps(getFlowParams().providerInfo, provider);
+                ProviderUtils.getConfigFromIdps(getFlowParams().providers, provider);
         if (providerConfig == null) {
             finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
                     ErrorCodes.DEVELOPER_ERROR,
@@ -77,7 +78,8 @@ public class SingleSignInActivity extends InvisibleActivityBase {
                 mProvider = twitter;
                 break;
             case GithubAuthProvider.PROVIDER_ID:
-                GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                ProviderSignInBase<AuthUI.IdpConfig> github =
+                        supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
                 github.init(providerConfig);
                 mProvider = github;
                 break;
@@ -105,7 +107,12 @@ public class SingleSignInActivity extends InvisibleActivityBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    IdpResponse res = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE, res));
+                } else {
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                }
             }
         });
 

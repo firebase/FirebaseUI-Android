@@ -27,6 +27,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
@@ -40,6 +41,7 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -61,14 +63,19 @@ public class SocialProviderResponseHandlerTest {
 
     private SocialProviderResponseHandler mHandler;
 
+    private static final ArrayList<String> NON_GITHUB_PROVIDERS = new ArrayList<>();
+    static {
+        NON_GITHUB_PROVIDERS.addAll(AuthUI.SUPPORTED_PROVIDERS);
+        NON_GITHUB_PROVIDERS.remove(GithubAuthProvider.PROVIDER_ID);
+    }
+
     @Before
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
         mHandler = new SocialProviderResponseHandler(RuntimeEnvironment.application);
-
-        FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
+        FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS);
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
     }
@@ -311,8 +318,8 @@ public class SocialProviderResponseHandlerTest {
 
     private void setupAnonymousUpgrade() {
         // enableAnonymousUpgrade must be set to true
-        FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
-                EmailAuthProvider.PROVIDER_ID), /* enableAnonymousUpgrade */ true);
+        FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS,
+                /* enableAnonymousUpgrade */ true);
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
 
         when(mUser.isAnonymous()).thenReturn(true);

@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">GitHub でログイン</string>
     <string name="fui_sign_in_with_email">メールアドレスでログイン</string>
     <string name="fui_sign_in_with_phone">電話番号でログイン</string>
+    <string name="fui_sign_in_anonymously">ゲストとして続行</string>
     <string name="fui_next_default">次へ</string>
     <string name="fui_email_hint">メールアドレス</string>
     <string name="fui_phone_hint">電話番号</string>

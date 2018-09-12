@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">使用 GitHub 帐号登录</string>
     <string name="fui_sign_in_with_email">使用电子邮件地址登录</string>
     <string name="fui_sign_in_with_phone">使用电话号码登录</string>
+    <string name="fui_sign_in_anonymously">以访客身份继续</string>
     <string name="fui_next_default">继续</string>
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>

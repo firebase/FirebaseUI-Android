@@ -2,7 +2,7 @@ package com.firebase.uidemo.util;
 
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.uidemo.R;
@@ -11,19 +11,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ConfigurationUtils {
+public final class ConfigurationUtils {
 
-    public static boolean isGoogleMisconfigured(Context context) {
+    private ConfigurationUtils() {
+        throw new AssertionError("No instance for you!");
+    }
+
+    public static boolean isGoogleMisconfigured(@NonNull Context context) {
         return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(
                 context.getString(R.string.default_web_client_id));
     }
 
-    public static boolean isFacebookMisconfigured(Context context) {
+    public static boolean isFacebookMisconfigured(@NonNull Context context) {
         return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(
                 context.getString(R.string.facebook_application_id));
     }
 
-    public static boolean isTwitterMisconfigured(Context context) {
+    public static boolean isTwitterMisconfigured(@NonNull Context context) {
         List<String> twitterConfigs = Arrays.asList(
                 context.getString(R.string.twitter_consumer_key),
                 context.getString(R.string.twitter_consumer_secret)
@@ -32,7 +36,7 @@ public class ConfigurationUtils {
         return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
-    public static boolean isGitHubMisconfigured(Context context) {
+    public static boolean isGitHubMisconfigured(@NonNull Context context) {
         List<String> gitHubConfigs = Arrays.asList(
                 context.getString(R.string.firebase_web_host),
                 context.getString(R.string.github_client_id),
@@ -42,7 +46,8 @@ public class ConfigurationUtils {
         return gitHubConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
-    public static List<AuthUI.IdpConfig> getConfiguredProviders(Context context) {
+    @NonNull
+    public static List<AuthUI.IdpConfig> getConfiguredProviders(@NonNull Context context) {
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
         providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
         providers.add(new AuthUI.IdpConfig.PhoneBuilder().build());

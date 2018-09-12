@@ -95,13 +95,20 @@ public final class AuthUI {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String TAG = "AuthUI";
 
+    /**
+     * Provider for anonymous users.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String ANONYMOUS_PROVIDER = "anonymous";
+
     @StringDef({
                        GoogleAuthProvider.PROVIDER_ID,
                        FacebookAuthProvider.PROVIDER_ID,
                        TwitterAuthProvider.PROVIDER_ID,
                        GithubAuthProvider.PROVIDER_ID,
                        EmailAuthProvider.PROVIDER_ID,
-                       PhoneAuthProvider.PROVIDER_ID
+                       PhoneAuthProvider.PROVIDER_ID,
+                       ANONYMOUS_PROVIDER
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
@@ -121,7 +128,8 @@ public final class AuthUI {
                     TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
-                    PhoneAuthProvider.PROVIDER_ID
+                    PhoneAuthProvider.PROVIDER_ID,
+                    ANONYMOUS_PROVIDER
             )));
 
     /**
@@ -652,7 +660,7 @@ public final class AuthUI {
              * Sets the country codes available in the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setBlacklistedCountries(List<String>)}.
+             * {@link #setBlacklistedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -688,7 +696,7 @@ public final class AuthUI {
              * Sets the countries to be removed from the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setWhitelistedCountries(List<String>)}.
+             * {@link #setWhitelistedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -970,6 +978,12 @@ public final class AuthUI {
             public GitHubBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(GithubAuthProvider.PROVIDER_ID);
+                if (!ProviderAvailability.IS_GITHUB_AVAILABLE) {
+                    throw new RuntimeException(
+                            "GitHub provider cannot be configured " +
+                                    "without dependency. Did you forget to add " +
+                                    "'com.firebaseui:firebase-ui-auth-github:VERSION' dependency?");
+                }
                 Preconditions.checkConfigured(getApplicationContext(),
                         "GitHub provider unconfigured. Make sure to add your client id and secret." +
                                 " See the docs for more info:" +
@@ -988,6 +1002,15 @@ public final class AuthUI {
                 getParams().putStringArrayList(
                         ExtraConstants.GITHUB_PERMISSIONS, new ArrayList<>(permissions));
                 return this;
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the Anonymous provider.
+         */
+        public static final class AnonymousBuilder extends Builder {
+            public AnonymousBuilder() {
+                super(ANONYMOUS_PROVIDER);
             }
         }
     }
@@ -1066,7 +1089,8 @@ public final class AuthUI {
 
         /**
          * Specified the set of supported authentication providers. At least one provider must
-         * be specified. There may only be one instance of each provider.
+         * be specified. There may only be one instance of each provider. Anonymous provider cannot
+         * be the only provider specified.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
@@ -1074,9 +1098,19 @@ public final class AuthUI {
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
          *                   configuration parameters for the IDP.
          * @see IdpConfig
+         *
+         * @throws IllegalStateException if anonymous provider is the only specified provider.
          */
         @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
+            Preconditions.checkNotNull(idpConfigs, "idpConfigs cannot be null");
+            if (idpConfigs.size() == 1 &&
+                    idpConfigs.get(0).getProviderId().equals(ANONYMOUS_PROVIDER)) {
+                throw new IllegalStateException("Sign in as guest cannot be the only sign in " +
+                        "method. In this case, sign the user in anonymously your self; " +
+                        "no UI is needed.");
+            }
+
             mProviders.clear();
 
             for (IdpConfig config : idpConfigs) {

@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Войти через аккаунт GitHub</string>
     <string name="fui_sign_in_with_email">Войти по адресу электронной почты</string>
     <string name="fui_sign_in_with_phone">Войти по номеру телефона</string>
+    <string name="fui_sign_in_anonymously">Продолжить как гость</string>
     <string name="fui_next_default">Далее</string>
     <string name="fui_email_hint">Адрес электронной почты</string>
     <string name="fui_phone_hint">Номер телефона</string>

@@ -4,7 +4,12 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("debug").configure {
+            // This empty config is only here to make Android Studio happy.
+            // This build type is later ignored in the variantFilter section
+        }
+
+        named("release").configure {
             // For the purposes of the sample, allow testing of a proguarded release build
             // using the debug key
             signingConfig = signingConfigs["debug"]
@@ -13,7 +18,6 @@ android {
                 isRemoveUnusedCode = true
                 isRemoveUnusedResources = true
                 isObfuscate = true
-                isOptimizeCode = true
             }
         }
     }

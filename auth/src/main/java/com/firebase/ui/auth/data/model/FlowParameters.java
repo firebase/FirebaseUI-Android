@@ -40,7 +40,7 @@ public class FlowParameters implements Parcelable {
     public final String appName;
 
     @NonNull
-    public final List<IdpConfig> providerInfo;
+    public final List<IdpConfig> providers;
 
     @StyleRes
     public final int themeId;
@@ -60,7 +60,7 @@ public class FlowParameters implements Parcelable {
 
     public FlowParameters(
             @NonNull String appName,
-            @NonNull List<IdpConfig> providerInfo,
+            @NonNull List<IdpConfig> providers,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
@@ -69,8 +69,8 @@ public class FlowParameters implements Parcelable {
             boolean enableHints,
             boolean enableAnonymousUpgrade) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
-        this.providerInfo = Collections.unmodifiableList(
-                Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
+        this.providers = Collections.unmodifiableList(
+                Preconditions.checkNotNull(providers, "providers cannot be null"));
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
@@ -90,7 +90,7 @@ public class FlowParameters implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(appName);
-        dest.writeTypedList(providerInfo);
+        dest.writeTypedList(providers);
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
@@ -137,7 +137,7 @@ public class FlowParameters implements Parcelable {
     };
 
     public boolean isSingleProviderFlow() {
-        return providerInfo.size() == 1;
+        return providers.size() == 1;
     }
 
     public boolean isTermsOfServiceUrlProvided() {

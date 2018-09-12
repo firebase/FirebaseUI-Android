@@ -15,7 +15,7 @@ import com.google.firebase.auth.AuthResult;
 public class SignInResultNotifier implements OnCompleteListener<AuthResult> {
     private Context mContext;
 
-    public SignInResultNotifier(Context context) {
+    public SignInResultNotifier(@NonNull Context context) {
         mContext = context.getApplicationContext();
     }
 

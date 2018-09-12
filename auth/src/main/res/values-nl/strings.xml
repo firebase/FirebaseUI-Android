@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Inloggen met GitHub</string>
     <string name="fui_sign_in_with_email">Inloggen met e-mailadres</string>
     <string name="fui_sign_in_with_phone">Inloggen met telefoon</string>
+    <string name="fui_sign_in_anonymously">Doorgaan als gast</string>
     <string name="fui_next_default">Volgende</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefoonnummer</string>

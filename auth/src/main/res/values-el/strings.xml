@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Σύνδεση μέσω GitHub</string>
     <string name="fui_sign_in_with_email">Σύνδεση μέσω ηλεκτρονικού ταχυδρομείου</string>
     <string name="fui_sign_in_with_phone">Σύνδεση μέσω τηλεφώνου</string>
+    <string name="fui_sign_in_anonymously">Συνέχεια ως επισκέπτης</string>
     <string name="fui_next_default">Επόμενο</string>
     <string name="fui_email_hint">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="fui_phone_hint">Αριθμός τηλεφώνου</string>

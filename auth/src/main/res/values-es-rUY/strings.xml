@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Acceder con GitHub</string>
     <string name="fui_sign_in_with_email">Acceder con el correo electrónico</string>
     <string name="fui_sign_in_with_phone">Acceder con el teléfono</string>
+    <string name="fui_sign_in_anonymously">Continuar como invitado</string>
     <string name="fui_next_default">Siguiente</string>
     <string name="fui_email_hint">Correo electrónico</string>
     <string name="fui_phone_hint">Número de teléfono</string>

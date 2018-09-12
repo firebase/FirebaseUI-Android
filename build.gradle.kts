@@ -1,4 +1,5 @@
 import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryExtension
 import com.jfrog.bintray.gradle.BintrayExtension
 import com.jfrog.bintray.gradle.tasks.RecordingCopyTask
 import org.jfrog.gradle.plugin.artifactory.dsl.ArtifactoryPluginConvention
@@ -22,6 +23,16 @@ buildscript {
     }
 }
 
+plugins {
+    `build-scan` version "1.16"
+    id("com.github.ben-manes.versions") version "0.20.0"
+}
+
+buildScan {
+    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
+    setTermsOfServiceAgree("yes")
+}
+
 // See https://github.com/gradle/kotlin-dsl/issues/607#issuecomment-375687119
 subprojects { parent!!.path.takeIf { it != rootProject.path }?.let { evaluationDependsOn(it) } }
 
@@ -30,16 +41,6 @@ allprojects {
         google()
         jcenter()
         mavenLocal()
-    }
-
-    // Skip Javadoc generation for Java 1.8 as it breaks build
-    if (JavaVersion.current().isJava8Compatible) {
-        tasks.withType<Javadoc> {
-            options {
-                this as StandardJavadocDocletOptions
-                addStringOption("Xdoclint:none", "-quiet")
-            }
-        }
     }
 
     if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
@@ -52,7 +53,7 @@ allprojects {
     }
 }
 
-tasks.withType<Wrapper> {
+tasks.withType<Wrapper>().configureEach {
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -103,7 +104,6 @@ fun Project.configureAndroid() {
                     "NewerVersionAvailable", "GradleDependency", // For reproducible builds
                     "SelectableText", "SyntheticAccessor" // We almost never care about this
             )
-            disable("UnknownNullness") // TODO fix in future PR
 
             isCheckAllWarnings = true
             isWarningsAsErrors = true
@@ -120,10 +120,10 @@ fun Project.configureQuality() {
     apply(plugin = "checkstyle")
 
     configure<CheckstyleExtension> { toolVersion = "8.10.1" }
-    check { dependsOn("checkstyle") }
+    tasks.named("check").configure { dependsOn("checkstyle") }
 
-    task<Checkstyle>("checkstyle") {
-        configFile = file("$configDir/checkstyle.xml")
+    tasks.register<Checkstyle>("checkstyle") {
+        configFile = file("${project.configDir}/checkstyle.xml")
         source("src")
         include("**/*.java")
         exclude("**/gen/**")
@@ -132,41 +132,42 @@ fun Project.configureQuality() {
 }
 
 fun Project.setupPublishing() {
-    val sourcesJar = task<Jar>("sourcesJar") {
+    val sourcesJar = tasks.register<Jar>("sourcesJar") {
         classifier = "sources"
         from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
     }
 
-    val javadoc = task<Javadoc>("javadoc") {
+    val javadoc = tasks.register<Javadoc>("javadoc") {
         setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-        classpath += configurations["compile"]
-        classpath += project.files(project.the<BaseExtension>().bootClasspath)
+        classpath += files(project.the<BaseExtension>().bootClasspath)
+
+        project.the<LibraryExtension>().libraryVariants.configureEach {
+            dependsOn(assemble)
+            classpath += files((javaCompiler as AbstractCompile).classpath)
+        }
+
+        // Ignore warnings about incomplete documentation
+        (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
     }
 
-    val javadocJar = task<Jar>("javadocJar") {
+    val javadocJar = tasks.register<Jar>("javadocJar") {
         dependsOn(javadoc)
         classifier = "javadoc"
-        from(javadoc.destinationDir)
+        from(javadoc.get().destinationDir)
     }
 
     artifacts.add("archives", javadocJar)
     artifacts.add("archives", sourcesJar)
 
-    tasks.whenTaskAdded {
-        if (name.contains("publish") && name.contains("publication", true)) {
-            dependsOn("assembleRelease")
-        }
-    }
-
     afterEvaluate {
         if (isLibrary) {
-            task("testAll") {
+            tasks.register("testAll") {
                 dependsOn(*Config.submodules.map {
                     ":$it:testDebugUnitTest"
                 }.toTypedArray())
             }
 
-            task("prepareArtifacts") {
+            tasks.register("prepareArtifacts") {
                 dependsOn(javadocJar, sourcesJar, "assembleRelease")
                 dependsOn("generatePomFileForMonolithLibraryPublication")
                 dependsOn(*Config.submodules.map {
@@ -174,34 +175,34 @@ fun Project.setupPublishing() {
                 }.toTypedArray())
             }
 
-            task("publishAllToMavenLocal") {
+            tasks.register("publishAllToMavenLocal") {
                 dependsOn("publishMonolithLibraryPublicationToMavenLocal")
                 dependsOn(*Config.submodules.map {
                     ":$it:publish${it.capitalize()}LibraryPublicationToMavenLocal"
                 }.toTypedArray())
             }
 
-            task("publishAllToCustomLocal") {
+            tasks.register("publishAllToCustomLocal") {
                 dependsOn("publishMonolithLibraryPublicationToCustomLocalRepository")
                 dependsOn(*Config.submodules.map {
                     ":$it:publish${it.capitalize()}LibraryPublicationToCustomLocalRepository"
                 }.toTypedArray())
             }
 
-            task("bintrayUploadAll") {
+            tasks.register("bintrayUploadAll") {
                 dependsOn("bintrayUpload")
                 dependsOn(*Config.submodules.map {
                     ":$it:bintrayUpload"
                 }.toTypedArray())
             }
         } else {
-            val pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
-            task("prepareArtifacts") {
+            val pomTask = "generatePomFileFor${name.capitalize()}LibraryPublication"
+            tasks.register("prepareArtifacts") {
                 dependsOn(javadocJar, sourcesJar, "assembleRelease", pomTask)
             }
         }
 
-        tasks["bintrayUpload"].dependsOn("prepareArtifacts")
+        tasks.named("bintrayUpload").configure { dependsOn("prepareArtifacts") }
     }
 
     apply(plugin = "maven-publish")
@@ -247,8 +248,8 @@ fun Project.setupPublishing() {
                 """.trimMargin())
 
                 artifact(releaseAar)
-                artifact(javadocJar)
-                artifact(sourcesJar)
+                artifact(javadocJar.get())
+                artifact(sourcesJar.get())
 
                 pom {
                     name.set("FirebaseUI ${project.name.capitalize()}")
@@ -321,6 +322,12 @@ fun Project.setupPublishing() {
         }
     }
 
+    tasks.matching {
+        it.name.contains("publish") && it.name.contains("publication", true)
+    }.configureEach {
+        dependsOn("assembleRelease")
+    }
+
     val bintrayUsername = properties["bintrayUser"] as String?
             ?: System.getProperty("BINTRAY_USER") ?: System.getenv("BINTRAY_USER")
     val bintrayKey = properties["bintrayKey"] as String?
@@ -337,7 +344,7 @@ fun Project.setupPublishing() {
         })
     }
 
-    tasks.withType<ArtifactoryTask> { publications(publicationName) }
+    tasks.withType<ArtifactoryTask>().configureEach { publications(publicationName) }
 
     configure<BintrayExtension> {
         user = bintrayUsername

@@ -49,9 +49,9 @@ public class AuthUITest {
                 .createSignInIntentBuilder()
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
-        assertEquals(1, flowParameters.providerInfo.size());
+        assertEquals(1, flowParameters.providers.size());
         assertEquals(EmailAuthProvider.PROVIDER_ID,
-                flowParameters.providerInfo.get(0).getProviderId());
+                flowParameters.providers.get(0).getProviderId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -69,12 +69,13 @@ public class AuthUITest {
                 .setAvailableProviders(Arrays.asList(
                         new IdpConfig.EmailBuilder().build(),
                         new IdpConfig.GoogleBuilder().build(),
-                        new IdpConfig.FacebookBuilder().build()))
+                        new IdpConfig.FacebookBuilder().build(),
+                        new IdpConfig.AnonymousBuilder().build()))
                 .setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, TestConstants.PRIVACY_URL)
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
-        assertEquals(3, flowParameters.providerInfo.size());
+        assertEquals(4, flowParameters.providers.size());
         assertEquals(TestHelper.MOCK_APP.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
@@ -91,6 +92,12 @@ public class AuthUITest {
     public void testCreatingStartIntent_withNullPp_expectEnforcesNonNullPpUrl() {
         SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
         startIntent.setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, null);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCreatingStartIntent_withOnlyAnonymousProvider_expectIllegalStateException() {
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
+        startIntent.setAvailableProviders(Arrays.asList(new IdpConfig.AnonymousBuilder().build()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -202,4 +209,11 @@ public class AuthUITest {
                 .setBlacklistedCountries(null)
                 .build();
     }
+
+    @Test
+    public void testAnonymousBuilder_expectSucess() {
+        new IdpConfig.AnonymousBuilder()
+                .build();
+    }
+
 }

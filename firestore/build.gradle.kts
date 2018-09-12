@@ -1,4 +1,4 @@
-check { dependsOn("compileDebugAndroidTestJavaWithJavac") }
+tasks.named("check").configure { dependsOn("compileDebugAndroidTestJavaWithJavac") }
 
 android {
     defaultConfig {
@@ -6,7 +6,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("release").configure {
             postprocessing {
                 consumerProguardFiles("proguard-rules.pro")
             }
@@ -23,6 +23,8 @@ dependencies {
     annotationProcessor(Config.Libs.Arch.compiler)
 
     compileOnly(Config.Libs.Arch.paging)
+
+    lintChecks(project(":lint"))
 
     androidTestImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.runner)

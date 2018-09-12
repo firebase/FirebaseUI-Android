@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">Conectați-vă cu GitHub</string>
     <string name="fui_sign_in_with_email">Conectați-vă cu adresa de e-mail</string>
     <string name="fui_sign_in_with_phone">Conectați-vă cu numărul de telefon</string>
+    <string name="fui_sign_in_anonymously">Continuați ca invitat</string>
     <string name="fui_next_default">Înainte</string>
     <string name="fui_email_hint">Adresă de e-mail</string>
     <string name="fui_phone_hint">Număr de telefon</string>

@@ -56,7 +56,7 @@ public class SignInKickstarter extends SignInViewModelBase {
     public void start() {
         // Only support password credentials if email auth is enabled
         boolean supportPasswords = ProviderUtils.getConfigFromIdps(
-                getArguments().providerInfo, EmailAuthProvider.PROVIDER_ID) != null;
+                getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;
         List<String> accountTypes = getCredentialAccountTypes();
 
         // If the request will be empty, avoid the step entirely
@@ -97,7 +97,7 @@ public class SignInKickstarter extends SignInViewModelBase {
     private void startAuthMethodChoice() {
         // If there is only one provider selected, launch the flow directly
         if (getArguments().isSingleProviderFlow()) {
-            AuthUI.IdpConfig firstIdpConfig = getArguments().providerInfo.get(0);
+            AuthUI.IdpConfig firstIdpConfig = getArguments().providers.get(0);
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
@@ -157,7 +157,7 @@ public class SignInKickstarter extends SignInViewModelBase {
 
     private List<String> getCredentialAccountTypes() {
         List<String> accounts = new ArrayList<>();
-        for (AuthUI.IdpConfig idpConfig : getArguments().providerInfo) {
+        for (AuthUI.IdpConfig idpConfig : getArguments().providers) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));

@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RealtimeDbChatIndexActivity extends RealtimeDbChatActivity {
     private DatabaseReference mChatIndicesRef;
 
+    @NonNull
     @Override
     protected FirebaseRecyclerAdapter<Chat, ChatHolder> newAdapter() {
         mChatIndicesRef = FirebaseDatabase.getInstance()
@@ -31,8 +32,9 @@ public class RealtimeDbChatIndexActivity extends RealtimeDbChatActivity {
                         .build();
 
         return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
+            @NonNull
             @Override
-            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public ChatHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 return new ChatHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.message, parent, false));
             }
@@ -51,7 +53,7 @@ public class RealtimeDbChatIndexActivity extends RealtimeDbChatActivity {
     }
 
     @Override
-    protected void onAddMessage(Chat chat) {
+    protected void onAddMessage(@NonNull Chat chat) {
         DatabaseReference chatRef = sChatQuery.getRef().push();
         mChatIndicesRef.child(chatRef.getKey()).setValue(true);
         chatRef.setValue(chat);

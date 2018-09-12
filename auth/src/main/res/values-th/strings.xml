@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">ลงชื่อเข้าใช้ด้วย GitHub</string>
     <string name="fui_sign_in_with_email">ลงชื่อเข้าใช้ด้วยอีเมล</string>
     <string name="fui_sign_in_with_phone">ลงชื่อเข้าใช้ด้วยโทรศัพท์</string>
+    <string name="fui_sign_in_anonymously">ดำเนินการต่อในฐานะผู้เข้าร่วม</string>
     <string name="fui_next_default">ถัดไป</string>
     <string name="fui_email_hint">อีเมล</string>
     <string name="fui_phone_hint">หมายเลขโทรศัพท์</string>

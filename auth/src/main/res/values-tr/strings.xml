@@ -13,6 +13,7 @@
     <string name="fui_sign_in_with_github">GitHub ile oturum aç</string>
     <string name="fui_sign_in_with_email">E-posta ile oturum aç</string>
     <string name="fui_sign_in_with_phone">Telefonla oturum aç</string>
+    <string name="fui_sign_in_anonymously">Misafir olarak devam et</string>
     <string name="fui_next_default">İleri</string>
     <string name="fui_email_hint">E-posta</string>
     <string name="fui_phone_hint">Telefon Numarası</string>

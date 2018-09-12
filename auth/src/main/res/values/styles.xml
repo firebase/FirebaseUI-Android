@@ -236,6 +236,12 @@
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <style name="FirebaseUI.Button.AccountChooser.AnonymousButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_anonymous_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_anonymous</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
     <style name="FirebaseUI.TopProgressBar" parent="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">4dp</item>

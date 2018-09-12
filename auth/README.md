@@ -65,7 +65,10 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
+
+    // Required only if GitHub OAuth support is required
+    implementation 'com.firebaseui:firebase-ui-auth-github:4.2.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -328,7 +331,8 @@ startActivityForResult(
                         new AuthUI.IdpConfig.TwitterBuilder().build(),
                         new AuthUI.IdpConfig.GitHubBuilder().build(),
                         new AuthUI.IdpConfig.EmailBuilder().build(),
-                        new AuthUI.IdpConfig.PhoneBuilder().build()))
+                        new AuthUI.IdpConfig.PhoneBuilder().build(),
+                        new AuthUI.IdpConfig.AnonymousBuilder().build()))
                 .build(),
         RC_SIGN_IN);
 ```
@@ -663,7 +667,7 @@ To support this behavior, FirebaseUI makes it easy to "upgrade" an anonymous
 account to a permanent account. To do so, simply call `enableAnonymousUsersAutoUpgrade()`
 when you configure the sign-in UI (this option is disabled by default).
 
-For example: 
+For example:
 ```java
 startActivityForResult(
     AuthUI.getInstance()
@@ -675,26 +679,26 @@ startActivityForResult(
 ```
 
 With this enabled, FirebaseUI will link the credential on sign-in with the anonymous account
-using Firebase Auth's `linkWithCredential` method: 
+using Firebase Auth's `linkWithCredential` method:
 ```java
 FirebaseAuth.getInstance().getCurrentUser().linkWithCredential(permanentCredential);
 ```
 
 #### Handling anonymous user upgrade merge conflicts
 
-There is an issue when an anonymous user tries to upgrade to an existing Firebase user. 
+There is an issue when an anonymous user tries to upgrade to an existing Firebase user.
 
-For example, a user may have previously signed up with a Google credential on a different device. 
-If they are signed in anonymously and they attempt to upgrade with the existing Google account, 
+For example, a user may have previously signed up with a Google credential on a different device.
+If they are signed in anonymously and they attempt to upgrade with the existing Google account,
 a `FirebaseAuthUserCollisionException` will be thrown by Firebase Auth as an existing user
-cannot be linked to another existing user. No two users can share the same credential. In this case, 
+cannot be linked to another existing user. No two users can share the same credential. In this case,
 we need to merge the data from both users before we can upgrade the anonymous user.
- 
-The process of storing the anonymous users data, signing in with the credential, and copying the
-data over to the existing account is left to the developer. 
 
-When linking is unsuccessful due to user collision, an error with code 
-`ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT` will be returned to `onActivityResult()`. A valid 
+The process of storing the anonymous users data, signing in with the credential, and copying the
+data over to the existing account is left to the developer.
+
+When linking is unsuccessful due to user collision, an error with code
+`ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT` will be returned to `onActivityResult()`. A valid
 non-anonymous credential can be obtained from the `IdpResponse` via `getCredentialForLinking()`.
 
 **Example:**

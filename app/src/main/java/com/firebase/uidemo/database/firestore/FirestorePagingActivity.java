@@ -3,6 +3,7 @@ package com.firebase.uidemo.database.firestore;
 import android.arch.paging.PagedList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,7 +47,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
     private CollectionReference mItemsCollection;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firestore_paging);
         ButterKnife.bind(this);
@@ -85,7 +86,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
                     @Override
                     protected void onBindViewHolder(@NonNull ItemViewHolder holder,
                                                     int position,
-                                                    Item model) {
+                                                    @NonNull Item model) {
                         holder.bind(model);
                     }
 
@@ -116,13 +117,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_firestore_paging, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_add_data) {
             showToast("Adding data...");
             createItems().addOnCompleteListener(this, new OnCompleteListener<Void>() {
@@ -142,6 +143,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @NonNull
     private Task<Void> createItems() {
         WriteBatch writeBatch = mFirestore.batch();
 
@@ -157,18 +159,18 @@ public class FirestorePagingActivity extends AppCompatActivity {
         return writeBatch.commit();
     }
 
-    private void showToast(String message) {
+    private void showToast(@NonNull String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     public static class Item {
 
-        public String text;
+        @Nullable public String text;
         public int value;
 
         public Item() {}
 
-        public Item(String text, int value) {
+        public Item(@Nullable String text, int value) {
             this.text = text;
             this.value = value;
         }
@@ -183,12 +185,12 @@ public class FirestorePagingActivity extends AppCompatActivity {
         @BindView(R.id.item_value)
         TextView mValueView;
 
-        ItemViewHolder(View itemView) {
+        ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(Item item) {
+        void bind(@NonNull Item item) {
             mTextView.setText(item.text);
             mValueView.setText(String.valueOf(item.value));
         }
