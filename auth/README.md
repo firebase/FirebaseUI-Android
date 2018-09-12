@@ -672,7 +672,7 @@ For example:
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        enableAnonymousUsersAutoUpgrade()
+        .enableAnonymousUsersAutoUpgrade()
         ...
         .build(),
     RC_SIGN_IN);
@@ -717,8 +717,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 ...
                 // Get the non-anoymous credential from the response
                 AuthCredential nonAnonymousCredential = response.getCredentialForLinking();
-                // Sign in with credential
-                FirebaseAuth.getInstance().signInWithCredential(nonAnonymousCredential);
+                // Sign in with credential 
+                FirebaseAuth.getInstance().signInWithCredential(nonAnonymousCredential)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult result) {

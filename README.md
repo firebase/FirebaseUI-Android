@@ -1,5 +1,8 @@
 # FirebaseUI for Android — UI Bindings for Firebase
 
+[![FirebaseOpensource.com](https://img.shields.io/badge/Docs-firebaseopensource.com-orange.svg)](
+https://firebaseopensource.com/projects/firebase/firebaseui-android
+)
 [![Build Status](https://travis-ci.org/firebase/FirebaseUI-Android.svg?branch=master)](https://travis-ci.org/firebase/FirebaseUI-Android)
 
 FirebaseUI is an open-source library for Android that allows you to
@@ -191,6 +194,14 @@ If you encounter a version incompatibility error between Android Studio
 and Gradle while trying to run the sample app, try disabling the Instant
 Run feature of Android Studio. Alternatively, update Android Studio and
 Gradle to their latest versions.
+
+A note on importing the project using Android Studio: Using 'Project from 
+Version Control' will not automatically link the project with Gradle 
+(issue [#1349](https://github.com/firebase/FirebaseUI-Android/issues/1349)). 
+When doing so and opening any `build.gradle.kts` file, an error shows up: 
+`Project 'FirebaseUI-Android' isn't linked with Gradle`. To resolve this 
+issue, please `git checkout` the project manually and import with `Import 
+from external model`.
 
 ## Snapshot builds
 

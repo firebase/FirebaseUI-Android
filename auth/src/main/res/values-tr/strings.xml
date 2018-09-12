@@ -23,7 +23,7 @@
     <string name="fui_missing_email_address">Devam etmek için e-posta adresinizi girin</string>
     <string name="fui_progress_dialog_checking_accounts">Mevcut hesaplar kontrol ediliyor…</string>
     <string name="fui_title_register_email">Kaydol</string>
-    <string name="fui_name_hint">Ad ve Soyadı</string>
+    <string name="fui_name_hint">Ad ve Soyad</string>
     <string name="fui_button_text_save">Kaydet</string>
     <string name="fui_progress_dialog_signing_up">Kaydolunuyor…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> </plurals>
