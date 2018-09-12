@@ -15,6 +15,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
@@ -96,7 +97,10 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
                 // Hack for https://github.com/googlesamples/google-services/issues/345
                 // Google remembers the account so the picker doesn't appear twice for the user.
                 start();
-            } else {
+            }else if(e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED){
+                setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+            }
+            else {
                 if (e.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
                     Log.w(TAG, "Developer error: this application is misconfigured. " +
                             "Check your SHA1 and package name in the Firebase console.");
