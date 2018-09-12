@@ -58,8 +58,9 @@ object Config {
         }
 
         object PlayServices {
-            const val auth = "com.google.android.gms:play-services-auth:15.0.1"
+            const val auth = "com.google.android.gms:play-services-auth:16.0.0"
         }
+
 
         object Provider {
             const val facebook = "com.facebook.android:facebook-login:4.33.0"
