@@ -62,6 +62,7 @@ object Config {
             const val auth = "com.google.android.gms:play-services-auth:16.0.0"
         }
 
+
         object Provider {
             const val facebook = "com.facebook.android:facebook-login:4.35.0"
             // WARNING: the Twitter requires Java 8 support. Therefore, the dep cannot be upgraded
