@@ -23,6 +23,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
@@ -84,6 +85,8 @@ public class FlowParameters implements Parcelable {
      * Extract FlowParameters from an Intent.
      */
     public static FlowParameters fromIntent(Intent intent) {
+        //this is required to fix #1416 - ClassNotFound for FlowParameters
+        intent.setExtrasClassLoader(AuthUI.class.getClassLoader());
         return intent.getParcelableExtra(ExtraConstants.FLOW_PARAMS);
     }
 
