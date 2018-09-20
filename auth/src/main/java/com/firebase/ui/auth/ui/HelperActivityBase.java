@@ -32,8 +32,7 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
         return new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ExtraConstants.FLOW_PARAMS,
-                        checkNotNull(flowParams, "flowParams cannot be null"));
+                .putExtra(ExtraConstants.FLOW_PARAMS, flowParams.toBundle());
     }
 
     @Override
