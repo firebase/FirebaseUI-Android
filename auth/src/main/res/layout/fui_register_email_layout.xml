@@ -24,6 +24,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/email_layout"
+                android:labelFor="@+id/email"
                 style="@style/FirebaseUI.TextInputLayout.EmailField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,6 +42,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_layout"
+                android:labelFor="@+id/name"
                 style="@style/FirebaseUI.TextInputLayout.NameField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
