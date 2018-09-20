@@ -86,8 +86,14 @@ public class FlowParameters implements Parcelable {
      */
     public static FlowParameters fromIntent(Intent intent) {
         //this is required to fix #1416 - ClassNotFound for FlowParameters
-        intent.setExtrasClassLoader(AuthUI.class.getClassLoader());
-        return intent.getParcelableExtra(ExtraConstants.FLOW_PARAMS);
+        Bundle bundle = intent.getBundleExtra(ExtraConstants.FLOW_BUNDLE);
+        return bundle.getParcelable(ExtraConstants.FLOW_PARAMS);
+    }
+
+    public Bundle toBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ExtraConstants.FLOW_PARAMS, this);
+        return bundle;
     }
 
     @Override
@@ -154,4 +160,5 @@ public class FlowParameters implements Parcelable {
     public boolean isAnonymousUpgradeEnabled() {
         return enableAnonymousUpgrade;
     }
+
 }
