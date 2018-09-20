@@ -21,6 +21,7 @@ import android.support.annotation.RestrictTo;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ExtraConstants {
+    public static final String FLOW_BUNDLE = "extra_flow_bundle";
     public static final String FLOW_PARAMS = "extra_flow_params";
     public static final String IDP_RESPONSE = "extra_idp_response";
     public static final String USER = "extra_user";
