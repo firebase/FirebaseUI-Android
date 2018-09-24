@@ -22,6 +22,7 @@
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
+        app:layout_constraintVertical_weight="2"
         tools:ignore="ContentDescription" />  <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
 
     <TextView
@@ -39,7 +40,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_weight="1" />
 
     <ScrollView
         android:id="@+id/container"
