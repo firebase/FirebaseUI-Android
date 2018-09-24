@@ -4,13 +4,13 @@ project.ext {
     version = '3.1.0'
     pomdesc = 'Firebase UI Android'
 
-    compileSdk = 26
-    targetSdk = 26
+    compileSdk = 28
+    targetSdk = 28
     minSdk = 14
 
-    buildTools = '26.0.1' // Remember to also update in .travis.yml
+    buildTools = '28.0.2' // Remember to also update in .travis.yml
 
     firebaseVersion = '11.4.2'
-    supportLibraryVersion = '26.1.0'
+    supportLibraryVersion = '28.0.0'
     architectureVersion = '1.0.0-beta1'
 }
