@@ -22,16 +22,17 @@
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
+        android:layout_marginTop="@dimen/fui_field_padding_vert"
+        android:layout_marginBottom="@dimen/fui_field_padding_vert"
         tools:ignore="ContentDescription" />  <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
 
     <TextView
         android:id="@+id/main_tos_and_pp"
         style="@style/FirebaseUI.Text.BodyText"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/fui_wrapper_padding_horiz"
         android:layout_marginRight="@dimen/fui_wrapper_padding_horiz"
-        android:layout_marginTop="@dimen/fui_field_padding_vert"
         android:layout_marginBottom="@dimen/fui_field_padding_vert"
         android:gravity="center"
         android:textColor="?android:attr/textColorTertiary"
