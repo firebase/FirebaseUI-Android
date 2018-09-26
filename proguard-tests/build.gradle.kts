@@ -1,3 +1,6 @@
+// This is always set to 'true' on Travis CI
+val inCiBuild = System.getenv("CI") == "true"
+
 android {
     defaultConfig {
         multiDexEnabled = true
@@ -23,7 +26,9 @@ android {
     }
 
     variantFilter {
-        if (name == "debug") setIgnore(true)
+        if (inCiBuild && name == "debug") {
+            setIgnore(true)
+        }
     }
 }
 
