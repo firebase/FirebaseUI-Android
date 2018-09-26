@@ -13,7 +13,7 @@ object Config {
     object Plugins {
         const val android = "com.android.tools.build:gradle:3.2.0-rc03"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        const val google = "com.google.gms:google-services:4.1.0"
+        const val google = "com.google.gms:google-services:4.0.2"
 
         const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5"
