@@ -15,16 +15,21 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+    <!-- TODO remove lint ignore once the bug is fixed:
+         https://issuetracker.google.com/issues/38281866-->
     <ImageView
         android:id="@+id/logo"
         style="@style/FirebaseUI.AuthMethodPicker.Logo"
+        android:layout_marginTop="@dimen/fui_field_padding_vert"
+        android:layout_marginBottom="@dimen/fui_field_padding_vert"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
-        android:layout_marginTop="@dimen/fui_field_padding_vert"
-        android:layout_marginBottom="@dimen/fui_field_padding_vert"
-        tools:ignore="ContentDescription" />  <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
+        tools:background="#bfbfbf"
+        tools:ignore="ContentDescription"
+        tools:layout_height="100dp"
+        tools:layout_width="100dp" />
 
     <TextView
         android:id="@+id/main_tos_and_pp"
@@ -40,12 +45,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="By continuing you are indicating that you accept our Terms of Service and Privacy Policy" />
 
     <ScrollView
         android:id="@+id/container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/fui_field_padding_vert"
+        android:layout_marginBottom="@dimen/fui_field_padding_vert"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +62,9 @@
 
         <LinearLayout
             android:id="@+id/btn_holder"
-            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder" />
+            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
+            tools:background="#bfbfbf"
+            tools:layout_height="250dp" />
 
     </ScrollView>
 
