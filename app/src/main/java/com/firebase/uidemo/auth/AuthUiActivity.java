@@ -81,11 +81,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_logo) RadioButton mGoogleLogo;
     @BindView(R.id.no_logo) RadioButton mNoLogo;
 
-    @BindView(R.id.google_tos) RadioButton mUseGoogleTos;
-    @BindView(R.id.firebase_tos) RadioButton mUseFirebaseTos;
-
-    @BindView(R.id.google_privacy) RadioButton mUseGooglePrivacyPolicy;
-    @BindView(R.id.firebase_privacy) RadioButton mUseFirebasePrivacyPolicy;
+    @BindView(R.id.google_tos_privacy) RadioButton mUseGoogleTosPp;
+    @BindView(R.id.firebase_tos_privacy) RadioButton mUseFirebaseTosPp;
 
     @BindView(R.id.google_scopes_header) TextView mGoogleScopesHeader;
     @BindView(R.id.google_scope_drive_file) CheckBox mGoogleScopeDriveFile;
@@ -180,17 +177,20 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @OnClick(R.id.sign_in)
     public void signIn() {
-        startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setTheme(getSelectedTheme())
-                        .setLogo(getSelectedLogo())
-                        .setAvailableProviders(getSelectedProviders())
-                        .setTosAndPrivacyPolicyUrls(getSelectedTosUrl(),
-                                getSelectedPrivacyPolicyUrl())
-                        .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
-                                mEnableHintSelector.isChecked())
-                        .build(),
-                RC_SIGN_IN);
+        AuthUI.SignInIntentBuilder builder =  AuthUI.getInstance().createSignInIntentBuilder()
+                .setTheme(getSelectedTheme())
+                .setLogo(getSelectedLogo())
+                .setAvailableProviders(getSelectedProviders())
+                .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
+                        mEnableHintSelector.isChecked());
+
+        if (getSelectedTosUrl() != null && getSelectedPrivacyPolicyUrl() != null) {
+            builder.setTosAndPrivacyPolicyUrls(
+                    getSelectedTosUrl(),
+                    getSelectedPrivacyPolicyUrl());
+        }
+
+        startActivityForResult(builder.build(), RC_SIGN_IN);
     }
 
     @OnClick(R.id.sign_in_silent)
@@ -328,20 +328,30 @@ public class AuthUiActivity extends AppCompatActivity {
         return selectedProviders;
     }
 
+    @Nullable
     private String getSelectedTosUrl() {
-        if (mUseGoogleTos.isChecked()) {
+        if (mUseGoogleTosPp.isChecked()) {
             return GOOGLE_TOS_URL;
         }
 
-        return FIREBASE_TOS_URL;
+        if (mUseFirebaseTosPp.isChecked()) {
+            return FIREBASE_TOS_URL;
+        }
+
+        return null;
     }
 
+    @Nullable
     private String getSelectedPrivacyPolicyUrl() {
-        if (mUseGooglePrivacyPolicy.isChecked()) {
+        if (mUseGoogleTosPp.isChecked()) {
             return GOOGLE_PRIVACY_POLICY_URL;
         }
 
-        return FIREBASE_PRIVACY_POLICY_URL;
+        if (mUseFirebaseTosPp.isChecked()) {
+            return FIREBASE_PRIVACY_POLICY_URL;
+        }
+
+        return null;
     }
 
     private void setGoogleScopesEnabled(boolean enabled) {

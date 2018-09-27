@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/tos_header" />
+                android:text="@string/tos_pp_header" />
 
             <RadioGroup
                 android:layout_width="wrap_content"
@@ -190,45 +190,22 @@
                 android:orientation="vertical">
 
                 <RadioButton
-                    android:id="@+id/google_tos"
+                    android:id="@+id/google_tos_privacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/tos_google" />
+                    android:text="@string/tos_pp_google" />
 
                 <RadioButton
-                    android:id="@+id/firebase_tos"
+                    android:id="@+id/firebase_tos_privacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tos_firebase" />
-
-            </RadioGroup>
-
-            <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/pp_header" />
-
-            <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                    android:text="@string/tos_pp_firebase" />
 
                 <RadioButton
-                    android:id="@+id/google_privacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/pp_google" />
-
-                <RadioButton
-                    android:id="@+id/firebase_privacy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/pp_firebase" />
+                    android:text="@string/tos_pp_none" />
 
             </RadioGroup>
 
