@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/main_tos_and_pp"
+        app:layout_constraintVertical_weight="2"
         tools:background="#bfbfbf"
         tools:ignore="ContentDescription"
         tools:layout_height="100dp"
@@ -35,7 +36,7 @@
         android:id="@+id/main_tos_and_pp"
         style="@style/FirebaseUI.Text.BodyText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="@dimen/fui_wrapper_padding_horiz"
         android:layout_marginRight="@dimen/fui_wrapper_padding_horiz"
         android:layout_marginBottom="@dimen/fui_field_padding_vert"
@@ -46,6 +47,7 @@
         app:layout_constraintEnd_toStartOf="@+id/container"
         app:layout_constraintTop_toBottomOf="@+id/logo"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_weight="1"
         tools:text="By continuing you are indicating that you accept our Terms of Service and Privacy Policy" />
 
     <ScrollView
