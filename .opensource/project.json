@@ -11,9 +11,9 @@
 
     "pages" : {
         "auth/README.md": "Authentication",
-        "database/README.md": "Realtime Database,
-        "storage/README.md": "Cloud Storage,
-        "firestore/README.md": "Cloud Firestore,
+        "database/README.md": "Realtime Database",
+        "storage/README.md": "Cloud Storage",
+        "firestore/README.md": "Cloud Firestore",
         "docs/upgrade-to-2.0.md": "Upgrade to v2.0",
         "docs/upgrade-to-3.0.md": "Upgrade to v3.0",
         "docs/upgrade-to-4.0.md": "Upgrade to v4.0"
