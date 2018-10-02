@@ -96,7 +96,7 @@ public class SignInKickstarter extends SignInViewModelBase {
 
     private void startAuthMethodChoice() {
         // If there is only one provider selected, launch the flow directly
-        if (getArguments().isSingleProviderFlow()) {
+        if (getArguments().isSingleProviderFlow() && !getArguments().isAlwaysShowProviderChoice()) {
             AuthUI.IdpConfig firstIdpConfig = getArguments().providers.get(0);
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
