@@ -167,10 +167,6 @@ public class FlowParameters implements Parcelable {
         return enableAnonymousUpgrade;
     }
 
-    public boolean isAlwaysShowProviderChoice() {
-        return alwaysShowProviderChoice;
-    }
-
     public boolean shouldShowProviderChoice() {
         return !isSingleProviderFlow() || alwaysShowProviderChoice;
     }
