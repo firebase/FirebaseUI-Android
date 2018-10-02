@@ -170,4 +170,8 @@ public class FlowParameters implements Parcelable {
     public boolean isAlwaysShowProviderChoice() {
         return alwaysShowProviderChoice;
     }
+
+    public boolean shouldShowProviderChoice() {
+        return !isSingleProviderFlow() || alwaysShowProviderChoice;
+    }
 }
