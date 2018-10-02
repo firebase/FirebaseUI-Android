@@ -24,7 +24,6 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
@@ -59,6 +58,7 @@ public class FlowParameters implements Parcelable {
     public final boolean enableCredentials;
     public final boolean enableHints;
     public final boolean enableAnonymousUpgrade;
+    public final boolean alwaysShowProviderChoice;
 
     public FlowParameters(
             @NonNull String appName,
@@ -69,7 +69,8 @@ public class FlowParameters implements Parcelable {
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
             boolean enableHints,
-            boolean enableAnonymousUpgrade) {
+            boolean enableAnonymousUpgrade,
+            boolean alwaysShowProviderChoice) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providers = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providers, "providers cannot be null"));
@@ -80,6 +81,7 @@ public class FlowParameters implements Parcelable {
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
         this.enableAnonymousUpgrade = enableAnonymousUpgrade;
+        this.alwaysShowProviderChoice = alwaysShowProviderChoice;
     }
 
     /**
@@ -108,6 +110,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
+        dest.writeInt(alwaysShowProviderChoice ? 1 : 0);
     }
 
     @Override
@@ -127,6 +130,7 @@ public class FlowParameters implements Parcelable {
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
             boolean enableAnonymousUpgrade = in.readInt() != 0;
+            boolean alwaysShowProviderChoice = in.readInt() != 0;
 
             return new FlowParameters(
                     appName,
@@ -137,7 +141,8 @@ public class FlowParameters implements Parcelable {
                     privacyPolicyUrl,
                     enableCredentials,
                     enableHints,
-                    enableAnonymousUpgrade);
+                    enableAnonymousUpgrade,
+                    alwaysShowProviderChoice);
         }
 
         @Override
@@ -162,4 +167,7 @@ public class FlowParameters implements Parcelable {
         return enableAnonymousUpgrade;
     }
 
+    public boolean shouldShowProviderChoice() {
+        return !isSingleProviderFlow() || alwaysShowProviderChoice;
+    }
 }
