@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -154,8 +155,14 @@ public class RegisterEmailFragment extends FragmentBase implements
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
-        TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
-        PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+        //Check Explicit Acceptance from Flow Params
+        if (getFlowParams().explicitAcceptance) {
+            CheckBox acceptanceCheckbox = view.findViewById(R.id.email_checkbox_tos_and_pp);
+            PrivacyDisclosureUtils.setupTermsOfServiceExplicitAcceptance(getContext(), getFlowParams(), acceptanceCheckbox);
+        } else {
+            TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
+            PrivacyDisclosureUtils.setupTermsOfServiceFooter(getContext(), getFlowParams(), footerText);
+        }
 
         // WARNING: Nothing below this line will be executed on rotation
         if (savedInstanceState != null) {

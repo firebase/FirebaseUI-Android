@@ -73,6 +73,11 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <!-- Checkbox for getting User's explicit agreement to ToS/PP -->
+            <CheckBox
+                android:id="@+id/email_checkbox_tos_and_pp"
+                style="@style/FirebaseUI.Privacy.Checkbox" />
+
             <Button
                 android:id="@+id/button_create"
                 style="@style/FirebaseUI.Button"

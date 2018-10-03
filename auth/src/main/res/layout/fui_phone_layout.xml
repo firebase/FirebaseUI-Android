@@ -36,12 +36,20 @@
 
             </com.firebase.ui.auth.util.ui.BaselineTextInputLayout>
 
+
+            <!-- Checkbox for getting User's explicit agreement to ToS/PP -->
+            <CheckBox
+                android:id="@+id/email_checkbox_tos_and_pp"
+                style="@style/FirebaseUI.Privacy.Checkbox"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/phone_layout"/>
+
             <Button
                 android:id="@+id/send_code"
                 style="@style/FirebaseUI.VerifyPhoneButton"
                 android:layout_marginTop="@dimen/fui_field_padding_vert"
                 android:text="@string/fui_verify_phone_number"
-                app:layout_constraintTop_toBottomOf="@+id/phone_layout" />
+                app:layout_constraintTop_toBottomOf="@id/email_checkbox_tos_and_pp" />
 
             <TextView
                 android:id="@+id/send_sms_tos"

@@ -3,6 +3,7 @@ package com.firebase.ui.auth.util.data;
 import android.content.Context;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -42,17 +43,39 @@ public class PrivacyDisclosureUtils {
                 termsText);
     }
 
+    public static void setupTermsOfServiceExplicitAcceptance(Context context,
+                                                             FlowParameters flowParameters,
+                                                             CheckBox acceptanceCheck) {
+        PreambleHandler.setup(context,
+                flowParameters,
+                acceptanceCheck,
+                getGlobalTermsStringResource(flowParameters));
+    }
+
     @StringRes
     private static int getGlobalTermsStringResource(FlowParameters flowParameters) {
+        boolean explicitAcceptance = flowParameters.explicitAcceptance;
         boolean termsOfServiceUrlProvided = flowParameters.isTermsOfServiceUrlProvided();
         boolean privacyPolicyUrlProvided = flowParameters.isPrivacyPolicyUrlProvided();
 
-        if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
-            return R.string.fui_tos_and_pp;
-        } else if (termsOfServiceUrlProvided) {
-            return R.string.fui_tos_only;
-        } else if (privacyPolicyUrlProvided) {
-            return R.string.fui_pp_only;
+        if (explicitAcceptance) {
+            if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
+                return R.string.fui_check_agree_tos_and_pp;
+            } else if (termsOfServiceUrlProvided) {
+                return R.string.fui_check_agree_tos_only;
+            } else if (privacyPolicyUrlProvided) {
+                return R.string.fui_check_agree_pp_only;
+            } else {
+                return R.string.fui_check_agree_tos_and_pp;
+            }
+        } else {
+            if (termsOfServiceUrlProvided && privacyPolicyUrlProvided) {
+                return R.string.fui_tos_and_pp;
+            } else if (termsOfServiceUrlProvided) {
+                return R.string.fui_tos_only;
+            } else if (privacyPolicyUrlProvided) {
+                return R.string.fui_pp_only;
+            }
         }
 
         return NO_TOS_OR_PP;

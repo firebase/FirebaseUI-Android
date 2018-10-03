@@ -15,6 +15,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -59,9 +60,24 @@ public class PreambleHandler {
         handler.setPreamble(textView);
     }
 
+    public static void setup(Context context,
+                             FlowParameters parameters,
+                             CheckBox acceptanceCheck,
+                             @StringRes int acceptanceText) {
+        PreambleHandler handler = new PreambleHandler(context, parameters, acceptanceText);
+        handler.initPreamble(acceptanceText);
+        handler.setPreamble(acceptanceCheck);
+        //Show visibility
+        acceptanceCheck.setVisibility(View.VISIBLE);
+    }
+
     private void setPreamble(TextView textView) {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(mBuilder);
+    }
+
+    private void setPreamble(CheckBox checkBox) {
+        checkBox.setText(mBuilder);
     }
 
     private void initPreamble(@StringRes int textViewText) {

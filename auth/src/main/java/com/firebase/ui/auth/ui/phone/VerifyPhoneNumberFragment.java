@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -113,8 +114,16 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
-        setupPrivacyDisclosures(footerText);
+        FlowParameters flowParams = getFlowParams();
+        if (flowParams.explicitAcceptance) {
+            CheckBox acceptanceCheckbox = view.findViewById(R.id.email_checkbox_tos_and_pp);
+            PrivacyDisclosureUtils.setupTermsOfServiceExplicitAcceptance(getContext(),
+                    flowParams,
+                    acceptanceCheckbox);
+        } else {
+            TextView footerText = view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text);
+            setupPrivacyDisclosures(footerText);
+        }
     }
 
     @Override
