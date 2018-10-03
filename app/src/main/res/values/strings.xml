@@ -9,6 +9,7 @@
     <string name="title_storage_activity">Storage Image Demo</string>
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
+    <string name="desc_anonymous_upgrade">Demonstrates upgrading an anonymous account using FirebaseUI.</string>
     <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
     <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paged data from Cloud Firestore.</string>
     <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
@@ -22,9 +23,11 @@
     <string name="providers_header">Auth providers</string>
     <string name="providers_google">Google</string>
     <string name="providers_facebook">Facebook</string>
+    <string name="providers_github">GitHub</string>
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
     <string name="providers_phone">Phone</string>
+    <string name="providers_anonymous">Anonymous</string>
 
     <string name="theme_header">Theme</string>
     <string name="theme_default">Default theme</string>
@@ -53,6 +56,10 @@
     <string name="facebook_permission_friends">Friends</string>
     <string name="facebook_permission_photos">Photos</string>
 
+    <string name="github_permissions_header">Example extra GitHub permissions</string>
+    <string name="github_permission_repo">Repo</string>
+    <string name="github_permission_gist">Gist</string>
+
     <string name="options_header">Other Options</string>
     <string name="options_enable_credential_selector">Enable Smart Lock\'s credential selector</string>
     <string name="options_enable_hint_selector">Enable Smart Lock\'s hint selector</string>
@@ -63,10 +70,16 @@
     <string name="google_label_missing_config">Google configuration missing</string>
     <string name="facebook_label_missing_config">Facebook configuration missing</string>
     <string name="twitter_label_missing_config">Twitter configuration missing</string>
+    <string name="github_label_missing_config">GitHub configuration missing</string>
 
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="unknown_error">An unknown error occurred</string>
+
+    <string name="title_anonymous_upgrade">FirebaseUI Anonymous Account Linking</string>
+    <string name="anonymous_sign_in">Anonymous Sign In</string>
+    <string name="launch_auth_ui">Launch Auth UI</string>
+    <string name="resolve_merge_conflict">Resolve Merge Conflict</string>
 
     <!-- Auth UI - Signed in -->
     <string name="signed_in_header">You are signed in!</string>

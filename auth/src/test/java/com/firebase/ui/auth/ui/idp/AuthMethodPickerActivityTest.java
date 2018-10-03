@@ -15,10 +15,10 @@
 package com.firebase.ui.auth.ui.idp;
 
 import android.content.Intent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailActivity;
@@ -57,15 +57,14 @@ public class AuthMethodPickerActivityTest {
                 GoogleAuthProvider.PROVIDER_ID,
                 TwitterAuthProvider.PROVIDER_ID,
                 EmailAuthProvider.PROVIDER_ID,
-                PhoneAuthProvider.PROVIDER_ID);
+                PhoneAuthProvider.PROVIDER_ID,
+                AuthUI.ANONYMOUS_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
         assertEquals(providers.size(),
-                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                             .getChildCount());
-        Button emailButton = authMethodPickerActivity.findViewById(R.id.email_button);
-        assertEquals(View.VISIBLE, emailButton.getVisibility());
+                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                        .getChildCount());
     }
 
     @Test

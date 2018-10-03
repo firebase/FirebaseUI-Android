@@ -4,6 +4,7 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,16 +109,17 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(mLayout, viewGroup, false);
+    @NonNull
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parent.getContext()).inflate(mLayout, parent, false);
         }
 
         T model = getItem(position);
 
         // Call out to subclass to marshall this model into the provided view
-        populateView(view, model, position);
-        return view;
+        populateView(convertView, model, position);
+        return convertView;
     }
 
     /**
@@ -132,5 +134,5 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
      * @param model    The object containing the data used to populate the view
      * @param position The position in the list of the view being populated
      */
-    protected abstract void populateView(View v, T model, int position);
+    protected abstract void populateView(@NonNull View v, @NonNull T model, int position);
 }

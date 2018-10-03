@@ -1,4 +1,4 @@
-check { dependsOn("compileDebugAndroidTestJavaWithJavac") }
+tasks.named("check").configure { dependsOn("compileDebugAndroidTestJavaWithJavac") }
 
 android {
     defaultConfig {

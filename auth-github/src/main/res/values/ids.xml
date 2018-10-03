@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Expect auth resources -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
+    <item name="colorPrimary" type="color" />
+    <item name="FirebaseUI.Transparent" type="style" />
+
+    <item name="firebase_web_host" type="string" />
+    <item name="github_client_id" type="string" />
+    <item name="github_client_secret" type="string" />
+</resources>

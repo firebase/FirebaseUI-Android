@@ -7,26 +7,4 @@
         message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location file="src/main/AndroidManifest.xml" />
     </issue>
-
-    <issue
-        id="UnusedResources"
-        severity="Error"
-        message="The resource `R.string.project_id` appears to be unused"
-        category="Performance"
-        priority="3"
-        summary="Unused resources"
-        explanation="Unused resources make applications larger and slow down builds."
-        errorLine1="    &lt;string name=&quot;project_id&quot; translatable=&quot;false&quot;>fir-ui-playground&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~"
-        quickfix="studio">
-        <location
-            file="build/generated/res/google-services/debug/values/values.xml"
-            line="10"
-            column="13"/>
-        <location
-            file="build/generated/res/google-services/release/values/values.xml"
-            line="10"
-            column="13"/>
-    </issue>
-
 </issues>

@@ -1,5 +1,7 @@
 package com.firebase.ui.common;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 /**
@@ -8,18 +10,19 @@ import android.support.annotation.RestrictTo;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class Preconditions {
 
-    public static <T> T checkNotNull(T o) {
+    @NonNull
+    public static <T> T checkNotNull(@Nullable T o) {
         if (o == null) throw new IllegalArgumentException("Argument cannot be null.");
         return o;
     }
 
-    public static void assertNull(Object object, String message) {
+    public static void assertNull(@Nullable Object object, @NonNull String message) {
         if (object != null) {
             throw new RuntimeException(message);
         }
     }
 
-    public static void assertNonNull(Object object, String message) {
+    public static void assertNonNull(@Nullable Object object, @NonNull String message) {
         if (object == null) {
             throw new RuntimeException(message);
         }

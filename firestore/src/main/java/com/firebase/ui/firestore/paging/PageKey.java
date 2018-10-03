@@ -1,5 +1,6 @@
 package com.firebase.ui.firestore.paging;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
@@ -20,7 +21,8 @@ public class PageKey {
         mEndBefore = endBefore;
     }
 
-    public Query getPageQuery(Query baseQuery, int size) {
+    @NonNull
+    public Query getPageQuery(@NonNull Query baseQuery, int size) {
         Query pageQuery = baseQuery;
 
         if (mStartAfter != null) {
@@ -37,6 +39,7 @@ public class PageKey {
     }
 
     @Override
+    @NonNull
     public String toString() {
         String startAfter = mStartAfter == null ? null : mStartAfter.getId();
         String endBefore = mEndBefore == null ? null : mEndBefore.getId();

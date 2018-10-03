@@ -2,7 +2,7 @@ import com.android.build.gradle.internal.dsl.TestOptions
 
 android {
     buildTypes {
-        getByName("release") {
+        named("release").configure {
             postprocessing {
                 consumerProguardFiles("auth-proguard.pro")
             }
@@ -10,7 +10,12 @@ android {
     }
 
     lintOptions {
+<<<<<<< HEAD
         disable("UnusedQuantity", "MissingTranslation")
+=======
+        disable("UnusedQuantity")
+        disable("UnknownNullness") // TODO fix in future PR
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
     }
 
     testOptions {
@@ -33,12 +38,11 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
-    // Needed to override Facebook
-    implementation(Config.Libs.Support.cardView)
-    implementation(Config.Libs.Support.customTabs)
+    implementation(Config.Libs.Support.cardView) // Needed to override Facebook
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
     testImplementation(Config.Libs.Test.junit)
+    testImplementation(Config.Libs.Test.truth)
     testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)

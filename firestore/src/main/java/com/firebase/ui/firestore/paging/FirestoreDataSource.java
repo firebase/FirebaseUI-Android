@@ -35,12 +35,13 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         private final Query mQuery;
         private final Source mSource;
 
-        public Factory(Query query, Source source) {
+        public Factory(@NonNull Query query, @NonNull Source source) {
             mQuery = query;
             mSource = source;
         }
 
         @Override
+        @NonNull
         public DataSource<PageKey, DocumentSnapshot> create() {
             return new FirestoreDataSource(mQuery, mSource);
         }
@@ -53,7 +54,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
     private Runnable mRetryRunnable;
 
-    public FirestoreDataSource(Query baseQuery, Source source) {
+    public FirestoreDataSource(@NonNull Query baseQuery, @NonNull Source source) {
         mBaseQuery = baseQuery;
         mSource = source;
     }
@@ -119,6 +120,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
     }
 
+    @NonNull
     private PageKey getNextPageKey(@NonNull QuerySnapshot snapshot) {
         List<DocumentSnapshot> data = snapshot.getDocuments();
         DocumentSnapshot last = getLast(data);
@@ -126,6 +128,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         return new PageKey(last, null);
     }
 
+    @NonNull
     public LiveData<LoadingState> getLoadingState() {
         return mLoadingState;
     }

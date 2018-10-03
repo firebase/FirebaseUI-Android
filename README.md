@@ -1,5 +1,8 @@
 # FirebaseUI for Android — UI Bindings for Firebase
 
+[![FirebaseOpensource.com](https://img.shields.io/badge/Docs-firebaseopensource.com-orange.svg)](
+https://firebaseopensource.com/projects/firebase/firebaseui-android
+)
 [![Build Status](https://travis-ci.org/firebase/FirebaseUI-Android.svg?branch=master)](https://travis-ci.org/firebase/FirebaseUI-Android)
 
 FirebaseUI is an open-source library for Android that allows you to
@@ -47,16 +50,19 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-database:4.2.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.2.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
+
+    // FirebaseUI for Firebase Auth (GitHub provider)
+    implementation 'com.firebaseui:firebase-ui-auth-github:4.2.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-storage:4.2.0'
 }
 ```
 
@@ -99,15 +105,15 @@ versions. This means that FirebaseUI has independent dependencies on each of the
 For best results, your app should depend on a version of each dependency with the same major
 version number as the version used by FirebaseUI.
 
-As of version `4.0.0`, FirebaseUI has the following dependency versions:
+As of version `4.2.0`, FirebaseUI has the following dependency versions:
 
 | Library              | Version                        |
 |----------------------|--------------------------------|
-| `firebase-auth`      | 16.0.1                         |
-| `play-services-auth` | 15.0.1                         |
-| `firebase-database`  | 16.0.1                         |
-| `firebase-firestore` | 17.0.1                         |
-| `firebase-storage`   | 16.0.1                         |
+| `firebase-auth`      | 16.0.3                         |
+| `play-services-auth` | 16.0.0                         |
+| `firebase-database`  | 16.0.2                         |
+| `firebase-firestore` | 17.1.0                         |
+| `firebase-storage`   | 16.0.2                         |
 
 ### Upgrading dependencies
 
@@ -189,6 +195,14 @@ If you encounter a version incompatibility error between Android Studio
 and Gradle while trying to run the sample app, try disabling the Instant
 Run feature of Android Studio. Alternatively, update Android Studio and
 Gradle to their latest versions.
+
+A note on importing the project using Android Studio: Using 'Project from 
+Version Control' will not automatically link the project with Gradle 
+(issue [#1349](https://github.com/firebase/FirebaseUI-Android/issues/1349)). 
+When doing so and opening any `build.gradle.kts` file, an error shows up: 
+`Project 'FirebaseUI-Android' isn't linked with Gradle`. To resolve this 
+issue, please `git checkout` the project manually and import with `Import 
+from external model`.
 
 ## Snapshot builds
 

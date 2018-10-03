@@ -1,21 +1,13 @@
 package com.firebase.uidemo;
 
-import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 
 public class FirebaseUIDemo extends MultiDexApplication {
-    private RefWatcher mRefWatcher;
-
     static {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
-
-    public static RefWatcher getRefWatcher(Context context) {
-        return ((FirebaseUIDemo) context.getApplicationContext()).mRefWatcher;
     }
 
     @Override
@@ -26,6 +18,6 @@ public class FirebaseUIDemo extends MultiDexApplication {
             // You should not init your app in this process.
             return;
         }
-        mRefWatcher = LeakCanary.install(this);
+        LeakCanary.install(this);
     }
 }

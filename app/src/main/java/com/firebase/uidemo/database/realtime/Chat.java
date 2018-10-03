@@ -1,5 +1,8 @@
 package com.firebase.uidemo.database.realtime;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.firebase.uidemo.database.AbstractChat;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -13,38 +16,44 @@ public class Chat extends AbstractChat {
         // Needed for Firebase
     }
 
-    public Chat(String name, String message, String uid) {
+    public Chat(@Nullable String name, @Nullable String message, @NonNull String uid) {
         mName = name;
         mMessage = message;
-        mUid = uid;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
-    }
-
-    public String getMessage() {
-        return mMessage;
-    }
-
-    public void setMessage(String message) {
-        mMessage = message;
-    }
-
-    public String getUid() {
-        return mUid;
-    }
-
-    public void setUid(String uid) {
         mUid = uid;
     }
 
     @Override
-    public boolean equals(Object o) {
+    @Nullable
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(@Nullable String name) {
+        mName = name;
+    }
+
+    @Override
+    @Nullable
+    public String getMessage() {
+        return mMessage;
+    }
+
+    public void setMessage(@Nullable String message) {
+        mMessage = message;
+    }
+
+    @Override
+    @NonNull
+    public String getUid() {
+        return mUid;
+    }
+
+    public void setUid(@NonNull String uid) {
+        mUid = uid;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -64,6 +73,7 @@ public class Chat extends AbstractChat {
     }
 
     @Override
+    @NonNull
     public String toString() {
         return "Chat{" +
                 "mName='" + mName + '\'' +

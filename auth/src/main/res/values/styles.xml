@@ -200,18 +200,6 @@
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.EmailButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_mail_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_email</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-    <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_phone_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_phone</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
     <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
         <item name="drawableStartCompat">@drawable/fui_ic_googleg_color_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_google</item>
@@ -230,6 +218,30 @@
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
+    <style name="FirebaseUI.Button.AccountChooser.GitHubButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_github_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_github</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.EmailButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_mail_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_email</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_phone_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_phone</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.AnonymousButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_anonymous_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_anonymous</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
     <style name="FirebaseUI.TopProgressBar" parent="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">4dp</item>
@@ -242,10 +254,10 @@
     <style name="FirebaseUI.PrivacyFooter">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:layout_marginTop">@dimen/fui_field_padding_vert</item>
+        <item name="android:layout_marginBottom">@dimen/fui_field_padding_vert</item>
         <item name="android:gravity">end</item>
-        <item name="android:textIsSelectable">true</item>
+        <item name="android:textIsSelectable">false</item>
     </style>
 
     <!-- Checkbox Agreement -->

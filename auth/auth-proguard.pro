@@ -1,4 +1,4 @@
-# Twitter and Facebook are optional
+# 3P providers are optional
 -dontwarn com.facebook.**
 -dontwarn com.twitter.**
 # Keep the class names used to check for availablility
@@ -19,5 +19,9 @@
 # Retrofit config
 -dontnote retrofit2.Platform
 -dontwarn retrofit2.** # Also keeps Twitter at bay as long as they keep using Retrofit
+-dontwarn okhttp3.**
 -dontwarn okio.**
 -keepattributes Exceptions
+
+# TODO remove https://github.com/google/gson/issues/1174
+-dontwarn com.google.gson.Gson$6

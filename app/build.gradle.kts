@@ -7,7 +7,7 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        named("release").configure {
             // For the purposes of the sample, allow testing of a proguarded release build
             // using the debug key
             signingConfig = signingConfigs["debug"]
@@ -32,6 +32,7 @@ dependencies {
     implementation(Config.Libs.Support.multidex)
 
     implementation(project(":auth"))
+    implementation(project(":auth-github"))
     implementation(project(":firestore"))
     implementation(project(":database"))
     implementation(project(":storage"))
@@ -55,6 +56,7 @@ dependencies {
     implementation(Config.Libs.Misc.butterKnife)
     annotationProcessor(Config.Libs.Misc.butterKnifeCompiler)
     debugImplementation(Config.Libs.Misc.leakCanary)
+    debugImplementation(Config.Libs.Misc.leakCanaryFragments)
     releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
     testImplementation(Config.Libs.Misc.leakCanaryNoop)
 }

@@ -1,29 +1,14 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!--
-    The Facebook Application ID associated with this Android application. To
-    use Facebook accounts with the demo application, register an application
-    and provide your value here.
-    -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+    <!-- See auth/src/main/res/values/config.xml for documentation -->
+
+    <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
+
     <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
 
-    <!--
-    Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs.
-    -->
-    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fbYOUR_APP_ID</string>
-
-
-    <!--
-    Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
-    application with Twitter and provide the following two values.
-    -->
     <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
-
-    <!--
-    Your Twitter Consumer Secret
-
-    WARNING: By obtaining your Consumer Key and Consumer Secret other programs can perform API
-    operations as your app. Embedding the Consumer Key and Consumer Secret in your app, no matter
-    how obfuscated, makes it vulnerable to being stolen.
-    -->
     <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
+
+    <string name="github_client_id" translatable="false">CHANGE-ME</string>
+    <string name="github_client_secret" translatable="false">CHANGE-ME</string>
 </resources>

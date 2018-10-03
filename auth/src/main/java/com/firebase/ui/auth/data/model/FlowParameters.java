@@ -40,7 +40,7 @@ public class FlowParameters implements Parcelable {
     public final String appName;
 
     @NonNull
-    public final List<IdpConfig> providerInfo;
+    public final List<IdpConfig> providers;
 
     @StyleRes
     public final int themeId;
@@ -56,28 +56,40 @@ public class FlowParameters implements Parcelable {
 
     public final boolean enableCredentials;
     public final boolean enableHints;
+<<<<<<< HEAD
     public final boolean explicitAcceptance;
+=======
+    public final boolean enableAnonymousUpgrade;
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
 
     public FlowParameters(
             @NonNull String appName,
-            @NonNull List<IdpConfig> providerInfo,
+            @NonNull List<IdpConfig> providers,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
             boolean enableHints,
+<<<<<<< HEAD
             boolean enableTermsCheckbox) {
+=======
+            boolean enableAnonymousUpgrade) {
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
-        this.providerInfo = Collections.unmodifiableList(
-                Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
+        this.providers = Collections.unmodifiableList(
+                Preconditions.checkNotNull(providers, "providers cannot be null"));
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.privacyPolicyUrl = privacyPolicyUrl;
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
+<<<<<<< HEAD
         this.explicitAcceptance = enableTermsCheckbox;
+=======
+        this.enableAnonymousUpgrade = enableAnonymousUpgrade;
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
     }
 
     /**
@@ -90,14 +102,18 @@ public class FlowParameters implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(appName);
-        dest.writeTypedList(providerInfo);
+        dest.writeTypedList(providers);
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeString(privacyPolicyUrl);
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
+<<<<<<< HEAD
         dest.writeInt(explicitAcceptance ? 1 : 0);
+=======
+        dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
     }
 
     @Override
@@ -116,7 +132,11 @@ public class FlowParameters implements Parcelable {
             String privacyPolicyUrl = in.readString();
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
+<<<<<<< HEAD
             boolean explicitAcceptance = in.readInt() != 0;
+=======
+            boolean enableAnonymousUpgrade = in.readInt() != 0;
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
 
             return new FlowParameters(
                     appName,
@@ -127,7 +147,11 @@ public class FlowParameters implements Parcelable {
                     privacyPolicyUrl,
                     enableCredentials,
                     enableHints,
+<<<<<<< HEAD
                     explicitAcceptance);
+=======
+                    enableAnonymousUpgrade);
+>>>>>>> df657cd5d37fa50a8ffc5c01d17c2f076c5928c2
         }
 
         @Override
@@ -137,7 +161,7 @@ public class FlowParameters implements Parcelable {
     };
 
     public boolean isSingleProviderFlow() {
-        return providerInfo.size() == 1;
+        return providers.size() == 1;
     }
 
     public boolean isTermsOfServiceUrlProvided() {
@@ -146,5 +170,9 @@ public class FlowParameters implements Parcelable {
 
     public boolean isPrivacyPolicyUrlProvided() {
         return !TextUtils.isEmpty(privacyPolicyUrl);
+    }
+
+    public boolean isAnonymousUpgradeEnabled() {
+        return enableAnonymousUpgrade;
     }
 }

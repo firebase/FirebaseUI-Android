@@ -34,22 +34,28 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
+import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
+import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
-import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -83,7 +89,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
-        populateIdpList(params.providerInfo, mHandler);
+        populateIdpList(params.providers, mHandler);
 
         int logoId = params.logoId;
         if (logoId == AuthUI.NO_LOGO) {
@@ -109,9 +115,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                if (!(e instanceof UserCancellationException)) {
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
+                            ((FirebaseAuthAnonymousUpgradeException) e).getResponse().toIntent());
+                } else if ((!(e instanceof UserCancellationException))) {
+                    String text = e instanceof FirebaseUiException ? e.getMessage() :
+                            getString(R.string.fui_error_unknown);
                     Toast.makeText(AuthMethodPickerActivity.this,
-                            R.string.fui_error_unknown,
+                            text,
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -155,6 +166,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
                     buttonLayout = R.layout.fui_idp_button_twitter;
                     break;
+                case GithubAuthProvider.PROVIDER_ID:
+                    ProviderSignInBase<IdpConfig> github =
+                            supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
+                    github.init(idpConfig);
+                    provider = github;
+
+                    buttonLayout = R.layout.fui_idp_button_github;
+                    break;
                 case EmailAuthProvider.PROVIDER_ID:
                     EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
                     email.init(null);
@@ -168,6 +187,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     provider = phone;
 
                     buttonLayout = R.layout.fui_provider_button_phone;
+                    break;
+                case AuthUI.ANONYMOUS_PROVIDER:
+                    AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
+                    anonymous.init(getFlowParams());
+                    provider = anonymous;
+
+                    buttonLayout = R.layout.fui_provider_button_anonymous;
                     break;
                 default:
                     throw new IllegalStateException("Unknown provider: " + providerId);
@@ -198,8 +224,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                         // started.
                         handler.startSignIn(response);
                     } else {
-                        // Email or phone: the credentials should have already been saved so simply
-                        // move along.
+                        // Email or phone: the credentials should have already been saved so
+                        // simply move along. Anononymous sign in also does not require any
+                        // other operations.
                         finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
                                 response.toIntent());
                     }

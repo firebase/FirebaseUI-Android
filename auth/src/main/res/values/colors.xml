@@ -8,10 +8,12 @@
     <color name="fui_linkColor">#4285F4</color>
     <color name="fui_transparent">#00000000</color>
 
-    <color name="fui_buttonShadow">#64BEBEBE</color>
-    <color name="fui_bgEmail">#D0021B</color>
-    <color name="fui_bgFacebook">#3B5998</color>
     <color name="fui_bgGoogle">#ffffff</color>
-    <color name="fui_bgPhone">#43C5A5</color>
+    <color name="fui_bgFacebook">#3B5998</color>
     <color name="fui_bgTwitter">#FF5BAAF4</color>
+    <color name="fui_bgGitHub">#24292E</color>
+    <color name="fui_bgEmail">#D0021B</color>
+    <color name="fui_bgPhone">#43C5A5</color>
+    <color name="fui_bgAnonymous">#f4b400</color>
+    <color name="fui_buttonShadow">#64BEBEBE</color>
 </resources>

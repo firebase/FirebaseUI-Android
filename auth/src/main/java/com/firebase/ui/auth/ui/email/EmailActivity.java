@@ -19,11 +19,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -41,7 +43,8 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener {
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener,
+        RegisterEmailFragment.AnonymousUpgradeListener {
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -108,7 +111,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-                getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
+                getFlowParams().providers, EmailAuthProvider.PROVIDER_ID);
         if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
@@ -129,5 +132,20 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     private void setSlideAnimation() {
         // Make the next activity slide in
         overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
+    }
+
+    @Override
+    public void showProgress(@StringRes int message) {
+        throw new UnsupportedOperationException("Email fragments must handle progress updates.");
+    }
+
+    @Override
+    public void hideProgress() {
+        throw new UnsupportedOperationException("Email fragments must handle progress updates.");
+    }
+
+    @Override
+    public void onMergeFailure(IdpResponse response) {
+        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
     }
 }

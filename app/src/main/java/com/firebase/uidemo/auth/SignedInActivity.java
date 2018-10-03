@@ -42,6 +42,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -64,10 +65,12 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name) TextView mUserDisplayName;
     @BindView(R.id.user_phone_number) TextView mUserPhoneNumber;
     @BindView(R.id.user_enabled_providers) TextView mEnabledProviders;
+    @BindView(R.id.user_is_new) TextView mIsNewUser;
 
-    public static Intent createIntent(Context context, IdpResponse idpResponse) {
+    @NonNull
+    public static Intent createIntent(@NonNull Context context, @Nullable IdpResponse response) {
         return new Intent().setClass(context, SignedInActivity.class)
-                .putExtra(ExtraConstants.IDP_RESPONSE, idpResponse);
+                .putExtra(ExtraConstants.IDP_RESPONSE, response);
     }
 
     @Override
@@ -85,7 +88,7 @@ public class SignedInActivity extends AppCompatActivity {
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
-        populateProfile();
+        populateProfile(response);
         populateIdpToken(response);
     }
 
@@ -137,7 +140,7 @@ public class SignedInActivity extends AppCompatActivity {
                 });
     }
 
-    private void populateProfile() {
+    private void populateProfile(@Nullable IdpResponse response) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
             GlideApp.with(this)
@@ -153,9 +156,16 @@ public class SignedInActivity extends AppCompatActivity {
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
+        if (response == null) {
+            mIsNewUser.setVisibility(View.GONE);
+        } else {
+            mIsNewUser.setVisibility(View.VISIBLE);
+            mIsNewUser.setText(response.isNewUser() ? "New user" : "Existing user");
+        }
+
         List<String> providers = new ArrayList<>();
         if (user.getProviderData().isEmpty()) {
-            providers.add("Anonymous");
+            providers.add(getString(R.string.providers_anonymous));
         } else {
             for (UserInfo info : user.getProviderData()) {
                 switch (info.getProviderId()) {
@@ -167,6 +177,9 @@ public class SignedInActivity extends AppCompatActivity {
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_twitter));
+                        break;
+                    case GithubAuthProvider.PROVIDER_ID:
+                        providers.add(getString(R.string.providers_github));
                         break;
                     case EmailAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_email));

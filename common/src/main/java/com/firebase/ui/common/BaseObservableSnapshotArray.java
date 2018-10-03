@@ -156,12 +156,12 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
     /**
      * @return true if the provided listener is listening for changes
      */
-    public boolean isListening(L listener) {
+    public boolean isListening(@NonNull L listener) {
         return mListeners.contains(listener);
     }
 
-    protected final void notifyOnChildChanged(ChangeEventType type,
-                                              S snapshot,
+    protected final void notifyOnChildChanged(@NonNull ChangeEventType type,
+                                              @NonNull S snapshot,
                                               int newIndex,
                                               int oldIndex) {
         if (type == ChangeEventType.CHANGED || type == ChangeEventType.REMOVED) {
@@ -181,7 +181,7 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
         }
     }
 
-    protected final void notifyOnError(E e) {
+    protected final void notifyOnError(@NonNull E e) {
         for (L listener : mListeners) {
             listener.onError(e);
         }
