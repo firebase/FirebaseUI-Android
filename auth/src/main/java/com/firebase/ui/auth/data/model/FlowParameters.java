@@ -87,8 +87,6 @@ public class FlowParameters implements Parcelable {
      * Extract FlowParameters from an Intent.
      */
     public static FlowParameters fromIntent(Intent intent) {
-        //this is required to fix #1416 - ClassNotFound for FlowParameters
-        intent.setExtrasClassLoader(AuthUI.class.getClassLoader());
         return intent.getParcelableExtra(ExtraConstants.FLOW_PARAMS);
     }
 
