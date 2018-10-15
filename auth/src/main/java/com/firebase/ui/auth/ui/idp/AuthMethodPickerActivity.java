@@ -132,6 +132,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
                 getFlowParams(),
                 termsText);
+
+        // No ToS or PP provided, so we should hide the view entirely
+        if (!getFlowParams().isPrivacyPolicyUrlProvided() &&
+                !getFlowParams().isTermsOfServiceUrlProvided()) {
+            termsText.setVisibility(View.GONE);
+        }
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,

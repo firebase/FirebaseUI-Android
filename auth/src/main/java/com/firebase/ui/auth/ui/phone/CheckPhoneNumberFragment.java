@@ -173,7 +173,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private void setupPrivacyDisclosures(TextView footerText) {
         FlowParameters params = getFlowParams();
 
-        if (params.isSingleProviderFlow()) {
+        if (!params.shouldShowProviderChoice()) {
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicySmsText(requireContext(),
                     params,
                     mSmsTermsText);
