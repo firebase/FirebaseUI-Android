@@ -26,6 +26,7 @@
     <string name="providers_github">GitHub</string>
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
+    <string name="providers_email_link">Email link</string>
     <string name="providers_phone">Phone</string>
     <string name="providers_anonymous">Anonymous</string>
 

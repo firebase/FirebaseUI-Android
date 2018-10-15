@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
     <string name="app_name" translatable="false" tools:ignore="ResourceName">ui_flow</string>
 
     <!-- Common -->
@@ -52,6 +52,8 @@
     <string name="fui_title_welcome_back_password_prompt" translatable="false">@string/fui_sign_in_default</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
+    <string name="fui_welcome_back_email_link_header" translation_description="Message for returning users">You already have an account\n</string>
+
     <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">
         You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
         Sign in with <xliff:g example="Google" id="provider_name" translation_description="">%2$s</xliff:g> to continue.
@@ -59,6 +61,10 @@
     <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">
         You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>
         to sign in. Enter your password for that account.
+    </string>
+    <string name="fui_welcome_back_email_link_prompt_body" translation_description="Message to users that need to signin using existing email link accounts">
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
+        You can connect your %2$s account with %1$s by signing in with email link below.\n\nFor this flow to successfully connect your %2$s account with this email, you have to open the link on the same device or browser.
     </string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Trouble signing in?</string>
@@ -70,7 +76,7 @@
         reset your password.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Follow the instructions sent to %1$s to recover your password.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sending…</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">That email address doesn\'t match an existing account</string>
 
     <!-- Other error messages -->
@@ -79,6 +85,19 @@
 
     <!-- Accessibility -->
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">App logo</string>
+
+
+    <!-- Email Link Sign In -->
+    <string name="fui_email_link_header" translation_description="Email link sign in email sent header">Sign-in email sent\n</string>
+    <string name="fui_email_link_email_sent" translation_description="Text to tell the user that the email has been sent">A sign-in email with additional instructions was sent to %1$s. Check your email to complete sign-in.</string>
+    <string name="fui_email_link_trouble_getting_email_header" translation_description="Header that is displayed on the trouble signing in activity">Trouble getting email?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes" translation_description="A list of possible fixes for receiving the email">Try these common fixes:\n\u2022 Check if the email was marked as spam or filtered.\n\u2022 Check your internet connection.\n\u2022 Check that you did not misspell your email.\n\u2022 Check that your inbox space is not running out or other inbox setting related issues.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution" translation_description="Prompt the user to resend the email if the listed fixes do not work">If the steps above didn\'t work, you can resend the email. Note that this will deactivate the link in the older email. </string>
+    <string name="fui_email_link_resend" translation_description="Button text to resend">Resend</string>
+    <string name="fui_email_link_wrong_device_header" translation_description="Header shown when the user opens a link that was sent from a different device">New device or browser detected.</string>
+    <string name="fui_email_link_wrong_device_message" translation_description="Message shown when the user opens a link that was sent from a different device">Try opening the link using the same device or browser where you started the sign-in process.</string>
+    <string name="fui_email_link_wrong_device_dismiss_button" translation_description="Dismiss button for the wrong device dialog">Dismiss</string>
+
 
     <!-- Phone number auth -->
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>
@@ -98,4 +117,6 @@
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Continue</string>
     <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%2$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%3$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
+
+
 </resources>

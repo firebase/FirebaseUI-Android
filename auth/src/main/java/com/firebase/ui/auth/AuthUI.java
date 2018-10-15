@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -87,7 +88,8 @@ import java.util.Set;
  * {@link AuthUI#getInstance(FirebaseApp)} instead, passing the appropriate app instance.
  * <p>
  * <p>
- * See the <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#table-of-contents">README</a>
+ * See the
+ * <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#table-of-contents">README</a>
  * for examples on how to get started with FirebaseUI Auth.
  */
 public final class AuthUI {
@@ -100,18 +102,7 @@ public final class AuthUI {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String ANONYMOUS_PROVIDER = "anonymous";
-
-    @StringDef({
-                       GoogleAuthProvider.PROVIDER_ID,
-                       FacebookAuthProvider.PROVIDER_ID,
-                       TwitterAuthProvider.PROVIDER_ID,
-                       GithubAuthProvider.PROVIDER_ID,
-                       EmailAuthProvider.PROVIDER_ID,
-                       PhoneAuthProvider.PROVIDER_ID,
-                       ANONYMOUS_PROVIDER
-               })
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface SupportedProvider {}
+    public static final String EMAIL_LINK_PROVIDER = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -129,7 +120,8 @@ public final class AuthUI {
                     GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID,
-                    ANONYMOUS_PROVIDER
+                    ANONYMOUS_PROVIDER,
+                    EMAIL_LINK_PROVIDER
             )));
 
     /**
@@ -205,6 +197,17 @@ public final class AuthUI {
     }
 
     /**
+     * Returns true if AuthUI can handle the intent.
+     */
+    public static boolean canHandleIntent(@NonNull Intent intent) {
+        if (intent == null || intent.getData() == null) {
+            return false;
+        }
+        String link = intent.getData().toString();
+        return FirebaseAuth.getInstance().isSignInWithEmailLink(link);
+    }
+
+    /**
      * Default theme used by {@link SignInIntentBuilder#setTheme(int)} if no theme customization is
      * required.
      */
@@ -262,7 +265,8 @@ public final class AuthUI {
                         // one, meaning Smart Lock won't have to show the picker UI.
                         .setPasswordLoginSupported(email != null)
                         .setAccountTypes(google == null ? null :
-                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider.PROVIDER_ID))
+                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider
+                                        .PROVIDER_ID))
                         .build())
                 .continueWithTask(new Continuation<CredentialRequestResponse, Task<AuthResult>>() {
                     @Override
@@ -277,11 +281,14 @@ public final class AuthUI {
                                             .setAccountName(email)
                                             .build())
                                     .silentSignIn()
-                                    .continueWithTask(new Continuation<GoogleSignInAccount, Task<AuthResult>>() {
+                                    .continueWithTask(new Continuation<GoogleSignInAccount,
+                                            Task<AuthResult>>() {
                                         @Override
-                                        public Task<AuthResult> then(@NonNull Task<GoogleSignInAccount> task) {
-                                            AuthCredential authCredential = GoogleAuthProvider.getCredential(
-                                                    task.getResult().getIdToken(), null);
+                                        public Task<AuthResult> then(@NonNull
+                                                                             Task<GoogleSignInAccount> task) {
+                                            AuthCredential authCredential = GoogleAuthProvider
+                                                    .getCredential(
+                                                            task.getResult().getIdToken(), null);
                                             return mAuth.signInWithCredential(authCredential);
                                         }
                                     });
@@ -311,7 +318,8 @@ public final class AuthUI {
                         // to fail (see Issue 1156).
                         Exception e = task.getException();
                         if (e instanceof ApiException
-                                && ((ApiException) e).getStatusCode() == CommonStatusCodes.CANCELED) {
+                                && ((ApiException) e).getStatusCode() == CommonStatusCodes
+                                .CANCELED) {
                             Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
                                     "SmartLock accounts available?", e);
                             return null;
@@ -371,7 +379,8 @@ public final class AuthUI {
                                 Exception e = task.getException();
                                 Throwable t = e == null ? null : e.getCause();
                                 if (!(t instanceof ApiException)
-                                        || ((ApiException) t).getStatusCode() != CommonStatusCodes.CANCELED) {
+                                        || ((ApiException) t).getStatusCode() !=
+                                        CommonStatusCodes.CANCELED) {
                                     // Only propagate the exception if it isn't an invalid account
                                     // one. This can occur if we failed to save the credential or it
                                     // was deleted elsewhere. However, a lack of stored credential
@@ -438,6 +447,21 @@ public final class AuthUI {
     @NonNull
     public SignInIntentBuilder createSignInIntentBuilder() {
         return new SignInIntentBuilder();
+    }
+
+    @StringDef({
+            GoogleAuthProvider.PROVIDER_ID,
+            FacebookAuthProvider.PROVIDER_ID,
+            TwitterAuthProvider.PROVIDER_ID,
+            GithubAuthProvider.PROVIDER_ID,
+            EmailAuthProvider.PROVIDER_ID,
+            PhoneAuthProvider.PROVIDER_ID,
+            ANONYMOUS_PROVIDER,
+            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+    })
+
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SupportedProvider {
     }
 
     /**
@@ -525,7 +549,7 @@ public final class AuthUI {
          * @see SignInIntentBuilder#setAvailableProviders(List)
          */
         public static class Builder {
-            @SupportedProvider private final String mProviderId;
+            @SupportedProvider private String mProviderId;
             private final Bundle mParams = new Bundle();
 
             protected Builder(@SupportedProvider @NonNull String providerId) {
@@ -557,7 +581,7 @@ public final class AuthUI {
             }
 
             /**
-             * Enables or disables creating new accounts in the email sign in flow.
+             * Enables or disables creating new accounts in the email sign in flows.
              * <p>
              * Account creation is enabled by default.
              */
@@ -577,6 +601,36 @@ public final class AuthUI {
             public EmailBuilder setRequireName(boolean requireName) {
                 getParams().putBoolean(ExtraConstants.REQUIRE_NAME, requireName);
                 return this;
+            }
+
+            @NonNull
+            public EmailBuilder enableEmailLinkSignIn() {
+                super.mProviderId = EMAIL_LINK_PROVIDER;
+                return this;
+            }
+
+            @NonNull
+            public EmailBuilder setActionCodeSettings(ActionCodeSettings actionCodeSettings) {
+                getParams().putParcelable(ExtraConstants.ACTION_CODE_SETTINGS, actionCodeSettings);
+                return this;
+            }
+
+            @Override
+            public IdpConfig build() {
+                if (super.mProviderId.equals(EMAIL_LINK_PROVIDER)) {
+                    ActionCodeSettings actionCodeSettings = getParams().getParcelable
+                            (ExtraConstants.ACTION_CODE_SETTINGS);
+                    Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
+                            "null when using email link sign in.");
+                    if (actionCodeSettings != null && !actionCodeSettings.canHandleCodeInApp()) {
+                        // Pre-emptively fail if actionCodeSettings are misconfigured. This would
+                        // have happened when calling sendSignInLinkToEmail
+                        throw new IllegalArgumentException(
+                                "You must set canHandleCodeInApp in your ActionCodeSettings to " +
+                                        "true for Email-Link Sign-in.");
+                    }
+                }
+                return super.build();
             }
         }
 
@@ -673,7 +727,7 @@ public final class AuthUI {
              * @param whitelistedCountries a non empty case insensitive list of country codes
              *                             and/or isos to be whitelisted
              * @throws IllegalArgumentException if an empty whitelist is provided.
-             * @throws NullPointerException if a null whitelist is provided.
+             * @throws NullPointerException     if a null whitelist is provided.
              */
             public PhoneBuilder setWhitelistedCountries(
                     @NonNull List<String> whitelistedCountries) {
@@ -686,7 +740,8 @@ public final class AuthUI {
                 String message = "Invalid argument: Only non-%s whitelists are valid. " +
                         "To specify no whitelist, do not call this method.";
                 Preconditions.checkNotNull(whitelistedCountries, String.format(message, "null"));
-                Preconditions.checkArgument(!whitelistedCountries.isEmpty(), String.format(message, "empty"));
+                Preconditions.checkArgument(!whitelistedCountries.isEmpty(), String.format
+                        (message, "empty"));
 
                 addCountriesToBundle(whitelistedCountries, ExtraConstants.WHITELISTED_COUNTRIES);
                 return this;
@@ -709,7 +764,7 @@ public final class AuthUI {
              * @param blacklistedCountries a non empty case insensitive list of country codes
              *                             and/or isos to be blacklisted
              * @throws IllegalArgumentException if an empty blacklist is provided.
-             * @throws NullPointerException if a null blacklist is provided.
+             * @throws NullPointerException     if a null blacklist is provided.
              */
             public PhoneBuilder setBlacklistedCountries(
                     @NonNull List<String> blacklistedCountries) {
@@ -722,7 +777,8 @@ public final class AuthUI {
                 String message = "Invalid argument: Only non-%s blacklists are valid. " +
                         "To specify no blacklist, do not call this method.";
                 Preconditions.checkNotNull(blacklistedCountries, String.format(message, "null"));
-                Preconditions.checkArgument(!blacklistedCountries.isEmpty(), String.format(message, "empty"));
+                Preconditions.checkArgument(!blacklistedCountries.isEmpty(), String.format
+                        (message, "empty"));
 
                 addCountriesToBundle(blacklistedCountries, ExtraConstants.BLACKLISTED_COUNTRIES);
                 return this;
@@ -929,7 +985,9 @@ public final class AuthUI {
                 Preconditions.checkConfigured(getApplicationContext(),
                         "Facebook provider unconfigured. Make sure to add a" +
                                 " `facebook_application_id` string. See the docs for more info:" +
-                                " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#facebook",
+                                " https://github" +
+                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
+                                ".md#facebook",
                         R.string.facebook_application_id);
                 if (getApplicationContext().getString(R.string.facebook_login_protocol_scheme)
                         .equals("fbYOUR_APP_ID")) {
@@ -965,7 +1023,9 @@ public final class AuthUI {
                 Preconditions.checkConfigured(getApplicationContext(),
                         "Twitter provider unconfigured. Make sure to add your key and secret." +
                                 " See the docs for more info:" +
-                                " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#twitter",
+                                " https://github" +
+                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
+                                ".md#twitter",
                         R.string.twitter_consumer_key,
                         R.string.twitter_consumer_secret);
             }
@@ -985,9 +1045,12 @@ public final class AuthUI {
                                     "'com.firebaseui:firebase-ui-auth-github:VERSION' dependency?");
                 }
                 Preconditions.checkConfigured(getApplicationContext(),
-                        "GitHub provider unconfigured. Make sure to add your client id and secret." +
+                        "GitHub provider unconfigured. Make sure to add your client id and secret" +
+                                "." +
                                 " See the docs for more info:" +
-                                " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#github",
+                                " https://github" +
+                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
+                                ".md#github",
                         R.string.firebase_web_host,
                         R.string.github_client_id,
                         R.string.github_client_secret);
@@ -995,7 +1058,8 @@ public final class AuthUI {
 
             /**
              * Specifies the additional permissions to be requested. Available permissions can be
-             * found <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
+             * found
+             * <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
              */
             @NonNull
             public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
@@ -1020,9 +1084,9 @@ public final class AuthUI {
      */
     @SuppressWarnings(value = "unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
+        final List<IdpConfig> mProviders = new ArrayList<>();
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();
-        final List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
         String mPrivacyPolicyUrl;
         boolean mAlwaysShowProviderChoice = false;
@@ -1188,10 +1252,21 @@ public final class AuthUI {
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
 
+        private String mEmailLink;
         private boolean mEnableAnonymousUpgrade;
 
         private SignInIntentBuilder() {
             super();
+        }
+
+        /**
+         * Specifies the email link to be used for sign in. When set, a sign in attempt will be
+         * made immediately.
+         */
+        @NonNull
+        public SignInIntentBuilder setEmailLink(@NonNull final String emailLink) {
+            mEmailLink = emailLink;
+            return this;
         }
 
         /**
@@ -1216,7 +1291,8 @@ public final class AuthUI {
                     mEnableCredentials,
                     mEnableHints,
                     mEnableAnonymousUpgrade,
-                    mAlwaysShowProviderChoice);
+                    mAlwaysShowProviderChoice,
+                    mEmailLink);
         }
     }
 }

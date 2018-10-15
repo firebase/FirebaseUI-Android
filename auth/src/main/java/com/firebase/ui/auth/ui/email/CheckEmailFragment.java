@@ -29,6 +29,8 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.firebase.auth.EmailAuthProvider;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that email.
  * <p>
@@ -39,38 +41,12 @@ public class CheckEmailFragment extends FragmentBase implements
         View.OnClickListener,
         ImeHelper.DonePressedListener {
 
-    /**
-     * Interface to be implemented by Activities hosting this Fragment.
-     */
-    interface CheckEmailListener {
-
-        /**
-         * Email entered belongs to an existing email user.
-         */
-        void onExistingEmailUser(User user);
-
-        /**
-         * Email entered belongs to an existing IDP user.
-         */
-        void onExistingIdpUser(User user);
-
-        /**
-         * Email entered does not belong to an existing user.
-         */
-        void onNewUser(User user);
-
-    }
-
     public static final String TAG = "CheckEmailFragment";
-
     private CheckEmailHandler mHandler;
-
     private Button mNextButton;
     private ProgressBar mProgressBar;
-
     private EditText mEmailEditText;
     private TextInputLayout mEmailLayout;
-
     private EmailFieldValidator mEmailFieldValidator;
     private CheckEmailListener mListener;
 
@@ -151,7 +127,8 @@ public class CheckEmailFragment extends FragmentBase implements
                             .setName(user.getName())
                             .setPhotoUri(user.getPhotoUri())
                             .build());
-                } else if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                } else if (provider.equals(EmailAuthProvider.PROVIDER_ID) || provider.equals
+                        (EMAIL_LINK_PROVIDER)) {
                     mListener.onExistingEmailUser(user);
                 } else {
                     mListener.onExistingIdpUser(user);
@@ -164,7 +141,9 @@ public class CheckEmailFragment extends FragmentBase implements
             }
         });
 
-        if (savedInstanceState != null) { return; }
+        if (savedInstanceState != null) {
+            return;
+        }
 
         // Check for email
         String email = getArguments().getString(ExtraConstants.EMAIL);
@@ -214,5 +193,27 @@ public class CheckEmailFragment extends FragmentBase implements
     public void hideProgress() {
         mNextButton.setEnabled(true);
         mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Interface to be implemented by Activities hosting this Fragment.
+     */
+    interface CheckEmailListener {
+
+        /**
+         * Email entered belongs to an existing email user.
+         */
+        void onExistingEmailUser(User user);
+
+        /**
+         * Email entered belongs to an existing IDP user.
+         */
+        void onExistingIdpUser(User user);
+
+        /**
+         * Email entered does not belong to an existing user.
+         */
+        void onNewUser(User user);
+
     }
 }

@@ -9,6 +9,7 @@ import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
+import com.firebase.ui.auth.ui.email.WelcomeBackEmailLinkPrompt;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
@@ -22,6 +23,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailProviderResponseHandler extends SignInViewModelBase {
@@ -99,7 +102,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                         "User has no providers even though we got a collision.");
             }
 
-            if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
+            if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(
                                 getApplication(),
@@ -108,6 +111,16 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                                         EmailAuthProvider.PROVIDER_ID, mEmail).build()
                                 ).build()),
                         RequestCodes.WELCOME_BACK_EMAIL_FLOW
+                )));
+            } else if (provider.equalsIgnoreCase(EMAIL_LINK_PROVIDER)) {
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                        WelcomeBackEmailLinkPrompt.createIntent(
+                                getApplication(),
+                                getArguments(),
+                                new IdpResponse.Builder(new User.Builder(
+                                        EMAIL_LINK_PROVIDER, mEmail).build()
+                                ).build()),
+                        RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW
                 )));
             } else {
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(

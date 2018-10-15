@@ -55,6 +55,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
 public class SignedInActivity extends AppCompatActivity {
     private static final String TAG = "SignedInActivity";
 
@@ -189,6 +191,9 @@ public class SignedInActivity extends AppCompatActivity {
                         break;
                     case FirebaseAuthProvider.PROVIDER_ID:
                         // Ignore this provider, it's not very meaningful
+                        break;
+                    case EMAIL_LINK_PROVIDER:
+                        providers.add(EMAIL_LINK_PROVIDER);
                         break;
                     default:
                         throw new IllegalStateException(

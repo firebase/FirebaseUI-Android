@@ -63,6 +63,8 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
 /** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
@@ -180,6 +182,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
                     buttonLayout = R.layout.fui_idp_button_github;
                     break;
+                case EMAIL_LINK_PROVIDER:
                 case EmailAuthProvider.PROVIDER_ID:
                     EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
                     email.init(null);

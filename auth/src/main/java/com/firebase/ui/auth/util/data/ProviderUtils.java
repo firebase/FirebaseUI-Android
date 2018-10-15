@@ -39,6 +39,8 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ProviderUtils {
     private static final String GITHUB_IDENTITY = "https://github.com";
@@ -89,8 +91,9 @@ public final class ProviderUtils {
             case PhoneAuthProvider.PHONE_SIGN_IN_METHOD:
                 return PhoneAuthProvider.PROVIDER_ID;
             case EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD:
-            case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
                 return EmailAuthProvider.PROVIDER_ID;
+            case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
+                return EMAIL_LINK_PROVIDER;
             default:
                 throw new IllegalStateException("Unknown method: " + method);
         }
