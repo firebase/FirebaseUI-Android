@@ -188,13 +188,13 @@ public class SignInKickstarter extends SignInViewModelBase {
                 }
                 break;
             case RequestCodes.EMAIL_FLOW:
-                if (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW) {
-                    startAuthMethodChoice();
-                    break;
-                }
             case RequestCodes.AUTH_PICKER_FLOW:
             case RequestCodes.PHONE_FLOW:
             case RequestCodes.PROVIDER_FLOW:
+                if (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW) {
+                    startAuthMethodChoice();
+                    return;
+                }
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if (response == null) {
                     setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
