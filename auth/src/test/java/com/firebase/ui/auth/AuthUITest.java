@@ -45,9 +45,10 @@ public class AuthUITest {
 
     @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
-        FlowParameters flowParameters = FlowParameters.fromIntent(mAuthUi
+        FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
-                .build());
+                .build()
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
         assertEquals(1, flowParameters.providers.size());
         assertEquals(EmailAuthProvider.PROVIDER_ID,
                 flowParameters.providers.get(0).getProviderId());
@@ -63,7 +64,7 @@ public class AuthUITest {
 
     @Test
     public void testCreatingStartIntent() {
-        FlowParameters flowParameters = FlowParameters.fromIntent(mAuthUi
+        FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
                         new IdpConfig.EmailBuilder().build(),
@@ -71,7 +72,8 @@ public class AuthUITest {
                         new IdpConfig.FacebookBuilder().build(),
                         new IdpConfig.AnonymousBuilder().build()))
                 .setTosAndPrivacyPolicyUrls(TestConstants.TOS_URL, TestConstants.PRIVACY_URL)
-                .build());
+                .build()
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
         assertEquals(4, flowParameters.providers.size());
         assertEquals(TestHelper.MOCK_APP.getName(), flowParameters.appName);
