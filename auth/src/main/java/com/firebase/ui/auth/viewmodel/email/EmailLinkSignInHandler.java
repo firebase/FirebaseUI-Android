@@ -40,6 +40,8 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
             return;
         }
 
+        setResult(Resource.<IdpResponse>forLoading());
+
         String link = getArguments().emailLink;
 
         if (!getAuth().isSignInWithEmailLink(link)) {
