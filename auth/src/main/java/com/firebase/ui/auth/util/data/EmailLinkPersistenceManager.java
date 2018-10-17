@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.data.client;
+package com.firebase.ui.auth.util.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,7 +21,7 @@ import java.util.Set;
 public class EmailLinkPersistenceManager {
 
     private static final String SHARED_PREF_NAME =
-            "com.firebase.ui.auth.data.client.EmailLinkPersistenceManager";
+            "com.firebase.ui.auth.util.data.EmailLinkPersistenceManager";
 
     private static final String KEY_EMAIL = "com.firebase.ui.auth.data.client.email";
     private static final String KEY_PROVIDER = "com.firebase.ui.auth.data.client.provider";

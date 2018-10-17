@@ -33,14 +33,14 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initHandler(buildAlertDialogForWrongDevice());
+        initHandler();
 
         if (getFlowParams().emailLink != null) {
             mHandler.startSignIn();
         }
     }
 
-    private void initHandler(final AlertDialog alertDialog) {
+    private void initHandler() {
         mHandler = ViewModelProviders.of(this).get(EmailLinkSignInHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
@@ -58,9 +58,14 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
                     finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants
                             .IDP_RESPONSE, res));
                 } else {
-                    if (e instanceof FirebaseUiException && ((FirebaseUiException) e)
-                            .getErrorCode() == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR) {
-                        alertDialog.show();
+                    if (e instanceof FirebaseUiException) {
+                        if (((FirebaseUiException) e).getErrorCode() == ErrorCodes
+                                .EMAIL_LINK_WRONG_DEVICE_ERROR) {
+                            buildAlertDialog(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR).show();
+                        } else if (((FirebaseUiException) e).getErrorCode() == ErrorCodes
+                                .INVALID_EMAIL_LINK_ERROR) {
+                            buildAlertDialog(ErrorCodes.INVALID_EMAIL_LINK_ERROR).show();
+                        }
                     } else {
                         finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                     }
@@ -69,17 +74,29 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         });
     }
 
-   private AlertDialog buildAlertDialogForWrongDevice() {
+    private AlertDialog buildAlertDialog(int errorCode) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle(R.string.fui_email_link_wrong_device_header)
-                .setMessage(R.string.fui_email_link_wrong_device_message)
-                .setPositiveButton(R.string
-                        .fui_email_link_wrong_device_dismiss_button, new
-                        DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                finish(RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW, null);
-                            }
-                        });
+        if (errorCode == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR) {
+            alertDialog.setTitle(R.string.fui_email_link_wrong_device_header)
+                    .setMessage(R.string.fui_email_link_wrong_device_message)
+                    .setPositiveButton(R.string
+                            .fui_email_link_dismiss_button, new
+                            DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    finish(RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW, null);
+                                }
+                            });
+        } else if (errorCode == ErrorCodes.INVALID_EMAIL_LINK_ERROR) {
+            alertDialog.setTitle(R.string.fui_email_link_invalid_link_header)
+                    .setMessage(R.string.fui_email_link_invalid_link_message)
+                    .setPositiveButton(R.string
+                            .fui_email_link_dismiss_button, new
+                            DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    finish(RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW, null);
+                                }
+                            });
+        }
         return alertDialog.create();
     }
 }

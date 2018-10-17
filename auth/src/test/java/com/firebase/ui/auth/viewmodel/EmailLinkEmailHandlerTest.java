@@ -2,7 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
 
-import com.firebase.ui.auth.data.client.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;

@@ -3,7 +3,7 @@ package com.firebase.ui.auth.viewmodel.email;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.firebase.ui.auth.data.client.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.OnCompleteListener;

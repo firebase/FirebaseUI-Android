@@ -1,9 +1,9 @@
-package com.firebase.ui.auth.storage;
+package com.firebase.ui.auth.data;
 
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.client.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 

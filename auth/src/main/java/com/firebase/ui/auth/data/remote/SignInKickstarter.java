@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.client.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
@@ -191,7 +191,7 @@ public class SignInKickstarter extends SignInViewModelBase {
             case RequestCodes.AUTH_PICKER_FLOW:
             case RequestCodes.PHONE_FLOW:
             case RequestCodes.PROVIDER_FLOW:
-                if (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW) {
+                if (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW || resultCode == RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW) {
                     startAuthMethodChoice();
                     return;
                 }
