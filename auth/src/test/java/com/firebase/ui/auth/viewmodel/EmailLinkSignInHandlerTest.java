@@ -7,7 +7,6 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
@@ -18,7 +17,9 @@ import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
+import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.AdditionalUserInfo;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -34,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -45,6 +47,7 @@ import java.util.Collections;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,6 +69,7 @@ public class EmailLinkSignInHandlerTest {
     @Mock private AuthResult mMockAuthResult;
     @Mock private AdditionalUserInfo mockAdditionalUserInfo;
 
+    @Mock private ActionCodeResult mMockActionCodeResult;
 
     @Before
     public void setUp() {
@@ -89,12 +93,18 @@ public class EmailLinkSignInHandlerTest {
     public void testStartSignIn_wrongDeviceFlow() {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
+        when(mMockAuth.checkActionCode(any(String.class))).thenReturn(AutoCompleteTask.forSuccess
+                (mMockActionCodeResult));
 
         mHandler.startSignIn();
 
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
         assertThat(exception).isNotNull();
@@ -118,7 +128,10 @@ public class EmailLinkSignInHandlerTest {
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
 
-        verify(mResponseObserver).onChanged(captor.capture());
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         IdpResponse response = captor.getValue().getValue();
 
@@ -154,7 +167,11 @@ public class EmailLinkSignInHandlerTest {
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
 
-        verify(mResponseObserver).onChanged(captor.capture());
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         IdpResponse response = captor.getValue().getValue();
 
@@ -188,7 +205,12 @@ public class EmailLinkSignInHandlerTest {
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
 
-        verify(mResponseObserver).onChanged(captor.capture());
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
 
         assertThat(captor.getValue().getException()).isNotNull();
         FirebaseAuthAnonymousUpgradeException mergeException =
@@ -246,7 +268,13 @@ public class EmailLinkSignInHandlerTest {
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
 
         IdpResponse response = captor.getValue().getValue();
 
@@ -286,7 +314,12 @@ public class EmailLinkSignInHandlerTest {
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
 
-        verify(mResponseObserver).onChanged(captor.capture());
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
 
         assertThat(captor.getValue().getException()).isNotNull();
         FirebaseAuthUserCollisionException collisionException =
@@ -348,7 +381,13 @@ public class EmailLinkSignInHandlerTest {
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
 
         FirebaseAuthAnonymousUpgradeException mergeException =
                 ((FirebaseAuthAnonymousUpgradeException) captor.getValue().getException());
@@ -390,13 +429,14 @@ public class EmailLinkSignInHandlerTest {
                 .isNull();
 
         // Validate failure
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
-
-
-        // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         assertThat(captor.getValue().getException()).isNotNull();
     }
@@ -441,13 +481,14 @@ public class EmailLinkSignInHandlerTest {
                 .isNull();
 
         // Validate failure
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
-
-
-        // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+
+        InOrder inOrder = inOrder(mResponseObserver);
+
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         assertThat(captor.getValue().getException()).isNotNull();
     }
