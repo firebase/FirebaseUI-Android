@@ -37,9 +37,6 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
     }
 
     public void startSignIn() {
-        if (getAuth() == null) {
-            return;
-        }
         setResult(Resource.<IdpResponse>forLoading());
 
         String link = getArguments().emailLink;

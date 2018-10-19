@@ -1,9 +1,11 @@
 package com.firebase.ui.auth.util.data;
 
 import android.net.Uri;
+import android.support.annotation.RestrictTo;
 
 import java.util.Set;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkParser {
 
     private static String LINK = "link";

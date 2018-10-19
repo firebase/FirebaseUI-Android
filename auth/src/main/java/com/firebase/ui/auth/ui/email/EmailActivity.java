@@ -27,6 +27,7 @@ import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -184,8 +185,9 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     }
 
     @Override
-    public void onSendEmailFailure() {
-        finish(ErrorCodes.UNKNOWN_ERROR, null);
+    public void onSendEmailFailure(Exception e) {
+        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
+                ErrorCodes.DEVELOPER_ERROR, e.getMessage())));
     }
 
     private void setSlideAnimation() {

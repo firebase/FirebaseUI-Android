@@ -2,6 +2,8 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
 
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
@@ -17,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -26,7 +29,9 @@ import java.util.ArrayList;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +79,11 @@ public class EmailLinkEmailHandlerTest {
         assertThat(email).isEqualTo(TestConstants.EMAIL);
 
         ArgumentCaptor<Resource<String>> captor = ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<String>isLoading()));
+
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         assertThat(captor.getValue().getState()).isEqualTo(State.SUCCESS);
         assertThat(captor.getValue().getValue()).isEqualTo(TestConstants.EMAIL);
@@ -95,7 +104,10 @@ public class EmailLinkEmailHandlerTest {
 
 
         ArgumentCaptor<Resource<String>> captor = ArgumentCaptor.forClass(Resource.class);
-        verify(mResponseObserver).onChanged(captor.capture());
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<String>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         assertThat(captor.getValue().getState()).isEqualTo(State.FAILURE);
         assertThat(captor.getValue().getException()).isNotNull();

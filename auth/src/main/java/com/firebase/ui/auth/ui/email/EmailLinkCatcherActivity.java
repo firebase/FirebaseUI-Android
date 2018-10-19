@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
@@ -22,6 +23,7 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkCatcherActivity extends InvisibleActivityBase {
 
     private EmailLinkSignInHandler mHandler;
@@ -79,9 +81,8 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         if (errorCode == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR) {
             alertDialog.setTitle(R.string.fui_email_link_wrong_device_header)
                     .setMessage(R.string.fui_email_link_wrong_device_message)
-                    .setPositiveButton(R.string
-                            .fui_email_link_dismiss_button, new
-                            DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.fui_email_link_dismiss_button,
+                            new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     finish(RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW, null);
                                 }
@@ -89,9 +90,8 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         } else if (errorCode == ErrorCodes.INVALID_EMAIL_LINK_ERROR) {
             alertDialog.setTitle(R.string.fui_email_link_invalid_link_header)
                     .setMessage(R.string.fui_email_link_invalid_link_message)
-                    .setPositiveButton(R.string
-                            .fui_email_link_dismiss_button, new
-                            DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.fui_email_link_dismiss_button,
+                            new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     finish(RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW, null);
                                 }

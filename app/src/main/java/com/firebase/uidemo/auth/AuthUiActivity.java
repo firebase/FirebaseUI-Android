@@ -397,8 +397,8 @@ public class AuthUiActivity extends AppCompatActivity {
 
             selectedProviders.add(new IdpConfig.EmailBuilder()
                     .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
-                    .enableEmailLinkSignIn()
                     .setActionCodeSettings(actionCodeSettings)
+                    .enableEmailLinkSignIn()
                     .build());
         }
 
