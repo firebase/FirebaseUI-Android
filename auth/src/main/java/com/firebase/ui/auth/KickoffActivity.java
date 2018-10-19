@@ -83,8 +83,9 @@ public class KickoffActivity extends InvisibleActivityBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RequestCodes.EMAIL_FLOW && resultCode == RequestCodes
-                .EMAIL_LINK_WRONG_DEVICE_FLOW) {
+        if (requestCode == RequestCodes.EMAIL_FLOW
+                && (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW
+                || resultCode == RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW)) {
             invalidateEmailLink();
         }
 
@@ -94,7 +95,7 @@ public class KickoffActivity extends InvisibleActivityBase {
     public void invalidateEmailLink() {
         FlowParameters flowParameters = getFlowParams();
         flowParameters.emailLink = null;
-        setIntent(new Intent().putExtra(ExtraConstants.FLOW_PARAMS,
+        setIntent(getIntent().putExtra(ExtraConstants.FLOW_PARAMS,
                 flowParameters));
     }
 

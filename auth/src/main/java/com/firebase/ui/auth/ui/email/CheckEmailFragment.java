@@ -127,8 +127,8 @@ public class CheckEmailFragment extends FragmentBase implements
                             .setName(user.getName())
                             .setPhotoUri(user.getPhotoUri())
                             .build());
-                } else if (provider.equals(EmailAuthProvider.PROVIDER_ID) || provider.equals
-                        (EMAIL_LINK_PROVIDER)) {
+                } else if (provider.equals(EmailAuthProvider.PROVIDER_ID)
+                        || provider.equals(EMAIL_LINK_PROVIDER)) {
                     mListener.onExistingEmailUser(user);
                 } else {
                     mListener.onExistingIdpUser(user);

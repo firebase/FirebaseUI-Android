@@ -102,7 +102,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                         "User has no providers even though we got a collision.");
             }
 
-            if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
+            if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(
                                 getApplication(),
@@ -112,7 +112,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                                 ).build()),
                         RequestCodes.WELCOME_BACK_EMAIL_FLOW
                 )));
-            } else if (provider.equalsIgnoreCase(EMAIL_LINK_PROVIDER)) {
+            } else if (EMAIL_LINK_PROVIDER.equalsIgnoreCase(provider)) {
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackEmailLinkPrompt.createIntent(
                                 getApplication(),

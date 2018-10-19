@@ -1,13 +1,13 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Typeface;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
+import android.support.v4.app.FragmentActivity;
 import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
+import com.firebase.ui.auth.util.ui.TextHelper;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkEmailHandler;
 import com.google.firebase.auth.ActionCodeSettings;
@@ -43,6 +44,16 @@ public class EmailLinkFragment extends FragmentBase {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        FragmentActivity activity = getActivity();
+        if (!(activity instanceof TroubleSigningInListener)) {
+            throw new IllegalStateException("Activity must implement TroubleSigningInListener");
+        }
+        mListener = (TroubleSigningInListener) activity;
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -52,7 +63,7 @@ public class EmailLinkFragment extends FragmentBase {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mProgressBar = view.findViewById(R.id.top_progress_bar);
-        mListener = (TroubleSigningInListener) getActivity();
+        getView().setVisibility(View.GONE);
 
         String email = getArguments().getString(ExtraConstants.EMAIL);
         setBodyText(view, email);
@@ -79,10 +90,12 @@ public class EmailLinkFragment extends FragmentBase {
         mHandler = ViewModelProviders.of(this).get(EmailLinkEmailHandler.class);
         mHandler.init(getFlowParams());
 
-        mHandler.getOperation().observe(this, new ResourceObserver<String>(this, R.string
-                .fui_progress_dialog_sending) {
+        mHandler.getOperation().observe(this, new ResourceObserver<String>(this,
+                R.string.fui_progress_dialog_sending) {
             @Override
             protected void onSuccess(@NonNull String email) {
+                Log.w(TAG, "Email for email link sign in sent successfully.");
+                getView().setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -98,11 +111,7 @@ public class EmailLinkFragment extends FragmentBase {
         String bodyText = getString(R.string.fui_email_link_email_sent, email);
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
-        int emailStart = bodyText.indexOf(email);
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                emailStart,
-                emailStart + email.length(),
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        TextHelper.boldAllOccurencesOfText(spannableStringBuilder, bodyText, email);
         body.setText(spannableStringBuilder);
     }
 
@@ -123,6 +132,7 @@ public class EmailLinkFragment extends FragmentBase {
 
     @Override
     public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
         state.putBoolean(EMAIL_SENT, true);
     }
 

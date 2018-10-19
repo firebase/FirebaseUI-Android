@@ -74,6 +74,8 @@
         <activity
             android:name=".ui.email.EmailLinkCatcherActivity"
             android:exported="false"
+            android:label=""
+            android:theme="@style/FirebaseUI.Transparent"
             android:windowSoftInputMode="adjustResize" />
 
         <activity

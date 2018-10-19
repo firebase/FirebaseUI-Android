@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
@@ -28,12 +29,12 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.ActionCodeSettings;
@@ -91,17 +92,11 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
                     responseForLinking);
 
             EmailLinkFragment fragment = EmailLinkFragment.newInstance(email, actionCodeSettings);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_register_email, fragment, EmailLinkFragment.TAG)
-                    .disallowAddToBackStack()
-                    .commit();
+            switchFragment(fragment, EmailLinkFragment.TAG);
         } else {
             // Start with check email
             CheckEmailFragment fragment = CheckEmailFragment.newInstance(email);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
-                    .disallowAddToBackStack()
-                    .commit();
+            switchFragment(fragment, CheckEmailFragment.TAG);
         }
     }
 
@@ -119,7 +114,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         if (user.getProviderId().equals(EMAIL_LINK_PROVIDER)) {
             AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                     getFlowParams().providers, EMAIL_LINK_PROVIDER);
-            registerEmailLinkFragment(
+            showRegisterEmailLinkFragment(
                     emailConfig, user.getEmail());
         } else {
             startActivityForResult(
@@ -146,19 +141,18 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         // if account creation is enabled in SignInIntentBuilder
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
-        AuthUI.IdpConfig emailConfig;
-        try {
-            emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-                    getFlowParams().providers, EmailAuthProvider.PROVIDER_ID);
-        } catch (IllegalStateException e) {
-            emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-                    getFlowParams().providers, EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD);
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(getFlowParams().providers,
+                EmailAuthProvider.PROVIDER_ID);
+
+        if (emailConfig == null) {
+            emailConfig = ProviderUtils.getConfigFromIdps(getFlowParams().providers,
+                    EMAIL_LINK_PROVIDER);
         }
 
         if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             if (emailConfig.getProviderId().equals(EMAIL_LINK_PROVIDER)) {
-                registerEmailLinkFragment(emailConfig, user.getEmail());
+                showRegisterEmailLinkFragment(emailConfig, user.getEmail());
             } else {
                 RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
                 ft.replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
@@ -178,17 +172,14 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     public void onTroubleSigningIn(String email) {
         TroubleSigningInFragment troubleSigningInFragment = TroubleSigningInFragment.newInstance
                 (email);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_register_email,
-                troubleSigningInFragment, TroubleSigningInFragment.TAG).disallowAddToBackStack()
-                .commit();
-
+        switchFragment(troubleSigningInFragment, TroubleSigningInFragment.TAG);
     }
 
     @Override
     public void onClickResendEmail(String email) {
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providers, EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD);
-        registerEmailLinkFragment(
+        showRegisterEmailLinkFragment(
                 emailConfig, email);
     }
 
@@ -202,15 +193,20 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
     }
 
-    private void registerEmailLinkFragment(AuthUI.IdpConfig emailConfig,
-                                           String email) {
+    private void showRegisterEmailLinkFragment(AuthUI.IdpConfig emailConfig,
+                                               String email) {
         ActionCodeSettings actionCodeSettings = emailConfig.getParams().getParcelable
                 (ExtraConstants.ACTION_CODE_SETTINGS);
         EmailLinkFragment fragment = EmailLinkFragment.newInstance(email,
                 actionCodeSettings);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_register_email,
-                fragment, EmailLinkFragment.TAG).disallowAddToBackStack().commit();
+        switchFragment(fragment, EmailLinkFragment.TAG);
+    }
+
+    private void switchFragment(Fragment fragment, String tag) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_register_email, fragment, tag)
+                .disallowAddToBackStack()
+                .commit();
     }
 
     @Override

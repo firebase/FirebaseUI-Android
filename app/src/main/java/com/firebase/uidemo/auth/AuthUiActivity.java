@@ -168,9 +168,22 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        mUseEmailLinkProvider.setChecked(true);
-        mUseEmailProvider.setChecked(false);
+        mUseEmailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                flipPasswordProviderCheckbox(isChecked);
+            }
+        });
 
+        mUseEmailProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                flipEmailLinkProviderCheckbox(isChecked);
+            }
+        });
+
+        mUseEmailLinkProvider.setChecked(false);
+        mUseEmailProvider.setChecked(true);
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)
@@ -187,22 +200,25 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     public void catchEmailLinkSignIn() {
+        if (getIntent().getExtras() == null) {
+            return;
+        }
         String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
         if (link != null) {
             signInWithEmailLink(link);
         }
     }
 
-    @OnClick(R.id.email_link_provider)
-    public void uncheckPasswordProvider() {
-        mUseEmailProvider.setChecked(!(mUseEmailProvider.isChecked() && mUseEmailLinkProvider
-                .isChecked()));
+    public void flipPasswordProviderCheckbox(boolean emailLinkProviderIsChecked) {
+        if (emailLinkProviderIsChecked) {
+            mUseEmailProvider.setChecked(false);
+        }
     }
 
-    @OnClick(R.id.email_provider)
-    public void uncheckEmailLinkProvider() {
-        mUseEmailLinkProvider.setChecked(!(mUseEmailProvider.isChecked() && mUseEmailLinkProvider
-                .isChecked()));
+    public void flipEmailLinkProviderCheckbox(boolean passwordProviderIsChecked) {
+        if (passwordProviderIsChecked) {
+            mUseEmailLinkProvider.setChecked(false);
+        }
     }
 
     @OnClick(R.id.sign_in)

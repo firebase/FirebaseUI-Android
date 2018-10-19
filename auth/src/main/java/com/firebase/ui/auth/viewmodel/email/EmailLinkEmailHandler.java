@@ -3,6 +3,7 @@ package com.firebase.ui.auth.viewmodel.email;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -20,6 +21,7 @@ public class EmailLinkEmailHandler extends AuthViewModelBase<String> {
         if (getAuth() == null) {
             return;
         }
+        setResult(Resource.<String>forLoading());
         getAuth().sendSignInLinkToEmail(email, actionCodeSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

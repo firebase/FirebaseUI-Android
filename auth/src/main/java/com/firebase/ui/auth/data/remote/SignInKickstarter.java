@@ -58,13 +58,13 @@ public class SignInKickstarter extends SignInViewModelBase {
     }
 
     public void start() {
-        if (getArguments().emailLink != null) {
+        if (!TextUtils.isEmpty(getArguments().emailLink)) {
             setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                     EmailLinkCatcherActivity.createIntent(getApplication(), getArguments()),
                     RequestCodes.EMAIL_FLOW)));
             return;
         }
-        EmailLinkPersistenceManager.getInstance().clearAllData(getApplication());
+
         // Only support password credentials if email auth is enabled
         boolean supportPasswords = ProviderUtils.getConfigFromIdps(
                 getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;

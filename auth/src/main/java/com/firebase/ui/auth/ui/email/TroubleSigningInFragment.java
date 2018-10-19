@@ -1,8 +1,10 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +44,18 @@ public class TroubleSigningInFragment extends FragmentBase implements View.OnCli
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        FragmentActivity activity = getActivity();
+        if (!(activity instanceof ResendEmailListener)) {
+            throw new IllegalStateException("Activity must implement ResendEmailListener");
+        }
+        mListener = (ResendEmailListener) activity;
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mProgressBar = view.findViewById(R.id.top_progress_bar);
-        mListener = (ResendEmailListener) getActivity();
         mEmail = getArguments().getString(ExtraConstants.EMAIL);
 
         setOnClickListeners(view);

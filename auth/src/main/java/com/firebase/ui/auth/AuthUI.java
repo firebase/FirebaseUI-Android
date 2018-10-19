@@ -158,15 +158,15 @@ public final class AuthUI {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static void setApplicationContext(@NonNull Context context) {
-        sApplicationContext = Preconditions.checkNotNull(context, "App context cannot be null.")
-                .getApplicationContext();
-    }
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @NonNull
     public static Context getApplicationContext() {
         return sApplicationContext;
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static void setApplicationContext(@NonNull Context context) {
+        sApplicationContext = Preconditions.checkNotNull(context, "App context cannot be null.")
+                .getApplicationContext();
     }
 
     /**
@@ -198,6 +198,10 @@ public final class AuthUI {
 
     /**
      * Returns true if AuthUI can handle the intent.
+     * <p>
+     * AuthUI handle the intent when the embedded data is an email link. If it is, you can then
+     * specify the link in {@link SignInIntentBuilder#setEmailLink(String)} before starting AuthUI
+     * and it will be handled immediately.
      */
     public static boolean canHandleIntent(@NonNull Intent intent) {
         if (intent == null || intent.getData() == null) {
@@ -214,6 +218,34 @@ public final class AuthUI {
     @StyleRes
     public static int getDefaultTheme() {
         return R.style.FirebaseUI;
+    }
+
+    /**
+     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
+     * for saving since we don't have access to the password.
+     */
+    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
+        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
+            return Collections.emptyList();
+        }
+
+        List<Credential> credentials = new ArrayList<>();
+        for (UserInfo userInfo : user.getProviderData()) {
+            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
+                continue;
+            }
+
+            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
+            if (type == null) {
+                // Since the account type is null, we've got an email credential. Adding a fake
+                // password is the only way to tell Smart Lock that this is an email credential.
+                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
+            } else {
+                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
+            }
+        }
+
+        return credentials;
     }
 
     /**
@@ -284,8 +316,8 @@ public final class AuthUI {
                                     .continueWithTask(new Continuation<GoogleSignInAccount,
                                             Task<AuthResult>>() {
                                         @Override
-                                        public Task<AuthResult> then(@NonNull
-                                                                             Task<GoogleSignInAccount> task) {
+                                        public Task<AuthResult> then(
+                                                @NonNull Task<GoogleSignInAccount> task) {
                                             AuthCredential authCredential = GoogleAuthProvider
                                                     .getCredential(
                                                             task.getResult().getIdToken(), null);
@@ -413,34 +445,6 @@ public final class AuthUI {
     }
 
     /**
-     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
-     * for saving since we don't have access to the password.
-     */
-    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
-        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
-            return Collections.emptyList();
-        }
-
-        List<Credential> credentials = new ArrayList<>();
-        for (UserInfo userInfo : user.getProviderData()) {
-            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
-                continue;
-            }
-
-            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
-            if (type == null) {
-                // Since the account type is null, we've got an email credential. Adding a fake
-                // password is the only way to tell Smart Lock that this is an email credential.
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
-            } else {
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
-            }
-        }
-
-        return credentials;
-    }
-
-    /**
      * Starts the process of creating a sign in intent, with the mandatory application context
      * parameter.
      */
@@ -549,8 +553,8 @@ public final class AuthUI {
          * @see SignInIntentBuilder#setAvailableProviders(List)
          */
         public static class Builder {
-            @SupportedProvider private String mProviderId;
             private final Bundle mParams = new Bundle();
+            @SupportedProvider private String mProviderId;
 
             protected Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
@@ -563,6 +567,11 @@ public final class AuthUI {
             @NonNull
             protected final Bundle getParams() {
                 return mParams;
+            }
+
+            @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+            protected void setProviderId(@NonNull String providerId) {
+                mProviderId = providerId;
             }
 
             @CallSuper
@@ -605,7 +614,7 @@ public final class AuthUI {
 
             @NonNull
             public EmailBuilder enableEmailLinkSignIn() {
-                super.mProviderId = EMAIL_LINK_PROVIDER;
+                setProviderId(EMAIL_LINK_PROVIDER);
                 return this;
             }
 

@@ -35,7 +35,6 @@ import com.firebase.uidemo.database.firestore.FirestorePagingActivity;
 import com.firebase.uidemo.database.realtime.RealtimeDbChatActivity;
 import com.firebase.uidemo.storage.ImageActivity;
 
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,6 +51,8 @@ public class ChooserActivity extends AppCompatActivity {
                     .class);
             intent.putExtra(ExtraConstants.EMAIL_LINK_SIGN_IN, getIntent().getData().toString());
             startActivity(intent);
+            finish();
+            return;
         }
 
         setContentView(R.layout.activity_chooser);
@@ -62,8 +63,8 @@ public class ChooserActivity extends AppCompatActivity {
         mActivities.setHasFixedSize(true);
     }
 
-    private static class ActivityChooserAdapter extends RecyclerView
-            .Adapter<ActivityStarterHolder> {
+    private static class ActivityChooserAdapter
+            extends RecyclerView.Adapter<ActivityStarterHolder> {
         private static final Class[] CLASSES = new Class[]{
                 AuthUiActivity.class,
                 AnonymousUpgradeActivity.class,
@@ -109,8 +110,8 @@ public class ChooserActivity extends AppCompatActivity {
         }
     }
 
-    private static class ActivityStarterHolder extends RecyclerView.ViewHolder implements View
-            .OnClickListener {
+    private static class ActivityStarterHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         private TextView mTitle;
         private TextView mDescription;
 

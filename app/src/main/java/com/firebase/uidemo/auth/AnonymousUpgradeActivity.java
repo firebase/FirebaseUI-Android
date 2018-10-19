@@ -60,9 +60,12 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
 
         updateUI();
 
+        // Got here from AuthUIActivity, and we need to deal with a merge conflict
+        // Occurs after catching an email link
         IdpResponse response = IdpResponse.fromResultIntent(getIntent());
         if (response != null) {
-            onActivityResult(RC_SIGN_IN, ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, getIntent());
+            handleSignInResult(RC_SIGN_IN, ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
+                    getIntent());
         }
     }
 
@@ -137,6 +140,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        handleSignInResult(requestCode, resultCode, data);
+    }
+
+    private void handleSignInResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {

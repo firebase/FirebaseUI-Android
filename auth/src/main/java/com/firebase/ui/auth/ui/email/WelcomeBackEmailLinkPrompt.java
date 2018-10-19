@@ -2,13 +2,10 @@ package com.firebase.ui.auth.ui.email;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -20,6 +17,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
+import com.firebase.ui.auth.util.ui.TextHelper;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 
 import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
@@ -75,29 +73,14 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         // bold email & provider text
-        boldText(spannableStringBuilder, bodyText, mIdpResponseForLinking.getEmail());
-        boldText(spannableStringBuilder, bodyText, mIdpResponseForLinking.getProviderType());
+        TextHelper.boldAllOccurencesOfText(spannableStringBuilder, bodyText,
+                mIdpResponseForLinking.getEmail());
+        TextHelper.boldAllOccurencesOfText(spannableStringBuilder, bodyText,
+                mIdpResponseForLinking.getProviderType());
 
         body.setText(spannableStringBuilder);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
-        }
-    }
-
-    private void boldText(SpannableStringBuilder spannableStringBuilder, String
-            text, String textToBold) {
-        int fromIndex = 0;
-        while (fromIndex < text.length()) {
-            int start = text.indexOf(textToBold, fromIndex);
-            int end = start + textToBold.length();
-            if (start == -1 || end >= text.length()) {
-                break;
-            }
-            spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                    start,
-                    end,
-                    Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            fromIndex = end + 1;
         }
     }
 
