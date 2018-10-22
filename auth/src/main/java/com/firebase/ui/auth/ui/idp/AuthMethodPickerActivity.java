@@ -145,220 +145,152 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
                                  final SocialProviderResponseHandler handler) {
-        ViewModelProvider supplier = ViewModelProviders.of(this);
-
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
-            final ProviderSignInBase<?> provider;
             @LayoutRes int buttonLayout;
 
             final String providerId = idpConfig.getProviderId();
             switch (providerId) {
                 case GoogleAuthProvider.PROVIDER_ID:
-                    GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
-                    google.init(new GoogleSignInHandler.Params(idpConfig));
-                    provider = google;
-
                     buttonLayout = R.layout.fui_idp_button_google;
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
-                    FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
-                    facebook.init(idpConfig);
-                    provider = facebook;
-
                     buttonLayout = R.layout.fui_idp_button_facebook;
                     break;
                 case TwitterAuthProvider.PROVIDER_ID:
-                    TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
-                    twitter.init(null);
-                    provider = twitter;
-
                     buttonLayout = R.layout.fui_idp_button_twitter;
                     break;
                 case GithubAuthProvider.PROVIDER_ID:
-                    ProviderSignInBase<IdpConfig> github =
-                            supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
-                    github.init(idpConfig);
-                    provider = github;
-
                     buttonLayout = R.layout.fui_idp_button_github;
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
-                    email.init(null);
-                    provider = email;
-
                     buttonLayout = R.layout.fui_provider_button_email;
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
-                    phone.init(idpConfig);
-                    provider = phone;
-
                     buttonLayout = R.layout.fui_provider_button_phone;
                     break;
                 case AuthUI.ANONYMOUS_PROVIDER:
-                    AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
-                    anonymous.init(getFlowParams());
-                    provider = anonymous;
-
                     buttonLayout = R.layout.fui_provider_button_anonymous;
                     break;
                 default:
                     throw new IllegalStateException("Unknown provider: " + providerId);
             }
-            mProviders.add(provider);
-
-            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
-                @Override
-                protected void onSuccess(@NonNull IdpResponse response) {
-                    handleResponse(response);
-                }
-
-                @Override
-                protected void onFailure(@NonNull Exception e) {
-                    handleResponse(IdpResponse.from(e));
-                }
-
-                private void handleResponse(@NonNull IdpResponse response) {
-                    if (!response.isSuccessful()) {
-                        // We have no idea what provider this error stemmed from so just forward
-                        // this along to the handler.
-                        handler.startSignIn(response);
-                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
-                        // Don't use the response's provider since it can be different than the one
-                        // that launched the sign-in attempt. Ex: the email flow is started, but
-                        // ends up turning into a Google sign-in because that account already
-                        // existed. In the previous example, an extra sign-in would incorrectly
-                        // started.
-                        handler.startSignIn(response);
-                    } else {
-                        // Email or phone: the credentials should have already been saved so
-                        // simply move along. Anononymous sign in also does not require any
-                        // other operations.
-                        finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
-                                response.toIntent());
-                    }
-                }
-            });
 
             View loginButton = getLayoutInflater().inflate(buttonLayout, mProviderHolder, false);
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    provider.startSignIn(AuthMethodPickerActivity.this);
-                }
-            });
+            handleSignInOperation(idpConfig, loginButton, handler);
             mProviderHolder.addView(loginButton);
         }
     }
 
-    /**
-     * This function is very similar with poplulateIdpList, but specifically made for custom layout
-     */
     private void populateIdpListCustomLayout(List<IdpConfig> providerConfigs,
                                              final SocialProviderResponseHandler handler) {
-        ViewModelProvider supplier = ViewModelProviders.of(this);
-
         Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
-            final ProviderSignInBase<?> provider;
-
             final String providerId = idpConfig.getProviderId();
             @IdRes int buttonId = providerButtonIds.get(providerId);
-
-            switch (providerId) {
-                case GoogleAuthProvider.PROVIDER_ID:
-                    GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
-                    google.init(new GoogleSignInHandler.Params(idpConfig));
-                    provider = google;
-
-                    break;
-                case FacebookAuthProvider.PROVIDER_ID:
-                    FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
-                    facebook.init(idpConfig);
-                    provider = facebook;
-
-                    break;
-                case TwitterAuthProvider.PROVIDER_ID:
-                    TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
-                    twitter.init(null);
-                    provider = twitter;
-
-                    break;
-                case GithubAuthProvider.PROVIDER_ID:
-                    ProviderSignInBase<IdpConfig> github =
-                            supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
-                    github.init(idpConfig);
-                    provider = github;
-
-                    break;
-                case EmailAuthProvider.PROVIDER_ID:
-                    EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
-                    email.init(null);
-                    provider = email;
-
-                    break;
-                case PhoneAuthProvider.PROVIDER_ID:
-                    PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
-                    phone.init(idpConfig);
-                    provider = phone;
-
-                    break;
-                case AuthUI.ANONYMOUS_PROVIDER:
-                    AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
-                    anonymous.init(getFlowParams());
-                    provider = anonymous;
-
-                    break;
-                default:
-                    throw new IllegalStateException("Unknown provider: " + providerId);
-            }
-            mProviders.add(provider);
-
-            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
-                @Override
-                protected void onSuccess(@NonNull IdpResponse response) {
-                    handleResponse(response);
-                }
-
-                @Override
-                protected void onFailure(@NonNull Exception e) {
-                    handleResponse(IdpResponse.from(e));
-                }
-
-                private void handleResponse(@NonNull IdpResponse response) {
-                    if (!response.isSuccessful()) {
-                        // We have no idea what provider this error stemmed from so just forward
-                        // this along to the handler.
-                        handler.startSignIn(response);
-                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
-                        // Don't use the response's provider since it can be different than the one
-                        // that launched the sign-in attempt. Ex: the email flow is started, but
-                        // ends up turning into a Google sign-in because that account already
-                        // existed. In the previous example, an extra sign-in would incorrectly
-                        // started.
-                        handler.startSignIn(response);
-                    } else {
-                        // Email or phone: the credentials should have already been saved so
-                        // simply move along. Anononymous sign in also does not require any
-                        // other operations.
-                        finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
-                                response.toIntent());
-                    }
-                }
-            });
-
             View loginButton = findViewById(buttonId);
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    provider.startSignIn(AuthMethodPickerActivity.this);
-                }
-            });
-            mProviderHolder.addView(loginButton);
+            if (loginButton == null) {
+                throw new IllegalStateException("No button found for this auth provider");
+            }
+
+            handleSignInOperation(idpConfig, loginButton, handler);
         }
+    }
+
+    private void handleSignInOperation(IdpConfig idpConfig, View view,
+                                       final SocialProviderResponseHandler handler) {
+        ViewModelProvider supplier = ViewModelProviders.of(this);
+        final String providerId = idpConfig.getProviderId();
+        final ProviderSignInBase<?> provider;
+
+        switch (providerId) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
+                google.init(new GoogleSignInHandler.Params(idpConfig));
+                provider = google;
+
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
+                facebook.init(idpConfig);
+                provider = facebook;
+
+                break;
+            case TwitterAuthProvider.PROVIDER_ID:
+                TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
+                twitter.init(null);
+                provider = twitter;
+
+                break;
+            case GithubAuthProvider.PROVIDER_ID:
+                ProviderSignInBase<IdpConfig> github =
+                        supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
+                github.init(idpConfig);
+                provider = github;
+
+                break;
+            case EmailAuthProvider.PROVIDER_ID:
+                EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
+                email.init(null);
+                provider = email;
+
+                break;
+            case PhoneAuthProvider.PROVIDER_ID:
+                PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
+                phone.init(idpConfig);
+                provider = phone;
+
+                break;
+            case AuthUI.ANONYMOUS_PROVIDER:
+                AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
+                anonymous.init(getFlowParams());
+                provider = anonymous;
+
+                break;
+            default:
+                throw new IllegalStateException("Unknown provider: " + providerId);
+        }
+        mProviders.add(provider);
+
+        provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
+            @Override
+            protected void onSuccess(@NonNull IdpResponse response) {
+                handleResponse(response);
+            }
+
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                handleResponse(IdpResponse.from(e));
+            }
+
+            private void handleResponse(@NonNull IdpResponse response) {
+                if (!response.isSuccessful()) {
+                    // We have no idea what provider this error stemmed from so just forward
+                    // this along to the handler.
+                    handler.startSignIn(response);
+                } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
+                    // Don't use the response's provider since it can be different than the one
+                    // that launched the sign-in attempt. Ex: the email flow is started, but
+                    // ends up turning into a Google sign-in because that account already
+                    // existed. In the previous example, an extra sign-in would incorrectly
+                    // started.
+                    handler.startSignIn(response);
+                } else {
+                    // Email or phone: the credentials should have already been saved so
+                    // simply move along. Anononymous sign in also does not require any
+                    // other operations.
+                    finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
+                            response.toIntent());
+                }
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                provider.startSignIn(AuthMethodPickerActivity.this);
+            }
+        });
     }
 
     @Override
