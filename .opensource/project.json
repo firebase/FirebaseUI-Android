@@ -9,15 +9,15 @@
   
     "content": "README.md",
 
-    "pages" : [
-        "auth/README.md",
-        "database/README.md",
-        "storage/README.md",
-        "firestore/README.md",
-        "docs/upgrade-to-2.0.md",
-        "docs/upgrade-to-3.0.md",
-        "docs/upgrade-to-4.0.md"
-    ],
+    "pages" : {
+        "auth/README.md": "Authentication",
+        "database/README.md": "Realtime Database",
+        "storage/README.md": "Cloud Storage",
+        "firestore/README.md": "Cloud Firestore",
+        "docs/upgrade-to-2.0.md": "Upgrade to v2.0",
+        "docs/upgrade-to-3.0.md": "Upgrade to v3.0",
+        "docs/upgrade-to-4.0.md": "Upgrade to v4.0"
+    },
   
     "related": [
       "firebase/firebaseui-ios",
