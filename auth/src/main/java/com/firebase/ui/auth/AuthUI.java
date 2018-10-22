@@ -1027,6 +1027,7 @@ public final class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
+        AuthLayout mCustomLayout = null;
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a
@@ -1156,6 +1157,12 @@ public final class AuthUI {
             return (T) this;
         }
 
+        @NonNull
+        public T setCustomLayout(@NonNull AuthLayout customLayout) {
+            mCustomLayout = customLayout;
+            return (T) this;
+        }
+
         @CallSuper
         @NonNull
         public Intent build() {
@@ -1201,7 +1208,8 @@ public final class AuthUI {
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
-                    mEnableAnonymousUpgrade);
+                    mEnableAnonymousUpgrade,
+                    mCustomLayout);
         }
     }
 }

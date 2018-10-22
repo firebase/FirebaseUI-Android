@@ -216,4 +216,20 @@ public class AuthUITest {
                 .build();
     }
 
+    @Test
+    public void testCustomAuthLayout() {
+        //Testing with some random layout res
+        AuthLayout customLayout = new AuthLayout
+                .Builder(R.layout.fui_phone_layout)
+                .build();
+
+        FlowParameters flowParameters = mAuthUi
+                .createSignInIntentBuilder()
+                .setCustomLayout(customLayout)
+                .build()
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
+
+        assert flowParameters.customLayout != null;
+        assertEquals(customLayout.getMainLayout(), flowParameters.customLayout.getMainLayout());
+    }
 }

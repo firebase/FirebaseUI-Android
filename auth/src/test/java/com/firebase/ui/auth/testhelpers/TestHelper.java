@@ -142,7 +142,8 @@ public final class TestHelper {
                 null,
                 true,
                 true,
-                enableAnonymousUpgrade);
+                enableAnonymousUpgrade,
+                null);
     }
 
 
