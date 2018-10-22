@@ -1027,7 +1027,7 @@ public final class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
-        AuthLayout mCustomLayout = null;
+        AuthMethodPickerLayout mAuthMethodPickerLayout = null;
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a
@@ -1158,8 +1158,8 @@ public final class AuthUI {
         }
 
         @NonNull
-        public T setCustomLayout(@NonNull AuthLayout customLayout) {
-            mCustomLayout = customLayout;
+        public T setAuthMethodPickerLayout(@NonNull AuthMethodPickerLayout authMethodPickerLayout) {
+            mAuthMethodPickerLayout = authMethodPickerLayout;
             return (T) this;
         }
 
@@ -1209,7 +1209,7 @@ public final class AuthUI {
                     mEnableCredentials,
                     mEnableHints,
                     mEnableAnonymousUpgrade,
-                    mCustomLayout);
+                    mAuthMethodPickerLayout);
         }
     }
 }

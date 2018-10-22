@@ -23,7 +23,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
-import com.firebase.ui.auth.AuthLayout;
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
@@ -60,7 +60,7 @@ public class FlowParameters implements Parcelable {
     public final boolean enableAnonymousUpgrade;
 
     @Nullable
-    public final AuthLayout customLayout;
+    public final AuthMethodPickerLayout authMethodPickerLayout;
 
     public FlowParameters(
             @NonNull String appName,
@@ -72,7 +72,7 @@ public class FlowParameters implements Parcelable {
             boolean enableCredentials,
             boolean enableHints,
             boolean enableAnonymousUpgrade,
-            @Nullable AuthLayout customLayout) {
+            @Nullable AuthMethodPickerLayout authMethodPickerLayout) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providers = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providers, "providers cannot be null"));
@@ -83,7 +83,7 @@ public class FlowParameters implements Parcelable {
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
         this.enableAnonymousUpgrade = enableAnonymousUpgrade;
-        this.customLayout = customLayout;
+        this.authMethodPickerLayout = authMethodPickerLayout;
     }
 
     /**
@@ -104,7 +104,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
-        dest.writeParcelable(customLayout, flags);
+        dest.writeParcelable(authMethodPickerLayout, flags);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class FlowParameters implements Parcelable {
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
             boolean enableAnonymousUpgrade = in.readInt() != 0;
-            AuthLayout customLayout = in.readParcelable(AuthLayout.class.getClassLoader());
+            AuthMethodPickerLayout customLayout = in.readParcelable(AuthMethodPickerLayout.class.getClassLoader());
 
             return new FlowParameters(
                     appName,

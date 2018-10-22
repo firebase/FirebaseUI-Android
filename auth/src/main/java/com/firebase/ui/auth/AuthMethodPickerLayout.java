@@ -8,13 +8,12 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import com.google.firebase.auth.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Layout model to help customizing the AuthPicker
  */
-public class AuthLayout implements Parcelable {
+public class AuthMethodPickerLayout implements Parcelable {
 
     @LayoutRes
     private int mainLayout;
@@ -24,10 +23,10 @@ public class AuthLayout implements Parcelable {
      */
     private Map<String, Integer> providersButton;
 
-    private AuthLayout() {
+    private AuthMethodPickerLayout() {
     }
 
-    private AuthLayout(@NonNull Parcel in) {
+    private AuthMethodPickerLayout(@NonNull Parcel in) {
         this.mainLayout = in.readInt();
         Bundle buttonsBundle = in.readBundle(getClass().getClassLoader());
         this.providersButton = new HashMap<>();
@@ -37,8 +36,13 @@ public class AuthLayout implements Parcelable {
         }
     }
 
+    @LayoutRes
     public int getMainLayout() {
         return mainLayout;
+    }
+
+    public Map<String, Integer> getProvidersButton() {
+        return providersButton;
     }
 
     @Override
@@ -57,64 +61,70 @@ public class AuthLayout implements Parcelable {
         parcel.writeBundle(bundle);
     }
 
-    public static final Creator<AuthLayout> CREATOR = new Creator<AuthLayout>() {
+    public static final Creator<AuthMethodPickerLayout> CREATOR = new Creator<AuthMethodPickerLayout>() {
 
         @Override
-        public AuthLayout createFromParcel(Parcel in) {
-            return new AuthLayout(in);
+        public AuthMethodPickerLayout createFromParcel(Parcel in) {
+            return new AuthMethodPickerLayout(in);
         }
 
         @Override
-        public AuthLayout[] newArray(int size) {
-            return new AuthLayout[size];
+        public AuthMethodPickerLayout[] newArray(int size) {
+            return new AuthMethodPickerLayout[size];
         }
     };
 
     /**
-     * Builder for AuthLayout
+     * Builder for AuthMethodPickerLayout
      */
     public static class Builder {
 
         private Map<String, Integer> providersMapping;
-        private AuthLayout instance;
+        private AuthMethodPickerLayout instance;
 
         public Builder(@LayoutRes int mainLayout) {
-            instance = new AuthLayout();
+            instance = new AuthMethodPickerLayout();
             instance.mainLayout = mainLayout;
             providersMapping = new HashMap<>();
         }
 
-        public AuthLayout.Builder setupGoogleButton(@IdRes int googleBtn) {
+        public AuthMethodPickerLayout.Builder setupGoogleButtonId(@IdRes int googleBtn) {
             providersMapping.put(GoogleAuthProvider.PROVIDER_ID, googleBtn);
             return this;
         }
 
-        public AuthLayout.Builder setupFacebookButton(@IdRes int facebookBtn) {
+        public AuthMethodPickerLayout.Builder setupFacebookButtonId(@IdRes int facebookBtn) {
             providersMapping.put(FacebookAuthProvider.PROVIDER_ID, facebookBtn);
             return this;
         }
 
-        public AuthLayout.Builder setupTwitterButton(@IdRes int twitterBtn) {
+        public AuthMethodPickerLayout.Builder setupTwitterButtonId(@IdRes int twitterBtn) {
             providersMapping.put(TwitterAuthProvider.PROVIDER_ID, twitterBtn);
             return this;
         }
 
-        public AuthLayout.Builder setupEmailButton(@IdRes int emailButton) {
+        public AuthMethodPickerLayout.Builder setupEmailButtonId(@IdRes int emailButton) {
             providersMapping.put(EmailAuthProvider.PROVIDER_ID, emailButton);
             return this;
         }
 
-        public AuthLayout.Builder setupPhoneButton(@IdRes int phoneButton) {
+        public AuthMethodPickerLayout.Builder setupPhoneButtonId(@IdRes int phoneButton) {
             providersMapping.put(PhoneAuthProvider.PROVIDER_ID, phoneButton);
             return this;
         }
 
-        public AuthLayout.Builder setupAnonymousButton(@IdRes int anonymousButton) {
+        public AuthMethodPickerLayout.Builder setupAnonymousButtonId(@IdRes int anonymousButton) {
             providersMapping.put(AuthUI.ANONYMOUS_PROVIDER, anonymousButton);
             return this;
         }
 
-        public AuthLayout build() {
+        public AuthMethodPickerLayout build() {
+            //Validating the button set
+            for (String key : providersMapping.keySet()) {
+                if (AuthUI.SUPPORTED_PROVIDERS.contains(key)) {
+                    throw new IllegalArgumentException("Unknown provider: " + key);
+                }
+            }
             instance.providersButton = providersMapping;
             return instance;
         }

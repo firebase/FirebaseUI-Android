@@ -217,19 +217,19 @@ public class AuthUITest {
     }
 
     @Test
-    public void testCustomAuthLayout() {
+    public void testCustomAuthMethodPickerLayout() {
         //Testing with some random layout res
-        AuthLayout customLayout = new AuthLayout
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.fui_phone_layout)
                 .build();
 
         FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()
-                .setCustomLayout(customLayout)
+                .setAuthMethodPickerLayout(customLayout)
                 .build()
                 .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
-        assert flowParameters.customLayout != null;
-        assertEquals(customLayout.getMainLayout(), flowParameters.customLayout.getMainLayout());
+        assert flowParameters.authMethodPickerLayout != null;
+        assertEquals(customLayout.getMainLayout(), flowParameters.authMethodPickerLayout.getMainLayout());
     }
 }

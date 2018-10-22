@@ -19,10 +19,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
+import android.support.annotation.*;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.view.View;
@@ -32,13 +29,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.*;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
-import com.firebase.ui.auth.FirebaseUiException;
-import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
@@ -62,6 +54,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -73,6 +66,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private ProgressBar mProgressBar;
     private ViewGroup mProviderHolder;
 
+    private AuthMethodPickerLayout customLayout;
+
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
@@ -80,32 +75,51 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fui_auth_method_picker_layout);
-
-        mProgressBar = findViewById(R.id.top_progress_bar);
-        mProviderHolder = findViewById(R.id.btn_holder);
 
         FlowParameters params = getFlowParams();
+        customLayout = params.authMethodPickerLayout;
+
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
-        populateIdpList(params.providers, mHandler);
+        if (customLayout != null) {
+            setContentView(customLayout.getMainLayout());
 
-        int logoId = params.logoId;
-        if (logoId == AuthUI.NO_LOGO) {
-            findViewById(R.id.logo).setVisibility(View.GONE);
+            //Setup using custom layout
+            populateIdpListCustomLayout(params.providers, mHandler);
 
-            ConstraintLayout layout = findViewById(R.id.root);
-            ConstraintSet constraints = new ConstraintSet();
-            constraints.clone(layout);
-            constraints.setHorizontalBias(R.id.container, 0.5f);
-            constraints.setVerticalBias(R.id.container, 0.5f);
-            constraints.applyTo(layout);
         } else {
-            ImageView logo = findViewById(R.id.logo);
-            logo.setImageResource(logoId);
+            setContentView(R.layout.fui_auth_method_picker_layout);
+
+            //UI only with default layout
+            mProgressBar = findViewById(R.id.top_progress_bar);
+            mProviderHolder = findViewById(R.id.btn_holder);
+
+
+            populateIdpList(params.providers, mHandler);
+
+            int logoId = params.logoId;
+            if (logoId == AuthUI.NO_LOGO) {
+                findViewById(R.id.logo).setVisibility(View.GONE);
+
+                ConstraintLayout layout = findViewById(R.id.root);
+                ConstraintSet constraints = new ConstraintSet();
+                constraints.clone(layout);
+                constraints.setHorizontalBias(R.id.container, 0.5f);
+                constraints.setVerticalBias(R.id.container, 0.5f);
+                constraints.applyTo(layout);
+            } else {
+                ImageView logo = findViewById(R.id.logo);
+                logo.setImageResource(logoId);
+            }
+
+            TextView termsText = findViewById(R.id.main_tos_and_pp);
+            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
+                    getFlowParams(),
+                    termsText);
         }
 
+        //Handler for both
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
                 this, R.string.fui_progress_dialog_signing_in) {
             @Override
@@ -127,11 +141,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             }
         });
-
-        TextView termsText = findViewById(R.id.main_tos_and_pp);
-        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
-                getFlowParams(),
-                termsText);
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
@@ -234,6 +243,114 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             });
 
             View loginButton = getLayoutInflater().inflate(buttonLayout, mProviderHolder, false);
+            loginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    provider.startSignIn(AuthMethodPickerActivity.this);
+                }
+            });
+            mProviderHolder.addView(loginButton);
+        }
+    }
+
+    /**
+     * This function is very similar with poplulateIdpList, but specifically made for custom layout
+     */
+    private void populateIdpListCustomLayout(List<IdpConfig> providerConfigs,
+                                             final SocialProviderResponseHandler handler) {
+        ViewModelProvider supplier = ViewModelProviders.of(this);
+
+        Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
+        mProviders = new ArrayList<>();
+        for (IdpConfig idpConfig : providerConfigs) {
+            final ProviderSignInBase<?> provider;
+
+            final String providerId = idpConfig.getProviderId();
+            @IdRes int buttonId = providerButtonIds.get(providerId);
+
+            switch (providerId) {
+                case GoogleAuthProvider.PROVIDER_ID:
+                    GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
+                    google.init(new GoogleSignInHandler.Params(idpConfig));
+                    provider = google;
+
+                    break;
+                case FacebookAuthProvider.PROVIDER_ID:
+                    FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
+                    facebook.init(idpConfig);
+                    provider = facebook;
+
+                    break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
+                    twitter.init(null);
+                    provider = twitter;
+
+                    break;
+                case GithubAuthProvider.PROVIDER_ID:
+                    ProviderSignInBase<IdpConfig> github =
+                            supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
+                    github.init(idpConfig);
+                    provider = github;
+
+                    break;
+                case EmailAuthProvider.PROVIDER_ID:
+                    EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
+                    email.init(null);
+                    provider = email;
+
+                    break;
+                case PhoneAuthProvider.PROVIDER_ID:
+                    PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
+                    phone.init(idpConfig);
+                    provider = phone;
+
+                    break;
+                case AuthUI.ANONYMOUS_PROVIDER:
+                    AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
+                    anonymous.init(getFlowParams());
+                    provider = anonymous;
+
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown provider: " + providerId);
+            }
+            mProviders.add(provider);
+
+            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
+                @Override
+                protected void onSuccess(@NonNull IdpResponse response) {
+                    handleResponse(response);
+                }
+
+                @Override
+                protected void onFailure(@NonNull Exception e) {
+                    handleResponse(IdpResponse.from(e));
+                }
+
+                private void handleResponse(@NonNull IdpResponse response) {
+                    if (!response.isSuccessful()) {
+                        // We have no idea what provider this error stemmed from so just forward
+                        // this along to the handler.
+                        handler.startSignIn(response);
+                    } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
+                        // Don't use the response's provider since it can be different than the one
+                        // that launched the sign-in attempt. Ex: the email flow is started, but
+                        // ends up turning into a Google sign-in because that account already
+                        // existed. In the previous example, an extra sign-in would incorrectly
+                        // started.
+                        handler.startSignIn(response);
+                    } else {
+                        // Email or phone: the credentials should have already been saved so
+                        // simply move along. Anononymous sign in also does not require any
+                        // other operations.
+                        finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
+                                response.toIntent());
+                    }
+                }
+            });
+
+            View loginButton = findViewById(buttonId);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
