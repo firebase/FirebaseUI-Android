@@ -54,7 +54,7 @@ object Config {
             const val core = "com.google.firebase:firebase-core:16.0.3"
             const val auth = "com.google.firebase:firebase-auth:16.0.3"
             const val firestore = "com.google.firebase:firebase-firestore:17.1.0"
-            const val database = "com.google.firebase:firebase-database:16.0.2"
+            const val database = "com.google.firebase:firebase-database:16.0.3"
             const val storage = "com.google.firebase:firebase-storage:16.0.2"
         }
 
