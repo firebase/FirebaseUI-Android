@@ -33,6 +33,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
@@ -46,6 +47,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -62,47 +64,79 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
 
-    @BindView(R.id.root) View mRootView;
+    @BindView(R.id.root)
+    View mRootView;
 
-    @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
-    @BindView(R.id.facebook_provider) CheckBox mUseFacebookProvider;
-    @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
-    @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
-    @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
-    @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
-    @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
+    @BindView(R.id.google_provider)
+    CheckBox mUseGoogleProvider;
+    @BindView(R.id.facebook_provider)
+    CheckBox mUseFacebookProvider;
+    @BindView(R.id.twitter_provider)
+    CheckBox mUseTwitterProvider;
+    @BindView(R.id.github_provider)
+    CheckBox mUseGitHubProvider;
+    @BindView(R.id.email_provider)
+    CheckBox mUseEmailProvider;
+    @BindView(R.id.phone_provider)
+    CheckBox mUsePhoneProvider;
+    @BindView(R.id.anonymous_provider)
+    CheckBox mUseAnonymousProvider;
 
-    @BindView(R.id.default_theme) RadioButton mDefaultTheme;
-    @BindView(R.id.green_theme) RadioButton mGreenTheme;
-    @BindView(R.id.purple_theme) RadioButton mPurpleTheme;
-    @BindView(R.id.dark_theme) RadioButton mDarkTheme;
+    @BindView(R.id.default_theme)
+    RadioButton mDefaultTheme;
+    @BindView(R.id.green_theme)
+    RadioButton mGreenTheme;
+    @BindView(R.id.purple_theme)
+    RadioButton mPurpleTheme;
+    @BindView(R.id.dark_theme)
+    RadioButton mDarkTheme;
 
-    @BindView(R.id.firebase_logo) RadioButton mFirebaseLogo;
-    @BindView(R.id.google_logo) RadioButton mGoogleLogo;
-    @BindView(R.id.no_logo) RadioButton mNoLogo;
+    @BindView(R.id.firebase_logo)
+    RadioButton mFirebaseLogo;
+    @BindView(R.id.google_logo)
+    RadioButton mGoogleLogo;
+    @BindView(R.id.no_logo)
+    RadioButton mNoLogo;
 
-    @BindView(R.id.google_tos) RadioButton mUseGoogleTos;
-    @BindView(R.id.firebase_tos) RadioButton mUseFirebaseTos;
+    @BindView(R.id.google_tos)
+    RadioButton mUseGoogleTos;
+    @BindView(R.id.firebase_tos)
+    RadioButton mUseFirebaseTos;
 
-    @BindView(R.id.google_privacy) RadioButton mUseGooglePrivacyPolicy;
-    @BindView(R.id.firebase_privacy) RadioButton mUseFirebasePrivacyPolicy;
+    @BindView(R.id.google_privacy)
+    RadioButton mUseGooglePrivacyPolicy;
+    @BindView(R.id.firebase_privacy)
+    RadioButton mUseFirebasePrivacyPolicy;
 
-    @BindView(R.id.google_scopes_header) TextView mGoogleScopesHeader;
-    @BindView(R.id.google_scope_drive_file) CheckBox mGoogleScopeDriveFile;
-    @BindView(R.id.google_scope_youtube_data) CheckBox mGoogleScopeYoutubeData;
+    @BindView(R.id.google_scopes_header)
+    TextView mGoogleScopesHeader;
+    @BindView(R.id.google_scope_drive_file)
+    CheckBox mGoogleScopeDriveFile;
+    @BindView(R.id.google_scope_youtube_data)
+    CheckBox mGoogleScopeYoutubeData;
 
-    @BindView(R.id.facebook_permissions_header) TextView mFacebookPermissionsHeader;
-    @BindView(R.id.facebook_permission_friends) CheckBox mFacebookPermissionFriends;
-    @BindView(R.id.facebook_permission_photos) CheckBox mFacebookPermissionPhotos;
+    @BindView(R.id.facebook_permissions_header)
+    TextView mFacebookPermissionsHeader;
+    @BindView(R.id.facebook_permission_friends)
+    CheckBox mFacebookPermissionFriends;
+    @BindView(R.id.facebook_permission_photos)
+    CheckBox mFacebookPermissionPhotos;
 
-    @BindView(R.id.github_permissions_header) TextView mGitHubPermissionsHeader;
-    @BindView(R.id.github_permission_repo) CheckBox mGitHubPermissionRepo;
-    @BindView(R.id.github_permission_gist) CheckBox mGitHubPermissionGist;
+    @BindView(R.id.github_permissions_header)
+    TextView mGitHubPermissionsHeader;
+    @BindView(R.id.github_permission_repo)
+    CheckBox mGitHubPermissionRepo;
+    @BindView(R.id.github_permission_gist)
+    CheckBox mGitHubPermissionGist;
 
-    @BindView(R.id.credential_selector_enabled) CheckBox mEnableCredentialSelector;
-    @BindView(R.id.hint_selector_enabled) CheckBox mEnableHintSelector;
-    @BindView(R.id.allow_new_email_accounts) CheckBox mAllowNewEmailAccounts;
-    @BindView(R.id.require_name) CheckBox mRequireName;
+    @BindView(R.id.credential_selector_enabled)
+    CheckBox mEnableCredentialSelector;
+    @BindView(R.id.hint_selector_enabled)
+    CheckBox mEnableHintSelector;
+    @BindView(R.id.allow_new_email_accounts)
+    CheckBox mAllowNewEmailAccounts;
+    @BindView(R.id.require_name)
+    CheckBox mRequireName;
 
     @NonNull
     public static Intent createIntent(@NonNull Context context) {
@@ -189,6 +223,32 @@ public class AuthUiActivity extends AppCompatActivity {
                                 getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                                 mEnableHintSelector.isChecked())
+                        .build(),
+                RC_SIGN_IN);
+    }
+
+    @OnClick(R.id.customised_sign_in)
+    public void signInCustomLayout() {
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.auth_method_picker_custom_layout)
+                .setupGoogleButtonId(R.id.custom_google_signin_button)
+                .setupEmailButtonId(R.id.custom_email_signin_clickable_text)
+                .build();
+
+        //For now we only test Google and Email
+        List<IdpConfig> availableProviders = Arrays.asList(
+                new AuthUI.IdpConfig.GoogleBuilder()
+                        .setScopes(getGoogleScopes())
+                        .build(),
+                new IdpConfig.EmailBuilder()
+                        .setRequireName(mRequireName.isChecked())
+                        .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                        .build());
+
+        startActivityForResult(
+                AuthUI.getInstance().createSignInIntentBuilder()
+                        .setAvailableProviders(availableProviders)
+                        .setAuthMethodPickerLayout(customLayout)
                         .build(),
                 RC_SIGN_IN);
     }
