@@ -285,7 +285,7 @@ public class AuthUiActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null && getIntent().getExtras() == null) {
             startSignedInActivity(null);
             finish();
         }
