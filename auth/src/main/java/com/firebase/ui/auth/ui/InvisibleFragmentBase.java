@@ -16,7 +16,7 @@ import com.firebase.ui.auth.R;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CircularProgressBarFragmentBase extends FragmentBase {
+public class InvisibleFragmentBase extends FragmentBase {
 
     // Minimum time that the spinner will stay on screen, once it is shown.
     private static final long MIN_SPINNER_MS = 750;
@@ -66,16 +66,8 @@ public class CircularProgressBarFragmentBase extends FragmentBase {
                 mLastShownTime = 0;
                 mProgressBar.setVisibility(View.GONE);
                 mFrameLayout.setVisibility(View.GONE);
-                if (mTopLevelView != null) {
-                    mTopLevelView.setVisibility(View.VISIBLE);
-                }
             }
         });
-    }
-
-    /** Setting the top level view will make it visible once #hideProgress is called */
-    protected void setTopLevelView(View view) {
-        mTopLevelView = view;
     }
 
     /**
@@ -85,7 +77,7 @@ public class CircularProgressBarFragmentBase extends FragmentBase {
      * This method performs some action after the window has passed, or immediately if we have
      * already waited longer than that.
      */
-    private void doAfterTimeout(Runnable runnable) {
+    protected void doAfterTimeout(Runnable runnable) {
         long currentTime = System.currentTimeMillis();
         long diff = currentTime - mLastShownTime;
 

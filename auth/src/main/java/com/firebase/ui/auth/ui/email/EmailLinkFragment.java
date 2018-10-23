@@ -16,7 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.CircularProgressBarFragmentBase;
+import com.firebase.ui.auth.ui.InvisibleFragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.TextHelper;
@@ -26,11 +26,10 @@ import com.google.firebase.auth.ActionCodeSettings;
 
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailLinkFragment extends CircularProgressBarFragmentBase {
+public class EmailLinkFragment extends InvisibleFragmentBase {
 
-    private static final String EMAIL_SENT = "emailSent";
     public static final String TAG = "EmailLinkFragment";
-
+    private static final String EMAIL_SENT = "emailSent";
     private EmailLinkSendEmailHandler mEmailLinkSendEmailHandler;
     private TroubleSigningInListener mListener;
     private ScrollView mTopLevelView;
@@ -68,8 +67,7 @@ public class EmailLinkFragment extends CircularProgressBarFragmentBase {
         super.onViewCreated(view, savedInstanceState);
         // We need to hide the top level view until we know that the email link has been sent
         mTopLevelView = view.findViewById(R.id.top_level_view);
-        mTopLevelView.setVisibility(View.VISIBLE);
-        super.setTopLevelView(mTopLevelView);
+        mTopLevelView.setVisibility(View.GONE);
 
         String email = getArguments().getString(ExtraConstants.EMAIL);
         setBodyText(view, email);
@@ -102,6 +100,12 @@ public class EmailLinkFragment extends CircularProgressBarFragmentBase {
             @Override
             protected void onSuccess(@NonNull String email) {
                 Log.w(TAG, "Email for email link sign in sent successfully.");
+                doAfterTimeout(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTopLevelView.setVisibility(View.VISIBLE);
+                    }
+                });
             }
 
             @Override
