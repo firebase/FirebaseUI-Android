@@ -304,21 +304,27 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
     @Override
     public void showProgress(int message) {
-        mProgressBar.setVisibility(View.VISIBLE);
-        for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
-            View child = mProviderHolder.getChildAt(i);
-            child.setEnabled(false);
-            child.setAlpha(0.75f);
+        //mProgressBar & mProviderHolder might be null if using custom AuthMethodPickerLayout
+        if (customLayout == null) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
+                View child = mProviderHolder.getChildAt(i);
+                child.setEnabled(false);
+                child.setAlpha(0.75f);
+            }
         }
     }
 
     @Override
     public void hideProgress() {
-        mProgressBar.setVisibility(View.INVISIBLE);
-        for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
-            View child = mProviderHolder.getChildAt(i);
-            child.setEnabled(true);
-            child.setAlpha(1.0f);
+        //mProgressBar & mProviderHolder might be null if using custom AuthMethodPickerLayout
+        if (customLayout == null) {
+            mProgressBar.setVisibility(View.INVISIBLE);
+            for (int i = 0; i < mProviderHolder.getChildCount(); i++) {
+                View child = mProviderHolder.getChildAt(i);
+                child.setEnabled(true);
+                child.setAlpha(1.0f);
+            }
         }
     }
 }
