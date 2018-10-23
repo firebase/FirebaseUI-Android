@@ -56,7 +56,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Presents the list of authentication options for this app to the user. */
+/**
+ * Presents the list of authentication options for this app to the user.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
 
@@ -82,12 +84,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
+        mProviders = new ArrayList<>();
         if (customLayout != null) {
             setContentView(customLayout.getMainLayout());
 
             //Setup using custom layout
             populateIdpListCustomLayout(params.providers, mHandler);
-
         } else {
             setContentView(R.layout.fui_auth_method_picker_layout);
 
@@ -145,7 +147,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
                                  final SocialProviderResponseHandler handler) {
-        mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             @LayoutRes int buttonLayout;
 
@@ -185,7 +186,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private void populateIdpListCustomLayout(List<IdpConfig> providerConfigs,
                                              final SocialProviderResponseHandler handler) {
         Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
-        mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             final String providerId = idpConfig.getProviderId();
             @IdRes int buttonId = providerButtonIds.get(providerId);

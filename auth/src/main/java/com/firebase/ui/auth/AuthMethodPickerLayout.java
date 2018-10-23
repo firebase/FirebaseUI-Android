@@ -121,7 +121,7 @@ public class AuthMethodPickerLayout implements Parcelable {
         public AuthMethodPickerLayout build() {
             //Validating the button set
             for (String key : providersMapping.keySet()) {
-                if (AuthUI.SUPPORTED_PROVIDERS.contains(key)) {
+                if (!AuthUI.SUPPORTED_PROVIDERS.contains(key)) {
                     throw new IllegalArgumentException("Unknown provider: " + key);
                 }
             }
