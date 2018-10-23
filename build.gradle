@@ -1,1 +1,2 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// This empty file along with settings.gradle help Android Studio recognize the project
+// as a gradle project, despite the use of .gradle.kts scripts.

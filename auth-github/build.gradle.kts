@@ -1,3 +1,9 @@
+android {
+    lintOptions {
+        disable("UnknownNullness") // TODO fix in future PR
+    }
+}
+
 dependencies {
     compileOnly(project(":auth")) { isTransitive = false }
     compileOnly(Config.Libs.Firebase.auth) { isTransitive = false }
