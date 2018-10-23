@@ -173,7 +173,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     public void onTroubleSigningIn(String email) {
         TroubleSigningInFragment troubleSigningInFragment = TroubleSigningInFragment.newInstance
                 (email);
-        switchFragment(troubleSigningInFragment, TroubleSigningInFragment.TAG);
+        switchFragment(troubleSigningInFragment, TroubleSigningInFragment.TAG, true);
     }
 
     @Override
@@ -204,11 +204,17 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         switchFragment(fragment, EmailLinkFragment.TAG);
     }
 
+
+    private void switchFragment(Fragment fragment, String tag, boolean withTransition) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (withTransition) {
+            ft.setCustomAnimations(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
+        }
+        ft.replace(R.id.fragment_register_email, fragment, tag).disallowAddToBackStack().commit();
+    }
+
     private void switchFragment(Fragment fragment, String tag) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_register_email, fragment, tag)
-                .disallowAddToBackStack()
-                .commit();
+        switchFragment(fragment, tag, false);
     }
 
     @Override
