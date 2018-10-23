@@ -12,31 +12,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.CircularProgressBarFragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.TextHelper;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
-import com.firebase.ui.auth.viewmodel.email.EmailLinkEmailHandler;
+import com.firebase.ui.auth.viewmodel.email.EmailLinkSendEmailHandler;
 import com.google.firebase.auth.ActionCodeSettings;
 
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailLinkFragment extends FragmentBase {
 
-    public static final String TAG = "EmailLinkFragment";
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class EmailLinkFragment extends CircularProgressBarFragmentBase {
 
     private static final String EMAIL_SENT = "emailSent";
+    public static final String TAG = "EmailLinkFragment";
 
-    private EmailLinkEmailHandler mHandler;
-    private ProgressBar mProgressBar;
+    private EmailLinkSendEmailHandler mEmailLinkSendEmailHandler;
     private TroubleSigningInListener mListener;
+    private ScrollView mTopLevelView;
 
-    public static EmailLinkFragment newInstance(@NonNull final String email, @NonNull final
-    ActionCodeSettings actionCodeSettings) {
+    public static EmailLinkFragment newInstance(@NonNull final String email,
+                                                @NonNull final ActionCodeSettings
+                                                        actionCodeSettings) {
         EmailLinkFragment fragment = new EmailLinkFragment();
         Bundle args = new Bundle();
         args.putString(ExtraConstants.EMAIL, email);
@@ -64,8 +65,11 @@ public class EmailLinkFragment extends FragmentBase {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mProgressBar = view.findViewById(R.id.top_progress_bar);
-        getView().setVisibility(View.GONE);
+        super.onViewCreated(view, savedInstanceState);
+        // We need to hide the top level view until we know that the email link has been sent
+        mTopLevelView = view.findViewById(R.id.top_level_view);
+        mTopLevelView.setVisibility(View.VISIBLE);
+        super.setTopLevelView(mTopLevelView);
 
         String email = getArguments().getString(ExtraConstants.EMAIL);
         setBodyText(view, email);
@@ -84,25 +88,24 @@ public class EmailLinkFragment extends FragmentBase {
                 .ACTION_CODE_SETTINGS);
 
         if (savedInstanceState == null || !savedInstanceState.getBoolean(EMAIL_SENT)) {
-            mHandler.sendSignInLinkToEmail(email, actionCodeSettings);
+            mEmailLinkSendEmailHandler.sendSignInLinkToEmail(email, actionCodeSettings);
         }
     }
 
     private void initHandler() {
-        mHandler = ViewModelProviders.of(this).get(EmailLinkEmailHandler.class);
-        mHandler.init(getFlowParams());
+        mEmailLinkSendEmailHandler = ViewModelProviders.of(this).get(EmailLinkSendEmailHandler
+                .class);
+        mEmailLinkSendEmailHandler.init(getFlowParams());
 
-        mHandler.getOperation().observe(this, new ResourceObserver<String>(this,
+        mEmailLinkSendEmailHandler.getOperation().observe(this, new ResourceObserver<String>(this,
                 R.string.fui_progress_dialog_sending) {
             @Override
             protected void onSuccess(@NonNull String email) {
                 Log.w(TAG, "Email for email link sign in sent successfully.");
-                getView().setVisibility(View.VISIBLE);
             }
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                // TODO(lsirac): fix
                 mListener.onSendEmailFailure(e);
             }
         });
@@ -136,16 +139,6 @@ public class EmailLinkFragment extends FragmentBase {
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
         state.putBoolean(EMAIL_SENT, true);
-    }
-
-    @Override
-    public void showProgress(int message) {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgress() {
-        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     interface TroubleSigningInListener {

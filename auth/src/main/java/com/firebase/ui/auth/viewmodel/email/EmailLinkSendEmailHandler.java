@@ -11,8 +11,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.ActionCodeSettings;
 
-public class EmailLinkEmailHandler extends AuthViewModelBase<String> {
-    public EmailLinkEmailHandler(Application application) {
+public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
+    public EmailLinkSendEmailHandler(Application application) {
         super(application);
     }
 
@@ -22,6 +22,7 @@ public class EmailLinkEmailHandler extends AuthViewModelBase<String> {
             return;
         }
         setResult(Resource.<String>forLoading());
+
         getAuth().sendSignInLinkToEmail(email, actionCodeSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

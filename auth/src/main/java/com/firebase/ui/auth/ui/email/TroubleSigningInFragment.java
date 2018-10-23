@@ -15,14 +15,12 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
-import com.firebase.ui.auth.viewmodel.email.EmailLinkEmailHandler;
 
 public class TroubleSigningInFragment extends FragmentBase implements View.OnClickListener {
 
     public static final String TAG = "TroubleSigningInFragment";
 
     private ResendEmailListener mListener;
-    private EmailLinkEmailHandler mHandler;
     private ProgressBar mProgressBar;
 
     private String mEmail;

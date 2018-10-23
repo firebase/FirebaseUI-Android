@@ -6,12 +6,16 @@
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-        android:id="@+id/top_progress_bar"
-        style="@style/FirebaseUI.TopProgressBar"
-        tools:visibility="visible" />
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/invisible_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="MergeRootFrame" />
 
     <ScrollView
+        android:id="@+id/top_level_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

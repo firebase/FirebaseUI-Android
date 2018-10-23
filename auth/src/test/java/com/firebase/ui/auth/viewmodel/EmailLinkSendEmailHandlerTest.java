@@ -2,7 +2,6 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
 
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -11,7 +10,7 @@ import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.viewmodel.email.EmailLinkEmailHandler;
+import com.firebase.ui.auth.viewmodel.email.EmailLinkSendEmailHandler;
 import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -36,15 +35,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link EmailLinkEmailHandler}.
+ * Unit tests for {@link EmailLinkSendEmailHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
-public class EmailLinkEmailHandlerTest {
+public class EmailLinkSendEmailHandlerTest {
 
     private static String URL = "url";
 
     private EmailLinkPersistenceManager mPersistenceManager;
-    private EmailLinkEmailHandler mHandler;
+    private EmailLinkSendEmailHandler mHandler;
 
     @Mock private FirebaseAuth mMockAuth;
     @Mock private Observer<Resource<String>> mResponseObserver;
@@ -54,7 +53,7 @@ public class EmailLinkEmailHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new EmailLinkEmailHandler(RuntimeEnvironment.application);
+        mHandler = new EmailLinkSendEmailHandler(RuntimeEnvironment.application);
         FlowParameters testParams = TestHelper.getFlowParameters(new ArrayList<String>());
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
