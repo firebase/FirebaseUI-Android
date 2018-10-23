@@ -20,6 +20,8 @@ import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -103,7 +105,8 @@ public final class ProviderUtils {
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
      * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
-    public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
+    public static String providerIdToAccountType(
+            @AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return IdentityProviders.GOOGLE;
@@ -143,7 +146,9 @@ public final class ProviderUtils {
     @Nullable
     public static AuthUI.IdpConfig getConfigFromIdps(List<AuthUI.IdpConfig> idps, String id) {
         for (AuthUI.IdpConfig idp : idps) {
-            if (idp.getProviderId().equals(id)) { return idp; }
+            if (idp.getProviderId().equals(id)) {
+                return idp;
+            }
         }
         return null;
     }
@@ -166,11 +171,13 @@ public final class ProviderUtils {
         }
 
         return auth.fetchSignInMethodsForEmail(email)
-                .continueWith(new Continuation<SignInMethodQueryResult, List<String>>() {
+                .continueWithTask(new Continuation<SignInMethodQueryResult, Task<List<String>>>() {
                     @Override
-                    public List<String> then(@NonNull Task<SignInMethodQueryResult> task) {
+                    public Task<List<String>> then(@NonNull Task<SignInMethodQueryResult> task) {
                         List<String> methods = task.getResult().getSignInMethods();
-                        if (methods == null) { methods = new ArrayList<>(); }
+                        if (methods == null) {
+                            methods = new ArrayList<>();
+                        }
 
                         List<String> allowedProviders = new ArrayList<>(params.providers.size());
                         for (AuthUI.IdpConfig provider : params.providers) {
@@ -185,15 +192,23 @@ public final class ProviderUtils {
                             }
                         }
 
+                        if (task.isSuccessful() && lastSignedInProviders.isEmpty()
+                                && !methods.isEmpty()) {
+                            // There is an existing user who only has unsupported sign in methods
+                            return Tasks.forException(new FirebaseUiException(ErrorCodes
+                                    .DEVELOPER_ERROR));
+                        }
                         // Reorder providers from most to least usable. Usability is determined by
                         // how many steps a user needs to perform to log in.
                         maximizePriority(lastSignedInProviders, GoogleAuthProvider.PROVIDER_ID);
 
-                        return lastSignedInProviders;
+                        return Tasks.forResult(lastSignedInProviders);
                     }
 
                     private void maximizePriority(List<String> providers, String id) {
-                        if (providers.remove(id)) { providers.add(0, id); }
+                        if (providers.remove(id)) {
+                            providers.add(0, id);
+                        }
                     }
                 });
     }
@@ -203,16 +218,18 @@ public final class ProviderUtils {
             @NonNull FlowParameters params,
             @NonNull String email) {
         return fetchSortedProviders(auth, params, email)
-                .continueWith(new Continuation<List<String>, String>() {
+                .continueWithTask(new Continuation<List<String>, Task<String>>() {
                     @Override
-                    public String then(@NonNull Task<List<String>> task) {
-                        if (!task.isSuccessful()) return null;
+                    public Task<String> then(@NonNull Task<List<String>> task) {
+                        if (!task.isSuccessful()) {
+                            return Tasks.forException(task.getException());
+                        }
                         List<String> providers = task.getResult();
 
                         if (providers.isEmpty()) {
-                            return null;
+                            return Tasks.forResult(null);
                         } else {
-                            return providers.get(0);
+                            return Tasks.forResult(providers.get(0));
                         }
                     }
                 });

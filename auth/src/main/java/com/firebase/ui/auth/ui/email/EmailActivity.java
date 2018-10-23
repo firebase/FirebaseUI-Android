@@ -186,6 +186,15 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
     @Override
     public void onSendEmailFailure(Exception e) {
+        finishOnDeveloperError(e);
+    }
+
+    @Override
+    public void onDeveloperFailure(Exception e) {
+        finishOnDeveloperError(e);
+    }
+
+    private void finishOnDeveloperError(Exception e) {
         finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
                 ErrorCodes.DEVELOPER_ERROR, e.getMessage())));
     }

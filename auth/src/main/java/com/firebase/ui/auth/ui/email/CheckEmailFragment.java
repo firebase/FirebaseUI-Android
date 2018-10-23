@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
@@ -137,7 +139,11 @@ public class CheckEmailFragment extends FragmentBase implements
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                // Just let the user enter their data
+                if (e instanceof FirebaseUiException
+                        && ((FirebaseUiException) e).getErrorCode() == ErrorCodes.DEVELOPER_ERROR) {
+                    mListener.onDeveloperFailure(e);
+                }
+                // Otherwise just let the user enter their data
             }
         });
 
@@ -215,5 +221,9 @@ public class CheckEmailFragment extends FragmentBase implements
          */
         void onNewUser(User user);
 
+        /**
+         * Email entered corresponds to an existing user whose sign in methods we do not support.
+         */
+        void onDeveloperFailure(Exception e);
     }
 }
