@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.firebase.ui.auth.R;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CircularProgressBarFragmentBase extends FragmentBase {
 
     // Minimum time that the spinner will stay on screen, once it is shown.
