@@ -167,13 +167,13 @@ public final class TestHelper {
 
         Field targetField = null;
         Field[] classFields = objClass.getDeclaredFields();
-        for (Field f : classFields) {
-            if (f.getType().equals(fieldClass)) {
+        for (Field field : classFields) {
+            if (field.getType().equals(fieldClass)) {
                 if (targetField != null) {
                     throw new IllegalStateException("Class " + objClass + " has multiple fields of type " + fieldClass);
                 }
 
-                targetField = f;
+                targetField = field;
             }
         }
 
@@ -188,5 +188,4 @@ public final class TestHelper {
             Log.w(TAG, "Error setting field", e);
         }
     }
-
 }
