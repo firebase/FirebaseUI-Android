@@ -55,6 +55,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
 public class SignedInActivity extends AppCompatActivity {
     private static final String TAG = "SignedInActivity";
 
@@ -186,6 +188,9 @@ public class SignedInActivity extends AppCompatActivity {
                         break;
                     case PhoneAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_phone));
+                        break;
+                    case EMAIL_LINK_PROVIDER:
+                        providers.add(getString(R.string.providers_email_link));
                         break;
                     case FirebaseAuthProvider.PROVIDER_ID:
                         // Ignore this provider, it's not very meaningful

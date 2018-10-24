@@ -40,6 +40,15 @@ public final class RequestCodes {
     /** Request code for retrieving a GitHub credential. */
     public static final int GITHUB_PROVIDER = 111;
 
+    /** Request code for starting an email link welcome back flow. */
+    public static final int WELCOME_BACK_EMAIL_LINK_FLOW = 112;
+
+    /** Request code for recovering from opening an email link from the wrong device */
+    public static final int EMAIL_LINK_WRONG_DEVICE_FLOW = 113;
+
+    /** Request code for recovering from opening an invalid email link */
+    public static final int EMAIL_LINK_INVALID_LINK_FLOW = 114;
+
     private RequestCodes() {
         throw new AssertionError("No instance for you!");
     }

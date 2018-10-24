@@ -14,6 +14,7 @@ import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.InvisibleActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,7 +45,8 @@ public class KickoffActivity extends InvisibleActivityBase {
                     finish(RESULT_CANCELED, null);
                 } else if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     IdpResponse res = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
-                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE, res));
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE,
+                            res));
                 } else {
                     finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                 }
@@ -56,7 +58,9 @@ public class KickoffActivity extends InvisibleActivityBase {
                 .addOnSuccessListener(this, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        if (savedInstanceState != null) { return; }
+                        if (savedInstanceState != null) {
+                            return;
+                        }
 
                         if (isOffline()) {
                             finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
@@ -78,7 +82,21 @@ public class KickoffActivity extends InvisibleActivityBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RequestCodes.EMAIL_FLOW
+                && (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW
+                || resultCode == RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW)) {
+            invalidateEmailLink();
+        }
+
         mKickstarter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void invalidateEmailLink() {
+        FlowParameters flowParameters = getFlowParams();
+        flowParameters.emailLink = null;
+        setIntent(getIntent().putExtra(ExtraConstants.FLOW_PARAMS,
+                flowParameters));
     }
 
     /**

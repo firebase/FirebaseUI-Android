@@ -63,7 +63,11 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Presents the list of authentication options for this app to the user. */
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
+/**
+ * Presents the list of authentication options for this app to the user.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
 
@@ -89,7 +93,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
-        populateIdpList(params.providers, mHandler);
+        populateIdpList(params.providers);
 
         int logoId = params.logoId;
         if (logoId == AuthUI.NO_LOGO) {
@@ -140,8 +144,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         }
     }
 
-    private void populateIdpList(List<IdpConfig> providerConfigs,
-                                 final SocialProviderResponseHandler handler) {
+    private void populateIdpList(List<IdpConfig> providerConfigs) {
         ViewModelProvider supplier = ViewModelProviders.of(this);
 
         mProviders = new ArrayList<>();
@@ -180,6 +183,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
                     buttonLayout = R.layout.fui_idp_button_github;
                     break;
+                case EMAIL_LINK_PROVIDER:
                 case EmailAuthProvider.PROVIDER_ID:
                     EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
                     email.init(null);
@@ -221,14 +225,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     if (!response.isSuccessful()) {
                         // We have no idea what provider this error stemmed from so just forward
                         // this along to the handler.
-                        handler.startSignIn(response);
+                        mHandler.startSignIn(response);
                     } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
                         // Don't use the response's provider since it can be different than the one
                         // that launched the sign-in attempt. Ex: the email flow is started, but
                         // ends up turning into a Google sign-in because that account already
                         // existed. In the previous example, an extra sign-in would incorrectly
                         // started.
-                        handler.startSignIn(response);
+                        mHandler.startSignIn(response);
                     } else {
                         // Email or phone: the credentials should have already been saved so
                         // simply move along. Anononymous sign in also does not require any

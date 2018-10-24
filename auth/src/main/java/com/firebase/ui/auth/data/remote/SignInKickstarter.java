@@ -11,12 +11,14 @@ import android.text.TextUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.email.EmailActivity;
+import com.firebase.ui.auth.ui.email.EmailLinkCatcherActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
@@ -48,12 +50,21 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
+
 public class SignInKickstarter extends SignInViewModelBase {
     public SignInKickstarter(Application application) {
         super(application);
     }
 
     public void start() {
+        if (!TextUtils.isEmpty(getArguments().emailLink)) {
+            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                    EmailLinkCatcherActivity.createIntent(getApplication(), getArguments()),
+                    RequestCodes.EMAIL_FLOW)));
+            return;
+        }
+
         // Only support password credentials if email auth is enabled
         boolean supportPasswords = ProviderUtils.getConfigFromIdps(
                 getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;
@@ -100,6 +111,7 @@ public class SignInKickstarter extends SignInViewModelBase {
             AuthUI.IdpConfig firstIdpConfig = getArguments().providers.get(0);
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
+                case EMAIL_LINK_PROVIDER:
                 case EmailAuthProvider.PROVIDER_ID:
                     setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             EmailActivity.createIntent(getApplication(), getArguments()),
@@ -175,10 +187,14 @@ public class SignInKickstarter extends SignInViewModelBase {
                     startAuthMethodChoice();
                 }
                 break;
-            case RequestCodes.AUTH_PICKER_FLOW:
             case RequestCodes.EMAIL_FLOW:
+            case RequestCodes.AUTH_PICKER_FLOW:
             case RequestCodes.PHONE_FLOW:
             case RequestCodes.PROVIDER_FLOW:
+                if (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW || resultCode == RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW) {
+                    startAuthMethodChoice();
+                    return;
+                }
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if (response == null) {
                     setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));

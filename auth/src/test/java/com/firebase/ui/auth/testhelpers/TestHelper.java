@@ -23,6 +23,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -120,6 +122,11 @@ public final class TestHelper {
                 case GithubAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.GitHubBuilder().build());
                     break;
+                case EMAIL_LINK_PROVIDER:
+                    idpConfigs.add(new IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                            .setActionCodeSettings(ActionCodeSettings.newBuilder().setUrl("URL")
+                                    .setHandleCodeInApp(true).build()).build());
+                    break;
                 case EmailAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.EmailBuilder().build());
                     break;
@@ -143,7 +150,8 @@ public final class TestHelper {
                 true,
                 true,
                 enableAnonymousUpgrade,
-                false);
+                false,
+                null);
     }
 
 

@@ -45,6 +45,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.util.ui.TextHelper;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
@@ -94,11 +95,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 getString(R.string.fui_welcome_back_password_prompt_body, email);
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
-        int emailStart = bodyText.indexOf(email);
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                emailStart,
-                emailStart + email.length(),
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        TextHelper.boldAllOccurencesOfText(spannableStringBuilder, bodyText, email);
 
         TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
         bodyTextView.setText(spannableStringBuilder);

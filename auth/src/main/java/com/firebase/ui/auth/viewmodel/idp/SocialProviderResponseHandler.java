@@ -15,6 +15,7 @@ import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
+import com.firebase.ui.auth.ui.email.WelcomeBackEmailLinkPrompt;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
@@ -29,6 +30,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.util.List;
+
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SocialProviderResponseHandler extends SignInViewModelBase {
@@ -124,6 +127,15 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                             getArguments(),
                             response),
                     RequestCodes.ACCOUNT_LINK_FLOW
+            )));
+        } else if (provider.equals(EMAIL_LINK_PROVIDER)) {
+            // Start email link welcome back flow
+            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                    WelcomeBackEmailLinkPrompt.createIntent(
+                            getApplication(),
+                            getArguments(),
+                            response),
+                    RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW
             )));
         } else {
             // Start Idp welcome back flow
