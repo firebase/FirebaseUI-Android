@@ -1025,6 +1025,7 @@ public final class AuthUI {
         final List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
         String mPrivacyPolicyUrl;
+        boolean mAlwaysShowProviderChoice = false;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
 
@@ -1156,6 +1157,19 @@ public final class AuthUI {
             return (T) this;
         }
 
+        /**
+         * Forces the sign-in method choice screen to always show, even if there is only
+         * a single provider configured.
+         * <p>
+         * <p>This is false by default.
+         * @param alwaysShow if true, force the sign-in choice screen to show.
+         */
+        @NonNull
+        public T setAlwaysShowSignInMethodScreen(boolean alwaysShow) {
+            mAlwaysShowProviderChoice = alwaysShow;
+            return (T) this;
+        }
+
         @CallSuper
         @NonNull
         public Intent build() {
@@ -1201,7 +1215,8 @@ public final class AuthUI {
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
-                    mEnableAnonymousUpgrade);
+                    mEnableAnonymousUpgrade,
+                    mAlwaysShowProviderChoice);
         }
     }
 }

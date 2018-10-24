@@ -13,4 +13,6 @@
     <dimen name="fui_button_inset_bottom">3dp</dimen>
     <dimen name="fui_button_inset_left">1dp</dimen>
     <dimen name="fui_button_inset_right">2dp</dimen>
+
+    <dimen name="fui_min_height_target">48dp</dimen>
 </resources>

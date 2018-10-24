@@ -113,7 +113,7 @@ public class CheckEmailFragment extends FragmentBase implements
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
         FlowParameters flowParameters = getFlowParams();
 
-        if (flowParameters.isSingleProviderFlow()) {
+        if (!flowParameters.shouldShowProviderChoice()) {
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(requireContext(),
                     flowParameters,
                     termsText);
