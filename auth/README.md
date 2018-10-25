@@ -337,6 +337,61 @@ startActivityForResult(
         RC_SIGN_IN);
 ```
 
+##### Configuring Email Link Sign In
+
+To use email link sign in, you will first need to enable it in the Firebase Console. Additionally, you will
+also have to enable Firebase Dynamic Links.
+
+You can enable email link sign in by calling the `enableEmailLinkSignIn` on an `EmailBuilder` instance. You will also need
+to provide a valid `ActionCodeSettings` object with `setHandleCodeInApp` set to true. Additionally, you need to whitelist the
+URL you pass to `setUrl`; you can do so in the Firebase Console (Authentication -> Sign in Methods -> Authorized domains).
+
+```java
+
+ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+        .setAndroidPackageName(/*yourPackageName*/, /*installIfNotAvailable*/true, /*minimumVersion*/null)
+        .setHandleCodeInApp(true)
+        .setUrl("https://google.com") // This URL needs to be whitelisted
+        .build();
+
+startActivityForResult(
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                        .setActionCodeSettings(actionCodeSettings).build())
+                .build(),
+        RC_SIGN_IN);
+
+```
+
+If you want to catch the link in a specific activity, please follow the steps outlined [here](https://firebase.google.com/docs/auth/android/email-link-auth).
+Otherwise, the link will redirect to your launcher activity.
+
+Once you catch the deep link, you will need to call verify that we can handle it for you. If we can, you need to then
+pass it to us via `setEmailLink`.
+
+```java
+if (AuthUI.canHandleIntent(getIntent())) {
+    if (getIntent().getExtras() != null) {
+            return;
+        }
+        String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
+        if (link != null) {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setEmailLink(link)
+                            .setAvailableProviders(getAvailableProviders())
+                            .build(),
+                    RC_SIGN_IN);
+        }
+}
+```
+
+Note that email link sign in is currently only supported for the same device. Finishing the flow on a different device will result
+in the user being shown an error.
+
 ##### Adding a ToS and privacy policy
 
 A terms of service URL and privacy policy URL are generally required:
@@ -468,7 +523,6 @@ exception will be thrown.
 This change is purely UI based. We do not restrict users from signing in with their phone number.
 They will simply be unable to choose their country in the selector, but there may be another country
 sharing the same country code (e.g. US and CA are +1).
-
 
 #####
 
