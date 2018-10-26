@@ -118,7 +118,8 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
 
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
                 (AutoCompleteTask.forSuccess(mMockAuthResult));
@@ -143,7 +144,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(response.getUser().getPhotoUri()).isEqualTo(mMockAuthResult.getUser()
                 .getPhotoUrl());
 
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -154,7 +155,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
 
         when(mMockAuth.getCurrentUser().linkWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoContinueTask<>(mMockAuthResult,
@@ -183,7 +185,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(response.getUser().getPhotoUri()).isEqualTo(mMockAuthResult.getUser()
                 .getPhotoUrl());
 
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -194,8 +196,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
-
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         when(mMockAuth.getCurrentUser().linkWithCredential(any(AuthCredential.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
                         new FirebaseAuthUserCollisionException("foo", "bar")));
@@ -216,7 +218,7 @@ public class EmailLinkSignInHandlerTest {
         FirebaseAuthAnonymousUpgradeException mergeException =
                 (FirebaseAuthAnonymousUpgradeException) captor.getValue().getException();
         assertThat(mergeException.getResponse().getCredentialForLinking()).isNotNull();
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -226,7 +228,8 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -258,12 +261,8 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
-                .isNull();
-
 
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
@@ -295,10 +294,10 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
-
 
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
                 (AutoCompleteTask.forSuccess(mMockAuthResult));
@@ -324,7 +323,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(captor.getValue().getException()).isNotNull();
         FirebaseAuthUserCollisionException collisionException =
                 (FirebaseAuthUserCollisionException) captor.getValue().getException();
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -336,7 +335,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -371,12 +371,8 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
-                .isNull();
-
 
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
@@ -405,7 +401,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -422,10 +419,7 @@ public class EmailLinkSignInHandlerTest {
         verify(mScratchMockAuth).signInWithCredential(any(AuthCredential.class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
-                .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
 
         // Validate failure
@@ -448,7 +442,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -474,10 +469,7 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
-                .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
 
         // Validate failure

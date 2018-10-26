@@ -6,12 +6,13 @@ import android.support.annotation.NonNull;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.EmailLinkParser;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager.SessionRecord;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
@@ -49,22 +50,24 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         final EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager
                 .getInstance();
         final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
-        final IdpResponse response = persistenceManager.retrieveIdpResponseForLinking
-                (getApplication());
-        final String email = persistenceManager.retrieveEmailForLink(getApplication());
 
-        persistenceManager.clearAllData(getApplication());
+        SessionRecord sessionRecord = persistenceManager.retrieveSessionRecord(getApplication());
 
-        if (email == null && response == null) {
+        if (sessionRecord == null) {
             determineErrorFlowAndFinish(link);
-        } else if (response != null) {
-            handleLinkingFlow(authOperationManager, persistenceManager, response, link);
-        } else {
+            return;
+        }
+
+        IdpResponse response = sessionRecord.getIdpResponseForLinking();
+        String email = sessionRecord.getEmail();
+        if (response == null) {
             handleNormalFlow(authOperationManager, persistenceManager, email, link);
+        } else {
+            handleLinkingFlow(authOperationManager, persistenceManager, response, link);
         }
     }
 
-    private void determineErrorFlowAndFinish(String link) {
+    private void determineErrorFlowAndFinish(final String link) {
         String oobCode = EmailLinkParser.getInstance().getOobCodeFromLink(link);
         getAuth().checkActionCode(oobCode).addOnCompleteListener(
                 new OnCompleteListener<ActionCodeResult>() {

@@ -2,14 +2,14 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
 
-import com.firebase.ui.auth.testhelpers.ResourceMatchers;
-import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
+import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSendEmailHandler;
 import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,7 +73,8 @@ public class EmailLinkSendEmailHandlerTest {
 
         verify(mMockAuth).sendSignInLinkToEmail(eq(TestConstants.EMAIL), eq(actionCodeSettings));
 
-        String email = mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application);
+        String email = mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application)
+                .getEmail();
         assertThat(email).isNotNull();
         assertThat(email).isEqualTo(TestConstants.EMAIL);
 

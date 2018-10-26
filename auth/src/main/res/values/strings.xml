@@ -96,8 +96,8 @@
     <string name="fui_email_link_resend" translation_description="Button text to resend">Resend</string>
     <string name="fui_email_link_wrong_device_header" translation_description="Header shown when the user opens a link that was sent from a different device">New device or browser detected.</string>
     <string name="fui_email_link_wrong_device_message" translation_description="Message shown when the user opens a link that was sent from a different device">Try opening the link using the same device or browser where you started the sign-in process.</string>
-    <string name="fui_email_link_invalid_link_header" translation_description="Header shown when the user opens a link that was sent from a different device">Invalid email link.</string>
-    <string name="fui_email_link_invalid_link_message" translation_description="Message shown when the user opens a link that was sent from a different device">The email link is invalid. This can occur if the email link is expired or was already used to sign in. Please restart the login flow.</string>
+    <string name="fui_email_link_invalid_link_header" translation_description="Header shown when the user opens a link that was sent from a different device">Unable to complete sign in</string>
+    <string name="fui_email_link_invalid_link_message" translation_description="Message shown when the user opens a link that was sent from a different device">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
     <string name="fui_email_link_dismiss_button" translation_description="Dismiss button for the wrong device or invalid link dialog">Dismiss</string>
 
 

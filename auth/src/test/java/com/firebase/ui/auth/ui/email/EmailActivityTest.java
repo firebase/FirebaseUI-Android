@@ -67,6 +67,11 @@ public class EmailActivityTest {
 
     @Test
     public void testOnCreate_emailLinkLinkingFlow_expectSendEmailLinkFlowStarted() {
+        // This is normally done by EmailLinkSendEmailHandler, saving the IdpResponse is done
+        // in EmailActivity but it will not be saved if we haven't previously set the email
+        EmailLinkPersistenceManager.getInstance().saveEmail(RuntimeEnvironment.application,
+                EMAIL, TestConstants.SESSION_ID, TestConstants.UID);
+
         EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER, true);
 
         EmailLinkFragment fragment = (EmailLinkFragment) emailActivity
@@ -74,8 +79,8 @@ public class EmailActivityTest {
         assertThat(fragment).isNotNull();
 
         EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager.getInstance();
-        IdpResponse response = persistenceManager.retrieveIdpResponseForLinking
-                (RuntimeEnvironment.application);
+        IdpResponse response = persistenceManager.retrieveSessionRecord(
+                RuntimeEnvironment.application).getIdpResponseForLinking();
 
         assertThat(response.getProviderType()).isEqualTo(GoogleAuthProvider.PROVIDER_ID);
         assertThat(response.getEmail()).isEqualTo(EMAIL);
