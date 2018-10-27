@@ -89,7 +89,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mProviders = new ArrayList<>();
         if (customLayout != null) {
             setContentView(customLayout.getMainLayout());
-            populateIdpList(params.providers);
 
             //Setup using custom layout
             populateIdpListCustomLayout(params.providers);
@@ -99,7 +98,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             //UI only with default layout
             mProgressBar = findViewById(R.id.top_progress_bar);
             mProviderHolder = findViewById(R.id.btn_holder);
-
 
             populateIdpList(params.providers);
 
