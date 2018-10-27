@@ -16,9 +16,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import static com.google.common.truth.Truth.assertThat;
 
-/**
- * Unit tests for {@link EmailLinkPersistenceManager}.
- */
+/** Unit tests for {@link EmailLinkPersistenceManager}.*/
 @RunWith(RobolectricTestRunner.class)
 public class EmailLinkPersistanceManagerTest {
 
@@ -81,5 +79,4 @@ public class EmailLinkPersistanceManagerTest {
                 .setSecret(TestConstants.SECRET)
                 .build();
     }
-
 }

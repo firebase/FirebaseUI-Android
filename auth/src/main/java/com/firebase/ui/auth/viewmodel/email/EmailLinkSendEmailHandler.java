@@ -13,11 +13,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.ActionCodeSettings;
 
 public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
+    private static final int SESSION_ID_LENGTH = 10;
+
     public EmailLinkSendEmailHandler(Application application) {
         super(application);
     }
-
-    private static final int SESSION_ID_LENGTH = 10;
 
     public void sendSignInLinkToEmail(@NonNull final String email, @NonNull final
     ActionCodeSettings actionCodeSettings) {
@@ -28,13 +28,13 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
 
         final String anonymousUserId = AuthOperationManager.getInstance().canUpgradeAnonymous
                 (getAuth(), getArguments()) ? getAuth().getCurrentUser().getUid() : null;
+        final String sessionId =
+                Utils.generateRandomAlphaNumericString(SESSION_ID_LENGTH);
         getAuth().sendSignInLinkToEmail(email, actionCodeSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            String sessionId =
-                                    Utils.generateRandomAlphaNumericString(SESSION_ID_LENGTH);
                             EmailLinkPersistenceManager.getInstance().saveEmail(getApplication(),
                                     email, sessionId, anonymousUserId);
                             setResult(Resource.forSuccess(email));
@@ -44,5 +44,4 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
                     }
                 });
     }
-
 }

@@ -26,28 +26,27 @@ public class EmailLinkParserTest {
                     + OOB_CODE;
     private static final String MALFORMED_LINK = "not_a_hierarchical_link:";
 
-    private EmailLinkParser mEmailLinkParser;
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_validStringWithNoParams_expectThrows() {
+        new EmailLinkParser(MALFORMED_LINK);
+    }
 
-    @Before
-    public void setUp() {
-        mEmailLinkParser = mEmailLinkParser.getInstance();
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructor_nullLink_expectThrows() {
+        new EmailLinkParser(MALFORMED_LINK);
     }
 
     @Test
-    public void testGetOobCodeFromLink_encodedLink() {
-        String oobCode = mEmailLinkParser.getOobCodeFromLink(ENCODED_EMAIL_LINK);
+    public void testGetOobCode_encodedLink() {
+        EmailLinkParser parser = new EmailLinkParser(ENCODED_EMAIL_LINK);
+        String oobCode = parser.getOobCode();
         assertThat(oobCode).isEqualTo(OOB_CODE);
     }
 
     @Test
-    public void testGetOobCodeFromLink_decodedLink() {
-        String oobCode = mEmailLinkParser.getOobCodeFromLink(DECODED_EMAIL_LINK);
+    public void testGetOobCode_decodedLink() {
+        EmailLinkParser parser = new EmailLinkParser(DECODED_EMAIL_LINK);
+        String oobCode = parser.getOobCode();
         assertThat(oobCode).isEqualTo(OOB_CODE);
-    }
-
-    @Test
-    public void testGetOobCodeFromLink_malformedLink() {
-        String oobCode = mEmailLinkParser.getOobCodeFromLink(MALFORMED_LINK);
-        assertThat(oobCode).isNull();
     }
 }

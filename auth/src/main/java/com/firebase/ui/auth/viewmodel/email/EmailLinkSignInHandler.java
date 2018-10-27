@@ -68,7 +68,8 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
     }
 
     private void determineErrorFlowAndFinish(final String link) {
-        String oobCode = EmailLinkParser.getInstance().getOobCodeFromLink(link);
+        EmailLinkParser parser = new EmailLinkParser(link);
+        String oobCode = parser.getOobCode();
         getAuth().checkActionCode(oobCode).addOnCompleteListener(
                 new OnCompleteListener<ActionCodeResult>() {
                     @Override
@@ -105,8 +106,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
                             if (task.isSuccessful()) {
                                 handleMergeFailure(storedCredentialForLink);
                             } else {
-                                setResult(Resource.<IdpResponse>forFailure(task.getException
-                                        ()));
+                                setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             }
                         }
                     });
