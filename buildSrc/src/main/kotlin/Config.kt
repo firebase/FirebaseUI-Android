@@ -1,5 +1,5 @@
 object Config {
-    const val version = "4.2.0"
+    const val version = "4.3.0-SNAPSHOT"
     val submodules = listOf("auth", "auth-github", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.2.61"
@@ -11,9 +11,9 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:3.2.0-rc01"
+        const val android = "com.android.tools.build:gradle:3.2.1"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        const val google = "com.google.gms:google-services:4.1.0"
+        const val google = "com.google.gms:google-services:4.0.2"
 
         const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5"
@@ -36,7 +36,7 @@ object Config {
             const val cardView = "com.android.support:cardview-v7:$version"
             const val customTabs = "com.android.support:customtabs:$version"
 
-            const val constraint = "com.android.support.constraint:constraint-layout:1.1.2"
+            const val constraint = "com.android.support.constraint:constraint-layout:1.1.3"
         }
 
         object Arch {
@@ -51,15 +51,15 @@ object Config {
         }
 
         object Firebase {
-            const val core = "com.google.firebase:firebase-core:16.0.3"
-            const val auth = "com.google.firebase:firebase-auth:16.0.3"
-            const val firestore = "com.google.firebase:firebase-firestore:17.1.0"
-            const val database = "com.google.firebase:firebase-database:16.0.2"
-            const val storage = "com.google.firebase:firebase-storage:16.0.2"
+            const val core = "com.google.firebase:firebase-core:16.0.4"
+            const val auth = "com.google.firebase:firebase-auth:16.0.5"
+            const val firestore = "com.google.firebase:firebase-firestore:17.1.1"
+            const val database = "com.google.firebase:firebase-database:16.0.3"
+            const val storage = "com.google.firebase:firebase-storage:16.0.3"
         }
 
         object PlayServices {
-            const val auth = "com.google.android.gms:play-services-auth:16.0.0"
+            const val auth = "com.google.android.gms:play-services-auth:16.0.1"
         }
 
 
@@ -106,7 +106,7 @@ object Config {
         }
 
         object Lint {
-            private const val version = "26.2.0-alpha17"
+            private const val version = "26.2.1"
 
             const val api = "com.android.tools.lint:lint-api:$version"
             const val tests = "com.android.tools.lint:lint-tests:$version"

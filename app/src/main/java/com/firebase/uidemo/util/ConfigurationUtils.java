@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.uidemo.R;
+import com.google.firebase.auth.ActionCodeSettings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,8 +50,6 @@ public final class ConfigurationUtils {
     @NonNull
     public static List<AuthUI.IdpConfig> getConfiguredProviders(@NonNull Context context) {
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
-        providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
-        providers.add(new AuthUI.IdpConfig.PhoneBuilder().build());
 
         if (!isGoogleMisconfigured(context)) {
             providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
@@ -67,6 +66,22 @@ public final class ConfigurationUtils {
         if (!isGitHubMisconfigured(context)) {
             providers.add(new AuthUI.IdpConfig.GitHubBuilder().build());
         }
+
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                .setAndroidPackageName("com.firebase.uidemo", true, null)
+                .setHandleCodeInApp(true)
+                .setUrl("https://google.com")
+                .build();
+
+        providers.add(new AuthUI.IdpConfig.EmailBuilder()
+                .setAllowNewAccounts(true)
+                .enableEmailLinkSignIn()
+                .setActionCodeSettings(actionCodeSettings)
+                .build());
+
+
+        providers.add(new AuthUI.IdpConfig.PhoneBuilder().build());
+
 
         return providers;
     }

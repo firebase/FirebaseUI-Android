@@ -14,6 +14,7 @@ import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -104,9 +105,13 @@ public class PhoneProviderResponseHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         setupAnonymousUpgrade();
 
+        FirebaseAuthUserCollisionException ex =
+                new FirebaseAuthUserCollisionException("foo", "bar");
+        TestHelper.setPrivateField(ex, FirebaseAuthUserCollisionException.class,
+                AuthCredential.class, mCredential);
+
         when(mMockAuth.getCurrentUser().linkWithCredential(mCredential))
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
-                        new FirebaseAuthUserCollisionException("foo", "bar", mCredential)));
+                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(ex));
 
         IdpResponse response = new IdpResponse.Builder(new User.Builder(
                 PhoneAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build())

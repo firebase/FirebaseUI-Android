@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -29,11 +30,13 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
             @NonNull FlowParameters flowParams) {
-        return new Intent(
+        Intent intent = new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
                 .putExtra(ExtraConstants.FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
+        intent.setExtrasClassLoader(AuthUI.class.getClassLoader());
+        return intent;
     }
 
     @Override

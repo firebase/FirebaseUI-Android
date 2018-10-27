@@ -20,6 +20,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;
@@ -31,10 +32,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthUITest {
+    private static final String URL = "url";
     private AuthUI mAuthUi;
 
     @Before
@@ -173,7 +176,8 @@ public class AuthUITest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testPhoneBuilder_setBothBlacklistedAndWhitelistedCountries_expectIllegalStateException() {
+    public void
+    testPhoneBuilder_setBothBlacklistedAndWhitelistedCountries_expectIllegalStateException() {
         List<String> countries = Arrays.asList("ca");
         new IdpConfig.PhoneBuilder()
                 .setBlacklistedCountries(countries)
@@ -182,7 +186,8 @@ public class AuthUITest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPhoneBuilder_passEmptyListForWhitelistedCountries_expectIllegalArgumentException() {
+    public void
+    testPhoneBuilder_passEmptyListForWhitelistedCountries_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
                 .setWhitelistedCountries(new ArrayList<String>())
                 .build();
@@ -197,7 +202,8 @@ public class AuthUITest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPhoneBuilder_passEmptyListForBlacklistedCountries_expectIllegalArgumentException() {
+    public void
+    testPhoneBuilder_passEmptyListForBlacklistedCountries_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
                 .setBlacklistedCountries(new ArrayList<String>())
                 .build();
@@ -231,5 +237,33 @@ public class AuthUITest {
 
         assert flowParameters.authMethodPickerLayout != null;
         assertEquals(customLayout.getMainLayout(), flowParameters.authMethodPickerLayout.getMainLayout());
+    }
+
+    @Test
+    public void testEmailBuilder_withValidActionCodeSettings_expectSuccess() {
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL)
+                .setHandleCodeInApp(true)
+                .build();
+        IdpConfig config = new IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                .setActionCodeSettings
+                        (actionCodeSettings).build();
+        assertThat(config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS)).isEqualTo
+                (actionCodeSettings);
+        assertThat(config.getProviderId()).isEqualTo(AuthUI.EMAIL_LINK_PROVIDER);
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testEmailBuilder_withoutActionCodeSettings_expectThrows() {
+        new IdpConfig.EmailBuilder().enableEmailLinkSignIn().build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void
+    testEmailBuilder_withActionCodeSettingsAndHandleCodeInAppFalse_expectThrows() {
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL)
+                .build();
+        new IdpConfig.EmailBuilder().enableEmailLinkSignIn().setActionCodeSettings
+                (actionCodeSettings).build();
     }
 }

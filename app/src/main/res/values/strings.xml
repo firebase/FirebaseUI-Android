@@ -26,6 +26,7 @@
     <string name="providers_github">GitHub</string>
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
+    <string name="providers_email_link">Email link</string>
     <string name="providers_phone">Phone</string>
     <string name="providers_anonymous">Anonymous</string>
 
@@ -40,13 +41,10 @@
     <string name="logo_google">Google</string>
     <string name="logo_none">None</string>
 
-    <string name="tos_header">Terms of Service URL</string>
-    <string name="tos_google">Google</string>
-    <string name="tos_firebase">Firebase</string>
-
-    <string name="pp_header">Privacy Policy URL</string>
-    <string name="pp_google">Google</string>
-    <string name="pp_firebase">Firebase</string>
+    <string name="tos_pp_header">Terms of Service and Privacy Policy</string>
+    <string name="tos_pp_google">Google</string>
+    <string name="tos_pp_firebase">Firebase</string>
+    <string name="tos_pp_none">None</string>
 
     <string name="google_scopes_header">Example extra Google scopes</string>
     <string name="google_scope_drive_file">Drive File</string>

@@ -57,6 +57,16 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anonymous_upgrade);
         ButterKnife.bind(this);
+
+        updateUI();
+
+        // Got here from AuthUIActivity, and we need to deal with a merge conflict
+        // Occurs after catching an email link
+        IdpResponse response = IdpResponse.fromResultIntent(getIntent());
+        if (response != null) {
+            handleSignInResult(RC_SIGN_IN, ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
+                    getIntent());
+        }
     }
 
     @OnClick(R.id.anon_sign_in)
@@ -81,10 +91,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
     public void startAuthUI() {
         List<AuthUI.IdpConfig> providers = ConfigurationUtils.getConfiguredProviders(this);
         Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-            .setLogo(R.drawable.firebase_auth_120dp)
-            .setAvailableProviders(providers)
-            .enableAnonymousUsersAutoUpgrade()
-            .build();
+                .setLogo(R.drawable.firebase_auth_120dp)
+                .setAvailableProviders(providers)
+                .enableAnonymousUsersAutoUpgrade()
+                .build();
         startActivityForResult(intent, RC_SIGN_IN);
     }
 
@@ -105,7 +115,8 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
                         updateUI();
 
                         if (task.isSuccessful()) {
-                            setStatus("Signed in as " + getUserIdentifier(task.getResult().getUser()));
+                            setStatus("Signed in as " + getUserIdentifier(task.getResult()
+                                    .getUser()));
                         } else {
                             Log.w(TAG, "Merge failed", task.getException());
                             setStatus("Failed to resolve merge conflict, see logs.");
@@ -129,6 +140,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        handleSignInResult(requestCode, resultCode, data);
+    }
+
+    private void handleSignInResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
@@ -136,8 +151,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
                 return;
             }
             if (resultCode == RESULT_OK) {
-                setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance().getCurrentUser()));
-            } else if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
+                        .getCurrentUser()));
+            } else if (response.getError().getErrorCode() == ErrorCodes
+                    .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
                 setStatus("Merge conflict: user already exists.");
                 mResolveMergeButton.setEnabled(true);
                 mPendingCredential = response.getCredentialForLinking();

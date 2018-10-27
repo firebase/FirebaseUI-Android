@@ -16,6 +16,7 @@ package com.firebase.ui.auth.testhelpers;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
@@ -24,6 +25,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,23 +37,29 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.robolectric.RuntimeEnvironment;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public final class TestHelper {
+
+    private static final String TAG = "TestHelper";
+    private static final String DEFAULT_APP_NAME = "[DEFAULT]";
+
     public static final FirebaseApp MOCK_APP;
 
     static {
         FirebaseApp app = mock(FirebaseApp.class);
         when(app.get(eq(FirebaseAuth.class))).thenReturn(mock(FirebaseAuth.class));
         when(app.getApplicationContext()).thenReturn(RuntimeEnvironment.application);
-        when(app.getName()).thenReturn(FirebaseApp.DEFAULT_APP_NAME);
+        when(app.getName()).thenReturn(DEFAULT_APP_NAME);
         MOCK_APP = app;
     }
 
@@ -127,6 +135,11 @@ public final class TestHelper {
                 case GithubAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.GitHubBuilder().build());
                     break;
+                case EMAIL_LINK_PROVIDER:
+                    idpConfigs.add(new IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                            .setActionCodeSettings(ActionCodeSettings.newBuilder().setUrl("URL")
+                                    .setHandleCodeInApp(true).build()).build());
+                    break;
                 case EmailAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.EmailBuilder().build());
                     break;
@@ -141,7 +154,7 @@ public final class TestHelper {
             }
         }
         return new FlowParameters(
-                FirebaseApp.DEFAULT_APP_NAME,
+                DEFAULT_APP_NAME,
                 idpConfigs,
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
@@ -150,8 +163,45 @@ public final class TestHelper {
                 true,
                 true,
                 enableAnonymousUpgrade,
+                false,
+                null,
                 customLayout);
     }
 
+    /**
+     * Set a private, obfuscated field of an object.
+     * @param obj the object to modify.
+     * @param objClass the object's class.
+     * @param fieldClass the class of the target field.
+     * @param fieldValue the value to use for the field.
+     */
+    public static <T, F> void setPrivateField(
+            T obj,
+            Class<T> objClass,
+            Class<F> fieldClass,
+            F fieldValue) {
 
+        Field targetField = null;
+        Field[] classFields = objClass.getDeclaredFields();
+        for (Field field : classFields) {
+            if (field.getType().equals(fieldClass)) {
+                if (targetField != null) {
+                    throw new IllegalStateException("Class " + objClass + " has multiple fields of type " + fieldClass);
+                }
+
+                targetField = field;
+            }
+        }
+
+        if (targetField == null) {
+            throw new IllegalStateException("Class " + objClass + " has no fields of type " + fieldClass);
+        }
+
+        targetField.setAccessible(true);
+        try {
+            targetField.set(obj, fieldValue);
+        } catch (IllegalAccessException e) {
+            Log.w(TAG, "Error setting field", e);
+        }
+    }
 }
