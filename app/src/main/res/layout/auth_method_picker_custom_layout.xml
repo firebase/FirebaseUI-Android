@@ -51,6 +51,7 @@
                   android:clickable="true"
                   android:focusable="true"
                   android:textStyle="bold"
-                  android:layout_marginLeft="4dp"/>
+                  android:layout_marginLeft="4dp"
+                  android:layout_marginStart="4dp"/>
     </LinearLayout>
 </LinearLayout>
