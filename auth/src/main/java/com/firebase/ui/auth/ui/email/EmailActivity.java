@@ -178,6 +178,9 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
     @Override
     public void onClickResendEmail(String email) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providers, EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD);
         showRegisterEmailLinkFragment(
@@ -214,7 +217,9 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     }
 
 
-    private void switchFragment(Fragment fragment, String tag, boolean withTransition,
+    private void switchFragment(Fragment fragment,
+                                String tag,
+                                boolean withTransition,
                                 boolean addToBackStack) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (withTransition) {
