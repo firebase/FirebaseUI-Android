@@ -179,6 +179,11 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     @Override
     public void onClickResendEmail(String email) {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            // We're assuming that to get to the TroubleSigningInFragment, we went through
+            // the EmailLinkFragment, which was added to the fragment back stack.
+            // From here, we're going to register the EmailLinkFragment again, meaning we'd have to
+            // pop off the back stack twice to return to the nascar screen. To avoid this,
+            // we pre-emptively pop off the last EmailLinkFragment here.
             getSupportFragmentManager().popBackStack();
         }
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
