@@ -612,29 +612,61 @@ public final class AuthUI {
                 return this;
             }
 
+            /**
+             * Enables email link sign in instead of password based sign in. Once enabled, you must
+             * pass a valid {@link ActionCodeSettings} object using
+             * {@link #setActionCodeSettings(ActionCodeSettings)}
+             * <p>
+             * You must enable Firebase Dynamic Links in the Firebase Console to use email link
+             * sign in.
+             *
+             * @throws IllegalStateException if {@link ActionCodeSettings} is null or not
+             *                               provided with email link enabled.
+             */
             @NonNull
             public EmailBuilder enableEmailLinkSignIn() {
                 setProviderId(EMAIL_LINK_PROVIDER);
                 return this;
             }
 
+            /**
+             * Sets the {@link ActionCodeSettings} object to be used for email link sign in.
+             * <p>
+             * {@link ActionCodeSettings#canHandleCodeInApp()} must be set to true, and a valid
+             * continueUrl must be passed via {@link ActionCodeSettings.Builder#setUrl(String)}.
+             * This URL must be whitelisted in the Firebase Console.
+             *
+             * @throws IllegalStateException if canHandleCodeInApp is set to false
+             * @throws NullPointerException if ActionCodeSettings is null
+             */
             @NonNull
             public EmailBuilder setActionCodeSettings(ActionCodeSettings actionCodeSettings) {
                 getParams().putParcelable(ExtraConstants.ACTION_CODE_SETTINGS, actionCodeSettings);
                 return this;
             }
 
+            /**
+             * Disables allowing email link sign in to occur across different devices.
+             * <p>
+             * This cannot be enabled with anonymous upgrade.
+             */
+            @NonNull
+            public EmailBuilder setForceSameDevice() {
+                getParams().putBoolean(ExtraConstants.FORCE_SAME_DEVICE, true);
+                return this;
+            }
+
             @Override
             public IdpConfig build() {
                 if (super.mProviderId.equals(EMAIL_LINK_PROVIDER)) {
-                    ActionCodeSettings actionCodeSettings = getParams().getParcelable
-                            (ExtraConstants.ACTION_CODE_SETTINGS);
+                    ActionCodeSettings actionCodeSettings
+                            = getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
                     Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
                             "null when using email link sign in.");
-                    if (actionCodeSettings != null && !actionCodeSettings.canHandleCodeInApp()) {
+                   if (actionCodeSettings != null && !actionCodeSettings.canHandleCodeInApp()) {
                         // Pre-emptively fail if actionCodeSettings are misconfigured. This would
                         // have happened when calling sendSignInLinkToEmail
-                        throw new IllegalArgumentException(
+                        throw new IllegalStateException(
                                 "You must set canHandleCodeInApp in your ActionCodeSettings to " +
                                         "true for Email-Link Sign-in.");
                     }
@@ -1247,6 +1279,7 @@ public final class AuthUI {
          * a single provider configured.
          * <p>
          * <p>This is false by default.
+         *
          * @param alwaysShow if true, force the sign-in choice screen to show.
          */
         @NonNull
@@ -1293,11 +1326,27 @@ public final class AuthUI {
         /**
          * Enables upgrading anonymous accounts to full accounts during the sign-in flow.
          * This is disabled by default.
+         *
+         * @throws IllegalStateException when you attempt to enable anonymous user upgrade
+         * without forcing the same device flow for email link sign in.
          */
         @NonNull
         public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {
             mEnableAnonymousUpgrade = true;
+            validateEmailBuilderConfig();
             return this;
+        }
+
+        private void validateEmailBuilderConfig() {
+            for (int i = 0; i < mProviders.size(); i++) {
+                IdpConfig config = mProviders.get(i);
+                if (config.getProviderId().equals(EMAIL_LINK_PROVIDER)) {
+                    if (!config.getParams().containsKey(ExtraConstants.FORCE_SAME_DEVICE)) {
+                        throw new IllegalStateException("You must force the same device flow " +
+                                "when using email link sign in with anonymous user upgrade");
+                    }
+                }
+            }
         }
 
         @Override
