@@ -34,6 +34,9 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     private TroubleSigningInListener mListener;
     private ScrollView mTopLevelView;
 
+    // Used to avoid sending a new email when popping off the fragment backstack
+    private boolean mEmailSent;
+
     public static EmailLinkFragment newInstance(@NonNull final String email,
                                                 @NonNull final ActionCodeSettings
                                                         actionCodeSettings) {
@@ -65,15 +68,20 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // We need to hide the top level view until we know that the email link has been sent
+        if (savedInstanceState != null) {
+            mEmailSent = savedInstanceState.getBoolean(EMAIL_SENT);
+        }
+
         mTopLevelView = view.findViewById(R.id.top_level_view);
-        mTopLevelView.setVisibility(View.GONE);
+        if (!mEmailSent) {
+            // We need to hide the top level view until we know that the email link has been sent
+            mTopLevelView.setVisibility(View.GONE);
+        }
 
         String email = getArguments().getString(ExtraConstants.EMAIL);
         setBodyText(view, email);
         setOnClickListeners(view, email);
         setPrivacyFooter(view);
-
     }
 
     @Override
@@ -85,7 +93,7 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
         ActionCodeSettings actionCodeSettings = getArguments().getParcelable(ExtraConstants
                 .ACTION_CODE_SETTINGS);
 
-        if (savedInstanceState == null || !savedInstanceState.getBoolean(EMAIL_SENT)) {
+        if (!mEmailSent) {
             mEmailLinkSendEmailHandler.sendSignInLinkToEmail(email, actionCodeSettings);
         }
     }
@@ -106,6 +114,7 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
                         mTopLevelView.setVisibility(View.VISIBLE);
                     }
                 });
+                mEmailSent = true;
             }
 
             @Override
@@ -142,7 +151,7 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
-        state.putBoolean(EMAIL_SENT, true);
+        state.putBoolean(EMAIL_SENT, mEmailSent);
     }
 
     interface TroubleSigningInListener {

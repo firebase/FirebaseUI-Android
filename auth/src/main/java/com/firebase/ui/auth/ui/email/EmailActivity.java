@@ -173,11 +173,19 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     public void onTroubleSigningIn(String email) {
         TroubleSigningInFragment troubleSigningInFragment = TroubleSigningInFragment.newInstance
                 (email);
-        switchFragment(troubleSigningInFragment, TroubleSigningInFragment.TAG, true);
+        switchFragment(troubleSigningInFragment, TroubleSigningInFragment.TAG, true, true);
     }
 
     @Override
     public void onClickResendEmail(String email) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            // We're assuming that to get to the TroubleSigningInFragment, we went through
+            // the EmailLinkFragment, which was added to the fragment back stack.
+            // From here, we're going to register the EmailLinkFragment again, meaning we'd have to
+            // pop off the back stack twice to return to the nascar screen. To avoid this,
+            // we pre-emptively pop off the last EmailLinkFragment here.
+            getSupportFragmentManager().popBackStack();
+        }
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providers, EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD);
         showRegisterEmailLinkFragment(
@@ -214,16 +222,24 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     }
 
 
-    private void switchFragment(Fragment fragment, String tag, boolean withTransition) {
+    private void switchFragment(Fragment fragment,
+                                String tag,
+                                boolean withTransition,
+                                boolean addToBackStack) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (withTransition) {
             ft.setCustomAnimations(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
         }
-        ft.replace(R.id.fragment_register_email, fragment, tag).disallowAddToBackStack().commit();
+        ft.replace(R.id.fragment_register_email, fragment, tag);
+        if (addToBackStack) {
+            ft.addToBackStack(null).commit();
+        } else {
+            ft.disallowAddToBackStack().commit();
+        }
     }
 
     private void switchFragment(Fragment fragment, String tag) {
-        switchFragment(fragment, tag, false);
+        switchFragment(fragment, tag, false, false);
     }
 
     @Override
