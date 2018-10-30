@@ -9,6 +9,7 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.util.data.EmailLinkParser;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSendEmailHandler;
 import com.google.firebase.auth.ActionCodeSettings;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class EmailLinkSendEmailHandlerTest {
 
-    private static String URL = "url";
+    private static String URL = "https://google.com";
 
     private EmailLinkPersistenceManager mPersistenceManager;
     private EmailLinkSendEmailHandler mHandler;
@@ -71,7 +72,13 @@ public class EmailLinkSendEmailHandlerTest {
 
         mHandler.sendSignInLinkToEmail(TestConstants.EMAIL, actionCodeSettings);
 
-        verify(mMockAuth).sendSignInLinkToEmail(eq(TestConstants.EMAIL), eq(actionCodeSettings));
+        ArgumentCaptor<ActionCodeSettings> acsCaptor =
+                ArgumentCaptor.forClass(ActionCodeSettings.class);
+
+        verify(mMockAuth).sendSignInLinkToEmail(eq(TestConstants.EMAIL), acsCaptor.capture());
+
+        assertThat(acsCaptor.getValue()).isNotEqualTo(actionCodeSettings);
+        validateSessionIdAddedToContinueUrl(acsCaptor.getValue());
 
         String email = mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application)
                 .getEmail();
@@ -100,8 +107,13 @@ public class EmailLinkSendEmailHandlerTest {
 
         mHandler.sendSignInLinkToEmail(TestConstants.EMAIL, actionCodeSettings);
 
-        verify(mMockAuth).sendSignInLinkToEmail(eq(TestConstants.EMAIL), eq(actionCodeSettings));
+        ArgumentCaptor<ActionCodeSettings> acsCaptor =
+                ArgumentCaptor.forClass(ActionCodeSettings.class);
 
+        verify(mMockAuth).sendSignInLinkToEmail(eq(TestConstants.EMAIL), acsCaptor.capture());
+
+        assertThat(acsCaptor.getValue()).isNotEqualTo(actionCodeSettings);
+        validateSessionIdAddedToContinueUrl(acsCaptor.getValue());
 
         ArgumentCaptor<Resource<String>> captor = ArgumentCaptor.forClass(Resource.class);
         InOrder inOrder = inOrder(mResponseObserver);
@@ -111,5 +123,10 @@ public class EmailLinkSendEmailHandlerTest {
 
         assertThat(captor.getValue().getState()).isEqualTo(State.FAILURE);
         assertThat(captor.getValue().getException()).isNotNull();
+    }
+
+    private void validateSessionIdAddedToContinueUrl(ActionCodeSettings actionCodeSettings) {
+        EmailLinkParser parser = new EmailLinkParser(actionCodeSettings.getUrl());
+        assertThat(parser.getSessionId()).isNotNull();
     }
 }

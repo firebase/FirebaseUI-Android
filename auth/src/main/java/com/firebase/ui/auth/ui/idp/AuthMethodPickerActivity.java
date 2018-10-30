@@ -160,10 +160,21 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             }
         });
+
+        TextView termsText = findViewById(R.id.main_tos_and_pp);
+        PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
+                getFlowParams(),
+                termsText);
+
+        // No ToS or PP provided, so we should hide the view entirely
+        if (!getFlowParams().isPrivacyPolicyUrlProvided()
+                && !getFlowParams().isTermsOfServiceUrlProvided()) {
+            termsText.setVisibility(View.GONE);
+        }
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs) {
-      
+
         ViewModelProvider supplier = ViewModelProviders.of(this);
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
@@ -248,6 +259,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 provider = github;
 
                 break;
+            case EMAIL_LINK_PROVIDER:
             case EmailAuthProvider.PROVIDER_ID:
                 EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
                 email.init(null);

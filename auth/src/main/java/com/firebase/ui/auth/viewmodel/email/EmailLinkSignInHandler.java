@@ -53,6 +53,8 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
 
         SessionRecord sessionRecord = persistenceManager.retrieveSessionRecord(getApplication());
 
+        EmailLinkParser parser = new EmailLinkParser(link);
+
         if (sessionRecord == null) {
             determineErrorFlowAndFinish(link);
             return;

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
+import com.firebase.ui.auth.util.data.ContinueUrlBuilder;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.util.data.Utils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -19,8 +20,8 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
         super(application);
     }
 
-    public void sendSignInLinkToEmail(@NonNull final String email, @NonNull final
-    ActionCodeSettings actionCodeSettings) {
+    public void sendSignInLinkToEmail(@NonNull final String email,
+                                      @NonNull final ActionCodeSettings actionCodeSettings) {
         if (getAuth() == null) {
             return;
         }
@@ -30,7 +31,11 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
                 (getAuth(), getArguments()) ? getAuth().getCurrentUser().getUid() : null;
         final String sessionId =
                 Utils.generateRandomAlphaNumericString(SESSION_ID_LENGTH);
-        getAuth().sendSignInLinkToEmail(email, actionCodeSettings)
+
+        ActionCodeSettings mutatedSettings =
+                addSessionInfoToActionCodeSettings(actionCodeSettings, sessionId, anonymousUserId);
+
+        getAuth().sendSignInLinkToEmail(email, mutatedSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -43,5 +48,24 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
                         }
                     }
                 });
+    }
+
+    private ActionCodeSettings addSessionInfoToActionCodeSettings(ActionCodeSettings
+                                                                          actionCodeSettings,
+                                                                  String sessionId,
+                                                                  String anonymousUserId) {
+        String continueUrl = actionCodeSettings.getUrl();
+        ContinueUrlBuilder continueUrlBuilder = new ContinueUrlBuilder(continueUrl);
+        continueUrlBuilder.appendSessionId(sessionId);
+        continueUrlBuilder.appendAnonymousUserId(anonymousUserId);
+
+        return ActionCodeSettings.newBuilder()
+                .setUrl(continueUrlBuilder.build())
+                .setHandleCodeInApp(true)
+                .setAndroidPackageName(actionCodeSettings.getAndroidPackageName(),
+                        actionCodeSettings.getAndroidInstallApp(),
+                        actionCodeSettings.getAndroidMinimumVersion())
+                .setIOSBundleId(actionCodeSettings.getIOSBundle())
+                .build();
     }
 }
