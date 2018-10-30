@@ -70,4 +70,15 @@ public class ContinueUrlBuilderTest {
         assertThat(parser.getProviderId()).isEqualTo(PROVIDER_ID);
         assertThat(parser.getForceSameDeviceBit()).isEqualTo(FORCE_SAME_DEVICE);
     }
+
+    @Test
+    public void testAppendParams_nullValues_expectNoParamsAdded() {
+        String continueUrl = new ContinueUrlBuilder(ENCODED_EMAIL_LINK)
+                .appendSessionId(null)
+                .appendAnonymousUserId(null)
+                .appendProviderId(null)
+                .build();
+
+        assertThat(continueUrl).isEqualTo(ENCODED_EMAIL_LINK);
+    }
 }

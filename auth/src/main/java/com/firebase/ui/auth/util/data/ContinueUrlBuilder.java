@@ -53,6 +53,10 @@ public class ContinueUrlBuilder {
     }
 
     public String build() {
+        if (continueUrl.charAt(continueUrl.length() - 1) == '?') {
+            // No params added so we remove the '?'
+            continueUrl.setLength(continueUrl.length() - 1);
+        }
         return continueUrl.toString();
     }
 }
