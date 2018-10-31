@@ -27,9 +27,9 @@
 <string name="fui_name_hint">Izen-deiturak</string>
 <string name="fui_button_text_save">Gorde</string>
 <string name="fui_progress_dialog_signing_up">Erregistratzen...</string>
-<plurals name="fui_error_weak_password"> <item quantity="one">Pasahitza ez da nahiko segurua. Gutxienez %1$d karakterea erabli, zenbakie ta letrak konbinatuz.</item> <item quantity="other">Pasahitza ez da nahiko segurua. Gutxienez %1$d karakterea erabli, zenbakie ta letrak konbinatuz.</item> </plurals>
+<plurals name="fui_error_weak_password"> <item quantity="one">Pasahitza ez da nahiko segurua. Gutxienez %1$d karakterea erabili, zenbaki eta letrak konbinatuz.</item> <item quantity="other">Pasahitza ez da nahiko segurua. Gutxienez %1$d karakterea erabli, zenbakie ta letrak konbinatuz.</item> </plurals>
 <string name="fui_email_account_creation_error">Posta elektronikoaren kontua ezin izan da erregistratu</string>
-<string name="fui_terms_of_service">Zerbitzu kondiziak</string>
+<string name="fui_terms_of_service">Zerbitzu kondizioak</string>
 <string name="fui_privacy_policy">Pribatutasun politika</string>
 <string name="fui_welcome_back_idp_header">Jadanik kontu bat duzu</string>
 <string name="fui_welcome_back_email_header">Kaixo berriro!</string>
@@ -62,6 +62,6 @@
 <string name="fui_resend_code">Kodea bidali berriro</string>
 <string name="fui_verify_phone_number">Telefono zenbakia egiaztatu</string>
 <string name="fui_continue_phone_login">Jarraitu</string>
-<string name="fui_sms_terms_of_service">%1$s ukitzean, SMS bat bidali liteje. Litekeena da du mezularitza eta datu mugikorretatik karguak aplikatzea.</string>
+<string name="fui_sms_terms_of_service">%1$s ukitzean, SMS bat bidali liteke. Litekeena da du mezularitza eta datu mugikorretatik karguak aplikatzea.</string>
 <string name="fui_sms_terms_of_service_and_privacy_policy_extended">%1$s ukituz gero, baieztatzen duzu gure %2$s eta %3$s onartzen dituzula. SMS bat bidali ahal izango luke, litekeena da du mezularitza eta datu mugikorretatik karguak aplikatzea.</string>
 </resources>
