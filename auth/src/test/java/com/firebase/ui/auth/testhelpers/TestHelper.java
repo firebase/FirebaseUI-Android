@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
@@ -113,6 +114,12 @@ public final class TestHelper {
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds,
                                                    boolean enableAnonymousUpgrade) {
+        return getFlowParameters(providerIds, enableAnonymousUpgrade, null);
+    }
+
+    public static FlowParameters getFlowParameters(Collection<String> providerIds,
+                                                   boolean enableAnonymousUpgrade,
+                                                   AuthMethodPickerLayout customLayout) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -157,7 +164,8 @@ public final class TestHelper {
                 true,
                 enableAnonymousUpgrade,
                 false,
-                null);
+                null,
+                customLayout);
     }
 
     /**

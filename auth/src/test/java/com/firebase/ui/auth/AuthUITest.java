@@ -223,8 +223,24 @@ public class AuthUITest {
     }
 
     @Test
-    public void
-    testEmailBuilder_withValidActionCodeSettings_expectSuccess() {
+    public void testCustomAuthMethodPickerLayout() {
+        //Testing with some random layout res
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.fui_phone_layout)
+                .build();
+
+        FlowParameters flowParameters = mAuthUi
+                .createSignInIntentBuilder()
+                .setAuthMethodPickerLayout(customLayout)
+                .build()
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
+
+        assert flowParameters.authMethodPickerLayout != null;
+        assertEquals(customLayout.getMainLayout(), flowParameters.authMethodPickerLayout.getMainLayout());
+    }
+
+    @Test
+    public void testEmailBuilder_withValidActionCodeSettings_expectSuccess() {
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL)
                 .setHandleCodeInApp(true)
                 .build();

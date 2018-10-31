@@ -94,6 +94,13 @@
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
 
+    <!-- Auth UI - Custom AuthMethodPickerLayout -->
+    <string name="custom_auth_picker_start">Start with Custom Layout</string>
+    <string name="custom_auth_picker_hint">You can use customised layout like this to improve your user experience!
+    </string>
+    <string name="custom_auth_use_email">Or you can also sign in by using</string>
+
+
     <!-- Storage -->
     <string name="choose_image">Choose Image</string>
     <string name="upload">Upload</string>

@@ -1101,6 +1101,7 @@ public final class AuthUI {
         boolean mAlwaysShowProviderChoice = false;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
+        AuthMethodPickerLayout mAuthMethodPickerLayout = null;
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a
@@ -1230,6 +1231,12 @@ public final class AuthUI {
             return (T) this;
         }
 
+        @NonNull
+        public T setAuthMethodPickerLayout(@NonNull AuthMethodPickerLayout authMethodPickerLayout) {
+            mAuthMethodPickerLayout = authMethodPickerLayout;
+            return (T) this;
+        }
+          
         /**
          * Forces the sign-in method choice screen to always show, even if there is only
          * a single provider configured.
@@ -1301,7 +1308,8 @@ public final class AuthUI {
                     mEnableHints,
                     mEnableAnonymousUpgrade,
                     mAlwaysShowProviderChoice,
-                    mEmailLink);
+                    mEmailLink,
+                    mAuthMethodPickerLayout);
         }
     }
 }

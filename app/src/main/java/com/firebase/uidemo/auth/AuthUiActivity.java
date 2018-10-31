@@ -33,6 +33,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
@@ -48,6 +49,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -256,6 +258,32 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         return builder.build();
+    }
+
+    @OnClick(R.id.customised_sign_in)
+    public void signInCustomLayout() {
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.auth_method_picker_custom_layout)
+                .setupGoogleButtonId(R.id.custom_google_signin_button)
+                .setupEmailButtonId(R.id.custom_email_signin_clickable_text)
+                .build();
+
+        //For now we only test Google and Email
+        List<IdpConfig> availableProviders = Arrays.asList(
+                new AuthUI.IdpConfig.GoogleBuilder()
+                        .setScopes(getGoogleScopes())
+                        .build(),
+                new IdpConfig.EmailBuilder()
+                        .setRequireName(mRequireName.isChecked())
+                        .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                        .build());
+
+        startActivityForResult(
+                AuthUI.getInstance().createSignInIntentBuilder()
+                        .setAvailableProviders(availableProviders)
+                        .setAuthMethodPickerLayout(customLayout)
+                        .build(),
+                RC_SIGN_IN);
     }
 
     @OnClick(R.id.sign_in_silent)

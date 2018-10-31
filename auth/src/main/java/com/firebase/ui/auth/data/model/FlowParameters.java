@@ -23,6 +23,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
@@ -51,6 +52,7 @@ public class FlowParameters implements Parcelable {
             boolean enableAnonymousUpgrade = in.readInt() != 0;
             boolean alwaysShowProviderChoice = in.readInt() != 0;
             String emailLink = in.readString();
+            AuthMethodPickerLayout customLayout = in.readParcelable(AuthMethodPickerLayout.class.getClassLoader());
 
             return new FlowParameters(
                     appName,
@@ -63,7 +65,8 @@ public class FlowParameters implements Parcelable {
                     enableHints,
                     enableAnonymousUpgrade,
                     alwaysShowProviderChoice,
-                    emailLink);
+                    emailLink,
+                    customLayout);
         }
 
         @Override
@@ -98,6 +101,9 @@ public class FlowParameters implements Parcelable {
     public final boolean enableAnonymousUpgrade;
     public final boolean alwaysShowProviderChoice;
 
+    @Nullable
+    public final AuthMethodPickerLayout authMethodPickerLayout;
+
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IdpConfig> providers,
@@ -109,7 +115,8 @@ public class FlowParameters implements Parcelable {
             boolean enableHints,
             boolean enableAnonymousUpgrade,
             boolean alwaysShowProviderChoice,
-            @Nullable String emailLink) {
+            @Nullable String emailLink,
+            @Nullable AuthMethodPickerLayout authMethodPickerLayout) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providers = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providers, "providers cannot be null"));
@@ -122,6 +129,7 @@ public class FlowParameters implements Parcelable {
         this.enableAnonymousUpgrade = enableAnonymousUpgrade;
         this.alwaysShowProviderChoice = alwaysShowProviderChoice;
         this.emailLink = emailLink;
+        this.authMethodPickerLayout = authMethodPickerLayout;
     }
 
     /**
@@ -144,6 +152,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
         dest.writeInt(alwaysShowProviderChoice ? 1 : 0);
         dest.writeString(emailLink);
+        dest.writeParcelable(authMethodPickerLayout, flags);
     }
 
     @Override
