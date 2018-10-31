@@ -22,7 +22,7 @@ public class AuthMethodPickerLayout implements Parcelable {
     private int mainLayout;
 
     @IdRes
-    private int tosPpView;
+    private int tosPpView = -1;
 
     /**
      * PROVIDER_ID -> IdRes of the Button

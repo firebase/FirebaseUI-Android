@@ -118,6 +118,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
         }
 
+        boolean tosAndPpConfigured = getFlowParams().isPrivacyPolicyUrlProvided()
+                && getFlowParams().isTermsOfServiceUrlProvided();
 
         int termsTextId = customLayout == null
                 ? R.id.main_tos_and_pp
@@ -125,14 +127,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
         if (termsTextId >= 0) {
             TextView termsText = findViewById(termsTextId);
-            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
-                    getFlowParams(),
-                    termsText);
 
             // No ToS or PP provided, so we should hide the view entirely
-            if (!getFlowParams().isPrivacyPolicyUrlProvided() &&
-                    !getFlowParams().isTermsOfServiceUrlProvided()) {
+            if (!tosAndPpConfigured) {
                 termsText.setVisibility(View.GONE);
+            } else {
+                PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
+                        getFlowParams(),
+                        termsText);
             }
         }
 
