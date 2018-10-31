@@ -86,6 +86,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
+
         mProviders = new ArrayList<>();
         if (customLayout != null) {
             setContentView(customLayout.getMainLayout());
@@ -115,18 +116,24 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 ImageView logo = findViewById(R.id.logo);
                 logo.setImageResource(logoId);
             }
+        }
 
-            TextView termsText = findViewById(R.id.main_tos_and_pp);
+
+        int termsTextId = customLayout == null
+                ? R.id.main_tos_and_pp
+                : customLayout.getTosPpView();
+
+        if (termsTextId >= 0) {
+            TextView termsText = findViewById(termsTextId);
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
                     getFlowParams(),
                     termsText);
-          
+
             // No ToS or PP provided, so we should hide the view entirely
             if (!getFlowParams().isPrivacyPolicyUrlProvided() &&
                     !getFlowParams().isTermsOfServiceUrlProvided()) {
-                 termsText.setVisibility(View.GONE);
-             }
-      
+                termsText.setVisibility(View.GONE);
+            }
         }
 
         //Handler for both
@@ -201,7 +208,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             if (!providerButtonIds.containsKey(providerId)) {
                 throw new IllegalStateException("No button found for auth provider: " + providerId);
             }
-            
+
             @IdRes int buttonId = providerButtonIds.get(providerId);
             View loginButton = findViewById(buttonId);
             handleSignInOperation(idpConfig, loginButton);

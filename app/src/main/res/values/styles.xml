@@ -33,10 +33,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="CustomTextAppearance" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">#FFFFFF</item>
-    </style>
-
     <style name="CustomWingInner">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

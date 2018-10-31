@@ -21,6 +21,9 @@ public class AuthMethodPickerLayout implements Parcelable {
     @LayoutRes
     private int mainLayout;
 
+    @IdRes
+    private int tosPpView;
+
     /**
      * PROVIDER_ID -> IdRes of the Button
      */
@@ -30,9 +33,10 @@ public class AuthMethodPickerLayout implements Parcelable {
 
     private AuthMethodPickerLayout(@NonNull Parcel in) {
         this.mainLayout = in.readInt();
+        this.tosPpView = in.readInt();
+
         Bundle buttonsBundle = in.readBundle(getClass().getClassLoader());
         this.providersButton = new HashMap<>();
-
         for (String key : buttonsBundle.keySet()) {
             this.providersButton.put(key, buttonsBundle.getInt(key));
         }
@@ -41,6 +45,11 @@ public class AuthMethodPickerLayout implements Parcelable {
     @LayoutRes
     public int getMainLayout() {
         return mainLayout;
+    }
+
+    @IdRes
+    public int getTosPpView() {
+        return tosPpView;
     }
 
     public Map<String, Integer> getProvidersButton() {
@@ -55,6 +64,7 @@ public class AuthMethodPickerLayout implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(mainLayout);
+        parcel.writeInt(tosPpView);
 
         Bundle bundle = new Bundle();
         for (String key : providersButton.keySet()) {
@@ -134,10 +144,19 @@ public class AuthMethodPickerLayout implements Parcelable {
         }
 
         /**
-         * Set the ID of the Anonymou sign in button in the custom layout.
+         * Set the ID of the Anonymous sign in button in the custom layout.
          */
         public AuthMethodPickerLayout.Builder setAnonymousButtonId(@IdRes int anonymousButton) {
             providersMapping.put(AuthUI.ANONYMOUS_PROVIDER, anonymousButton);
+            return this;
+        }
+
+        /**
+         * Set the ID of a TextView where terms of service and privacy policy should be
+         * displayed.
+         */
+        public AuthMethodPickerLayout.Builder setTosAndPrivacyPolicyId(@IdRes int tosPpView) {
+            instance.tosPpView = tosPpView;
             return this;
         }
 

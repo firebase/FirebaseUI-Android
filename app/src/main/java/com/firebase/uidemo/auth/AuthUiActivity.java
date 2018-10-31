@@ -266,6 +266,7 @@ public class AuthUiActivity extends AppCompatActivity {
                     .Builder(R.layout.auth_method_picker_custom_layout)
                     .setGoogleButtonId(R.id.custom_google_signin_button)
                     .setEmailButtonId(R.id.custom_email_signin_clickable_text)
+                    .setTosAndPrivacyPolicyId(R.id.custom_tos_pp)
                     .build();
 
             builder.setTheme(R.style.CustomTheme);
