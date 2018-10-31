@@ -43,6 +43,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [Customization](#ui-customization)
    1. [Required setup](#required-setup)
    1. [Themes](#themes)
+   1. [Auth method picker layout](#custom-layout)
    1. [Strings](#strings)
 1. [OAuth scopes](#oauth-scope-customization)
    1. [Google](#google-1)
@@ -863,6 +864,33 @@ startActivityForResult(
 ```
 
 Your application theme could also simply be used, rather than defining a new one.
+
+### Custom Layout
+
+The first screen shown in most cases is the auth method picker screen, where the user selects
+from a list of authentication methods. While customization in other screens of FirebaseUI is
+limited to themes, this screen can be fully customized with your own XML layout.
+
+To customize the auth method picker screen, build an `AuthMethodPickerLayout` object and pass
+it to the `SignInIntentBuilder` before launching the AuthUI flow:
+
+```java
+// You must provide a custom layout XML resource and configure at least one
+// provider button ID. It's important that that you set the button ID for every provider
+// that you have enabled. 
+AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+    .Builder(R.layout.your_custom_layout_xml)
+    .setGoogleButtonId(R.id.bar)
+    .setEmailButtonId(R.id.foo)
+    // ...
+    .setTosAndPrivacyPolicyId(R.id.baz)
+    .build();
+
+AuthUI.getInstance(this).createSignInIntentBuilder()
+    // ...
+    .setAuthMethodPickerLayout(customLayout)
+    .build());
+```
 
 ### Strings
 
