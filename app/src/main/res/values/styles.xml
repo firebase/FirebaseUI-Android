@@ -21,9 +21,31 @@
         <item name="android:windowBackground">@color/material_green_50</item>
     </style>
 
+    <!-- Theme used in custom layout example -->
+    <style name="CustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#7c4dff</item>
+        <item name="colorPrimaryDark">#4527a0</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@drawable/custom_bg_gradient</item>
+    </style>
+
     <style name="WarnButton" parent="Widget.AppCompat.Button.Colored">
         <item name="colorButtonNormal">@color/material_red_a200</item>
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="CustomWingInner">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">#FFFFFF</item>
+    </style>
+
+    <style name="CustomWingOuter">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
     </style>
 
 </resources>

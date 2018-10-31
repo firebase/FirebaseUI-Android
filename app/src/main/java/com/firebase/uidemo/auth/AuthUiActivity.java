@@ -79,6 +79,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
     @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
 
+    @BindView(R.id.default_layout) RadioButton mDefaultLayout;
+    @BindView(R.id.custom_layout) RadioButton mCustomLayout;
+
     @BindView(R.id.default_theme) RadioButton mDefaultTheme;
     @BindView(R.id.green_theme) RadioButton mGreenTheme;
     @BindView(R.id.purple_theme) RadioButton mPurpleTheme;
@@ -241,6 +244,17 @@ public class AuthUiActivity extends AppCompatActivity {
                 .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                         mEnableHintSelector.isChecked());
 
+        if (mCustomLayout.isChecked()) {
+            AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                    .Builder(R.layout.auth_method_picker_custom_layout)
+                    .setupGoogleButtonId(R.id.custom_google_signin_button)
+                    .setupEmailButtonId(R.id.custom_email_signin_clickable_text)
+                    .build();
+
+            builder.setTheme(R.style.CustomTheme);
+            builder.setAuthMethodPickerLayout(customLayout);
+        }
+
         if (getSelectedTosUrl() != null && getSelectedPrivacyPolicyUrl() != null) {
             builder.setTosAndPrivacyPolicyUrls(
                     getSelectedTosUrl(),
@@ -258,32 +272,6 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         return builder.build();
-    }
-
-    @OnClick(R.id.customised_sign_in)
-    public void signInCustomLayout() {
-        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
-                .Builder(R.layout.auth_method_picker_custom_layout)
-                .setupGoogleButtonId(R.id.custom_google_signin_button)
-                .setupEmailButtonId(R.id.custom_email_signin_clickable_text)
-                .build();
-
-        //For now we only test Google and Email
-        List<IdpConfig> availableProviders = Arrays.asList(
-                new AuthUI.IdpConfig.GoogleBuilder()
-                        .setScopes(getGoogleScopes())
-                        .build(),
-                new IdpConfig.EmailBuilder()
-                        .setRequireName(mRequireName.isChecked())
-                        .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
-                        .build());
-
-        startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setAvailableProviders(availableProviders)
-                        .setAuthMethodPickerLayout(customLayout)
-                        .build(),
-                RC_SIGN_IN);
     }
 
     @OnClick(R.id.sign_in_silent)

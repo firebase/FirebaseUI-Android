@@ -1,57 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent" android:gravity="center_horizontal">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/custom_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@mipmap/ic_launcher_foreground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-            android:text="@string/launch_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:textAlignment="center"
-            android:layout_margin="24dp"
-            android:layout_marginBottom="0dp"/>
+        android:id="@+id/custom_subheader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Sign in using this nice custom layout!"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_logo" />
 
-    <TextView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:textAlignment="center"
-              android:textSize="16sp"
-              android:layout_margin="16dp"
-              android:layout_marginBottom="32dp"
-              android:text="@string/custom_auth_picker_hint"/>
+    <!-- Horiz line, left of provider header -->
+    <FrameLayout
+        android:id="@+id/header_idp_wing_left"
+        style="@style/CustomWingOuter"
+        app:layout_constraintBottom_toBottomOf="@+id/header_idp_choice"
+        app:layout_constraintEnd_toStartOf="@+id/header_idp_choice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/header_idp_choice">
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+        <View style="@style/CustomWingInner" />
 
-        <Button
-                android:id="@+id/custom_google_signin_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/providers_google"/>
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="8dp">
+    <TextView
+        android:id="@+id/header_idp_choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Choose a provider"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/header_idp_wing_right"
+        app:layout_constraintStart_toEndOf="@+id/header_idp_wing_left"
+        app:layout_constraintTop_toBottomOf="@+id/custom_subheader" />
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/custom_auth_use_email"/>
+    <!-- Horiz line, right of provider header -->
+    <FrameLayout
+        android:id="@+id/header_idp_wing_right"
+        style="@style/CustomWingOuter"
+        app:layout_constraintBottom_toBottomOf="@+id/header_idp_choice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/header_idp_choice"
+        app:layout_constraintTop_toTopOf="@+id/header_idp_choice">
 
-        <TextView android:id="@+id/custom_email_signin_clickable_text"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/providers_email"
-                  android:clickable="true"
-                  android:focusable="true"
-                  android:textStyle="bold"
-                  android:layout_marginLeft="4dp"
-                  android:layout_marginStart="4dp"/>
-    </LinearLayout>
-</LinearLayout>
+        <View style="@style/CustomWingInner" />
+
+    </FrameLayout>
+
+    <!--
+      NOTE: This sample app uses this class from the FirebaseUI library to show the Google Sign
+      in button. However this button is NOT considered part of the public API and you should not
+      use it in your own app.
+    -->
+    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
+        android:text="@string/fui_sign_in_with_google"
+        android:id="@+id/custom_google_signin_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_idp_choice" />
+
+    <!-- Horiz line, left of email header -->
+    <FrameLayout
+        android:id="@+id/header_email_wing_left"
+        style="@style/CustomWingOuter"
+        app:layout_constraintBottom_toBottomOf="@+id/header_email"
+        app:layout_constraintEnd_toStartOf="@+id/header_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/header_email">
+
+        <View style="@style/CustomWingInner" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/header_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Use your email"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toStartOf="@+id/header_email_wing_right"
+        app:layout_constraintStart_toEndOf="@+id/header_email_wing_left"
+        app:layout_constraintTop_toBottomOf="@+id/custom_google_signin_button" />
+
+    <!-- Horiz line, right of email header -->
+    <FrameLayout
+        android:id="@+id/header_email_wing_right"
+        style="@style/CustomWingOuter"
+        app:layout_constraintBottom_toBottomOf="@+id/header_email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/header_email"
+        app:layout_constraintTop_toTopOf="@+id/header_email">
+
+        <View style="@style/CustomWingInner" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/custom_email_signin_clickable_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Continue with Email"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_email" />
+
+</android.support.constraint.ConstraintLayout>

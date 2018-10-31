@@ -30,6 +30,10 @@
     <string name="providers_phone">Phone</string>
     <string name="providers_anonymous">Anonymous</string>
 
+    <string name="layout_header">Layout</string>
+    <string name="layout_default">Default</string>
+    <string name="layout_custom">Custom</string>
+
     <string name="theme_header">Theme</string>
     <string name="theme_default">Default theme</string>
     <string name="theme_purple">Purple Theme</string>
@@ -95,7 +99,6 @@
     <string name="idp_secret">IDP Secret</string>
 
     <!-- Auth UI - Custom AuthMethodPickerLayout -->
-    <string name="custom_auth_picker_start">Start with Custom Layout</string>
     <string name="custom_auth_picker_hint">You can use customised layout like this to improve your user experience!
     </string>
     <string name="custom_auth_use_email">Or you can also sign in by using</string>

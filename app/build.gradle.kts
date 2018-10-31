@@ -54,6 +54,7 @@ dependencies {
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     implementation(Config.Libs.Misc.permissions)
     implementation(Config.Libs.Misc.butterKnife)
+    implementation(Config.Libs.Support.constraint)
     annotationProcessor(Config.Libs.Misc.butterKnifeCompiler)
     debugImplementation(Config.Libs.Misc.leakCanary)
     debugImplementation(Config.Libs.Misc.leakCanaryFragments)
