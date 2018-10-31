@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/custom_bg_gradient">
 
     <ImageView
         android:id="@+id/custom_logo"
@@ -26,7 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:text="Sign in using this nice custom layout!"
+        android:text="@string/custom_layout_subheader"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Choose a provider"
+        android:text="@string/custom_layout_idp_header"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toStartOf="@+id/header_idp_wing_right"
@@ -75,14 +76,13 @@
       in button. However this button is NOT considered part of the public API and you should not
       use it in your own app.
     -->
-    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
-        android:text="@string/fui_sign_in_with_google"
+    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/custom_google_signin_button"
+        style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:text="@string/fui_sign_in_with_google"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_idp_choice" />
@@ -105,7 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Use your email"
+        android:text="@string/custom_layout_email_header"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toStartOf="@+id/header_email_wing_right"
@@ -136,7 +136,7 @@
         android:layout_marginRight="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:text="Continue with Email"
+        android:text="@string/custom_layout_email_click_text"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

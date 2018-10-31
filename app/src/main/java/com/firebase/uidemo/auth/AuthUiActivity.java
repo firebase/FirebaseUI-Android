@@ -49,7 +49,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -190,6 +189,24 @@ public class AuthUiActivity extends AppCompatActivity {
         mUseEmailLinkProvider.setChecked(false);
         mUseEmailProvider.setChecked(true);
 
+        // The custom layout in this app only supports Email and Google providers.
+        mCustomLayout.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    mUseGoogleProvider.setChecked(true);
+                    mUseEmailProvider.setChecked(true);
+
+                    mUseFacebookProvider.setChecked(false);
+                    mUseTwitterProvider.setChecked(false);
+                    mUseGitHubProvider.setChecked(false);
+                    mUseEmailLinkProvider.setChecked(false);
+                    mUsePhoneProvider.setChecked(false);
+                    mUseAnonymousProvider.setChecked(false);
+                }
+            }
+        });
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)
                 || ConfigurationUtils.isTwitterMisconfigured(this)
@@ -247,8 +264,8 @@ public class AuthUiActivity extends AppCompatActivity {
         if (mCustomLayout.isChecked()) {
             AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                     .Builder(R.layout.auth_method_picker_custom_layout)
-                    .setupGoogleButtonId(R.id.custom_google_signin_button)
-                    .setupEmailButtonId(R.id.custom_email_signin_clickable_text)
+                    .setGoogleButtonId(R.id.custom_google_signin_button)
+                    .setEmailButtonId(R.id.custom_email_signin_clickable_text)
                     .build();
 
             builder.setTheme(R.style.CustomTheme);

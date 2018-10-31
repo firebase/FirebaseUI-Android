@@ -198,11 +198,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
         for (IdpConfig idpConfig : providerConfigs) {
             final String providerId = idpConfig.getProviderId();
+            if (!providerButtonIds.containsKey(providerId)) {
+                throw new IllegalStateException("No button found for auth provider: " + providerId);
+            }
+            
             @IdRes int buttonId = providerButtonIds.get(providerId);
             View loginButton = findViewById(buttonId);
-            if (loginButton == null) {
-                throw new IllegalStateException("No button found for this auth provider");
-            }
             handleSignInOperation(idpConfig, loginButton);
         }
     }

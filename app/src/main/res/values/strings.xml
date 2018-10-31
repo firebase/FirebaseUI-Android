@@ -99,9 +99,10 @@
     <string name="idp_secret">IDP Secret</string>
 
     <!-- Auth UI - Custom AuthMethodPickerLayout -->
-    <string name="custom_auth_picker_hint">You can use customised layout like this to improve your user experience!
-    </string>
-    <string name="custom_auth_use_email">Or you can also sign in by using</string>
+    <string name="custom_layout_subheader">Sign in using this nice custom layout!</string>
+    <string name="custom_layout_idp_header">Choose a provider</string>
+    <string name="custom_layout_email_header">Use your email</string>
+    <string name="custom_layout_email_click_text">Continue with Email</string>
 
 
     <!-- Storage -->
