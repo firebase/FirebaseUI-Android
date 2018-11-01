@@ -89,10 +89,14 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
             ActionCodeSettings actionCodeSettings = emailConfig.getParams().getParcelable
                     (ExtraConstants.ACTION_CODE_SETTINGS);
 
+
+            boolean forceSameDevice
+                    = emailConfig.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE);
             EmailLinkPersistenceManager.getInstance().saveIdpResponseForLinking(getApplication(),
                     responseForLinking);
 
-            EmailLinkFragment fragment = EmailLinkFragment.newInstance(email, actionCodeSettings);
+            EmailLinkFragment fragment = EmailLinkFragment.newInstance(email, actionCodeSettings,
+                    responseForLinking, forceSameDevice);
             switchFragment(fragment, EmailLinkFragment.TAG);
         } else {
             // Start with check email

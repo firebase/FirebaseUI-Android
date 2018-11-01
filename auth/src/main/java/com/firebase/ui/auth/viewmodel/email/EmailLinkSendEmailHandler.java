@@ -2,7 +2,9 @@ package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ContinueUrlBuilder;
@@ -21,7 +23,9 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
     }
 
     public void sendSignInLinkToEmail(@NonNull final String email,
-                                      @NonNull final ActionCodeSettings actionCodeSettings) {
+                                      @NonNull final ActionCodeSettings actionCodeSettings,
+                                      @Nullable final IdpResponse idpResponseForLinking,
+                                      final boolean forceSameDevice) {
         if (getAuth() == null) {
             return;
         }
@@ -32,8 +36,8 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
         final String sessionId =
                 Utils.generateRandomAlphaNumericString(SESSION_ID_LENGTH);
 
-        ActionCodeSettings mutatedSettings =
-                addSessionInfoToActionCodeSettings(actionCodeSettings, sessionId, anonymousUserId);
+        ActionCodeSettings mutatedSettings = addSessionInfoToActionCodeSettings(actionCodeSettings,
+                sessionId, anonymousUserId, idpResponseForLinking, forceSameDevice);
 
         getAuth().sendSignInLinkToEmail(email, mutatedSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -42,6 +46,7 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
                         if (task.isSuccessful()) {
                             EmailLinkPersistenceManager.getInstance().saveEmail(getApplication(),
                                     email, sessionId, anonymousUserId);
+
                             setResult(Resource.forSuccess(email));
                         } else {
                             setResult(Resource.<String>forFailure(task.getException()));
@@ -50,14 +55,21 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
                 });
     }
 
-    private ActionCodeSettings addSessionInfoToActionCodeSettings(ActionCodeSettings
+    private ActionCodeSettings addSessionInfoToActionCodeSettings(@NonNull ActionCodeSettings
                                                                           actionCodeSettings,
-                                                                  String sessionId,
-                                                                  String anonymousUserId) {
+                                                                  @NonNull String sessionId,
+                                                                  @NonNull String anonymousUserId,
+                                                                  @Nullable IdpResponse response,
+                                                                  boolean forceSameDevice) {
+
         String continueUrl = actionCodeSettings.getUrl();
         ContinueUrlBuilder continueUrlBuilder = new ContinueUrlBuilder(continueUrl);
         continueUrlBuilder.appendSessionId(sessionId);
         continueUrlBuilder.appendAnonymousUserId(anonymousUserId);
+        continueUrlBuilder.appendForceSameDeviceBit(forceSameDevice);
+        if (response != null) {
+            continueUrlBuilder.appendProviderId(response.getProviderType());
+        }
 
         return ActionCodeSettings.newBuilder()
                 .setUrl(continueUrlBuilder.build())

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.InvisibleFragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -40,10 +41,20 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     public static EmailLinkFragment newInstance(@NonNull final String email,
                                                 @NonNull final ActionCodeSettings
                                                         actionCodeSettings) {
+        return newInstance(email, actionCodeSettings, /*idpResponseForLinking=*/null, false);
+    }
+
+    public static EmailLinkFragment newInstance(@NonNull final String email,
+                                                @NonNull final ActionCodeSettings
+                                                        actionCodeSettings,
+                                                @Nullable final IdpResponse idpResponseForLinking,
+                                                final boolean forceSameDevice) {
         EmailLinkFragment fragment = new EmailLinkFragment();
         Bundle args = new Bundle();
         args.putString(ExtraConstants.EMAIL, email);
         args.putParcelable(ExtraConstants.ACTION_CODE_SETTINGS, actionCodeSettings);
+        args.putParcelable(ExtraConstants.IDP_RESPONSE, idpResponseForLinking);
+        args.putBoolean(ExtraConstants.FORCE_SAME_DEVICE, forceSameDevice);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,11 +101,16 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
         initHandler();
 
         String email = getArguments().getString(ExtraConstants.EMAIL);
-        ActionCodeSettings actionCodeSettings = getArguments().getParcelable(ExtraConstants
-                .ACTION_CODE_SETTINGS);
+        ActionCodeSettings actionCodeSettings
+                = getArguments().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
+        IdpResponse idpResponseForLinking
+                = getArguments().getParcelable(ExtraConstants.IDP_RESPONSE);
+        boolean forceSameDevice
+                = getArguments().getBoolean(ExtraConstants.FORCE_SAME_DEVICE);
 
         if (!mEmailSent) {
-            mEmailLinkSendEmailHandler.sendSignInLinkToEmail(email, actionCodeSettings);
+            mEmailLinkSendEmailHandler.sendSignInLinkToEmail(email, actionCodeSettings,
+                    idpResponseForLinking, forceSameDevice);
         }
     }
 
