@@ -67,4 +67,17 @@ public class EmailLinkParserTest {
         assertThat(parser.getProviderId()).isEqualTo(PROVIDER_ID);
         assertThat(parser.getForceSameDeviceBit()).isEqualTo(FORCE_SAME_DEVICE);
     }
+
+    @Test
+    public void testGetters_noContinueUrlParams() {
+        String encodedLink = ENCODED_EMAIL_LINK.substring(0,
+                ENCODED_EMAIL_LINK.length() - CONTINUE_URL.length());
+        EmailLinkParser parser = new EmailLinkParser(encodedLink);
+        assertThat(parser.getOobCode()).isEqualTo(OOB_CODE);
+        assertThat(parser.getSessionId()).isNull();
+        assertThat(parser.getAnonymousUserId()).isNull();
+        assertThat(parser.getProviderId()).isNull();
+        assertThat(parser.getForceSameDeviceBit()).isFalse();
+    }
+
 }

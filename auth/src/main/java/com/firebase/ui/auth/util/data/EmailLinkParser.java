@@ -3,6 +3,7 @@ package com.firebase.ui.auth.util.data;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.text.TextUtils;
 
 import com.google.android.gms.common.internal.Preconditions;
 
@@ -48,7 +49,12 @@ public class EmailLinkParser {
     }
 
     public boolean getForceSameDeviceBit() {
-        return params.get(FORCE_SAME_DEVICE_IDENTIFIER).equals("1");
+        String forceSameDeviceBit = params.get(FORCE_SAME_DEVICE_IDENTIFIER);
+        if (TextUtils.isEmpty(forceSameDeviceBit)) {
+            // Default value is false when no bit is set
+            return false;
+        }
+        return forceSameDeviceBit.equals("1");
     }
 
     public String getProviderId() {
