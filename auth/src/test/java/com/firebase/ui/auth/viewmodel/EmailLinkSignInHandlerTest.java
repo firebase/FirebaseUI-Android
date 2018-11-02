@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.AuthUI;
@@ -184,8 +183,7 @@ public class EmailLinkSignInHandlerTest {
 
     @Test
     @SuppressWarnings("all")
-    public void
-    testStartSignIn_invaliddifferentDeviceLinkWithValidSessionInfo_expectInvalidLinkError() {
+    public void testStartSignIn_differentDeviceLinkWithValidSessionInfo_expectInvalidLinkError() {
         String differentSessionId = Utils.generateRandomAlphaNumericString(10);
         initializeHandlerWithSessionInfo(differentSessionId, null, null, false);
 
@@ -212,6 +210,36 @@ public class EmailLinkSignInHandlerTest {
         assertThat(exception.getErrorCode())
                 .isEqualTo(ErrorCodes.INVALID_EMAIL_LINK_ERROR);
     }
+
+    @Test
+    @SuppressWarnings("all")
+    public void
+    testStartSignIn_differentDeviceLinkWithAnonymousUpgradeEnabled_expectInvalidLinkError() {
+        String differentSessionId = Utils.generateRandomAlphaNumericString(10);
+        String anonUserId = Utils.generateRandomAlphaNumericString(10);
+        initializeHandlerWithSessionInfo(differentSessionId, anonUserId, null, false);
+
+        mHandler.getOperation().observeForever(mResponseObserver);
+        when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
+
+        mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+
+        ArgumentCaptor<Resource<IdpResponse>> captor =
+                ArgumentCaptor.forClass(Resource.class);
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
+        FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
+        assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR);
+    }
+
 
     @Test
     @SuppressWarnings("all")

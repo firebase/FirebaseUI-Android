@@ -56,6 +56,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
 
         EmailLinkParser parser = new EmailLinkParser(link);
         String sessionIdFromLink = parser.getSessionId();
+        String anonymousUserIdFromLink = parser.getAnonymousUserId();
         String oobCodeFromLink = parser.getOobCode();
         boolean forceSameDevice = parser.getForceSameDeviceBit();
 
@@ -66,8 +67,9 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
                         new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
                 return;
             }
-            if (forceSameDevice) {
-                // The link was meant to be completed on the same device.
+            if (forceSameDevice || !TextUtils.isEmpty(anonymousUserIdFromLink)) {
+                // In both cases, the link was meant to be completed on the same device.
+                // For anonymous user upgrade, we don't support the cross device flow.
                 setResult(Resource.<IdpResponse>forFailure(
                         new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
                 return;
