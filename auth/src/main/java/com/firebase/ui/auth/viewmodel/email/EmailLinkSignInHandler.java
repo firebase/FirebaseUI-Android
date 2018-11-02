@@ -2,6 +2,8 @@ package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
@@ -42,26 +44,65 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
 
         String link = getArguments().emailLink;
         if (!getAuth().isSignInWithEmailLink(link)) {
-            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(ErrorCodes
-                    .INVALID_EMAIL_LINK_ERROR)));
+            setResult(Resource.<IdpResponse>forFailure(
+                    new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
             return;
         }
 
         final EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager
                 .getInstance();
-        final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
 
         SessionRecord sessionRecord = persistenceManager.retrieveSessionRecord(getApplication());
 
         EmailLinkParser parser = new EmailLinkParser(link);
+        String sessionIdFromLink = parser.getSessionId();
+        String oobCodeFromLink = parser.getOobCode();
+        boolean forceSameDevice = parser.getForceSameDeviceBit();
 
-        if (sessionRecord == null) {
-            determineErrorFlowAndFinish(link);
+        if (isDifferentDeviceFlow(sessionRecord, sessionIdFromLink)) {
+            if (TextUtils.isEmpty(sessionIdFromLink)) {
+                // There should always be a valid session ID in the link
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
+                return;
+            }
+            if (forceSameDevice) {
+                // The link was meant to be completed on the same device.
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                return;
+            }
+            // If we have no SessionRecord/there is a session ID mismatch, this means that we were
+            // not the ones to send the link. The only way forward is to prompt the user for their
+            // email before continuing the flow. We should only do that after validating the link.
+            determineDifferentDeviceErrorFlowAndFinish(oobCodeFromLink);
             return;
         }
 
-        IdpResponse response = sessionRecord.getIdpResponseForLinking();
+        finishSignIn(sessionRecord);
+    }
+
+    public void finishSignIn(String email) {
+        setResult(Resource.<IdpResponse>forLoading());
+        finishSignIn(email, /*response=*/null);
+    }
+
+    private void finishSignIn(SessionRecord sessionRecord) {
         String email = sessionRecord.getEmail();
+        IdpResponse response = sessionRecord.getIdpResponseForLinking();
+        finishSignIn(email, response);
+    }
+
+    private void finishSignIn(@NonNull String email, @Nullable IdpResponse response) {
+        if (TextUtils.isEmpty(email)) {
+            setResult(Resource.<IdpResponse>forFailure(
+                    new FirebaseUiException(ErrorCodes.EMAIL_MISMATCH_ERROR)));
+            return;
+        }
+        final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
+        final EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager
+                .getInstance();
+        String link = getArguments().emailLink;
         if (response == null) {
             handleNormalFlow(authOperationManager, persistenceManager, email, link);
         } else {
@@ -69,21 +110,19 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         }
     }
 
-    private void determineErrorFlowAndFinish(final String link) {
-        EmailLinkParser parser = new EmailLinkParser(link);
-        String oobCode = parser.getOobCode();
+    private void determineDifferentDeviceErrorFlowAndFinish(String oobCode) {
         getAuth().checkActionCode(oobCode).addOnCompleteListener(
                 new OnCompleteListener<ActionCodeResult>() {
                     @Override
                     public void onComplete(@NonNull Task<ActionCodeResult> task) {
                         if (task.isSuccessful()) {
-                            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException
-                                    (ErrorCodes
-                                            .EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                            // The email link is valid, we can ask the user for their email
+                            setResult(Resource.<IdpResponse>forFailure(
+                                            new FirebaseUiException(
+                                                    ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR)));
                         } else {
-                            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException
-                                    (ErrorCodes
-                                            .INVALID_EMAIL_LINK_ERROR)));
+                            setResult(Resource.<IdpResponse>forFailure(
+                                    new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
                         }
                     }
                 });
@@ -194,5 +233,11 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
                         }
                     }
                 });
+    }
+
+    private boolean isDifferentDeviceFlow(SessionRecord sessionRecord, String sessionIdFromLink) {
+        return sessionRecord == null || TextUtils.isEmpty(sessionRecord.getSessionId())
+                || TextUtils.isEmpty(sessionIdFromLink)
+                || !sessionIdFromLink.equals(sessionRecord.getSessionId());
     }
 }

@@ -5,6 +5,7 @@
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
+    <string name="fui_cancel" translation_description="Button text to cancel">Cancel</string>
     <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
     <string name="fui_tos_and_pp_footer" translation_description="Global ToS and Privacy policy footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="Footer ToS text">%1$s</xliff:g> \u00A0 \u00A0 <xliff:g example="https://google.com/privacy" id="pp" translation_description="Footer privacy policy text">%2$s</xliff:g></string>
 
@@ -98,6 +99,8 @@
     <string name="fui_email_link_wrong_device_message" translation_description="Message shown when the user opens a link that was sent from a different device">Try opening the link using the same device or browser where you started the sign-in process.</string>
     <string name="fui_email_link_invalid_link_header" translation_description="Header shown when the user opens a link that was sent from a different device">Unable to complete sign in</string>
     <string name="fui_email_link_invalid_link_message" translation_description="Message shown when the user opens a link that was sent from a different device">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
+    <string name="fui_email_link_confirm_email_header" translation_description="Header shown when prompting the user to confirm their email to complete the sign in">Confirm email</string>
+    <string name="fui_email_link_confirm_email_message" translation_description="Message shown when prompting the user to confirm their email to finish the sign in flow">Confirm email to continue sign in</string>
     <string name="fui_email_link_dismiss_button" translation_description="Dismiss button for the wrong device or invalid link dialog">Dismiss</string>
 
 

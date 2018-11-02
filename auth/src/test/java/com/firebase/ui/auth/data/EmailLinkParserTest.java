@@ -28,7 +28,7 @@ public class EmailLinkParserTest {
     private static final String ENCODED_EMAIL_LINK =
             "https://www.fake.com?link=https://fake.firebaseapp.com/__/auth/action?"
                     + "%26mode%3DsignIn%26oobCode%3D" + OOB_CODE
-                    + "&continueUrl=" + CONTINUE_URL;
+                    + "%26continueUrl%3D" + CONTINUE_URL;
 
     private static final String DECODED_EMAIL_LINK =
             "https://fake.com/__/auth/action?apiKey=apiKey&mode=signIn"

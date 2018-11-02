@@ -107,7 +107,7 @@ public class EmailLinkPersistenceManager {
     }
 
     /** Holds the necessary information to complete the email link sign in flow */
-    public class SessionRecord {
+    public static class SessionRecord {
         private String sessionId;
         private String email;
         @Nullable private String anonymousUserId;

@@ -22,6 +22,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkCatcherActivity extends InvisibleActivityBase {
@@ -35,6 +36,7 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         initHandler();
 
         if (getFlowParams().emailLink != null) {
@@ -59,21 +61,28 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
                     IdpResponse res = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
                     finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants
                             .IDP_RESPONSE, res));
-                } else {
-                    if (e instanceof FirebaseUiException) {
-                        if (((FirebaseUiException) e).getErrorCode() == ErrorCodes
-                                .EMAIL_LINK_WRONG_DEVICE_ERROR) {
-                            buildAlertDialog(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR).show();
-                        } else if (((FirebaseUiException) e).getErrorCode() == ErrorCodes
-                                .INVALID_EMAIL_LINK_ERROR) {
-                            buildAlertDialog(ErrorCodes.INVALID_EMAIL_LINK_ERROR).show();
-                        }
-                    } else {
-                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                } else if (e instanceof FirebaseUiException) {
+                    int errorCode = ((FirebaseUiException) e).getErrorCode();
+                    if (errorCode == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR
+                            || errorCode == ErrorCodes.INVALID_EMAIL_LINK_ERROR) {
+                        buildAlertDialog(errorCode).show();
+                    } else if (errorCode == ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR
+                            || errorCode == ErrorCodes.EMAIL_MISMATCH_ERROR) {
+                        recoverFromEmailMismatchError();
                     }
+                } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    recoverFromEmailMismatchError();
+                } else {
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                 }
             }
         });
+    }
+
+    private void recoverFromEmailMismatchError() {
+        Intent intent = EmailLinkErrorRecoveryActivity.createIntent(getApplicationContext(),
+                getFlowParams());
+        startActivityForResult(intent, RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW);
     }
 
     private AlertDialog buildAlertDialog(int errorCode) {
@@ -98,5 +107,19 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
                             });
         }
         return alertDialog.create();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+            // CheckActionCode is called before starting this flow, so we only get here
+            // if the sign in link is valid - it can only fail by being cancelled.
+            if (resultCode == RESULT_OK) {
+                finish(RESULT_OK, response.toIntent());
+            } else {
+                finish(RESULT_CANCELED, null);
+            }
+        }
     }
 }
