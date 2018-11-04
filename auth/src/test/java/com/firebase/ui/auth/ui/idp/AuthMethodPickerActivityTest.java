@@ -106,7 +106,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.fui_provider_button_email)
-                .setupEmailButtonId(R.id.email_button)
+                .setEmailButtonId(R.id.email_button)
                 .build();
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivityWithCustomLayout(providers, customLayout);

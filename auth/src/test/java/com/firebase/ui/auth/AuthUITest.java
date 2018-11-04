@@ -217,7 +217,7 @@ public class AuthUITest {
     }
 
     @Test
-    public void testAnonymousBuilder_expectSucess() {
+    public void testAnonymousBuilder_expectSuccess() {
         new IdpConfig.AnonymousBuilder()
                 .build();
     }
@@ -225,9 +225,10 @@ public class AuthUITest {
     @Test
     public void testCustomAuthMethodPickerLayout() {
         //Testing with some random layout res
-        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
-                .Builder(R.layout.fui_phone_layout)
-                .build();
+        AuthMethodPickerLayout customLayout =
+                new AuthMethodPickerLayout.Builder(R.layout.fui_phone_layout)
+                        .setAnonymousButtonId(123)
+                        .build();
 
         FlowParameters flowParameters = mAuthUi
                 .createSignInIntentBuilder()

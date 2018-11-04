@@ -86,6 +86,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
+
         mProviders = new ArrayList<>();
         if (customLayout != null) {
             setContentView(customLayout.getMainLayout());
@@ -115,18 +116,26 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 ImageView logo = findViewById(R.id.logo);
                 logo.setImageResource(logoId);
             }
+        }
 
-            TextView termsText = findViewById(R.id.main_tos_and_pp);
-            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
-                    getFlowParams(),
-                    termsText);
-          
+        boolean tosAndPpConfigured = getFlowParams().isPrivacyPolicyUrlProvided()
+                && getFlowParams().isTermsOfServiceUrlProvided();
+
+        int termsTextId = customLayout == null
+                ? R.id.main_tos_and_pp
+                : customLayout.getTosPpView();
+
+        if (termsTextId >= 0) {
+            TextView termsText = findViewById(termsTextId);
+
             // No ToS or PP provided, so we should hide the view entirely
-            if (!getFlowParams().isPrivacyPolicyUrlProvided() &&
-                    !getFlowParams().isTermsOfServiceUrlProvided()) {
-                 termsText.setVisibility(View.GONE);
-             }
-      
+            if (!tosAndPpConfigured) {
+                termsText.setVisibility(View.GONE);
+            } else {
+                PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this,
+                        getFlowParams(),
+                        termsText);
+            }
         }
 
         //Handler for both
@@ -198,11 +207,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
         for (IdpConfig idpConfig : providerConfigs) {
             final String providerId = idpConfig.getProviderId();
+            if (!providerButtonIds.containsKey(providerId)) {
+                throw new IllegalStateException("No button found for auth provider: " + providerId);
+            }
+
             @IdRes int buttonId = providerButtonIds.get(providerId);
             View loginButton = findViewById(buttonId);
-            if (loginButton == null) {
-                throw new IllegalStateException("No button found for this auth provider");
-            }
             handleSignInOperation(idpConfig, loginButton);
         }
     }

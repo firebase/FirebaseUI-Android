@@ -46,16 +46,6 @@
                 android:layout_marginBottom="16dp"
                 android:text="@string/sign_in_silent" />
 
-            <Button
-                    android:id="@+id/customised_sign_in"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
-                    android:text="@string/custom_auth_picker_start"/>
-
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
@@ -118,6 +108,34 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/providers_anonymous" />
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/layout_header" />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/default_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/layout_default" />
+
+                <RadioButton
+                    android:id="@+id/custom_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/layout_custom" />
+
+            </RadioGroup>
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"

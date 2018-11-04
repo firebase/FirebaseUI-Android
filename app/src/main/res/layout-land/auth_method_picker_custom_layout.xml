@@ -6,19 +6,30 @@
     android:layout_height="match_parent"
     android:background="@drawable/custom_bg_gradient">
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.4" />
+
     <ImageView
         android:id="@+id/custom_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:src="@mipmap/ic_launcher_foreground"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/custom_subheader"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/header_idp_choice"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -29,11 +40,15 @@
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/custom_layout_subheader"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/custom_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/custom_logo"
+        app:layout_constraintBottom_toTopOf="@+id/custom_tos_pp"
+        app:layout_constraintEnd_toEndOf="@+id/guideline"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <!-- Horiz line, left of provider header -->
     <FrameLayout
@@ -41,7 +56,7 @@
         style="@style/CustomWingOuter"
         app:layout_constraintBottom_toBottomOf="@+id/header_idp_choice"
         app:layout_constraintEnd_toStartOf="@+id/header_idp_choice"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/header_idp_choice">
 
         <View style="@style/CustomWingInner" />
@@ -52,13 +67,15 @@
         android:id="@+id/header_idp_choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="@string/custom_layout_idp_header"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@+id/custom_google_signin_button"
         app:layout_constraintEnd_toStartOf="@+id/header_idp_wing_right"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/header_idp_wing_left"
-        app:layout_constraintTop_toBottomOf="@+id/custom_subheader" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Horiz line, right of provider header -->
     <FrameLayout
@@ -85,8 +102,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/fui_sign_in_with_google"
+        app:layout_constraintBottom_toTopOf="@+id/header_email"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/header_idp_choice" />
 
     <!-- Horiz line, left of email header -->
@@ -95,7 +114,7 @@
         style="@style/CustomWingOuter"
         app:layout_constraintBottom_toBottomOf="@+id/header_email"
         app:layout_constraintEnd_toStartOf="@+id/header_email"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/header_email">
 
         <View style="@style/CustomWingInner" />
@@ -110,7 +129,9 @@
         android:text="@string/custom_layout_email_header"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/custom_email_signin_clickable_text"
         app:layout_constraintEnd_toStartOf="@+id/header_email_wing_right"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/header_email_wing_left"
         app:layout_constraintTop_toBottomOf="@+id/custom_google_signin_button" />
 
@@ -136,13 +157,16 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
         android:text="@string/custom_layout_email_click_text"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/header_email" />
 
     <TextView
@@ -150,11 +174,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center_horizontal"
         android:textColor="#FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/custom_subheader"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="Terms of Service and Privacy Policy" />
 
 </android.support.constraint.ConstraintLayout>

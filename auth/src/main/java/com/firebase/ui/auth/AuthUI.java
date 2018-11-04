@@ -1231,6 +1231,11 @@ public final class AuthUI {
             return (T) this;
         }
 
+        /**
+         * Set a custom layout for the AuthMethodPickerActivity screen.
+         * See {@link AuthMethodPickerLayout}.
+         * @param authMethodPickerLayout custom layout descriptor object.
+         */
         @NonNull
         public T setAuthMethodPickerLayout(@NonNull AuthMethodPickerLayout authMethodPickerLayout) {
             mAuthMethodPickerLayout = authMethodPickerLayout;

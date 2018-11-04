@@ -49,7 +49,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -78,6 +77,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.email_link_provider) CheckBox mUseEmailLinkProvider;
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
     @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
+
+    @BindView(R.id.default_layout) RadioButton mDefaultLayout;
+    @BindView(R.id.custom_layout) RadioButton mCustomLayout;
 
     @BindView(R.id.default_theme) RadioButton mDefaultTheme;
     @BindView(R.id.green_theme) RadioButton mGreenTheme;
@@ -187,6 +189,24 @@ public class AuthUiActivity extends AppCompatActivity {
         mUseEmailLinkProvider.setChecked(false);
         mUseEmailProvider.setChecked(true);
 
+        // The custom layout in this app only supports Email and Google providers.
+        mCustomLayout.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    mUseGoogleProvider.setChecked(true);
+                    mUseEmailProvider.setChecked(true);
+
+                    mUseFacebookProvider.setChecked(false);
+                    mUseTwitterProvider.setChecked(false);
+                    mUseGitHubProvider.setChecked(false);
+                    mUseEmailLinkProvider.setChecked(false);
+                    mUsePhoneProvider.setChecked(false);
+                    mUseAnonymousProvider.setChecked(false);
+                }
+            }
+        });
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)
                 || ConfigurationUtils.isTwitterMisconfigured(this)
@@ -241,6 +261,18 @@ public class AuthUiActivity extends AppCompatActivity {
                 .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                         mEnableHintSelector.isChecked());
 
+        if (mCustomLayout.isChecked()) {
+            AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                    .Builder(R.layout.auth_method_picker_custom_layout)
+                    .setGoogleButtonId(R.id.custom_google_signin_button)
+                    .setEmailButtonId(R.id.custom_email_signin_clickable_text)
+                    .setTosAndPrivacyPolicyId(R.id.custom_tos_pp)
+                    .build();
+
+            builder.setTheme(R.style.CustomTheme);
+            builder.setAuthMethodPickerLayout(customLayout);
+        }
+
         if (getSelectedTosUrl() != null && getSelectedPrivacyPolicyUrl() != null) {
             builder.setTosAndPrivacyPolicyUrls(
                     getSelectedTosUrl(),
@@ -258,32 +290,6 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         return builder.build();
-    }
-
-    @OnClick(R.id.customised_sign_in)
-    public void signInCustomLayout() {
-        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
-                .Builder(R.layout.auth_method_picker_custom_layout)
-                .setupGoogleButtonId(R.id.custom_google_signin_button)
-                .setupEmailButtonId(R.id.custom_email_signin_clickable_text)
-                .build();
-
-        //For now we only test Google and Email
-        List<IdpConfig> availableProviders = Arrays.asList(
-                new AuthUI.IdpConfig.GoogleBuilder()
-                        .setScopes(getGoogleScopes())
-                        .build(),
-                new IdpConfig.EmailBuilder()
-                        .setRequireName(mRequireName.isChecked())
-                        .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
-                        .build());
-
-        startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setAvailableProviders(availableProviders)
-                        .setAuthMethodPickerLayout(customLayout)
-                        .build(),
-                RC_SIGN_IN);
     }
 
     @OnClick(R.id.sign_in_silent)
