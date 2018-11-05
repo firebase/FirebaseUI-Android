@@ -98,6 +98,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mSubmitButton.setOnClickListener(this);
 
         setupPrivacyDisclosures(view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
+        setupCountrySpinner();
     }
 
     @Override
@@ -115,12 +116,12 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             }
         });
 
-        if (savedInstanceState != null || mCalled) { return; }
+        if (savedInstanceState != null || mCalled) {
+            return;
+        }
         // Fragment back stacks are the stuff of nightmares (what's new?): the fragment isn't
         // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
         mCalled = true;
-
-        setupCountrySpinner();
     }
 
     @Override
