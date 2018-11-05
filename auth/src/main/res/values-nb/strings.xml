@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laster inn…</string>
     <string name="fui_sign_in_default">Logg på</string>
     <string name="fui_tos_and_pp">Ved å fortsette godtar du %1$s og %2$s våre.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Personvernregler</string>
     <string name="fui_welcome_back_idp_header">Du har allerede en konto</string>
     <string name="fui_welcome_back_email_header">Velkommen tilbake!</string>
+    <string name="fui_welcome_back_email_link_header">Du har allerede en konto\n</string>
     <string name="fui_welcome_back_idp_prompt">Du har allerede brukt %1$s. Logg på med %2$s for å fortsette.</string>
     <string name="fui_welcome_back_password_prompt_body">Du har allerede brukt %1$s for å logge på. Angi passordet ditt for denne kontoen.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Du har allerede brukt %1$s. Du kan koble %2$s-kontoen din til %1$s ved å logge på med e-postlinken nedenfor.\n\nDu må åpne linken med den samme enheten eller nettleseren for at %2$s-kontoen din skal bli koblet til denne e-postadressen.</string>
     <string name="fui_progress_dialog_signing_in">Logger på…</string>
     <string name="fui_trouble_signing_in">Har du problemer med å logge på?</string>
     <string name="fui_title_recover_password_activity">Gjenopprett passordet</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Det oppsto en ukjent feil.</string>
     <string name="fui_error_invalid_password">Feil passord.</string>
     <string name="fui_accessibility_logo">App-logo</string>
+    <string name="fui_email_link_header">Påloggings-e-post er sendt\n</string>
+    <string name="fui_email_link_email_sent">En påloggings-e-post med ytterligere veiledning er sendt til %1$s. Sjekk e-posten din for å fullføre påloggingen.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Problemer med å motta e-posten?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Prøv disse vanlige løsningene:\n\u2022 Sjekk om e-posten ble merket som søppelpost eller filtrert bort.\n\u2022 Sjekk internettilkoblingen din.\n\u2022 Sjekk at du ikke har skrevet e-postadressen din feil.\n\u2022 Sjekk at innboksen din ikke er full, og se etter andre problemer knyttet til innboksinnstillingene.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Hvis trinnene ovenfor ikke bidro til å løse problemet, kan du sende e-posten på nytt. Merk at denne handlingen deaktiverer linken i den forrige e-posten.</string>
+    <string name="fui_email_link_resend">Send på nytt</string>
+    <string name="fui_email_link_wrong_device_header">Ny enhet eller nettleser er registrert.</string>
+    <string name="fui_email_link_wrong_device_message">Prøv å åpne linken med den samme enheten eller nettleseren som du brukte til å starte påloggingsprosessen.</string>
+    <string name="fui_email_link_invalid_link_header">Ugyldig e-postlink.</string>
+    <string name="fui_email_link_invalid_link_message">E-postlinken er ugyldig. Dette kan skje hvis e-postlinken er utløpt eller allerede brukt til pålogging. Start påloggingsprosessen på nytt.</string>
+    <string name="fui_email_link_dismiss_button">Lukk</string>
     <string name="fui_verify_phone_number_title">Oppgi telefonnummeret ditt</string>
     <string name="fui_invalid_phone_number">Oppgi et gyldig telefonnummer</string>
     <string name="fui_enter_confirmation_code">Oppgi den 6-sifrede koden vi sendte til</string>

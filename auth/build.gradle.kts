@@ -11,7 +11,8 @@ android {
 
     lintOptions {
         disable("UnusedQuantity")
-        disable("UnknownNullness") // TODO fix in future PR
+        disable("UnknownNullness")  // TODO fix in future PR
+        disable("TypographyQuotes") // Straight versus directional quotes
     }
 
     testOptions {

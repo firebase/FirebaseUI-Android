@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuatkan…</string>
     <string name="fui_sign_in_default">Log masuk</string>
     <string name="fui_tos_and_pp">Dengan meneruskan, anda menyatakan bahawa anda menerima %1$s dan %2$s kami.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Dasar Privasi</string>
     <string name="fui_welcome_back_idp_header">Anda sudah mempunyai akaun</string>
     <string name="fui_welcome_back_email_header">Selamat kembali!</string>
+    <string name="fui_welcome_back_email_link_header">Anda sudah mempunyai akaun\n</string>
     <string name="fui_welcome_back_idp_prompt">Anda sudah menggunakan %1$s. Log masuk dengan %2$s untuk teruskan.</string>
     <string name="fui_welcome_back_password_prompt_body">Anda sudah menggunakan %1$s untuk log masuk. Masukkan kata laluan anda untuk akaun tersebut.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Anda sudah menggunakan %1$s. Anda boleh menyambungkan akaun %2$s anda dengan %1$s melalui log masuk menggunakan pautan e-mel di bawah.\n\nUntuk memastikan aliran ini disambungkan kepada akaun %2$s anda menggunakan e-mel ini, anda perlu membuka pautan pada peranti atau penyemak imbas yang sama.</string>
     <string name="fui_progress_dialog_signing_in">Log masuk…</string>
     <string name="fui_trouble_signing_in">Menghadapi masalah log masuk?</string>
     <string name="fui_title_recover_password_activity">Pulihkan kata laluan</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Ralat tidak diketahui telah berlaku.</string>
     <string name="fui_error_invalid_password">Kata laluan tidak betul.</string>
     <string name="fui_accessibility_logo">Logo apl</string>
+    <string name="fui_email_link_header">E-mel log masuk dihantar\n</string>
+    <string name="fui_email_link_email_sent">E-mel log masuk dengan arahan tambahan telah dihantar ke %1$s. Semak e-mel anda untuk melengkapkan log masuk.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Tidak menerima e-mel?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Cuba pembetulan lazim berikut:\n\u2022 Pastikan e-mel tidak ditandakan sebagai spam atau ditapis.\n\u2022 Semak sambungan Internet anda.\n\u2022 Pastikan e-mel anda dieja dengan betul.\n\u2022 Pastikan peti masuk anda tidak kehabisan ruang atau tiada isu berkaitan tetapan peti masuk yang lain.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Jika langkah di atas tidak boleh digunakan, anda boleh menghantar semula e-mel. Sila ambil perhatian bahawa tindakan ini akan menyahaktifkan pautan dalam e-mel sebelumnya.</string>
+    <string name="fui_email_link_resend">Hantar semula</string>
+    <string name="fui_email_link_wrong_device_header">Peranti atau penyemak imbas baharu telah dikesan.</string>
+    <string name="fui_email_link_wrong_device_message">Cuba buka pautan menggunakan peranti atau penyemak imbas sama yang anda gunakan untuk memulakan proses log masuk.</string>
+    <string name="fui_email_link_invalid_link_header">Pautan e-mel tidak sah.</string>
+    <string name="fui_email_link_invalid_link_message">Pautan e-mel tidak sah. Isu ini boleh berlaku jika pautan e-mel tamat tempoh atau telah digunakan untuk log masuk. Sila mulakan semula aliran log masuk.</string>
+    <string name="fui_email_link_dismiss_button">Ketepikan</string>
     <string name="fui_verify_phone_number_title">Masukkan nombor telefon anda</string>
     <string name="fui_invalid_phone_number">Masukkan nombor telefon yang sah</string>
     <string name="fui_enter_confirmation_code">Masukkan kod 6 digit yang kami hantar ke</string>

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
     <string name="fui_sign_in_default">سائن ان کریں</string>
     <string name="fui_tos_and_pp">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s اور %2$s کو قبول کرتے ہیں۔</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">رازداری کی پالیسی</string>
     <string name="fui_welcome_back_idp_header">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ موجود ہے</string>
     <string name="fui_welcome_back_email_header">واپسی پر خوش آمدید!</string>
+    <string name="fui_welcome_back_email_link_header">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ ہے‎\n</string>
     <string name="fui_welcome_back_idp_prompt">آپ نے پہلے ہی %1$s استعمال کر لیا ہے۔ جاری رکھنے کے لیے %2$s کے ساتھ سائن ان کریں۔</string>
     <string name="fui_welcome_back_password_prompt_body">آپ نے پہلے ہی %1$s استعمال کر لیا ہے سائن کرنے کے لیے۔ اس کاؤنٹ کے لیے اپنا پاس ورڈ درج کریں۔</string>
+    <string name="fui_welcome_back_email_link_prompt_body">آپ پہلے ہی %1$s استعمال کر چکے ہیں۔ ذیل میں موجود ای میل کے لنک کے ساتھ سائن ان کر کے آپ اپنے %2$s اکاؤنٹ کو %1$s سے منسلک کر سکتے ہیں۔‎\n\nاس فلو کو کامیابی کے ساتھ آپ کے %2$s اکاؤنٹ کو اس ای میل کے ساتھ شامل کرنے کیلئے آپ کو اسی آلہ یا براؤزر پر لنک کھولنا ہوگا۔</string>
     <string name="fui_progress_dialog_signing_in">سائن ان ہو رہا ہے…</string>
     <string name="fui_trouble_signing_in">سائن ان کرنے میں دشواری؟</string>
     <string name="fui_title_recover_password_activity">پاس ورڈ بازیافت کریں</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">ایک نامعلوم خرابی پیش آ گئی۔</string>
     <string name="fui_error_invalid_password">غلط پاس ورڈ۔</string>
     <string name="fui_accessibility_logo">ایپ لوگو</string>
+    <string name="fui_email_link_header">سائن ان ای میل بھیج دی گئی‎\n</string>
+    <string name="fui_email_link_email_sent">ایک سائن ان ای میل اضافی ہدایات کے ساتھ %1$s کو بھیج دی گئی ہے۔ سائن ان مکمل کرنے کیلئے اپنی ای میل چیک کریں۔</string>
+    <string name="fui_email_link_trouble_getting_email_header">ای میل حاصل کرنے میں دشواری پیش آ رہی ہے؟</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">یہ عام اصلاحات آزمائیں:‎\n\u2022 چیک کریں کہ آیا ای میل کو اسپام یا فلٹر شدہ کے بطور نشان زد تو نہیں کیا گیا ہے۔‎\n\u2022 اپنا انٹرنیٹ کنکشن چیک کریں۔‎\n\u2022 چیک کریں کہ آپ نے اپنی ای میل میں ہجے کی کوئی غلطی تو نہیں کی ہے۔‎\n\u2022 چیک کریں کہ آپ کے ان باکس میں جگہ ختم تو نہیں ہو رہی ہے یا ان باکس کی ترتیب سے متعلق کوئی دوسرا مسئلہ تو نہیں ہے۔‎\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">اگر مندرجہ بالا مراحل کام نہ کریں تو آپ ای میل دوبارہ بھیج سکتے ہیں۔ نوٹ کریں کہ اس سے پرانی ای میل میں موجود لنک غیر فعال ہو جائے گا۔</string>
+    <string name="fui_email_link_resend">دوبارہ بھیجیں</string>
+    <string name="fui_email_link_wrong_device_header">نئے آلہ یا براؤزر کا پتا چلا ہے۔</string>
+    <string name="fui_email_link_wrong_device_message">جہاں آپ نے سائن ان کا عمل شروع کیا تھا، اسی آلہ یا براؤزر کا استعمال کر کے لنک کھولنے کی کوشش کریں۔</string>
+    <string name="fui_email_link_invalid_link_header">غلط ای میل لنک۔</string>
+    <string name="fui_email_link_invalid_link_message">ای میل کا لنک غلط ہے۔ اگر ای میل کے لنک کی میعاد ختم ہو جاتی ہے یا سائن ان کرنے کیلئے پہلے ہی اس کا استعمال کیا چکا ہے تو ایسا ہو سکتا ہے۔ براہ کرم لاگ ان فلو کو دوبارہ شروع کریں۔</string>
+    <string name="fui_email_link_dismiss_button">برخاست کریں</string>
     <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>

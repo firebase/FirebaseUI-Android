@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Đang tải…</string>
     <string name="fui_sign_in_default">Đăng nhập</string>
     <string name="fui_tos_and_pp">Bằng cách tiếp tục, bạn cho biết rằng bạn chấp nhận %1$s và %2$s của chúng tôi.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Chính sách bảo mật</string>
     <string name="fui_welcome_back_idp_header">Bạn đã có tài khoản</string>
     <string name="fui_welcome_back_email_header">Chào mừng bạn quay trở lại!</string>
+    <string name="fui_welcome_back_email_link_header">Bạn đã có tài khoản\n</string>
     <string name="fui_welcome_back_idp_prompt">Bạn đã sử dụng %1$s. Đăng nhập bằng %2$s để tiếp tục.</string>
     <string name="fui_welcome_back_password_prompt_body">Bạn đã sử dụng %1$s để đăng nhập. Hãy nhập mật khẩu của bạn cho tài khoản đó.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Bạn đã sử dụng %1$s. Bạn có thể kết nối tài khoản %2$s của mình với %1$s bằng cách đăng nhập vào liên kết email bên dưới.\n\nĐể quy trình kết nối tài khoản %2$s của bạn với email này diễn ra thành công, bạn phải mở liên kết trên cùng một thiết bị hoặc trình duyệt.</string>
     <string name="fui_progress_dialog_signing_in">Đang đăng nhập…</string>
     <string name="fui_trouble_signing_in">Bạn gặp sự cố khi đăng nhập?</string>
     <string name="fui_title_recover_password_activity">Khôi phục mật khẩu</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Đã xảy ra lỗi không xác định.</string>
     <string name="fui_error_invalid_password">Sai mật khẩu.</string>
     <string name="fui_accessibility_logo">Biểu trưng ứng dụng</string>
+    <string name="fui_email_link_header">Đã gửi email đăng nhập\n</string>
+    <string name="fui_email_link_email_sent">Email đăng nhập có hướng dẫn bổ sung đã được gửi tới %1$s. Hãy tìm email này trong hộp thư của bạn để hoàn tất đăng nhập.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Bạn gặp vấn đề khi nhận email?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Hãy thử các biện pháp khắc phục phổ biến sau:\n\u2022 Kiểm tra xem email có bị đánh dấu là spam hay đã được lọc.\n\u2022 Kiểm tra kết nối Internet của bạn.\n\u2022 Kiểm tra để đảm bảo bạn không viết sai chính tả tên email.\n\u2022 Kiểm tra để đảm bảo hộp thư đến của bạn chưa hết dung lượng và không có vấn đề về cài đặt hộp thư đến.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Nếu các bước trên không hiệu quả, bạn có thể gửi lại email. Vui lòng lưu ý rằng thao tác này sẽ hủy kích hoạt đường dẫn liên kết trong email cũ.</string>
+    <string name="fui_email_link_resend">Gửi lại</string>
+    <string name="fui_email_link_wrong_device_header">Đã phát hiện thiết bị hoặc trình duyệt mới.</string>
+    <string name="fui_email_link_wrong_device_message">Hãy thử mở liên kết bằng cùng một thiết bị hoặc trình duyệt mà bạn dùng để bắt đầu quá trình đăng nhập.</string>
+    <string name="fui_email_link_invalid_link_header">Liên kết email không hợp lệ.</string>
+    <string name="fui_email_link_invalid_link_message">Liên kết email không hợp lệ. Vấn đề này có thể xảy ra nếu liên kết email đã hết hạn hoặc đã được dùng để đăng nhập trước đó. Vui lòng thực hiện lại quy trình đăng nhập.</string>
+    <string name="fui_email_link_dismiss_button">Bỏ qua</string>
     <string name="fui_verify_phone_number_title">Nhập số điện thoại của bạn</string>
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>
     <string name="fui_enter_confirmation_code">Nhập mã 6 chữ số mà chúng tôi đã gửi cho bạn</string>

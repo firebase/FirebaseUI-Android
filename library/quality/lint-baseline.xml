@@ -7,4 +7,13 @@
         message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location file="src/main/AndroidManifest.xml" />
     </issue>
+
+    <!-- This is an acceptable misspelling for German -->
+    <issue
+        id="Typos"
+        severity="Error"
+        message="&quot;abzuschliessen&quot; is a common misspelling; did you mean &quot;abzuschließen&quot; ?"
+        category="Correctness:Messages">
+        <location file="auth/src/main/res/values-de-rCH/strings.xml" />
+    </issue>
 </issues>

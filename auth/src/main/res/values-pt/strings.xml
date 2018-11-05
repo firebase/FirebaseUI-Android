@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Carregando…</string>
     <string name="fui_sign_in_default">Fazer login</string>
     <string name="fui_tos_and_pp">Ao continuar, você concorda com nossos %1$s e a %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Política de privacidade</string>
     <string name="fui_welcome_back_idp_header">Você já tem uma conta</string>
     <string name="fui_welcome_back_email_header">É bom ver você novamente!</string>
+    <string name="fui_welcome_back_email_link_header">Você já tem uma conta\n</string>
     <string name="fui_welcome_back_idp_prompt">Você já usou o e-mail %1$s. Faça login com o %2$s para continuar.</string>
     <string name="fui_welcome_back_password_prompt_body">Você já usou o e-mail %1$s para fazer login. Insira a senha dessa conta.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Você já usou %1$s. Você pode conectar sua conta do %2$s com %1$s ao fazer login usando o link de e-mail abaixo.\n\nPara conectar sua conta do %2$s com este e-mail, é necessário abrir o link no mesmo dispositivo ou navegador.</string>
     <string name="fui_progress_dialog_signing_in">Fazendo login…</string>
     <string name="fui_trouble_signing_in">Problemas com login?</string>
     <string name="fui_title_recover_password_activity">Recuperar a senha</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Ocorreu um erro desconhecido.</string>
     <string name="fui_error_invalid_password">A senha está incorreta.</string>
     <string name="fui_accessibility_logo">Logotipo do app</string>
+    <string name="fui_email_link_header">E-mail de login enviado\n</string>
+    <string name="fui_email_link_email_sent">Um e-mail de login com mais instruções foi enviado para %1$s. Verifique sua caixa de entrada para concluir o login.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Problemas para receber e-mails?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Utilize estas soluções comuns:\n\u2022 Verifique se o e-mail foi filtrado ou marcado como spam\n\u2022 Verifique sua conexão com a Internet.\n\u2022 Verifique se você digitou seu e-mail corretamente.\n\u2022 Verifique se a sua caixa de entrada está cheia ou se ela está com outro tipo de problema.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Se as etapas acima não funcionarem, envie o e-mail novamente. Observação: isso desativará o link do e-mail anterior.</string>
+    <string name="fui_email_link_resend">Reenviar</string>
+    <string name="fui_email_link_wrong_device_header">Novo dispositivo ou navegador detectado.</string>
+    <string name="fui_email_link_wrong_device_message">Tente abrir o link usando o mesmo dispositivo ou navegador que você usou para iniciar o processo de login.</string>
+    <string name="fui_email_link_invalid_link_header">Link de e-mail inválido.</string>
+    <string name="fui_email_link_invalid_link_message">O link de email é inválido. Esse problema pode acontecer se o link de e-mail expirou ou já foi usado para fazer login. Reinicie o processo de login.</string>
+    <string name="fui_email_link_dismiss_button">Dispensar</string>
     <string name="fui_verify_phone_number_title">Insira o número do seu telefone</string>
     <string name="fui_invalid_phone_number">Insira um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Insira o código de 6 dígitos enviado para</string>

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Načítání…</string>
     <string name="fui_sign_in_default">Přihlásit se</string>
     <string name="fui_tos_and_pp">Budete-li pokračovat, vyjadřujete svůj souhlas s dokumenty %1$s a %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Zásady ochrany soukromí</string>
     <string name="fui_welcome_back_idp_header">Již máte účet</string>
     <string name="fui_welcome_back_email_header">Vítejte zpět!</string>
+    <string name="fui_welcome_back_email_link_header">Již máte účet\n</string>
     <string name="fui_welcome_back_idp_prompt">Již jste použili adresu %1$s. Chcete-li pokračovat, přihlaste se prostřednictvím služby %2$s.</string>
     <string name="fui_welcome_back_password_prompt_body">K přihlášení jste již použili adresu %1$s. Zadejte příslušné heslo k účtu.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">E-mailovou adresu %1$s jste již použili. Svůj účet %2$s můžete s e-mailovou adresou %1$s propojit přihlášením prostřednictvím odkazu níže.\n\nAby došlo k úspěšnému propojení účtu %2$s s touto e-mailovou adresou, musíte odkaz otevřít na stejném zařízení nebo ve stejném prohlížeči.</string>
     <string name="fui_progress_dialog_signing_in">Přihlašování…</string>
     <string name="fui_trouble_signing_in">Máte potíže s přihlášením?</string>
     <string name="fui_title_recover_password_activity">Obnovit heslo</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Došlo k neznámé chybě.</string>
     <string name="fui_error_invalid_password">Nesprávné heslo.</string>
     <string name="fui_accessibility_logo">Logo aplikace</string>
+    <string name="fui_email_link_header">Přihlašovací e-mail odeslán\n</string>
+    <string name="fui_email_link_email_sent">Na adresu %1$s byl odeslán přihlašovací e-mail s dalšími pokyny. Dokončete přihlášení podle instrukcí v e-mailu.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Nepřišel vám e-mail?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Vyzkoušejte tyto běžné opravy:\n\u2022 Zkontrolujte, jestli nebyl e-mail označen jako spam nebo vyfiltrován.\n\u2022 Zkontrolujte své připojení k internetu.\n\u2022 Zkontrolujte, že jste napsali e-mailovou adresu správně.\n\u2022 Zkontrolujte, že ve vaší e-mailové schránce máte dostatek úložného prostoru nebo jiné problémy týkající se nastavení schránky.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Pokud žádné z uvedených řešení nepomohlo, můžete si e-mail nechat zaslat znovu. Odkaz v prvním e-mailu pak bude deaktivován.</string>
+    <string name="fui_email_link_resend">Odeslat znovu</string>
+    <string name="fui_email_link_wrong_device_header">Bylo rozpoznáno nové zařízení nebo prohlížeč</string>
+    <string name="fui_email_link_wrong_device_message">Otevřete odkaz na stejném zařízení nebo ve stejném prohlížeči, kde jste proces přihlášení započali.</string>
+    <string name="fui_email_link_invalid_link_header">Neplatný e-mailový odkaz.</string>
+    <string name="fui_email_link_invalid_link_message">E-mailový odkaz je neplatný. K tomu může dojít, pokud platnost emailového odkazu vypršela nebo byl k přihlášení již použit. Přihlaste se znovu.</string>
+    <string name="fui_email_link_dismiss_button">Zavřít</string>
     <string name="fui_verify_phone_number_title">Zadejte své telefonní číslo</string>
     <string name="fui_invalid_phone_number">Zadejte platné telefonní číslo</string>
     <string name="fui_enter_confirmation_code">Zadejte šestimístný kód, který jsme vám zaslali</string>
