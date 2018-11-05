@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड हो रहा है…</string>
     <string name="fui_sign_in_default">प्रवेश करें</string>
     <string name="fui_tos_and_pp">जारी रखकर, आप यह बताते हैं कि आप हमारी %1$s और %2$s को मंज़ूर करते हैं.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">निजता नीति</string>
     <string name="fui_welcome_back_idp_header">आपके पास पहले से ही एक खाता है</string>
     <string name="fui_welcome_back_email_header">आपका फिर से स्वागत है!</string>
+    <string name="fui_welcome_back_email_link_header">आपके पास पहले से ही एक खाता है\n</string>
     <string name="fui_welcome_back_idp_prompt">आपने पहले ही %1$s का उपयोग कर लिया है. जारी रखने के लिए %2$s से प्रवेश करें.</string>
     <string name="fui_welcome_back_password_prompt_body">आपने पहले ही प्रवेश करने के लिए %1$s का उपयोग कर लिया है. उस खाते के लिए अपना पासवर्ड डालें.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">आप पहले ही %1$s का इस्तेमाल कर चुके हैं. आप नीचे दिए गए ईमेल लिंक के ज़रिए साइन इन करके अपना %2$s खाता %1$s के साथ जोड़ सकते हैं.\n\n अपने %2$s खाते को इस ईमेल पते से सफलतापूर्वक जोड़ने के लिए आपको उसी डिवाइस या ब्राउज़र पर लिंक खोलना होगा, जिससे आपने साइन-इन किया था.</string>
     <string name="fui_progress_dialog_signing_in">प्रवेश हो रहा है…</string>
     <string name="fui_trouble_signing_in">प्रवेश करने में समस्या?</string>
     <string name="fui_title_recover_password_activity">पासवर्ड फिर से पाएं</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">ऐसी गड़बड़ी हुई है, जिसके बारे में पता नहीं है.</string>
     <string name="fui_error_invalid_password">गलत पासवर्ड.</string>
     <string name="fui_accessibility_logo">ऐप्लिकेशन लोगो</string>
+    <string name="fui_email_link_header">साइन-इन ईमेल भेजा गया\n</string>
+    <string name="fui_email_link_email_sent">ज़्यादा निर्देशों वाला एक ईमेल %1$s पर भेजा गया है. साइन-इन पूरा करने के लिए अपना ईमेल देखें.</string>
+    <string name="fui_email_link_trouble_getting_email_header">क्या ईमेल मिलने में दिक्कत हो रही है?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">समाधान के इन सामान्य तरीकों को आज़माएं:\n\u2022 देख लें कि ईमेल स्पैम फ़ोल्डर में तो नहीं चला गया या फिर फ़िल्टर तो नहीं हो गया है.\n\u2022 अपने इंटरनेट कनेक्शन की जाँच करें.\n\u2022 देख लें कि आपने अपने ईमेल पते की वर्तनी गलत तो नहीं लिखी है.\n\u2022 देख लें कि आपके इनबॉक्स में नए ईमेल आने के लिए जगह है या नहीं या इनबॉक्स सेटिंग से जुड़ी दूसरी समस्याएं तो नहीं हैं.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">अगर ऊपर दिए गए सुझावों से काम नहीं बनता है, तो आप फिर से ईमेल भेज सकते हैं. ध्यान दें कि ऐसा करने से पुराने ईमेल का लिंक बंद हो जाएगा.</string>
+    <string name="fui_email_link_resend">फिर से भेजें</string>
+    <string name="fui_email_link_wrong_device_header">नए डिवाइस या ब्राउज़र का पता चला है.</string>
+    <string name="fui_email_link_wrong_device_message">उसी डिवाइस या ब्राउज़र का इस्तेमाल करके लिंक खोलने की कोशिश करें जिससे आपने साइन-इन करना शुरू किया था.</string>
+    <string name="fui_email_link_invalid_link_header">गलत ईमेल लिंक.</string>
+    <string name="fui_email_link_invalid_link_message">ईमेल लिंक गलत है. ऐसा तब हो सकता है जब ईमेल लिंक की समय-सीमा खत्म हो गई हो या लिंक का इस्तेमाल साइन इन करने के लिए पहले ही किया जा चुका हो. कृपया लॉग-इन प्रोसेस फिर से शुरू करें.</string>
+    <string name="fui_email_link_dismiss_button">खारिज करें</string>
     <string name="fui_verify_phone_number_title">अपना फ़ोन नंबर डालें</string>
     <string name="fui_invalid_phone_number">कोई मान्य फ़ोन नंबर डालें</string>
     <string name="fui_enter_confirmation_code">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>

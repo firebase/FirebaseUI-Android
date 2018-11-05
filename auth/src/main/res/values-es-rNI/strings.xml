@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Acceder</string>
     <string name="fui_tos_and_pp">Si continúas, indicas que aceptas nuestras %1$s y %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Política de privacidad</string>
     <string name="fui_welcome_back_idp_header">Ya tienes una cuenta</string>
     <string name="fui_welcome_back_email_header">¡Te damos la bienvenida nuevamente!</string>
+    <string name="fui_welcome_back_email_link_header">Ya tienes una cuenta\n</string>
     <string name="fui_welcome_back_idp_prompt">Ya usaste %1$s. Accede con %2$s para continuar.</string>
     <string name="fui_welcome_back_password_prompt_body">Ya usaste %1$s para acceder. Ingresa la contraseña correspondiente.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Ya usaste %1$s. Si quieres conectar tu cuenta de %2$s con %1$s, accede mediante el vínculo del correo electrónico que aparece a continuación.\n\nPara que este flujo conecte correctamente tu cuenta de %2$s con este correo electrónico, debes abrir el vínculo en el mismo dispositivo o navegador.</string>
     <string name="fui_progress_dialog_signing_in">Accediendo…</string>
     <string name="fui_trouble_signing_in">¿Tienes problemas para acceder?</string>
     <string name="fui_title_recover_password_activity">Recuperar contraseña</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Se produjo un error desconocido.</string>
     <string name="fui_error_invalid_password">Contraseña incorrecta.</string>
     <string name="fui_accessibility_logo">Logotipo de la app</string>
+    <string name="fui_email_link_header">Se envió el correo electrónico de acceso\n</string>
+    <string name="fui_email_link_email_sent">Se envió un correo electrónico de acceso con instrucciones adicionales a %1$s. Revisa tu bandeja de entrada para completar el proceso.</string>
+    <string name="fui_email_link_trouble_getting_email_header">¿Tienes problemas para recibir correos electrónicos?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Prueba estas soluciones comunes:\n\u2022 Revisa si el correo electrónico se marcó como spam o se filtró.\n\u2022 Comprueba tu conexión a Internet.\n\u2022 Verifica que hayas escrito correctamente el correo electrónico.\n\u2022 Verifica que el espacio de tu bandeja de entrada no se esté agotando o revisa cualquier otro problema relacionado con su configuración.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Si los pasos anteriores no funcionaron, puedes reenviar el correo electrónico. Ten en cuenta que esta acción desactivará el vínculo en el correo electrónico más antiguo.</string>
+    <string name="fui_email_link_resend">Reenviar</string>
+    <string name="fui_email_link_wrong_device_header">Se detectó un dispositivo o navegador nuevo</string>
+    <string name="fui_email_link_wrong_device_message">Intenta abrir el vínculo con el mismo dispositivo o navegador en el que comenzaste el proceso de acceso.</string>
+    <string name="fui_email_link_invalid_link_header">Vínculo de correo electrónico no válido</string>
+    <string name="fui_email_link_invalid_link_message">El vínculo del correo electrónico no es válido. Esto puede deberse a que el vínculo venció o que ya se usó para acceder. Reinicia el flujo de acceso.</string>
+    <string name="fui_email_link_dismiss_button">Descartar</string>
     <string name="fui_verify_phone_number_title">Ingresa tu número de teléfono</string>
     <string name="fui_invalid_phone_number">Ingresa un número de teléfono válido</string>
     <string name="fui_enter_confirmation_code">Ingresa el código de 6 dígitos que enviamos al número</string>

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">লোড হচ্ছে…</string>
     <string name="fui_sign_in_default">সাইন-ইন করুন</string>
     <string name="fui_tos_and_pp">চালিয়ে যাওয়ার অর্থ, আপনি আমাদের %1$s এবং %2$s-এর সাথে সম্মত।</string>
@@ -32,13 +32,15 @@
     <string name="fui_privacy_policy">গোপনীয়তা নীতি</string>
     <string name="fui_welcome_back_idp_header">আপনার আগে থেকেই একটি অ্যাকাউন্ট আছে</string>
     <string name="fui_welcome_back_email_header">আবার স্বাগতম!</string>
+    <string name="fui_welcome_back_email_link_header">আপনার আগে থেকেই একটি অ্যাকাউন্ট আছে\n</string>
     <string name="fui_welcome_back_idp_prompt">আপনি %1$s আগেই ব্যবহার করেছেন। চালিয়ে যেতে %2$s দিয়ে সাইন-ইন করুন।</string>
     <string name="fui_welcome_back_password_prompt_body">আপনি আগেই %1$s দিয়ে সাইন-ইন করেছেন। সেই অ্যাকাউন্টের জন্য পাসওয়ার্ডটি লিখুন।</string>
+    <string name="fui_welcome_back_email_link_prompt_body">আপনি আগে থেকেই %1$s ব্যবহার করে ফেলেছেন। নিচের ইমেল লিঙ্কে সাইন-ইন করে আপনি আপনার %2$s অ্যাকাউন্ট %1$s-এ কানেক্ট করতে পারেন।\n\nএই ইমেলে আপনার %2$s অ্যাকাউন্টটি কানেক্ট করার জন্য আপনাকে একই ডিভাইস অথবা ব্রাউজারে লিঙ্কটি খুলতে হবে।</string>
     <string name="fui_progress_dialog_signing_in">সাইন-ইন করা হচ্ছে…</string>
     <string name="fui_trouble_signing_in">সাইন-ইন করতে সমস্যা হচ্ছে?</string>
     <string name="fui_title_recover_password_activity">পাসওয়ার্ড পুনরুদ্ধার করুন</string>
     <string name="fui_title_confirm_recover_password">আপনার ইমেল দেখুন</string>
-    <string name="fui_password_recovery_body">কিভাবে পাসওয়ার্ড পুনরুদ্ধার করতে হবে তা ইমেলে পাঠানো নির্দেশাবলী থেকে জানুন।</string>
+    <string name="fui_password_recovery_body">কীভাবে পাসওয়ার্ড পুনরুদ্ধার করতে হবে তা ইমেলে পাঠানো নির্দেশাবলী থেকে জানুন।</string>
     <string name="fui_button_text_send">পাঠান</string>
     <string name="fui_confirm_recovery_body">আপনার পাসওয়ার্ড পুনরুদ্ধার করতে %1$s তে পাঠানো নির্দেশ অনুসরণ করুন।</string>
     <string name="fui_progress_dialog_sending">পাঠানো হচ্ছে…</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">অজানা একটি সমস্যা হয়েছে।</string>
     <string name="fui_error_invalid_password">পাসওয়ার্ডটি সঠিক নয়।</string>
     <string name="fui_accessibility_logo">অ্যাপের লোগো</string>
+    <string name="fui_email_link_header">সাইন-ইন করার ইমেল পাঠানো হয়েছে\n</string>
+    <string name="fui_email_link_email_sent">অতিরিক্ত নির্দেশাবলী সহ সাইন-ইন করার একটি ইমেল %1$s-এ পাঠানো হয়েছে। সাইন-ইন করার জন্য আপনার ইমেল দেখুন।</string>
+    <string name="fui_email_link_trouble_getting_email_header">ইমেল পেতে সমস্যা হচ্ছে?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">সাধারণ সমাধানগুলি ব্যবহার করে দেখুন:\n\u2022 ইমেলটি স্প্যাম হিসেবে চিহ্নিত করে স্প্যাম ফোল্ডারে পাঠানো হয়েছে কিনা তা দেখুন।\n\u2022 আপনার ইন্টারনেট কানেকশন যাচাই করুন।\n\u2022 আপনার ইমেল আইডিতে কোনও ভুল বানান লিখেছেন কিনা দেখে নিন।\n\u2022 আপনার ইনবক্সের স্পেস শেষ হয়ে গেছে কিনা এবং ইনবক্স সংক্রান্ত অন্যান্য সমস্যাগুলি একবার দেখে নিন।\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">তারপরেও ইমেলটি না পেলে, আপনি তা আবার পাঠাতে পারেন। তবে, প্রথমে যে ইমেলটি পাঠানো হয়েছিল তাতে থাকা লিঙ্কটি আর কাজ করবে না।</string>
+    <string name="fui_email_link_resend">আবার পাঠান</string>
+    <string name="fui_email_link_wrong_device_header">এই ডিভাইস বা ব্রাউজারটি আলাদা।</string>
+    <string name="fui_email_link_wrong_device_message">যে ডিভাইস অথবা ব্রাউজারে আপনি সাইন-ইন প্রসেস শুরু করেছেন সেই একই ডিভাইস অথবা ব্রাউজার ব্যবহার করে লিঙ্কটি খোলার চেষ্টা করুন।</string>
+    <string name="fui_email_link_invalid_link_header">ইমেল লিঙ্কটি সঠিক নয়।</string>
+    <string name="fui_email_link_invalid_link_message">ইমেল লিঙ্কটি সঠিক নয়। ইমেল লিঙ্কটির মেয়াদ শেষ হয়ে গেলে অথবা সাইন-ইন করার জন্য আগেই ব্যবহার করা হয়ে থাকলে এটি ঘটতে পারে। লগ-ইনের জন্য রিস্টার্ট করুন।</string>
+    <string name="fui_email_link_dismiss_button">খারিজ করুন</string>
     <string name="fui_verify_phone_number_title">আপনার ফোন নম্বর লিখুন</string>
     <string name="fui_invalid_phone_number">একটি সঠিক ফোন নম্বর লিখুন</string>
     <string name="fui_enter_confirmation_code">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Naglo-load…</string>
     <string name="fui_sign_in_default">Mag-sign in</string>
     <string name="fui_tos_and_pp">Sa pagpapatuloy, ipinababatid mo na tinatanggap mo ang aming %1$s at %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Patakaran sa Privacy</string>
     <string name="fui_welcome_back_idp_header">Mayroon ka nang account</string>
     <string name="fui_welcome_back_email_header">Maligayang pagbabalik!</string>
+    <string name="fui_welcome_back_email_link_header">May account ka na\n</string>
     <string name="fui_welcome_back_idp_prompt">Nagamit mo na ang %1$s.        Mag-sign in gamit ang %2$s upang magpatuloy.</string>
     <string name="fui_welcome_back_password_prompt_body">Nagamit mo na ang %1$s        upang mag-sign in. Ilagay ang iyong password para sa account na iyon.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Nagamit mo na ang %1$s. Maaari mong ikonekta ang iyong %2$s account sa %1$s sa pamamagitan ng pag-sign in gamit ang link ng email sa ibaba.\n\nPara matagumpay na maikonekta ng daloy na ito ang iyong %2$s account sa email na ito, kailangan mong buksan ang link sa parehong device o browser.</string>
     <string name="fui_progress_dialog_signing_in">Nagsa-sign in…</string>
     <string name="fui_trouble_signing_in">Nagkaproblema sa pag-sign in?</string>
     <string name="fui_title_recover_password_activity">I-recover ang password</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Nagkaroon ng hindi malamang error.</string>
     <string name="fui_error_invalid_password">Maling password.</string>
     <string name="fui_accessibility_logo">Logo ng app</string>
+    <string name="fui_email_link_header">Naipadala ang email sa pag-sign in\n</string>
+    <string name="fui_email_link_email_sent">Nagpadala ng email sa pag-sign in na may mga karagdagang tagubilin sa %1$s. Tingnan ang iyong email para makumpleto ang pag-sign in.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Nagkakaproblema sa pagtanggap ng email?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Subukan ang mga karaniwang pag-aayos na ito:\n\u2022 Tingnan kung namarkahan na spam o na-filter ang email.\n\u2022 Tingnan ang iyong koneksyon sa internet.\n\u2022 Tiyakin na hindi ka nagkamali sa pagbaybay sa iyong email.\n\u2022 Tiyakin na hindi nauubusan ng espasyo ang iyong inbox o may iba pang isyu na may kinalaman sa setting ng inbox.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Kung hindi gumagana ang mga hakbang sa itaas, maaari mong ipadala muli ang email. Tandaan na ide-deactivate nito ang link sa mas lumang email.</string>
+    <string name="fui_email_link_resend">Muling ipadala</string>
+    <string name="fui_email_link_wrong_device_header">May nakitang bagong device o browser.</string>
+    <string name="fui_email_link_wrong_device_message">Subukang buksan ang link gamit ang parehong device o browser kung saan mo sinimulan ang proseso ng pag-sign in.</string>
+    <string name="fui_email_link_invalid_link_header">Invalid na link ng email.</string>
+    <string name="fui_email_link_invalid_link_message">Invalid ang link ng email. Maaaring mangyari ito kung nag-expire na ang link sa email o ginamit na para maka-sign in. Paki-restart ang daloy ng pag-login.</string>
+    <string name="fui_email_link_dismiss_button">I-dismiss</string>
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Γίνεται φόρτωση…</string>
     <string name="fui_sign_in_default">Σύνδεση</string>
     <string name="fui_tos_and_pp">Αν συνεχίσετε, δηλώνετε ότι αποδέχεστε τους %1$s και την %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Πολιτική απορρήτου</string>
     <string name="fui_welcome_back_idp_header">Έχετε ήδη λογαριασμό</string>
     <string name="fui_welcome_back_email_header">Καλώς ορίσατε και πάλι!</string>
+    <string name="fui_welcome_back_email_link_header">Έχετε ήδη λογαριασμό\n</string>
     <string name="fui_welcome_back_idp_prompt">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s. Συνδεθείτε μέσω %2$s για να συνεχίσετε.</string>
     <string name="fui_welcome_back_password_prompt_body">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s για να συνδεθείτε. Εισαγάγετε τον κωδικό πρόσβασής σας για αυτόν τον λογαριασμό.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Χρησιμοποιήσατε ήδη το %1$s. Για να συνδέσετε τον λογαριασμό σας %2$s με το %1$s, συνδεθείτε στον σύνδεσμο ηλεκτρονικού ταχυδρομείου παρακάτω.\n\nΣε αυτήν τη ροή για την επιτυχή σύνδεση του λογαριασμού %2$s με αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου, θα πρέπει να ανοίξετε τον σύνδεσμο στην ίδια συσκευή ή στο ίδιο πρόγραμμα περιήγησης.</string>
     <string name="fui_progress_dialog_signing_in">Γίνεται σύνδεση…</string>
     <string name="fui_trouble_signing_in">Πρόβλημα κατά τη σύνδεση;</string>
     <string name="fui_title_recover_password_activity">Ανάκτηση κωδικού πρόσβασης</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Παρουσιάστηκε άγνωστο σφάλμα.</string>
     <string name="fui_error_invalid_password">Λανθασμένος κωδικός πρόσβασης.</string>
     <string name="fui_accessibility_logo">Λογότυπο εφαρμογής</string>
+    <string name="fui_email_link_header">Το μήνυμα ηλεκτρονικού ταχυδρομείου σύνδεσης στάλθηκε\n</string>
+    <string name="fui_email_link_email_sent">Ένα μήνυμα ηλεκτρονικού ταχυδρομείου σύνδεσης με πρόσθετες οδηγίες στάλθηκε στη διεύθυνση %1$s. Ελέγξτε τη διεύθυνση ηλεκτρονικού ταχυδρομείου για να ολοκληρώσετε τη σύνδεση.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Αντιμετωπίζετε πρόβλημα με τη λήψη του μηνύματος ηλεκτρονικού ταχυδρομείου;</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Δοκιμάστε αυτές τις συνήθεις διορθώσεις:\n\u2022 Ελέγξτε αν το μήνυμα ηλεκτρονικού ταχυδρομείου επισημάνθηκε ως ανεπιθύμητο ή φιλτραρισμένο.\n\u2022 Ελέγξτε τη σύνδεσή σας στο διαδίκτυο.\n\u2022 Βεβαιωθείτε ότι δεν έχετε γράψει λάθος το μήνυμα ηλεκτρονικού ταχυδρομείου.\n\u2022 Βεβαιωθείτε ότι δεν έχει γεμίσει ο χώρος εισερχομένων ή ότι δεν υπάρχουν άλλα προβλήματα που σχετίζονται με τις ρυθμίσεις εισερχομένων.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Αν τα παραπάνω βήματα δεν λειτούργησαν, μπορείτε να στείλετε ξανά το μήνυμα ηλεκτρονικού ταχυδρομείου. Έχετε υπόψη ότι με αυτήν την ενέργεια, ο σύνδεσμος στο παλιότερο μήνυμα ηλεκτρονικού ταχυδρομείου θα απενεργοποιηθεί.</string>
+    <string name="fui_email_link_resend">Επανάληψη αποστολής</string>
+    <string name="fui_email_link_wrong_device_header">Εντοπίστηκε νέα συσκευή ή πρόγραμμα περιήγησης.</string>
+    <string name="fui_email_link_wrong_device_message">Δοκιμάστε να ανοίξετε τον σύνδεσμο χρησιμοποιώντας την ίδια συσκευή ή το ίδιο πρόγραμμα περιήγησης από όπου ξεκινήσατε τη διαδικασία σύνδεσης.</string>
+    <string name="fui_email_link_invalid_link_header">Μη έγκυρος σύνδεσμος ηλεκτρονικού ταχυδρομείου.</string>
+    <string name="fui_email_link_invalid_link_message">Ο σύνδεσμος ηλεκτρονικού ταχυδρομείου δεν είναι έγκυρος. Αυτό μπορεί να συμβεί αν ο σύνδεσμος ηλεκτρονικού ταχυδρομείου έληξε ή χρησιμοποιήθηκε ήδη για σύνδεση. Επανεκκινήστε τη ροή σύνδεσης.</string>
+    <string name="fui_email_link_dismiss_button">Παράβλεψη</string>
     <string name="fui_verify_phone_number_title">Εισαγάγετε τον αριθμό τηλεφώνου σας</string>
     <string name="fui_invalid_phone_number">Καταχωρίστε έναν έγκυρο αριθμό τηλεφώνου</string>
     <string name="fui_enter_confirmation_code">Εισαγάγετε τον 6ψήφιο κωδικό που σας στείλαμε στο</string>

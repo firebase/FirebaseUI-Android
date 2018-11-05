@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Завантаження…</string>
     <string name="fui_sign_in_default">Увійти</string>
     <string name="fui_tos_and_pp">Продовжуючи, ви приймаєте такі документи: %1$s і %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Політику конфіденційності</string>
     <string name="fui_welcome_back_idp_header">У вас уже є обліковий запис</string>
     <string name="fui_welcome_back_email_header">З поверненням!</string>
+    <string name="fui_welcome_back_email_link_header">У вас уже є обліковий запис\n</string>
     <string name="fui_welcome_back_idp_prompt">Ви вже використовували електронну адресу %1$s. Щоб продовжити, увійдіть в обліковий запис %2$s.</string>
     <string name="fui_welcome_back_password_prompt_body">Ви вже використовували електронну адресу %1$s для входу. Введіть пароль для цього облікового запису.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Ви вже використовували адресу %1$s. Ви можете зв’язати свій обліковий запис %2$s з адресою %1$s, увійшовши за допомогою посилання нижче.\n\nЩоб зв’язати обліковий запис %2$s з цією електронною адресою, потрібно відкрити посилання на тому ж пристрої або в тому ж веб-переглядачі.</string>
     <string name="fui_progress_dialog_signing_in">Виконується вхід…</string>
     <string name="fui_trouble_signing_in">Не вдається ввійти?</string>
     <string name="fui_title_recover_password_activity">Відновити пароль</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Сталася невідома помилка.</string>
     <string name="fui_error_invalid_password">Неправильний пароль.</string>
     <string name="fui_accessibility_logo">Логотип додатка</string>
+    <string name="fui_email_link_header">Посилання для входу надіслано\n</string>
+    <string name="fui_email_link_email_sent">Посилання для входу та додаткові вказівки надіслано на адресу %1$s. Дотримуйтеся їх, щоб увійти в обліковий запис.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Не отримали листа?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Скористайтеся порадами нижче, щоб вирішити проблему.\n\u2022 Перевірте – можливо, електронний лист позначено як спам або відфільтровано.\n\u2022 Перевірте інтернет-з’єднання.\n\u2022 Переконайтеся, що ви правильно вказали електронну адресу.\n\u2022 Перевірте доступний обсяг пам’яті для папки \"Вхідні\" й інші можливі проблеми з налаштуваннями.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Якщо наведені вище поради не допомагають, спробуйте знову надіслати електронний лист (у такому разі посилання в попередньому листі стане неактивним).</string>
+    <string name="fui_email_link_resend">Надіслати повторно</string>
+    <string name="fui_email_link_wrong_device_header">Виявлено новий пристрій або веб-переглядач.</string>
+    <string name="fui_email_link_wrong_device_message">Спробуйте відкрити посилання на пристрої або у веб-переглядачі, де ви починали процедуру входу.</string>
+    <string name="fui_email_link_invalid_link_header">Посилання недійсне.</string>
+    <string name="fui_email_link_invalid_link_message">Посилання в електронному листі недійсне. Можливо, термін його дії минув або його вже використовували для входу. Повторіть процедуру входу.</string>
+    <string name="fui_email_link_dismiss_button">Закрити</string>
     <string name="fui_verify_phone_number_title">Введіть свій номер телефону</string>
     <string name="fui_invalid_phone_number">Введіть дійсний номер телефону</string>
     <string name="fui_enter_confirmation_code">Введіть 6-значний код, який ми надіслали на номер</string>

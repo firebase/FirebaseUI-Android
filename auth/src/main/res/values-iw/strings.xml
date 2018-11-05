@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">טוען…</string>
     <string name="fui_sign_in_default">כניסה</string>
     <string name="fui_tos_and_pp">המשך התהליך יפורש כהסכמתך ל%1$s ול%2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">מדיניות הפרטיות</string>
     <string name="fui_welcome_back_idp_header">כבר יש לך חשבון</string>
     <string name="fui_welcome_back_email_header">ברוכים השבים!</string>
+    <string name="fui_welcome_back_email_link_header">כבר יצרת חשבון\n</string>
     <string name="fui_welcome_back_idp_prompt">כבר השתמשת בכתובת %1$s. כדי להמשיך, עליך להיכנס באמצעות %2$s.</string>
     <string name="fui_welcome_back_password_prompt_body">כבר השתמשת בכתובת %1$s. כדי להיכנס. עליך להזין את הסיסמה לחשבון המשויך אליה.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">כבר השתמשת בכתובת האימייל %1$s. כדי לקשר את חשבון %2$s לכתובת האימייל %1$s, עליך להיכנס לחשבון באמצעות הקישור לאימייל שבהמשך.\n\nצריך לפתוח את הקישור באותו מכשיר או דפדפן כדי לקשר את חשבון %2$s לכתובת האימייל הזו.</string>
     <string name="fui_progress_dialog_signing_in">נכנס…</string>
     <string name="fui_trouble_signing_in">לא מצליח להיכנס?</string>
     <string name="fui_title_recover_password_activity">שחזור הסיסמה</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">אירעה שגיאה לא ידועה.</string>
     <string name="fui_error_invalid_password">סיסמה שגויה.</string>
     <string name="fui_accessibility_logo">הלוגו של האפליקציה</string>
+    <string name="fui_email_link_header">נשלח אימייל לכניסה לחשבון\n</string>
+    <string name="fui_email_link_email_sent">אימייל לכניסה לחשבון עם הוראות נוספות נשלח אל %1$s. יש לבדוק את תיבת הדואר הנכנס כדי להשלים את תהליך הכניסה.</string>
+    <string name="fui_email_link_trouble_getting_email_header">נתקלת בבעיה בקבלת האימייל?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">כדי לנסות לפתור את הבעיה, מומלץ:‎\n\u2022 לבדוק אם האימייל סומן כספאם או סונן.‎\n\u2022 לבדוק את החיבור לאינטרנט.‎\n\u2022 לוודא שכתובת האימייל אויתה בצורה תקינה.‎\n\u2022 לוודא שהשטח הפנוי בתיבת הדואר הנכנס אינו עומד להסתיים, או לבדוק בעיות אחרות שקשורות להגדרות של תיבת הדואר הנכנס.‎\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">אם השלבים המפורטים למעלה לא פותרים את הבעיה, אפשר לשלוח מחדש את האימייל. לתשומת ליבך: שליחת האימייל מחדש תשבית את הקישור באימייל הקודם.</string>
+    <string name="fui_email_link_resend">שליחה מחדש</string>
+    <string name="fui_email_link_wrong_device_header">זוהו מכשיר או דפדפן חדשים.</string>
+    <string name="fui_email_link_wrong_device_message">מומלץ לפתוח את הקישור באמצעות אותו מכשיר או דפדפן שבהם התחלת את תהליך הכניסה.</string>
+    <string name="fui_email_link_invalid_link_header">קישור לאימייל לא חוקי</string>
+    <string name="fui_email_link_invalid_link_message">הקישור לאימייל לא חוקי. מצב זה עלול להתרחש כשפג התוקף של הקישור לאימייל או כשנעשה בו כבר שימוש כדי להיכנס לחשבון. יש להתחיל מחדש את תהליך ההתחברות.</string>
+    <string name="fui_email_link_dismiss_button">סגירה</string>
     <string name="fui_verify_phone_number_title">הזן את מספר הטלפון שלך</string>
     <string name="fui_invalid_phone_number">מספר הטלפון שהזנת לא תקין</string>
     <string name="fui_enter_confirmation_code">הזן את הקוד בן 6 הספרות ששלחנו אל</string>

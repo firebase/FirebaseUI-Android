@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Loading…</string>
     <string name="fui_sign_in_default">Sign in</string>
     <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Privacy Policy</string>
     <string name="fui_welcome_back_idp_header">You already have an account</string>
     <string name="fui_welcome_back_email_header">Welcome back!</string>
+    <string name="fui_welcome_back_email_link_header">You already have an account\n</string>
     <string name="fui_welcome_back_idp_prompt">You\'ve already used %1$s. Sign in with %2$s to continue.</string>
     <string name="fui_welcome_back_password_prompt_body">You\'ve already used %1$s to sign in. Enter your password for that account.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">You\'ve already used %1$s. You can connect your %2$s account with %1$s by signing in with the email link below.\n\nFor this flow to successfully connect your %2$s account with this email, you have to open the link on the same device or browser.</string>
     <string name="fui_progress_dialog_signing_in">Signing in…</string>
     <string name="fui_trouble_signing_in">Trouble signing in?</string>
     <string name="fui_title_recover_password_activity">Recover password</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">An unknown error occurred.</string>
     <string name="fui_error_invalid_password">Incorrect password.</string>
     <string name="fui_accessibility_logo">App logo</string>
+    <string name="fui_email_link_header">Sign-in email sent\n</string>
+    <string name="fui_email_link_email_sent">A sign-in email with additional instructions was sent to %1$s. Check your email to complete sign-in.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Trouble getting email?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Try these common fixes:\n\u2022 Check if the email was marked as spam or filtered.\n\u2022 Check your Internet connection.\n\u2022 Check that you did not misspell your email.\n\u2022 Check that your inbox space is not running out or other inbox settings related issues.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">If the steps above didn\'t work, you can resend the email. Note that this will deactivate the link in the older email.</string>
+    <string name="fui_email_link_resend">Resend</string>
+    <string name="fui_email_link_wrong_device_header">New device or browser detected.</string>
+    <string name="fui_email_link_wrong_device_message">Try opening the link using the same device or browser where you started the sign-in process.</string>
+    <string name="fui_email_link_invalid_link_header">Invalid email link.</string>
+    <string name="fui_email_link_invalid_link_message">The email link is invalid. This can occur if the email link is expired or was already used to sign in. Please restart the log-in flow.</string>
+    <string name="fui_email_link_dismiss_button">Dismiss</string>
     <string name="fui_verify_phone_number_title">Enter your phone number</string>
     <string name="fui_invalid_phone_number">Enter a valid phone number</string>
     <string name="fui_enter_confirmation_code">Enter the 6-digit code that we sent to</string>

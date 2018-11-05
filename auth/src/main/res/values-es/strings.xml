@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Iniciar sesión</string>
     <string name="fui_tos_and_pp">Si continúas, confirmas que aceptas nuestras %1$s y nuestra %2$s.</string>
@@ -32,8 +32,10 @@
     <string name="fui_privacy_policy">Política de Privacidad</string>
     <string name="fui_welcome_back_idp_header">Ya tienes una cuenta</string>
     <string name="fui_welcome_back_email_header">¡Hola de nuevo!</string>
+    <string name="fui_welcome_back_email_link_header">Ya tienes una cuenta\n</string>
     <string name="fui_welcome_back_idp_prompt">Ya has usado %1$s. Para continuar, inicia sesión con %2$s.</string>
     <string name="fui_welcome_back_password_prompt_body">Ya has usado %1$s para iniciar sesión. Introduce la contraseña de esa cuenta.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Ya has usado la dirección %1$s. Para conectar tu cuenta de %2$s con %1$s, inicia sesión a través del enlace de correo electrónico que aparece más adelante.\n\nPara que este flujo conecte correctamente tu cuenta de %2$s con este correo electrónico, debes abrir el enlace en el mismo dispositivo o navegador.</string>
     <string name="fui_progress_dialog_signing_in">Iniciando sesión…</string>
     <string name="fui_trouble_signing_in">¿No puedes iniciar sesión?</string>
     <string name="fui_title_recover_password_activity">Recuperar contraseña</string>
@@ -46,6 +48,17 @@
     <string name="fui_error_unknown">Se ha producido un error desconocido.</string>
     <string name="fui_error_invalid_password">La contraseña no es correcta.</string>
     <string name="fui_accessibility_logo">Logotipo de la aplicación</string>
+    <string name="fui_email_link_header">Correo electrónico de inicio de sesión enviado\n</string>
+    <string name="fui_email_link_email_sent">Se ha enviado un correo electrónico de inicio de sesión con más instrucciones a %1$s. Consulta tu bandeja de entrada para completar el inicio de sesión.</string>
+    <string name="fui_email_link_trouble_getting_email_header">¿No puedes recibir el correo?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Prueba las soluciones más habituales:\n\u2022 Comprueba si el mensaje de correo electrónico se ha filtrado o marcado como spam.\n\u2022 Verifica que tienes conexión a Internet.\n\u2022 Asegúrate de haber escrito correctamente tu dirección de correo electrónico.\n\u2022 Comprueba que no te estás quedando sin espacio en la bandeja de entrada y que no hay ningún problema con su configuración.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Si no se ha resuelto el problema con los pasos mencionados, puedes volver a enviar el correo electrónico (se desactivará el enlace del correo electrónico anterior).</string>
+    <string name="fui_email_link_resend">Reenviar</string>
+    <string name="fui_email_link_wrong_device_header">Se ha detectado un nuevo dispositivo o navegador.</string>
+    <string name="fui_email_link_wrong_device_message">Prueba a abrir el enlace con el mismo dispositivo o navegador en los que empezaste el proceso de inicio de sesión.</string>
+    <string name="fui_email_link_invalid_link_header">Enlace de correo electrónico no válido</string>
+    <string name="fui_email_link_invalid_link_message">El enlace de correo electrónico no es válido. Puede deberse a que haya caducado o a que ya se haya usado para iniciar sesión. Reinicia el flujo de inicio de sesión.</string>
+    <string name="fui_email_link_dismiss_button">Ignorar</string>
     <string name="fui_verify_phone_number_title">Introduce tu número de teléfono</string>
     <string name="fui_invalid_phone_number">Introduce un número de teléfono válido</string>
     <string name="fui_enter_confirmation_code">Introduce el código de seis dígitos que hemos enviado a</string>
