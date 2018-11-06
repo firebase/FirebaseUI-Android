@@ -19,30 +19,30 @@ public class EmailLinkParser {
     private static final String OOB_CODE = "oobCode";
     private static final String CONTINUE_URL = "continueUrl";
 
-    private Map<String, String> params;
+    private Map<String, String> mParams;
 
     public EmailLinkParser(@NonNull String link) {
         Preconditions.checkNotEmpty(link);
-        params = parseUri(Uri.parse(link));
-        if (params.isEmpty()) {
+        mParams = parseUri(Uri.parse(link));
+        if (mParams.isEmpty()) {
             throw new IllegalArgumentException("Invalid link: no parameters found");
         }
     }
 
     public String getOobCode() {
-        return params.get(OOB_CODE);
+        return mParams.get(OOB_CODE);
     }
 
     public String getSessionId() {
-        return params.get(LinkParameters.SESSION_IDENTIFIER);
+        return mParams.get(LinkParameters.SESSION_IDENTIFIER);
     }
 
     public String getAnonymousUserId() {
-        return params.get(LinkParameters.ANONYMOUS_USER_ID_IDENTIFIER);
+        return mParams.get(LinkParameters.ANONYMOUS_USER_ID_IDENTIFIER);
     }
 
     public boolean getForceSameDeviceBit() {
-        String forceSameDeviceBit = params.get(LinkParameters.FORCE_SAME_DEVICE_IDENTIFIER);
+        String forceSameDeviceBit = mParams.get(LinkParameters.FORCE_SAME_DEVICE_IDENTIFIER);
         if (TextUtils.isEmpty(forceSameDeviceBit)) {
             // Default value is false when no bit is set
             return false;
@@ -51,7 +51,7 @@ public class EmailLinkParser {
     }
 
     public String getProviderId() {
-        return params.get(LinkParameters.PROVIDER_ID_IDENTIFIER);
+        return mParams.get(LinkParameters.PROVIDER_ID_IDENTIFIER);
     }
 
     private Map<String, String> parseUri(Uri uri) {

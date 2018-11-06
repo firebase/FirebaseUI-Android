@@ -108,44 +108,44 @@ public class EmailLinkPersistenceManager {
 
     /** Holds the necessary information to complete the email link sign in flow */
     public static class SessionRecord {
-        private String sessionId;
-        private String email;
-        @Nullable private String anonymousUserId;
-        @Nullable private IdpResponse idpResponseForLinking;
+        private String mSessionId;
+        private String mEmail;
+        @Nullable private String mAnonymousUserId;
+        @Nullable private IdpResponse mIdpResponseForLinking;
 
         public SessionRecord(@NonNull String sessionId,
                              @Nullable String anonymousUserId) {
             Preconditions.checkNotNull(sessionId);
-            this.sessionId = sessionId;
-            this.anonymousUserId = anonymousUserId;
+            this.mSessionId = sessionId;
+            this.mAnonymousUserId = anonymousUserId;
         }
 
         public String getSessionId() {
-            return sessionId;
+            return mSessionId;
         }
 
         public String getEmail() {
-            return email;
+            return mEmail;
         }
 
         public SessionRecord setEmail(@NonNull String email) {
-            this.email = email;
+            this.mEmail = email;
             return this;
         }
 
         @Nullable
         public IdpResponse getIdpResponseForLinking() {
-            return idpResponseForLinking;
+            return mIdpResponseForLinking;
         }
 
         public SessionRecord setIdpResponseForLinking(@NonNull IdpResponse idpResponseForLinking) {
-            this.idpResponseForLinking = idpResponseForLinking;
+            this.mIdpResponseForLinking = idpResponseForLinking;
             return this;
         }
 
         @Nullable
         public String getAnonymousUserId() {
-            return anonymousUserId;
+            return mAnonymousUserId;
         }
     }
 }

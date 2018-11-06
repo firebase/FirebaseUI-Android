@@ -10,11 +10,11 @@ import com.google.android.gms.common.internal.Preconditions;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ContinueUrlBuilder {
 
-    private StringBuilder continueUrl;
+    private StringBuilder mContinueUrl;
 
     public ContinueUrlBuilder(@NonNull String url) {
         Preconditions.checkNotEmpty(url);
-        continueUrl = new StringBuilder(url + "?");
+        mContinueUrl = new StringBuilder(url + "?");
     }
 
     public ContinueUrlBuilder appendSessionId(@NonNull String sessionId) {
@@ -42,16 +42,16 @@ public class ContinueUrlBuilder {
         if (TextUtils.isEmpty(value)) {
             return;
         }
-        boolean isFirstParam = continueUrl.charAt(continueUrl.length() - 1) == '?';
+        boolean isFirstParam = mContinueUrl.charAt(mContinueUrl.length() - 1) == '?';
         String mark = isFirstParam ? "" : "&";
-        continueUrl.append(String.format("%s%s=%s", mark, key, value));
+        mContinueUrl.append(String.format("%s%s=%s", mark, key, value));
     }
 
     public String build() {
-        if (continueUrl.charAt(continueUrl.length() - 1) == '?') {
+        if (mContinueUrl.charAt(mContinueUrl.length() - 1) == '?') {
             // No params added so we remove the '?'
-            continueUrl.setLength(continueUrl.length() - 1);
+            mContinueUrl.setLength(mContinueUrl.length() - 1);
         }
-        return continueUrl.toString();
+        return mContinueUrl.toString();
     }
 }
