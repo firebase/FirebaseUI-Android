@@ -54,6 +54,11 @@ public final class ErrorCodes {
      * */
     public static final int EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR = 9;
 
+    /**
+     * Cross device linking flow - we need to ask the user if they want to continue linking or
+     * just sign in.
+     * */
+    public static final int EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR = 10;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
@@ -84,6 +89,8 @@ public final class ErrorCodes {
                 return "Please enter your email to continue signing in";
             case EMAIL_LINK_WRONG_DEVICE_ERROR:
                 return "You must open the email link on the same device.";
+            case EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR:
+                return "You must determine if you want to continue linking or complete the sign in";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }
@@ -102,7 +109,8 @@ public final class ErrorCodes {
             EMAIL_MISMATCH_ERROR,
             INVALID_EMAIL_LINK_ERROR,
             EMAIL_LINK_WRONG_DEVICE_ERROR,
-            EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR
+            EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
+            EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {

@@ -68,10 +68,12 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
                         buildAlertDialog(errorCode).show();
                     } else if (errorCode == ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR
                             || errorCode == ErrorCodes.EMAIL_MISMATCH_ERROR) {
-                        recoverFromEmailMismatchError();
+                        startErrorRecoveryFlow(RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW);
+                    } else if (errorCode == ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR) {
+                        startErrorRecoveryFlow(RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW);
                     }
                 } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    recoverFromEmailMismatchError();
+                    startErrorRecoveryFlow(RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW);
                 } else {
                     finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                 }
@@ -79,10 +81,10 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         });
     }
 
-    private void recoverFromEmailMismatchError() {
+    private void startErrorRecoveryFlow(int flow) {
         Intent intent = EmailLinkErrorRecoveryActivity.createIntent(getApplicationContext(),
-                getFlowParams());
-        startActivityForResult(intent, RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW);
+                getFlowParams(), flow);
+        startActivityForResult(intent, flow);
     }
 
     private AlertDialog buildAlertDialog(int errorCode) {
@@ -111,7 +113,8 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW) {
+        if (requestCode == RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW
+                || requestCode == RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             // CheckActionCode is called before starting this flow, so we only get here
             // if the sign in link is valid - it can only fail by being cancelled.

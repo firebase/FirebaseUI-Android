@@ -143,6 +143,26 @@ public final class ProviderUtils {
         }
     }
 
+    public static String providerIdToProviderName(@NonNull String providerId) {
+        switch (providerId) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                return "Google";
+            case FacebookAuthProvider.PROVIDER_ID:
+                return "Facebook";
+            case TwitterAuthProvider.PROVIDER_ID:
+                return "Twitter";
+            case GithubAuthProvider.PROVIDER_ID:
+                return "Github";
+            case PhoneAuthProvider.PROVIDER_ID:
+                return "Phone number";
+            case EmailAuthProvider.PROVIDER_ID:
+            case EMAIL_LINK_PROVIDER:
+                return "Email";
+            default:
+                return null;
+        }
+    }
+
     @Nullable
     public static AuthUI.IdpConfig getConfigFromIdps(List<AuthUI.IdpConfig> idps, String id) {
         for (AuthUI.IdpConfig idp : idps) {

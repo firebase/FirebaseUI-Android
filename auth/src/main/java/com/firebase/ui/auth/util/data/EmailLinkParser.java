@@ -14,13 +14,6 @@ import java.util.Set;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkParser {
 
-    // TODO(lsirac): centralize
-    private static final String SESSION_IDENTIFIER = "ui_sid";
-    private static final String ANONYMOUS_USER_ID_IDENTIFIER = "ui_auid";
-    private static final String FORCE_SAME_DEVICE_IDENTIFIER = "ui_sd";
-    private static final String PROVIDER_ID_IDENTIFIER = "ui_pid";
-
-
     private static String LINK = "link";
 
     private static final String OOB_CODE = "oobCode";
@@ -41,15 +34,15 @@ public class EmailLinkParser {
     }
 
     public String getSessionId() {
-        return params.get(SESSION_IDENTIFIER);
+        return params.get(LinkParameters.SESSION_IDENTIFIER);
     }
 
     public String getAnonymousUserId() {
-        return params.get(ANONYMOUS_USER_ID_IDENTIFIER);
+        return params.get(LinkParameters.ANONYMOUS_USER_ID_IDENTIFIER);
     }
 
     public boolean getForceSameDeviceBit() {
-        String forceSameDeviceBit = params.get(FORCE_SAME_DEVICE_IDENTIFIER);
+        String forceSameDeviceBit = params.get(LinkParameters.FORCE_SAME_DEVICE_IDENTIFIER);
         if (TextUtils.isEmpty(forceSameDeviceBit)) {
             // Default value is false when no bit is set
             return false;
@@ -58,7 +51,7 @@ public class EmailLinkParser {
     }
 
     public String getProviderId() {
-        return params.get(PROVIDER_ID_IDENTIFIER);
+        return params.get(LinkParameters.PROVIDER_ID_IDENTIFIER);
     }
 
     private Map<String, String> parseUri(Uri uri) {
@@ -83,5 +76,12 @@ public class EmailLinkParser {
             // Do nothing.
         }
         return map;
+    }
+
+    public static class LinkParameters {
+        public static final String SESSION_IDENTIFIER = "ui_sid";
+        public static final String ANONYMOUS_USER_ID_IDENTIFIER = "ui_auid";
+        public static final String FORCE_SAME_DEVICE_IDENTIFIER = "ui_sd";
+        public static final String PROVIDER_ID_IDENTIFIER = "ui_pid";
     }
 }

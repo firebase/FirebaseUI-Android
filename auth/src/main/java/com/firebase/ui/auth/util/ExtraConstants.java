@@ -45,6 +45,7 @@ public final class ExtraConstants {
     public static final String EMAIL_LINK_SIGN_IN = "email_link_sign_in";
     public static final String ACTION_CODE_SETTINGS = "action_code_settings";
     public static final String FORCE_SAME_DEVICE = "force_same_device";
+    public static final String PROVIDER_ID = "provider_id";
 
     private ExtraConstants() {
         throw new AssertionError("No instance for you!");

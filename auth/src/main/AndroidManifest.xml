@@ -81,7 +81,6 @@
         <activity
             android:name=".ui.email.EmailLinkErrorRecoveryActivity"
             android:exported="false"
-            android:label="@string/fui_email_link_confirm_email_header"
             android:windowSoftInputMode="adjustResize" />
 
         <activity

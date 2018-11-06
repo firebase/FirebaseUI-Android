@@ -52,6 +52,9 @@ public final class RequestCodes {
     /** Request code for prompting the user to enter their email to finish the sign in */
     public static final int EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW = 115;
 
+    /** Request code for prompting the user to enter their email to finish the sign in */
+    public static final int EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW = 116;
+
     private RequestCodes() {
         throw new AssertionError("No instance for you!");
     }

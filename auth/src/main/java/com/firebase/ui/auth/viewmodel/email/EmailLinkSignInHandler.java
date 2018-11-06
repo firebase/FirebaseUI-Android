@@ -58,6 +58,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         String sessionIdFromLink = parser.getSessionId();
         String anonymousUserIdFromLink = parser.getAnonymousUserId();
         String oobCodeFromLink = parser.getOobCode();
+        String providerIdFromLink = parser.getProviderId();
         boolean forceSameDevice = parser.getForceSameDeviceBit();
 
         if (isDifferentDeviceFlow(sessionRecord, sessionIdFromLink)) {
@@ -74,10 +75,11 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
                         new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
                 return;
             }
+
             // If we have no SessionRecord/there is a session ID mismatch, this means that we were
             // not the ones to send the link. The only way forward is to prompt the user for their
             // email before continuing the flow. We should only do that after validating the link.
-            determineDifferentDeviceErrorFlowAndFinish(oobCodeFromLink);
+            determineDifferentDeviceErrorFlowAndFinish(oobCodeFromLink, providerIdFromLink);
             return;
         }
 
@@ -112,12 +114,19 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         }
     }
 
-    private void determineDifferentDeviceErrorFlowAndFinish(String oobCode) {
+    private void determineDifferentDeviceErrorFlowAndFinish(@NonNull String oobCode,
+                                                            @Nullable final String providerId) {
         getAuth().checkActionCode(oobCode).addOnCompleteListener(
                 new OnCompleteListener<ActionCodeResult>() {
                     @Override
                     public void onComplete(@NonNull Task<ActionCodeResult> task) {
                         if (task.isSuccessful()) {
+                            if (!TextUtils.isEmpty(providerId)) {
+                                setResult(Resource.<IdpResponse>forFailure(
+                                        new FirebaseUiException(
+                                                ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR)));
+                                return;
+                            }
                             // The email link is valid, we can ask the user for their email
                             setResult(Resource.<IdpResponse>forFailure(
                                             new FirebaseUiException(

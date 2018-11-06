@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
@@ -33,7 +32,7 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
 
     public static final String TAG = "EmailLinkEmailPromptFragment";
 
-    private Button mSignInButton;
+    private Button mNextButton;
     private ProgressBar mProgressBar;
 
     private EditText mEmailEditText;
@@ -41,8 +40,12 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
     private EmailFieldValidator mEmailFieldValidator;
 
     private EmailLinkSignInHandler mHandler;
-    private EmailLinkSignInListener mListener;
+    private EmailLinkPromptEmailListener mListener;
 
+    public static EmailLinkEmailPromptFragment newInstance() {
+        EmailLinkEmailPromptFragment fragment = new EmailLinkEmailPromptFragment();
+        return fragment;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,11 +56,10 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mSignInButton = view.findViewById(R.id.button_next);
-        mSignInButton.setText(R.string.fui_sign_in_default);
+        mNextButton = view.findViewById(R.id.button_next);
         mProgressBar = view.findViewById(R.id.top_progress_bar);
 
-        mSignInButton.setOnClickListener(this);
+        mNextButton.setOnClickListener(this);
 
         // Email field and validator
         mEmailLayout = view.findViewById(R.id.email_layout);
@@ -70,26 +72,15 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
         LinearLayout topLayout = view.findViewById(R.id.email_top_layout);
         TextView textView = new TextView(getActivity());
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(R.style.FirebaseUI_Text_BodyText);
+            textView.setTextAppearance(R.style.FirebaseUI_Text_Heading);
         }
-        textView.setPaddingRelative(0,16,0,16);
         textView.setText(R.string.fui_email_link_confirm_email_message);
         topLayout.addView(textView, 0);
 
         // Set Tos/Pp footer
-        TextView termsText = view.findViewById(R.id.email_tos_and_pp_text);
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
-        FlowParameters flowParameters = getFlowParams();
-        if (!flowParameters.shouldShowProviderChoice()) {
-            PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(requireContext(),
-                    flowParameters,
-                    termsText);
-        } else {
-            termsText.setVisibility(View.GONE);
-            PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(),
-                    flowParameters,
-                    footerText);
-        }
+        PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(), getFlowParams(),
+                footerText);
     }
 
     @Override
@@ -98,10 +89,10 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
         initHandler();
 
         FragmentActivity activity = getActivity();
-        if (!(activity instanceof EmailLinkSignInListener)) {
-            throw new IllegalStateException("Activity must implement EmailLinkSignInListener");
+        if (!(activity instanceof EmailLinkPromptEmailListener)) {
+            throw new IllegalStateException("Activity must implement EmailLinkPromptEmailListener");
         }
-        mListener = (EmailLinkSignInListener) activity;
+        mListener = (EmailLinkPromptEmailListener) activity;
     }
 
     private void initHandler() {
@@ -129,7 +120,6 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
         }
     }
 
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -140,23 +130,22 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
         }
     }
 
-
     @Override
     public void showProgress(int message) {
-        mSignInButton.setEnabled(false);
+        mNextButton.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mSignInButton.setEnabled(true);
+        mNextButton.setEnabled(true);
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */
-    interface EmailLinkSignInListener {
+    interface EmailLinkPromptEmailListener {
         /* Pass on the success to the hosting Activity so we can complete the sign in */
         void onSuccess(IdpResponse response);
     }

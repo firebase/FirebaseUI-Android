@@ -2,18 +2,13 @@ package com.firebase.ui.auth.util.data;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import static com.firebase.ui.auth.util.data.EmailLinkParser.LinkParameters.*;
 import android.text.TextUtils;
 
 import com.google.android.gms.common.internal.Preconditions;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ContinueUrlBuilder {
-
-    private static final String SESSION_IDENTIFIER = "ui_sid";
-    private static final String ANONYMOUS_USER_ID_IDENTIFIER = "ui_auid";
-    private static final String FORCE_SAME_DEVICE_IDENTIFIER = "ui_sd";
-    private static final String PROVIDER_ID_IDENTIFIER = "ui_pid";
-
 
     private StringBuilder continueUrl;
 
