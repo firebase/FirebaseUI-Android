@@ -103,7 +103,8 @@ fun Project.configureAndroid() {
                     "InvalidPackage", // Firestore uses GRPC which makes lint mad
                     "NewerVersionAvailable", "GradleDependency", // For reproducible builds
                     "SelectableText", "SyntheticAccessor", // We almost never care about this
-                    "MissingTranslation" // TODO remove in future PR
+                    "MissingTranslation", // TODO remove in future PR
+                    "IconMissingDensityFolder"
             )
 
             isCheckAllWarnings = true
