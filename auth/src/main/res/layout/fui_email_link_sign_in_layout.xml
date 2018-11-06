@@ -31,6 +31,17 @@
                 android:text="@string/fui_email_link_header"
                 android:textStyle="bold" />
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/fui_email_sent"
+                android:maxHeight="128dp"
+                android:maxWidth="128dp"
+                android:adjustViewBounds="true"
+                android:paddingBottom="@dimen/fui_field_padding_vert"
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription" />
+
             <TextView
                 android:id="@+id/sign_in_email_sent_text"
                 style="@style/FirebaseUI.Text.BodyText"

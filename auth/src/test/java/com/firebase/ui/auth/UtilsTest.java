@@ -14,7 +14,7 @@ public class UtilsTest {
 
     @Test
     public void testGenerateRandomAlphaNumericString() {
-        for (int i = 0 ; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             assertThat(Utils.generateRandomAlphaNumericString(i).length()).isEqualTo(i);
         }
     }

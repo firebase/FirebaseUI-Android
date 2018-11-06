@@ -30,6 +30,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 public class EmailLinkSignInHandler extends SignInViewModelBase {
@@ -81,6 +83,18 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
             // email before continuing the flow. We should only do that after validating the link.
             determineDifferentDeviceErrorFlowAndFinish(oobCodeFromLink, providerIdFromLink);
             return;
+        }
+
+        if (anonymousUserIdFromLink != null){
+            // Same device flow, need to ensure uids match
+            if (getAuth().getCurrentUser() == null
+                    || (getAuth().getCurrentUser().isAnonymous()
+                    && !anonymousUserIdFromLink.equals(getAuth().getCurrentUser().getUid()))) {
+                // TODO(lsirac): add new error?
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                return;
+            }
         }
 
         finishSignIn(sessionRecord);
