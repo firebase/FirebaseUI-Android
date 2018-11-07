@@ -79,6 +79,12 @@ public class CheckEmailFragment extends FragmentBase implements
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
 
+        // Hide header
+        TextView headerText = view.findViewById(R.id.header_text);
+        if (headerText != null) {
+            headerText.setVisibility(View.GONE);
+        }
+
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {

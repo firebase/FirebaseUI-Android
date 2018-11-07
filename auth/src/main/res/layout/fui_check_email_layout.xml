@@ -22,6 +22,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/header_text"
+                style="@style/FirebaseUI.Text.Heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:text="@string/fui_email_link_confirm_email_message"
+                android:textStyle="bold" />
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/email_layout"
                 android:labelFor="@+id/email"

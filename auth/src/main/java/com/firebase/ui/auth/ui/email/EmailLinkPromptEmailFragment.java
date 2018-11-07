@@ -68,15 +68,6 @@ public class EmailLinkPromptEmailFragment extends FragmentBase implements
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
 
-        // Set body text
-        LinearLayout topLayout = view.findViewById(R.id.email_top_layout);
-        TextView textView = new TextView(getActivity());
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(R.style.FirebaseUI_Text_Heading);
-        }
-        textView.setText(R.string.fui_email_link_confirm_email_message);
-        topLayout.addView(textView, 0);
-
         // Set activity title
         getActivity().setTitle(R.string.fui_email_link_confirm_email_header);
 
