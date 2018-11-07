@@ -23,6 +23,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
@@ -146,18 +147,18 @@ public final class ProviderUtils {
     public static String providerIdToProviderName(@NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
-                return "Google";
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_google);
             case FacebookAuthProvider.PROVIDER_ID:
-                return "Facebook";
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_facebook);
             case TwitterAuthProvider.PROVIDER_ID:
-                return "Twitter";
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_twitter);
             case GithubAuthProvider.PROVIDER_ID:
-                return "Github";
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_github);
             case PhoneAuthProvider.PROVIDER_ID:
-                return "Phone number";
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_phone);
             case EmailAuthProvider.PROVIDER_ID:
             case EMAIL_LINK_PROVIDER:
-                return "Email";
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_email);
             default:
                 return null;
         }

@@ -27,10 +27,10 @@ import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 
 /** Prompts the user to enter their email to finish the cross-device email link sign in flow. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailLinkEmailPromptFragment extends FragmentBase implements
+public class EmailLinkPromptEmailFragment extends FragmentBase implements
         View.OnClickListener {
 
-    public static final String TAG = "EmailLinkEmailPromptFragment";
+    public static final String TAG = "EmailLinkPromptEmailFragment";
 
     private Button mNextButton;
     private ProgressBar mProgressBar;
@@ -42,8 +42,8 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
     private EmailLinkSignInHandler mHandler;
     private EmailLinkPromptEmailListener mListener;
 
-    public static EmailLinkEmailPromptFragment newInstance() {
-        EmailLinkEmailPromptFragment fragment = new EmailLinkEmailPromptFragment();
+    public static EmailLinkPromptEmailFragment newInstance() {
+        EmailLinkPromptEmailFragment fragment = new EmailLinkPromptEmailFragment();
         return fragment;
     }
 
@@ -77,6 +77,9 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
         textView.setText(R.string.fui_email_link_confirm_email_message);
         topLayout.addView(textView, 0);
 
+        // Set activity title
+        getActivity().setTitle(R.string.fui_email_link_confirm_email_header);
+
         // Set Tos/Pp footer
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(), getFlowParams(),
@@ -86,13 +89,14 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initHandler();
 
         FragmentActivity activity = getActivity();
         if (!(activity instanceof EmailLinkPromptEmailListener)) {
             throw new IllegalStateException("Activity must implement EmailLinkPromptEmailListener");
         }
         mListener = (EmailLinkPromptEmailListener) activity;
+
+        initHandler();
     }
 
     private void initHandler() {
@@ -101,7 +105,7 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                mListener.onSuccess(response);
+                mListener.onEmailPromptSuccess(response);
             }
 
             @Override
@@ -147,6 +151,6 @@ public class EmailLinkEmailPromptFragment extends FragmentBase implements
      */
     interface EmailLinkPromptEmailListener {
         /* Pass on the success to the hosting Activity so we can complete the sign in */
-        void onSuccess(IdpResponse response);
+        void onEmailPromptSuccess(IdpResponse response);
     }
 }

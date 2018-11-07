@@ -20,7 +20,7 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ContinueUrlBuilder;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
-import com.firebase.ui.auth.util.data.Utils;
+import com.firebase.ui.auth.util.data.SessionUtils;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.AdditionalUserInfo;
@@ -102,7 +102,7 @@ public class EmailLinkSignInHandlerTest {
     @SuppressWarnings("all")
     public void
     testStartSignIn_differentDeviceLinkWithForceSameDeviceTrue_expectWrongDeviceError() {
-        String differentSessionId = Utils.generateRandomAlphaNumericString(10);
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
         initializeHandlerWithSessionInfo(differentSessionId, null, null, true);
 
         mHandler.getOperation().observeForever(mResponseObserver);
@@ -154,7 +154,7 @@ public class EmailLinkSignInHandlerTest {
     @SuppressWarnings("all")
     public void
     testStartSignIn_differentDeviceLinkWithValidSessionInfo_expectPromptForEmailError() {
-        String differentSessionId = Utils.generateRandomAlphaNumericString(10);
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
         initializeHandlerWithSessionInfo(differentSessionId, null, null, false);
 
         mHandler.getOperation().observeForever(mResponseObserver);
@@ -184,7 +184,7 @@ public class EmailLinkSignInHandlerTest {
     @Test
     @SuppressWarnings("all")
     public void testStartSignIn_differentDeviceLinkWithValidSessionInfo_expectInvalidLinkError() {
-        String differentSessionId = Utils.generateRandomAlphaNumericString(10);
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
         initializeHandlerWithSessionInfo(differentSessionId, null, null, false);
 
         mHandler.getOperation().observeForever(mResponseObserver);
@@ -215,8 +215,8 @@ public class EmailLinkSignInHandlerTest {
     @SuppressWarnings("all")
     public void
     testStartSignIn_differentDeviceLinkWithAnonymousUpgradeEnabled_expectInvalidLinkError() {
-        String differentSessionId = Utils.generateRandomAlphaNumericString(10);
-        String anonUserId = Utils.generateRandomAlphaNumericString(10);
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
+        String anonUserId = SessionUtils.generateRandomAlphaNumericString(10);
         initializeHandlerWithSessionInfo(differentSessionId, anonUserId, null, false);
 
         mHandler.getOperation().observeForever(mResponseObserver);

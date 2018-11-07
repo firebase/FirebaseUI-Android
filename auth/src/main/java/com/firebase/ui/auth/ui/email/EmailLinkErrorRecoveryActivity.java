@@ -21,7 +21,7 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkErrorRecoveryActivity extends AppCompatBase
-        implements EmailLinkEmailPromptFragment.EmailLinkPromptEmailListener,
+        implements EmailLinkPromptEmailFragment.EmailLinkPromptEmailListener,
         EmailLinkCrossDeviceLinkingFragment.FinishEmailLinkSignInListener {
 
     private static final String RECOVERY_TYPE_KEY = "com.firebase.ui.auth.ui.email.recoveryTypeKey";
@@ -36,51 +36,34 @@ public class EmailLinkErrorRecoveryActivity extends AppCompatBase
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_email);
 
-        setTitle(R.string.fui_sign_in_default);
-
-        // Needed so that a rotation doesn't cause us to land on the wrong fragment
         if (savedInstanceState != null) {
-            if (!getSupportFragmentManager().getFragments().isEmpty()) {
-                if (getSupportFragmentManager().getFragments().get(0)
-                        instanceof EmailLinkEmailPromptFragment) {
-                    setTitle(R.string.fui_email_link_confirm_email_header);
-                }
-            }
             return;
         }
 
-        boolean linkingFlow = getIntent().getIntExtra(RECOVERY_TYPE_KEY, -1)
-                == RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW;
+        boolean linkingFlow = getIntent().getIntExtra(RECOVERY_TYPE_KEY, -1) ==
+                RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW;
 
         Fragment fragment;
         if (linkingFlow) {
             fragment = EmailLinkCrossDeviceLinkingFragment.newInstance();
         } else {
-            setTitle(R.string.fui_email_link_confirm_email_header);
-            fragment = EmailLinkEmailPromptFragment.newInstance();
+            fragment = EmailLinkPromptEmailFragment.newInstance();
         }
-        switchFragment(fragment, R.id.fragment_register_email, EmailLinkEmailPromptFragment.TAG);
+        switchFragment(fragment, R.id.fragment_register_email, EmailLinkPromptEmailFragment.TAG);
     }
 
     @Override
-    public void onSuccess(IdpResponse response) {
+    public void onEmailPromptSuccess(IdpResponse response) {
         finish(RESULT_OK, response.toIntent());
     }
 
     @Override
     public void completeCrossDeviceEmailLinkFlow() {
-        setTitle(R.string.fui_email_link_confirm_email_header);
-        EmailLinkEmailPromptFragment fragment
-                = EmailLinkEmailPromptFragment.newInstance();
+        EmailLinkPromptEmailFragment fragment
+                = EmailLinkPromptEmailFragment.newInstance();
         switchFragment(fragment, R.id.fragment_register_email,
                 EmailLinkCrossDeviceLinkingFragment.TAG, /*withTransition=*/true,
                 /*addToBackStack=*/true);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        setTitle(R.string.fui_sign_in_default);
     }
 
     @Override

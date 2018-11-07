@@ -34,7 +34,7 @@ public class ContinueUrlBuilder {
 
     public ContinueUrlBuilder appendForceSameDeviceBit(@NonNull boolean forceSameDevice) {
         String bit = forceSameDevice ? "1" : "0";
-        addQueryParam(FORCE_SAME_DEVICE_IDENTIFIER, String.valueOf(bit));
+        addQueryParam(FORCE_SAME_DEVICE_IDENTIFIER, bit);
         return this;
     }
 

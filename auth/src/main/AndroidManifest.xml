@@ -80,6 +80,7 @@
 
         <activity
             android:name=".ui.email.EmailLinkErrorRecoveryActivity"
+            android:label="@string/fui_sign_in_default"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 

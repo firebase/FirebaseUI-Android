@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
@@ -34,7 +35,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/fui_email_sent"
+                app:srcCompat="@drawable/fui_ic_check_circle_black_128dp"
                 android:maxHeight="128dp"
                 android:maxWidth="128dp"
                 android:adjustViewBounds="true"

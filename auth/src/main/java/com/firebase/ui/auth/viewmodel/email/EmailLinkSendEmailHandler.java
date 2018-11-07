@@ -9,7 +9,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ContinueUrlBuilder;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
-import com.firebase.ui.auth.util.data.Utils;
+import com.firebase.ui.auth.util.data.SessionUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,10 +31,11 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
         }
         setResult(Resource.<String>forLoading());
 
-        final String anonymousUserId = AuthOperationManager.getInstance().canUpgradeAnonymous
-                (getAuth(), getArguments()) ? getAuth().getCurrentUser().getUid() : null;
+        final String anonymousUserId =
+                AuthOperationManager.getInstance().canUpgradeAnonymous(getAuth(), getArguments())
+                ? getAuth().getCurrentUser().getUid() : null;
         final String sessionId =
-                Utils.generateRandomAlphaNumericString(SESSION_ID_LENGTH);
+                SessionUtils.generateRandomAlphaNumericString(SESSION_ID_LENGTH);
 
         ActionCodeSettings mutatedSettings = addSessionInfoToActionCodeSettings(actionCodeSettings,
                 sessionId, anonymousUserId, idpResponseForLinking, forceSameDevice);

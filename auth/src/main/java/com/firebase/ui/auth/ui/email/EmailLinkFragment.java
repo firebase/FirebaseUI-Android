@@ -39,9 +39,8 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     private boolean mEmailSent;
 
     public static EmailLinkFragment newInstance(@NonNull final String email,
-                                                @NonNull final ActionCodeSettings
-                                                        actionCodeSettings) {
-        return newInstance(email, actionCodeSettings, /*idpResponseForLinking=*/null, false);
+                                                @NonNull final ActionCodeSettings settings) {
+        return newInstance(email, settings, /*idpResponseForLinking=*/null, false);
     }
 
     public static EmailLinkFragment newInstance(@NonNull final String email,

@@ -81,7 +81,17 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         });
     }
 
+    /**
+     * @param flow must be one of RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW or
+     *             RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW
+     */
     private void startErrorRecoveryFlow(int flow) {
+        if (flow != RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW
+                && flow != RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW) {
+            throw new IllegalStateException("Invalid flow param. It must be either " +
+                    "RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW or " +
+                    "RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW");
+        }
         Intent intent = EmailLinkErrorRecoveryActivity.createIntent(getApplicationContext(),
                 getFlowParams(), flow);
         startActivityForResult(intent, flow);

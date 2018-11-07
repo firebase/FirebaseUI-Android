@@ -23,11 +23,15 @@ import com.firebase.ui.auth.util.ui.TextHelper;
 
 import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
+/**
+ * Fragment that tells the user that a linking flow cannot be completed as they have opened the
+ * email link on a different device.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
-        implements View.OnClickListener  {
+        implements View.OnClickListener {
 
-    public static final String TAG = "EmailLinkCrossDeviceLinkingFragment";
+    public static final String TAG = "CrossDeviceFragment";
 
     private FinishEmailLinkSignInListener mListener;
     private ProgressBar mProgressBar;
@@ -65,6 +69,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
         TextHelper.boldAllOccurencesOfText(spannableStringBuilder, bodyText, providerName);
         body.setText(spannableStringBuilder);
 
+        // Justifies the text
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
         }
@@ -79,7 +84,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
         super.onActivityCreated(savedInstanceState);
 
         FragmentActivity activity = getActivity();
-        if (!(activity instanceof EmailLinkEmailPromptFragment.EmailLinkPromptEmailListener)) {
+        if (!(activity instanceof FinishEmailLinkSignInListener)) {
             throw new IllegalStateException("Activity must implement EmailLinkPromptEmailListener");
         }
         mListener = (FinishEmailLinkSignInListener) activity;
@@ -89,7 +94,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.button_continue) {
-             mListener.completeCrossDeviceEmailLinkFlow();
+            mListener.completeCrossDeviceEmailLinkFlow();
         }
     }
 
@@ -108,7 +113,9 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
      * Interface to be implemented by Activities hosting this Fragment.
      */
     interface FinishEmailLinkSignInListener {
-        /** Used to let the hosting activity know that we can finish the email link sign in flow */
+        /**
+         * Used to let the hosting activity know that we can finish the email link sign in flow
+         */
         void completeCrossDeviceEmailLinkFlow();
     }
 }

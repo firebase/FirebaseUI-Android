@@ -15,6 +15,9 @@
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">Phone</string>
+    <string name="fui_idp_name_email">Email</string>
+
 
     <!-- Auth method picker -->
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>

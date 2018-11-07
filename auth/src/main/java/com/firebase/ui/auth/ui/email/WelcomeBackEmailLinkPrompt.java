@@ -81,6 +81,7 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
                 mIdpResponseForLinking.getProviderType());
 
         body.setText(spannableStringBuilder);
+        // Justifies the text
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
         }

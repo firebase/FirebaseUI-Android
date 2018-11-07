@@ -648,7 +648,7 @@ public final class AuthUI {
             /**
              * Disables allowing email link sign in to occur across different devices.
              * <p>
-             * This cannot be enabled with anonymous upgrade.
+             * This cannot be disabled with anonymous upgrade.
              */
             @NonNull
             public EmailBuilder setForceSameDevice() {
@@ -659,8 +659,8 @@ public final class AuthUI {
             @Override
             public IdpConfig build() {
                 if (super.mProviderId.equals(EMAIL_LINK_PROVIDER)) {
-                    ActionCodeSettings actionCodeSettings
-                            = getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
+                    ActionCodeSettings actionCodeSettings =
+                            getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
                     Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
                             "null when using email link sign in.");
                    if (actionCodeSettings != null && !actionCodeSettings.canHandleCodeInApp()) {
@@ -1341,7 +1341,9 @@ public final class AuthUI {
             for (int i = 0; i < mProviders.size(); i++) {
                 IdpConfig config = mProviders.get(i);
                 if (config.getProviderId().equals(EMAIL_LINK_PROVIDER)) {
-                    if (!config.getParams().containsKey(ExtraConstants.FORCE_SAME_DEVICE)) {
+                    boolean emailLinkForceSameDevice =
+                            config.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE, true);
+                    if (!emailLinkForceSameDevice) {
                         throw new IllegalStateException("You must force the same device flow " +
                                 "when using email link sign in with anonymous user upgrade");
                     }
