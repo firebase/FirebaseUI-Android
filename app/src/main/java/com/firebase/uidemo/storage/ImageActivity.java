@@ -111,7 +111,7 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         if (BuildConfig.DEBUG) {
-                            Log.d(TAG, "uploadPhoto:onEmailPromptSuccess:" +
+                            Log.d(TAG, "uploadPhoto:onSuccess:" +
                                     taskSnapshot.getMetadata().getReference().getPath());
                         }
                         Toast.makeText(ImageActivity.this, "Image uploaded",
