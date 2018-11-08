@@ -21,7 +21,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 
@@ -92,12 +91,15 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
             EmailLinkPersistenceManager.getInstance().saveIdpResponseForLinking(getApplication(),
                     responseForLinking);
 
-            EmailLinkFragment fragment = EmailLinkFragment.newInstance(email, actionCodeSettings);
-            switchFragment(fragment, EmailLinkFragment.TAG);
+            boolean forceSameDevice =
+                    emailConfig.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE);
+            EmailLinkFragment fragment = EmailLinkFragment.newInstance(email, actionCodeSettings,
+                    responseForLinking, forceSameDevice);
+            switchFragment(fragment, R.id.fragment_register_email, EmailLinkFragment.TAG);
         } else {
             // Start with check email
             CheckEmailFragment fragment = CheckEmailFragment.newInstance(email);
-            switchFragment(fragment, CheckEmailFragment.TAG);
+            switchFragment(fragment, R.id.fragment_register_email, CheckEmailFragment.TAG);
         }
     }
 
@@ -128,7 +130,6 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
     @Override
     public void onExistingIdpUser(User user) {
-
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
                 WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
@@ -173,7 +174,8 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     public void onTroubleSigningIn(String email) {
         TroubleSigningInFragment troubleSigningInFragment = TroubleSigningInFragment.newInstance
                 (email);
-        switchFragment(troubleSigningInFragment, TroubleSigningInFragment.TAG, true, true);
+        switchFragment(troubleSigningInFragment, R.id.fragment_register_email,
+                TroubleSigningInFragment.TAG, true, true);
     }
 
     @Override
@@ -218,28 +220,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
                 (ExtraConstants.ACTION_CODE_SETTINGS);
         EmailLinkFragment fragment = EmailLinkFragment.newInstance(email,
                 actionCodeSettings);
-        switchFragment(fragment, EmailLinkFragment.TAG);
-    }
-
-
-    private void switchFragment(Fragment fragment,
-                                String tag,
-                                boolean withTransition,
-                                boolean addToBackStack) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if (withTransition) {
-            ft.setCustomAnimations(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
-        }
-        ft.replace(R.id.fragment_register_email, fragment, tag);
-        if (addToBackStack) {
-            ft.addToBackStack(null).commit();
-        } else {
-            ft.disallowAddToBackStack().commit();
-        }
-    }
-
-    private void switchFragment(Fragment fragment, String tag) {
-        switchFragment(fragment, tag, false, false);
+        switchFragment(fragment, R.id.fragment_register_email, EmailLinkFragment.TAG);
     }
 
     @Override

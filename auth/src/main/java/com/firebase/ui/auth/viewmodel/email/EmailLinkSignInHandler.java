@@ -2,16 +2,19 @@ package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.EmailLinkParser;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager.SessionRecord;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
@@ -41,43 +44,108 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
 
         String link = getArguments().emailLink;
         if (!getAuth().isSignInWithEmailLink(link)) {
-            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(ErrorCodes
-                    .INVALID_EMAIL_LINK_ERROR)));
+            setResult(Resource.<IdpResponse>forFailure(
+                    new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
             return;
         }
 
         final EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager
                 .getInstance();
+
+        SessionRecord sessionRecord = persistenceManager.retrieveSessionRecord(getApplication());
+
+        EmailLinkParser parser = new EmailLinkParser(link);
+        String sessionIdFromLink = parser.getSessionId();
+        String anonymousUserIdFromLink = parser.getAnonymousUserId();
+        String oobCodeFromLink = parser.getOobCode();
+        String providerIdFromLink = parser.getProviderId();
+        boolean forceSameDevice = parser.getForceSameDeviceBit();
+
+        if (isDifferentDeviceFlow(sessionRecord, sessionIdFromLink)) {
+            if (TextUtils.isEmpty(sessionIdFromLink)) {
+                // There should always be a valid session ID in the link
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
+                return;
+            }
+            if (forceSameDevice || !TextUtils.isEmpty(anonymousUserIdFromLink)) {
+                // In both cases, the link was meant to be completed on the same device.
+                // For anonymous user upgrade, we don't support the cross device flow.
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                return;
+            }
+
+            // If we have no SessionRecord/there is a session ID mismatch, this means that we were
+            // not the ones to send the link. The only way forward is to prompt the user for their
+            // email before continuing the flow. We should only do that after validating the link.
+            determineDifferentDeviceErrorFlowAndFinish(oobCodeFromLink, providerIdFromLink);
+            return;
+        }
+
+        if (anonymousUserIdFromLink != null){
+            // Same device flow, need to ensure uids match
+            if (getAuth().getCurrentUser() == null
+                    || (getAuth().getCurrentUser().isAnonymous()
+                    && !anonymousUserIdFromLink.equals(getAuth().getCurrentUser().getUid()))) {
+                // TODO(lsirac): add new error?
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                return;
+            }
+        }
+
+        finishSignIn(sessionRecord);
+    }
+
+    public void finishSignIn(String email) {
+        setResult(Resource.<IdpResponse>forLoading());
+        finishSignIn(email, /*response=*/null);
+    }
+
+    private void finishSignIn(SessionRecord sessionRecord) {
+        String email = sessionRecord.getEmail();
+        IdpResponse response = sessionRecord.getIdpResponseForLinking();
+        finishSignIn(email, response);
+    }
+
+    private void finishSignIn(@NonNull String email, @Nullable IdpResponse response) {
+        if (TextUtils.isEmpty(email)) {
+            setResult(Resource.<IdpResponse>forFailure(
+                    new FirebaseUiException(ErrorCodes.EMAIL_MISMATCH_ERROR)));
+            return;
+        }
         final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
-        final IdpResponse response = persistenceManager.retrieveIdpResponseForLinking
-                (getApplication());
-        final String email = persistenceManager.retrieveEmailForLink(getApplication());
-
-        persistenceManager.clearAllData(getApplication());
-
-        if (email == null && response == null) {
-            determineErrorFlowAndFinish(link);
-        } else if (response != null) {
-            handleLinkingFlow(authOperationManager, persistenceManager, response, link);
-        } else {
+        final EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager
+                .getInstance();
+        String link = getArguments().emailLink;
+        if (response == null) {
             handleNormalFlow(authOperationManager, persistenceManager, email, link);
+        } else {
+            handleLinkingFlow(authOperationManager, persistenceManager, response, link);
         }
     }
 
-    private void determineErrorFlowAndFinish(String link) {
-        String oobCode = EmailLinkParser.getInstance().getOobCodeFromLink(link);
+    private void determineDifferentDeviceErrorFlowAndFinish(@NonNull String oobCode,
+                                                            @Nullable final String providerId) {
         getAuth().checkActionCode(oobCode).addOnCompleteListener(
                 new OnCompleteListener<ActionCodeResult>() {
                     @Override
                     public void onComplete(@NonNull Task<ActionCodeResult> task) {
                         if (task.isSuccessful()) {
-                            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException
-                                    (ErrorCodes
-                                            .EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                            if (!TextUtils.isEmpty(providerId)) {
+                                setResult(Resource.<IdpResponse>forFailure(
+                                        new FirebaseUiException(
+                                                ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR)));
+                                return;
+                            }
+                            // The email link is valid, we can ask the user for their email
+                            setResult(Resource.<IdpResponse>forFailure(
+                                            new FirebaseUiException(
+                                                    ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR)));
                         } else {
-                            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException
-                                    (ErrorCodes
-                                            .INVALID_EMAIL_LINK_ERROR)));
+                            setResult(Resource.<IdpResponse>forFailure(
+                                    new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
                         }
                     }
                 });
@@ -102,8 +170,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
                             if (task.isSuccessful()) {
                                 handleMergeFailure(storedCredentialForLink);
                             } else {
-                                setResult(Resource.<IdpResponse>forFailure(task.getException
-                                        ()));
+                                setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             }
                         }
                     });
@@ -189,5 +256,11 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
                         }
                     }
                 });
+    }
+
+    private boolean isDifferentDeviceFlow(SessionRecord sessionRecord, String sessionIdFromLink) {
+        return sessionRecord == null || TextUtils.isEmpty(sessionRecord.getSessionId())
+                || TextUtils.isEmpty(sessionIdFromLink)
+                || !sessionIdFromLink.equals(sessionRecord.getSessionId());
     }
 }

@@ -36,7 +36,7 @@ public final class ErrorCodes {
      */
     public static final int ANONYMOUS_UPGRADE_MERGE_CONFLICT = 5;
     /**
-     * Signing in with a different email in the WelcomeBackIdp flow.
+     * Signing in with a different email in the WelcomeBackIdp flow or email link flow.
      */
     public static final int EMAIL_MISMATCH_ERROR = 6;
     /**
@@ -49,7 +49,16 @@ public final class ErrorCodes {
      */
     public static final int EMAIL_LINK_WRONG_DEVICE_ERROR = 8;
 
+    /**
+     * We need to prompt the user for their email.
+     * */
+    public static final int EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR = 9;
 
+    /**
+     * Cross device linking flow - we need to ask the user if they want to continue linking or
+     * just sign in.
+     * */
+    public static final int EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR = 10;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
@@ -76,8 +85,12 @@ public final class ErrorCodes {
                         "provided";
             case INVALID_EMAIL_LINK_ERROR:
                 return "You are are attempting to sign in with an invalid email link";
+            case EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR:
+                return "Please enter your email to continue signing in";
             case EMAIL_LINK_WRONG_DEVICE_ERROR:
                 return "You must open the email link on the same device.";
+            case EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR:
+                return "You must determine if you want to continue linking or complete the sign in";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }
@@ -95,7 +108,9 @@ public final class ErrorCodes {
             ANONYMOUS_UPGRADE_MERGE_CONFLICT,
             EMAIL_MISMATCH_ERROR,
             INVALID_EMAIL_LINK_ERROR,
-            EMAIL_LINK_WRONG_DEVICE_ERROR
+            EMAIL_LINK_WRONG_DEVICE_ERROR,
+            EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
+            EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {

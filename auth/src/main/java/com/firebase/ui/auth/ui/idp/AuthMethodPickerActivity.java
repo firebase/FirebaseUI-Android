@@ -163,7 +163,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs) {
-      
+
         ViewModelProvider supplier = ViewModelProviders.of(this);
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
@@ -248,6 +248,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 provider = github;
 
                 break;
+            case EMAIL_LINK_PROVIDER:
             case EmailAuthProvider.PROVIDER_ID:
                 EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
                 email.init(null);

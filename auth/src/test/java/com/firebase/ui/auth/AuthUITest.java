@@ -242,14 +242,22 @@ public class AuthUITest {
 
     @Test
     public void testEmailBuilder_withValidActionCodeSettings_expectSuccess() {
-        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL)
-                .setHandleCodeInApp(true)
+        ActionCodeSettings actionCodeSettings =
+                ActionCodeSettings.newBuilder()
+                        .setUrl(URL)
+                        .setHandleCodeInApp(true)
+                        .build();
+
+        IdpConfig config = new IdpConfig.EmailBuilder()
+                .enableEmailLinkSignIn()
+                .setActionCodeSettings(actionCodeSettings)
+                .setForceSameDevice()
                 .build();
-        IdpConfig config = new IdpConfig.EmailBuilder().enableEmailLinkSignIn()
-                .setActionCodeSettings
-                        (actionCodeSettings).build();
-        assertThat(config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS)).isEqualTo
-                (actionCodeSettings);
+
+        assertThat(config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS))
+                .isEqualTo(actionCodeSettings);
+        assertThat(config.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE))
+                .isEqualTo(true);
         assertThat(config.getProviderId()).isEqualTo(AuthUI.EMAIL_LINK_PROVIDER);
 
     }
@@ -259,12 +267,29 @@ public class AuthUITest {
         new IdpConfig.EmailBuilder().enableEmailLinkSignIn().build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public void
     testEmailBuilder_withActionCodeSettingsAndHandleCodeInAppFalse_expectThrows() {
-        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL)
-                .build();
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
         new IdpConfig.EmailBuilder().enableEmailLinkSignIn().setActionCodeSettings
                 (actionCodeSettings).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testEmailBuilder_withAnonymousUpgradeAndNotForcingSameDevice_expectThrows() {
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
+        new IdpConfig.EmailBuilder().enableEmailLinkSignIn().setActionCodeSettings
+                (actionCodeSettings).build();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSignInIntentBuilder_anonymousUpgradeWithEmailLinkCrossDevice_expectThrows() {
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
+        IdpConfig config = new IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                .setActionCodeSettings(actionCodeSettings).build();
+
+        AuthUI.getInstance().createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(config))
+                .enableAnonymousUsersAutoUpgrade();
     }
 }

@@ -79,6 +79,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".ui.email.EmailLinkErrorRecoveryActivity"
+            android:label="@string/fui_sign_in_default"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".ui.idp.AuthMethodPickerActivity"
             android:label="@string/fui_default_toolbar_title"
             android:exported="false" />

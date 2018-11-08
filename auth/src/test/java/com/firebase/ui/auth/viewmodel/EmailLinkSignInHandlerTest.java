@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -17,7 +18,9 @@ import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
+import com.firebase.ui.auth.util.data.ContinueUrlBuilder;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
+import com.firebase.ui.auth.util.data.SessionUtils;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 import com.google.firebase.auth.ActionCodeResult;
 import com.google.firebase.auth.AdditionalUserInfo;
@@ -57,7 +60,12 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class EmailLinkSignInHandlerTest {
 
-    private static final String EMAIL_LINK = "?oobCode=oobCode&mode=signIn";
+    private static final String EMAIL_LINK =
+            "https://fake.com/__/auth/action?apiKey=apiKey&mode=signIn"
+                    + "&oobCode=oobCode"
+                    + "&continueUrl=";
+
+    private static final String CONTINUE_URL = "https://google.com";
 
     private EmailLinkSignInHandler mHandler;
     private EmailLinkPersistenceManager mPersistenceManager;
@@ -77,9 +85,11 @@ public class EmailLinkSignInHandlerTest {
         MockitoAnnotations.initMocks(this);
 
         mHandler = new EmailLinkSignInHandler(RuntimeEnvironment.application);
-        FlowParameters testParams = TestHelper.getFlowParameters(new ArrayList<String>());
-        testParams.emailLink = EMAIL_LINK;
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+
+
+        initializeHandlerWithSessionInfo(TestConstants.SESSION_ID, null, null, false);
+
+
         mPersistenceManager = EmailLinkPersistenceManager.getInstance();
 
         FirebaseUser user = TestHelper.getMockFirebaseUser();
@@ -90,13 +100,72 @@ public class EmailLinkSignInHandlerTest {
 
     @Test
     @SuppressWarnings("all")
-    public void testStartSignIn_wrongDeviceFlow() {
+    public void
+    testStartSignIn_differentDeviceLinkWithForceSameDeviceTrue_expectWrongDeviceError() {
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
+        initializeHandlerWithSessionInfo(differentSessionId, null, null, true);
+
+        mHandler.getOperation().observeForever(mResponseObserver);
+        when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
+
+
+        mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+        ArgumentCaptor<Resource<IdpResponse>> captor =
+                ArgumentCaptor.forClass(Resource.class);
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
+        FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
+        assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode()).isEqualTo(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR);
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void
+    testStartSignIn_differentDeviceLinkWithNoSessionId_expectInvalidLinkError() {
+        initializeHandlerWithSessionInfo(null, null, null, true);
+
+        mHandler.getOperation().observeForever(mResponseObserver);
+        when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
+
+        mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+        ArgumentCaptor<Resource<IdpResponse>> captor =
+                ArgumentCaptor.forClass(Resource.class);
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
+        FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
+        assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode()).isEqualTo(ErrorCodes.INVALID_EMAIL_LINK_ERROR);
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void
+    testStartSignIn_differentDeviceLinkWithValidSessionInfo_expectPromptForEmailError() {
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
+        initializeHandlerWithSessionInfo(differentSessionId, null, null, false);
+
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
         when(mMockAuth.checkActionCode(any(String.class))).thenReturn(AutoCompleteTask.forSuccess
                 (mMockActionCodeResult));
 
         mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+        verify(mMockAuth).checkActionCode(any(String.class));
 
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -108,8 +177,92 @@ public class EmailLinkSignInHandlerTest {
 
         FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
         assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR);
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void testStartSignIn_differentDeviceLinkWithValidSessionInfo_expectInvalidLinkError() {
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
+        initializeHandlerWithSessionInfo(differentSessionId, null, null, false);
+
+        mHandler.getOperation().observeForever(mResponseObserver);
+        when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
+        when(mMockAuth.checkActionCode(any(String.class)))
+                .thenReturn(AutoCompleteTask.<ActionCodeResult>forFailure(new Exception("foo")));
+
+        mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+        verify(mMockAuth).checkActionCode(any(String.class));
+
+        ArgumentCaptor<Resource<IdpResponse>> captor =
+                ArgumentCaptor.forClass(Resource.class);
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
+        FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
+        assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(ErrorCodes.INVALID_EMAIL_LINK_ERROR);
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void
+    testStartSignIn_differentDeviceLinkWithAnonymousUpgradeEnabled_expectInvalidLinkError() {
+        String differentSessionId = SessionUtils.generateRandomAlphaNumericString(10);
+        String anonUserId = SessionUtils.generateRandomAlphaNumericString(10);
+        initializeHandlerWithSessionInfo(differentSessionId, anonUserId, null, false);
+
+        mHandler.getOperation().observeForever(mResponseObserver);
+        when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
+
+        mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+
+        ArgumentCaptor<Resource<IdpResponse>> captor =
+                ArgumentCaptor.forClass(Resource.class);
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
+        FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
+        assertThat(exception).isNotNull();
+        assertThat(exception.getErrorCode())
+                .isEqualTo(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR);
+    }
+
+
+    @Test
+    @SuppressWarnings("all")
+    public void testStartSignIn_invalidLink_expectInvalidLinkError() {
+        mHandler.getOperation().observeForever(mResponseObserver);
+
+        when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(false);
+
+        mHandler.startSignIn();
+
+        verify(mMockAuth).isSignInWithEmailLink(any(String.class));
+
+        ArgumentCaptor<Resource<IdpResponse>> captor =
+                ArgumentCaptor.forClass(Resource.class);
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        inOrder.verify(mResponseObserver).onChanged(captor.capture());
+
+        FirebaseUiException exception = (FirebaseUiException) captor.getValue().getException();
+        assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isEqualTo(ErrorCodes
-                .EMAIL_LINK_WRONG_DEVICE_ERROR);
+                .INVALID_EMAIL_LINK_ERROR);
     }
 
     @Test
@@ -118,7 +271,8 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
 
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
                 (AutoCompleteTask.forSuccess(mMockAuthResult));
@@ -143,7 +297,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(response.getUser().getPhotoUri()).isEqualTo(mMockAuthResult.getUser()
                 .getPhotoUrl());
 
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -154,7 +308,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
 
         when(mMockAuth.getCurrentUser().linkWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoContinueTask<>(mMockAuthResult,
@@ -183,7 +338,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(response.getUser().getPhotoUri()).isEqualTo(mMockAuthResult.getUser()
                 .getPhotoUrl());
 
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -194,8 +349,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
-
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         when(mMockAuth.getCurrentUser().linkWithCredential(any(AuthCredential.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
                         new FirebaseAuthUserCollisionException("foo", "bar")));
@@ -216,7 +371,7 @@ public class EmailLinkSignInHandlerTest {
         FirebaseAuthAnonymousUpgradeException mergeException =
                 (FirebaseAuthAnonymousUpgradeException) captor.getValue().getException();
         assertThat(mergeException.getResponse().getCredentialForLinking()).isNotNull();
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -226,7 +381,8 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -258,12 +414,8 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
-                .isNull();
-
 
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
@@ -295,10 +447,10 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
-
 
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
                 (AutoCompleteTask.forSuccess(mMockAuthResult));
@@ -324,7 +476,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(captor.getValue().getException()).isNotNull();
         FirebaseAuthUserCollisionException collisionException =
                 (FirebaseAuthUserCollisionException) captor.getValue().getException();
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
     }
 
@@ -336,7 +488,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -371,12 +524,8 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
-                .isNull();
-
 
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
@@ -405,7 +554,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -422,10 +572,7 @@ public class EmailLinkSignInHandlerTest {
         verify(mScratchMockAuth).signInWithCredential(any(AuthCredential.class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
-                .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
 
         // Validate failure
@@ -448,7 +595,8 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmailForLink(RuntimeEnvironment.application, TestConstants.EMAIL);
+        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+                TestConstants.SESSION_ID, TestConstants.UID);
         mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
                 buildFacebookIdpResponse());
 
@@ -474,10 +622,7 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveEmailForLink(RuntimeEnvironment.application))
-                .isNull();
-        assertThat(mPersistenceManager.retrieveIdpResponseForLinking(RuntimeEnvironment
-                .application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
                 .isNull();
 
         // Validate failure
@@ -507,12 +652,28 @@ public class EmailLinkSignInHandlerTest {
         // enableAnonymousUpgrade must be set to true
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID), /* enableAnonymousUpgrade */ true);
+
+        testParams.emailLink = mHandler.getArguments().emailLink;
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
 
         // Mock isAnonymous() to return true so canUpgradeAnonymous will return true
         when(mMockAnonUser.isAnonymous()).thenReturn(true);
         when(mMockAuth.getCurrentUser()).thenReturn(mMockAnonUser);
-        testParams.emailLink = EMAIL_LINK;
     }
 
+    private void initializeHandlerWithSessionInfo(@Nullable String sessionId,
+                                                  @Nullable String anonymousUserId,
+                                                  @Nullable String providerId,
+                                                  boolean forceSameDevice) {
+        FlowParameters testParams = TestHelper.getFlowParameters(new ArrayList<String>());
+        ContinueUrlBuilder continueUrlBuilder = new ContinueUrlBuilder(CONTINUE_URL);
+        continueUrlBuilder.appendSessionId(sessionId);
+        continueUrlBuilder.appendAnonymousUserId(anonymousUserId);
+        continueUrlBuilder.appendProviderId(providerId);
+        continueUrlBuilder.appendForceSameDeviceBit(forceSameDevice);
+
+        testParams.emailLink = EMAIL_LINK + continueUrlBuilder.build();
+
+        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+    }
 }

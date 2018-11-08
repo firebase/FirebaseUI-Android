@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
@@ -30,6 +31,17 @@
                 android:layout_gravity="top"
                 android:text="@string/fui_email_link_header"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/fui_ic_check_circle_black_128dp"
+                android:maxHeight="128dp"
+                android:maxWidth="128dp"
+                android:adjustViewBounds="true"
+                android:paddingBottom="@dimen/fui_field_padding_vert"
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/sign_in_email_sent_text"

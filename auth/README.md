@@ -390,8 +390,10 @@ if (AuthUI.canHandleIntent(getIntent())) {
 }
 ```
 
-Note that email link sign in is currently only supported for the same device. Finishing the flow on a different device will result
-in the user being shown an error.
+#### Cross device support
+
+We support cross device email link sign in for the normal flows. It is not supported with anonymous user upgrade. By default,
+cross device support is enabled. You can disable it by calling `setForceSameDevice` on the `EmailBuilder` instance.
 
 ##### Adding a ToS and privacy policy
 
