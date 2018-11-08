@@ -663,7 +663,7 @@ public final class AuthUI {
                             getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
                     Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
                             "null when using email link sign in.");
-                   if (actionCodeSettings != null && !actionCodeSettings.canHandleCodeInApp()) {
+                   if (actionCodeSettings.canHandleCodeInApp()) {
                         // Pre-emptively fail if actionCodeSettings are misconfigured. This would
                         // have happened when calling sendSignInLinkToEmail
                         throw new IllegalStateException(

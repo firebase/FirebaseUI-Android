@@ -130,7 +130,6 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
     @Override
     public void onExistingIdpUser(User user) {
-
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
                 WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
