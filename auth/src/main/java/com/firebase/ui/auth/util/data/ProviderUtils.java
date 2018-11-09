@@ -221,14 +221,29 @@ public final class ProviderUtils {
                         }
                         // Reorder providers from most to least usable. Usability is determined by
                         // how many steps a user needs to perform to log in.
-                        maximizePriority(lastSignedInProviders, GoogleAuthProvider.PROVIDER_ID);
+                        reorderPriorities(lastSignedInProviders);
 
                         return Tasks.forResult(lastSignedInProviders);
                     }
 
-                    private void maximizePriority(List<String> providers, String id) {
+                    private void reorderPriorities(List<String> providers) {
+                        // Prioritize Google over everything else
+                        // Prioritize email-password sign in second
+                        // De-prioritize email link sign in
+                        changePriority(providers, EmailAuthProvider.PROVIDER_ID, true);
+                        changePriority(providers, GoogleAuthProvider.PROVIDER_ID, true);
+                        changePriority(providers, EMAIL_LINK_PROVIDER, false);
+                    }
+
+                    private void changePriority(List<String> providers,
+                                                String id,
+                                                boolean maximizePriority) {
                         if (providers.remove(id)) {
-                            providers.add(0, id);
+                            if (maximizePriority) {
+                                providers.add(0, id);
+                            } else {
+                                providers.add(id);
+                            }
                         }
                     }
                 });
