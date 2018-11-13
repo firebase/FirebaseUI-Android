@@ -60,6 +60,12 @@ public final class ErrorCodes {
      * */
     public static final int EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR = 10;
 
+    /**
+     * Attempting to open an email link from the same device, with anonymous upgrade enabled,
+     * but the underlying anonymous user has been changed.
+     */
+    public static final int EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR = 11;
+
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
     }
@@ -91,6 +97,9 @@ public final class ErrorCodes {
                 return "You must open the email link on the same device.";
             case EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR:
                 return "You must determine if you want to continue linking or complete the sign in";
+            case EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR:
+                return "The session associated with this sign-in request has either expired or " +
+                        "was cleared";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }
@@ -110,7 +119,8 @@ public final class ErrorCodes {
             INVALID_EMAIL_LINK_ERROR,
             EMAIL_LINK_WRONG_DEVICE_ERROR,
             EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
-            EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR
+            EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR,
+            EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {

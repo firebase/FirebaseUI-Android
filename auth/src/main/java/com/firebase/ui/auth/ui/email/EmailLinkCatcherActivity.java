@@ -64,7 +64,8 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
                 } else if (e instanceof FirebaseUiException) {
                     int errorCode = ((FirebaseUiException) e).getErrorCode();
                     if (errorCode == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR
-                            || errorCode == ErrorCodes.INVALID_EMAIL_LINK_ERROR) {
+                            || errorCode == ErrorCodes.INVALID_EMAIL_LINK_ERROR
+                            || errorCode == ErrorCodes.EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR) {
                         buildAlertDialog(errorCode).show();
                     } else if (errorCode == ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR
                             || errorCode == ErrorCodes.EMAIL_MISMATCH_ERROR) {
@@ -97,28 +98,32 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         startActivityForResult(intent, flow);
     }
 
-    private AlertDialog buildAlertDialog(int errorCode) {
+    private AlertDialog buildAlertDialog(final int errorCode) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        if (errorCode == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR) {
-            alertDialog.setTitle(R.string.fui_email_link_wrong_device_header)
-                    .setMessage(R.string.fui_email_link_wrong_device_message)
-                    .setPositiveButton(R.string.fui_email_link_dismiss_button,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    finish(RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW, null);
-                                }
-                            });
+
+        String titleText;
+        String messageText;
+        if (errorCode == ErrorCodes.EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR) {
+            titleText = getString(R.string.fui_email_link_different_anonymous_user_header);
+            messageText = getString(R.string.fui_email_link_different_anonymous_user_message);
         } else if (errorCode == ErrorCodes.INVALID_EMAIL_LINK_ERROR) {
-            alertDialog.setTitle(R.string.fui_email_link_invalid_link_header)
-                    .setMessage(R.string.fui_email_link_invalid_link_message)
-                    .setPositiveButton(R.string.fui_email_link_dismiss_button,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    finish(RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW, null);
-                                }
-                            });
+            titleText = getString(R.string.fui_email_link_invalid_link_header);
+            messageText = getString(R.string.fui_email_link_invalid_link_message);
+        } else {
+            // Default value - ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR
+            titleText = getString(R.string.fui_email_link_wrong_device_header);
+            messageText = getString(R.string.fui_email_link_wrong_device_message);
         }
-        return alertDialog.create();
+
+        return alertDialog.setTitle(titleText)
+                .setMessage(messageText)
+                .setPositiveButton(R.string.fui_email_link_dismiss_button,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                finish(errorCode, null);
+                            }
+                        })
+                .create();
     }
 
     @Override
