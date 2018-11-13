@@ -88,9 +88,9 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
             if (getAuth().getCurrentUser() == null
                     || (getAuth().getCurrentUser().isAnonymous()
                     && !anonymousUserIdFromLink.equals(getAuth().getCurrentUser().getUid()))) {
-                // TODO(lsirac): add new error?
                 setResult(Resource.<IdpResponse>forFailure(
-                        new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
+                        new FirebaseUiException(
+                                ErrorCodes.EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR)));
                 return;
             }
         }
