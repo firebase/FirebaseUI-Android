@@ -35,6 +35,7 @@ object Config {
             const val recyclerView = "com.android.support:recyclerview-v7:$version"
             const val cardView = "com.android.support:cardview-v7:$version"
             const val customTabs = "com.android.support:customtabs:$version"
+            const val mediaCompat = "com.android.support:support-media-compat:$version"
 
             const val constraint = "com.android.support.constraint:constraint-layout:1.1.3"
         }
@@ -64,7 +65,7 @@ object Config {
 
 
         object Provider {
-            const val facebook = "com.facebook.android:facebook-login:4.35.0"
+            const val facebook = "com.facebook.android:facebook-login:4.38.1"
             // WARNING: the Twitter requires Java 8 support. Therefore, the dep cannot be upgraded
             // futher until we decide to force clients to enable Java 8 support.
             const val twitter = "com.twitter.sdk.android:twitter-core:3.1.1@aar"
