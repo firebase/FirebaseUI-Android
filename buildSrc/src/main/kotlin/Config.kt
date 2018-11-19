@@ -5,15 +5,15 @@ object Config {
     private const val kotlinVersion = "1.2.61"
 
     object SdkVersions {
-        const val compile = 27
-        const val target = 27
+        const val compile = 28
+        const val target = 28
         const val min = 16
     }
 
     object Plugins {
         const val android = "com.android.tools.build:gradle:3.2.1"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        const val google = "com.google.gms:google-services:4.0.2"
+        const val google = "com.google.gms:google-services:4.2.0"
 
         const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5"
@@ -25,7 +25,7 @@ object Config {
         }
 
         object Support {
-            private const val version = "27.1.1"
+            private const val version = "28.0.0"
 
             const val multidex = "com.android.support:multidex:1.0.3"
             const val annotations = "com.android.support:support-annotations:$version"
@@ -51,11 +51,11 @@ object Config {
         }
 
         object Firebase {
-            const val core = "com.google.firebase:firebase-core:16.0.4"
+            const val core = "com.google.firebase:firebase-core:16.0.5"
             const val auth = "com.google.firebase:firebase-auth:16.0.5"
-            const val firestore = "com.google.firebase:firebase-firestore:17.1.1"
-            const val database = "com.google.firebase:firebase-database:16.0.3"
-            const val storage = "com.google.firebase:firebase-storage:16.0.3"
+            const val firestore = "com.google.firebase:firebase-firestore:17.1.3"
+            const val database = "com.google.firebase:firebase-database:16.0.5"
+            const val storage = "com.google.firebase:firebase-storage:16.0.5"
         }
 
         object PlayServices {
