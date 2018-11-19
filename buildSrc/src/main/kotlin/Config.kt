@@ -100,7 +100,7 @@ object Config {
             const val junit = "junit:junit:4.12"
             const val truth = "com.google.truth:truth:0.42"
             const val mockito = "org.mockito:mockito-android:2.21.0"
-            const val robolectric = "org.robolectric:robolectric:3.8"
+            const val robolectric = "org.robolectric:robolectric:4.0.2"
 
             const val runner = "com.android.support.test:runner:1.0.2"
             const val rules = "com.android.support.test:rules:1.0.2"
