@@ -1,12 +1,16 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Įkeliama…</string>
     <string name="fui_sign_in_default">Prisijungti</string>
+    <string name="fui_cancel">Atšaukti</string>
+    <string name="fui_continue">Tęsti</string>
     <string name="fui_tos_and_pp">Tęsdami nurodote, kad sutinkate su %1$s ir %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">Telefono numeris</string>
+    <string name="fui_idp_name_email">El. pašto</string>
     <string name="fui_sign_in_with_google">Prisijungti per „Google“</string>
     <string name="fui_sign_in_with_facebook">Prisijungti per „Facebook“</string>
     <string name="fui_sign_in_with_twitter">Prisijungti per „Twitter“</string>
@@ -56,9 +60,15 @@
     <string name="fui_email_link_resend">Siųsti iš naujo</string>
     <string name="fui_email_link_wrong_device_header">Aptiktas naujas įrenginys arba naršyklė.</string>
     <string name="fui_email_link_wrong_device_message">Bandykite atidaryti nuorodą naudodami tą patį įrenginį ar naršyklę, kur pradėjote prisijungimo procesą.</string>
-    <string name="fui_email_link_invalid_link_header">Netinkama el. laiško nuoroda.</string>
-    <string name="fui_email_link_invalid_link_message">El. laiško nuoroda netinkama. Taip gali atsitikti, jei el. laiško nuoroda nebegalioja arba jau buvo naudojama prisijungti. Pradėkite prisijungimo procesą iš naujo.</string>
+    <string name="fui_email_link_invalid_link_header">Nepavyko prisijungti</string>
+    <string name="fui_email_link_invalid_link_message">Veiksmo kodas netinkamas. Tai gali nutikti, kai kodas netinkamai suformuotas, baigė galioti arba jau buvo naudotas.</string>
+    <string name="fui_email_link_different_anonymous_user_header">Sesija baigėsi</string>
+    <string name="fui_email_link_different_anonymous_user_message">Šios prisijungimo užklausos sesija baigė galioti arba buvo išvalyta.</string>
+    <string name="fui_email_link_confirm_email_header">Patvirtinkite el. paštą</string>
+    <string name="fui_email_link_confirm_email_message">Patvirtinkite el. paštą, kad galėtumėte tęsti prisijungimą</string>
     <string name="fui_email_link_dismiss_button">Atsisakyti</string>
+    <string name="fui_email_link_cross_device_linking_text">Iš pradžių ketinote susieti %1$s ir el. pašto paskyras, bet atidarėte nuorodą kitame įrenginyje, kuriame nesate prisijungę.\n\nJei vis tiek norite susieti %1$s paskyrą, atidarykite nuorodą tame pačiame įrenginyje, kuriame pradėjote prisijungimo procesą. Jei nenorite, palieskite „Tęsti“ ir prisijunkite šiame įrenginyje.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Prisijungti per „%1$s“</string>
     <string name="fui_verify_phone_number_title">Įveskite telefono numerį</string>
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>

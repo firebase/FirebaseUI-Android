@@ -1,12 +1,16 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">S\'està carregant…</string>
     <string name="fui_sign_in_default">Inicia la sessió</string>
+    <string name="fui_cancel">Cancel·la</string>
+    <string name="fui_continue">Continua</string>
     <string name="fui_tos_and_pp">En continuar, acceptes les nostres %1$s i la nostra %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">Telèfon</string>
+    <string name="fui_idp_name_email">Adreça electrònica</string>
     <string name="fui_sign_in_with_google">Inicia la sessió amb Google</string>
     <string name="fui_sign_in_with_facebook">Inicia la sessió amb Facebook</string>
     <string name="fui_sign_in_with_twitter">Inicia la sessió amb Twitter</string>
@@ -56,9 +60,15 @@
     <string name="fui_email_link_resend">Torna a enviar</string>
     <string name="fui_email_link_wrong_device_header">S\'ha detectat un dispositiu o navegador nou.</string>
     <string name="fui_email_link_wrong_device_message">Prova d\'obrir l\'enllaç amb el mateix dispositiu o navegador on has començat el procés d\'inici de sessió.</string>
-    <string name="fui_email_link_invalid_link_header">L\'enllaç de correu electrònic no és vàlid.</string>
-    <string name="fui_email_link_invalid_link_message">L\'enllaç de correu electrònic no és vàlid. Això pot passar si l\'enllaç de correu electrònic està caducat o si ja s\'ha fet servir per iniciar la sessió. Reinicia el flux d\'inici de sessió.</string>
+    <string name="fui_email_link_invalid_link_header">No s\'ha pogut completar l\'inici de sessió</string>
+    <string name="fui_email_link_invalid_link_message">El codi de l\'acció no és vàlid. Això pot passar si el codi té un format incorrecte, ha caducat o ja s\'ha fet servir.</string>
+    <string name="fui_email_link_different_anonymous_user_header">Sessió finalitzada</string>
+    <string name="fui_email_link_different_anonymous_user_message">La sessió associada a aquesta sol·licitud d\'inici de sessió ha caducat o s\'ha esborrat.</string>
+    <string name="fui_email_link_confirm_email_header">Confirma l\'adreça electrònica</string>
+    <string name="fui_email_link_confirm_email_message">Confirma l\'adreça electrònica per continuar amb l\'inici de sessió</string>
     <string name="fui_email_link_dismiss_button">Ignora</string>
+    <string name="fui_email_link_cross_device_linking_text">Inicialment has intentat connectar %1$s amb el teu compte de correu electrònic, però has obert l\'enllaç amb un dispositiu diferent en què no has iniciat la sessió.\n\nSi encara vols connectar el compte que tens a %1$s, obre l\'enllaç al mateix dispositiu en què has començat a iniciar la sessió. Si no, toca Continua per iniciar la sessió en aquest dispositiu.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Inicia la sessió amb %1$s</string>
     <string name="fui_verify_phone_number_title">Introdueix el número de telèfon</string>
     <string name="fui_invalid_phone_number">Introdueix un número de telèfon vàlid</string>
     <string name="fui_enter_confirmation_code">Introdueix el codi de 6 dígits que s\'ha enviat al número</string>
