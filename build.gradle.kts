@@ -102,7 +102,7 @@ fun Project.configureAndroid() {
                     "IconExpectedSize",
                     "InvalidPackage", // Firestore uses GRPC which makes lint mad
                     "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-                    "SelectableText", "SyntheticAccessor", // We almost never care about this
+                    "SelectableText", "SyntheticAccessor" // We almost never care about this
             )
 
             isCheckAllWarnings = true
