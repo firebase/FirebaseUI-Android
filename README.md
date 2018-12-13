@@ -101,7 +101,7 @@ firebase-ui-storage
 ```
 
 You can see the specific dependencies associated with each release on the 
-[Releases page][https://github.com/firebase/FirebaseUI-Android/releases].
+[Releases page](https://github.com/firebase/FirebaseUI-Android/releases).
 
 ### Upgrading dependencies
 
