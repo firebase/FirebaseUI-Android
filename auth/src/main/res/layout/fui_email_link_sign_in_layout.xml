@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <FrameLayout
+        android:id="@+id/invisible_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="MergeRootFrame" />
+
+    <ScrollView
+        android:id="@+id/top_level_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            style="@style/FirebaseUI.WrapperStyle"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sign_in_email_sent_header_text"
+                style="@style/FirebaseUI.Text.Heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:text="@string/fui_email_link_header"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/fui_ic_check_circle_black_128dp"
+                android:maxHeight="128dp"
+                android:maxWidth="128dp"
+                android:adjustViewBounds="true"
+                android:paddingBottom="@dimen/fui_field_padding_vert"
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/sign_in_email_sent_text"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="false" />
+
+            <TextView
+                android:id="@+id/welcome_back_email_link_body"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="false" />
+
+            <TextView
+                android:id="@+id/trouble_signing_in"
+                style="@style/FirebaseUI.Text.Link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fui_trouble_signing_in" />
+
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

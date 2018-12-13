@@ -113,12 +113,6 @@ public class IdpResponse implements Parcelable {
 
     @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public IdpResponse withResult(AuthResult result) {
-        return mutate().setNewUser(result.getAdditionalUserInfo().isNewUser()).build();
-    }
-
-    @NonNull
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static IdpResponse from(@NonNull Exception e) {
         if (e instanceof FirebaseUiException) {
             return new IdpResponse((FirebaseUiException) e);
@@ -133,6 +127,12 @@ public class IdpResponse implements Parcelable {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static Intent getErrorIntent(@NonNull Exception e) {
         return from(e).toIntent();
+    }
+
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public IdpResponse withResult(AuthResult result) {
+        return mutate().setNewUser(result.getAdditionalUserInfo().isNewUser()).build();
     }
 
     @NonNull
@@ -253,7 +253,8 @@ public class IdpResponse implements Parcelable {
             if (oos != null) {
                 try {
                     oos.close();
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) {
+                }
             }
         }
 
@@ -271,7 +272,8 @@ public class IdpResponse implements Parcelable {
                 && (mToken == null ? response.mToken == null : mToken.equals(response.mToken))
                 && (mSecret == null ? response.mSecret == null : mSecret.equals(response.mSecret))
                 && (mIsNewUser == response.mIsNewUser)
-                && (mException == null ? response.mException == null : mException.equals(response.mException))
+                && (mException == null ? response.mException == null : mException.equals(response
+                .mException))
                 && (mPendingCredential == null ? response.mPendingCredential == null :
                 mPendingCredential.getProvider().equals(response.mPendingCredential.getProvider()));
     }
@@ -283,7 +285,8 @@ public class IdpResponse implements Parcelable {
         result = 31 * result + (mSecret == null ? 0 : mSecret.hashCode());
         result = 31 * result + (mIsNewUser ? 1 : 0);
         result = 31 * result + (mException == null ? 0 : mException.hashCode());
-        result = 31 * result + (mPendingCredential == null ? 0 : mPendingCredential.getProvider().hashCode());
+        result = 31 * result + (mPendingCredential == null ? 0 : mPendingCredential.getProvider()
+                .hashCode());
         return result;
     }
 
@@ -343,7 +346,8 @@ public class IdpResponse implements Parcelable {
 
         public IdpResponse build() {
             if (mPendingCredential != null) {
-                return new IdpResponse(mPendingCredential, new FirebaseUiException(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT));
+                return new IdpResponse(mPendingCredential, new FirebaseUiException(ErrorCodes
+                        .ANONYMOUS_UPGRADE_MERGE_CONFLICT));
             }
 
             String providerId = mUser.getProviderId();

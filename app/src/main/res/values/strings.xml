@@ -26,8 +26,13 @@
     <string name="providers_github">GitHub</string>
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
+    <string name="providers_email_link">Email link</string>
     <string name="providers_phone">Phone</string>
     <string name="providers_anonymous">Anonymous</string>
+
+    <string name="layout_header">Layout</string>
+    <string name="layout_default">Default</string>
+    <string name="layout_custom">Custom</string>
 
     <string name="theme_header">Theme</string>
     <string name="theme_default">Default theme</string>
@@ -92,6 +97,13 @@
     <string name="used_providers">Providers used: %s</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
+
+    <!-- Auth UI - Custom AuthMethodPickerLayout -->
+    <string name="custom_layout_subheader">Sign in using this nice custom layout!</string>
+    <string name="custom_layout_idp_header">Choose a provider</string>
+    <string name="custom_layout_email_header">Use your email</string>
+    <string name="custom_layout_email_click_text">Continue with Email</string>
+
 
     <!-- Storage -->
     <string name="choose_image">Choose Image</string>

@@ -50,19 +50,19 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-database:4.3.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.3.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
 
     // FirebaseUI for Firebase Auth (GitHub provider)
-    implementation 'com.firebaseui:firebase-ui-auth-github:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth-github:4.3.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-storage:4.3.0'
 }
 ```
 
@@ -100,20 +100,8 @@ firebase-ui-storage
 |--- com.google.firebase:firebase-storage
 ```
 
-As of version `15.0.0`, Firebase and Google Play services libraries have independent, semantic
-versions. This means that FirebaseUI has independent dependencies on each of the libraries above.
-For best results, your app should depend on a version of each dependency with the same major
-version number as the version used by FirebaseUI.
-
-As of version `4.2.1`, FirebaseUI has the following dependency versions:
-
-| Library              | Version                        |
-|----------------------|--------------------------------|
-| `firebase-auth`      | 16.0.5                         |
-| `play-services-auth` | 16.0.1                         |
-| `firebase-database`  | 16.0.3                         |
-| `firebase-firestore` | 17.1.1                         |
-| `firebase-storage`   | 16.0.3                         |
+You can see the specific dependencies associated with each release on the 
+[Releases page][https://github.com/firebase/FirebaseUI-Android/releases].
 
 ### Upgrading dependencies
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        tools:visibility="visible" />
+
+    <ScrollView
+        android:id="@+id/top_level_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            style="@style/FirebaseUI.WrapperStyle"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/cross_device_linking_body"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fui_email_link_cross_device_linking_text"
+                android:textIsSelectable="false" />
+
+            <Button
+                android:id="@+id/button_continue"
+                style="@style/FirebaseUI.Button"
+                android:text="@string/fui_continue" />
+
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

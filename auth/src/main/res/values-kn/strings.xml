@@ -1,12 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_sign_in_default">ಸೈನ್ ಇನ್‌</string>
+    <string name="fui_cancel">Cancel</string>
+    <string name="fui_continue">Continue</string>
     <string name="fui_tos_and_pp">ಮುಂದುವರಿಸುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %1$s ಮತ್ತು %2$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">Phone</string>
+    <string name="fui_idp_name_email">Email</string>
     <string name="fui_sign_in_with_google">Google ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_sign_in_with_facebook">Facebook ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_sign_in_with_twitter">Twitter ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
@@ -32,8 +36,10 @@
     <string name="fui_privacy_policy">ಗೌಪ್ಯತಾ ನೀತಿ</string>
     <string name="fui_welcome_back_idp_header">ನೀವು ಈಗಾಗಲೇ ಖಾತೆಯನ್ನು ಹೊಂದಿರುವಿರಿ</string>
     <string name="fui_welcome_back_email_header">ಮರಳಿ ಸುಸ್ವಾಗತ!</string>
+    <string name="fui_welcome_back_email_link_header">ನೀವು ಈಗಾಗಲೇ ಖಾತೆಯನ್ನು ಹೊಂದಿರುವಿರಿ\n</string>
     <string name="fui_welcome_back_idp_prompt">ನೀವು ಈಗಾಗಲೇ %1$s ಅನ್ನು ಬಳಸುತ್ತಿರುವಿರಿ. ಮುಂದುವರಿಸಲು %2$s ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
     <string name="fui_welcome_back_password_prompt_body">ನೀವು ಈಗಾಗಲೇ ಸೈನ್ ಇನ್ ಮಾಡಲು %1$sನ್ನು ಬಳಸಿದ್ದೀರಿ. ಆ ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಆಗಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">ನೀವು ಈಗಾಗಲೇ %1$s ಇಮೇಲ್ ಅನ್ನು ಬಳಸಿರುವಿರಿ. ಕೆಳಗಿನ ಇಮೇಲ್ ಲಿಂಕ್ ಬಳಸಿಕೊಂಡು ಸೈನ್ ಇನ್ ಮಾಡುವ ಮೂಲಕ ನಿಮ್ಮ %2$s ಖಾತೆಯನ್ನು %1$s ಜೊತೆಗೆ ನೀವು ಸಂಪರ್ಕಿಸಬಹುದು.\n\nಇದು ಯಶಸ್ವಿಯಾಗಿ ನೆರವೇರಲು ಈ ಇಮೇಲ್ ಜೊತೆಗೆ ನಿಮ್ಮ %2$s ಖಾತೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ, ನೀವು ಒಂದೇ ಸಾಧನ ಅಥವಾ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಲಿಂಕ್ ಅನ್ನು ತೆರೆಯಬೇಕು.</string>
     <string name="fui_progress_dialog_signing_in">ಸೈನ್ ಇನ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_trouble_signing_in">ಸೈನ್ ಇನ್ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿದೆಯೇ?</string>
     <string name="fui_title_recover_password_activity">ಪಾಸ್‌ವರ್ಡ್ ಹಿಂಪಡೆಯಿರಿ</string>
@@ -46,6 +52,23 @@
     <string name="fui_error_unknown">ಅಪರಿಚಿತ ದೋಷವೊಂದು ಸಂಭವಿಸಿದೆ.</string>
     <string name="fui_error_invalid_password">ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್.</string>
     <string name="fui_accessibility_logo">ಅಪ್ಲಿಕೇಶನ್‌ ಲೋಗೊ</string>
+    <string name="fui_email_link_header">ಸೈನ್-ಇನ್ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ\n</string>
+    <string name="fui_email_link_email_sent">%1$s ಇಮೇಲ್‌ಗೆ ಹೆಚ್ಚುವರಿ ಸೂಚನೆಗಳನ್ನು ಹೊಂದಿರುವ ಸೈನ್-ಇನ್ ಇಮೇಲ್ ಅನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ. ಸೈನ್-ಇನ್ ಪೂರ್ಣಗೊಳಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
+    <string name="fui_email_link_trouble_getting_email_header">ಇಮೇಲ್ ಪಡೆಯುವಲ್ಲಿ ಸಮಸ್ಯೆ ಉಂಟಾಗುತ್ತಿದೆಯೇ?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">ಈ ಸಾಮಾನ್ಯ ಪರಿಹಾರಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ:\n\u2022 ಇಮೇಲ್ ಅನ್ನು ಸ್ಪ್ಯಾಮ್ ಎಂದು ಗುರುತು ಮಾಡಲಾಗಿದೆಯೇ ಅಥವಾ ಫಿಲ್ಟರ್ ಮಾಡಲಾಗಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ.\n\u2022 ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.\n\u2022 ನಿಮ್ಮ ಇಮೇಲ್‌ನ ಕಾಗುಣಿತವನ್ನು ಸರಿಯಾಗಿ ನಮೂದಿಸಿರುವಿರಾ ಎಂಬುದನ್ನು ಪರಿಶೀಲಿಸಿ.\n\u2022 ನಿಮ್ಮ ಇನ್‌ಬಾಕ್ಸ್ ಸಂಗ್ರಹಣೆಯು ಭರ್ತಿಯಾಗದಿರುವುದನ್ನು ಅಥವಾ ಇತರ ಇನ್‌ಬಾಕ್ಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ಸಮಸ್ಯೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">ಮೇಲಿನ ಹಂತಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿದ್ದಲ್ಲಿ, ನೀವು ಇಮೇಲ್ ಅನ್ನು ಪುನಃ ಕಳುಹಿಸಬಹುದು. ಇದು ಹಳೆಯ ಇಮೇಲ್‌ನಲ್ಲಿರುವ ಲಿಂಕ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ ಎಂಬುದನ್ನು ಗಮನಿಸಿ.</string>
+    <string name="fui_email_link_resend">ಪುನಃ ಕಳುಹಿಸಿ</string>
+    <string name="fui_email_link_wrong_device_header">ಹೊಸ ಸಾಧನ ಅಥವಾ ಬ್ರೌಸರ್ ಪತ್ತೆಯಾಗಿದೆ.</string>
+    <string name="fui_email_link_wrong_device_message">ನೀವು ಸೈನ್ ಇನ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿದ ಸಾಧನ ಅಥವಾ ಬ್ರೌಸರ್ ಅನ್ನು ಬಳಸಿಕೊಂಡು ಲಿಂಕ್ ತೆರೆಯಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_email_link_invalid_link_header">Unable to complete sign in</string>
+    <string name="fui_email_link_invalid_link_message">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
+    <string name="fui_email_link_different_anonymous_user_header">Session ended</string>
+    <string name="fui_email_link_different_anonymous_user_message">The session associated with this sign-in request has either expired or was cleared.</string>
+    <string name="fui_email_link_confirm_email_header">Confirm email</string>
+    <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
+    <string name="fui_email_link_dismiss_button">ವಜಾಗೊಳಿಸಿ</string>
+    <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device where you started sign-in. Otherwise, tap Continue to sign-in on this device.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Sign in with %1$s</string>
     <string name="fui_verify_phone_number_title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>

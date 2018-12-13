@@ -221,7 +221,6 @@ public class RegisterEmailFragment extends FragmentBase implements
             throw new IllegalStateException("Activity must implement CheckEmailListener");
         }
         mListener = (AnonymousUpgradeListener) activity;
-
     }
 
     @Override

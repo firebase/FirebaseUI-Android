@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingDefaultResource"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/top_progress_bar"
+        style="@style/FirebaseUI.TopProgressBar"
+        tools:visibility="visible" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            style="@style/FirebaseUI.WrapperStyle"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/heading"
+                style="@style/FirebaseUI.Text.Heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fui_email_link_trouble_getting_email_header" />
+
+            <TextView
+                android:id="@+id/trouble_signing_in_possible_fixes"
+                style="@style/FirebaseUI.Text.BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fui_field_padding_vert"
+                android:textIsSelectable="false"
+                android:text="@string/fui_email_link_trouble_getting_possible_fixes" />
+
+            <Button
+                android:id="@+id/button_resend_email"
+                style="@style/FirebaseUI.Button"
+                android:text="@string/fui_email_link_resend" />
+
+            <TextView
+                android:id="@+id/email_footer_tos_and_pp_text"
+                style="@style/FirebaseUI.PrivacyFooter" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

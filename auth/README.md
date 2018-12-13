@@ -43,6 +43,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [Customization](#ui-customization)
    1. [Required setup](#required-setup)
    1. [Themes](#themes)
+   1. [Auth method picker layout](#custom-layout)
    1. [Strings](#strings)
 1. [OAuth scopes](#oauth-scope-customization)
    1. [Google](#google-1)
@@ -65,10 +66,10 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
 
     // Required only if GitHub OAuth support is required
-    implementation 'com.firebaseui:firebase-ui-auth-github:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth-github:4.3.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -80,7 +81,7 @@ dependencies {
 }
 ```
 
-As of version `2.1.0` FirebaseUI includes translations for all string resources. In order to
+FirebaseUI includes translations for all string resources. In order to
 ensure that you only get the translations relevant to your application, we recommend changing the
 `resConfigs` of your application module:
 
@@ -337,6 +338,63 @@ startActivityForResult(
         RC_SIGN_IN);
 ```
 
+##### Configuring Email Link Sign In
+
+To use email link sign in, you will first need to enable it in the Firebase Console. Additionally, you will
+also have to enable Firebase Dynamic Links.
+
+You can enable email link sign in by calling the `enableEmailLinkSignIn` on an `EmailBuilder` instance. You will also need
+to provide a valid `ActionCodeSettings` object with `setHandleCodeInApp` set to true. Additionally, you need to whitelist the
+URL you pass to `setUrl`; you can do so in the Firebase Console (Authentication -> Sign in Methods -> Authorized domains).
+
+```java
+
+ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+        .setAndroidPackageName(/*yourPackageName*/, /*installIfNotAvailable*/true, /*minimumVersion*/null)
+        .setHandleCodeInApp(true)
+        .setUrl("https://google.com") // This URL needs to be whitelisted
+        .build();
+
+startActivityForResult(
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.EmailBuilder().enableEmailLinkSignIn()
+                        .setActionCodeSettings(actionCodeSettings).build())
+                .build(),
+        RC_SIGN_IN);
+
+```
+
+If you want to catch the link in a specific activity, please follow the steps outlined [here](https://firebase.google.com/docs/auth/android/email-link-auth).
+Otherwise, the link will redirect to your launcher activity.
+
+Once you catch the deep link, you will need to call verify that we can handle it for you. If we can, you need to then
+pass it to us via `setEmailLink`.
+
+```java
+if (AuthUI.canHandleIntent(getIntent())) {
+    if (getIntent().getExtras() != null) {
+            return;
+        }
+        String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
+        if (link != null) {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setEmailLink(link)
+                            .setAvailableProviders(getAvailableProviders())
+                            .build(),
+                    RC_SIGN_IN);
+        }
+}
+```
+
+#### Cross device support
+
+We support cross device email link sign in for the normal flows. It is not supported with anonymous user upgrade. By default,
+cross device support is enabled. You can disable it by calling `setForceSameDevice` on the `EmailBuilder` instance.
+
 ##### Adding a ToS and privacy policy
 
 A terms of service URL and privacy policy URL are generally required:
@@ -468,7 +526,6 @@ exception will be thrown.
 This change is purely UI based. We do not restrict users from signing in with their phone number.
 They will simply be unable to choose their country in the selector, but there may be another country
 sharing the same country code (e.g. US and CA are +1).
-
 
 #####
 
@@ -809,6 +866,33 @@ startActivityForResult(
 ```
 
 Your application theme could also simply be used, rather than defining a new one.
+
+### Custom Layout
+
+The first screen shown in most cases is the auth method picker screen, where the user selects
+from a list of authentication methods. While customization in other screens of FirebaseUI is
+limited to themes, this screen can be fully customized with your own XML layout.
+
+To customize the auth method picker screen, build an `AuthMethodPickerLayout` object and pass
+it to the `SignInIntentBuilder` before launching the AuthUI flow:
+
+```java
+// You must provide a custom layout XML resource and configure at least one
+// provider button ID. It's important that that you set the button ID for every provider
+// that you have enabled. 
+AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+    .Builder(R.layout.your_custom_layout_xml)
+    .setGoogleButtonId(R.id.bar)
+    .setEmailButtonId(R.id.foo)
+    // ...
+    .setTosAndPrivacyPolicyId(R.id.baz)
+    .build();
+
+AuthUI.getInstance(this).createSignInIntentBuilder()
+    // ...
+    .setAuthMethodPickerLayout(customLayout)
+    .build());
+```
 
 ### Strings
 

@@ -97,6 +97,21 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
         public void updateDiskCacheKey(@NonNull MessageDigest digest) {
             digest.update(mRef.getPath().getBytes(Charset.defaultCharset()));
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            FirebaseStorageKey key = (FirebaseStorageKey) o;
+
+            return mRef.equals(key.mRef);
+        }
+
+        @Override
+        public int hashCode() {
+            return mRef.hashCode();
+        }
     }
 
     private static class FirebaseStorageFetcher implements DataFetcher<InputStream> {

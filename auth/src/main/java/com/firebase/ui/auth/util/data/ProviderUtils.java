@@ -20,7 +20,10 @@ import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
@@ -38,6 +41,8 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ProviderUtils {
@@ -89,8 +94,9 @@ public final class ProviderUtils {
             case PhoneAuthProvider.PHONE_SIGN_IN_METHOD:
                 return PhoneAuthProvider.PROVIDER_ID;
             case EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD:
-            case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
                 return EmailAuthProvider.PROVIDER_ID;
+            case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
+                return EMAIL_LINK_PROVIDER;
             default:
                 throw new IllegalStateException("Unknown method: " + method);
         }
@@ -100,7 +106,8 @@ public final class ProviderUtils {
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
      * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
-    public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
+    public static String providerIdToAccountType(
+            @AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return IdentityProviders.GOOGLE;
@@ -137,10 +144,32 @@ public final class ProviderUtils {
         }
     }
 
+    public static String providerIdToProviderName(@NonNull String providerId) {
+        switch (providerId) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_google);
+            case FacebookAuthProvider.PROVIDER_ID:
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_facebook);
+            case TwitterAuthProvider.PROVIDER_ID:
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_twitter);
+            case GithubAuthProvider.PROVIDER_ID:
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_github);
+            case PhoneAuthProvider.PROVIDER_ID:
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_phone);
+            case EmailAuthProvider.PROVIDER_ID:
+            case EMAIL_LINK_PROVIDER:
+                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_email);
+            default:
+                return null;
+        }
+    }
+
     @Nullable
     public static AuthUI.IdpConfig getConfigFromIdps(List<AuthUI.IdpConfig> idps, String id) {
         for (AuthUI.IdpConfig idp : idps) {
-            if (idp.getProviderId().equals(id)) { return idp; }
+            if (idp.getProviderId().equals(id)) {
+                return idp;
+            }
         }
         return null;
     }
@@ -163,11 +192,13 @@ public final class ProviderUtils {
         }
 
         return auth.fetchSignInMethodsForEmail(email)
-                .continueWith(new Continuation<SignInMethodQueryResult, List<String>>() {
+                .continueWithTask(new Continuation<SignInMethodQueryResult, Task<List<String>>>() {
                     @Override
-                    public List<String> then(@NonNull Task<SignInMethodQueryResult> task) {
+                    public Task<List<String>> then(@NonNull Task<SignInMethodQueryResult> task) {
                         List<String> methods = task.getResult().getSignInMethods();
-                        if (methods == null) { methods = new ArrayList<>(); }
+                        if (methods == null) {
+                            methods = new ArrayList<>();
+                        }
 
                         List<String> allowedProviders = new ArrayList<>(params.providers.size());
                         for (AuthUI.IdpConfig provider : params.providers) {
@@ -182,15 +213,38 @@ public final class ProviderUtils {
                             }
                         }
 
+                        if (task.isSuccessful() && lastSignedInProviders.isEmpty()
+                                && !methods.isEmpty()) {
+                            // There is an existing user who only has unsupported sign in methods
+                            return Tasks.forException(new FirebaseUiException(ErrorCodes
+                                    .DEVELOPER_ERROR));
+                        }
                         // Reorder providers from most to least usable. Usability is determined by
                         // how many steps a user needs to perform to log in.
-                        maximizePriority(lastSignedInProviders, GoogleAuthProvider.PROVIDER_ID);
+                        reorderPriorities(lastSignedInProviders);
 
-                        return lastSignedInProviders;
+                        return Tasks.forResult(lastSignedInProviders);
                     }
 
-                    private void maximizePriority(List<String> providers, String id) {
-                        if (providers.remove(id)) { providers.add(0, id); }
+                    private void reorderPriorities(List<String> providers) {
+                        // Prioritize Google over everything else
+                        // Prioritize email-password sign in second
+                        // De-prioritize email link sign in
+                        changePriority(providers, EmailAuthProvider.PROVIDER_ID, true);
+                        changePriority(providers, GoogleAuthProvider.PROVIDER_ID, true);
+                        changePriority(providers, EMAIL_LINK_PROVIDER, false);
+                    }
+
+                    private void changePriority(List<String> providers,
+                                                String id,
+                                                boolean maximizePriority) {
+                        if (providers.remove(id)) {
+                            if (maximizePriority) {
+                                providers.add(0, id);
+                            } else {
+                                providers.add(id);
+                            }
+                        }
                     }
                 });
     }
@@ -200,16 +254,18 @@ public final class ProviderUtils {
             @NonNull FlowParameters params,
             @NonNull String email) {
         return fetchSortedProviders(auth, params, email)
-                .continueWith(new Continuation<List<String>, String>() {
+                .continueWithTask(new Continuation<List<String>, Task<String>>() {
                     @Override
-                    public String then(@NonNull Task<List<String>> task) {
-                        if (!task.isSuccessful()) return null;
+                    public Task<String> then(@NonNull Task<List<String>> task) {
+                        if (!task.isSuccessful()) {
+                            return Tasks.forException(task.getException());
+                        }
                         List<String> providers = task.getResult();
 
                         if (providers.isEmpty()) {
-                            return null;
+                            return Tasks.forResult(null);
                         } else {
-                            return providers.get(0);
+                            return Tasks.forResult(providers.get(0));
                         }
                     }
                 });

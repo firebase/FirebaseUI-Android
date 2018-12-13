@@ -11,7 +11,8 @@ android {
 
     lintOptions {
         disable("UnusedQuantity")
-        disable("UnknownNullness") // TODO fix in future PR
+        disable("UnknownNullness")  // TODO fix in future PR
+        disable("TypographyQuotes") // Straight versus directional quotes
     }
 
     testOptions {
@@ -34,6 +35,7 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
+    implementation(Config.Libs.Support.v4) // Needed to override deps
     implementation(Config.Libs.Support.cardView) // Needed to override Facebook
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 

@@ -1,12 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">લોડ કરી રહ્યું છે…</string>
     <string name="fui_sign_in_default">સાઇન ઇન કરો</string>
+    <string name="fui_cancel">રદ કરો</string>
+    <string name="fui_continue">આગળ વધો</string>
     <string name="fui_tos_and_pp">ચાલુ રાખીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %1$s અને %2$sને સ્વીકારો છો.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">ફોન</string>
+    <string name="fui_idp_name_email">ઇમેઇલ</string>
     <string name="fui_sign_in_with_google">Google વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_facebook">Facebook વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_twitter">Twitter વડે સાઇન ઇન કરો</string>
@@ -32,8 +36,10 @@
     <string name="fui_privacy_policy">ગોપનીયતા નીતિ</string>
     <string name="fui_welcome_back_idp_header">તમારી પાસે પહેલેથી જ એક એકાઉન્ટ છે</string>
     <string name="fui_welcome_back_email_header">ફરી સ્વાગત છે!</string>
+    <string name="fui_welcome_back_email_link_header">તમારી પાસે પહેલેથી જ એકાઉન્ટ છે\n</string>
     <string name="fui_welcome_back_idp_prompt">તમે પહેલાંથી જ %1$sનો ઉપયોગ કરી લીધો છે. આગળ વધવા માટે %2$s વડે સાઇન ઇન કરો.</string>
     <string name="fui_welcome_back_password_prompt_body">તમે સાઇન ઇન કરવા માટે પહેલેથી %1$sનો ઉપયોગ કરી લીધો છે. તે એકાઉન્ટ માટેનો તમારો પાસવર્ડ દાખલ કરો.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">તમે પહેલેથી જ %1$sનો ઉપયોગ કરી લીધો છે. તમે નીચે આપેલ ઇમેઇલ લિંક વડે સાઇન ઇન કરીને તમારા %2$s એકાઉન્ટને %1$s સાથે કનેક્ટ કરી શકો છો.\n\nતમારા %2$s એકાઉન્ટને આ ઇમેઇલ સાથે સફળતાપૂર્વક કનેક્ટ કરવાની આ ક્રિયા માટે, તમારે આ લિંકને તે જ ડિવાઇસ અથવા બ્રાઉઝર પર ખોલવી પડશે.</string>
     <string name="fui_progress_dialog_signing_in">સાઇન ઇન કરી રહ્યાં છીએ…</string>
     <string name="fui_trouble_signing_in">સાઇન ઇન કરવામાં સમસ્યા આવી રહી છે?</string>
     <string name="fui_title_recover_password_activity">પાસવર્ડ પુનઃપ્રાપ્ત કરો</string>
@@ -46,6 +52,23 @@
     <string name="fui_error_unknown">કોઈ અજ્ઞાત ભૂલ આવી છે.</string>
     <string name="fui_error_invalid_password">ખોટો પાસવર્ડ.</string>
     <string name="fui_accessibility_logo">ઍપ્લિકેશન લોગો</string>
+    <string name="fui_email_link_header">સાઇન ઇન ઇમેઇલ મોકલ્યો\n</string>
+    <string name="fui_email_link_email_sent">વધારાની સૂચનાઓ ધરાવતો સાઇન-ઇન ઇમેઇલ %1$s પર મોકલ્યો હતો. સાઇન-ઇન પૂર્ણ કરવા માટે તમારું ઇમેઇલ ઍડ્રેસ ચેક કરો.</string>
+    <string name="fui_email_link_trouble_getting_email_header">ઇમેઇલ મેળવવામાં મુશ્કેલી આવે છે?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">આ સામાન્ય ઉકેલોને અજમાવી જુઓ:\n\u2022 ચેક કરો કે તે ઇમેઇલને સ્પામ કે ફિલ્ટર કરેલ તરીકે ચિહ્નિત કર્યો હતો કે કેમ.\n\u2022 તમારું ઇન્ટરનેટ કનેક્શન ચેક કરો.\n\u2022 ચેક કરો કે તમારા ઇમેઇલની જોડણી ખોટી તો નથી.\n\u2022 ચેક કરો કે તમારા ઇનબૉક્સમાં જગ્યા ભરાઈ ગઈ છે કે કેમ અથવા ઇનબૉક્સ સેટિંગથી સંબંધિત અન્ય સમસ્યા નથી.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">જો ઉપરોક્ત પગલાં કામ ન કરે, તો તમે ઇમેઇલ ફરીથી મોકલી શકો છો. નોંધ લેશો કે આ જૂના ઇમેઇલમાં રહેલી લિંકને નિષ્ક્રિય કરશે.</string>
+    <string name="fui_email_link_resend">ફરીથી મોકલો</string>
+    <string name="fui_email_link_wrong_device_header">નવું ડિવાઇસ અથવા બ્રાઉઝર મળ્યું.</string>
+    <string name="fui_email_link_wrong_device_message">લિંકને તે જ ડિવાઇસ અથવા બ્રાઉઝરમાંથી ખોલવાનો પ્રયાસ કરો કે જેનાથી તમે સાઇન ઇન પ્રક્રિયા શરૂ કરી હતી.</string>
+    <string name="fui_email_link_invalid_link_header">સાઇન ઇન પૂર્ણ કરવામાં અસમર્થ</string>
+    <string name="fui_email_link_invalid_link_message">ક્રિયા કોડ અમાન્ય છે. જો કોડ દૂષિત થઈ જાય, સમાપ્ત થઈ ગયો હોય અથવા પહેલેથી જ ઉપયોગમાં લેવાયો હોય તો આમ બની શકે છે.</string>
+    <string name="fui_email_link_different_anonymous_user_header">સત્ર સમાપ્ત થયું</string>
+    <string name="fui_email_link_different_anonymous_user_message">આ સાઇન-ઇન વિનંતિ સાથે સંકળાયેલું સત્ર ક્યાં તો સમાપ્ત થઈ ગયું છે અથવા તો સાફ કરવામાં આવ્યું છે.</string>
+    <string name="fui_email_link_confirm_email_header">ઇમેઇલ કન્ફર્મ કરો</string>
+    <string name="fui_email_link_confirm_email_message">સાઇન ઇન ચાલુ રાખવા માટે ઇમેઇલ કન્ફર્મ કરો</string>
+    <string name="fui_email_link_dismiss_button">છોડી દો</string>
+    <string name="fui_email_link_cross_device_linking_text">તમે ઑરિજિનલ રીતે %1$sને તમારા ઇમેઇલ એકાઉન્ટ જોડે કનેક્ટ કરવા માગતા હતા પણ તમે લિંકને કોઈ અલગ ડિવાઇસ પરથી ખોલી છે, જેમાં તમે સાઇન ઇન થયા નથી.\n\nજો તમે હજી પણ તમારા %1$s એકાઉન્ટને કનેક્ટ કરવા માગતા હો, તો તમે જે ડિવાઇસ પરથી સાઇન-ઇન કરવાની પ્રક્રિયા શરૂ કરી હોય એના પરથી જ લિંક ખોલો. અન્યથા, આ ડિવાઇસ પરથી સાઇન-ઇન કરવા માટે આગળ વધો પર ટૅપ કરો.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s વડે સાઇન ઇન કરો</string>
     <string name="fui_verify_phone_number_title">તમારો ફોન નંબર દાખલ કરો</string>
     <string name="fui_invalid_phone_number">એક માન્ય ફોન નંબર દાખલ કરો</string>
     <string name="fui_enter_confirmation_code">અમે આ ફોન નંબર પર મોકલેલ 6-અંકનો કોડ દાખલ કરો</string>

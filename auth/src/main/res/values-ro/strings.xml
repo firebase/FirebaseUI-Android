@@ -1,12 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Se încarcă…</string>
     <string name="fui_sign_in_default">Conectați-vă</string>
+    <string name="fui_cancel">Anulați</string>
+    <string name="fui_continue">Continuați</string>
     <string name="fui_tos_and_pp">Dacă alegeți să continuați, sunteți de acord cu %1$s și cu %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">Număr de telefon</string>
+    <string name="fui_idp_name_email">Adresă de e-mail</string>
     <string name="fui_sign_in_with_google">Conectați-vă cu Google</string>
     <string name="fui_sign_in_with_facebook">Conectați-vă cu Facebook</string>
     <string name="fui_sign_in_with_twitter">Conectați-vă cu Twitter</string>
@@ -32,8 +36,10 @@
     <string name="fui_privacy_policy">Politica de confidențialitate</string>
     <string name="fui_welcome_back_idp_header">Aveți deja un cont</string>
     <string name="fui_welcome_back_email_header">Bine ați revenit!</string>
+    <string name="fui_welcome_back_email_link_header">Aveți deja un cont\n</string>
     <string name="fui_welcome_back_idp_prompt">Ați folosit deja %1$s. Pentru a continua, conectați-vă cu %2$s.</string>
     <string name="fui_welcome_back_password_prompt_body">Ați folosit deja %1$s pentru a vă conecta. Introduceți parola acestui cont.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Ați folosit deja %1$s. Vă puteți conecta contul %2$s la %1$s folosind linkul din e-mail, aflat mai jos.\n\nPentru ca acest flux să conecteze contul %2$s la această adresă de e-mail, trebuie să accesați linkul pe același dispozitiv sau browser.</string>
     <string name="fui_progress_dialog_signing_in">Se conectează…</string>
     <string name="fui_trouble_signing_in">Nu reușiți să vă conectați?</string>
     <string name="fui_title_recover_password_activity">Recuperați parola</string>
@@ -46,6 +52,23 @@
     <string name="fui_error_unknown">A apărut o eroare necunoscută.</string>
     <string name="fui_error_invalid_password">Parolă incorectă</string>
     <string name="fui_accessibility_logo">Sigla aplicației</string>
+    <string name="fui_email_link_header">A fost trimis e-mailul de conectare\n</string>
+    <string name="fui_email_link_email_sent">Un e-mail de conectare cu instrucțiuni suplimentare a fost trimis la %1$s. Verificați-vă căsuța de e-mail pentru a finaliza conectarea.</string>
+    <string name="fui_email_link_trouble_getting_email_header">Nu primiți e-mailuri?</string>
+    <string name="fui_email_link_trouble_getting_possible_fixes">Încercați aceste soluții folosite frecvent:\n\u2022 verificați dacă e-mailul a fost marcat ca spam sau filtrat;\n\u2022 verificați conexiunea la internet;\n\u2022 verificați dacă ați scris corect adresa de e-mail;\n\u2022 verificați dacă aveți spațiu în căsuța de e-mail sau dacă există alte probleme legate de setările căsuței de e-mail.\n</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Dacă pașii de mai sus nu funcționează, puteți să trimiteți din nou e-mailul. Rețineți că va fi dezactivat linkul din e-mailul anterior.</string>
+    <string name="fui_email_link_resend">Retrimiteți</string>
+    <string name="fui_email_link_wrong_device_header">A fost detectat un nou dispozitiv sau browser.</string>
+    <string name="fui_email_link_wrong_device_message">Încercați să accesați linkul folosind același dispozitiv sau browser pe care ați început procesul de conectare.</string>
+    <string name="fui_email_link_invalid_link_header">Conectarea nu poate fi finalizată</string>
+    <string name="fui_email_link_invalid_link_message">Codul de acțiune nu este valid. Se poate întâmpla în cazurile în care codul este incorect, expirat sau a fost folosit deja.</string>
+    <string name="fui_email_link_different_anonymous_user_header">S-a încheiat sesiunea</string>
+    <string name="fui_email_link_different_anonymous_user_message">Sesiunea asociată acestei solicitări de conectare a expirat sau a fost ștearsă.</string>
+    <string name="fui_email_link_confirm_email_header">Confirmați adresa de e-mail</string>
+    <string name="fui_email_link_confirm_email_message">Confirmați adresa de e-mail pentru a continua conectarea</string>
+    <string name="fui_email_link_dismiss_button">Închideți</string>
+    <string name="fui_email_link_cross_device_linking_text">Inițial ați intenționat să conectați %1$s la contul de e-mail, dar ați deschis linkul pe un dispozitiv pe care nu sunteți conectat(ă).\n\nDacă doriți să continuați conectarea contului %1$s, deschideți linkul pe același dispozitiv pe care ați început conectarea. În caz contrar, atingeți Continuați pentru a vă conecta pe acest dispozitiv.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Conectați-vă cu %1$s</string>
     <string name="fui_verify_phone_number_title">Introduceți numărul de telefon</string>
     <string name="fui_invalid_phone_number">Introduceți un număr valid de telefon</string>
     <string name="fui_enter_confirmation_code">Introduceți codul din 6 cifre pe care l-am trimis la</string>

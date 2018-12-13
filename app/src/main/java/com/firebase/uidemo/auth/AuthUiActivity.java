@@ -33,15 +33,18 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.util.ConfigurationUtils;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -57,8 +60,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
-    private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
-    private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
+    private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google" +
+            ".com/policies/privacy/";
+    private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google" +
+            ".com/terms/analytics/#7_privacy";
 
     private static final int RC_SIGN_IN = 100;
 
@@ -69,8 +74,12 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
     @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
     @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
+    @BindView(R.id.email_link_provider) CheckBox mUseEmailLinkProvider;
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
     @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
+
+    @BindView(R.id.default_layout) RadioButton mDefaultLayout;
+    @BindView(R.id.custom_layout) RadioButton mCustomLayout;
 
     @BindView(R.id.default_theme) RadioButton mDefaultTheme;
     @BindView(R.id.green_theme) RadioButton mGreenTheme;
@@ -163,6 +172,41 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
+        mUseEmailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                flipPasswordProviderCheckbox(isChecked);
+            }
+        });
+
+        mUseEmailProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                flipEmailLinkProviderCheckbox(isChecked);
+            }
+        });
+
+        mUseEmailLinkProvider.setChecked(false);
+        mUseEmailProvider.setChecked(true);
+
+        // The custom layout in this app only supports Email and Google providers.
+        mCustomLayout.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    mUseGoogleProvider.setChecked(true);
+                    mUseEmailProvider.setChecked(true);
+
+                    mUseFacebookProvider.setChecked(false);
+                    mUseTwitterProvider.setChecked(false);
+                    mUseGitHubProvider.setChecked(false);
+                    mUseEmailLinkProvider.setChecked(false);
+                    mUsePhoneProvider.setChecked(false);
+                    mUseAnonymousProvider.setChecked(false);
+                }
+            }
+        });
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)
                 || ConfigurationUtils.isTwitterMisconfigured(this)
@@ -173,16 +217,61 @@ public class AuthUiActivity extends AppCompatActivity {
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
             mDarkTheme.setChecked(true);
         }
+
+        catchEmailLinkSignIn();
+    }
+
+    public void catchEmailLinkSignIn() {
+        if (getIntent().getExtras() == null) {
+            return;
+        }
+        String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
+        if (link != null) {
+            signInWithEmailLink(link);
+        }
+    }
+
+    public void flipPasswordProviderCheckbox(boolean emailLinkProviderIsChecked) {
+        if (emailLinkProviderIsChecked) {
+            mUseEmailProvider.setChecked(false);
+        }
+    }
+
+    public void flipEmailLinkProviderCheckbox(boolean passwordProviderIsChecked) {
+        if (passwordProviderIsChecked) {
+            mUseEmailLinkProvider.setChecked(false);
+        }
     }
 
     @OnClick(R.id.sign_in)
     public void signIn() {
-        AuthUI.SignInIntentBuilder builder =  AuthUI.getInstance().createSignInIntentBuilder()
+        startActivityForResult(buildSignInIntent(/*link=*/null), RC_SIGN_IN);
+    }
+
+    public void signInWithEmailLink(@Nullable String link) {
+        startActivityForResult(buildSignInIntent(link), RC_SIGN_IN);
+    }
+
+    @NonNull
+    public Intent buildSignInIntent(@Nullable String link) {
+        AuthUI.SignInIntentBuilder builder = AuthUI.getInstance().createSignInIntentBuilder()
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
                 .setAvailableProviders(getSelectedProviders())
                 .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                         mEnableHintSelector.isChecked());
+
+        if (mCustomLayout.isChecked()) {
+            AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                    .Builder(R.layout.auth_method_picker_custom_layout)
+                    .setGoogleButtonId(R.id.custom_google_signin_button)
+                    .setEmailButtonId(R.id.custom_email_signin_clickable_text)
+                    .setTosAndPrivacyPolicyId(R.id.custom_tos_pp)
+                    .build();
+
+            builder.setTheme(R.style.CustomTheme);
+            builder.setAuthMethodPickerLayout(customLayout);
+        }
 
         if (getSelectedTosUrl() != null && getSelectedPrivacyPolicyUrl() != null) {
             builder.setTosAndPrivacyPolicyUrls(
@@ -190,7 +279,17 @@ public class AuthUiActivity extends AppCompatActivity {
                     getSelectedPrivacyPolicyUrl());
         }
 
-        startActivityForResult(builder.build(), RC_SIGN_IN);
+        if (link != null) {
+            builder.setEmailLink(link);
+        }
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        if (auth.getCurrentUser() != null && auth.getCurrentUser().isAnonymous()) {
+            builder.enableAnonymousUsersAutoUpgrade();
+        }
+
+        return builder.build();
     }
 
     @OnClick(R.id.sign_in_silent)
@@ -220,7 +319,7 @@ public class AuthUiActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null && getIntent().getExtras() == null) {
             startSignedInActivity(null);
             finish();
         }
@@ -244,6 +343,12 @@ public class AuthUiActivity extends AppCompatActivity {
             if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
+            }
+
+            if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                Intent intent = new Intent(this, AnonymousUpgradeActivity.class).putExtra
+                        (ExtraConstants.IDP_RESPONSE, response);
+                startActivity(intent);
             }
 
             showSnackbar(R.string.unknown_error);
@@ -314,6 +419,20 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.EmailBuilder()
                     .setRequireName(mRequireName.isChecked())
                     .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                    .build());
+        }
+
+        if (mUseEmailLinkProvider.isChecked()) {
+            ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
+                    .setAndroidPackageName("com.firebase.uidemo", true, null)
+                    .setHandleCodeInApp(true)
+                    .setUrl("https://google.com")
+                    .build();
+
+            selectedProviders.add(new IdpConfig.EmailBuilder()
+                    .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                    .setActionCodeSettings(actionCodeSettings)
+                    .enableEmailLinkSignIn()
                     .build());
         }
 
