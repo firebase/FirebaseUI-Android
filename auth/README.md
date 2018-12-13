@@ -66,10 +66,10 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
 
     // Required only if GitHub OAuth support is required
-    implementation 'com.firebaseui:firebase-ui-auth-github:4.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth-github:4.3.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -81,7 +81,7 @@ dependencies {
 }
 ```
 
-As of version `2.1.0` FirebaseUI includes translations for all string resources. In order to
+FirebaseUI includes translations for all string resources. In order to
 ensure that you only get the translations relevant to your application, we recommend changing the
 `resConfigs` of your application module:
 
