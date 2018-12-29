@@ -15,12 +15,15 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +49,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     public static final String TAG = "SubmitConfirmationCodeFragment";
 
+    private static final int VERIFICATION_CODE_LENGTH = 6;
     private static final long RESEND_WAIT_MILLIS = 15000;
     private static final long TICK_INTERVAL_MILLIS = 500;
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "millis_until_finished";
@@ -68,6 +72,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private SpacedEditText mConfirmationCodeEditText;
     private Button mSubmitConfirmationButton;
     private long mMillisUntilFinished = RESEND_WAIT_MILLIS;
+
+    private boolean mHasResumed;
 
     public static SubmitConfirmationCodeFragment newInstance(String phoneNumber) {
         SubmitConfirmationCodeFragment fragment = new SubmitConfirmationCodeFragment();
@@ -126,6 +132,32 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (!mHasResumed) {
+            // Don't check for codes before we've even had the chance to send one.
+            mHasResumed = true;
+            return;
+        }
+
+        ClipData clip = ContextCompat.getSystemService(requireContext(), ClipboardManager.class)
+                .getPrimaryClip();
+        if (clip != null && clip.getItemCount() == 1) {
+            CharSequence candidate = clip.getItemAt(0).getText();
+            if (candidate != null && candidate.length() == VERIFICATION_CODE_LENGTH) {
+                try {
+                    Integer.parseInt(candidate.toString());
+
+                    // We have a number! Try to submit it.
+                    mConfirmationCodeEditText.setText(candidate);
+                } catch (NumberFormatException ignored) {
+                    // Turns out it wasn't a number
+                }
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         mLooper.removeCallbacks(mCountdown);
         outState.putLong(EXTRA_MILLIS_UNTIL_FINISHED, mMillisUntilFinished);
@@ -152,11 +184,12 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private void setupConfirmationCodeEditText() {
         mConfirmationCodeEditText.setText("------");
         mConfirmationCodeEditText.addTextChangedListener(new BucketedTextChangeListener(
-                mConfirmationCodeEditText, 6, "-",
+                mConfirmationCodeEditText, VERIFICATION_CODE_LENGTH, "-",
                 new BucketedTextChangeListener.ContentChangeCallback() {
                     @Override
                     public void whileComplete() {
                         mSubmitConfirmationButton.setEnabled(true);
+                        submitCode();
                     }
 
                     @Override
