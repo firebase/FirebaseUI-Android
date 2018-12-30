@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Numero di telefono verificato automaticamente</string>
     <string name="fui_resend_code">Invia di nuovo il codice</string>
     <string name="fui_verify_phone_number">Verifica numero di telefono</string>
-    <string name="fui_continue_phone_login">Continua</string>
     <string name="fui_sms_terms_of_service">Se tocchi “%1$s”, è possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Se tocchi “%1$s”, accetti le nostre %2$s e i nostri %3$s. È possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
 </resources>

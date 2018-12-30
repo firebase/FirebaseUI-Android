@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Puhelinnumero vahvistettu automaattisesti</string>
     <string name="fui_resend_code">Lähetä koodi uudelleen</string>
     <string name="fui_verify_phone_number">Vahvista puhelinnumero</string>
-    <string name="fui_continue_phone_login">Jatka</string>
     <string name="fui_sms_terms_of_service">Kun napautat %1$s, tekstiviesti voidaan lähettää. Datan ja viestien käyttö voi olla maksullista.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Napauttamalla %1$s vahvistat hyväksyväsi seuraavat: %2$s ja %3$s. Tekstiviesti voidaan lähettää, ja datan ja viestien käyttö voi olla maksullista.</string>
 </resources>

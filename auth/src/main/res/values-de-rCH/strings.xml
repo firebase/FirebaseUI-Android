@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Telefonnummer wurde automatisch bestätigt</string>
     <string name="fui_resend_code">Code erneut senden</string>
     <string name="fui_verify_phone_number">Telefonnummer bestätigen</string>
-    <string name="fui_continue_phone_login">Weiter</string>
     <string name="fui_sms_terms_of_service">Wenn Sie auf “%1$s” tippen, erhalten Sie möglicherweise eine SMS. Es können Gebühren für SMS und Datenübertragung anfallen.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Indem Sie auf “%1$s” tippen, stimmen Sie unseren %2$s und unserer %3$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
 </resources>

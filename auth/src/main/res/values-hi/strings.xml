@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">फ़ोन नंबर की अपने आप पुष्टि की गई</string>
     <string name="fui_resend_code">कोड फिर से भेजें</string>
     <string name="fui_verify_phone_number">फ़ोन नंबर की पुष्टि करें</string>
-    <string name="fui_continue_phone_login">जारी रखें</string>
     <string name="fui_sms_terms_of_service">“%1$s” पर टैप करने पर, एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” पर टैप करके, आप यह बताते हैं कि आप हमारी %2$s और %3$s को मंज़ूर करते हैं. एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
 </resources>

@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Đã tự động xác minh số điện thoại</string>
     <string name="fui_resend_code">Gửi lại mã</string>
     <string name="fui_verify_phone_number">Xác minh số điện thoại</string>
-    <string name="fui_continue_phone_login">Tiếp tục</string>
     <string name="fui_sms_terms_of_service">Bằng cách nhấn vào “%1$s”, bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s và %3$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
 </resources>

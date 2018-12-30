@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Ο αριθμός τηλεφώνου επαληθεύτηκε αυτόματα</string>
     <string name="fui_resend_code">Επανάληψη αποστολής κωδικού</string>
     <string name="fui_verify_phone_number">Επαλήθευση αριθμού τηλεφώνου</string>
-    <string name="fui_continue_phone_login">Συνέχεια</string>
     <string name="fui_sms_terms_of_service">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε τους %2$s και την %3$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
 </resources>

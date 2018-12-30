@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Номер телефону підтверджено автоматично</string>
     <string name="fui_resend_code">Повторно надіслати код</string>
     <string name="fui_verify_phone_number">Підтвердити номер телефону</string>
-    <string name="fui_continue_phone_login">Продовжити</string>
     <string name="fui_sms_terms_of_service">Коли ви торкнетесь опції “%1$s”, вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Торкаючись кнопки “%1$s”, ви приймаєте такі документи: %2$s і %3$s. Вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
 </resources>

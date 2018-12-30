@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Telefonnummeret blev bekræftet automatisk</string>
     <string name="fui_resend_code">Send koden igen</string>
     <string name="fui_verify_phone_number">Bekræft telefonnummer</string>
-    <string name="fui_continue_phone_login">Fortsæt</string>
     <string name="fui_sms_terms_of_service">Når du trykker på “%1$s”, sendes der måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Når du trykker på “%1$s”, indikerer du, at du accepterer vores %2$s og %3$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
 </resources>
