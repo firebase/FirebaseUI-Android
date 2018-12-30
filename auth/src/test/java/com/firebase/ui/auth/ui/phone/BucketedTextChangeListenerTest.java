@@ -105,7 +105,7 @@ public class BucketedTextChangeListenerTest {
         inOrder.verify(editText).setSelection(expectedSelection);
         inOrder.verify(editText).addTextChangedListener(mTextChangeListener);
         if (isComplete) {
-            verify(mContentChangeCallback).whileComplete();
+            verify(mContentChangeCallback).whenComplete();
         } else {
             verify(mContentChangeCallback).whileIncomplete();
         }

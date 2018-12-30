@@ -28,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,12 +36,11 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
-import com.firebase.ui.auth.util.ui.ImeHelper;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * Display confirmation code to verify phone numbers input in {{@link CheckPhoneNumberFragment}}
+ * Display confirmation code to verify phone numbers input in {@link CheckPhoneNumberFragment}
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SubmitConfirmationCodeFragment extends FragmentBase {
@@ -70,7 +68,6 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private TextView mResendCodeTextView;
     private TextView mCountDownTextView;
     private SpacedEditText mConfirmationCodeEditText;
-    private Button mSubmitConfirmationButton;
     private long mMillisUntilFinished = RESEND_WAIT_MILLIS;
 
     private boolean mHasResumed;
@@ -109,11 +106,9 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mCountDownTextView = view.findViewById(R.id.ticker);
         mResendCodeTextView = view.findViewById(R.id.resend_code);
         mConfirmationCodeEditText = view.findViewById(R.id.confirmation_code);
-        mSubmitConfirmationButton = view.findViewById(R.id.submit_confirmation_code);
 
         requireActivity().setTitle(getString(R.string.fui_verify_your_phone_title));
         processCountdownTick();
-        setupSubmitConfirmationButton();
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView();
         setupResendConfirmationCodeTextView();
@@ -171,42 +166,19 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mLooper.removeCallbacks(mCountdown);
     }
 
-    private void setupSubmitConfirmationButton() {
-        mSubmitConfirmationButton.setEnabled(false);
-        mSubmitConfirmationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitCode();
-            }
-        });
-    }
-
     private void setupConfirmationCodeEditText() {
         mConfirmationCodeEditText.setText("------");
         mConfirmationCodeEditText.addTextChangedListener(new BucketedTextChangeListener(
                 mConfirmationCodeEditText, VERIFICATION_CODE_LENGTH, "-",
                 new BucketedTextChangeListener.ContentChangeCallback() {
                     @Override
-                    public void whileComplete() {
-                        mSubmitConfirmationButton.setEnabled(true);
+                    public void whenComplete() {
                         submitCode();
                     }
 
                     @Override
-                    public void whileIncomplete() {
-                        mSubmitConfirmationButton.setEnabled(false);
-                    }
+                    public void whileIncomplete() {}
                 }));
-
-        ImeHelper.setImeOnDoneListener(mConfirmationCodeEditText,
-                new ImeHelper.DonePressedListener() {
-                    @Override
-                    public void onDonePressed() {
-                        if (mSubmitConfirmationButton.isEnabled()) {
-                            submitCode();
-                        }
-                    }
-                });
     }
 
     private void setupEditPhoneNumberTextView() {
@@ -255,13 +227,11 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     @Override
     public void showProgress(int message) {
-        mSubmitConfirmationButton.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mSubmitConfirmationButton.setEnabled(true);
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 }
