@@ -50,19 +50,19 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:4.3.0'
+    implementation 'com.firebaseui:firebase-ui-database:4.3.1'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:4.3.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.3.1'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
 
     // FirebaseUI for Firebase Auth (GitHub provider)
-    implementation 'com.firebaseui:firebase-ui-auth-github:4.3.0'
+    implementation 'com.firebaseui:firebase-ui-auth-github:4.3.1'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:4.3.0'
+    implementation 'com.firebaseui:firebase-ui-storage:4.3.1'
 }
 ```
 
