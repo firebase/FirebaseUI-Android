@@ -46,6 +46,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private TextInputLayout mPhoneInputLayout;
     private EditText mPhoneEditText;
     private TextView mSmsTermsText;
+    private TextView mFooterText;
 
 
     public static CheckPhoneNumberFragment newInstance(Bundle params) {
@@ -81,6 +82,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mPhoneInputLayout = view.findViewById(R.id.phone_layout);
         mPhoneEditText = view.findViewById(R.id.phone_number);
         mSmsTermsText = view.findViewById(R.id.send_sms_tos);
+        mFooterText = view.findViewById(R.id.email_footer_tos_and_pp_text);
 
         mSmsTermsText.setText(getString(R.string.fui_sms_terms_of_service,
                 getString(R.string.fui_verify_phone_number)));
@@ -97,7 +99,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         });
         mSubmitButton.setOnClickListener(this);
 
-        setupPrivacyDisclosures(view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
+        setupPrivacyDisclosures();
         setupCountrySpinner();
     }
 
@@ -171,17 +173,20 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 everythingElse, mCountryListSpinner.getSelectedCountryInfo());
     }
 
-    private void setupPrivacyDisclosures(TextView footerText) {
+    private void setupPrivacyDisclosures() {
         FlowParameters params = getFlowParams();
 
-        if (!params.shouldShowProviderChoice()) {
+        boolean termsAndPrivacyUrlsProvided = params.isTermsOfServiceUrlProvided()
+                && params.isPrivacyPolicyUrlProvided();
+
+        if (!params.shouldShowProviderChoice() && termsAndPrivacyUrlsProvided) {
             PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicySmsText(requireContext(),
                     params,
                     mSmsTermsText);
         } else {
             PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(),
                     params,
-                    footerText);
+                    mFooterText);
 
             String verifyText = getString(R.string.fui_verify_phone_number);
             mSmsTermsText.setText(getString(R.string.fui_sms_terms_of_service, verifyText));
