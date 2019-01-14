@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -31,11 +32,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
+import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -116,6 +121,22 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
                 requireContext(),
                 getFlowParams(),
                 view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ViewModelProviders.of(requireActivity())
+                .get(PhoneProviderResponseHandler.class)
+                .getOperation()
+                .observe(this, new Observer<Resource<IdpResponse>>() {
+                    @Override
+                    public void onChanged(@Nullable Resource<IdpResponse> resource) {
+                        if (resource.getState() == State.FAILURE) {
+                            mConfirmationCodeEditText.setText("");
+                        }
+                    }
+                });
     }
 
     @Override

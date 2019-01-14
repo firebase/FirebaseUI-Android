@@ -61,7 +61,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         super.onCreate(savedInstanceState);
         mVerificationHandler = ViewModelProviders.of(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
-        mCheckPhoneHandler = ViewModelProviders.of(requireActivity())
+        mCheckPhoneHandler = ViewModelProviders.of(this)
                 .get(CheckPhoneHandler.class);
     }
 

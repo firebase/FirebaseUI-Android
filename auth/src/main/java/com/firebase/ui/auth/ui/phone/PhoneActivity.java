@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.ErrorCodes;
@@ -83,7 +84,18 @@ public class PhoneActivity extends AppCompatBase {
             protected void onSuccess(@NonNull PhoneVerification verification) {
                 if (verification.isAutoVerified()) {
                     Toast.makeText(
-                            PhoneActivity.this, R.string.fui_auto_verified, Toast.LENGTH_LONG).show();
+                            PhoneActivity.this,
+                            R.string.fui_auto_verified,
+                            Toast.LENGTH_LONG
+                    ).show();
+
+                    FragmentManager manager = getSupportFragmentManager();
+                    if (manager.findFragmentByTag(SubmitConfirmationCodeFragment.TAG) != null) {
+                        // Ensure the submit code screen isn't visible if there's no code to submit.
+                        // It's possible to get into this state when an SMS is sent, but then
+                        // automatically retrieved.
+                        manager.popBackStack();
+                    }
                 }
 
                 handler.startSignIn(verification.getCredential(), new IdpResponse.Builder(
