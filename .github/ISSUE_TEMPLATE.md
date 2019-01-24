@@ -1,3 +1,8 @@
+<!-- DO NOT DELETE 
+validate_template=false
+template_path=.github/ISSUE_TEMPLATE.md
+-->
+
 Welcome to FirebaseUI and thanks for submitting an issue!
 
 Please take a look at [open issues](https://github.com/firebase/FirebaseUI-Android/issues?q=is%3Aopen+is%3Aissue), as well as [resolved issues](https://github.com/firebase/FirebaseUI-Android/issues?q=is%3Aissue+is%3Aclosed), to see if your issue is either already being addressed, or has been solved by someone else.
