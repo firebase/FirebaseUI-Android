@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Номер телефона был подтвержден автоматически</string>
     <string name="fui_resend_code">Отправить код ещё раз</string>
     <string name="fui_verify_phone_number">Подтвердить номер телефона</string>
-    <string name="fui_continue_phone_login">Продолжить</string>
     <string name="fui_sms_terms_of_service">Нажимая кнопку “%1$s”, вы соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Нажимая кнопку “%1$s”, вы принимаете %2$s и %3$s, а также соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
 </resources>

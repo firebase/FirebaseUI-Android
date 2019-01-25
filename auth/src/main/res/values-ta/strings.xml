@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
-    <string name="fui_continue_phone_login">தொடர்க</string>
     <string name="fui_sms_terms_of_service">“%1$s” என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” என்பதைத் தட்டுவதன் மூலம், எங்கள் %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள். SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
 </resources>

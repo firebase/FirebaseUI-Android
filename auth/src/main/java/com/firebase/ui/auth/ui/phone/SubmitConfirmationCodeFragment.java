@@ -14,38 +14,45 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
-import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * Display confirmation code to verify phone numbers input in {{@link CheckPhoneNumberFragment}}
+ * Display confirmation code to verify phone numbers input in {@link CheckPhoneNumberFragment}
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     public static final String TAG = "SubmitConfirmationCodeFragment";
 
+    private static final int VERIFICATION_CODE_LENGTH = 6;
     private static final long RESEND_WAIT_MILLIS = 15000;
     private static final long TICK_INTERVAL_MILLIS = 500;
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "millis_until_finished";
@@ -66,8 +73,9 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private TextView mResendCodeTextView;
     private TextView mCountDownTextView;
     private SpacedEditText mConfirmationCodeEditText;
-    private Button mSubmitConfirmationButton;
     private long mMillisUntilFinished = RESEND_WAIT_MILLIS;
+
+    private boolean mHasResumed;
 
     public static SubmitConfirmationCodeFragment newInstance(String phoneNumber) {
         SubmitConfirmationCodeFragment fragment = new SubmitConfirmationCodeFragment();
@@ -103,11 +111,9 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mCountDownTextView = view.findViewById(R.id.ticker);
         mResendCodeTextView = view.findViewById(R.id.resend_code);
         mConfirmationCodeEditText = view.findViewById(R.id.confirmation_code);
-        mSubmitConfirmationButton = view.findViewById(R.id.submit_confirmation_code);
 
         requireActivity().setTitle(getString(R.string.fui_verify_your_phone_title));
         processCountdownTick();
-        setupSubmitConfirmationButton();
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView();
         setupResendConfirmationCodeTextView();
@@ -118,11 +124,53 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ViewModelProviders.of(requireActivity())
+                .get(PhoneProviderResponseHandler.class)
+                .getOperation()
+                .observe(this, new Observer<Resource<IdpResponse>>() {
+                    @Override
+                    public void onChanged(@Nullable Resource<IdpResponse> resource) {
+                        if (resource.getState() == State.FAILURE) {
+                            mConfirmationCodeEditText.setText("");
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mConfirmationCodeEditText.requestFocus();
         ((InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(mConfirmationCodeEditText, 0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!mHasResumed) {
+            // Don't check for codes before we've even had the chance to send one.
+            mHasResumed = true;
+            return;
+        }
+
+        ClipData clip = ContextCompat.getSystemService(requireContext(), ClipboardManager.class)
+                .getPrimaryClip();
+        if (clip != null && clip.getItemCount() == 1) {
+            CharSequence candidate = clip.getItemAt(0).getText();
+            if (candidate != null && candidate.length() == VERIFICATION_CODE_LENGTH) {
+                try {
+                    Integer.parseInt(candidate.toString());
+
+                    // We have a number! Try to submit it.
+                    mConfirmationCodeEditText.setText(candidate);
+                } catch (NumberFormatException ignored) {
+                    // Turns out it wasn't a number
+                }
+            }
+        }
     }
 
     @Override
@@ -139,41 +187,19 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mLooper.removeCallbacks(mCountdown);
     }
 
-    private void setupSubmitConfirmationButton() {
-        mSubmitConfirmationButton.setEnabled(false);
-        mSubmitConfirmationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitCode();
-            }
-        });
-    }
-
     private void setupConfirmationCodeEditText() {
         mConfirmationCodeEditText.setText("------");
         mConfirmationCodeEditText.addTextChangedListener(new BucketedTextChangeListener(
-                mConfirmationCodeEditText, 6, "-",
+                mConfirmationCodeEditText, VERIFICATION_CODE_LENGTH, "-",
                 new BucketedTextChangeListener.ContentChangeCallback() {
                     @Override
-                    public void whileComplete() {
-                        mSubmitConfirmationButton.setEnabled(true);
+                    public void whenComplete() {
+                        submitCode();
                     }
 
                     @Override
-                    public void whileIncomplete() {
-                        mSubmitConfirmationButton.setEnabled(false);
-                    }
+                    public void whileIncomplete() {}
                 }));
-
-        ImeHelper.setImeOnDoneListener(mConfirmationCodeEditText,
-                new ImeHelper.DonePressedListener() {
-                    @Override
-                    public void onDonePressed() {
-                        if (mSubmitConfirmationButton.isEnabled()) {
-                            submitCode();
-                        }
-                    }
-                });
     }
 
     private void setupEditPhoneNumberTextView() {
@@ -222,13 +248,11 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     @Override
     public void showProgress(int message) {
-        mSubmitConfirmationButton.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mSubmitConfirmationButton.setEnabled(true);
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

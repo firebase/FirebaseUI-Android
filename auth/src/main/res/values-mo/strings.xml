@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Numărul de telefon este verificat automat</string>
     <string name="fui_resend_code">Retrimiteți codul</string>
     <string name="fui_verify_phone_number">Confirmați numărul de telefon</string>
-    <string name="fui_continue_phone_login">Continuați</string>
     <string name="fui_sms_terms_of_service">Dacă atingeți „%1$s”, poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dacă atingeți „%1$s”, sunteți de acord cu %2$s și cu %3$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
 </resources>

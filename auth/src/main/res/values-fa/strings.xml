@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">شماره تلفن به‌طور خودکار به‌تأیید رسید</string>
     <string name="fui_resend_code">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number">تأیید شماره تلفن</string>
-    <string name="fui_continue_phone_login">ادامه</string>
     <string name="fui_sms_terms_of_service">با ضربه زدن روی «%1$s»، پیامکی برایتان ارسال می‌شود. هزینه پیام و داده اعمال می‌شود.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">درصورت ضربه‌زدن روی «%1$s»، موافقتتان را با %2$s و %3$s اعلام می‌کنید. پیامکی ارسال می‌شود. ممکن است هزینه داده و «پیام» محاسبه شود.</string>
 </resources>

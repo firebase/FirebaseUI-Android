@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Telefonní číslo bylo automaticky ověřeno</string>
     <string name="fui_resend_code">Znovu poslat kód</string>
     <string name="fui_verify_phone_number">Ověřit telefonní číslo</string>
-    <string name="fui_continue_phone_login">Pokračovat</string>
     <string name="fui_sms_terms_of_service">Po klepnutí na možnost %1$s může být odeslána SMS. Mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačítko %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s. Může být odeslána SMS a mohou být účtovány poplatky za zprávy a data.</string>
 </resources>

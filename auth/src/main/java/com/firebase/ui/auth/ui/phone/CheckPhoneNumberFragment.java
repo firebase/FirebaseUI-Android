@@ -62,7 +62,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         super.onCreate(savedInstanceState);
         mVerificationHandler = ViewModelProviders.of(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
-        mCheckPhoneHandler = ViewModelProviders.of(requireActivity())
+        mCheckPhoneHandler = ViewModelProviders.of(this)
                 .get(CheckPhoneHandler.class);
     }
 
@@ -124,6 +124,9 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         // Fragment back stacks are the stuff of nightmares (what's new?): the fragment isn't
         // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
         mCalled = true;
+
+        // DON'T REMOVE
+        setDefaultCountryForSpinner();
     }
 
     @Override
@@ -201,8 +204,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private void setupCountrySpinner() {
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         mCountryListSpinner.init(params);
-
-        setDefaultCountryForSpinner();
 
         // Clear error when spinner is clicked on
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {

@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Tālruņa numurs tika automātiski verificēts</string>
     <string name="fui_resend_code">Vēlreiz nosūtīt kodu</string>
     <string name="fui_verify_phone_number">Verificēt tālruņa numuru</string>
-    <string name="fui_continue_phone_login">Turpināt</string>
     <string name="fui_sms_terms_of_service">Pieskaroties pogai %1$s, var tikt nosūtīta īsziņa. Var tikt piemērota maksa par ziņojumiem un datu pārsūtīšanu.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Pieskaroties pogai “%1$s”, jūs norādāt, ka piekrītat šādiem dokumentiem: %2$s un %3$s. Var tikt nosūtīta īsziņa. Var tikt piemērota maksa par ziņojumiem un datu pārsūtīšanu.</string>
 </resources>

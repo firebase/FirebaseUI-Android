@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
-    <string name="fui_continue_phone_login">متابعة</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على “%1$s” إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
 </resources>

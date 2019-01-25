@@ -83,7 +83,6 @@
     <string name="fui_auto_verified">Nomor telepon terverifikasi secara otomatis</string>
     <string name="fui_resend_code">Kirim Ulang Kode</string>
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
-    <string name="fui_continue_phone_login">Lanjutkan</string>
     <string name="fui_sms_terms_of_service">Dengan menge-tap “%1$s\", SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan menge-tap “%1$s”, Anda menyatakan bahwa Anda menyetujui %2$s dan %3$s kami. SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
 </resources>
