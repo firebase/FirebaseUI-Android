@@ -884,6 +884,7 @@ AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
     .Builder(R.layout.your_custom_layout_xml)
     .setGoogleButtonId(R.id.bar)
     .setEmailButtonId(R.id.foo)
+    .setGithubButtonId(R.id.github)
     // ...
     .setTosAndPrivacyPolicyId(R.id.baz)
     .build();
