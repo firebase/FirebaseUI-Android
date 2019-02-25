@@ -307,6 +307,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isOffline()) {
+                    Toast.makeText(AuthMethodPickerActivity.this, getString(R.string.fui_no_internet), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 provider.startSignIn(AuthMethodPickerActivity.this);
             }
         });

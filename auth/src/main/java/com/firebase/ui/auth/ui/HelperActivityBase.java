@@ -3,6 +3,7 @@ package com.firebase.ui.auth.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -74,5 +75,19 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
         Intent intent = CredentialSaveActivity.createIntent(
                 this, getFlowParams(), credential, response);
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
+    }
+
+    /**
+     * Check if there is an active or soon-to-be-active network connection.
+     *
+     * @return true if there is no network connection, false otherwise.
+     */
+    protected boolean isOffline() {
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return !(manager != null
+                && manager.getActiveNetworkInfo() != null
+                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
     }
 }
