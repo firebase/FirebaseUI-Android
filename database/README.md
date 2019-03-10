@@ -202,7 +202,7 @@ protected void onStop() {
 If you don't want to manually start/stop listening you can use
 [Android Architecture Components][arch-components] to automatically manage the lifecycle of the
 `FirebaseRecyclerAdapter`. Pass a `LifecycleOwner` to
-`FirebaseRecyclerAdapter.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
+`FirebaseRecyclerOptions.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
 start and stop listening in `onStart()` and `onStop()`.
 
 ### Data and error events
