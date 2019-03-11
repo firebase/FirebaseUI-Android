@@ -13,7 +13,6 @@ android {
         disable("UnusedQuantity")
         disable("UnknownNullness")  // TODO fix in future PR
         disable("TypographyQuotes") // Straight versus directional quotes
-        disable("MissingTranslation") // STOPSHIP: Get translations
     }
 
     testOptions {

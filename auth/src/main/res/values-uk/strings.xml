@@ -1,16 +1,17 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Завантаження…</string>
     <string name="fui_sign_in_default">Увійти</string>
-    <string name="fui_cancel">Cancel</string>
-    <string name="fui_continue">Continue</string>
+    <string name="fui_cancel">Скасувати</string>
+    <string name="fui_continue">Продовжити</string>
     <string name="fui_tos_and_pp">Продовжуючи, ви приймаєте такі документи: %1$s і %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Помилка мережі. Перевірте інтернет-з’єднання.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
-    <string name="fui_idp_name_phone">Phone</string>
-    <string name="fui_idp_name_email">Email</string>
+    <string name="fui_idp_name_phone">Телефон</string>
+    <string name="fui_idp_name_email">Електронна пошта</string>
     <string name="fui_sign_in_with_google">Увійти через Google</string>
     <string name="fui_sign_in_with_facebook">Увійти через Facebook</string>
     <string name="fui_sign_in_with_twitter">Увійти через Twitter</string>
@@ -60,15 +61,15 @@
     <string name="fui_email_link_resend">Надіслати повторно</string>
     <string name="fui_email_link_wrong_device_header">Виявлено новий пристрій або веб-переглядач.</string>
     <string name="fui_email_link_wrong_device_message">Спробуйте відкрити посилання на пристрої або у веб-переглядачі, де ви починали процедуру входу.</string>
-    <string name="fui_email_link_invalid_link_header">Unable to complete sign in</string>
-    <string name="fui_email_link_invalid_link_message">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
-    <string name="fui_email_link_different_anonymous_user_header">Session ended</string>
-    <string name="fui_email_link_different_anonymous_user_message">The session associated with this sign-in request has either expired or was cleared.</string>
-    <string name="fui_email_link_confirm_email_header">Confirm email</string>
-    <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
+    <string name="fui_email_link_invalid_link_header">Не вдалося ввійти</string>
+    <string name="fui_email_link_invalid_link_message">Недійсний код активації. Можливо, він неправильний, застарілий або вже використаний.</string>
+    <string name="fui_email_link_different_anonymous_user_header">Сеанс завершено</string>
+    <string name="fui_email_link_different_anonymous_user_message">Сеанс, пов’язаний із цим запитом на вхід, завершено або видалено.</string>
+    <string name="fui_email_link_confirm_email_header">Підтвердьте електронну адресу</string>
+    <string name="fui_email_link_confirm_email_message">Щоб продовжити, підтвердьте електронну адресу</string>
     <string name="fui_email_link_dismiss_button">Закрити</string>
-    <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device where you started sign-in. Otherwise, tap Continue to sign-in on this device.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Sign in with %1$s</string>
+    <string name="fui_email_link_cross_device_linking_text">Ви збиралися зв’язати %1$s зі своєю електронною адресою, але відкрили надане посилання на пристрої, на якому не ввійшли в обліковий запис.\n\nЩоб зв’язати обліковий запис %1$s, відкрийте посилання на пристрої, де ви почали входити, або натисніть \"Продовжити\", щоб увійти на цьому пристрої.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Увійти, використовуючи %1$s</string>
     <string name="fui_verify_phone_number_title">Введіть свій номер телефону</string>
     <string name="fui_invalid_phone_number">Введіть дійсний номер телефону</string>
     <string name="fui_enter_confirmation_code">Введіть 6-значний код, який ми надіслали на номер</string>

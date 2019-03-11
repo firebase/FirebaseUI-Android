@@ -1,15 +1,16 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuat…</string>
     <string name="fui_sign_in_default">Login</string>
-    <string name="fui_cancel">Cancel</string>
-    <string name="fui_continue">Continue</string>
+    <string name="fui_cancel">Batal</string>
+    <string name="fui_continue">Lanjutkan</string>
     <string name="fui_tos_and_pp">Dengan melanjutkan, Anda menyatakan bahwa Anda menyetujui %1$s dan %2$s kami.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error jaringan, periksa koneksi internet Anda.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
-    <string name="fui_idp_name_phone">Phone</string>
+    <string name="fui_idp_name_phone">Ponsel</string>
     <string name="fui_idp_name_email">Email</string>
     <string name="fui_sign_in_with_google">Login dengan Google</string>
     <string name="fui_sign_in_with_facebook">Login dengan Facebook</string>
@@ -60,15 +61,15 @@
     <string name="fui_email_link_resend">Kirim ulang</string>
     <string name="fui_email_link_wrong_device_header">Perangkat atau browser baru terdeteksi.</string>
     <string name="fui_email_link_wrong_device_message">Coba buka link menggunakan perangkat atau browser yang sama tempat Anda memulai proses login.</string>
-    <string name="fui_email_link_invalid_link_header">Unable to complete sign in</string>
-    <string name="fui_email_link_invalid_link_message">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
-    <string name="fui_email_link_different_anonymous_user_header">Session ended</string>
-    <string name="fui_email_link_different_anonymous_user_message">The session associated with this sign-in request has either expired or was cleared.</string>
-    <string name="fui_email_link_confirm_email_header">Confirm email</string>
-    <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
+    <string name="fui_email_link_invalid_link_header">Tidak dapat menyelesaikan login</string>
+    <string name="fui_email_link_invalid_link_message">Kode tindakan tidak valid. Ini bisa terjadi jika kode rusak, sudah tidak berlaku, atau sudah digunakan.</string>
+    <string name="fui_email_link_different_anonymous_user_header">Sesi diakhiri</string>
+    <string name="fui_email_link_different_anonymous_user_message">Sesi yang terkait dengan permintaan login ini sudah berakhir atau sudah dihapus.</string>
+    <string name="fui_email_link_confirm_email_header">Konfirmasi email</string>
+    <string name="fui_email_link_confirm_email_message">Konfirmasi email untuk melanjutkan login</string>
     <string name="fui_email_link_dismiss_button">Tutup</string>
-    <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device where you started sign-in. Otherwise, tap Continue to sign-in on this device.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Sign in with %1$s</string>
+    <string name="fui_email_link_cross_device_linking_text">Anda sebelumnya ingin menghubungkan %1$s ke akun email Anda, tapi telah membuka link di perangkat berbeda yang tidak digunakan untuk login.\n\nJika Anda masih ingin menghubungkan ke akun %1$s, buka link di perangkat yang sama yang digunakan untuk login. Jika tidak, tap Lanjutkan untuk login di perangkat ini.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Login dengan %1$s</string>
     <string name="fui_verify_phone_number_title">Masukkan nomor telepon Anda</string>
     <string name="fui_invalid_phone_number">Masukkan nomor telepon yang valid</string>
     <string name="fui_enter_confirmation_code">Masukkan kode 6 digit yang kami kirimkan ke</string>

@@ -5,6 +5,7 @@
     <string name="fui_continue">Doorgaan</string>
     <string name="fui_tos_and_pp">Als u doorgaat, geeft u aan dat u onze %1$s en ons %2$s accepteert.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Er is een netwerkfout opgetreden. Controleer uw internetverbinding.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>

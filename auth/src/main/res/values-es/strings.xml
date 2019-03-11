@@ -1,16 +1,17 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Iniciar sesión</string>
-    <string name="fui_cancel">Cancel</string>
-    <string name="fui_continue">Continue</string>
+    <string name="fui_cancel">Cancelar</string>
+    <string name="fui_continue">Continuar</string>
     <string name="fui_tos_and_pp">Si continúas, confirmas que aceptas nuestras %1$s y nuestra %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Se ha producido un error de red. Comprueba la conexión a Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
-    <string name="fui_idp_name_phone">Phone</string>
-    <string name="fui_idp_name_email">Email</string>
+    <string name="fui_idp_name_phone">Teléfono</string>
+    <string name="fui_idp_name_email">Correo electrónico</string>
     <string name="fui_sign_in_with_google">Iniciar sesión con Google</string>
     <string name="fui_sign_in_with_facebook">Iniciar sesión con Facebook</string>
     <string name="fui_sign_in_with_twitter">Iniciar sesión con Twitter</string>
@@ -60,15 +61,15 @@
     <string name="fui_email_link_resend">Reenviar</string>
     <string name="fui_email_link_wrong_device_header">Se ha detectado un nuevo dispositivo o navegador.</string>
     <string name="fui_email_link_wrong_device_message">Prueba a abrir el enlace con el mismo dispositivo o navegador en los que empezaste el proceso de inicio de sesión.</string>
-    <string name="fui_email_link_invalid_link_header">Unable to complete sign in</string>
-    <string name="fui_email_link_invalid_link_message">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
-    <string name="fui_email_link_different_anonymous_user_header">Session ended</string>
-    <string name="fui_email_link_different_anonymous_user_message">The session associated with this sign-in request has either expired or was cleared.</string>
-    <string name="fui_email_link_confirm_email_header">Confirm email</string>
-    <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
-    <string name="fui_email_link_dismiss_button">Ignorar</string>
-    <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device where you started sign-in. Otherwise, tap Continue to sign-in on this device.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Sign in with %1$s</string>
+    <string name="fui_email_link_invalid_link_header">No se ha podido completar el inicio de sesión</string>
+    <string name="fui_email_link_invalid_link_message">El código de acción no es válido. Esto puede deberse a que ha caducado, ya se ha utilizado o el formato es incorrecto.</string>
+    <string name="fui_email_link_different_anonymous_user_header">La sesión ha finalizado</string>
+    <string name="fui_email_link_different_anonymous_user_message">La sesión asociada con esta solicitud de inicio de sesión ha caducado o se ha borrado.</string>
+    <string name="fui_email_link_confirm_email_header">Confirmar el correo electrónico</string>
+    <string name="fui_email_link_confirm_email_message">Confirma el correo electrónico para continuar con el inicio de sesión</string>
+    <string name="fui_email_link_dismiss_button">Cerrar</string>
+    <string name="fui_email_link_cross_device_linking_text">En un principio intentaste conectar %1$s a tu cuenta de correo electrónico, pero has abierto el enlace en un dispositivo diferente en el que no has iniciado sesión.\n\nSi sigues queriendo vincular tu cuenta de %1$s, abre el enlace en el mismo dispositivo en el que empezaste el inicio de sesión. De lo contrario, toca Continuar para iniciar sesión en este dispositivo.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Iniciar sesión con %1$s</string>
     <string name="fui_verify_phone_number_title">Introduce tu número de teléfono</string>
     <string name="fui_invalid_phone_number">Introduce un número de teléfono válido</string>
     <string name="fui_enter_confirmation_code">Introduce el código de seis dígitos que hemos enviado a</string>
