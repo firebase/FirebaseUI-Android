@@ -5,6 +5,7 @@
     <string name="fui_continue">Continuer</string>
     <string name="fui_tos_and_pp">En continuant, vous acceptez les %1$s et les %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s   %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Erreur de réseau, vérifiez votre connexion Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>

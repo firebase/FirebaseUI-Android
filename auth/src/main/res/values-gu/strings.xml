@@ -5,6 +5,7 @@
     <string name="fui_continue">આગળ વધો</string>
     <string name="fui_tos_and_pp">ચાલુ રાખીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %1$s અને %2$sને સ્વીકારો છો.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">નેટવર્કમાં ભૂલ, તમારું ઇન્ટરનેટ કનેક્શન ચેક કરો.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>

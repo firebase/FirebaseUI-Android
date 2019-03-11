@@ -5,6 +5,7 @@
     <string name="fui_continue">Fortsätt</string>
     <string name="fui_tos_and_pp">Genom att fortsätta godkänner du våra %1$s och vår %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Nätverksfel, kontrollera din internetanslutning.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>

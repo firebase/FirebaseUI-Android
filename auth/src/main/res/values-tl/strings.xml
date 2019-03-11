@@ -1,15 +1,16 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Naglo-load…</string>
     <string name="fui_sign_in_default">Mag-sign in</string>
-    <string name="fui_cancel">Cancel</string>
-    <string name="fui_continue">Continue</string>
+    <string name="fui_cancel">Kanselahin</string>
+    <string name="fui_continue">Magpatuloy</string>
     <string name="fui_tos_and_pp">Sa pagpapatuloy, ipinababatid mo na tinatanggap mo ang aming %1$s at %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error sa network, tingnan ang koneksyon mo sa internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Fecebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
-    <string name="fui_idp_name_phone">Phone</string>
+    <string name="fui_idp_name_phone">Telepono</string>
     <string name="fui_idp_name_email">Email</string>
     <string name="fui_sign_in_with_google">Mag-sign in sa Google</string>
     <string name="fui_sign_in_with_facebook">Mag-sign in sa Facebook</string>
@@ -60,15 +61,15 @@
     <string name="fui_email_link_resend">Muling ipadala</string>
     <string name="fui_email_link_wrong_device_header">May nakitang bagong device o browser.</string>
     <string name="fui_email_link_wrong_device_message">Subukang buksan ang link gamit ang parehong device o browser kung saan mo sinimulan ang proseso ng pag-sign in.</string>
-    <string name="fui_email_link_invalid_link_header">Unable to complete sign in</string>
-    <string name="fui_email_link_invalid_link_message">The action code is invalid. This can happen if the code is malformed, expired, or has already been used.</string>
-    <string name="fui_email_link_different_anonymous_user_header">Session ended</string>
-    <string name="fui_email_link_different_anonymous_user_message">The session associated with this sign-in request has either expired or was cleared.</string>
-    <string name="fui_email_link_confirm_email_header">Confirm email</string>
-    <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
+    <string name="fui_email_link_invalid_link_header">Hindi makumpleto ang pag-sign in</string>
+    <string name="fui_email_link_invalid_link_message">Hindi valid ang code ng aksyon. Maaaring mangyari ito kung malformed, nag-expire na, o nagamit na ang code.</string>
+    <string name="fui_email_link_different_anonymous_user_header">Natapos ang session</string>
+    <string name="fui_email_link_different_anonymous_user_message">Ang session na kaugnay ng kahilingan sa pag-sign in na ito ay maaaring nag-expire na o na-clear.</string>
+    <string name="fui_email_link_confirm_email_header">Kumpirmahin ang email</string>
+    <string name="fui_email_link_confirm_email_message">Kumpirmahin ang email para magpatuloy sa pag-sign in</string>
     <string name="fui_email_link_dismiss_button">I-dismiss</string>
-    <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device where you started sign-in. Otherwise, tap Continue to sign-in on this device.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Sign in with %1$s</string>
+    <string name="fui_email_link_cross_device_linking_text">Orihinal na sinadya mong ikonekta ang %1$s sa iyong email account pero nabuksan ang link sa ibang device kung saan hindi ka naka-sign in.\n\nKung gusto mo pa ring ikonekta ang iyong %1$s account, buksan ang link sa parehong device kung saan ka nagsimulang mag-sign in. Kung hindi, i-tap ang Magpatuloy para makapag-sign in sa device na ito.</string>
+    <string name="fui_email_link_cross_device_sign_in_button_text">Mag-sign in gamit ang %1$s</string>
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>
