@@ -1,3 +1,4 @@
+val kotlin_version: String = "1.3.21"
 tasks.named("check").configure { dependsOn("compileDebugAndroidTestJavaWithJavac") }
 
 android {
@@ -31,4 +32,12 @@ dependencies {
     androidTestImplementation(Config.Libs.Test.rules)
     androidTestImplementation(Config.Libs.Test.mockito)
     androidTestImplementation(Config.Libs.Arch.paging)
+    implementation(kotlin("stdlib-jdk7", kotlin_version))
+}
+apply {
+    plugin("kotlin-android")
+    plugin("kotlin-android-extensions")
+}
+repositories {
+    mavenCentral()
 }
