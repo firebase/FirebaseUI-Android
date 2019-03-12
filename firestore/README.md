@@ -19,6 +19,7 @@ Before using this library, you should be familiar with the following topics:
    1. [Using the FirestorePagingAdapter](#using-the-firestorepagingadapter)
        1. [Adapter lifecyle](#firestorepagingadapter-lifecycle)
        1. [Events](#paging-events)
+   1. [Using the FirestoreItemKeyedDataSource](#using-the-firestoreitemkeyeddatasource)
 
 ## Data model
 
@@ -391,6 +392,77 @@ FirestorePagingAdapter<Item, ItemViewHolder> adapter =
             }
         };
 ```
+
+### Using the `FirestoreItemKeyedDataSource`
+
+The `FirestoreItemKeyedDataSource` loads documents in pages. It also automatically applied updates
+to your UI in real time when documents are added, removed, or change.
+
+The `FirestoreItemKeyedDataSource` is built on top of the [Android Paging Support Library][paging-support].
+Before using the adapter in your application, you must add a dependency on the support library:
+
+```groovy
+implementation 'android.arch.paging:runtime:1.x.x'
+```
+
+The detailed explanation of how to use `DataSource` you can find in the [Android Paging Support Library][paging-support].
+
+Here is a short example of how `FirestoreItemKeyedDataSource`.
+
+The following code snippet shows how to create a new instance of `LiveData<PagedList>` in your app's 
+`ViewModel` class :
+
+```java
+
+public class MyViewModel extends ViewModel {
+
+    CollectionReference collection = FirebaseFirestore.getInstance().collection("cities");
+
+    FirestoreItemKeyedDataSource.Factory factory = FirestoreItemKeyedDataSource.Factory( 
+        QueryFactory.Builder(collection)
+                        .orderBy("name")
+                        .build(),
+        errorListener 
+    );
+    
+    LiveData<PagedList<DocumentSnapshot>> items = LivePagedListBuilder(factory, /* page size*/ 10).build();
+    
+    FirestoreItemKeyedDataSource.ErrorCallback errorListener = new FirestoreItemKeyedDataSource.ErrorCallback() {
+        @Override
+        public void onError(@NotNull FirebaseFirestoreException exception) {
+            // handle error
+            
+            items.getValue().getDataSource().invalidate();   
+        }
+    };
+
+}
+
+```
+
+You can connect an instance of `LiveData<PagedList>` to a `PagedListAdapter`, as shown in the following code snippet:
+
+```java
+
+public class MytActivity extends AppCompatActivity {
+    private MyAdapter adapter = new MyAdapter();
+    private MyViewModel viewModel;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        viewModel.items.observe(this, adapter::submitList);
+    }
+}
+
+``` 
+
+
+**Note**:   your implementation of `PagedListAdapter` should indicate that each item in the data set 
+        can be represented with a unique identifier by calling `setHasStableIds(true)` and implement 
+        `getItemId(position: Int)`. 
+        Otherwise `RecyclerView` will be loosing current position after each data change.
 
 [firestore-docs]: https://firebase.google.com/docs/firestore/
 [firestore-custom-objects]: https://firebase.google.com/docs/firestore/manage-data/add-data#custom_objects
