@@ -140,6 +140,7 @@ fun Project.setupPublishing() {
     val javadoc = tasks.register<Javadoc>("javadoc") {
         setSource(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
         classpath += files(project.the<BaseExtension>().bootClasspath)
+        exclude("**/*.kt")
 
         project.the<LibraryExtension>().libraryVariants.configureEach {
             dependsOn(assemble)
