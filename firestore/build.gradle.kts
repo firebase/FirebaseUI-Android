@@ -36,6 +36,7 @@ dependencies {
 }
 apply {
     plugin("kotlin-android")
+    plugin("kotlin-kapt")
     plugin("kotlin-android-extensions")
 }
 repositories {
