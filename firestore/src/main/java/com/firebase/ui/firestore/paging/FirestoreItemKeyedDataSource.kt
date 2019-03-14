@@ -139,6 +139,7 @@ class FirestoreItemKeyedDataSource(
 
     override fun invalidate() {
         super.invalidate()
+        registrations.forEach { it.remove() }
         registrations.clear()
     }
 
