@@ -55,154 +55,168 @@ class FirestoreItemKeyedDataSource(
             params: LoadInitialParams<DocumentSnapshot>,
             callback: LoadInitialCallback<DocumentSnapshot>
     ) {
-        val key = params.requestedInitialKey
-        val loadSize = params.requestedLoadSize.toLong()
+        val lastSeenDocument = params.requestedInitialKey
+        val requestedLoadSize = params.requestedLoadSize.toLong()
 
-        if (key == null) {  // Initial data load could be asynchronous.
-            loadFromBeginning(loadSize, callback)
+        if (lastSeenDocument == null) {  // Initial data load could be asynchronous.
+            loadFromBeginning(requestedLoadSize, callback)
         } else {    // Stale data refresh. Should be synchronous to prevent RecyclerView items disappearing and loss of current position.
-            loadAround(key, loadSize, callback).await()
+            loadAround(lastSeenDocument, requestedLoadSize, callback).await()
         }
     }
 
     /**
-     * Tries to load some items before and after provided [key].
+     * Tries to load half of [loadSize] documents before [document] and half of [loadSize] documents starting at provided [document].
      *
-     * @param key The key to load around.
+     * @param document The document to load around.
      * @param loadSize Requested number of items to load.
      *
      * @return A Task that will be resolved with the results of the Query.
      */
     private fun loadAround(
-            key: DocumentSnapshot,
+            document: DocumentSnapshot,
             loadSize: Long,
             callback: LoadInitialCallback<DocumentSnapshot>
-    ) = tryGetPriorKey(key, loadSize / 2).continueWithTask { previousTask ->
+    ) = tryGetDocumentPrior(document, loadSize / 2).continueWithTask { previousTask ->
         loadStartAt(previousTask.result!!, loadSize, callback)
     }
 
     /**
-     * Tries to get key before provided [key] to start load page from it.
+     * Returns document before [document] maximum by [preloadSize] or [document] if there is no documents before.
      *
-     * @param key The key to load before.
+     * @param document The document to load before.
      * @param preloadSize Requested number of items to preload.
      *
      * @return A Task that will be resolved with the results of the Query.
      */
-    private fun tryGetPriorKey(
-            key: DocumentSnapshot,
+    private fun tryGetDocumentPrior(
+            document: DocumentSnapshot,
             preloadSize: Long
-    ): Task<DocumentSnapshot> = getItemsBeforeKey(key, preloadSize).continueWith { task ->
+    ): Task<DocumentSnapshot> = getItemsBefore(document, preloadSize).continueWith { task ->
         if (task.isSuccessful) {
-            val documents = task.result!!.documents
-            documents.getOrElse(documents.lastIndex) { key }
+            task.result!!.documents.lastOrNull() ?: document
         } else {
-            key
+            document
         }
     }
 
-    private fun getItemsBeforeKey(
-            key: DocumentSnapshot,
-            preloadSize: Long
-    ) = endAtQuery(key, preloadSize).get(CACHE)
+    private fun getItemsBefore(
+            document: DocumentSnapshot,
+            loadSize: Long
+    ) = queryEndAt(document, loadSize).get(CACHE)
 
     private fun loadStartAt(
-            key: DocumentSnapshot,
+            document: DocumentSnapshot,
             loadSize: Long,
             callback: LoadInitialCallback<DocumentSnapshot>
-    ): Task<Unit> = resultsListener(callback).also { listener ->
-        register(startAtQuery(key, loadSize), listener)
-    }.firstEventFiredTask
+    ) = PageLoader(callback).also { pageLoader ->
+        addPageLoader(queryStartAt(document, loadSize), pageLoader)
+    }.task
 
     private fun loadFromBeginning(
             loadSize: Long,
             callback: LoadInitialCallback<DocumentSnapshot>
     ) {
-        register(startFromBeginningQuery(loadSize), resultsListener(callback))
+        addPageLoader(
+                queryStartFromBeginning(loadSize),
+                PageLoader(callback)
+        )
     }
 
     override fun loadAfter(
             params: LoadParams<DocumentSnapshot>,
             callback: LoadCallback<DocumentSnapshot>
     ) {
-        register(startAfterQuery(params), resultsListener(callback))
+        addPageLoader(
+                queryStartAfter(params.key, params.requestedLoadSize.toLong()),
+                PageLoader(callback)
+        )
     }
 
     override fun loadBefore(
             params: LoadParams<DocumentSnapshot>,
             callback: LoadCallback<DocumentSnapshot>
     ) {
-        register(startBeforeQuery(params), reversedResultsListener(callback))
+        addPageLoader(
+                queryEndBefore(params.key, params.requestedLoadSize.toLong()),
+                PageLoader(callback.reversedResults())
+        )
     }
 
     override fun getKey(item: DocumentSnapshot) = item
 
     override fun invalidate() {
         super.invalidate()
+        removeAllPageLoaders()
+    }
+
+    private fun removeAllPageLoaders() {
         registrations.forEach { it.remove() }
         registrations.clear()
     }
 
-    private fun register(
+    private fun addPageLoader(
             query: Query,
-            resultListener: ResultsListener
+            pageLoader: PageLoader
     ) {
-        registrations.add(query.addSnapshotListener(resultListener))
+        registrations.add(query.addSnapshotListener(pageLoader))
     }
 
-    private fun startFromBeginningQuery(loadSize: Long) = directQuery.limit(loadSize)
+    private fun queryStartFromBeginning(loadSize: Long) = directQuery.limit(loadSize)
 
-    private fun startAtQuery(key: DocumentSnapshot, loadSize: Long) = directQuery.startAt(key).limit(loadSize)
+    private fun queryStartAt(document: DocumentSnapshot, loadSize: Long) = directQuery.startAt(document).limit(loadSize)
 
-    private fun startAfterQuery(params: LoadParams<DocumentSnapshot>) =
-            directQuery.startAfter(params.key).limit(params.requestedLoadSize.toLong())
+    private fun queryStartAfter(document: DocumentSnapshot, loadSize: Long) = directQuery.startAfter(document).limit(loadSize)
 
-    private fun startBeforeQuery(params: LoadParams<DocumentSnapshot>) =
-            reverseQuery.startAfter(params.key).limit(params.requestedLoadSize.toLong())
+    private fun queryEndAt(document: DocumentSnapshot, loadSize: Long) = reverseQuery.startAt(document).limit(loadSize)
 
-    private fun endAtQuery(key: DocumentSnapshot, loadSize: Long) = reverseQuery.startAt(key).limit(loadSize)
-
-    private fun resultsListener(callback: LoadCallback<DocumentSnapshot>) = ResultsListener(callback)
-    private fun reversedResultsListener(callback: LoadCallback<DocumentSnapshot>) = ResultsListener(callback, true)
+    private fun queryEndBefore(document: DocumentSnapshot, loadSize: Long) = reverseQuery.startAfter(document).limit(loadSize)
 
     /**
      * Implementation of [EventListener].
      *
-     * Listen for [DocumentSnapshot] for the requested page to load.
+     * Listen for loading of the requested page.
+     *
      * The first received result is treated as page data. The subsequent results treated as data change and invoke
      * data source invalidation.
      *
      * @property callback The callback to pass data to [PagedList].
-     * @property isReversedResults The flag that tells that this listener will receive reversed result.
      */
-    private inner class ResultsListener(
-            private val callback: LoadCallback<DocumentSnapshot>,
-            private val isReversedResults: Boolean = false
+    private inner class PageLoader(
+            private val callback: LoadCallback<DocumentSnapshot>
     ) : EventListener<QuerySnapshot> {
-
-        private val isFirstEvent = AtomicBoolean(true)
-        private val taskCompletionSource = TaskCompletionSource<Unit>()
+        private val isWaitingForPage = AtomicBoolean(true)
+        private val taskCompletionSource = TaskCompletionSource<MutableList<DocumentSnapshot>>()
 
         /**
-         * A [Task] that will be resolved when this listener get first result or error.
+         * A [Task] that will be resolved when this page loader loads page or fails.
          * Used to load initial data synchronously on stale data refresh.
          */
-        val firstEventFiredTask get() = taskCompletionSource.task
+        val task get() = taskCompletionSource.task
 
         override fun onEvent(snapshot: QuerySnapshot?, exception: FirebaseFirestoreException?) {
-            if (isFirstEvent()) {
+            if (isWaitingForPage()) {
 
-                snapshot?.documents?.also { documents ->
-                    callback.onResult(if (isReversedResults) documents.reversed() else documents)
-                } ?: notifyError(exception!!)
+                snapshot?.documents?.also { result ->
+                    submit(result)
+                } ?: submit(exception!!)
 
-                taskCompletionSource.setResult(Unit)
             } else {
                 invalidate()
             }
         }
 
-        private inline fun isFirstEvent() = isFirstEvent.compareAndSet(true, false)
+        private fun submit(result: MutableList<DocumentSnapshot>) {
+            callback.onResult(result)
+            taskCompletionSource.setResult(result)
+        }
+
+        private fun submit(exception: FirebaseFirestoreException) {
+            notifyError(exception)
+            taskCompletionSource.setException(exception)
+        }
+
+        private inline fun isWaitingForPage() = isWaitingForPage.compareAndSet(true, false)
     }
 
     private fun notifyError(exception: FirebaseFirestoreException) {
@@ -218,6 +232,19 @@ class FirestoreItemKeyedDataSource(
         fun onError(exception: FirebaseFirestoreException)
     }
 
+    /**
+     * Wraps [LoadCallback] with new one that reverses the results list.
+     */
+    private fun LoadCallback<DocumentSnapshot>.reversedResults() = object : LoadCallback<DocumentSnapshot>() {
+        override fun onResult(data: MutableList<DocumentSnapshot>) {
+            this@reversedResults.onResult(data.reversed())
+        }
+    }
+
+    /**
+     * Waits for [Task] to resolve ignoring whether it succeeded or failed.
+     * Used to load initial page synchronously on stale data refresh.
+     */
     private inline fun <TResult> Task<TResult>.await() {
         try {
             Tasks.await(this)
