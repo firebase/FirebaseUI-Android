@@ -35,6 +35,10 @@ public class FirebaseDataSource<T> extends PageKeyedDataSource<String,T> {
     private final MutableLiveData<DatabaseError> mError = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<String>> mKeyLiveData = new MutableLiveData<>();
 
+    private final String WRONG_DATA_PATH_STATUS = "WRONG_PATH";
+    private final String WRONG_DATA_PATH_MESSAGE = "WRONG DATA PATH";
+    private final String WRONG_DATA_PATH_DETAILS = "Wrong Data Path is given. Data Child Not Found !";
+
     public static class Factory<T> extends DataSource.Factory<String, Class<T>> {
 
         private final Query mQuery;
@@ -67,17 +71,22 @@ public class FirebaseDataSource<T> extends PageKeyedDataSource<String,T> {
         mInitQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<T> mDataList = new ArrayList<>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    T data = ds.getValue(mClass);
-                    String key = ds.getKey();
-                    mKeyList.add(key);
-                    mDataList.add(data);
-                }
+                if(dataSnapshot.exists()) {
+                    ArrayList<T> mDataList = new ArrayList<T>();
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        T data = ds.getValue(mClass);
+                        String key = ds.getKey();
+                        mKeyList.add(key);
+                        mDataList.add(data);
+                    }
 
-                //Initial Load Success
-                mLoadingState.postValue(LoadingState.LOADED);
-                callback.onResult(mDataList,mKeyList.get(mKeyList.size() - 1),mKeyList.get(mKeyList.size() - 1));
+                    //Initial Load Success
+                    mLoadingState.postValue(LoadingState.LOADED);
+                    callback.onResult(mDataList, mKeyList.get(mKeyList.size() - 1), mKeyList.get(mKeyList.size() - 1));
+                }
+                else{
+                    setWrongDataPathError();
+                }
             }
 
             @Override
@@ -104,32 +113,37 @@ public class FirebaseDataSource<T> extends PageKeyedDataSource<String,T> {
         mNewQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<T> mList = new ArrayList<>();
-                boolean isFirstItem = true;
+                if(dataSnapshot.exists()) {
+                    ArrayList<T> mList = new ArrayList<T>();
+                    boolean isFirstItem = true;
 
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    T data = ds.getValue(mClass);
-                    String key = ds.getKey();
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        T data = ds.getValue(mClass);
+                        String key = ds.getKey();
 
                     /*
                       Check for first Item.
                       Because in Firebase Database there is no query for startAfter(key).
                       So we're ignoring first data item
                     */
-                     if(!isFirstItem) {
-                        mList.add(data);
-                        mKeyList.add(key);
+                        if (!isFirstItem) {
+                            mList.add(data);
+                            mKeyList.add(key);
+                        }
+                        isFirstItem = false;
                     }
-                    isFirstItem = false;
+
+                    mLoadingState.postValue(LoadingState.LOADED);
+
+                    //Detect End of Data
+                    if (mList.isEmpty())
+                        mLoadingState.postValue(LoadingState.FINISHED);
+
+                    callback.onResult(mList, mKeyList.get(mKeyList.size() - 1));
                 }
-
-                mLoadingState.postValue(LoadingState.LOADED);
-
-                //Detect End of Data
-                if(mList.isEmpty())
-                    mLoadingState.postValue(LoadingState.FINISHED);
-
-                callback.onResult(mList,mKeyList.get(mKeyList.size() - 1));
+                else{
+                   setWrongDataPathError();
+                }
 
             }
 
@@ -139,6 +153,15 @@ public class FirebaseDataSource<T> extends PageKeyedDataSource<String,T> {
                 mLoadingState.postValue(LoadingState.ERROR);
             }
         });
+    }
+
+    private void setWrongDataPathError(){
+        mError.postValue(DatabaseError.fromStatus(
+                WRONG_DATA_PATH_STATUS,
+                WRONG_DATA_PATH_DETAILS,
+                WRONG_DATA_PATH_MESSAGE));
+
+        mLoadingState.postValue(LoadingState.ERROR);
     }
 
     @NonNull
