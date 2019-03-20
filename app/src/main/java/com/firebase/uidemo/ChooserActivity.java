@@ -32,6 +32,7 @@ import com.firebase.uidemo.auth.AnonymousUpgradeActivity;
 import com.firebase.uidemo.auth.AuthUiActivity;
 import com.firebase.uidemo.database.firestore.FirestoreChatActivity;
 import com.firebase.uidemo.database.firestore.FirestorePagingActivity;
+import com.firebase.uidemo.database.realtime.FirebaseDbPagingActivity;
 import com.firebase.uidemo.database.realtime.RealtimeDbChatActivity;
 import com.firebase.uidemo.storage.ImageActivity;
 
@@ -71,6 +72,7 @@ public class ChooserActivity extends AppCompatActivity {
                 FirestoreChatActivity.class,
                 FirestorePagingActivity.class,
                 RealtimeDbChatActivity.class,
+                FirebaseDbPagingActivity.class,
                 ImageActivity.class,
         };
 
@@ -80,6 +82,7 @@ public class ChooserActivity extends AppCompatActivity {
                 R.string.title_firestore_activity,
                 R.string.title_firestore_paging_activity,
                 R.string.title_realtime_database_activity,
+                R.string.title_paging_database_activity,
                 R.string.title_storage_activity
         };
 
@@ -89,6 +92,7 @@ public class ChooserActivity extends AppCompatActivity {
                 R.string.desc_firestore,
                 R.string.desc_firestore_paging,
                 R.string.desc_realtime_database,
+                R.string.desc_paging_database,
                 R.string.desc_storage
         };
 

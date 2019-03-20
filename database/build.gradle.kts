@@ -12,6 +12,8 @@ dependencies {
 
     api(Config.Libs.Support.v4)
     api(Config.Libs.Support.recyclerView)
+
+    compileOnly(Config.Libs.Arch.paging)
     annotationProcessor(Config.Libs.Arch.compiler)
 
     androidTestImplementation(Config.Libs.Test.junit)
