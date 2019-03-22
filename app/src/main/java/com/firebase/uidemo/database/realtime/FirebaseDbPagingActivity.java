@@ -15,9 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.paging.FirebasePagingOptions;
+import com.firebase.ui.database.paging.DatabasePagingOptions;
 import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
-import com.firebase.ui.database.paging.listener.StateChangedListener;
+import com.firebase.ui.database.paging.LoadingState;
 import com.firebase.uidemo.R;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -59,7 +59,7 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                 .build();
 
         //Initialize Firebase Paging Options
-        FirebasePagingOptions<Post> options = new FirebasePagingOptions.Builder<Post>()
+        DatabasePagingOptions<Post> options = new DatabasePagingOptions.Builder<Post>()
                 .setLifecycleOwner(this)
                 .setQuery(mQuery, config, Post.class)
                 .build();
@@ -79,43 +79,42 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                     @Override
                     protected void onBindViewHolder(@NonNull PostViewHolder holder,
                                                     int position,
-                                                    @NonNull String key,
                                                     @NonNull Post model) {
                         holder.bind(model);
+                    }
+
+                    @Override
+                    protected void onLoadingStateChanged(@NonNull LoadingState state) {
+                        switch (state) {
+                            case LOADING_INITIAL:
+                            case LOADING_MORE:
+                                mProgressBar.setVisibility(View.VISIBLE);
+                                break;
+
+                            case LOADED:
+                                mProgressBar.setVisibility(View.GONE);
+                                break;
+
+                            case FINISHED:
+                                mProgressBar.setVisibility(View.GONE);
+                                Toast.makeText(getApplicationContext(), getString(R.string.paging_finished_message), Toast.LENGTH_SHORT).show();
+                                break;
+
+                            case ERROR:
+                                mProgressBar.setVisibility(View.GONE);
+                                break;
+                        }
+                    }
+
+                    @Override
+                    protected void onError(DatabaseError databaseError) {
+                        mProgressBar.setVisibility(View.GONE);
+                        Log.e(TAG, databaseError.getMessage());
                     }
                 };
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(mAdapter);
-
-        mAdapter.setStateChangedListener(new StateChangedListener() {
-            @Override
-            public void onInitLoading() {
-                mProgressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onLoading() {
-                mProgressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onLoaded() {
-                mProgressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFinished() {
-                mProgressBar.setVisibility(View.GONE);
-                Toast.makeText(getApplicationContext(), getString(R.string.paging_finished_message), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(DatabaseError databaseError) {
-                mProgressBar.setVisibility(View.GONE);
-                Log.e(TAG, databaseError.getMessage());
-            }
-        });
     }
 
     public static class Post {

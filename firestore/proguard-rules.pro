@@ -1,2 +1,1 @@
 -dontwarn com.firebase.ui.firestore.paging.**
--dontwarn com.firebase.ui.database.paging.**

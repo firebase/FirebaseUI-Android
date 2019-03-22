@@ -4,6 +4,14 @@ android {
     defaultConfig {
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    buildTypes {
+        named("release").configure {
+            postprocessing {
+                consumerProguardFiles("proguard-rules.pro")
+            }
+        }
+    }
 }
 
 dependencies {
