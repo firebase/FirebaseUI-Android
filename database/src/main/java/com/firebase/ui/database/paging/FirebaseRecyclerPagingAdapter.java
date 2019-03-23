@@ -17,7 +17,6 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.annotations.NotNull;
 
 /**
  * Paginated RecyclerView Adapter for a Firebase Realtime Database query.
@@ -26,7 +25,7 @@ import com.google.firebase.database.annotations.NotNull;
  */
 public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder> extends PagedListAdapter<DataSnapshot, VH> implements LifecycleObserver{
 
-    private final String TAG = "FirebaseRecyclerPagingAdapter";
+    private final String TAG = "FirebasePagingAdapter";
 
     private final SnapshotParser<T> mParser;
     private final LiveData<PagedList<DataSnapshot>> mPagedList;
@@ -141,7 +140,7 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      * @param model the model object containing the data that should be used to populate the view.
      * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
      */
-    protected abstract void onBindViewHolder(@NonNull VH viewHolder, int position, @NotNull T model);
+    protected abstract void onBindViewHolder(@NonNull VH viewHolder, int position, @NonNull T model);
 
     /**
      * Called whenever the loading state of the adapter changes.
@@ -155,11 +154,11 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      *
      * When {@link DatabaseError} is caught the adapter will stop loading any data
      */
-    protected void onError(@NotNull DatabaseError databaseError){
+    protected void onError(@NonNull DatabaseError databaseError){
 
     }
 
-    @NotNull
+    @NonNull
     public DatabaseReference getRef(int position){
        return getItem(position).getRef();
     }

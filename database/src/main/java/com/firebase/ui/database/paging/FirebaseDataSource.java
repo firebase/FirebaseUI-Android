@@ -5,13 +5,13 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;
 import android.arch.paging.PageKeyedDataSource;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,9 +27,9 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot> {
 
-    private Query mQuery;
-
     private static final String TAG = "FirebaseDataSource";
+
+    private Query mQuery;
 
     private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
     private final MutableLiveData<DatabaseError> mError = new MutableLiveData<>();
@@ -58,7 +58,8 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull final LoadInitialCallback<String, DataSnapshot> callback) {
+    public void loadInitial(@NonNull final LoadInitialParams<String> params,
+                            @NonNull final LoadInitialCallback<String, DataSnapshot> callback) {
         // Set initial loading state
         mLoadingState.postValue(LoadingState.LOADING_INITIAL);
 
@@ -82,17 +83,15 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
                     mLoadingState.postValue(LoadingState.LOADED);
 
                     callback.onResult(data, lastKey, lastKey);
-                }
-                else {
+
+                } else {
                     setDatabaseNotFoundError();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //Error caught
-                mError.postValue(databaseError);
-                mLoadingState.postValue(LoadingState.ERROR);
+                setError(databaseError);
             }
         });
     }
@@ -103,7 +102,9 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<String> params, @NonNull final LoadCallback<String, DataSnapshot> callback) {
+    public void loadAfter(@NonNull final LoadParams<String> params,
+                          @NonNull final LoadCallback<String, DataSnapshot> callback) {
+
         // Set loading state
         mLoadingState.postValue(LoadingState.LOADING_MORE);
 
@@ -140,8 +141,8 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
                     }
 
                     callback.onResult(data, lastKey);
-                }
-                else {
+
+                } else {
                    setDatabaseNotFoundError();
                 }
 
@@ -149,15 +150,18 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                mError.postValue(databaseError);
-                mLoadingState.postValue(LoadingState.ERROR);
+                setError(databaseError);
             }
         });
     }
 
-    @NonNull
+    @Nullable
     private String getLastPageKey(@NonNull List<DataSnapshot> data) {
-        return data.get(data.size() - 1).getKey();
+        if (data.isEmpty()) {
+            return null;
+        } else {
+            return data.get(data.size() - 1).getKey();
+        }
     }
 
     private void setDatabaseNotFoundError(){
@@ -166,6 +170,11 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
                 DETAILS_DATABASE_NOT_FOUND,
                 MESSAGE_DATABASE_NOT_FOUND));
 
+        mLoadingState.postValue(LoadingState.ERROR);
+    }
+
+    private void setError(DatabaseError databaseError){
+        mError.postValue(databaseError);
         mLoadingState.postValue(LoadingState.ERROR);
     }
 
@@ -178,4 +187,5 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
     public LiveData<DatabaseError> getLastError(){
         return mError;
     }
+
 }
