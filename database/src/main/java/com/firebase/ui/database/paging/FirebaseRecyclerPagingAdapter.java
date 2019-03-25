@@ -12,6 +12,7 @@ import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +33,15 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
     private final LiveData<LoadingState> mLoadingState;
     private final LiveData<DatabaseError> mDatabaseError;
     private final LiveData<FirebaseDataSource> mDataSource;
+
+
+    //Data Source Observer
+    private final Observer<FirebaseDataSource> mDataSourceObserver = new Observer<FirebaseDataSource>() {
+        @Override
+        public void onChanged(@Nullable FirebaseDataSource source) {
+
+        }
+    };
 
     //State Observer
     private final Observer<LoadingState> mStateObserver = new Observer<LoadingState>() {
@@ -110,6 +120,32 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
     }
 
     /**
+     * If {@link #onLoadingStateChanged(LoadingState)} indicates error state, call this method
+     * to attempt to retry the most recent failure.
+     */
+    public void retry(){
+        FirebaseDataSource mFirebaseDataSource = mDataSource.getValue();
+        if (mFirebaseDataSource == null) {
+            Log.w(TAG, "Called retry() when FirebaseDataSource is null!");
+            return;
+        }
+
+        mFirebaseDataSource.retry();
+    }
+
+    /**
+     * To attempt to refresh the list. It will reload the list from beginning.
+     */
+    public void refresh(){
+        FirebaseDataSource mFirebaseDataSource = mDataSource.getValue();
+        if (mFirebaseDataSource == null) {
+            Log.w(TAG, "Called refresh() when FirebaseDataSource is null!");
+            return;
+        }
+        mFirebaseDataSource.invalidate();
+    }
+
+    /**
      * Start listening to paging / scrolling events and populating adapter data.
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
@@ -117,6 +153,7 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
         mPagedList.observeForever(mDataObserver);
         mLoadingState.observeForever(mStateObserver);
         mDatabaseError.observeForever(mErrorObserver);
+        mDataSource.observeForever(mDataSourceObserver);
     }
 
     /**
@@ -128,6 +165,7 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
         mPagedList.removeObserver(mDataObserver);
         mLoadingState.removeObserver(mStateObserver);
         mDatabaseError.removeObserver(mErrorObserver);
+        mDataSource.removeObserver(mDataSourceObserver);
     }
 
     @Override
@@ -162,4 +200,5 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
     public DatabaseReference getRef(int position){
        return getItem(position).getRef();
     }
+
 }

@@ -4,6 +4,7 @@ import android.arch.paging.PagedList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +33,8 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
     @BindView(R.id.paging_recycler)
     RecyclerView mRecycler;
 
-    @BindView(R.id.paging_loading)
-    ProgressBar mProgressBar;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private Query mQuery;
 
@@ -65,7 +65,7 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                 .build();
 
         //Initializing Adapter
-        FirebaseRecyclerPagingAdapter<Post, PostViewHolder> mAdapter =
+        final FirebaseRecyclerPagingAdapter<Post, PostViewHolder> mAdapter =
                 new FirebaseRecyclerPagingAdapter<Post, PostViewHolder>(options) {
                     @NonNull
                     @Override
@@ -88,33 +88,42 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                         switch (state) {
                             case LOADING_INITIAL:
                             case LOADING_MORE:
-                                mProgressBar.setVisibility(View.VISIBLE);
+                                mSwipeRefreshLayout.setRefreshing(true);
                                 break;
 
                             case LOADED:
-                                mProgressBar.setVisibility(View.GONE);
+                                mSwipeRefreshLayout.setRefreshing(false);
                                 break;
 
                             case FINISHED:
-                                mProgressBar.setVisibility(View.GONE);
+                                mSwipeRefreshLayout.setRefreshing(false);
                                 Toast.makeText(getApplicationContext(), getString(R.string.paging_finished_message), Toast.LENGTH_SHORT).show();
                                 break;
 
                             case ERROR:
-                                mProgressBar.setVisibility(View.GONE);
+                                retry();
                                 break;
                         }
                     }
 
                     @Override
                     protected void onError(DatabaseError databaseError) {
-                        mProgressBar.setVisibility(View.GONE);
+                        mSwipeRefreshLayout.setRefreshing(false);
                         Log.e(TAG, databaseError.getMessage());
                     }
                 };
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(mAdapter);
+
+        // Reload data on swipe
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Reload Data
+                mAdapter.refresh();
+            }
+        });
     }
 
     public static class Post {
