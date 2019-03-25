@@ -15,7 +15,7 @@ public class RecoverPasswordHandler extends AuthViewModelBase<String> {
         super(application);
     }
 
-    public void startReset(final String email) {
+    public void startReset(@NonNull final String email) {
         setResult(Resource.<String>forLoading());
         getAuth().sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
