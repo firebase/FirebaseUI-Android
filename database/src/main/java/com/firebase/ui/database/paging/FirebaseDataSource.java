@@ -128,8 +128,9 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
                     Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
 
                     //Skip First Item
-                    if (iterator.hasNext())
+                    if (iterator.hasNext()) {
                         iterator.next();
+                    }
 
                     while (iterator.hasNext()) {
                         DataSnapshot snapshot = iterator.next();

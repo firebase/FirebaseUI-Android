@@ -79,7 +79,7 @@ public final class DatabasePagingOptions<T> {
             return setQuery(query, config, new ClassSnapshotParser<>(modelClass));
         }
         /**
-         * Sets the Firestore query to paginate.
+         * Sets the Database query to paginate.
          *
          * @param query the FirebaseDatabase query. This query should only contain orderByKey(), orderByChild() and
          *              orderByValue() clauses. Any limit will cause an error such as limitToLast() or limitToFirst().
