@@ -5,6 +5,7 @@
     <string name="fui_continue">চালিয়ে যান</string>
     <string name="fui_tos_and_pp">চালিয়ে যাওয়ার অর্থ, আপনি আমাদের %1$s এবং %2$s-এর সাথে সম্মত।</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">নেটওয়ার্কে সমস্যা, ইন্টারনেট কানেকশন দেখে নিন।</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">ফোন নম্বরটি নিজে থেকে যাচাই করা হয়েছে</string>
     <string name="fui_resend_code">কোডটি আবার পাঠান</string>
     <string name="fui_verify_phone_number">ফোন নম্বর যাচাই করুন</string>
-    <string name="fui_continue_phone_login">চালিয়ে যান</string>
     <string name="fui_sms_terms_of_service">%1$s এ ট্যাপ করলে আপনি একটি এসএমএস পাঠাতে পারেন। মেসেজ ও ডেটার চার্জ প্রযোজ্য।</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” বোতামে ট্যাপ করার অর্থ, আপনি আমাদের %2$s এবং %3$s-এর সাথে সম্মত। একটি এসএমএস পাঠানো হতে পারে। মেসেজ এবং ডেটার উপরে প্রযোজ্য চার্জ লাগতে পারে।</string>
 </resources>

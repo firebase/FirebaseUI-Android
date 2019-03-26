@@ -5,6 +5,7 @@
     <string name="fui_continue">આગળ વધો</string>
     <string name="fui_tos_and_pp">ચાલુ રાખીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %1$s અને %2$sને સ્વીકારો છો.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">નેટવર્કમાં ભૂલ, તમારું ઇન્ટરનેટ કનેક્શન ચેક કરો.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">ફોન નંબર આપમેળે ચકાસવામાં આવ્યો</string>
     <string name="fui_resend_code">કોડ ફરીથી મોકલો</string>
     <string name="fui_verify_phone_number">ફોન નંબર ચકાસો</string>
-    <string name="fui_continue_phone_login">આગળ વધો</string>
     <string name="fui_sms_terms_of_service">“%1$s”ને ટૅપ કરવાથી, કદાચ એક SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ટૅપ કરીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %2$s અને %3$sને સ્વીકારો છો. SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
 </resources>

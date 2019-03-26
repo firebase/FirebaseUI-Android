@@ -3,7 +3,6 @@ package com.firebase.ui.auth;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -62,12 +61,7 @@ public class KickoffActivity extends InvisibleActivityBase {
                             return;
                         }
 
-                        if (isOffline()) {
-                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                                    new FirebaseUiException(ErrorCodes.NO_NETWORK)));
-                        } else {
-                            mKickstarter.start();
-                        }
+                        mKickstarter.start();
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -97,19 +91,5 @@ public class KickoffActivity extends InvisibleActivityBase {
         flowParameters.emailLink = null;
         setIntent(getIntent().putExtra(ExtraConstants.FLOW_PARAMS,
                 flowParameters));
-    }
-
-    /**
-     * Check if there is an active or soon-to-be-active network connection.
-     *
-     * @return true if there is no network connection, false otherwise.
-     */
-    private boolean isOffline() {
-        ConnectivityManager manager = (ConnectivityManager) getApplicationContext()
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return !(manager != null
-                && manager.getActiveNetworkInfo() != null
-                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
     }
 }

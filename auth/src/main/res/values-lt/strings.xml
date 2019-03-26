@@ -5,6 +5,7 @@
     <string name="fui_continue">Tęsti</string>
     <string name="fui_tos_and_pp">Tęsdami nurodote, kad sutinkate su %1$s ir %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Tinklo klaida: patikrinkite interneto ryšį.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
-    <string name="fui_continue_phone_login">Tęsti</string>
     <string name="fui_sms_terms_of_service">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s. Gali būti išsiųstas SMS pranešimas, taip pat – taikomi pranešimų ir duomenų įkainiai.</string>
 </resources>

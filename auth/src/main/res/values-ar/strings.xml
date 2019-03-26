@@ -5,6 +5,7 @@
     <string name="fui_continue">متابعة</string>
     <string name="fui_tos_and_pp">تشير المتابعة إلى موافقتك على %1$s و%2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">حدث خطأ في الشبكة، يُرجى التحقّق من اتصال الإنترنت.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
-    <string name="fui_continue_phone_login">متابعة</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على “%1$s” إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
 </resources>

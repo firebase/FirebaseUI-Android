@@ -109,15 +109,16 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.button_done
-                && mEmailFieldValidator.validate(mEmailEditText.getText())) {
+        if (view.getId() == R.id.button_done) {
             onDonePressed();
         }
     }
 
     @Override
     public void onDonePressed() {
-        mHandler.startReset(mEmailEditText.getText().toString());
+        if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
+            mHandler.startReset(mEmailEditText.getText().toString());
+        }
     }
 
     private void showEmailSentDialog(String email) {

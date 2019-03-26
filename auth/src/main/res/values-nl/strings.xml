@@ -5,6 +5,7 @@
     <string name="fui_continue">Doorgaan</string>
     <string name="fui_tos_and_pp">Als u doorgaat, geeft u aan dat u onze %1$s en ons %2$s accepteert.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Er is een netwerkfout opgetreden. Controleer uw internetverbinding.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">Telefoonnummer is automatisch geverifieerd</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
-    <string name="fui_continue_phone_login">Doorgaan</string>
     <string name="fui_sms_terms_of_service">Als u op “%1$s” tikt, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op “%1$s” tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
 </resources>

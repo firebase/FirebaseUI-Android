@@ -5,6 +5,7 @@
     <string name="fui_continue">ادامه</string>
     <string name="fui_tos_and_pp">درصورت ادامه‌دادن، موافقتتان را با %1$s و %2$s اعلام می‌کنید.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">خطای شبکه. اتصال اینترنت را بررسی کنید.</string>
     <string name="fui_idp_name_google">Google‏</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">شماره تلفن به‌طور خودکار به‌تأیید رسید</string>
     <string name="fui_resend_code">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number">تأیید شماره تلفن</string>
-    <string name="fui_continue_phone_login">ادامه</string>
     <string name="fui_sms_terms_of_service">با ضربه زدن روی «%1$s»، پیامکی برایتان ارسال می‌شود. هزینه پیام و داده اعمال می‌شود.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">درصورت ضربه‌زدن روی «%1$s»، موافقتتان را با %2$s و %3$s اعلام می‌کنید. پیامکی ارسال می‌شود. ممکن است هزینه داده و «پیام» محاسبه شود.</string>
 </resources>

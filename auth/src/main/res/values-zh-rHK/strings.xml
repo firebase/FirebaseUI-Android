@@ -5,6 +5,7 @@
     <string name="fui_continue">繼續</string>
     <string name="fui_tos_and_pp">選擇繼續即表示您同意接受我們的《%1$s》和《%2$s》。</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">網路發生錯誤，請檢查您的網際網路連線。</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">已自動驗證電話號碼</string>
     <string name="fui_resend_code">重新傳送驗證碼</string>
     <string name="fui_verify_phone_number">驗證電話號碼</string>
-    <string name="fui_continue_phone_login">繼續</string>
     <string name="fui_sms_terms_of_service">輕觸 [%1$s] 後，系統將會傳送一封簡訊。您可能需支付簡訊和數據傳輸費用。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">輕觸 [%1$s] 即表示您同意接受我們的《%2$s》和《%3$s》。系統將會傳送簡訊給您，不過您可能需要支付簡訊和數據傳輸費用。</string>
 </resources>

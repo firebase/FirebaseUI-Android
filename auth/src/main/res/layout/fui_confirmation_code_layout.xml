@@ -61,13 +61,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/submit_confirmation_code"
-                style="@style/FirebaseUI.VerifyPhoneButton"
-                android:layout_gravity="end"
-                android:text="@string/fui_continue_phone_login"
-                app:layout_constraintTop_toBottomOf="@+id/confirmation_code_layout" />
-
             <TextView
                 android:id="@+id/ticker"
                 style="@style/FirebaseUI.Text.T08"
@@ -80,7 +73,7 @@
                 android:textIsSelectable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/submit_confirmation_code"
+                app:layout_constraintTop_toBottomOf="@+id/confirmation_code_layout"
                 tools:text="Resend in 0:01" />
 
             <TextView

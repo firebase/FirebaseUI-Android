@@ -5,6 +5,7 @@
     <string name="fui_continue">המשך</string>
     <string name="fui_tos_and_pp">המשך התהליך יפורש כהסכמתך ל%1$s ול%2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">אירעה שגיאת רשת. יש לבדוק את החיבור לאינטרנט.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -45,7 +46,7 @@
     <string name="fui_title_recover_password_activity">שחזור הסיסמה</string>
     <string name="fui_title_confirm_recover_password">שלחנו לך אימייל</string>
     <string name="fui_password_recovery_body">אנחנו יכולים לשלוח לכתובת הזו הוראות לאיפוס הסיסמה.</string>
-    <string name="fui_button_text_send">שלח</string>
+    <string name="fui_button_text_send">שליחה</string>
     <string name="fui_confirm_recovery_body">כדי לשחזר את הסיסמה, עליך לפעול לפי ההוראות ששלחנו לכתובת %1$s.</string>
     <string name="fui_progress_dialog_sending">מתבצעת שליחה…</string>
     <string name="fui_error_email_does_not_exist">אין חשבון המשויך לכתובת האימייל הזו</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">מספר הטלפון אומת באופן אוטומטי</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
-    <string name="fui_continue_phone_login">המשך</string>
     <string name="fui_sms_terms_of_service">הקשה על “%1$s” עשויה לגרום לשליחה של הודעת SMS. ייתכן שיחולו תעריפי הודעות והעברת נתונים.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">הקשה על “%1$s”, תפורש כהסכמתך ל%2$s ול%3$s. ייתכן שתישלח הודעת SMS. ייתכנו חיובים בגין שליחת הודעות ושימוש בנתונים.</string>
 </resources>

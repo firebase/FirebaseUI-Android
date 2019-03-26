@@ -5,6 +5,7 @@
     <string name="fui_continue">Continua</string>
     <string name="fui_tos_and_pp">En continuar, acceptes les nostres %1$s i la nostra %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error de xarxa; comprova la connexió a Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -83,7 +84,6 @@
     <string name="fui_auto_verified">El número de telèfon s\'ha verificat automàticament</string>
     <string name="fui_resend_code">Torna a enviar el codi</string>
     <string name="fui_verify_phone_number">Verifica el número de telèfon</string>
-    <string name="fui_continue_phone_login">Continua</string>
     <string name="fui_sms_terms_of_service">En tocar %1$s, és possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En tocar %1$s, acceptes les nostres %2$s i la nostra %3$s. És possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
 </resources>
