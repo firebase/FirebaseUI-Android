@@ -16,6 +16,6 @@
         android:paddingLeft="16dp"
         android:paddingTop="8dp"
         android:paddingRight="16dp"
-        tools:listitem="@layout/item_post" />
+        tools:listitem="@layout/item_item" />
 
 </android.support.v4.widget.SwipeRefreshLayout>

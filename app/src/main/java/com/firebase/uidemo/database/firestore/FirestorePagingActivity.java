@@ -118,7 +118,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_firestore_paging, menu);
+        getMenuInflater().inflate(R.menu.menu_paging, menu);
         return true;
     }
 
