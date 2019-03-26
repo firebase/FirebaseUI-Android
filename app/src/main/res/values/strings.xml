@@ -120,8 +120,6 @@
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
     <string name="signing_in">Signing in…</string>
     <string name="signed_in">Signed In</string>
-    <string name="post_text_title">Title</string>
-    <string name="post_text_body">Body</string>
     <string name="anonymous_auth_failed_msg">
         Anonymous authentication failed, various components of the demo will not work.
         Make sure your device is online and that Anonymous Auth is configured in your Firebase project
