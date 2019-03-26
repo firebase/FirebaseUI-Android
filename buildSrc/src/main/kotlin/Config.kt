@@ -1,5 +1,5 @@
 object Config {
-    const val version = "4.3.2"
+    const val version = "4.4.0-SNAPSHOT"
     val submodules = listOf("auth", "auth-github", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.2.61"
