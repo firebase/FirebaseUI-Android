@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,6 +24,8 @@ import com.firebase.uidemo.R;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +40,7 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
+    private FirebaseDatabase mDatabase;
     private Query mQuery;
 
     @Override
@@ -44,7 +49,8 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_database_paging);
         ButterKnife.bind(this);
 
-        mQuery = FirebaseDatabase.getInstance().getReference().child("posts");
+        mDatabase = FirebaseDatabase.getInstance();
+        mQuery = mDatabase.getReference().child("items");
 
         setUpAdapter();
     }
@@ -59,27 +65,27 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                 .build();
 
         //Initialize Firebase Paging Options
-        DatabasePagingOptions<Post> options = new DatabasePagingOptions.Builder<Post>()
+        DatabasePagingOptions<Item> options = new DatabasePagingOptions.Builder<Item>()
                 .setLifecycleOwner(this)
-                .setQuery(mQuery, config, Post.class)
+                .setQuery(mQuery, config, Item.class)
                 .build();
 
         //Initializing Adapter
-        final FirebaseRecyclerPagingAdapter<Post, PostViewHolder> mAdapter =
-                new FirebaseRecyclerPagingAdapter<Post, PostViewHolder>(options) {
+        final FirebaseRecyclerPagingAdapter<Item, ItemViewHolder> mAdapter =
+                new FirebaseRecyclerPagingAdapter<Item, ItemViewHolder>(options) {
                     @NonNull
                     @Override
-                    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                              int viewType) {
                         View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_post, parent, false);
-                        return new PostViewHolder(view);
+                                .inflate(R.layout.item_item, parent, false);
+                        return new ItemViewHolder(view);
                     }
 
                     @Override
-                    protected void onBindViewHolder(@NonNull PostViewHolder holder,
+                    protected void onBindViewHolder(@NonNull ItemViewHolder holder,
                                                     int position,
-                                                    @NonNull Post model) {
+                                                    @NonNull Item model) {
                         holder.bind(model);
                     }
 
@@ -90,18 +96,15 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                             case LOADING_MORE:
                                 mSwipeRefreshLayout.setRefreshing(true);
                                 break;
-
                             case LOADED:
                                 mSwipeRefreshLayout.setRefreshing(false);
                                 break;
-
                             case FINISHED:
                                 mSwipeRefreshLayout.setRefreshing(false);
-                                Toast.makeText(getApplicationContext(), getString(R.string.paging_finished_message), Toast.LENGTH_SHORT).show();
+                                showToast(getString(R.string.paging_finished_message));
                                 break;
-
                             case ERROR:
-                                retry();
+                                showToast(getString(R.string.unknown_error));
                                 break;
                         }
                     }
@@ -109,7 +112,7 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                     @Override
                     protected void onError(DatabaseError databaseError) {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        Log.e(TAG, databaseError.getMessage());
+                        Log.e(TAG, databaseError.getDetails(), databaseError.toException());
                     }
                 };
 
@@ -126,35 +129,71 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
         });
     }
 
-    public static class Post {
 
-        @Nullable public String title;
-        @Nullable public String body;
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_paging, menu);
+        return true;
+    }
 
-        public Post(){}
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.item_add_data) {
+            showToast("Adding data...");
+            createItems();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        public Post(@Nullable String title, @Nullable String body) {
-            this.title = title;
-            this.body = body;
+    @NonNull
+    private void createItems() {
+        for (int i = 0; i < 250; i++) {
+            String title = "Item " + i;
+
+            String id = String.format(Locale.getDefault(), "item_%03d", i);
+            Item item = new Item(title, i);
+
+            mDatabase.getReference("items").child(id).setValue(item);
         }
     }
 
-    public static class PostViewHolder extends RecyclerView.ViewHolder {
+    private void showToast(@NonNull String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
-        @BindView(R.id.textViewTitle)
-        TextView mTitleView;
 
-        @BindView(R.id.textViewBody)
-        TextView mBodyView;
+    public static class Item {
 
-        PostViewHolder(@NonNull View itemView) {
+        @Nullable
+        public String text;
+        public int value;
+
+        public Item(){}
+
+        public Item(@Nullable String text, int value) {
+            this.text = text;
+            this.value = value;
+        }
+    }
+
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+
+
+        @BindView(R.id.item_text)
+        TextView mTextView;
+
+        @BindView(R.id.item_value)
+        TextView mValueView;
+
+        ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(@NonNull Post post) {
-            mTitleView.setText(post.title);
-            mBodyView.setText(post.body);
+        void bind(@NonNull Item item) {
+            mTextView.setText(item.text);
+            mValueView.setText(String.valueOf(item.value));
         }
     }
 

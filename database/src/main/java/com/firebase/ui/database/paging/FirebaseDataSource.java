@@ -34,9 +34,9 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
     private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
     private final MutableLiveData<DatabaseError> mError = new MutableLiveData<>();
 
-    private static final String STATUS_DATABASE_NOT_FOUND = "DATABASE NOT FOUND";
-    private static final String MESSAGE_DATABASE_NOT_FOUND = "Database not found at given child path !";
-    private static final String DETAILS_DATABASE_NOT_FOUND = "Database Children Not Found in the specified child path. Please specify correct child path/reference";
+    private static final String STATUS_DATABASE_NOT_FOUND = "DATA_NOT_FOUND";
+    private static final String MESSAGE_DATABASE_NOT_FOUND = "Data not found at given child path!";
+    private static final String DETAILS_DATABASE_NOT_FOUND = "No data was returned for the given query: ";
 
     private Runnable mRetryRunnable;
 
@@ -214,10 +214,11 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
     }
 
     private void setDatabaseNotFoundError(){
+        String details = DETAILS_DATABASE_NOT_FOUND + mQuery.toString();
         mError.postValue(DatabaseError.fromStatus(
                 STATUS_DATABASE_NOT_FOUND,
-                DETAILS_DATABASE_NOT_FOUND,
-                MESSAGE_DATABASE_NOT_FOUND));
+                MESSAGE_DATABASE_NOT_FOUND,
+                details));
 
         mLoadingState.postValue(LoadingState.ERROR);
     }
