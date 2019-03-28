@@ -34,7 +34,10 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     private final LiveData<LoadingState> mLoadingState;
     private final LiveData<FirestoreDataSource> mDataSource;
 
-
+    /*
+        LiveData created via Transformation do not have a value until an Observer is attached.  
+        We attach this empty observer so that our getValue() calls return non-null later.
+    */
     private final Observer<FirestoreDataSource> mDataSourceObserver = new Observer<FirestoreDataSource>() {
         @Override
         public void onChanged(@Nullable FirestoreDataSource source) {
