@@ -37,6 +37,7 @@
     <string name="fui_required_field" translation_description="Inline error for required field">You can\'t leave this empty.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Enter your email address to continue</string>
+    <string name="fui_missing_first_and_last_name" translation_description="Inline error for empty email address in input field">Please enter a first and last name.</string>
     <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts…</string>
 
     <!-- Email sign up -->
