@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.firebase.uidemo.database.firestore.FirestorePagingActivity">
-
-    <ProgressBar
-        android:id="@+id/paging_loading"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-6dp"
-        android:background="@android:color/transparent"
-        android:indeterminate="true"
-        tools:ignore="NegativeMargin" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/paging_recycler"
@@ -27,4 +18,4 @@
         android:clipToPadding="false"
         tools:listitem="@layout/item_item" />
 
-</RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -35,7 +35,10 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
     private final LiveData<FirebaseDataSource> mDataSource;
 
 
-    //Data Source Observer
+    /*
+        LiveData created via Transformation do not have a value until an Observer is attached.  
+        We attach this empty observer so that our getValue() calls return non-null later.
+    */
     private final Observer<FirebaseDataSource> mDataSourceObserver = new Observer<FirebaseDataSource>() {
         @Override
         public void onChanged(@Nullable FirebaseDataSource source) {

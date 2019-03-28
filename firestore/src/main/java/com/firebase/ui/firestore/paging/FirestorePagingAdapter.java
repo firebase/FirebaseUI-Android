@@ -34,6 +34,17 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     private final LiveData<LoadingState> mLoadingState;
     private final LiveData<FirestoreDataSource> mDataSource;
 
+    /*
+        LiveData created via Transformation do not have a value until an Observer is attached.  
+        We attach this empty observer so that our getValue() calls return non-null later.
+    */
+    private final Observer<FirestoreDataSource> mDataSourceObserver = new Observer<FirestoreDataSource>() {
+        @Override
+        public void onChanged(@Nullable FirestoreDataSource source) {
+
+        }
+    };
+
     private final Observer<LoadingState> mStateObserver =
             new Observer<LoadingState>() {
                 @Override
@@ -105,12 +116,25 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     }
 
     /**
+     * To attempt to refresh the list. It will reload the list from beginning.
+     */
+    public void refresh(){
+        FirestoreDataSource mFirebaseDataSource = mDataSource.getValue();
+        if (mFirebaseDataSource == null) {
+            Log.w(TAG, "Called refresh() when FirestoreDataSource is null!");
+            return;
+        }
+        mFirebaseDataSource.invalidate();
+    }
+
+    /**
      * Start listening to paging / scrolling events and populating adapter data.
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         mSnapshots.observeForever(mDataObserver);
         mLoadingState.observeForever(mStateObserver);
+        mDataSource.observeForever(mDataSourceObserver);
     }
 
     /**
@@ -121,6 +145,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public void stopListening() {
         mSnapshots.removeObserver(mDataObserver);
         mLoadingState.removeObserver(mStateObserver);
+        mDataSource.removeObserver(mDataSourceObserver);
     }
 
     @Override

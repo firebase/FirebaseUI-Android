@@ -4,6 +4,7 @@ import android.arch.paging.PagedList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,8 +41,8 @@ public class FirestorePagingActivity extends AppCompatActivity {
     @BindView(R.id.paging_recycler)
     RecyclerView mRecycler;
 
-    @BindView(R.id.paging_loading)
-    ProgressBar mProgressBar;
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private FirebaseFirestore mFirestore;
     private CollectionReference mItemsCollection;
@@ -72,7 +73,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
                 .setQuery(baseQuery, config, Item.class)
                 .build();
 
-        FirestorePagingAdapter<Item, ItemViewHolder> adapter =
+        final FirestorePagingAdapter<Item, ItemViewHolder> adapter =
                 new FirestorePagingAdapter<Item, ItemViewHolder>(options) {
                     @NonNull
                     @Override
@@ -95,13 +96,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
                         switch (state) {
                             case LOADING_INITIAL:
                             case LOADING_MORE:
-                                mProgressBar.setVisibility(View.VISIBLE);
+                                mSwipeRefreshLayout.setRefreshing(true);
                                 break;
                             case LOADED:
-                                mProgressBar.setVisibility(View.GONE);
+                                mSwipeRefreshLayout.setRefreshing(false);
                                 break;
                             case FINISHED:
-                                mProgressBar.setVisibility(View.GONE);
+                                mSwipeRefreshLayout.setRefreshing(false);
                                 showToast("Reached end of data set.");
                                 break;
                             case ERROR:
@@ -114,6 +115,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(adapter);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.refresh();
+            }
+        });
     }
 
     @Override
