@@ -69,7 +69,7 @@ public class WelcomeBackPasswordPromptTest {
                 welcomeBack.findViewById(R.id.password_layout);
 
         assertEquals(
-                welcomeBack.getString(R.string.fui_required_field),
+                welcomeBack.getString(R.string.fui_error_invalid_password),
                 passwordLayout.getError().toString());
 
         // should block and not start a new activity
