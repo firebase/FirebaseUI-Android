@@ -111,6 +111,12 @@ public class FirestorePagingActivity extends AppCompatActivity {
                                 break;
                         }
                     }
+
+                    @Override
+                    protected void onError(@NonNull Exception e) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 };
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
