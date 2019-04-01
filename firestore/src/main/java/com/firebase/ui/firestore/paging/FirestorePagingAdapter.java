@@ -32,6 +32,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     private final LiveData<PagedList<DocumentSnapshot>> mSnapshots;
     private final LiveData<LoadingState> mLoadingState;
+    private final LiveData<Exception> mException;
     private final LiveData<FirestoreDataSource> mDataSource;
 
     /*
@@ -42,6 +43,14 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         @Override
         public void onChanged(@Nullable FirestoreDataSource source) {
 
+        }
+    };
+
+    //Error observer to determine last occurred Error
+    private final Observer<Exception> mErrorObserver = new Observer<Exception>() {
+        @Override
+        public void onChanged(@Nullable Exception e) {
+            onError(e);
         }
     };
 
@@ -94,6 +103,15 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                     }
                 });
 
+        mException = Transformations.switchMap(mSnapshots,
+                new Function<PagedList<DocumentSnapshot>, LiveData<Exception>>() {
+                    @Override
+                    public LiveData<Exception> apply(PagedList<DocumentSnapshot> input) {
+                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
+                        return dataSource.getLastError();
+                    }
+                });
+
         mParser = options.getParser();
 
         if (options.getOwner() != null) {
@@ -135,6 +153,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         mSnapshots.observeForever(mDataObserver);
         mLoadingState.observeForever(mStateObserver);
         mDataSource.observeForever(mDataSourceObserver);
+        mException.observeForever(mErrorObserver);
     }
 
     /**
@@ -146,6 +165,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         mSnapshots.removeObserver(mDataObserver);
         mLoadingState.removeObserver(mStateObserver);
         mDataSource.removeObserver(mDataSourceObserver);
+        mException.removeObserver(mErrorObserver);
     }
 
     @Override
@@ -167,6 +187,15 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * {@link #retry()} is called.
      */
     protected void onLoadingStateChanged(@NonNull LoadingState state) {
+        // For overriding
+    }
+
+    /**
+     * Called whenever the {@link Exception} is caught.
+     *
+     * When {@link Exception} is caught the adapter will stop loading any data
+     */
+    protected void onError(@NonNull Exception e) {
         // For overriding
     }
 }
