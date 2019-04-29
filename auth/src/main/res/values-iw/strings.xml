@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">אירעה שגיאת רשת. יש לבדוק את החיבור לאינטרנט.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">טלפון</string>
     <string name="fui_idp_name_email">אימייל</string>
     <string name="fui_sign_in_with_google">כניסה באמצעות Google</string>
     <string name="fui_sign_in_with_facebook">כניסה באמצעות Facebook</string>
-    <string name="fui_sign_in_with_twitter">כניסה באמצעות Twitter</string>
     <string name="fui_sign_in_with_github">כניסה באמצעות GitHub</string>
     <string name="fui_sign_in_with_email">כניסה באמצעות אימייל</string>
     <string name="fui_sign_in_with_phone">כניסה באמצעות הטלפון</string>

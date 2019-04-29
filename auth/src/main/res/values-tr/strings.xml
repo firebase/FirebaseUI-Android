@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Ağ hatası, internet bağlantınızı kontrol edin.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telefon</string>
     <string name="fui_idp_name_email">E-posta</string>
     <string name="fui_sign_in_with_google">Google ile oturum aç</string>
     <string name="fui_sign_in_with_facebook">Facebook ile oturum aç</string>
-    <string name="fui_sign_in_with_twitter">Twitter ile oturum aç</string>
     <string name="fui_sign_in_with_github">GitHub ile oturum aç</string>
     <string name="fui_sign_in_with_email">E-posta ile oturum aç</string>
     <string name="fui_sign_in_with_phone">Telefonla oturum aç</string>

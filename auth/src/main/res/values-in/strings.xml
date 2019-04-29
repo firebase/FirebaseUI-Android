@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error jaringan, periksa koneksi internet Anda.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Ponsel</string>
     <string name="fui_idp_name_email">Email</string>
     <string name="fui_sign_in_with_google">Login dengan Google</string>
     <string name="fui_sign_in_with_facebook">Login dengan Facebook</string>
-    <string name="fui_sign_in_with_twitter">Login dengan Twitter</string>
     <string name="fui_sign_in_with_github">Login dengan GitHub</string>
     <string name="fui_sign_in_with_email">Login dengan email</string>
     <string name="fui_sign_in_with_phone">Login dengan nomor telepon</string>

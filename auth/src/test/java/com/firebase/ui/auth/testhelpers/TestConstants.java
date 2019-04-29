@@ -21,7 +21,6 @@ public class TestConstants {
     public static final String PASSWORD = "hunter2";
     public static final String NAME = "Test Testerson";
     public static final String TOKEN = "token";
-    public static final String SECRET = "secret";
     public static final String UID = "uid";
     public static final String SESSION_ID = "sessionId";
     public static final String TOS_URL = "http://www.google.com";

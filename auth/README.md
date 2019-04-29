@@ -48,7 +48,6 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [OAuth scopes](#oauth-scope-customization)
    1. [Google](#google-1)
    1. [Facebook](#facebook-1)
-   1. [Twitter](#twitter-1)
    1. [GitHub](#github-1)
 
 ## Demo
@@ -74,10 +73,6 @@ dependencies {
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation 'com.facebook.android:facebook-login:4.x'
-
-    // Required only if Twitter login support is required
-    // Find the latest Twitter SDK releases here: https://goo.gl/E5wZvQ
-    implementation("com.twitter.sdk.android:twitter-core:3.x@aar") { transitive = true }
 }
 ```
 
@@ -101,7 +96,7 @@ for more information.
 
 ### Identity provider configuration
 
-In order to use either Google, Facebook or Twitter accounts with your app, ensure that
+In order to use either Google, or Facebook accounts with your app, ensure that
 these authentication methods are first configured in the Firebase console.
 
 #### Google
@@ -123,33 +118,6 @@ the [Facebook developer dashboard](https://developers.facebook.com):
     <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
     <string name="facebook_login_protocol_scheme" translatable="false">fbAPP_ID</string>
 </resources>
-```
-
-#### Twitter
-
-If support for Twitter Sign-in is also required, define the resource strings
-`twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
-Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
-
-```xml
-<resources>
-  <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
-  <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
-</resources>
-```
-
-In addition, you must enable the "Request email addresses from users" permission
-in the "Permissions" tab of your Twitter app.
-
-In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
-
-```groovy
-allprojects {
-    repositories {
-        // ...
-        maven { url 'https://maven.fabric.io/public' }
-    }
-}
 ```
 
 #### GitHub
@@ -329,7 +297,6 @@ startActivityForResult(
                 .setAvailableProviders(Arrays.asList(
                         new AuthUI.IdpConfig.GoogleBuilder().build(),
                         new AuthUI.IdpConfig.FacebookBuilder().build(),
-                        new AuthUI.IdpConfig.TwitterBuilder().build(),
                         new AuthUI.IdpConfig.GitHubBuilder().build(),
                         new AuthUI.IdpConfig.EmailBuilder().build(),
                         new AuthUI.IdpConfig.PhoneBuilder().build(),
@@ -595,8 +562,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
 }
 ```
-
-Twitter also returns an AuthToken Secret which can be accessed with `idpResponse.getIdpSecret()`.
 
 #### User metadata
 
@@ -955,10 +920,6 @@ startActivityForResult(
                 .build(),
         RC_SIGN_IN);
 ```
-
-### Twitter
-
-Twitter permissions can only be configured through [Twitter's developer console](https://apps.twitter.com/).
 
 ### GitHub
 

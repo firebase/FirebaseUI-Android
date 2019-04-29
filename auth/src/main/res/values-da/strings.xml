@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Netværksfejl. Tjek din internetforbindelse.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telefon</string>
     <string name="fui_idp_name_email">Mail</string>
     <string name="fui_sign_in_with_google">Log ind med Google</string>
     <string name="fui_sign_in_with_facebook">Log ind med Facebook</string>
-    <string name="fui_sign_in_with_twitter">Log ind med Twitter</string>
     <string name="fui_sign_in_with_github">Log ind med GitHub</string>
     <string name="fui_sign_in_with_email">Log ind med mail</string>
     <string name="fui_sign_in_with_phone">Log ind med telefon</string>

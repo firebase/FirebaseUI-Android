@@ -644,7 +644,6 @@ public class EmailLinkSignInHandlerTest {
 
         return new IdpResponse.Builder(user)
                 .setToken(TestConstants.TOKEN)
-                .setSecret(TestConstants.SECRET)
                 .build();
     }
 

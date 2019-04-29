@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">网络错误，请检查您的互联网连接。</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">电话</string>
     <string name="fui_idp_name_email">电子邮件</string>
     <string name="fui_sign_in_with_google">使用 Google 帐号登录</string>
     <string name="fui_sign_in_with_facebook">使用 Facebook 帐号登录</string>
-    <string name="fui_sign_in_with_twitter">使用 Twitter 帐号登录</string>
     <string name="fui_sign_in_with_github">使用 GitHub 帐号登录</string>
     <string name="fui_sign_in_with_email">使用电子邮件地址登录</string>
     <string name="fui_sign_in_with_phone">使用电话号码登录</string>

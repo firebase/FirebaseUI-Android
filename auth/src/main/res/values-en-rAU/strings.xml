@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Network error, check your Internet connection.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Phone</string>
     <string name="fui_idp_name_email">Email</string>
     <string name="fui_sign_in_with_google">Sign in with Google</string>
     <string name="fui_sign_in_with_facebook">Sign in with Facebook</string>
-    <string name="fui_sign_in_with_twitter">Sign in with Twitter</string>
     <string name="fui_sign_in_with_github">Sign in with GitHub</string>
     <string name="fui_sign_in_with_email">Sign in with email</string>
     <string name="fui_sign_in_with_phone">Sign in with phone</string>

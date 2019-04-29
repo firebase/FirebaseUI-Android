@@ -28,15 +28,6 @@ public final class ConfigurationUtils {
                 context.getString(R.string.facebook_application_id));
     }
 
-    public static boolean isTwitterMisconfigured(@NonNull Context context) {
-        List<String> twitterConfigs = Arrays.asList(
-                context.getString(R.string.twitter_consumer_key),
-                context.getString(R.string.twitter_consumer_secret)
-        );
-
-        return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
-    }
-
     public static boolean isGitHubMisconfigured(@NonNull Context context) {
         List<String> gitHubConfigs = Arrays.asList(
                 context.getString(R.string.firebase_web_host),
@@ -57,10 +48,6 @@ public final class ConfigurationUtils {
 
         if (!isFacebookMisconfigured(context)) {
             providers.add(new AuthUI.IdpConfig.FacebookBuilder().build());
-        }
-
-        if (!isTwitterMisconfigured(context)) {
-            providers.add(new AuthUI.IdpConfig.TwitterBuilder().build());
         }
 
         if (!isGitHubMisconfigured(context)) {

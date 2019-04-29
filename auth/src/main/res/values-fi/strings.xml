@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Verkkovirhe, tarkista internetyhteys.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Puhelin</string>
     <string name="fui_idp_name_email">Sähköposti</string>
     <string name="fui_sign_in_with_google">Kirjaudu Google-tilillä</string>
     <string name="fui_sign_in_with_facebook">Kirjaudu Facebook-tilillä</string>
-    <string name="fui_sign_in_with_twitter">Kirjaudu Twitter-tilillä</string>
     <string name="fui_sign_in_with_github">Kirjaudu GitHub-tilillä</string>
     <string name="fui_sign_in_with_email">Kirjaudu sähköpostilla</string>
     <string name="fui_sign_in_with_phone">Kirjaudu puhelimella</string>

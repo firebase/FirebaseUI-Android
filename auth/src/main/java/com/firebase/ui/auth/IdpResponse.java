@@ -27,7 +27,6 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,7 +41,6 @@ public class IdpResponse implements Parcelable {
         public IdpResponse createFromParcel(Parcel in) {
             return new IdpResponse(
                     in.<User>readParcelable(User.class.getClassLoader()),
-                    in.readString(),
                     in.readString(),
                     in.readInt() == 1,
                     (FirebaseUiException) in.readSerializable(),
@@ -60,37 +58,33 @@ public class IdpResponse implements Parcelable {
     private final AuthCredential mPendingCredential;
 
     private final String mToken;
-    private final String mSecret;
     private final boolean mIsNewUser;
 
     private final FirebaseUiException mException;
 
     private IdpResponse(@NonNull FirebaseUiException e) {
-        this(null, null, null, false, e, null);
+        this(null, null, false, e, null);
     }
 
     private IdpResponse(
             @NonNull User user,
             @Nullable String token,
-            @Nullable String secret,
             boolean isNewUser) {
-        this(user, token, secret, isNewUser, null, null);
+        this(user, token, isNewUser, null, null);
     }
 
     private IdpResponse(AuthCredential credential, FirebaseUiException e) {
-        this(null, null, null, false, e, credential);
+        this(null, null, false, e, credential);
     }
 
     private IdpResponse(
             User user,
             String token,
-            String secret,
             boolean isNewUser,
             FirebaseUiException e,
             AuthCredential credential) {
         mUser = user;
         mToken = token;
-        mSecret = secret;
         mIsNewUser = isNewUser;
         mException = e;
         mPendingCredential = credential;
@@ -201,14 +195,6 @@ public class IdpResponse implements Parcelable {
     }
 
     /**
-     * Twitter only. Return the token secret received as a result of logging in with Twitter.
-     */
-    @Nullable
-    public String getIdpSecret() {
-        return mSecret;
-    }
-
-    /**
      * Get the error for a failed sign in.
      */
     @Nullable
@@ -230,7 +216,6 @@ public class IdpResponse implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
-        dest.writeString(mSecret);
         dest.writeInt(mIsNewUser ? 1 : 0);
 
         ObjectOutputStream oos = null;
@@ -270,7 +255,6 @@ public class IdpResponse implements Parcelable {
 
         return (mUser == null ? response.mUser == null : mUser.equals(response.mUser))
                 && (mToken == null ? response.mToken == null : mToken.equals(response.mToken))
-                && (mSecret == null ? response.mSecret == null : mSecret.equals(response.mSecret))
                 && (mIsNewUser == response.mIsNewUser)
                 && (mException == null ? response.mException == null : mException.equals(response
                 .mException))
@@ -282,7 +266,6 @@ public class IdpResponse implements Parcelable {
     public int hashCode() {
         int result = mUser == null ? 0 : mUser.hashCode();
         result = 31 * result + (mToken == null ? 0 : mToken.hashCode());
-        result = 31 * result + (mSecret == null ? 0 : mSecret.hashCode());
         result = 31 * result + (mIsNewUser ? 1 : 0);
         result = 31 * result + (mException == null ? 0 : mException.hashCode());
         result = 31 * result + (mPendingCredential == null ? 0 : mPendingCredential.getProvider()
@@ -295,7 +278,6 @@ public class IdpResponse implements Parcelable {
         return "IdpResponse{" +
                 "mUser=" + mUser +
                 ", mToken='" + mToken + '\'' +
-                ", mSecret='" + mSecret + '\'' +
                 ", mIsNewUser='" + mIsNewUser + '\'' +
                 ", mException=" + mException +
                 ", mPendingCredential=" + mPendingCredential +
@@ -308,7 +290,6 @@ public class IdpResponse implements Parcelable {
         private final AuthCredential mPendingCredential;
 
         private String mToken;
-        private String mSecret;
         private boolean mIsNewUser;
 
         public Builder(@NonNull User user) {
@@ -324,7 +305,6 @@ public class IdpResponse implements Parcelable {
         public Builder(@NonNull IdpResponse response) {
             mUser = response.mUser;
             mToken = response.mToken;
-            mSecret = response.mSecret;
             mIsNewUser = response.mIsNewUser;
             mPendingCredential = response.mPendingCredential;
         }
@@ -336,11 +316,6 @@ public class IdpResponse implements Parcelable {
 
         public Builder setToken(String token) {
             mToken = token;
-            return this;
-        }
-
-        public Builder setSecret(String secret) {
-            mSecret = secret;
             return this;
         }
 
@@ -358,12 +333,7 @@ public class IdpResponse implements Parcelable {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
-            if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
-                    && TextUtils.isEmpty(mSecret)) {
-                throw new IllegalStateException(
-                        "Secret cannot be null when using the Twitter provider.");
-            }
-            return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
+            return new IdpResponse(mUser, mToken, mIsNewUser);
         }
     }
 }

@@ -80,7 +80,6 @@ public class WelcomeBackPasswordHandlerTest {
 
         IdpResponse response = new IdpResponse.Builder(user)
                 .setToken(TestConstants.TOKEN)
-                .setSecret(TestConstants.SECRET)
                 .build();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(TestConstants.TOKEN);
@@ -184,7 +183,6 @@ public class WelcomeBackPasswordHandlerTest {
 
         IdpResponse response = new IdpResponse.Builder(user)
                 .setToken(TestConstants.TOKEN)
-                .setSecret(TestConstants.SECRET)
                 .build();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(TestConstants.TOKEN);

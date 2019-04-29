@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">เกิดข้อผิดพลาดของเครือข่าย โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">โทรศัพท์</string>
     <string name="fui_idp_name_email">อีเมล</string>
     <string name="fui_sign_in_with_google">ลงชื่อเข้าใช้ด้วย Google</string>
     <string name="fui_sign_in_with_facebook">ลงชื่อเข้าใช้ด้วย Facebook</string>
-    <string name="fui_sign_in_with_twitter">ลงชื่อเข้าใช้ด้วย Twitter</string>
     <string name="fui_sign_in_with_github">ลงชื่อเข้าใช้ด้วย GitHub</string>
     <string name="fui_sign_in_with_email">ลงชื่อเข้าใช้ด้วยอีเมล</string>
     <string name="fui_sign_in_with_phone">ลงชื่อเข้าใช้ด้วยโทรศัพท์</string>

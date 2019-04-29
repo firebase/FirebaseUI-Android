@@ -45,7 +45,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
@@ -177,9 +176,6 @@ public class SignedInActivity extends AppCompatActivity {
                     case FacebookAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_facebook));
                         break;
-                    case TwitterAuthProvider.PROVIDER_ID:
-                        providers.add(getString(R.string.providers_twitter));
-                        break;
                     case GithubAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_github));
                         break;
@@ -210,7 +206,6 @@ public class SignedInActivity extends AppCompatActivity {
         String secret = null;
         if (response != null) {
             token = response.getIdpToken();
-            secret = response.getIdpSecret();
         }
 
         View idpTokenLayout = findViewById(R.id.idp_token_layout);

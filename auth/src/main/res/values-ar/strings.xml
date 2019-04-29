@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">حدث خطأ في الشبكة، يُرجى التحقّق من اتصال الإنترنت.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">الهاتف</string>
     <string name="fui_idp_name_email">البريد الإلكتروني</string>
     <string name="fui_sign_in_with_google">تسجيل الدخول عبر Google</string>
     <string name="fui_sign_in_with_facebook">تسجيل الدخول عبر Facebook</string>
-    <string name="fui_sign_in_with_twitter">تسجيل الدخول عبر Twitter</string>
     <string name="fui_sign_in_with_github">تسجيل الدخول باستخدام GitHub</string>
     <string name="fui_sign_in_with_email">تسجيل الدخول عبر البريد الإلكتروني</string>
     <string name="fui_sign_in_with_phone">تسجيل الدخول عبر رقم الهاتف</string>

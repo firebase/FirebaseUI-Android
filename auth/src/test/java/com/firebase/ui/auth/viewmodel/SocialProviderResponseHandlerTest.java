@@ -292,7 +292,6 @@ public class SocialProviderResponseHandlerTest {
         IdpResponse response = new IdpResponse.Builder(new User.Builder(
                 FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build())
                 .setToken(TestConstants.TOKEN)
-                .setSecret(TestConstants.SECRET)
                 .build();
 
         mHandler.startSignIn(response);

@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">नेटवर्क एरर, तुमचे इंटरनेट कनेक्शन तपासा.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">Github</string>
     <string name="fui_idp_name_phone">फोन</string>
     <string name="fui_idp_name_email">ईमेल</string>
     <string name="fui_sign_in_with_google">Googleने साइन इन करा</string>
     <string name="fui_sign_in_with_facebook">Facebookने साइन इन करा</string>
-    <string name="fui_sign_in_with_twitter">Twitterने साइन इन करा</string>
     <string name="fui_sign_in_with_github">GitHub सह साइन इन करा</string>
     <string name="fui_sign_in_with_email">ईमेलने साइन इन करा</string>
     <string name="fui_sign_in_with_phone">फोनने साइन इन करा</string>

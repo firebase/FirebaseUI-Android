@@ -45,7 +45,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,7 +152,6 @@ public class SignInKickstarter extends SignInViewModelBase {
                 break;
             case GoogleAuthProvider.PROVIDER_ID:
             case FacebookAuthProvider.PROVIDER_ID:
-            case TwitterAuthProvider.PROVIDER_ID:
             case GithubAuthProvider.PROVIDER_ID:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         SingleSignInActivity.createIntent(

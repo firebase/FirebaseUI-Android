@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Erro de rede, confira sua conexão de Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telefone</string>
     <string name="fui_idp_name_email">E-mail</string>
     <string name="fui_sign_in_with_google">Fazer login com o Google</string>
     <string name="fui_sign_in_with_facebook">Fazer login com o Facebook</string>
-    <string name="fui_sign_in_with_twitter">Fazer login com o Twitter</string>
     <string name="fui_sign_in_with_github">Fazer login com o GitHub</string>
     <string name="fui_sign_in_with_email">Fazer login com o e-mail</string>
     <string name="fui_sign_in_with_phone">Fazer login com o telefone</string>

@@ -26,13 +26,12 @@ public class EmailLinkPersistenceManager {
     private static final String KEY_EMAIL = "com.firebase.ui.auth.data.client.email";
     private static final String KEY_PROVIDER = "com.firebase.ui.auth.data.client.provider";
     private static final String KEY_IDP_TOKEN = "com.firebase.ui.auth.data.client.idpToken";
-    private static final String KEY_IDP_SECRET = "com.firebase.ui.auth.data.client.idpSecret";
     private static final String KEY_ANONYMOUS_USER_ID = "com.firebase.ui.auth.data.client.auid";
     private static final String KEY_SESSION_ID = "com.firebase.ui.auth.data.client.sid";
 
     private static final Set<String> KEYS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(KEY_EMAIL, KEY_PROVIDER,
-                    KEY_IDP_TOKEN, KEY_IDP_SECRET)));
+                    KEY_IDP_TOKEN)));
 
     private static final EmailLinkPersistenceManager instance = new EmailLinkPersistenceManager();
 
@@ -63,7 +62,6 @@ public class EmailLinkPersistenceManager {
         editor.putString(KEY_EMAIL, idpResponseForLinking.getEmail());
         editor.putString(KEY_PROVIDER, idpResponseForLinking.getProviderType());
         editor.putString(KEY_IDP_TOKEN, idpResponseForLinking.getIdpToken());
-        editor.putString(KEY_IDP_SECRET, idpResponseForLinking.getIdpSecret());
         editor.apply();
     }
 
@@ -80,14 +78,12 @@ public class EmailLinkPersistenceManager {
         String anonymousUserId = sharedPreferences.getString(KEY_ANONYMOUS_USER_ID, null);
         String provider = sharedPreferences.getString(KEY_PROVIDER, null);
         String idpToken = sharedPreferences.getString(KEY_IDP_TOKEN, null);
-        String idpSecret = sharedPreferences.getString(KEY_IDP_SECRET, null);
 
         SessionRecord sessionRecord = new SessionRecord(sessionId, anonymousUserId).setEmail(email);
         if (provider != null && idpToken != null) {
             IdpResponse response = new IdpResponse.Builder(
                         new User.Builder(provider, email).build())
                     .setToken(idpToken)
-                    .setSecret(idpSecret)
                     .setNewUser(false)
                     .build();
             sessionRecord.setIdpResponseForLinking(response);

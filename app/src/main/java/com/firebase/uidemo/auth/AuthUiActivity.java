@@ -71,7 +71,6 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
     @BindView(R.id.facebook_provider) CheckBox mUseFacebookProvider;
-    @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
     @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
     @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
     @BindView(R.id.email_link_provider) CheckBox mUseEmailLinkProvider;
@@ -151,12 +150,6 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (ConfigurationUtils.isTwitterMisconfigured(this)) {
-            mUseTwitterProvider.setChecked(false);
-            mUseTwitterProvider.setEnabled(false);
-            mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
-        }
-
         if (ConfigurationUtils.isGitHubMisconfigured(this)) {
             mUseGitHubProvider.setChecked(false);
             mUseGitHubProvider.setEnabled(false);
@@ -198,7 +191,6 @@ public class AuthUiActivity extends AppCompatActivity {
                     mUseEmailProvider.setChecked(true);
 
                     mUseFacebookProvider.setChecked(false);
-                    mUseTwitterProvider.setChecked(false);
                     mUseGitHubProvider.setChecked(false);
                     mUseEmailLinkProvider.setChecked(false);
                     mUsePhoneProvider.setChecked(false);
@@ -209,7 +201,6 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)
-                || ConfigurationUtils.isTwitterMisconfigured(this)
                 || ConfigurationUtils.isGitHubMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
         }
@@ -403,10 +394,6 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.FacebookBuilder()
                     .setPermissions(getFacebookPermissions())
                     .build());
-        }
-
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
         }
 
         if (mUseGitHubProvider.isChecked()) {

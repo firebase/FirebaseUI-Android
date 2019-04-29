@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Σφάλμα δικτύου, ελέγξτε τη σύνδεση στο διαδίκτυο.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Τηλέφωνο</string>
     <string name="fui_idp_name_email">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="fui_sign_in_with_google">Σύνδεση μέσω Google</string>
     <string name="fui_sign_in_with_facebook">Σύνδεση μέσω Facebook</string>
-    <string name="fui_sign_in_with_twitter">Σύνδεση μέσω Twitter</string>
     <string name="fui_sign_in_with_github">Σύνδεση μέσω GitHub</string>
     <string name="fui_sign_in_with_email">Σύνδεση μέσω ηλεκτρονικού ταχυδρομείου</string>
     <string name="fui_sign_in_with_phone">Σύνδεση μέσω τηλεφώνου</string>

@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Дошло је до мрежне грешке, проверите интернет везу.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Телефон</string>
     <string name="fui_idp_name_email">Имејл</string>
     <string name="fui_sign_in_with_google">Пријави ме помоћу Google-а</string>
     <string name="fui_sign_in_with_facebook">Пријави ме помоћу Facebook-а</string>
-    <string name="fui_sign_in_with_twitter">Пријави ме помоћу Twitter-а</string>
     <string name="fui_sign_in_with_github">Пријавите се помоћу GitHub-а</string>
     <string name="fui_sign_in_with_email">Пријави ме помоћу имејла</string>
     <string name="fui_sign_in_with_phone">Пријави ме помоћу телефона</string>

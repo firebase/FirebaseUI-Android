@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Napaka v omrežju. Preverite internetno povezavo.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telefon</string>
     <string name="fui_idp_name_email">E-pošta</string>
     <string name="fui_sign_in_with_google">Prijava z Google Računom</string>
     <string name="fui_sign_in_with_facebook">Prijava z računom za Facebook</string>
-    <string name="fui_sign_in_with_twitter">Prijava z računom za Twitter</string>
     <string name="fui_sign_in_with_github">Prijava z računom za GitHub</string>
     <string name="fui_sign_in_with_email">Prijava z e-poštnim naslovom</string>
     <string name="fui_sign_in_with_phone">Prijava s telefonom</string>

@@ -41,7 +41,6 @@ dependencies {
     // Needed to override Facebook
     implementation(Config.Libs.Support.cardView)
     implementation(Config.Libs.Support.customTabs)
-    implementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     implementation(Config.Libs.Misc.glide)
     annotationProcessor(Config.Libs.Misc.glideCompiler)

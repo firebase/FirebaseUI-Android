@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Er is een netwerkfout opgetreden. Controleer uw internetverbinding.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Telefoon</string>
     <string name="fui_idp_name_email">E-mailadres</string>
     <string name="fui_sign_in_with_google">Inloggen met Google</string>
     <string name="fui_sign_in_with_facebook">Inloggen met Facebook</string>
-    <string name="fui_sign_in_with_twitter">Inloggen met Twitter</string>
     <string name="fui_sign_in_with_github">Inloggen met GitHub</string>
     <string name="fui_sign_in_with_email">Inloggen met e-mailadres</string>
     <string name="fui_sign_in_with_phone">Inloggen met telefoon</string>

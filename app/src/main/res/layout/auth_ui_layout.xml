@@ -68,13 +68,6 @@
                 android:text="@string/providers_facebook" />
 
             <CheckBox
-                android:id="@+id/twitter_provider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/providers_twitter" />
-
-            <CheckBox
                 android:id="@+id/github_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

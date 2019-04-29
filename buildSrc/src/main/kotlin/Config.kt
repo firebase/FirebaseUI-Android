@@ -66,9 +66,6 @@ object Config {
 
         object Provider {
             const val facebook = "com.facebook.android:facebook-login:4.38.1"
-            // WARNING: the Twitter requires Java 8 support. Therefore, the dep cannot be upgraded
-            // futher until we decide to force clients to enable Java 8 support.
-            const val twitter = "com.twitter.sdk.android:twitter-core:3.1.1@aar"
         }
 
         object Misc {

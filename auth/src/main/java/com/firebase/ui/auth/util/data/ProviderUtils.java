@@ -37,7 +37,6 @@ import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +59,6 @@ public final class ProviderUtils {
                 return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
             case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookAuthProvider.getCredential(response.getIdpToken());
-            case TwitterAuthProvider.PROVIDER_ID:
-                return TwitterAuthProvider.getCredential(response.getIdpToken(),
-                        response.getIdpSecret());
             case GithubAuthProvider.PROVIDER_ID:
                 return GithubAuthProvider.getCredential(response.getIdpToken());
             default:
@@ -87,8 +83,6 @@ public final class ProviderUtils {
                 return GoogleAuthProvider.PROVIDER_ID;
             case FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD:
                 return FacebookAuthProvider.PROVIDER_ID;
-            case TwitterAuthProvider.TWITTER_SIGN_IN_METHOD:
-                return TwitterAuthProvider.PROVIDER_ID;
             case GithubAuthProvider.GITHUB_SIGN_IN_METHOD:
                 return GithubAuthProvider.PROVIDER_ID;
             case PhoneAuthProvider.PHONE_SIGN_IN_METHOD:
@@ -113,8 +107,6 @@ public final class ProviderUtils {
                 return IdentityProviders.GOOGLE;
             case FacebookAuthProvider.PROVIDER_ID:
                 return IdentityProviders.FACEBOOK;
-            case TwitterAuthProvider.PROVIDER_ID:
-                return IdentityProviders.TWITTER;
             case GithubAuthProvider.PROVIDER_ID:
                 return GITHUB_IDENTITY;
             case PhoneAuthProvider.PROVIDER_ID:
@@ -133,8 +125,6 @@ public final class ProviderUtils {
                 return GoogleAuthProvider.PROVIDER_ID;
             case IdentityProviders.FACEBOOK:
                 return FacebookAuthProvider.PROVIDER_ID;
-            case IdentityProviders.TWITTER:
-                return TwitterAuthProvider.PROVIDER_ID;
             case GITHUB_IDENTITY:
                 return GithubAuthProvider.PROVIDER_ID;
             case PHONE_IDENTITY:
@@ -150,8 +140,6 @@ public final class ProviderUtils {
                 return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_google);
             case FacebookAuthProvider.PROVIDER_ID:
                 return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_facebook);
-            case TwitterAuthProvider.PROVIDER_ID:
-                return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_twitter);
             case GithubAuthProvider.PROVIDER_ID:
                 return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_github);
             case PhoneAuthProvider.PROVIDER_ID:

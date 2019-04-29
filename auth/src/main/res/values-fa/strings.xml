@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">خطای شبکه. اتصال اینترنت را بررسی کنید.</string>
     <string name="fui_idp_name_google">Google‏</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">تلفن</string>
     <string name="fui_idp_name_email">ایمیل</string>
     <string name="fui_sign_in_with_google">ورود به سیستم با Google‎</string>
     <string name="fui_sign_in_with_facebook">ورود به سیستم با Facebook</string>
-    <string name="fui_sign_in_with_twitter">ورود به سیستم با Twitter</string>
     <string name="fui_sign_in_with_github">ورود به سیستم با GitHub</string>
     <string name="fui_sign_in_with_email">ورود به سیستم با ایمیل </string>
     <string name="fui_sign_in_with_phone">ورود به سیستم با تلفن</string>

@@ -120,14 +120,6 @@ public class AuthMethodPickerLayout implements Parcelable {
         }
 
         /**
-         * Set the ID of the Twitter sign in button in the custom layout.
-         */
-        public AuthMethodPickerLayout.Builder setTwitterButtonId(@IdRes int twitterBtn) {
-            providersMapping.put(TwitterAuthProvider.PROVIDER_ID, twitterBtn);
-            return this;
-        }
-
-        /**
          * Set the ID of the Email sign in button in the custom layout.
          */
         public AuthMethodPickerLayout.Builder setEmailButtonId(@IdRes int emailButton) {

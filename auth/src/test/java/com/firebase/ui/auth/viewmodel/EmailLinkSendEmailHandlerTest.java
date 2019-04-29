@@ -177,7 +177,6 @@ public class EmailLinkSendEmailHandlerTest {
                 .build();
         return new IdpResponse.Builder(user)
                 .setToken(TestConstants.TOKEN)
-                .setSecret(TestConstants.SECRET)
                 .build();
     }
 }

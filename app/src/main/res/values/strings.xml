@@ -24,7 +24,6 @@
     <string name="providers_google">Google</string>
     <string name="providers_facebook">Facebook</string>
     <string name="providers_github">GitHub</string>
-    <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
     <string name="providers_email_link">Email link</string>
     <string name="providers_phone">Phone</string>
@@ -71,7 +70,6 @@
     <string name="configuration_required">Configuration required - see README.md</string>
     <string name="google_label_missing_config">Google configuration missing</string>
     <string name="facebook_label_missing_config">Facebook configuration missing</string>
-    <string name="twitter_label_missing_config">Twitter configuration missing</string>
     <string name="github_label_missing_config">GitHub configuration missing</string>
 
     <string name="sign_in_cancelled">Sign in cancelled</string>

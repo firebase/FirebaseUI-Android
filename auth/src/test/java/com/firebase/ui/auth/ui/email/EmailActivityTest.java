@@ -46,7 +46,6 @@ public class EmailActivityTest {
 
     private static final String EMAIL = "email";
     private static final String ID_TOKEN = "idToken";
-    private static final String SECRET = "secret";
 
     @Before
     public void setUp() {
@@ -85,7 +84,6 @@ public class EmailActivityTest {
         assertThat(response.getProviderType()).isEqualTo(GoogleAuthProvider.PROVIDER_ID);
         assertThat(response.getEmail()).isEqualTo(EMAIL);
         assertThat(response.getIdpToken()).isEqualTo(ID_TOKEN);
-        assertThat(response.getIdpSecret()).isEqualTo(SECRET);
     }
 
     // @Test TODO(lsirac): uncomment after figuring out why this no longer works
@@ -166,7 +164,6 @@ public class EmailActivityTest {
         return new IdpResponse.Builder(
                 new User.Builder(GoogleAuthProvider.PROVIDER_ID, EMAIL).build())
                 .setToken(ID_TOKEN)
-                .setSecret(SECRET)
                 .build();
     }
 }

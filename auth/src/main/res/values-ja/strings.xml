@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">ネットワーク エラー。インターネット接続を確認してください。</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">電話</string>
     <string name="fui_idp_name_email">メール</string>
     <string name="fui_sign_in_with_google">Google でログイン</string>
     <string name="fui_sign_in_with_facebook">Facebook でログイン</string>
-    <string name="fui_sign_in_with_twitter">Twitter でログイン</string>
     <string name="fui_sign_in_with_github">GitHub でログイン</string>
     <string name="fui_sign_in_with_email">メールアドレスでログイン</string>
     <string name="fui_sign_in_with_phone">電話番号でログイン</string>

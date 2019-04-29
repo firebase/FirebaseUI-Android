@@ -37,14 +37,12 @@ dependencies {
     compileOnly(Config.Libs.Provider.facebook)
     implementation(Config.Libs.Support.v4) // Needed to override deps
     implementation(Config.Libs.Support.cardView) // Needed to override Facebook
-    compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
     testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     debugImplementation(project(":internal:lintchecks"))
 }

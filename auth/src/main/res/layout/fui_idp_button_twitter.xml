@@ -1,4 +1,0 @@
-<com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/FirebaseUI.Button.AccountChooser.TwitterButton"
-    android:text="@string/fui_sign_in_with_twitter" />

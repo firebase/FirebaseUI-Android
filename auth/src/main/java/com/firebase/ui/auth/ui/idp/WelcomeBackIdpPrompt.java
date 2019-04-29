@@ -40,7 +40,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
@@ -51,7 +50,6 @@ import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
@@ -123,13 +121,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 mProvider = facebook;
 
                 providerName = R.string.fui_idp_name_facebook;
-                break;
-            case TwitterAuthProvider.PROVIDER_ID:
-                TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
-                twitter.init(null);
-                mProvider = twitter;
-
-                providerName = R.string.fui_idp_name_twitter;
                 break;
             case GithubAuthProvider.PROVIDER_ID:
                 ProviderSignInBase<AuthUI.IdpConfig> github =

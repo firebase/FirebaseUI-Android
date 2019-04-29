@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Ошибка сети. Проверьте подключение к Интернету.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Телефон</string>
     <string name="fui_idp_name_email">Адрес электронной почты</string>
     <string name="fui_sign_in_with_google">Войти через аккаунт Google</string>
     <string name="fui_sign_in_with_facebook">Войти через аккаунт Facebook</string>
-    <string name="fui_sign_in_with_twitter">Войти через аккаунт Twitter</string>
     <string name="fui_sign_in_with_github">Войти через аккаунт GitHub</string>
     <string name="fui_sign_in_with_email">Войти по адресу электронной почты</string>
     <string name="fui_sign_in_with_phone">Войти по номеру телефона</string>

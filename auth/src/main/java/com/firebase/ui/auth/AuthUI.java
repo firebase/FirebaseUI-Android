@@ -31,7 +31,6 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -66,9 +65,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -116,7 +113,6 @@ public final class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
-                    TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID,
@@ -132,7 +128,6 @@ public final class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
-                    TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID)));
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -437,10 +432,6 @@ public final class AuthUI {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            TwitterSignInHandler.initializeTwitter();
-            TwitterCore.getInstance().getSessionManager().clearActiveSession();
-        }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
@@ -456,7 +447,6 @@ public final class AuthUI {
     @StringDef({
             GoogleAuthProvider.PROVIDER_ID,
             FacebookAuthProvider.PROVIDER_ID,
-            TwitterAuthProvider.PROVIDER_ID,
             GithubAuthProvider.PROVIDER_ID,
             EmailAuthProvider.PROVIDER_ID,
             PhoneAuthProvider.PROVIDER_ID,
@@ -1046,29 +1036,6 @@ public final class AuthUI {
                 getParams().putStringArrayList(
                         ExtraConstants.FACEBOOK_PERMISSIONS, new ArrayList<>(permissions));
                 return this;
-            }
-        }
-
-        /**
-         * {@link IdpConfig} builder for the Twitter provider.
-         */
-        public static final class TwitterBuilder extends Builder {
-            public TwitterBuilder() {
-                super(TwitterAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_TWITTER_AVAILABLE) {
-                    throw new RuntimeException(
-                            "Twitter provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "Twitter provider unconfigured. Make sure to add your key and secret." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#twitter",
-                        R.string.twitter_consumer_key,
-                        R.string.twitter_consumer_secret);
             }
         }
 

@@ -27,7 +27,6 @@ import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +55,6 @@ public class AuthMethodPickerActivityTest {
         // is fixed.
         List<String> providers = Arrays.asList(
                 GoogleAuthProvider.PROVIDER_ID,
-                TwitterAuthProvider.PROVIDER_ID,
                 EmailAuthProvider.PROVIDER_ID,
                 PhoneAuthProvider.PROVIDER_ID,
                 AuthUI.ANONYMOUS_PROVIDER);

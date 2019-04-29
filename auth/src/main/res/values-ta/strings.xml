@@ -8,13 +8,11 @@
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">நெட்வொர்க் பிழை, உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">Github</string>
     <string name="fui_idp_name_phone">ஃபோன்</string>
     <string name="fui_idp_name_email">மின்னஞ்சல்</string>
     <string name="fui_sign_in_with_google">Google மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_facebook">Facebook மூலம் உள்நுழைக</string>
-    <string name="fui_sign_in_with_twitter">Twitter மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_github">GitHub பயன்படுத்தி உள்நுழைக</string>
     <string name="fui_sign_in_with_email">மின்னஞ்சல் மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_phone">ஃபோன் எண் மூலம் உள்நுழைக</string>
