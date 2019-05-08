@@ -66,6 +66,12 @@ public final class ErrorCodes {
      */
     public static final int EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR = 11;
 
+    /**
+     * User canceled the login attempt by clicking the back button, in this case we should not
+     * prompt an error message to the user.
+     */
+    public static final int CANCELED_BY_USER = 12;
+
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
     }
@@ -100,6 +106,8 @@ public final class ErrorCodes {
             case EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR:
                 return "The session associated with this sign-in request has either expired or " +
                         "was cleared";
+            case CANCELED_BY_USER:
+                return "Sign in process canceled by the user.";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }
@@ -120,7 +128,8 @@ public final class ErrorCodes {
             EMAIL_LINK_WRONG_DEVICE_ERROR,
             EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
             EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR,
-            EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR
+            EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR,
+            CANCELED_BY_USER
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {
