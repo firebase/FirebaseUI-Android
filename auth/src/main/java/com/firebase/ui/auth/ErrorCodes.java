@@ -127,7 +127,8 @@ public final class ErrorCodes {
             EMAIL_LINK_WRONG_DEVICE_ERROR,
             EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
             EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR,
-            EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR
+            EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR,
+            ERROR_USER_DISABLED
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {
