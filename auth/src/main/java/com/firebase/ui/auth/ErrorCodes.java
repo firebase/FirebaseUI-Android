@@ -66,6 +66,11 @@ public final class ErrorCodes {
      */
     public static final int EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR = 11;
 
+    /**
+     *  Attempting to auth with account that is currently disabled in the Firebase console.
+     */
+    public static final int ERROR_USER_DISABLED = 12;
+
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
     }
@@ -100,6 +105,8 @@ public final class ErrorCodes {
             case EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR:
                 return "The session associated with this sign-in request has either expired or " +
                         "was cleared";
+            case ERROR_USER_DISABLED:
+                return "The user account has been disabled by an administrator.";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }

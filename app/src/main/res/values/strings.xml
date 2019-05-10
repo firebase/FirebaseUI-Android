@@ -78,6 +78,7 @@
 
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="account_disabled">Account is disabled by the administrator</string>
     <string name="unknown_error">An unknown error occurred</string>
 
     <string name="title_anonymous_upgrade">FirebaseUI Anonymous Account Linking</string>
