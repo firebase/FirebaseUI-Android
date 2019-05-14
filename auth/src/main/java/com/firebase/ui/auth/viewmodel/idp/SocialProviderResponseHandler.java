@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.util.List;
@@ -108,6 +109,16 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                                     e));
                                         }
                                     });
+                        } else if (e instanceof FirebaseAuthInvalidUserException){
+                            setResult(Resource.<IdpResponse>forFailure(
+                                    new FirebaseUiException(
+                                            ErrorCodes.ERROR_USER_DISABLED,
+                                            ErrorCodes.toFriendlyMessage(
+                                                    ErrorCodes.ERROR_USER_DISABLED
+                                            )
+                                    )
+                            ));
+                            return;
                         }
                     }
                 });
