@@ -70,7 +70,7 @@ public final class ErrorCodes {
      * User canceled the login attempt by clicking the back button, in this case we should not
      * prompt an error message to the user.
      */
-    public static final int CANCELED_BY_USER = 12;
+    public static final int CANCELED_BY_USER = 13;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");

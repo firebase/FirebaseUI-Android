@@ -23,6 +23,7 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
@@ -109,8 +110,7 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
 
         @Override
         public void onCancel() {
-            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
-                    ErrorCodes.CANCELED_BY_USER, "Sign in process canceled")));
+            setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
         }
 
         @Override
