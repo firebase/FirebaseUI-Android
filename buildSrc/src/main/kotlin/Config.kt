@@ -52,11 +52,11 @@ object Config {
         }
 
         object Firebase {
-            const val core = "com.google.firebase:firebase-core:16.0.6"
-            const val auth = "com.google.firebase:firebase-auth:16.1.0"
-            const val firestore = "com.google.firebase:firebase-firestore:17.1.4"
-            const val database = "com.google.firebase:firebase-database:16.0.5"
-            const val storage = "com.google.firebase:firebase-storage:16.0.5"
+            const val core = "com.google.firebase:firebase-core:16.0.9"
+            const val auth = "com.google.firebase:firebase-auth:17.0.0"
+            const val firestore = "com.google.firebase:firebase-firestore:19.0.0"
+            const val database = "com.google.firebase:firebase-database:17.0.0"
+            const val storage = "com.google.firebase:firebase-storage:17.0.0"
         }
 
         object PlayServices {
