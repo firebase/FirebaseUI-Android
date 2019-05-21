@@ -17,6 +17,7 @@ package com.firebase.ui.auth.testhelpers;
 import android.os.Parcel;
 
 import com.google.firebase.auth.AdditionalUserInfo;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -43,6 +44,11 @@ public final class FakeAuthResult implements AuthResult {
     @Override
     public AdditionalUserInfo getAdditionalUserInfo() {
         return FakeAdditionalUserInfo.INSTANCE;
+    }
+
+    @Override
+    public AuthCredential getCredential() {
+        throw new IllegalStateException("FakeAuthResult has no Credential!");
     }
 
     @Override

@@ -127,7 +127,7 @@ public class EmailActivityTest {
         TextInputLayout passwordLayout = emailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
-                emailActivity.getString(R.string.fui_required_field),
+                emailActivity.getString(R.string.fui_missing_first_and_last_name),
                 nameLayout.getError().toString());
         assertEquals(
                 String.format(

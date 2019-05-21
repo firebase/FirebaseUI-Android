@@ -154,7 +154,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                 mPasswordInput,
                 getResources().getInteger(R.integer.fui_min_password_length));
         mNameValidator = requireName
-                ? new RequiredFieldValidator(nameInput)
+                ? new RequiredFieldValidator(nameInput,
+                      getResources().getString(R.string.fui_missing_first_and_last_name))
                 : new NoOpValidator(nameInput);
         mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
 

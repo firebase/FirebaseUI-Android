@@ -48,6 +48,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     }
 
     private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
+    private final MutableLiveData<Exception> mException = new MutableLiveData<>();
 
     private final Query mBaseQuery;
     private final Source mSource;
@@ -133,6 +134,11 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         return mLoadingState;
     }
 
+    @NonNull
+    public LiveData<Exception> getLastError() {
+        return mException;
+    }
+
     public void retry() {
         LoadingState currentState = mLoadingState.getValue();
         if (currentState != LoadingState.ERROR) {
@@ -216,6 +222,9 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
             // Set the retry action
             mRetryRunnable = getRetryRunnable();
+
+            //Set to the MutableLiveData to determine Latest Error
+            mException.postValue(e);
         }
 
         protected abstract Runnable getRetryRunnable();

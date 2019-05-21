@@ -2,10 +2,11 @@
     <string name="app_name">Firebase UI</string>
 
     <!-- Chooser -->
-    <string name="title_auth_activity">Auth UI demo</string>
+    <string name="title_auth_activity">Auth UI Demo</string>
     <string name="title_firestore_activity">Cloud Firestore Demo</string>
     <string name="title_firestore_paging_activity">Cloud Firestore Paging Demo</string>
-    <string name="title_realtime_database_activity">Real-time database demo</string>
+    <string name="title_realtime_database_activity">Realtime Database Demo</string>
+    <string name="title_realtime_database_paging_activity">Realtime Database Paging Demo</string>
     <string name="title_storage_activity">Storage Image Demo</string>
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
@@ -13,6 +14,7 @@
     <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
     <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paged data from Cloud Firestore.</string>
     <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
+    <string name="desc_realtime_database_paging">Demonstrates using a FirebaseRecyclerPagingAdapter to load/infinite scroll paged data from Firebase Realtime Database.</string>
     <string name="desc_storage">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
     <!-- Auth UI -->
@@ -76,6 +78,7 @@
 
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="account_disabled">Account is disabled by the administrator</string>
     <string name="unknown_error">An unknown error occurred</string>
 
     <string name="title_anonymous_upgrade">FirebaseUI Anonymous Account Linking</string>
@@ -126,4 +129,5 @@
 
     <string name="menu_add_data">Add Data</string>
     <string name="hint_message">Say something…</string>
+    <string name="paging_finished_message">Reached End of List</string>
 </resources>

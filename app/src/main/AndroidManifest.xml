@@ -55,6 +55,12 @@
         <activity
             android:name=".database.realtime.RealtimeDbChatActivity"
             android:label="@string/title_realtime_database_activity" />
+
+        <!-- Realtime database paging demo -->
+        <activity
+            android:name=".database.realtime.FirebaseDbPagingActivity"
+            android:label="@string/title_realtime_database_paging_activity" />
+
         <activity
             android:name=".database.realtime.RealtimeDbChatIndexActivity"
             android:label="@string/title_realtime_database_activity" />

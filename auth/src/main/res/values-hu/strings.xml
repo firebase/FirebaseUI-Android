@@ -26,6 +26,7 @@
     <string name="fui_required_field">Ezt nem hagyhatja üresen.</string>
     <string name="fui_invalid_email_address">Az e-mail-cím helytelen.</string>
     <string name="fui_missing_email_address">A folytatáshoz adja meg e-mail-címét.</string>
+    <string name="fui_missing_first_and_last_name">Írja be utónevét és vezetéknevét.</string>
     <string name="fui_progress_dialog_checking_accounts">Meglévő fiókok ellenőrzése…</string>
     <string name="fui_title_register_email">Regisztráció</string>
     <string name="fui_name_hint">Utónév és vezetéknév</string>

@@ -26,6 +26,7 @@
     <string name="fui_required_field">Questo campo non può restare vuoto.</string>
     <string name="fui_invalid_email_address">L\'indirizzo email non è corretto</string>
     <string name="fui_missing_email_address">Inserisci il tuo indirizzo email per continuare</string>
+    <string name="fui_missing_first_and_last_name">Inserisci un nome e un cognome.</string>
     <string name="fui_progress_dialog_checking_accounts">Verifica degli account esistenti in corso…</string>
     <string name="fui_title_register_email">Registrati</string>
     <string name="fui_name_hint">Nome e cognome</string>

@@ -26,6 +26,7 @@
     <string name="fui_required_field">আপনি এটি খালি ছাড়তে পারেন না।</string>
     <string name="fui_invalid_email_address">ইমেল অ্যাড্রেসটি সঠিক নয়</string>
     <string name="fui_missing_email_address">চালিয়ে যাওয়ার জন্য আপনার ইমেল অ্যাড্রেস লিখুন</string>
+    <string name="fui_missing_first_and_last_name">আপনার নাম এবং পদবি লিখুন।</string>
     <string name="fui_progress_dialog_checking_accounts">আগে থেকে কোনও অ্যাকাউন্ট আছে কিনা চেক করা হচ্ছে…</string>
     <string name="fui_title_register_email">সাইন-আপ করুন</string>
     <string name="fui_name_hint">নাম ও পদবি</string>

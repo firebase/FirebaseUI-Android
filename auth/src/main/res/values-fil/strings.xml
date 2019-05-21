@@ -26,6 +26,7 @@
     <string name="fui_required_field">Hindi mo ito maaaring iwanan na walang laman.</string>
     <string name="fui_invalid_email_address">Mali ang email address na iyon</string>
     <string name="fui_missing_email_address">Ilagay ang iyong email address upang magpatuloy</string>
+    <string name="fui_missing_first_and_last_name">Maglagay ng pangalan at apelyido.</string>
     <string name="fui_progress_dialog_checking_accounts">Tinitingnan ang mga umiiral nang account…</string>
     <string name="fui_title_register_email">Mag-sign up</string>
     <string name="fui_name_hint">Pangalan at apelyido</string>

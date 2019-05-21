@@ -26,6 +26,7 @@
     <string name="fui_required_field">Dit veld mag niet leeg zijn.</string>
     <string name="fui_invalid_email_address">Dit e-mailadres is niet juist</string>
     <string name="fui_missing_email_address">Voer uw e-mailadres in om verder te gaan</string>
+    <string name="fui_missing_first_and_last_name">Voer een voor- en achternaam in.</string>
     <string name="fui_progress_dialog_checking_accounts">Controleren op bestaande accounts…</string>
     <string name="fui_title_register_email">Aanmelden</string>
     <string name="fui_name_hint">Voor- en achternaam</string>

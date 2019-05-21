@@ -26,6 +26,7 @@
     <string name="fui_required_field">Ne možete to ostaviti prazno.</string>
     <string name="fui_invalid_email_address">Ta e-adresa nije točna</string>
     <string name="fui_missing_email_address">Unesite svoju e-adresu za nastavak</string>
+    <string name="fui_missing_first_and_last_name">Unesite ime i prezime.</string>
     <string name="fui_progress_dialog_checking_accounts">Traženje postojećih računa…</string>
     <string name="fui_title_register_email">Registracija</string>
     <string name="fui_name_hint">Ime i prezime</string>

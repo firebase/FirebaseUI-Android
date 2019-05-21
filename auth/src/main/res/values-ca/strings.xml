@@ -26,6 +26,7 @@
     <string name="fui_required_field">Aquest camp no es pot deixar en blanc.</string>
     <string name="fui_invalid_email_address">Aquesta adreça electrònica no és correcta</string>
     <string name="fui_missing_email_address">Introdueix l\'adreça electrònica per continuar</string>
+    <string name="fui_missing_first_and_last_name">Introdueix nom i cognoms.</string>
     <string name="fui_progress_dialog_checking_accounts">S\'estan comprovant els comptes existents…</string>
     <string name="fui_title_register_email">Registra\'t</string>
     <string name="fui_name_hint">Nom i cognoms</string>

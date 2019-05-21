@@ -351,6 +351,11 @@ public class AuthUiActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
+            if (response.getError().getErrorCode() == ErrorCodes.ERROR_USER_DISABLED) {
+                showSnackbar(R.string.account_disabled);
+                return;
+            }
+
             showSnackbar(R.string.unknown_error);
             Log.e(TAG, "Sign-in error: ", response.getError());
         }

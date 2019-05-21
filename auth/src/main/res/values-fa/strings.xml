@@ -26,6 +26,7 @@
     <string name="fui_required_field">اینجا نباید خالی باشد.</string>
     <string name="fui_invalid_email_address">آن نشانی ایمیل درست نیست</string>
     <string name="fui_missing_email_address">برای ادامه، آدرس رایانامه‌تان را وارد کنید</string>
+    <string name="fui_missing_first_and_last_name">لطفاً نام و نام خانوادگی را وارد کنید.</string>
     <string name="fui_progress_dialog_checking_accounts">در حال بررسی حساب‌های موجود…</string>
     <string name="fui_title_register_email">ثبت‌نام</string>
     <string name="fui_name_hint">نام و نام خانوادگی</string>

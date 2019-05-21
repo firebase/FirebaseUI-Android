@@ -12,9 +12,8 @@ Before using this library, you should be familiar with the following topics:
 1. [Data model](#data-model)
 1. [Querying](#querying)
 1. [Populating a RecyclerView](#using-firebaseui-to-populate-a-recyclerview)
-   1. [Using the adapter](#using-the-firebaserecycleradapter)
-   1. [Adapter lifecyle](#firebaserecycleradapter-lifecycle)
-   1. [Events](#data-and-error-events)
+   1. [Using the FirebaseRecyclerAdapter](#using-the-firebaserecycleradapter)
+   1. [Using the FirebaseRecyclerPagingAdapter](#using-the-firebaserecyclerpagingadapter)
 1. [Populating a ListView](#using-firebaseui-to-populate-a-listview)
 1. [Handling indexed data](#using-firebaseui-with-indexed-data)
    1. [Warnings](#a-note-on-ordering)
@@ -115,6 +114,17 @@ This means implementing a custom `RecyclerView.Adapter` and coordinating updates
 
 Fear not, FirebaseUI does all of this for you automatically!
 
+### Choosing an adapter
+
+FirebaseUI offers two types of RecyclerView adapters for the Realtime Database:
+
+  * `FirebaseRecyclerAdapter` — binds a `Query` to a `RecyclerView` and responds to all real-time
+    events included items being added, removed, moved, or changed. Best used with small result sets
+    since all results are loaded at once.
+  * `FirebasePagingRecyclerAdapter` — binds a `Query` to a `RecyclerView` by loading data in pages. Best
+    used with large, static data sets. Real-time events are not respected by this adapter, so it
+    will not detect new/removed items or changes to items already loaded.
+
 ### Using the FirebaseRecyclerAdapter
 
 The `FirebaseRecyclerAdapter` binds a `Query` to a `RecyclerView`. When data is added, removed,
@@ -169,9 +179,9 @@ Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdap
 Don't forget to also set a `LayoutManager`!
 
 
-### FirebaseRecyclerAdapter lifecycle
+#### FirebaseRecyclerAdapter lifecycle
 
-#### Start/stop listening
+##### Start/stop listening
 
 The `FirebaseRecyclerAdapter` uses an event listener to monitor changes to the Firebase query.
 To begin listening for data, call the `startListening()` method. You may want to call this in your
@@ -197,7 +207,7 @@ protected void onStop() {
 }
 ```
 
-#### Automatic listening
+##### Automatic listening
 
 If you don't want to manually start/stop listening you can use
 [Android Architecture Components][arch-components] to automatically manage the lifecycle of the
@@ -205,7 +215,7 @@ If you don't want to manually start/stop listening you can use
 `FirebaseRecyclerOptions.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
 start and stop listening in `onStart()` and `onStop()`.
 
-### Data and error events
+#### Data and error events
 
 When using the `FirebaseRecyclerAdapter` you may want to perform some action every time data
 changes or when there is an error. To do this, override the `onDataChanged()` and `onError()`
@@ -230,6 +240,156 @@ FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
     }
 };
 ```
+
+### Using the `FirebaseRecyclerPagingAdapter`
+
+The `FirebaseRecyclerPagingAdapter` binds a `Query` to a `RecyclerView` by loading documents in pages.
+This results in a time and memory efficient binding, however it gives up the real-time events
+afforted by the `FirestoreRecyclerAdapter`.
+
+The `FirebaseRecyclerPagingAdapter` is built on top of the [Android Paging Support Library][paging-support].
+Before using the adapter in your application, you must add a dependency on the support library:
+
+```groovy
+implementation 'android.arch.paging:runtime:1.x.x'
+```
+
+First, configure the adapter by building `DatabasePagingOptions`. Since the paging adapter
+is not appropriate for a chat application (it would not detect new messages), we will consider
+an adapter that loads a generic `Item`:
+
+```java
+// The "base query" is a query with no startAt/endAt/limit clauses that the adapter can use
+// to form smaller queries for each page.
+Query baseQuery = mDatabase.getReference().child("items");
+
+// This configuration comes from the Paging Support Library
+// https://developer.android.com/reference/android/arch/paging/PagedList.Config.html
+PagedList.Config config = new PagedList.Config.Builder()
+        .setEnablePlaceholders(false)
+        .setPrefetchDistance(10)
+        .setPageSize(20)
+        .build();
+
+// The options for the adapter combine the paging configuration with query information
+// and application-specific options for lifecycle, etc.
+DatabasePagingOptions<Item> options = new DatabasePagingOptions.Builder<Item>()
+        .setLifecycleOwner(this)
+        .setQuery(baseQuery, config, Item.class)
+        .build();
+```
+
+If you need to customize how your model class is parsed, you can use a custom `SnapshotParser`:
+
+```java
+...setQuery(..., new SnapshotParser<Item>() {
+    @NonNull
+    @Override
+    public Item parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+        return ...;
+    }
+});
+```
+
+Next, create the `FirebaseRecyclerPagingAdapter` object. You should already have a `ViewHolder` subclass
+for displaying each item. In this case we will use a custom `ItemViewHolder` class:
+
+```java
+FirebaseRecyclerPagingAdapter<Item, ItemViewHolder> adapter =
+        new FirebaseRecyclerPagingAdapter<Item, ItemViewHolder>(options) {
+            @NonNull
+            @Override
+            public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                // Create the ItemViewHolder
+                // ...
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull ItemViewHolder holder,
+                                            int position,
+                                            @NonNull Item model) {
+                // Bind the item to the view holder
+                // ...
+            }
+        };
+```
+
+Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()` method.
+Don't forget to also set a `LayoutManager`!
+
+#### `FirebaseRecyclerPagingAdapter` lifecycle
+
+##### Start/stop listening
+
+The `FirebaseRecyclerPagingAdapter` listens for scrolling events and loads additional pages from the
+database only when needed.
+
+To begin populating data, call the `startListening()` method. You may want to call this
+in your `onStart()` method. Make sure you have finished any authentication necessary to read the
+data before calling `startListening()` or your query will fail.
+
+```java
+@Override
+protected void onStart() {
+    super.onStart();
+    adapter.startListening();
+}
+```
+
+Similarly, the `stopListening()` call freezes the data in the `RecyclerView` and prevents any future
+loading of data pages.
+
+Call this method when the containing Activity or Fragment stops:
+
+```java
+@Override
+protected void onStop() {
+    super.onStop();
+    adapter.stopListening();
+}
+```
+
+##### Automatic listening
+
+If you don't want to manually start/stop listening you can use
+[Android Architecture Components][arch-components] to automatically manage the lifecycle of the
+`FirebaseRecyclerPagingAdapter`. Pass a `LifecycleOwner` to
+`DatabasePagingOptions.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
+start and stop listening in `onStart()` and `onStop()`.
+
+#### Paging events
+
+When using the `FirebaseRecyclerPagingAdapter`, you may want to perform some action every time data
+changes or when there is an error. To do this, override the `onLoadingStateChanged()`
+method of the adapter:
+
+```java
+FirebaseRecyclerPagingAdapter<Item, ItemViewHolder> adapter =
+        new FirebaseRecyclerPagingAdapter<Item, ItemViewHolder>(options) {
+
+            // ...
+
+            @Override
+            protected void onLoadingStateChanged(@NonNull LoadingState state) {
+                switch (state) {
+                    case LOADING_INITIAL:
+                        // The initial load has begun
+                        // ...
+                    case LOADING_MORE:
+                        // The adapter has started to load an additional page
+                        // ...
+                    case LOADED:
+                        // The previous load (either initial or additional) completed
+                        // ...
+                    case ERROR:
+                        // The previous load (either initial or additional) failed. Call
+                        // the retry() method in order to retry the load operation.
+                        // ...
+                }
+            }
+        };
+```
+
 
 ## Using FirebaseUI to populate a `ListView`
 

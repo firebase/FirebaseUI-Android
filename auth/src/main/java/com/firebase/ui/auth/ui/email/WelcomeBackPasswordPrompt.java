@@ -160,7 +160,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private void validateAndSignIn(String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
-            mPasswordLayout.setError(getString(R.string.fui_required_field));
+            mPasswordLayout.setError(getString(R.string.fui_error_invalid_password));
             return;
         } else {
             mPasswordLayout.setError(null);

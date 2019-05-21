@@ -26,12 +26,13 @@
     <string name="fui_required_field">आप इसे खाली नहीं छोड़ सकते.</string>
     <string name="fui_invalid_email_address">वह ईमेल पता सही नहीं है</string>
     <string name="fui_missing_email_address">जारी रखने के लिए अपना ईमेल पता डालें</string>
+    <string name="fui_missing_first_and_last_name">कृपया नाम और उपनाम डालें.</string>
     <string name="fui_progress_dialog_checking_accounts">मौजूदा खातों की जाँच की जा रही है…</string>
     <string name="fui_title_register_email">साइन अप करें</string>
     <string name="fui_name_hint">नाम और उपनाम</string>
-    <string name="fui_button_text_save">सहेजें</string>
+    <string name="fui_button_text_save">सेव करें</string>
     <string name="fui_progress_dialog_signing_up">साइन अप करना…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> <item quantity="other">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> </plurals>
+    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड काफ़ी रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> <item quantity="other">पासवर्ड काफ़ी रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> </plurals>
     <string name="fui_email_account_creation_error">ईमेल खाता पंजीकरण असफल रहा</string>
     <string name="fui_terms_of_service">सेवा की शर्तें</string>
     <string name="fui_privacy_policy">निजता नीति</string>

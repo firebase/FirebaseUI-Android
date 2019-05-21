@@ -26,6 +26,7 @@
     <string name="fui_required_field">Anda wajib mengisinya.</string>
     <string name="fui_invalid_email_address">Alamat email yang dimasukkan salah</string>
     <string name="fui_missing_email_address">Masukkan alamat email Anda untuk melanjutkan</string>
+    <string name="fui_missing_first_and_last_name">Masukkan nama depan dan belakang.</string>
     <string name="fui_progress_dialog_checking_accounts">Memeriksa akun yang ada…</string>
     <string name="fui_title_register_email">Daftar</string>
     <string name="fui_name_hint">Nama depan &amp; belakang</string>

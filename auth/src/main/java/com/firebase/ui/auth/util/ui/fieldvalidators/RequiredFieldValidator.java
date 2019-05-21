@@ -26,6 +26,11 @@ public class RequiredFieldValidator extends BaseValidator {
         mErrorMessage = mErrorContainer.getResources().getString(R.string.fui_required_field);
     }
 
+    public RequiredFieldValidator(TextInputLayout errorContainer, String errorMessage) {
+        super(errorContainer);
+        mErrorMessage = errorMessage;
+    }
+
     @Override
     protected boolean isValid(CharSequence charSequence) {
         return charSequence != null && charSequence.length() > 0;

@@ -20,9 +20,9 @@ dependencies {
 
     api(Config.Libs.Support.v4)
     api(Config.Libs.Support.recyclerView)
-    annotationProcessor(Config.Libs.Arch.compiler)
 
     compileOnly(Config.Libs.Arch.paging)
+    annotationProcessor(Config.Libs.Arch.compiler)
 
     lintChecks(project(":lint"))
 
