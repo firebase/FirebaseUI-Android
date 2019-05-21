@@ -66,10 +66,16 @@ public final class ErrorCodes {
      */
     public static final int EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR = 11;
 
-    /**
+    /**   
      *  Attempting to auth with account that is currently disabled in the Firebase console.
      */
     public static final int ERROR_USER_DISABLED = 12;
+
+    /**
+     * User canceled the login attempt by clicking the back button, in this case we should not
+     * prompt an error message to the user.
+     */
+    public static final int CANCELED_BY_USER = 13;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
@@ -107,6 +113,8 @@ public final class ErrorCodes {
                         "was cleared";
             case ERROR_USER_DISABLED:
                 return "The user account has been disabled by an administrator.";
+            case CANCELED_BY_USER:
+                return "Sign in process canceled by the user.";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }
@@ -128,7 +136,9 @@ public final class ErrorCodes {
             EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
             EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR,
             EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR,
+            CANCELED_BY_USER,
             ERROR_USER_DISABLED
+            
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {

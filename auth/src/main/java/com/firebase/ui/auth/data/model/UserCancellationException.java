@@ -8,6 +8,6 @@ import com.firebase.ui.auth.FirebaseUiException;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class UserCancellationException extends FirebaseUiException {
     public UserCancellationException() {
-        super(ErrorCodes.UNKNOWN_ERROR);
+        super(ErrorCodes.CANCELED_BY_USER);
     }
 }
