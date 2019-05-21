@@ -26,6 +26,7 @@
     <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>
     <string name="fui_invalid_email_address">மின்னஞ்சல் முகவரி தவறாக உள்ளது</string>
     <string name="fui_missing_email_address">தொடர, மின்னஞ்சல் முகவரியை உள்ளிடவும்</string>
+    <string name="fui_missing_first_and_last_name">பெயரின் முற்பகுதியையும் பிற்பகுதியையும் உள்ளிடவும்.</string>
     <string name="fui_progress_dialog_checking_accounts">ஏற்கனவே உள்ள கணக்குகளைச் சரிபார்க்கிறது…</string>
     <string name="fui_title_register_email">பதிவு செய்க</string>
     <string name="fui_name_hint">பெயரின் முற்பகுதி மற்றும் பிற்பகுதி</string>

@@ -26,6 +26,7 @@
     <string name="fui_required_field">Nie możesz zostawić tego pola pustego.</string>
     <string name="fui_invalid_email_address">Nieprawidłowy adres e-mail</string>
     <string name="fui_missing_email_address">Aby kontynuować, wpisz adres e-mail</string>
+    <string name="fui_missing_first_and_last_name">Wpisz imię i nazwisko.</string>
     <string name="fui_progress_dialog_checking_accounts">Szukam istniejących kont…</string>
     <string name="fui_title_register_email">Rejestracja</string>
     <string name="fui_name_hint">Imię i nazwisko</string>

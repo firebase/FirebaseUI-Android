@@ -26,6 +26,7 @@
     <string name="fui_required_field">此处不能留空。</string>
     <string name="fui_invalid_email_address">该电子邮件地址不正确</string>
     <string name="fui_missing_email_address">请输入您的电子邮件地址以继续</string>
+    <string name="fui_missing_first_and_last_name">请输入姓氏和名字。</string>
     <string name="fui_progress_dialog_checking_accounts">正在检查是否存在现有帐号…</string>
     <string name="fui_title_register_email">注册</string>
     <string name="fui_name_hint">姓名</string>

@@ -26,6 +26,7 @@
     <string name="fui_required_field">آپ اسے خالی نہیں چھوڑ سکتے۔</string>
     <string name="fui_invalid_email_address">یہ ای میل پتہ غلط ہے</string>
     <string name="fui_missing_email_address">جاری رکھنے کے لیے اپنا ای میل پتہ درج کریں</string>
+    <string name="fui_missing_first_and_last_name">براہ کرم پہلا اور آخری نام درج کریں۔</string>
     <string name="fui_progress_dialog_checking_accounts">موجودہ اکاؤنٹس چیک ہو رہے ہیں…</string>
     <string name="fui_title_register_email">سائن اپ کریں</string>
     <string name="fui_name_hint">پہلا اور آخری نام</string>

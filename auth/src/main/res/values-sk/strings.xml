@@ -26,6 +26,7 @@
     <string name="fui_required_field">Toto pole nesmie byť prázdne.</string>
     <string name="fui_invalid_email_address">Táto e-mailová adresa nie je správna</string>
     <string name="fui_missing_email_address">Zadajte svoju e-mailovú adresu, aby ste mohli pokračovať</string>
+    <string name="fui_missing_first_and_last_name">Zadajte meno a priezvisko.</string>
     <string name="fui_progress_dialog_checking_accounts">Kontrolujú sa existujúce účty…</string>
     <string name="fui_title_register_email">Registrovať sa</string>
     <string name="fui_name_hint">Krstné meno a priezvisko</string>

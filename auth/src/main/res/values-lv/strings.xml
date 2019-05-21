@@ -26,6 +26,7 @@
     <string name="fui_required_field">Šo laukumu nedrīkst atstāt tukšu.</string>
     <string name="fui_invalid_email_address">Šī e-pasta adrese nav pareiza</string>
     <string name="fui_missing_email_address">Lai turpinātu, ievadiet e-pasta adresi</string>
+    <string name="fui_missing_first_and_last_name">Lūdzu, ievadiet vārdu un uzvārdu.</string>
     <string name="fui_progress_dialog_checking_accounts">Tiek pārbaudīti esošie konti…</string>
     <string name="fui_title_register_email">Reģistrācija</string>
     <string name="fui_name_hint">Vārds un uzvārds</string>

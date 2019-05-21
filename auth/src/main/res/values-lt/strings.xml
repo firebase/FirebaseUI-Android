@@ -26,6 +26,7 @@
     <string name="fui_required_field">Šį lauką būtina užpildyti.</string>
     <string name="fui_invalid_email_address">Šis el. pašto adresas netinkamas</string>
     <string name="fui_missing_email_address">Norėdami tęsti įveskite el. pašto adresą</string>
+    <string name="fui_missing_first_and_last_name">Įveskite vardą ir pavardę.</string>
     <string name="fui_progress_dialog_checking_accounts">Tikrinama, ar yra esamų paskyrų…</string>
     <string name="fui_title_register_email">Prisiregistruoti</string>
     <string name="fui_name_hint">Vardas ir pavardė</string>

@@ -26,6 +26,7 @@
     <string name="fui_required_field">此欄位不可留空。</string>
     <string name="fui_invalid_email_address">電子郵件地址不正確</string>
     <string name="fui_missing_email_address">如要繼續，請輸入您的電子郵件地址</string>
+    <string name="fui_missing_first_and_last_name">請輸入姓名。</string>
     <string name="fui_progress_dialog_checking_accounts">正在檢查是否已有帳戶…</string>
     <string name="fui_title_register_email">註冊</string>
     <string name="fui_name_hint">姓氏和名字</string>

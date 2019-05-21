@@ -26,6 +26,7 @@
     <string name="fui_required_field">이 입력란을 비워둘 수 없습니다.</string>
     <string name="fui_invalid_email_address">이메일 주소가 잘못되었습니다.</string>
     <string name="fui_missing_email_address">계속하려면 이메일 주소를 입력하세요.</string>
+    <string name="fui_missing_first_and_last_name">성과 이름을 입력하세요.</string>
     <string name="fui_progress_dialog_checking_accounts">기존 계정 확인 중…</string>
     <string name="fui_title_register_email">가입</string>
     <string name="fui_name_hint">이름 및 성</string>

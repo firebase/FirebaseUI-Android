@@ -26,6 +26,7 @@
     <string name="fui_required_field">Потрібно заповнити це поле.</string>
     <string name="fui_invalid_email_address">Електронна адреса неправильна</string>
     <string name="fui_missing_email_address">Щоб продовжити, введіть електронну адресу</string>
+    <string name="fui_missing_first_and_last_name">Введіть ім’я та прізвище.</string>
     <string name="fui_progress_dialog_checking_accounts">Перевірка наявних облікових записів…</string>
     <string name="fui_title_register_email">Зареєструватися</string>
     <string name="fui_name_hint">Ім’я та прізвище</string>

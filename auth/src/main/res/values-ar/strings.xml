@@ -26,6 +26,7 @@
     <string name="fui_required_field">يجب ملء هذا الحقل.</string>
     <string name="fui_invalid_email_address">عنوان البريد الإلكتروني هذا غير صحيح</string>
     <string name="fui_missing_email_address">يجب إدخال عنوان بريدك الإلكتروني للمتابعة</string>
+    <string name="fui_missing_first_and_last_name">يُرجى إدخال الاسم الأول واسم العائلة.</string>
     <string name="fui_progress_dialog_checking_accounts">جارٍ البحث عن حسابات حالية…</string>
     <string name="fui_title_register_email">اشتراك</string>
     <string name="fui_name_hint">الاسم الأول واسم العائلة</string>
