@@ -26,6 +26,7 @@
     <string name="fui_required_field">तुम्ही हे रिक्त सोडू शकत नाही.</string>
     <string name="fui_invalid_email_address">तो ईमेल अॅड्रेस चुकीचा आहे</string>
     <string name="fui_missing_email_address">सुरू ठेवण्यासाठी तुमचा ईमेल अॅड्रेस टाका</string>
+    <string name="fui_missing_first_and_last_name">कृपया नाव आणि आडनाव एंटर करा.</string>
     <string name="fui_progress_dialog_checking_accounts">सध्याच्या खात्यांसाठी तपासत आहे…</string>
     <string name="fui_title_register_email">साइन अप करा</string>
     <string name="fui_name_hint">नाव आणि आडनाव</string>

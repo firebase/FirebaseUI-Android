@@ -26,6 +26,7 @@
     <string name="fui_required_field">Du måste fylla i det här fältet.</string>
     <string name="fui_invalid_email_address">E-postadressen är ogiltig</string>
     <string name="fui_missing_email_address">Ange din e-postadress om du vill fortsätta</string>
+    <string name="fui_missing_first_and_last_name">Ange för- och efternamn.</string>
     <string name="fui_progress_dialog_checking_accounts">Söker efter befintliga konton…</string>
     <string name="fui_title_register_email">Registrera dig</string>
     <string name="fui_name_hint">För- och efternamn</string>

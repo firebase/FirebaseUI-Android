@@ -26,6 +26,7 @@
     <string name="fui_required_field">Bu alanı boş bırakamazsınız.</string>
     <string name="fui_invalid_email_address">E-posta adresi doğru değil</string>
     <string name="fui_missing_email_address">Devam etmek için e-posta adresinizi girin</string>
+    <string name="fui_missing_first_and_last_name">Lütfen ad ve soyadı girin.</string>
     <string name="fui_progress_dialog_checking_accounts">Mevcut hesaplar kontrol ediliyor…</string>
     <string name="fui_title_register_email">Kaydol</string>
     <string name="fui_name_hint">Ad ve Soyad</string>

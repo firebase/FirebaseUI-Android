@@ -26,6 +26,7 @@
     <string name="fui_required_field">אי אפשר להשאיר את השדה הזה ריק.</string>
     <string name="fui_invalid_email_address">כתובת האימייל שגויה</string>
     <string name="fui_missing_email_address">כדי להמשיך, עליך להזין כתובת אימייל</string>
+    <string name="fui_missing_first_and_last_name">יש להזין שם פרטי ושם משפחה.</string>
     <string name="fui_progress_dialog_checking_accounts">מחפש חשבונות קיימים…</string>
     <string name="fui_title_register_email">הרשמה</string>
     <string name="fui_name_hint">שם מלא</string>

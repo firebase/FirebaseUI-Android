@@ -26,6 +26,7 @@
     <string name="fui_required_field">ನೀವು ಇದನ್ನು ಖಾಲಿ ಬಿಡುವಂತಿಲ್ಲ.</string>
     <string name="fui_invalid_email_address">ಆ ಇಮೇಲ್ ವಿಳಾಸ ಸರಿಯಾಗಿಲ್ಲ</string>
     <string name="fui_missing_email_address">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_missing_first_and_last_name">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ.</string>
     <string name="fui_progress_dialog_checking_accounts">ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಖಾತೆಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_title_register_email">ಸೈನ್ ಅಪ್</string>
     <string name="fui_name_hint">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರು</string>

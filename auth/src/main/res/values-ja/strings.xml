@@ -26,6 +26,7 @@
     <string name="fui_required_field">入力必須項目です。</string>
     <string name="fui_invalid_email_address">メールアドレスが正しくありません</string>
     <string name="fui_missing_email_address">続行するにはメールアドレスを入力してください</string>
+    <string name="fui_missing_first_and_last_name">姓と名を入力してください。</string>
     <string name="fui_progress_dialog_checking_accounts">既存のアカウントを確認しています…</string>
     <string name="fui_title_register_email">登録</string>
     <string name="fui_name_hint">あなたの名前</string>
@@ -40,7 +41,7 @@
     <string name="fui_welcome_back_email_link_header">すでにアカウントをお持ちです\n</string>
     <string name="fui_welcome_back_idp_prompt">%1$s をすでに使用しています。%2$s でログインして続行してください。</string>
     <string name="fui_welcome_back_password_prompt_body">すでに %1$s を使用してログインしています。このアカウントのパスワードを入力してください。</string>
-    <string name="fui_welcome_back_email_link_prompt_body">すでに %1$s をお使いです。以下のメールリンクを使用してログインすると、%2$s アカウントを %1$s に接続できます。\n\nこのフローで %2$s アカウントをこのメールアドレスに正常に接続するには、同じ端末またはブラウザでリンクを開く必要があります。</string>
+    <string name="fui_welcome_back_email_link_prompt_body">すでに %1$s をお使いです。以下のメールリンクを使用してログインすると、%2$s アカウントを %1$s に接続できます。\n\nこのフローで %2$s アカウントをこのメールアドレスに正常に接続するには、同じデバイスまたはブラウザでリンクを開く必要があります。</string>
     <string name="fui_progress_dialog_signing_in">ログインしています…</string>
     <string name="fui_trouble_signing_in">ログインできない場合</string>
     <string name="fui_title_recover_password_activity">パスワードの復元</string>
@@ -59,8 +60,8 @@
     <string name="fui_email_link_trouble_getting_possible_fixes">以下の一般的な解決方法をお試しください。\n\u2022 メールがスパムに分類されたりフィルタされたりしていないか確認する。\n\u2022 インターネットの接続を確認する。\n\u2022 メールアドレスのスペルに誤りがないか確認する。\n\u2022 受信トレイの容量不足や、設定関連のその他の問題がないか確認する。\n</string>
     <string name="fui_email_link_trouble_getting_email_resend_solution">上記の手順で解決しなかった場合はメールを再送信できます。メールを再送信すると、前回のメールに記載されたリンクは無効になります。</string>
     <string name="fui_email_link_resend">再送信</string>
-    <string name="fui_email_link_wrong_device_header">新しい端末またはブラウザが検出されました。</string>
-    <string name="fui_email_link_wrong_device_message">ログイン プロセスを開始したときと同じ端末またはブラウザを使用してリンクを開いてみてください。</string>
+    <string name="fui_email_link_wrong_device_header">新しいデバイスまたはブラウザが検出されました。</string>
+    <string name="fui_email_link_wrong_device_message">ログイン プロセスを開始したときと同じデバイスまたはブラウザを使用してリンクを開いてみてください。</string>
     <string name="fui_email_link_invalid_link_header">ログインを完了できません</string>
     <string name="fui_email_link_invalid_link_message">アクション コードが無効です。この問題は、コードの形式が誤っているか期限が切れている、またはコードがすでに使用されている場合に発生する可能性があります。</string>
     <string name="fui_email_link_different_anonymous_user_header">セッションが終了しています</string>
@@ -68,7 +69,7 @@
     <string name="fui_email_link_confirm_email_header">メールの確認</string>
     <string name="fui_email_link_confirm_email_message">ログインを続行するにはメールを確認してください</string>
     <string name="fui_email_link_dismiss_button">閉じる</string>
-    <string name="fui_email_link_cross_device_linking_text">元々は %1$s をメール アカウントに接続しようとしましたが、ログインしていない端末でリンクが開かれました。%1$s アカウントの接続を続行する場合は、ログインを開始した端末でリンクを開いてください。接続しない場合は、[続行] をタップしてこの端末でログインします。</string>
+    <string name="fui_email_link_cross_device_linking_text">元々は %1$s をメール アカウントに接続しようとしましたが、ログインしていないデバイスでリンクが開かれました。%1$s アカウントの接続を続行する場合は、ログインを開始したデバイスでリンクを開いてください。接続しない場合は、[続行] をタップしてこのデバイスでログインします。</string>
     <string name="fui_email_link_cross_device_sign_in_button_text">%1$s でログイン</string>
     <string name="fui_verify_phone_number_title">電話番号を入力してください</string>
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>

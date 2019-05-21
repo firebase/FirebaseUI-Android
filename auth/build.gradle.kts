@@ -13,7 +13,6 @@ android {
         disable("UnusedQuantity")
         disable("UnknownNullness")  // TODO fix in future PR
         disable("TypographyQuotes") // Straight versus directional quotes
-        disable("MissingTranslation") // TODO remove after translations for fui_missing_first_and_last_name are added
     }
 
     testOptions {

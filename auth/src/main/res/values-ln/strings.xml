@@ -26,6 +26,7 @@
     <string name="fui_required_field">Ce champ est obligatoire.</string>
     <string name="fui_invalid_email_address">Cette adresse e-mail n\'est pas valide</string>
     <string name="fui_missing_email_address">Saisissez votre adresse e-mail pour continuer</string>
+    <string name="fui_missing_first_and_last_name">Veuillez saisir un prénom et un nom.</string>
     <string name="fui_progress_dialog_checking_accounts">Vérification des comptes existants…</string>
     <string name="fui_title_register_email">S\'inscrire</string>
     <string name="fui_name_hint">Nom et prénom</string>

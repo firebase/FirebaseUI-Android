@@ -26,6 +26,7 @@
     <string name="fui_required_field">Anda tidak boleh membiarkan ruang ini kosong.</string>
     <string name="fui_invalid_email_address">Alamat e-mel itu tidak betul</string>
     <string name="fui_missing_email_address">Masukkan alamat e-mel anda untuk teruskan</string>
+    <string name="fui_missing_first_and_last_name">Sila masukkan nama pertama dan nama keluarga.</string>
     <string name="fui_progress_dialog_checking_accounts">Menyemak akaun sedia ada…</string>
     <string name="fui_title_register_email">Daftar</string>
     <string name="fui_name_hint">Nama pertama &amp; keluarga</string>

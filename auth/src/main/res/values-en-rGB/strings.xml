@@ -26,6 +26,7 @@
     <string name="fui_required_field">You can\'t leave this empty.</string>
     <string name="fui_invalid_email_address">Incorrect email address</string>
     <string name="fui_missing_email_address">Enter your email address to continue</string>
+    <string name="fui_missing_first_and_last_name">Please enter a first name and surname.</string>
     <string name="fui_progress_dialog_checking_accounts">Checking for existing accounts…</string>
     <string name="fui_title_register_email">Sign up</string>
     <string name="fui_name_hint">First name &amp; surname</string>

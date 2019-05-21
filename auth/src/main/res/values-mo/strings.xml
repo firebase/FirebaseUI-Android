@@ -26,6 +26,7 @@
     <string name="fui_required_field">Câmpul este obligatoriu.</string>
     <string name="fui_invalid_email_address">Adresa de e-mail nu este corectă</string>
     <string name="fui_missing_email_address">Introduceți adresa de e-mail pentru a continua</string>
+    <string name="fui_missing_first_and_last_name">Introduceți numele și prenumele.</string>
     <string name="fui_progress_dialog_checking_accounts">Se caută conturi existente…</string>
     <string name="fui_title_register_email">Înscrieți-vă</string>
     <string name="fui_name_hint">Prenume și nume de familie</string>

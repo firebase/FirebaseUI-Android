@@ -26,6 +26,7 @@
     <string name="fui_required_field">Du må fylle ut dette feltet.</string>
     <string name="fui_invalid_email_address">E-postadressen er ikke riktig</string>
     <string name="fui_missing_email_address">Oppgi e-postadressen din for å fortsette</string>
+    <string name="fui_missing_first_and_last_name">Skriv inn et for- og etternavn.</string>
     <string name="fui_progress_dialog_checking_accounts">Ser etter eksisterende kontoer…</string>
     <string name="fui_title_register_email">Registrering</string>
     <string name="fui_name_hint">Fornavn og etternavn</string>

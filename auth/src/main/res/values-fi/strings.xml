@@ -26,6 +26,7 @@
     <string name="fui_required_field">Tätä ei voi jättää tyhjäksi.</string>
     <string name="fui_invalid_email_address">Virheellinen sähköpostiosoite</string>
     <string name="fui_missing_email_address">Jatka antamalla sähköpostiosoite.</string>
+    <string name="fui_missing_first_and_last_name">Lisää etu- ja sukunimi.</string>
     <string name="fui_progress_dialog_checking_accounts">Tarkistetaan nykyisiä tilejä…</string>
     <string name="fui_title_register_email">Hanki tili</string>
     <string name="fui_name_hint">Etu- ja sukunimi</string>

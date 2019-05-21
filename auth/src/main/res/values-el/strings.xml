@@ -26,6 +26,7 @@
     <string name="fui_required_field">Αυτό το πεδίο είναι υποχρεωτικό.</string>
     <string name="fui_invalid_email_address">Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν είναι σωστή</string>
     <string name="fui_missing_email_address">Εισαγάγετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου για να συνεχίσετε</string>
+    <string name="fui_missing_first_and_last_name">Εισαγάγετε ένα όνομα και ένα επώνυμο.</string>
     <string name="fui_progress_dialog_checking_accounts">Γίνεται έλεγχος για υπάρχοντες λογαριασμούς…</string>
     <string name="fui_title_register_email">Εγγραφή</string>
     <string name="fui_name_hint">Όνομα και επώνυμο</string>

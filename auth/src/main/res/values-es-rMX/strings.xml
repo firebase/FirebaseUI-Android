@@ -26,6 +26,7 @@
     <string name="fui_required_field">Este campo no puede estar en blanco.</string>
     <string name="fui_invalid_email_address">La dirección de correo electrónico es incorrecta</string>
     <string name="fui_missing_email_address">Ingresa tu dirección de correo electrónico para continuar</string>
+    <string name="fui_missing_first_and_last_name">Ingresa un nombre y un apellido.</string>
     <string name="fui_progress_dialog_checking_accounts">Buscando cuentas existentes…</string>
     <string name="fui_title_register_email">Registrarse</string>
     <string name="fui_name_hint">Nombre y apellido</string>
