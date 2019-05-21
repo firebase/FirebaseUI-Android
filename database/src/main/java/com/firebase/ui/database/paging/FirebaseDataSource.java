@@ -1,5 +1,6 @@
 package com.firebase.ui.database.paging;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.paging.DataSource;
@@ -213,6 +214,10 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
         }
     }
 
+    /**
+     * DatabaseError.fromStatus() is not meant to be public.
+     */
+    @SuppressLint("RestrictedApi")
     private void setDatabaseNotFoundError(){
         String details = DETAILS_DATABASE_NOT_FOUND + mQuery.toString();
         mError.postValue(DatabaseError.fromStatus(
