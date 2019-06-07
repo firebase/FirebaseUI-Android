@@ -136,14 +136,6 @@ public class AuthMethodPickerLayout implements Parcelable {
         }
 
         /**
-         * Set the ID of the Github sign in button in the custom layout.
-         */
-        public AuthMethodPickerLayout.Builder setGithubButtonId(@IdRes int githubButton) {
-            providersMapping.put(GithubAuthProvider.PROVIDER_ID, githubButton);
-            return this;
-        }
-
-        /**
          * Set the ID of the Phone Number sign in button in the custom layout.
          */
         public AuthMethodPickerLayout.Builder setPhoneButtonId(@IdRes int phoneButton) {
