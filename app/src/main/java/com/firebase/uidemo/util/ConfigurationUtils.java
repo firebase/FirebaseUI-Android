@@ -37,16 +37,6 @@ public final class ConfigurationUtils {
         return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
-    public static boolean isGitHubMisconfigured(@NonNull Context context) {
-        List<String> gitHubConfigs = Arrays.asList(
-                context.getString(R.string.firebase_web_host),
-                context.getString(R.string.github_client_id),
-                context.getString(R.string.github_client_secret)
-        );
-
-        return gitHubConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
-    }
-
     @NonNull
     public static List<AuthUI.IdpConfig> getConfiguredProviders(@NonNull Context context) {
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
@@ -61,10 +51,6 @@ public final class ConfigurationUtils {
 
         if (!isTwitterMisconfigured(context)) {
             providers.add(new AuthUI.IdpConfig.TwitterBuilder().build());
-        }
-
-        if (!isGitHubMisconfigured(context)) {
-            providers.add(new AuthUI.IdpConfig.GitHubBuilder().build());
         }
 
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()

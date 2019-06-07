@@ -42,7 +42,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -179,9 +178,6 @@ public class SignedInActivity extends AppCompatActivity {
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_twitter));
-                        break;
-                    case GithubAuthProvider.PROVIDER_ID:
-                        providers.add(getString(R.string.providers_github));
                         break;
                     case EmailAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_email));

@@ -72,7 +72,6 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
     @BindView(R.id.facebook_provider) CheckBox mUseFacebookProvider;
     @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
-    @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
     @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
     @BindView(R.id.email_link_provider) CheckBox mUseEmailLinkProvider;
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
@@ -100,10 +99,6 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.facebook_permissions_header) TextView mFacebookPermissionsHeader;
     @BindView(R.id.facebook_permission_friends) CheckBox mFacebookPermissionFriends;
     @BindView(R.id.facebook_permission_photos) CheckBox mFacebookPermissionPhotos;
-
-    @BindView(R.id.github_permissions_header) TextView mGitHubPermissionsHeader;
-    @BindView(R.id.github_permission_repo) CheckBox mGitHubPermissionRepo;
-    @BindView(R.id.github_permission_gist) CheckBox mGitHubPermissionGist;
 
     @BindView(R.id.credential_selector_enabled) CheckBox mEnableCredentialSelector;
     @BindView(R.id.hint_selector_enabled) CheckBox mEnableHintSelector;
@@ -157,21 +152,6 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
         }
 
-        if (ConfigurationUtils.isGitHubMisconfigured(this)) {
-            mUseGitHubProvider.setChecked(false);
-            mUseGitHubProvider.setEnabled(false);
-            mUseGitHubProvider.setText(R.string.github_label_missing_config);
-            setGitHubPermissionsEnabled(false);
-        } else {
-            setGitHubPermissionsEnabled(mUseGitHubProvider.isChecked());
-            mUseGitHubProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    setGitHubPermissionsEnabled(checked);
-                }
-            });
-        }
-
         mUseEmailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -199,7 +179,6 @@ public class AuthUiActivity extends AppCompatActivity {
 
                     mUseFacebookProvider.setChecked(false);
                     mUseTwitterProvider.setChecked(false);
-                    mUseGitHubProvider.setChecked(false);
                     mUseEmailLinkProvider.setChecked(false);
                     mUsePhoneProvider.setChecked(false);
                     mUseAnonymousProvider.setChecked(false);
@@ -209,8 +188,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)
-                || ConfigurationUtils.isTwitterMisconfigured(this)
-                || ConfigurationUtils.isGitHubMisconfigured(this)) {
+                || ConfigurationUtils.isTwitterMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
         }
 
@@ -414,12 +392,6 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.TwitterBuilder().build());
         }
 
-        if (mUseGitHubProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.GitHubBuilder()
-                    .setPermissions(getGitHubPermissions())
-                    .build());
-        }
-
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.EmailBuilder()
                     .setRequireName(mRequireName.isChecked())
@@ -490,12 +462,6 @@ public class AuthUiActivity extends AppCompatActivity {
         mFacebookPermissionPhotos.setEnabled(enabled);
     }
 
-    private void setGitHubPermissionsEnabled(boolean enabled) {
-        mGitHubPermissionsHeader.setEnabled(enabled);
-        mGitHubPermissionRepo.setEnabled(enabled);
-        mGitHubPermissionGist.setEnabled(enabled);
-    }
-
     private List<String> getGoogleScopes() {
         List<String> result = new ArrayList<>();
         if (mGoogleScopeYoutubeData.isChecked()) {
@@ -514,17 +480,6 @@ public class AuthUiActivity extends AppCompatActivity {
         }
         if (mFacebookPermissionPhotos.isChecked()) {
             result.add("user_photos");
-        }
-        return result;
-    }
-
-    private List<String> getGitHubPermissions() {
-        List<String> result = new ArrayList<>();
-        if (mGitHubPermissionRepo.isChecked()) {
-            result.add("repo");
-        }
-        if (mGitHubPermissionGist.isChecked()) {
-            result.add("gist");
         }
         return result;
     }
