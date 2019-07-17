@@ -2,7 +2,7 @@ object Config {
     const val version = "5.0.0-SNAPSHOT"
     val submodules = listOf("auth", "auth-github", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.2.61"
+    private const val kotlinVersion = "1.3.31"
 
     object SdkVersions {
         const val compile = 28
@@ -11,7 +11,7 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:3.2.1"
+        const val android = "com.android.tools.build:gradle:3.4.2"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.2.0"
 
