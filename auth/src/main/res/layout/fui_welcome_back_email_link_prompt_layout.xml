@@ -49,6 +49,8 @@
             <TextView
                 android:id="@+id/email_footer_tos_and_pp_text"
                 style="@style/FirebaseUI.PrivacyFooter"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button_sign_in"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
