@@ -84,6 +84,12 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         return mSnapshots.get(position);
     }
 
+    /**
+     * Gets the size of snapshots in adapter.
+     *
+     * @return the total count of snapshots in adapter.
+     * @see ObservableSnapshotArray#size()
+     */
     @Override
     public int getItemCount() {
         return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
@@ -126,6 +132,10 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         onBindViewHolder(holder, position, getItem(position));
     }
 
+    /**
+     * Method for changing/updating the {@link Query} in existing adapter.
+     * @param newQuery is a new updated query.
+     */
     public void updateQuery(@NonNull Query newQuery) {
         mSnapshots.updateQuery(newQuery);
     }
