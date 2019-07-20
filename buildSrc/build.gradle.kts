@@ -6,7 +6,7 @@ repositories {
 
 plugins {
     `kotlin-dsl`
-    kotlin("jvm") version "1.3.41"
+    kotlin("jvm") version "1.3.11"
 }
 dependencies {
     implementation(kotlin("stdlib-jdk8"))

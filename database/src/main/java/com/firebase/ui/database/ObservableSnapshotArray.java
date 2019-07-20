@@ -31,5 +31,5 @@ public abstract class ObservableSnapshotArray<T>
      *
      * @param newQuery is a new updated query.
      */
-    public abstract void updateQuery(Query newQuery);
+    public abstract void updateQuery(@NonNull Query newQuery);
 }
