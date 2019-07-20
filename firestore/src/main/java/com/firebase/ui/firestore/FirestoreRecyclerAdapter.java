@@ -11,6 +11,7 @@ import android.util.Log;
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
 /**
  * RecyclerView adapter that listens to a {@link FirestoreArray} and displays its data in real
@@ -123,6 +124,10 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         onBindViewHolder(holder, position, getItem(position));
+    }
+
+    public void updateQuery(@NonNull Query newQuery) {
+        mSnapshots.updateQuery(newQuery);
     }
 
     /**

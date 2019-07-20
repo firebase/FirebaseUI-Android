@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class FirestoreArray<T> extends ObservableSnapshotArray<T>
         implements EventListener<QuerySnapshot> {
-    private final Query mQuery;
+    private Query mQuery;
     private final MetadataChanges mMetadataChanges;
     private ListenerRegistration mRegistration;
 
@@ -125,5 +125,17 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
             notifyOnChildChanged(ChangeEventType.CHANGED, snapshot,
                     change.getNewIndex(), change.getNewIndex());
         }
+    }
+
+    @Override
+    public void updateQuery(@NonNull Query newQuery) {
+        // Clear the Snapshot list.
+        mSnapshots.clear();
+        notifyOnDataChanged();
+
+        // Remove previous registration and create new one.
+        onDestroy();
+        mQuery = newQuery;
+        onCreate();
     }
 }
