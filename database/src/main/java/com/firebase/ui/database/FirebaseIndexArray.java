@@ -209,7 +209,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void updateQuery(Query newQuery) {
+    public void updateQuery(@NonNull Query newQuery) {
         // Clear the Snapshot list.
         mDataSnapshots.clear();
         mKeySnapshots.clear();
