@@ -26,5 +26,10 @@ public abstract class ObservableSnapshotArray<T>
         super(new CachingSnapshotParser<>(parser));
     }
 
+    /**
+     * Method for changing/updating the {@link Query} in existing adapter.
+     *
+     * @param newQuery is a new updated query.
+     */
     public abstract void updateQuery(Query newQuery);
 }
