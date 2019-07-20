@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.firebase.ui.common.BaseObservableSnapshotArray;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public abstract class ObservableSnapshotArray<T>
     public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         super(new CachingSnapshotParser<>(parser));
     }
+
+    public abstract void updateQuery(Query newQuery);
 }

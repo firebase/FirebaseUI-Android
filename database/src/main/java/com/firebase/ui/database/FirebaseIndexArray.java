@@ -34,7 +34,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
-    private final DatabaseReference mDataRef;
+    private DatabaseReference mDataRef;
     private final Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
 
     private final FirebaseArray<String> mKeySnapshots;
@@ -206,6 +206,19 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
             mHasPendingMoveOrDelete = true;
             notifyOnChildChanged(ChangeEventType.REMOVED, snapshot, realIndex, -1);
         }
+    }
+
+    @Override
+    public void updateQuery(Query newQuery) {
+        // Clear the Snapshot list.
+        mDataSnapshots.clear();
+        mKeySnapshots.clear();
+        notifyOnDataChanged();
+
+        // Remove previous registration and create new one.
+        onDestroy();
+        mDataRef = newQuery.getRef();
+        onCreate();
     }
 
     /**

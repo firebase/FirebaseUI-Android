@@ -11,6 +11,7 @@ import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 /**
  * This class is a generic way of backing a {@link RecyclerView} with a Firebase location. It
@@ -115,6 +116,15 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
+    }
+
+    /**
+     * Method for changing/updating the {@link Query} in existing adapter.
+     *
+     * @param newQuery is a new updated query.
+     */
+    public void updateQuery(@NonNull Query newQuery) {
+        mSnapshots.updateQuery(newQuery);
     }
 
     @Override

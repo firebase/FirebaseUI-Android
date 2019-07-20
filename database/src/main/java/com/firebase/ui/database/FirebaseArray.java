@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class FirebaseArray<T> extends ObservableSnapshotArray<T>
         implements ChildEventListener, ValueEventListener {
-    private final Query mQuery;
+    private Query mQuery;
     private final List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
@@ -126,5 +126,17 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     @Override
     protected List<DataSnapshot> getSnapshots() {
         return mSnapshots;
+    }
+
+    @Override
+    public void updateQuery(Query newQuery) {
+        // Clear the Snapshot list.
+        mSnapshots.clear();
+        notifyOnDataChanged();
+
+        // Remove previous registration and create new one.
+        onDestroy();
+        mQuery = newQuery;
+        onCreate();
     }
 }
