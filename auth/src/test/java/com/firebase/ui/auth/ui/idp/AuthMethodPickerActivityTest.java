@@ -122,6 +122,28 @@ public class AuthMethodPickerActivityTest {
                 nextIntent.intent.getComponent().getClassName());
     }
 
+    @Test
+    public void testCustomAuthMethodPickerLayoutWithEmailLink() {
+        List<String> providers = Arrays.asList(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD);
+
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.fui_provider_button_email)
+                .setEmailButtonId(R.id.email_button)
+                .build();
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivityWithCustomLayout(providers, customLayout);
+
+        Button emailButton = authMethodPickerActivity.findViewById(R.id.email_button);
+        emailButton.performClick();
+
+        //Expected result -> Directing users to EmailActivity
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+        assertEquals(
+                EmailActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
+    }
+
     private AuthMethodPickerActivity createActivityWithCustomLayout(List<String> providers,
                                                                     AuthMethodPickerLayout layout) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(
