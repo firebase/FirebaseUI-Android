@@ -19,7 +19,11 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.*;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.view.View;
@@ -29,8 +33,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.*;
+import com.firebase.ui.auth.AuthMethodPickerLayout;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.firebase.ui.auth.FirebaseUiException;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
@@ -206,7 +216,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private void populateIdpListCustomLayout(List<IdpConfig> providerConfigs) {
         Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
         for (IdpConfig idpConfig : providerConfigs) {
-            final String providerId = handleAliasForEmailLinkProvider(idpConfig.getProviderId());
+            final String providerId = providerOrEmailLinkProvider(idpConfig.getProviderId());
 
             if (!providerButtonIds.containsKey(providerId)) {
                 throw new IllegalStateException("No button found for auth provider: " + providerId);
@@ -219,10 +229,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     }
 
     @NonNull
-    private String handleAliasForEmailLinkProvider(@NonNull String providerId) {
-        if(providerId.equals(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)){
+    private String providerOrEmailLinkProvider(@NonNull String providerId) {
+        if (providerId.equals(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)) {
             return EmailAuthProvider.PROVIDER_ID;
         }
+
         return providerId;
     }
 
@@ -317,7 +328,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             @Override
             public void onClick(View view) {
                 if (isOffline()) {
-                    Toast.makeText(AuthMethodPickerActivity.this, getString(R.string.fui_no_internet), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AuthMethodPickerActivity.this,
+                            getString(R.string.fui_no_internet),
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
 
