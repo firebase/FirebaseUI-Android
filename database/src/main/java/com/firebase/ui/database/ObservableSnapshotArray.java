@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.firebase.ui.common.BaseObservableSnapshotArray;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
 
 import java.util.List;
 
@@ -26,10 +25,4 @@ public abstract class ObservableSnapshotArray<T>
         super(new CachingSnapshotParser<>(parser));
     }
 
-    /**
-     * Method for changing/updating the {@link Query} in existing adapter.
-     *
-     * @param newQuery is a new updated query.
-     */
-    public abstract void updateQuery(@NonNull Query newQuery);
 }
