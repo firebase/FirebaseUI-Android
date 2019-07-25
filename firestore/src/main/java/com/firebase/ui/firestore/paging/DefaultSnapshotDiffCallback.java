@@ -1,6 +1,5 @@
 package com.firebase.ui.firestore.paging;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.v7.util.DiffUtil;
@@ -26,7 +25,6 @@ public class DefaultSnapshotDiffCallback<T> extends DiffUtil.ItemCallback<Docume
         return oldItem.getId().equals(newItem.getId());
     }
 
-    @SuppressLint("DiffUtilEquals")
     @Override
     public boolean areContentsTheSame(@NonNull DocumentSnapshot oldItem,
                                       @NonNull DocumentSnapshot newItem) {
