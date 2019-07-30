@@ -24,5 +24,4 @@ public abstract class ObservableSnapshotArray<T>
     public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         super(new CachingSnapshotParser<>(parser));
     }
-
 }
