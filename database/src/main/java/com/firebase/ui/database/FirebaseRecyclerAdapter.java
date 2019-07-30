@@ -11,7 +11,6 @@ import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 
 /**
  * This class is a generic way of backing a {@link RecyclerView} with a Firebase location. It
@@ -29,17 +28,19 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    private final ObservableSnapshotArray<T> mSnapshots;
+    private FirebaseRecyclerOptions<T> mOptions;
+    private ObservableSnapshotArray<T> mSnapshots;
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
      * {@link FirebaseRecyclerOptions} for configuration options.
      */
     public FirebaseRecyclerAdapter(@NonNull FirebaseRecyclerOptions<T> options) {
+        mOptions = options;
         mSnapshots = options.getSnapshots();
 
-        if (options.getOwner() != null) {
-            options.getOwner().getLifecycle().addObserver(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().addObserver(this);
         }
     }
 
@@ -119,12 +120,27 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * Method for changing/updating the {@link Query} in existing adapter.
-     *
-     * @param newQuery is a new updated query.
+     * Re-initialize the Adapter with a new set of options. Can be used to change the query
+     * without re-constructing the entire adapter.
      */
-    public void updateQuery(@NonNull Query newQuery) {
-        mSnapshots.updateQuery(newQuery);
+    public void setOptions(@NonNull FirebaseRecyclerOptions<T> options) {
+        // Tear down old options
+        boolean wasListening = mSnapshots.isListening(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().removeObserver(this);
+        }
+        mSnapshots.clear();
+        stopListening();
+
+        // Set up new options
+        mOptions = options;
+        mSnapshots = options.getSnapshots();
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
+        }
+        if (wasListening) {
+            startListening();
+        }
     }
 
     @Override

@@ -127,16 +127,4 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     protected List<DataSnapshot> getSnapshots() {
         return mSnapshots;
     }
-
-    @Override
-    public void updateQuery(@NonNull Query newQuery) {
-        // Clear the Snapshot list.
-        mSnapshots.clear();
-        notifyOnDataChanged();
-
-        // Remove previous registration and create new one.
-        onDestroy();
-        mQuery = newQuery;
-        onCreate();
-    }
 }
