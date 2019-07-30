@@ -11,7 +11,6 @@ import android.util.Log;
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 
 /**
  * RecyclerView adapter that listens to a {@link FirestoreArray} and displays its data in real
@@ -26,7 +25,8 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
 
     private static final String TAG = "FirestoreRecycler";
 
-    private final ObservableSnapshotArray<T> mSnapshots;
+    private FirestoreRecyclerOptions<T> mOptions;
+    private ObservableSnapshotArray<T> mSnapshots;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -95,6 +95,30 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
     }
 
+    /**
+     * Re-initialize the Adapter with a new set of options. Can be used to change the query without
+     * re-constructing the entire adapter.
+     */
+    public void updateOptions(@NonNull FirestoreRecyclerOptions<T> options) {
+        // Tear down old options
+        boolean wasListening = mSnapshots.isListening(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().removeObserver(this);
+        }
+        mSnapshots.clear();
+        stopListening();
+
+        // Set up new options
+        mOptions = options;
+        mSnapshots = options.getSnapshots();
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
+        }
+        if (wasListening) {
+            startListening();
+        }
+    }
+
     @Override
     public void onChildChanged(@NonNull ChangeEventType type,
                                @NonNull DocumentSnapshot snapshot,
@@ -130,14 +154,6 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position) {
         onBindViewHolder(holder, position, getItem(position));
-    }
-
-    /**
-     * Method for changing/updating the {@link Query} in existing adapter.
-     * @param newQuery is a new updated query.
-     */
-    public void updateQuery(@NonNull Query newQuery) {
-        mSnapshots.updateQuery(newQuery);
     }
 
     /**

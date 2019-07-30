@@ -123,7 +123,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * Re-initialize the Adapter with a new set of options. Can be used to change the query
      * without re-constructing the entire adapter.
      */
-    public void setOptions(@NonNull FirebaseRecyclerOptions<T> options) {
+    public void updateOptions(@NonNull FirebaseRecyclerOptions<T> options) {
         // Tear down old options
         boolean wasListening = mSnapshots.isListening(this);
         if (mOptions.getOwner() != null) {

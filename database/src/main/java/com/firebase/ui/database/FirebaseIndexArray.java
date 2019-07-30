@@ -208,19 +208,6 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         }
     }
 
-    @Override
-    public void updateQuery(@NonNull Query newQuery) {
-        // Clear the Snapshot list.
-        mDataSnapshots.clear();
-        mKeySnapshots.clear();
-        notifyOnDataChanged();
-
-        // Remove previous registration and create new one.
-        onDestroy();
-        mDataRef = newQuery.getRef();
-        onCreate();
-    }
-
     /**
      * A ValueEventListener attached to the joined child data.
      */

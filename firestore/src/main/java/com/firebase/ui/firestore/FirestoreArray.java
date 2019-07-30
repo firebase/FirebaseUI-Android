@@ -126,16 +126,4 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
                     change.getNewIndex(), change.getNewIndex());
         }
     }
-
-    @Override
-    public void updateQuery(@NonNull Query newQuery) {
-        // Clear the Snapshot list.
-        mSnapshots.clear();
-        notifyOnDataChanged();
-
-        // Remove previous registration and create new one.
-        onDestroy();
-        mQuery = newQuery;
-        onCreate();
-    }
 }
