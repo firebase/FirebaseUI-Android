@@ -2,7 +2,7 @@ tasks.named("check").configure { dependsOn("compileDebugAndroidTestJavaWithJavac
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

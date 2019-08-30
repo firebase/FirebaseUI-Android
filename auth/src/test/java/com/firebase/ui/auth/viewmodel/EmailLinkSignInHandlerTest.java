@@ -1,6 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.Observer;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;

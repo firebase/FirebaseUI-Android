@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/FirebaseUI.WrapperStyle"
             android:layout_height="wrap_content">
 
@@ -52,7 +52,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/button_sign_in"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 

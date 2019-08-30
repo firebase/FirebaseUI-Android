@@ -1,7 +1,5 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.arch.lifecycle.Observer;
-
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -34,6 +32,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
+
+import androidx.lifecycle.Observer;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
