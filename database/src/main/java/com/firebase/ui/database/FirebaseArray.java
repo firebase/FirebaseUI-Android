@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class FirebaseArray<T> extends ObservableSnapshotArray<T>
         implements ChildEventListener, ValueEventListener {
-    private final Query mQuery;
+    private Query mQuery;
     private final List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**

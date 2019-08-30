@@ -25,7 +25,8 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
 
     private static final String TAG = "FirestoreRecycler";
 
-    private final ObservableSnapshotArray<T> mSnapshots;
+    private FirestoreRecyclerOptions<T> mOptions;
+    private ObservableSnapshotArray<T> mSnapshots;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -83,9 +84,39 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         return mSnapshots.get(position);
     }
 
+    /**
+     * Gets the size of snapshots in adapter.
+     *
+     * @return the total count of snapshots in adapter.
+     * @see ObservableSnapshotArray#size()
+     */
     @Override
     public int getItemCount() {
         return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
+    }
+
+    /**
+     * Re-initialize the Adapter with a new set of options. Can be used to change the query without
+     * re-constructing the entire adapter.
+     */
+    public void updateOptions(@NonNull FirestoreRecyclerOptions<T> options) {
+        // Tear down old options
+        boolean wasListening = mSnapshots.isListening(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().removeObserver(this);
+        }
+        mSnapshots.clear();
+        stopListening();
+
+        // Set up new options
+        mOptions = options;
+        mSnapshots = options.getSnapshots();
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
+        }
+        if (wasListening) {
+            startListening();
+        }
     }
 
     @Override

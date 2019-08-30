@@ -160,6 +160,14 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
         return mListeners.contains(listener);
     }
 
+    /**
+     * Clear data and notify all listeners.
+     */
+    public void clear() {
+        getSnapshots().clear();
+        notifyOnDataChanged();
+    }
+
     protected final void notifyOnChildChanged(@NonNull ChangeEventType type,
                                               @NonNull S snapshot,
                                               int newIndex,

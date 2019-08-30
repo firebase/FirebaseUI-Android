@@ -206,7 +206,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private void populateIdpListCustomLayout(List<IdpConfig> providerConfigs) {
         Map<String, Integer> providerButtonIds = customLayout.getProvidersButton();
         for (IdpConfig idpConfig : providerConfigs) {
-            final String providerId = idpConfig.getProviderId();
+            final String providerId = providerOrEmailLinkProvider(idpConfig.getProviderId());
+
             if (!providerButtonIds.containsKey(providerId)) {
                 throw new IllegalStateException("No button found for auth provider: " + providerId);
             }
@@ -215,6 +216,15 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             View loginButton = findViewById(buttonId);
             handleSignInOperation(idpConfig, loginButton);
         }
+    }
+
+    @NonNull
+    private String providerOrEmailLinkProvider(@NonNull String providerId) {
+        if (providerId.equals(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)) {
+            return EmailAuthProvider.PROVIDER_ID;
+        }
+
+        return providerId;
     }
 
     private void handleSignInOperation(IdpConfig idpConfig, View view) {

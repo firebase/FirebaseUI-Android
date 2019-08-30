@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class FirestoreArray<T> extends ObservableSnapshotArray<T>
         implements EventListener<QuerySnapshot> {
-    private final Query mQuery;
+    private Query mQuery;
     private final MetadataChanges mMetadataChanges;
     private ListenerRegistration mRegistration;
 

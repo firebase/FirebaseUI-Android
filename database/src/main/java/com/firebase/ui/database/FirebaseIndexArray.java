@@ -34,7 +34,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
-    private final DatabaseReference mDataRef;
+    private DatabaseReference mDataRef;
     private final Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
 
     private final FirebaseArray<String> mKeySnapshots;
