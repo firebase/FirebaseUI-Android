@@ -78,7 +78,7 @@
       in button. However this button is NOT considered part of the public API and you should not
       use it in your own app.
     -->
-    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
         android:id="@+id/custom_google_signin_button"
         style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
         android:layout_width="wrap_content"

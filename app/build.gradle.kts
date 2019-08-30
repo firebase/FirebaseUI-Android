@@ -22,7 +22,7 @@ android {
     }
 
     lintOptions {
-        disable("ResourceName", "MissingTranslation")
+        disable("ResourceName", "MissingTranslation", "DuplicateStrings")
     }
 
     compileOptions {

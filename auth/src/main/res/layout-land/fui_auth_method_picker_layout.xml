@@ -13,6 +13,7 @@
         android:id="@+id/top_progress_bar"
         style="@style/FirebaseUI.TopProgressBar"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
     <!-- TODO remove lint ignore once the bug is fixed:
