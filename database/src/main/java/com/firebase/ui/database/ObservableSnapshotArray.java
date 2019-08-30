@@ -1,12 +1,12 @@
 package com.firebase.ui.database;
 
-import android.support.annotation.NonNull;
-
 import com.firebase.ui.common.BaseObservableSnapshotArray;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Exposes a collection of items in Firebase as a {@link List} of {@link DataSnapshot}. To observe

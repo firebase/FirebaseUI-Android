@@ -1,11 +1,11 @@
 package com.firebase.ui.common;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-
 import java.util.AbstractList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 
 /**
  * Exposes a collection of {@link S} items in a database as a {@link List} of {@link T} objects. To

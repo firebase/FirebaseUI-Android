@@ -1,11 +1,16 @@
 package com.firebase.ui.auth.util.data;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import static com.firebase.ui.auth.util.data.EmailLinkParser.LinkParameters.*;
 import android.text.TextUtils;
 
 import com.google.android.gms.common.internal.Preconditions;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+
+import static com.firebase.ui.auth.util.data.EmailLinkParser.LinkParameters.ANONYMOUS_USER_ID_IDENTIFIER;
+import static com.firebase.ui.auth.util.data.EmailLinkParser.LinkParameters.FORCE_SAME_DEVICE_IDENTIFIER;
+import static com.firebase.ui.auth.util.data.EmailLinkParser.LinkParameters.PROVIDER_ID_IDENTIFIER;
+import static com.firebase.ui.auth.util.data.EmailLinkParser.LinkParameters.SESSION_IDENTIFIER;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ContinueUrlBuilder {

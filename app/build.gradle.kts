@@ -24,6 +24,11 @@ android {
     lintOptions {
         disable("ResourceName", "MissingTranslation")
     }
+
+    compileOptions {
+        setSourceCompatibility(JavaVersion.VERSION_1_8)
+        setTargetCompatibility(JavaVersion.VERSION_1_8)
+    }
 }
 
 dependencies {

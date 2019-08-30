@@ -1,8 +1,8 @@
 package com.firebase.ui.auth.util;
 
-import android.support.annotation.RestrictTo;
-
 import com.google.firebase.auth.FirebaseAuthException;
+
+import androidx.annotation.RestrictTo;
 
 /**
  * List of all possible results of {@link FirebaseAuthException#getErrorCode()} and their meanings.

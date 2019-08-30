@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.util.data;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.google.android.gms.common.internal.Preconditions;
@@ -10,6 +8,9 @@ import com.google.android.gms.common.internal.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkParser {

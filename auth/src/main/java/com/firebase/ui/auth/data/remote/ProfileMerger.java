@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.data.remote;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -14,6 +12,9 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 /**
  * Merges an existing account's profile with the new user's profile.

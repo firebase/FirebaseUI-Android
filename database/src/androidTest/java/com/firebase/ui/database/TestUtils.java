@@ -1,7 +1,6 @@
 package com.firebase.ui.database;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.FirebaseApp;

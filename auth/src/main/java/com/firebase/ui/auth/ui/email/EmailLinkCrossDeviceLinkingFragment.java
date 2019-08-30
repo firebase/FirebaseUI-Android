@@ -2,10 +2,6 @@ package com.firebase.ui.auth.ui.email;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-import android.support.v4.app.FragmentActivity;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +16,11 @@ import com.firebase.ui.auth.util.data.EmailLinkParser;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.TextHelper;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.fragment.app.FragmentActivity;
 
 import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 

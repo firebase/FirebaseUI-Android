@@ -1,8 +1,9 @@
 package com.firebase.ui.common;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 import android.util.LruCache;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 /**
  * Implementation of {@link BaseSnapshotParser} that caches results, so parsing a snapshot

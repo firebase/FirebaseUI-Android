@@ -1,9 +1,9 @@
 package com.firebase.ui.auth.ui.phone;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-
 import com.google.firebase.auth.PhoneAuthCredential;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class PhoneVerification {

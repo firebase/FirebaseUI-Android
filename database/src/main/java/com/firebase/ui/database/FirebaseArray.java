@@ -14,9 +14,6 @@
 
 package com.firebase.ui.database;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * This class implements a collection on top of a Firebase location.

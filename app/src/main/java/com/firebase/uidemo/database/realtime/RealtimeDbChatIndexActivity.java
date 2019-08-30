@@ -1,6 +1,5 @@
 package com.firebase.uidemo.database.realtime;
 
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import com.firebase.uidemo.database.ChatHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import androidx.annotation.NonNull;
 
 public class RealtimeDbChatIndexActivity extends RealtimeDbChatActivity {
     private DatabaseReference mChatIndicesRef;

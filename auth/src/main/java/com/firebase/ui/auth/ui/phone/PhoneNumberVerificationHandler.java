@@ -2,8 +2,6 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.app.Application;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
@@ -14,6 +12,9 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerification> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;

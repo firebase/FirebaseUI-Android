@@ -17,12 +17,6 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -37,8 +31,15 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.EmailAuthProvider;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.annotation.StringRes;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 

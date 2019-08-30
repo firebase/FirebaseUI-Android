@@ -1,8 +1,9 @@
 package com.firebase.ui.auth.util.data;
 
-import android.support.annotation.RestrictTo;
 
 import java.util.Random;
+
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SessionUtils {

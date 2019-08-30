@@ -19,13 +19,14 @@
 package com.firebase.ui.auth.util.ui;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.RestrictTo;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
 import java.util.Collections;
+
+import androidx.annotation.RestrictTo;
 
 /**
  * Listens for changes to a text field that has hyphens and replaces with the character being typed:

@@ -1,9 +1,10 @@
 package com.firebase.ui.auth.util.data;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
+
+import androidx.annotation.NonNull;
 
 public class TaskFailureLogger implements OnFailureListener {
     private String mTag;

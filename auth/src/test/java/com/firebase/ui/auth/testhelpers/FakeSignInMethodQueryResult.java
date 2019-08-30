@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-import android.support.annotation.Nullable;
 
 import com.google.firebase.auth.SignInMethodQueryResult;
 

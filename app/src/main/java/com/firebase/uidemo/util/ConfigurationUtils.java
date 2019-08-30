@@ -2,7 +2,6 @@ package com.firebase.uidemo.util;
 
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.uidemo.R;
@@ -11,6 +10,8 @@ import com.google.firebase.auth.ActionCodeSettings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class ConfigurationUtils {
 

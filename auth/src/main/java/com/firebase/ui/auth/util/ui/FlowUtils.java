@@ -3,14 +3,15 @@ package com.firebase.ui.auth.util.ui;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.IntentSender;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public final class FlowUtils {
     private FlowUtils() {

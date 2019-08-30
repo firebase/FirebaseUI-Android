@@ -1,11 +1,11 @@
 package com.firebase.ui.firestore.paging;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import android.support.v7.util.DiffUtil;
-
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+import androidx.recyclerview.widget.DiffUtil;
 
 /**
  * Default diff callback implementation for Firestore snapshots.

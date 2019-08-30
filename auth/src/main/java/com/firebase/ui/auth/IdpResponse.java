@@ -17,9 +17,6 @@ package com.firebase.ui.auth;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.data.model.User;
@@ -32,6 +29,10 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
