@@ -1,5 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
+import android.app.Application;
+
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -29,11 +31,11 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
 
 import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +70,7 @@ public class LinkingSocialProviderResponseHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new LinkingSocialProviderResponseHandler(RuntimeEnvironment.application);
+        mHandler = new LinkingSocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 GoogleAuthProvider.PROVIDER_ID));
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);

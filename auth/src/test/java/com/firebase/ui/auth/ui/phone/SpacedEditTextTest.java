@@ -29,9 +29,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,15 +46,13 @@ public class SpacedEditTextTest {
 
     @Before
     public void setUp() {
-        AttributeSet attrs = mock(AttributeSet.class);
         Context context = mock(Context.class);
         TypedArray array = mock(TypedArray.class);
 
         when(array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1))
                 .thenReturn(SPACING_PROPORTION);
-        when(context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText)).thenReturn(array);
-        mSpacedEditText = new SpacedEditText(RuntimeEnvironment.application, attrs);
-        mSpacedEditText.initAttrs(context, attrs);
+        when(context.obtainStyledAttributes(any(AttributeSet.class), eq(R.styleable.SpacedEditText))).thenReturn(array);
+        mSpacedEditText = new SpacedEditText(ApplicationProvider.getApplicationContext());
     }
 
     @Test

@@ -20,11 +20,12 @@ import android.widget.Button;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -33,9 +34,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -68,7 +70,7 @@ public class EmailActivityTest {
     public void testOnCreate_emailLinkLinkingFlow_expectSendEmailLinkFlowStarted() {
         // This is normally done by EmailLinkSendEmailHandler, saving the IdpResponse is done
         // in EmailActivity but it will not be saved if we haven't previously set the email
-        EmailLinkPersistenceManager.getInstance().saveEmail(RuntimeEnvironment.application,
+        EmailLinkPersistenceManager.getInstance().saveEmail(ApplicationProvider.getApplicationContext(),
                 EMAIL, TestConstants.SESSION_ID, TestConstants.UID);
 
         EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER, true);
@@ -79,7 +81,7 @@ public class EmailActivityTest {
 
         EmailLinkPersistenceManager persistenceManager = EmailLinkPersistenceManager.getInstance();
         IdpResponse response = persistenceManager.retrieveSessionRecord(
-                RuntimeEnvironment.application).getIdpResponseForLinking();
+                ApplicationProvider.getApplicationContext()).getIdpResponseForLinking();
 
         assertThat(response.getProviderType()).isEqualTo(GoogleAuthProvider.PROVIDER_ID);
         assertThat(response.getEmail()).isEqualTo(EMAIL);
@@ -146,7 +148,7 @@ public class EmailActivityTest {
 
     private EmailActivity createActivity(String providerId, boolean emailLinkLinkingFlow) {
         Intent startIntent = EmailActivity.createIntent(
-                RuntimeEnvironment.application,
+                ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(Collections.singletonList(providerId)));
 
         if (emailLinkLinkingFlow) {

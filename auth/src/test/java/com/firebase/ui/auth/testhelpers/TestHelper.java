@@ -35,12 +35,12 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-import org.robolectric.RuntimeEnvironment;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 import static org.mockito.ArgumentMatchers.eq;
@@ -54,28 +54,31 @@ public final class TestHelper {
     private static final String DEFAULT_APP_NAME = "[DEFAULT]";
 
     public static final FirebaseApp MOCK_APP;
+    public static Context context = ApplicationProvider.getApplicationContext();
+
 
     static {
+        
         FirebaseApp app = mock(FirebaseApp.class);
         when(app.get(eq(FirebaseAuth.class))).thenReturn(mock(FirebaseAuth.class));
-        when(app.getApplicationContext()).thenReturn(RuntimeEnvironment.application);
+        when(app.getApplicationContext()).thenReturn(context);
         when(app.getName()).thenReturn(DEFAULT_APP_NAME);
         MOCK_APP = app;
     }
 
     public static void initialize() {
         spyContextAndResources();
-        AuthUI.setApplicationContext(RuntimeEnvironment.application);
-        initializeApp(RuntimeEnvironment.application);
+        AuthUI.setApplicationContext(context);
+        initializeApp(context);
         initializeProviders();
     }
 
     private static void spyContextAndResources() {
-        RuntimeEnvironment.application = spy(RuntimeEnvironment.application);
-        when(RuntimeEnvironment.application.getApplicationContext())
-                .thenReturn(RuntimeEnvironment.application);
-        Resources spiedResources = spy(RuntimeEnvironment.application.getResources());
-        when(RuntimeEnvironment.application.getResources()).thenReturn(spiedResources);
+        context = spy(context);
+        when(context.getApplicationContext())
+                .thenReturn(context);
+        Resources spiedResources = spy(context.getResources());
+        when(context.getResources()).thenReturn(spiedResources);
     }
 
     private static void initializeApp(Context context) {
@@ -88,7 +91,6 @@ public final class TestHelper {
     }
 
     private static void initializeProviders() {
-        Context context = RuntimeEnvironment.application;
         when(context.getString(R.string.firebase_web_host)).thenReturn("abc");
         when(context.getString(R.string.default_web_client_id)).thenReturn("abc");
         when(context.getString(R.string.facebook_application_id)).thenReturn("abc");

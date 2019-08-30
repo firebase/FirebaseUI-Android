@@ -22,6 +22,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;
@@ -29,11 +30,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -47,7 +49,7 @@ public class WelcomeBackPasswordPromptTest {
 
     private WelcomeBackPasswordPrompt createActivity() {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
-                RuntimeEnvironment.application,
+                ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(Collections.singletonList(EmailAuthProvider.PROVIDER_ID)),
                 new IdpResponse.Builder(new User.Builder(
                         EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL

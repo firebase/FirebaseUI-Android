@@ -12,7 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -30,11 +31,12 @@ public class EmailLinkPersistanceManagerTest {
 
     @Test
     public void testSaveAndRetrieveEmailForLink() {
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
-                TestConstants.SESSION_ID, TestConstants.UID);
+        mPersistenceManager.saveEmail(
+                ApplicationProvider.getApplicationContext(),
+                TestConstants.EMAIL, TestConstants.SESSION_ID, TestConstants.UID);
 
         SessionRecord sessionRecord = mPersistenceManager
-                .retrieveSessionRecord(RuntimeEnvironment.application);
+                .retrieveSessionRecord(ApplicationProvider.getApplicationContext());
 
         assertThat(sessionRecord.getEmail()).isEqualTo(TestConstants.EMAIL);
         assertThat(sessionRecord.getSessionId()).isEqualTo(TestConstants.SESSION_ID);
@@ -45,12 +47,14 @@ public class EmailLinkPersistanceManagerTest {
     public void testSaveAndRetrieveIdpResonseForLinking_saveEmailFirst() {
         IdpResponse response = buildIdpResponse();
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
-                TestConstants.SESSION_ID, TestConstants.UID);
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application, response);
+        mPersistenceManager.saveEmail(
+                ApplicationProvider.getApplicationContext(),
+                TestConstants.EMAIL, TestConstants.SESSION_ID, TestConstants.UID);
+        mPersistenceManager.saveIdpResponseForLinking(
+                ApplicationProvider.getApplicationContext(), response);
 
         SessionRecord sessionRecord = mPersistenceManager
-                .retrieveSessionRecord(RuntimeEnvironment.application);
+                .retrieveSessionRecord(ApplicationProvider.getApplicationContext());
 
         assertThat(sessionRecord.getEmail()).isEqualTo(TestConstants.EMAIL);
         assertThat(sessionRecord.getSessionId()).isEqualTo(TestConstants.SESSION_ID);
@@ -62,10 +66,11 @@ public class EmailLinkPersistanceManagerTest {
     public void testSaveAndRetrieveIdpResonseForLinking_noSavedEmail_expectNothingSaved() {
         IdpResponse response = buildIdpResponse();
 
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application, response);
+        mPersistenceManager.saveIdpResponseForLinking(
+                ApplicationProvider.getApplicationContext(), response);
 
         SessionRecord sessionRecord = mPersistenceManager
-                .retrieveSessionRecord(RuntimeEnvironment.application);
+                .retrieveSessionRecord(ApplicationProvider.getApplicationContext());
 
         assertThat(sessionRecord).isNull();
     }
