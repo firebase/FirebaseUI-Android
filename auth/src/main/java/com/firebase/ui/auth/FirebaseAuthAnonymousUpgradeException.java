@@ -1,6 +1,5 @@
 package com.firebase.ui.auth;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 

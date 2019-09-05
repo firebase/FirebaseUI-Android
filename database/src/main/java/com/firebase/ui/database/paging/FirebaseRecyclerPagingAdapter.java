@@ -25,7 +25,9 @@ import androidx.recyclerview.widget.RecyclerView;
  *
  * Configured with {@link DatabasePagingOptions}.
  */
-public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder> extends PagedListAdapter<DataSnapshot, VH> implements LifecycleObserver {
+public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder>
+        extends PagedListAdapter<DataSnapshot, VH>
+        implements LifecycleObserver {
 
     private final String TAG = "FirebasePagingAdapter";
 

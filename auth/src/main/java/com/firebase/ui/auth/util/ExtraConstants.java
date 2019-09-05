@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.util;
 
-
 import androidx.annotation.RestrictTo;
 
 /**

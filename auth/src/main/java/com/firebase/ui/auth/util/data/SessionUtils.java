@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.util.data;
 
-
 import java.util.Random;
 
 import androidx.annotation.RestrictTo;

@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-
 import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;

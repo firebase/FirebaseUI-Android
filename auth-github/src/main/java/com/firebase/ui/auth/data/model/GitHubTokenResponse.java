@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.data.model;
 
-
 import com.google.gson.annotations.SerializedName;
 
 import androidx.annotation.NonNull;

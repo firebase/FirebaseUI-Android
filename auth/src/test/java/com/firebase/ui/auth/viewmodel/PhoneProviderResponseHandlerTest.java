@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.viewmodel;
 
-
 import android.app.Application;
 
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;

@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.util.data;
 
-
 import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)

@@ -1,6 +1,5 @@
 package com.firebase.uidemo.util;
 
-
 import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;

@@ -1,6 +1,5 @@
 package com.firebase.uidemo.database.firestore;
 
-
 import com.firebase.uidemo.database.AbstractChat;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.ServerTimestamp;

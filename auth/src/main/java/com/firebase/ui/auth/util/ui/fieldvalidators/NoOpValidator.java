@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.util.ui.fieldvalidators;
 
-
 import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.annotation.RestrictTo;

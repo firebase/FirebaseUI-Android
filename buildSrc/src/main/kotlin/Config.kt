@@ -24,7 +24,7 @@ object Config {
             const val jvm = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
         }
 
-        object Support {
+        object Androidx {
             const val multidex = "androidx.multidex:multidex:2.0.0"
             const val annotations = "androidx.annotation:annotation:1.1.0"
             const val v4 = "androidx.legacy:legacy-support-v4:1.0.0"

@@ -18,8 +18,8 @@ dependencies {
     api(project(":common"))
     api(Config.Libs.Firebase.database)
 
-    api(Config.Libs.Support.v4)
-    api(Config.Libs.Support.recyclerView)
+    api(Config.Libs.Androidx.v4)
+    api(Config.Libs.Androidx.recyclerView)
 
     compileOnly(Config.Libs.Arch.paging)
     annotationProcessor(Config.Libs.Arch.compiler)

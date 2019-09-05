@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.util.ui.fieldvalidators;
 
-
 import com.firebase.ui.auth.R;
 import com.google.android.material.textfield.TextInputLayout;
 

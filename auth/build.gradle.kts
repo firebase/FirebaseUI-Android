@@ -24,9 +24,9 @@ android {
 }
 
 dependencies {
-    implementation(Config.Libs.Support.design)
-    implementation(Config.Libs.Support.customTabs)
-    implementation(Config.Libs.Support.constraint)
+    implementation(Config.Libs.Androidx.design)
+    implementation(Config.Libs.Androidx.customTabs)
+    implementation(Config.Libs.Androidx.constraint)
     implementation(Config.Libs.Misc.materialProgress)
 
     implementation(Config.Libs.Arch.extensions)
@@ -36,8 +36,8 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
-    implementation(Config.Libs.Support.v4) // Needed to override deps
-    implementation(Config.Libs.Support.cardView) // Needed to override Facebook
+    implementation(Config.Libs.Androidx.v4) // Needed to override deps
+    implementation(Config.Libs.Androidx.cardView) // Needed to override Facebook
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
     testImplementation(Config.Libs.Test.junit)

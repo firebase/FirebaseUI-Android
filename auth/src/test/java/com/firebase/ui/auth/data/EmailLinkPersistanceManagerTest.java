@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.data;
 
-
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;

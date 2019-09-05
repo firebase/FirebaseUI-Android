@@ -59,15 +59,14 @@
                 android:layout_marginTop="@dimen/fui_field_padding_vert"
                 android:textColor="?android:textColorTertiary"
                 android:textIsSelectable="false"
-                app:layout_constraintEnd_toStartOf="@+id/email_footer_tos_and_pp_text"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/send_code" />
 
             <TextView
                 android:id="@+id/email_footer_tos_and_pp_text"
                 style="@style/FirebaseUI.PrivacyFooter"
                 app:layout_constraintTop_toBottomOf="@+id/send_sms_tos"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

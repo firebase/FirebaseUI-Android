@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.data.remote;
 
-
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 
