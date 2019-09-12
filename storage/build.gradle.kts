@@ -3,5 +3,5 @@ dependencies {
 
     api(Config.Libs.Firebase.storage)
     // Override Play Services
-    implementation(Config.Libs.Androidx.v4)
+    implementation(Config.Libs.Androidx.legacySupportv4)
 }

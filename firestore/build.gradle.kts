@@ -19,7 +19,7 @@ dependencies {
     api(project(":common"))
     api(Config.Libs.Firebase.firestore)
 
-    api(Config.Libs.Androidx.v4)
+    api(Config.Libs.Androidx.legacySupportv4)
     api(Config.Libs.Androidx.recyclerView)
 
     compileOnly(Config.Libs.Arch.paging)

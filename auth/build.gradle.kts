@@ -36,7 +36,7 @@ dependencies {
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
-    implementation(Config.Libs.Androidx.v4) // Needed to override deps
+    implementation(Config.Libs.Androidx.legacySupportv4) // Needed to override deps
     implementation(Config.Libs.Androidx.cardView) // Needed to override Facebook
     compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 

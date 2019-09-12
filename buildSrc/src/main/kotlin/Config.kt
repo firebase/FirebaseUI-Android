@@ -25,16 +25,16 @@ object Config {
         }
 
         object Androidx {
-            const val multidex = "androidx.multidex:multidex:2.0.0"
+            const val appCompat = "androidx.appcompat:appcompat:1.1.0"
             const val annotations = "androidx.annotation:annotation:1.1.0"
-            const val v4 = "androidx.legacy:legacy-support-v4:1.0.0"
-            const val appCompat = "androidx.appcompat:appcompat:1.0.0"
-            const val design = "com.google.android.material:material:1.0.0"
-            const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
-            const val cardView = "androidx.cardview:cardview:1.0.0"
             const val customTabs = "androidx.browser:browser:1.0.0"
-            const val mediaCompat = "androidx.media:media:1.0.1"
+            const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:1.1.3"
+            const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
+            const val multidex = "androidx.multidex:multidex:2.0.1"
+            const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
+
+            const val design = "com.google.android.material:material:1.0.0"
         }
 
         object Arch {
@@ -51,11 +51,11 @@ object Config {
         }
 
         object Firebase {
-            const val core = "com.google.firebase:firebase-core:17.2.0"
             const val auth = "com.google.firebase:firebase-auth:19.0.0"
-            const val firestore = "com.google.firebase:firebase-firestore:21.0.0"
-            const val database = "com.google.firebase:firebase-database:19.0.0"
-            const val storage = "com.google.firebase:firebase-storage:19.0.0"
+            const val core = "com.google.firebase:firebase-core:17.2.0"
+            const val database = "com.google.firebase:firebase-database:19.1.0"
+            const val firestore = "com.google.firebase:firebase-firestore:21.1.0"
+            const val storage = "com.google.firebase:firebase-storage:19.0.1"
         }
 
         object PlayServices {
