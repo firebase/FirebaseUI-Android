@@ -1,18 +1,18 @@
 package com.firebase.ui.database.paging;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
-import android.arch.paging.LivePagedListBuilder;
-import android.arch.paging.PagedList;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.util.DiffUtil;
-
 import com.firebase.ui.database.ClassSnapshotParser;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.annotations.NotNull;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.DiffUtil;
 
 /**
  * Options to configure an {@link FirebaseRecyclerPagingAdapter}.

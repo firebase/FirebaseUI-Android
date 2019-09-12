@@ -1,7 +1,6 @@
 package com.firebase.ui.database;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.FirebaseApp;
@@ -13,6 +12,8 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
 
 import static org.junit.Assert.assertTrue;
 

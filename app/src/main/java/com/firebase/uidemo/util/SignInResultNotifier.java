@@ -1,13 +1,14 @@
 package com.firebase.uidemo.util;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+
+import androidx.annotation.NonNull;
 
 /**
  * Notifies the user of sign in successes or failures beyond the lifecycle of an activity.

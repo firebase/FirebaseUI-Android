@@ -1,9 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
-import android.support.annotation.VisibleForTesting;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
@@ -13,6 +10,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.annotation.VisibleForTesting;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParameters, Resource<T>> {

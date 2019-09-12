@@ -3,8 +3,6 @@ package com.firebase.ui.auth.ui.phone;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
@@ -15,6 +13,9 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CheckPhoneHandler extends AuthViewModelBase<PhoneNumber> {

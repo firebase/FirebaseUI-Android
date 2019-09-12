@@ -1,6 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class RequestCodes {

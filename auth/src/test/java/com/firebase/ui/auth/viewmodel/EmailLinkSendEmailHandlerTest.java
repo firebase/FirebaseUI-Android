@@ -1,6 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.arch.lifecycle.Observer;
+import android.app.Application;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -26,9 +26,11 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
+
+import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -57,7 +59,7 @@ public class EmailLinkSendEmailHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new EmailLinkSendEmailHandler(RuntimeEnvironment.application);
+        mHandler = new EmailLinkSendEmailHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(new ArrayList<String>());
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
@@ -85,7 +87,7 @@ public class EmailLinkSendEmailHandlerTest {
         assertThat(acsCaptor.getValue()).isNotEqualTo(actionCodeSettings);
         validateSessionIdAddedToContinueUrl(acsCaptor.getValue(), null, forceSameDevice);
 
-        String email = mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application)
+        String email = mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext())
                 .getEmail();
         assertThat(email).isNotNull();
         assertThat(email).isEqualTo(TestConstants.EMAIL);

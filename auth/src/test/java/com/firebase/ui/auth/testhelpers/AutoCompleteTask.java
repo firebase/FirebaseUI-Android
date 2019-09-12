@@ -15,8 +15,6 @@
 package com.firebase.ui.auth.testhelpers;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +25,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
 import java.util.concurrent.Executor;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class AutoCompleteTask<TResult> extends Task<TResult> {
     private TResult mResult;

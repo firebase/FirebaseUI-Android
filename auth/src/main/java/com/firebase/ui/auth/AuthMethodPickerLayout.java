@@ -3,12 +3,19 @@ package com.firebase.ui.auth;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import com.google.firebase.auth.*;
 
-import java.util.*;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
 
 /**
  * Layout model to help customizing layout of the AuthMethodPickerActivity screen,

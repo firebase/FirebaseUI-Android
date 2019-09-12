@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -78,7 +78,7 @@
       in button. However this button is NOT considered part of the public API and you should not
       use it in your own app.
     -->
-    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
         android:id="@+id/custom_google_signin_button"
         style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
         android:layout_width="wrap_content"
@@ -157,4 +157,4 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:text="Terms of Service and Privacy Policy" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

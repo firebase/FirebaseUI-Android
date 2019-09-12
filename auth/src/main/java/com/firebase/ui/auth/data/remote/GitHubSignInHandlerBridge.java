@@ -1,9 +1,9 @@
 package com.firebase.ui.auth.data.remote;
 
-import android.support.annotation.RestrictTo;
-
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
+
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class GitHubSignInHandlerBridge {

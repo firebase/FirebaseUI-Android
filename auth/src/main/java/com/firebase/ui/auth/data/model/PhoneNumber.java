@@ -17,8 +17,9 @@
  */
 package com.firebase.ui.auth.data.model;
 
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
+
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class PhoneNumber {

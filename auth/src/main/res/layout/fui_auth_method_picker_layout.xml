@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,6 +12,7 @@
         android:id="@+id/top_progress_bar"
         style="@style/FirebaseUI.TopProgressBar"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
     <!-- TODO remove lint ignore once the bug is fixed:
@@ -71,4 +72,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="By continuing you are indicating that you accept our Terms of Service and Privacy Policy" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

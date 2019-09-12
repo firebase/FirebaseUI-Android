@@ -14,10 +14,10 @@
 
 package com.firebase.ui.auth.util.ui.fieldvalidators;
 
-import android.support.annotation.RestrictTo;
-import android.support.design.widget.TextInputLayout;
-
 import com.firebase.ui.auth.R;
+import com.google.android.material.textfield.TextInputLayout;
+
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RequiredFieldValidator extends BaseValidator {

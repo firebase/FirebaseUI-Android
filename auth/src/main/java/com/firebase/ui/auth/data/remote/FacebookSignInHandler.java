@@ -4,9 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -34,6 +31,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {

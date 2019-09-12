@@ -31,7 +31,7 @@
                 android:text="@string/fui_email_link_confirm_email_message"
                 android:textStyle="bold" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_layout"
                 android:labelFor="@+id/email"
                 style="@style/FirebaseUI.TextInputLayout.EmailField"
@@ -43,11 +43,11 @@
                 app:errorEnabled="true"
                 tools:ignore="UnusedAttribute">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
                     style="@style/FirebaseUI.TextInputEditText.EmailField" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <Button

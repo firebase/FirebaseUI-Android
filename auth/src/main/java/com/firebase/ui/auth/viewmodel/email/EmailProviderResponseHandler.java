@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
@@ -23,6 +21,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 

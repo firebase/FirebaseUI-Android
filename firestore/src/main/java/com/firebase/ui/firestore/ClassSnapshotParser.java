@@ -1,9 +1,9 @@
 package com.firebase.ui.firestore;
 
-import android.support.annotation.NonNull;
-
 import com.firebase.ui.common.Preconditions;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import androidx.annotation.NonNull;
 
 /**
  * An implementation of {@link SnapshotParser} that converts {@link DocumentSnapshot} to

@@ -3,9 +3,6 @@ package com.firebase.ui.auth.viewmodel.idp;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -31,6 +28,10 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 

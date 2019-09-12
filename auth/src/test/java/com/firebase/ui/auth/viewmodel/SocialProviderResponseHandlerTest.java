@@ -1,7 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
+import android.app.Application;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
@@ -39,11 +39,13 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+
+import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,7 +76,7 @@ public class SocialProviderResponseHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new SocialProviderResponseHandler(RuntimeEnvironment.application);
+        mHandler = new SocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS);
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);

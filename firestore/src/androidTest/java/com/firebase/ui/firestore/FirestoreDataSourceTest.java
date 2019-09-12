@@ -1,10 +1,5 @@
 package com.firebase.ui.firestore;
 
-import android.arch.lifecycle.Observer;
-import android.arch.paging.PageKeyedDataSource;
-import android.support.annotation.Nullable;
-import android.support.test.runner.AndroidJUnit4;
-
 import com.firebase.ui.firestore.paging.FirestoreDataSource;
 import com.firebase.ui.firestore.paging.LoadingState;
 import com.firebase.ui.firestore.paging.PageKey;
@@ -15,6 +10,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,6 +20,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import androidx.annotation.Nullable;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.Observer;
+import androidx.paging.PageKeyedDataSource;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +37,12 @@ import static org.mockito.Mockito.when;
 public class FirestoreDataSourceTest {
 
     private FirestoreDataSource mDataSource;
+
+    /**
+     * Needed to run tasks on the main thread so observeForever() doesn't throw.
+     */
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Mock Query mMockQuery;
     @Mock PageKeyedDataSource.LoadInitialCallback<PageKey, DocumentSnapshot> mInitialCallback;

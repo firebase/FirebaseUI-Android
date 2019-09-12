@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
-
-import android.arch.lifecycle.Observer;
+import android.app.Application;
 
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
@@ -19,7 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -31,9 +29,11 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
+
+import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -59,7 +59,7 @@ public class PhoneProviderResponseHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new PhoneProviderResponseHandler(RuntimeEnvironment.application);
+        mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 PhoneAuthProvider.PROVIDER_ID));
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);

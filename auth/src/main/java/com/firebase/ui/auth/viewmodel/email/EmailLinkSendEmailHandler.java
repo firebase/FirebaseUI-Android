@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
@@ -14,6 +12,9 @@ import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.ActionCodeSettings;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
     private static final int SESSION_ID_LENGTH = 10;

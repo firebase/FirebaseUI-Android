@@ -1,7 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
+import android.app.Application;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -27,9 +27,11 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
+
+import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -55,7 +57,7 @@ public class SmartLockHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new SmartLockHandler(RuntimeEnvironment.application);
+        mHandler = new SmartLockHandler((Application) ApplicationProvider.getApplicationContext());
 
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID));

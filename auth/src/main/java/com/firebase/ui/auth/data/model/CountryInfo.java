@@ -20,10 +20,11 @@ package com.firebase.ui.auth.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.RestrictTo;
 
 import java.text.Collator;
 import java.util.Locale;
+
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class CountryInfo implements Comparable<CountryInfo>, Parcelable {
