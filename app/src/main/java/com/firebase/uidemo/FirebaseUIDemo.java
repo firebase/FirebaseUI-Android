@@ -2,14 +2,9 @@ package com.firebase.uidemo;
 
 import com.squareup.leakcanary.LeakCanary;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
 public class FirebaseUIDemo extends MultiDexApplication {
-    static {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();

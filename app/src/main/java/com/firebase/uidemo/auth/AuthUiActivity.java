@@ -346,7 +346,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @OnClick({R.id.default_theme, R.id.purple_theme, R.id.green_theme, R.id.dark_theme})
     public void toggleDarkTheme() {
         int mode = mDarkTheme.isChecked() ?
-                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO;
+                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO;
         AppCompatDelegate.setDefaultNightMode(mode);
         getDelegate().setLocalNightMode(mode);
     }

@@ -168,9 +168,9 @@ public class WelcomeBackPasswordHandlerTest {
 
         EmailAuthCredential capturedCredential = credentialCaptor.getValue();
 
-        // TODO
-//        assertThat(capturedCredential.getEmail()).isEqualTo(TestConstants.EMAIL);
-//        assertThat(capturedCredential.getPassword()).isEqualTo(TestConstants.PASSWORD);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        // assertThat(capturedCredential.getEmail()).isEqualTo(TestConstants.EMAIL);
+        // assertThat(capturedCredential.getPassword()).isEqualTo(TestConstants.PASSWORD);
 
         verifyMergeFailure();
     }
@@ -216,9 +216,9 @@ public class WelcomeBackPasswordHandlerTest {
 
         EmailAuthCredential capturedCredential = credentialCaptor.getValue();
 
-        // TODO
-//        assertThat(capturedCredential.getEmail()).isEqualTo(TestConstants.EMAIL);
-//        assertThat(capturedCredential.getPassword()).isEqualTo(TestConstants.PASSWORD);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        // assertThat(capturedCredential.getEmail()).isEqualTo(TestConstants.EMAIL);
+        // assertThat(capturedCredential.getPassword()).isEqualTo(TestConstants.PASSWORD);
 
         // Verify that account linking is attempted
         verify(FakeAuthResult.INSTANCE.getUser()).linkWithCredential(credential);
@@ -253,8 +253,8 @@ public class WelcomeBackPasswordHandlerTest {
         EmailAuthCredential responseCredential =
                 (EmailAuthCredential) e.getResponse().getCredentialForLinking();
 
-        // TODO
-//        assertThat(responseCredential.getEmail()).isEqualTo(TestConstants.EMAIL);
-//        assertThat(responseCredential.getPassword()).isEqualTo(TestConstants.PASSWORD);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        // assertThat(responseCredential.getEmail()).isEqualTo(TestConstants.EMAIL);
+        // assertThat(responseCredential.getPassword()).isEqualTo(TestConstants.PASSWORD);
     }
 }

@@ -407,8 +407,9 @@ public class EmailLinkSignInHandlerTest {
                 = ArgumentCaptor.forClass(EmailAuthCredential.class);
         verify(mMockAuth).signInWithCredential(credentialCaptor.capture());
 
-        // TODO
-//        assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        //assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
+
         assertThat(credentialCaptor.getValue().getSignInMethod()).isEqualTo(EmailAuthProvider
                 .EMAIL_LINK_SIGN_IN_METHOD);
 
@@ -518,8 +519,8 @@ public class EmailLinkSignInHandlerTest {
                 = ArgumentCaptor.forClass(EmailAuthCredential.class);
         verify(mScratchMockAuth).signInWithCredential(credentialCaptor.capture());
 
-        // TODO
-//        assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        // assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
         assertThat(credentialCaptor.getValue().getSignInMethod()).isEqualTo(EmailAuthProvider
                 .EMAIL_LINK_SIGN_IN_METHOD);
 
