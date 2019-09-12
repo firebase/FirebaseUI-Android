@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.content.ContextCompat;
 
 import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 
 /**
  * These are our goals for GitHub login:

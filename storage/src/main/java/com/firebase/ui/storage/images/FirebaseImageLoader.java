@@ -1,7 +1,5 @@
 package com.firebase.ui.storage.images;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.bumptech.glide.Priority;
@@ -21,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * ModelLoader implementation to download images from FirebaseStorage with Glide.

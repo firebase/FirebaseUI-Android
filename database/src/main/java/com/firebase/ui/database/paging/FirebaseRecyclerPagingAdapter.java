@@ -1,17 +1,5 @@
 package com.firebase.ui.database.paging;
 
-import android.arch.core.util.Function;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.OnLifecycleEvent;
-import android.arch.lifecycle.Transformations;
-import android.arch.paging.PagedList;
-import android.arch.paging.PagedListAdapter;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.firebase.ui.database.SnapshotParser;
@@ -19,12 +7,27 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.Transformations;
+import androidx.paging.PagedList;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Paginated RecyclerView Adapter for a Firebase Realtime Database query.
  *
  * Configured with {@link DatabasePagingOptions}.
  */
-public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder> extends PagedListAdapter<DataSnapshot, VH> implements LifecycleObserver{
+public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder>
+        extends PagedListAdapter<DataSnapshot, VH>
+        implements LifecycleObserver {
 
     private final String TAG = "FirebasePagingAdapter";
 

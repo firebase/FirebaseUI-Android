@@ -22,14 +22,19 @@ android {
     }
 
     lintOptions {
-        disable("ResourceName", "MissingTranslation")
+        disable("ResourceName", "MissingTranslation", "DuplicateStrings")
+    }
+
+    compileOptions {
+        setSourceCompatibility(JavaVersion.VERSION_1_8)
+        setTargetCompatibility(JavaVersion.VERSION_1_8)
     }
 }
 
 dependencies {
     implementation(Config.Libs.Firebase.core)
-    implementation(Config.Libs.Support.design)
-    implementation(Config.Libs.Support.multidex)
+    implementation(Config.Libs.Androidx.design)
+    implementation(Config.Libs.Androidx.multidex)
 
     implementation(project(":auth"))
     implementation(project(":auth-github"))
@@ -39,8 +44,8 @@ dependencies {
 
     implementation(Config.Libs.Provider.facebook)
     // Needed to override Facebook
-    implementation(Config.Libs.Support.cardView)
-    implementation(Config.Libs.Support.customTabs)
+    implementation(Config.Libs.Androidx.cardView)
+    implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     implementation(Config.Libs.Misc.glide)
@@ -54,7 +59,7 @@ dependencies {
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     implementation(Config.Libs.Misc.permissions)
     implementation(Config.Libs.Misc.butterKnife)
-    implementation(Config.Libs.Support.constraint)
+    implementation(Config.Libs.Androidx.constraint)
     annotationProcessor(Config.Libs.Misc.butterKnifeCompiler)
     debugImplementation(Config.Libs.Misc.leakCanary)
     debugImplementation(Config.Libs.Misc.leakCanaryFragments)

@@ -2,7 +2,6 @@ package com.firebase.ui.auth.data;
 
 import com.firebase.ui.auth.util.data.EmailLinkParser;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;

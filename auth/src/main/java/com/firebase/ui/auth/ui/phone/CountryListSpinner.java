@@ -22,8 +22,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -42,6 +40,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatEditText;
+
 public final class CountryListSpinner extends AppCompatEditText implements View.OnClickListener {
 
     private static final String KEY_SUPER_STATE = "KEY_SUPER_STATE";
@@ -50,7 +51,7 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     private final String mTextFormat;
     private final DialogPopup mDialogPopup;
     private final CountryListAdapter mCountryListAdapter;
-    private OnClickListener mListener;
+    private View.OnClickListener mListener;
     private String mSelectedCountryName;
     private CountryInfo mSelectedCountryInfo;
 

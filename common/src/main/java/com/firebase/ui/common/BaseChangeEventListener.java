@@ -1,6 +1,6 @@
 package com.firebase.ui.common;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Event listener for changes in an {@link BaseObservableSnapshotArray}.

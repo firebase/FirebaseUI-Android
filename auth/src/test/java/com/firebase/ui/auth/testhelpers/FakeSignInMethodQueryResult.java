@@ -14,11 +14,11 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-import android.support.annotation.Nullable;
-
 import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class FakeSignInMethodQueryResult implements SignInMethodQueryResult {
     private List<String> mMethods;

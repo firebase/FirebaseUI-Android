@@ -1,9 +1,5 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.arch.lifecycle.Observer;
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
@@ -14,6 +10,11 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ProgressView;
 import com.firebase.ui.auth.util.ui.FlowUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
+import androidx.annotation.StringRes;
+import androidx.lifecycle.Observer;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ResourceObserver<T> implements Observer<Resource<T>> {

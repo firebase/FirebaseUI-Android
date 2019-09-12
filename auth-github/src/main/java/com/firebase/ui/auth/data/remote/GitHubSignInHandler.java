@@ -3,9 +3,6 @@ package com.firebase.ui.auth.data.remote;
 import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
@@ -28,6 +25,9 @@ import com.google.firebase.auth.GithubAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

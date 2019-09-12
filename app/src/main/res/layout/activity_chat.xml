@@ -13,7 +13,7 @@
         android:padding="16dp"
         android:text="@string/start_chatting" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

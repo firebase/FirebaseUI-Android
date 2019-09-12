@@ -1,13 +1,14 @@
 package com.firebase.ui.auth.util.data;
 
 import android.content.Context;
-import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
+
+import androidx.annotation.RestrictTo;
+import androidx.annotation.StringRes;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PrivacyDisclosureUtils {

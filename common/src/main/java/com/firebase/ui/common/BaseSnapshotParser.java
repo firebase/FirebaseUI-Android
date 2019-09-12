@@ -1,6 +1,6 @@
 package com.firebase.ui.common;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Common interface for snapshot parsers.

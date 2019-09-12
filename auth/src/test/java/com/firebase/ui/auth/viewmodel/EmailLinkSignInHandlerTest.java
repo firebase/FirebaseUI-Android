@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
+import android.app.Application;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -42,10 +41,13 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,7 +86,7 @@ public class EmailLinkSignInHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new EmailLinkSignInHandler(RuntimeEnvironment.application);
+        mHandler = new EmailLinkSignInHandler((Application) ApplicationProvider.getApplicationContext());
 
 
         initializeHandlerWithSessionInfo(TestConstants.SESSION_ID, null, null, false);
@@ -271,7 +273,7 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
 
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
@@ -297,7 +299,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(response.getUser().getPhotoUri()).isEqualTo(mMockAuthResult.getUser()
                 .getPhotoUrl());
 
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
     }
 
@@ -308,7 +310,7 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
 
         when(mMockAuth.getCurrentUser().linkWithCredential(any(AuthCredential.class)))
@@ -338,7 +340,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(response.getUser().getPhotoUri()).isEqualTo(mMockAuthResult.getUser()
                 .getPhotoUrl());
 
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
     }
 
@@ -349,7 +351,7 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
         when(mMockAuth.getCurrentUser().linkWithCredential(any(AuthCredential.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
@@ -371,7 +373,7 @@ public class EmailLinkSignInHandlerTest {
         FirebaseAuthAnonymousUpgradeException mergeException =
                 (FirebaseAuthAnonymousUpgradeException) captor.getValue().getException();
         assertThat(mergeException.getResponse().getCredentialForLinking()).isNotNull();
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
     }
 
@@ -381,9 +383,9 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
+        mPersistenceManager.saveIdpResponseForLinking(ApplicationProvider.getApplicationContext(),
                 buildFacebookIdpResponse());
 
 
@@ -405,7 +407,9 @@ public class EmailLinkSignInHandlerTest {
                 = ArgumentCaptor.forClass(EmailAuthCredential.class);
         verify(mMockAuth).signInWithCredential(credentialCaptor.capture());
 
-        assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        //assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
+
         assertThat(credentialCaptor.getValue().getSignInMethod()).isEqualTo(EmailAuthProvider
                 .EMAIL_LINK_SIGN_IN_METHOD);
 
@@ -414,7 +418,7 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
 
         // Validate IdpResponse
@@ -447,9 +451,9 @@ public class EmailLinkSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
+        mPersistenceManager.saveIdpResponseForLinking(ApplicationProvider.getApplicationContext(),
                 buildFacebookIdpResponse());
 
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
@@ -476,7 +480,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(captor.getValue().getException()).isNotNull();
         FirebaseAuthUserCollisionException collisionException =
                 (FirebaseAuthUserCollisionException) captor.getValue().getException();
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
     }
 
@@ -488,9 +492,9 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
+        mPersistenceManager.saveIdpResponseForLinking(ApplicationProvider.getApplicationContext(),
                 buildFacebookIdpResponse());
 
         // Need to control FirebaseAuth's return values
@@ -515,7 +519,8 @@ public class EmailLinkSignInHandlerTest {
                 = ArgumentCaptor.forClass(EmailAuthCredential.class);
         verify(mScratchMockAuth).signInWithCredential(credentialCaptor.capture());
 
-        assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
+        // TODO: EmailAuthCredential no longer exposes .getEmail() or .getPassword()
+        // assertThat(credentialCaptor.getValue().getEmail()).isEqualTo(TestConstants.EMAIL);
         assertThat(credentialCaptor.getValue().getSignInMethod()).isEqualTo(EmailAuthProvider
                 .EMAIL_LINK_SIGN_IN_METHOD);
 
@@ -524,7 +529,7 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
 
         // Validate IdpResponse
@@ -554,9 +559,9 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
+        mPersistenceManager.saveIdpResponseForLinking(ApplicationProvider.getApplicationContext(),
                 buildFacebookIdpResponse());
 
         // Need to control FirebaseAuth's return values
@@ -572,7 +577,7 @@ public class EmailLinkSignInHandlerTest {
         verify(mScratchMockAuth).signInWithCredential(any(AuthCredential.class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
 
         // Validate failure
@@ -595,9 +600,9 @@ public class EmailLinkSignInHandlerTest {
         setupAnonymousUpgrade();
         when(mMockAuth.isSignInWithEmailLink(any(String.class))).thenReturn(true);
 
-        mPersistenceManager.saveEmail(RuntimeEnvironment.application, TestConstants.EMAIL,
+        mPersistenceManager.saveEmail(ApplicationProvider.getApplicationContext(), TestConstants.EMAIL,
                 TestConstants.SESSION_ID, TestConstants.UID);
-        mPersistenceManager.saveIdpResponseForLinking(RuntimeEnvironment.application,
+        mPersistenceManager.saveIdpResponseForLinking(ApplicationProvider.getApplicationContext(),
                 buildFacebookIdpResponse());
 
         // Need to control FirebaseAuth's return values
@@ -622,7 +627,7 @@ public class EmailLinkSignInHandlerTest {
                 .class));
 
         // Validate that the data was cleared
-        assertThat(mPersistenceManager.retrieveSessionRecord(RuntimeEnvironment.application))
+        assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
 
         // Validate failure

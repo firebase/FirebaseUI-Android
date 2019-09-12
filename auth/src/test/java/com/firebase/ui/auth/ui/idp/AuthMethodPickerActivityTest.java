@@ -34,12 +34,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.test.core.app.ApplicationProvider;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -147,7 +148,7 @@ public class AuthMethodPickerActivityTest {
     private AuthMethodPickerActivity createActivityWithCustomLayout(List<String> providers,
                                                                     AuthMethodPickerLayout layout) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(
-                RuntimeEnvironment.application,
+                ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(providers, false, layout));
 
         return Robolectric
@@ -159,7 +160,7 @@ public class AuthMethodPickerActivityTest {
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(
-                RuntimeEnvironment.application,
+                ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(providers));
 
         return Robolectric

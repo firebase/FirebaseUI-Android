@@ -20,7 +20,6 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -28,6 +27,7 @@ import android.text.style.ScaleXSpan;
 import android.util.AttributeSet;
 
 import com.firebase.ui.auth.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 /**
  * This element inserts spaces between characters in the edit text and expands the width of the
@@ -50,7 +50,7 @@ public final class SpacedEditText extends TextInputEditText {
     void initAttrs(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText);
         // Controls the ScaleXSpan applied on the injected spaces
-        mProportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1);
+        mProportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1f);
         array.recycle();
     }
 

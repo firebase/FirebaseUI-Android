@@ -24,7 +24,7 @@ buildscript {
 }
 
 plugins {
-    `build-scan` version "1.16"
+    `build-scan` version "2.0.2"
     id("com.github.ben-manes.versions") version "0.20.0"
 }
 

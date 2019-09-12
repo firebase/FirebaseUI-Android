@@ -21,7 +21,6 @@ package com.firebase.ui.auth.ui.phone;
 import android.content.Context;
 import android.telephony.TelephonyManager;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;

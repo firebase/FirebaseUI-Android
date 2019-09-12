@@ -1,7 +1,8 @@
 package com.firebase.ui.auth.util.ui.fieldvalidators;
 
-import android.support.annotation.RestrictTo;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
+
+import androidx.annotation.RestrictTo;
 
 /**
  * Validator that is always valid.

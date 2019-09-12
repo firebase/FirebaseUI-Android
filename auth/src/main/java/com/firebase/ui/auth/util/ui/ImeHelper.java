@@ -1,10 +1,11 @@
 package com.firebase.ui.auth.util.ui;
 
-import android.support.annotation.RestrictTo;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ImeHelper {

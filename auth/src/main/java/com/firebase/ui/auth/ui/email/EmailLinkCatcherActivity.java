@@ -1,14 +1,10 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.app.AlertDialog;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
@@ -23,6 +19,11 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.lifecycle.ViewModelProviders;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkCatcherActivity extends InvisibleActivityBase {
