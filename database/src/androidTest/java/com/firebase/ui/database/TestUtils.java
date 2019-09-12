@@ -13,6 +13,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
+
 import static org.junit.Assert.assertTrue;
 
 public class TestUtils {
