@@ -34,7 +34,7 @@ object Config {
             const val multidex = "androidx.multidex:multidex:2.0.1"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
 
-            const val design = "com.google.android.material:material:1.0.0"
+            const val design = "com.google.android.material:material:1.1.0-alpha09"
         }
 
         object Arch {
