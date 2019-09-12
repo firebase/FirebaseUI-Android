@@ -50,7 +50,7 @@ public final class SpacedEditText extends TextInputEditText {
     void initAttrs(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText);
         // Controls the ScaleXSpan applied on the injected spaces
-        mProportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1);
+        mProportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1f);
         array.recycle();
     }
 
