@@ -2,6 +2,7 @@ tasks.named("check").configure { dependsOn("compileDebugAndroidTestJavaWithJavac
 
 android {
     defaultConfig {
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,7 +27,9 @@ dependencies {
 
     lintChecks(project(":lint"))
 
+    androidTestImplementation(Config.Libs.Arch.coreTesting)
     androidTestImplementation(Config.Libs.Test.junit)
+    androidTestImplementation(Config.Libs.Test.junitExt)
     androidTestImplementation(Config.Libs.Test.runner)
     androidTestImplementation(Config.Libs.Test.rules)
     androidTestImplementation(Config.Libs.Test.mockito)

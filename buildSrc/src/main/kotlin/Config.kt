@@ -46,6 +46,8 @@ object Config {
             const val compiler = "android.arch.lifecycle:compiler:$version"
 
             const val paging = "android.arch.paging:runtime:1.0.1"
+
+            const val coreTesting = "android.arch.core:core-testing:1.1.1"
         }
 
         object Firebase {
@@ -95,6 +97,7 @@ object Config {
 
         object Test {
             const val junit = "junit:junit:4.12"
+            const val junitExt = "androidx.test.ext:junit:1.1.1"
             const val truth = "com.google.truth:truth:0.42"
             const val mockito = "org.mockito:mockito-android:2.21.0"
             const val robolectric = "org.robolectric:robolectric:4.0.2"

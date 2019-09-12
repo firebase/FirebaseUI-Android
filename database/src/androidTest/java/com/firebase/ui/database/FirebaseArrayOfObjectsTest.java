@@ -15,7 +15,7 @@
 package com.firebase.ui.database;
 
 import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;

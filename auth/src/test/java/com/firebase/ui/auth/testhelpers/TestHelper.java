@@ -54,31 +54,30 @@ public final class TestHelper {
     private static final String DEFAULT_APP_NAME = "[DEFAULT]";
 
     public static final FirebaseApp MOCK_APP;
-    public static Context context = ApplicationProvider.getApplicationContext();
+    private static Context CONTEXT = ApplicationProvider.getApplicationContext();
 
 
     static {
-        
         FirebaseApp app = mock(FirebaseApp.class);
         when(app.get(eq(FirebaseAuth.class))).thenReturn(mock(FirebaseAuth.class));
-        when(app.getApplicationContext()).thenReturn(context);
+        when(app.getApplicationContext()).thenReturn(CONTEXT);
         when(app.getName()).thenReturn(DEFAULT_APP_NAME);
         MOCK_APP = app;
     }
 
     public static void initialize() {
         spyContextAndResources();
-        AuthUI.setApplicationContext(context);
-        initializeApp(context);
+        AuthUI.setApplicationContext(CONTEXT);
+        initializeApp(CONTEXT);
         initializeProviders();
     }
 
     private static void spyContextAndResources() {
-        context = spy(context);
-        when(context.getApplicationContext())
-                .thenReturn(context);
-        Resources spiedResources = spy(context.getResources());
-        when(context.getResources()).thenReturn(spiedResources);
+        CONTEXT = spy(CONTEXT);
+        when(CONTEXT.getApplicationContext())
+                .thenReturn(CONTEXT);
+        Resources spiedResources = spy(CONTEXT.getResources());
+        when(CONTEXT.getResources()).thenReturn(spiedResources);
     }
 
     private static void initializeApp(Context context) {
@@ -91,13 +90,13 @@ public final class TestHelper {
     }
 
     private static void initializeProviders() {
-        when(context.getString(R.string.firebase_web_host)).thenReturn("abc");
-        when(context.getString(R.string.default_web_client_id)).thenReturn("abc");
-        when(context.getString(R.string.facebook_application_id)).thenReturn("abc");
-        when(context.getString(R.string.twitter_consumer_key)).thenReturn("abc");
-        when(context.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
-        when(context.getString(R.string.github_client_id)).thenReturn("abc");
-        when(context.getString(R.string.github_client_secret)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.firebase_web_host)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.default_web_client_id)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.facebook_application_id)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.twitter_consumer_key)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.github_client_id)).thenReturn("abc");
+        when(CONTEXT.getString(R.string.github_client_secret)).thenReturn("abc");
     }
 
     public static FirebaseUser getMockFirebaseUser() {

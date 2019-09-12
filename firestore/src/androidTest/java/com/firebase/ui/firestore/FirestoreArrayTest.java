@@ -16,8 +16,6 @@ package com.firebase.ui.firestore;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.firebase.ui.common.ChangeEventType;
@@ -43,6 +41,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.assertTrue;
 
