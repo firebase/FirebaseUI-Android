@@ -9,6 +9,7 @@ android {
     buildTypes {
         named("release").configure {
             postprocessing {
+                isRemoveUnusedCode = false
                 consumerProguardFiles("proguard-rules.pro")
             }
         }

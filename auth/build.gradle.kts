@@ -4,6 +4,7 @@ android {
     buildTypes {
         named("release").configure {
             postprocessing {
+                isRemoveUnusedCode = false
                 consumerProguardFiles("auth-proguard.pro")
             }
         }

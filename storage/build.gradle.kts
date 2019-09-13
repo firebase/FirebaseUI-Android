@@ -1,3 +1,13 @@
+android {
+    buildTypes {
+        named("release").configure {
+            postprocessing {
+                isRemoveUnusedCode = false
+            }
+        }
+    }
+}
+
 dependencies {
     api(Config.Libs.Misc.glide)
 
