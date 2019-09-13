@@ -7,9 +7,8 @@ android {
 
     buildTypes {
         named("release").configure {
-            postprocessing {
-                consumerProguardFiles("proguard-rules.pro")
-            }
+            isMinifyEnabled = false
+            consumerProguardFiles("proguard-rules.pro")
         }
     }
 }
