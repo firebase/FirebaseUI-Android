@@ -1,9 +1,8 @@
 android {
     buildTypes {
         named("release").configure {
-            postprocessing {
-                isRemoveUnusedCode = false
-            }
+            isMinifyEnabled = false
+            consumerProguardFiles("proguard-rules.pro")
         }
     }
 }

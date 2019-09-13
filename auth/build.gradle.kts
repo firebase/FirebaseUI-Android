@@ -3,10 +3,8 @@ import com.android.build.gradle.internal.dsl.TestOptions
 android {
     buildTypes {
         named("release").configure {
-            postprocessing {
-                isRemoveUnusedCode = false
-                consumerProguardFiles("auth-proguard.pro")
-            }
+            isMinifyEnabled = false
+            consumerProguardFiles("proguard-rules.pro")
         }
     }
 
