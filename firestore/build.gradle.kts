@@ -26,6 +26,7 @@ dependencies {
 
     lintChecks(project(":lint"))
 
+    androidTestImplementation(Config.Libs.Test.archCoreTesting)
     androidTestImplementation(Config.Libs.Test.core)
     androidTestImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.junitExt)

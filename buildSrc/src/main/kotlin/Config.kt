@@ -94,6 +94,7 @@ object Config {
             const val robolectric = "org.robolectric:robolectric:4.0.2"
 
             const val core = "androidx.test:core:1.2.0"
+            const val archCoreTesting = "androidx.arch.core:core-testing:2.0.0"
             const val runner = "androidx.test:runner:1.2.0"
             const val rules = "androidx.test:rules:1.2.0"
         }
