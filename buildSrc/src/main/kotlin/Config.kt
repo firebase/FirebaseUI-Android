@@ -30,22 +30,16 @@ object Config {
             const val customTabs = "androidx.browser:browser:1.0.0"
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:1.1.3"
+            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.1.0"
+            const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:2.1.0"
+            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.1.0"
+            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.1.0"
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
+            const val paging = "androidx.paging:paging-runtime:2.1.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
 
             const val design = "com.google.android.material:material:1.0.0"
-        }
-
-        object Arch {
-            const val runtime = "androidx.lifecycle:lifecycle-runtime:2.1.0"
-            const val viewModel = "androidx.lifecycle:lifecycle-viewmodel:2.1.0"
-            const val extensions = "androidx.lifecycle:lifecycle-extensions:2.1.0"
-            const val compiler = "androidx.lifecycle:lifecycle-compiler:2.1.0"
-
-            const val paging = "androidx.paging:paging-runtime:2.1.0"
-
-            const val coreTesting = "androidx.test:core:1.2.1"
         }
 
         object Firebase {
@@ -59,7 +53,6 @@ object Config {
         object PlayServices {
             const val auth = "com.google.android.gms:play-services-auth:17.0.0"
         }
-
 
         object Provider {
             const val facebook = "com.facebook.android:facebook-login:4.38.1"

@@ -20,8 +20,8 @@ dependencies {
     api(Config.Libs.Androidx.legacySupportv4)
     api(Config.Libs.Androidx.recyclerView)
 
-    compileOnly(Config.Libs.Arch.paging)
-    annotationProcessor(Config.Libs.Arch.compiler)
+    compileOnly(Config.Libs.Androidx.paging)
+    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     androidTestImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.junitExt)

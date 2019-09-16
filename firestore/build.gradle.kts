@@ -21,16 +21,16 @@ dependencies {
     api(Config.Libs.Androidx.legacySupportv4)
     api(Config.Libs.Androidx.recyclerView)
 
-    compileOnly(Config.Libs.Arch.paging)
-    annotationProcessor(Config.Libs.Arch.compiler)
+    compileOnly(Config.Libs.Androidx.paging)
+    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     lintChecks(project(":lint"))
 
-    androidTestImplementation(Config.Libs.Arch.coreTesting)
+    androidTestImplementation(Config.Libs.Test.core)
     androidTestImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.junitExt)
     androidTestImplementation(Config.Libs.Test.runner)
     androidTestImplementation(Config.Libs.Test.rules)
     androidTestImplementation(Config.Libs.Test.mockito)
-    androidTestImplementation(Config.Libs.Arch.paging)
+    androidTestImplementation(Config.Libs.Androidx.paging)
 }
