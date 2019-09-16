@@ -38,23 +38,21 @@ object Config {
         }
 
         object Arch {
-            private const val version = "1.1.1"
+            const val runtime = "androidx.lifecycle:lifecycle-runtime:2.1.0"
+            const val viewModel = "androidx.lifecycle:lifecycle-viewmodel:2.1.0"
+            const val extensions = "androidx.lifecycle:lifecycle-extensions:2.1.0"
+            const val compiler = "androidx.lifecycle:lifecycle-compiler:2.1.0"
 
-            const val runtime = "android.arch.lifecycle:runtime:$version"
-            const val viewModel = "android.arch.lifecycle:viewmodel:$version"
-            const val extensions = "android.arch.lifecycle:extensions:$version"
-            const val compiler = "android.arch.lifecycle:compiler:$version"
+            const val paging = "androidx.paging:paging-runtime:2.1.0"
 
-            const val paging = "android.arch.paging:runtime:1.0.1"
-
-            const val coreTesting = "android.arch.core:core-testing:1.1.1"
+            const val coreTesting = "androidx.test:core:1.2.1"
         }
 
         object Firebase {
             const val auth = "com.google.firebase:firebase-auth:19.0.0"
             const val core = "com.google.firebase:firebase-core:17.2.0"
             const val database = "com.google.firebase:firebase-database:19.1.0"
-            const val firestore = "com.google.firebase:firebase-firestore:21.1.0"
+            const val firestore = "com.google.firebase:firebase-firestore:21.1.1"
             const val storage = "com.google.firebase:firebase-storage:19.0.1"
         }
 
