@@ -1,5 +1,5 @@
 object Config {
-    const val version = "6.0.1"
+    const val version = "6.0.2"
     val submodules = listOf("auth", "auth-github", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.3.10"
@@ -30,38 +30,29 @@ object Config {
             const val customTabs = "androidx.browser:browser:1.0.0"
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:1.1.3"
+            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.1.0"
+            const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:2.1.0"
+            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.1.0"
+            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.1.0"
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
+            const val paging = "androidx.paging:paging-runtime:2.1.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
 
             const val design = "com.google.android.material:material:1.0.0"
-        }
-
-        object Arch {
-            private const val version = "1.1.1"
-
-            const val runtime = "android.arch.lifecycle:runtime:$version"
-            const val viewModel = "android.arch.lifecycle:viewmodel:$version"
-            const val extensions = "android.arch.lifecycle:extensions:$version"
-            const val compiler = "android.arch.lifecycle:compiler:$version"
-
-            const val paging = "android.arch.paging:runtime:1.0.1"
-
-            const val coreTesting = "android.arch.core:core-testing:1.1.1"
         }
 
         object Firebase {
             const val auth = "com.google.firebase:firebase-auth:19.0.0"
             const val core = "com.google.firebase:firebase-core:17.2.0"
             const val database = "com.google.firebase:firebase-database:19.1.0"
-            const val firestore = "com.google.firebase:firebase-firestore:21.1.0"
+            const val firestore = "com.google.firebase:firebase-firestore:21.1.1"
             const val storage = "com.google.firebase:firebase-storage:19.0.1"
         }
 
         object PlayServices {
             const val auth = "com.google.android.gms:play-services-auth:17.0.0"
         }
-
 
         object Provider {
             const val facebook = "com.facebook.android:facebook-login:4.38.1"
@@ -103,6 +94,7 @@ object Config {
             const val robolectric = "org.robolectric:robolectric:4.0.2"
 
             const val core = "androidx.test:core:1.2.0"
+            const val archCoreTesting = "androidx.arch.core:core-testing:2.0.0"
             const val runner = "androidx.test:runner:1.2.0"
             const val rules = "androidx.test:rules:1.2.0"
         }

@@ -1,5 +1,8 @@
 # Upgrading to FirebaseUI 6.0
 
+**Note**: FirebaseUI versions `6.0.0` and `6.0.1` contain critical issues. Please use version
+`6.0.2` or later.
+
 FirebaseUI version `6.0.0` has no breaking API changes from version `5.1.0` but updates
 critical dependencies to new major versions.
 
@@ -17,10 +20,10 @@ Below is a comprehensive list of all of the relevant dependencies for each modul
 **Auth**
 
 ```
-android.arch.lifecycle:extensions:1.1.1
 androidx.browser:browser:1.0.0
 androidx.cardview:cardview:1.0.0
 androidx.constraintlayout:constraintlayout:1.1.3
+androidx.lifecycle:lifecycle-extensions:2.1.0
 androidx.legacy:legacy-support-v4:1.0.0
 com.google.android.material:material:1.0.0
 com.google.android.gms:play-services-auth:17.0.0
@@ -30,9 +33,9 @@ com.google.firebase:firebase-auth:19.0.0
 **Common**
 
 ```
-android.arch.lifecycle:runtime:1.1.1
-android.arch.lifecycle:viewmodel:1.1.1
 androidx.annotation:annotation:1.1.0
+androidx.lifecycle:lifecycle-runtime:2.1.0
+androidx.lifecycle:lifecycle-viewmodel:2.1.0
 ```
 
 **Database**
@@ -48,7 +51,7 @@ com.google.firebase:firebase-database:19.1.0
 ```
 androidx.legacy:legacy-support-v4:1.0.0
 androidx.recyclerview:recyclerview:1.0.0
-com.google.firebase:firebase-firestore:21.1.0
+com.google.firebase:firebase-firestore:21.1.1
 ```
 
 **Storage**

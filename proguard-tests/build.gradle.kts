@@ -39,7 +39,7 @@ dependencies {
     implementation(project(":storage"))
 
     implementation(Config.Libs.Firebase.core)
-    implementation(Config.Libs.Arch.extensions)
+    implementation(Config.Libs.Androidx.lifecycleExtensions)
 }
 
 apply(plugin = "com.google.gms.google-services")

@@ -8,8 +8,8 @@ android {
 }
 
 dependencies {
-    api(Config.Libs.Arch.runtime)
-    api(Config.Libs.Arch.viewModel)
+    api(Config.Libs.Androidx.lifecycleRuntime)
+    api(Config.Libs.Androidx.lifecycleViewModel)
     implementation(Config.Libs.Androidx.annotations)
-    annotationProcessor(Config.Libs.Arch.compiler)
+    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 }

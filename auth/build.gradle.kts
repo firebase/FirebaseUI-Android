@@ -28,8 +28,8 @@ dependencies {
     implementation(Config.Libs.Androidx.constraint)
     implementation(Config.Libs.Misc.materialProgress)
 
-    implementation(Config.Libs.Arch.extensions)
-    annotationProcessor(Config.Libs.Arch.compiler)
+    implementation(Config.Libs.Androidx.lifecycleExtensions)
+    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     api(Config.Libs.Firebase.auth)
     api(Config.Libs.PlayServices.auth)

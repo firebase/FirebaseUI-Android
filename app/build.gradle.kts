@@ -52,7 +52,7 @@ dependencies {
     annotationProcessor(Config.Libs.Misc.glideCompiler)
 
     // Used for FirestorePagingActivity
-    implementation(Config.Libs.Arch.paging)
+    implementation(Config.Libs.Androidx.paging)
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
