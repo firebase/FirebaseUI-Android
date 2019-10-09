@@ -28,16 +28,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         implements LifecycleObserver {
 
     private static final String TAG = "FirestorePagingAdapter";
-
-    private final SnapshotParser<T> mParser;
-
-    private final LiveData<PagedList<DocumentSnapshot>> mSnapshots;
-    private final LiveData<LoadingState> mLoadingState;
-    private final LiveData<Exception> mException;
-    private final LiveData<FirestoreDataSource> mDataSource;
-
     /*
-        LiveData created via Transformation do not have a value until an Observer is attached.  
+        LiveData created via Transformation do not have a value until an Observer is attached.
         We attach this empty observer so that our getValue() calls return non-null later.
     */
     private final Observer<FirestoreDataSource> mDataSourceObserver = new Observer<FirestoreDataSource>() {
@@ -46,7 +38,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
         }
     };
-
     //Error observer to determine last occurred Error
     private final Observer<Exception> mErrorObserver = new Observer<Exception>() {
         @Override
@@ -54,7 +45,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
             onError(e);
         }
     };
-
     private final Observer<LoadingState> mStateObserver =
             new Observer<LoadingState>() {
                 @Override
@@ -66,7 +56,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                     onLoadingStateChanged(state);
                 }
             };
-
     private final Observer<PagedList<DocumentSnapshot>> mDataObserver =
             new Observer<PagedList<DocumentSnapshot>>() {
                 @Override
@@ -78,6 +67,12 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                     submitList(snapshots);
                 }
             };
+    private FirestorePagingOptions<T> mOptions;
+    private SnapshotParser<T> mParser;
+    private LiveData<PagedList<DocumentSnapshot>> mSnapshots;
+    private LiveData<LoadingState> mLoadingState;
+    private LiveData<Exception> mException;
+    private LiveData<FirestoreDataSource> mDataSource;
 
     /**
      * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
@@ -85,7 +80,16 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public FirestorePagingAdapter(@NonNull FirestorePagingOptions<T> options) {
         super(options.getDiffCallback());
 
-        mSnapshots = options.getData();
+        mOptions = options;
+
+        init();
+    }
+
+    /**
+     * Initializes Snapshots and LiveData
+     */
+    private void init() {
+        mSnapshots = mOptions.getData();
 
         mLoadingState = Transformations.switchMap(mSnapshots,
                 new Function<PagedList<DocumentSnapshot>, LiveData<LoadingState>>() {
@@ -113,16 +117,16 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                     }
                 });
 
-        mParser = options.getParser();
+        mParser = mOptions.getParser();
 
-        if (options.getOwner() != null) {
-            options.getOwner().getLifecycle().addObserver(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().addObserver(this);
         }
     }
 
     /**
-     * If {@link #onLoadingStateChanged(LoadingState)} indicates error state, call this method
-     * to attempt to retry the most recent failure.
+     * If {@link #onLoadingStateChanged(LoadingState)} indicates error state, call this method to
+     * attempt to retry the most recent failure.
      */
     public void retry() {
         FirestoreDataSource source = mDataSource.getValue();
@@ -137,13 +141,35 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     /**
      * To attempt to refresh the list. It will reload the list from beginning.
      */
-    public void refresh(){
+    public void refresh() {
         FirestoreDataSource mFirebaseDataSource = mDataSource.getValue();
         if (mFirebaseDataSource == null) {
             Log.w(TAG, "Called refresh() when FirestoreDataSource is null!");
             return;
         }
         mFirebaseDataSource.invalidate();
+    }
+
+    /**
+     * Re-initialize the Adapter with a new set of options. Can be used to change the query without
+     * re-constructing the entire adapter.
+     */
+    public void updateOptions(@NonNull FirestorePagingOptions<T> options) {
+        mOptions = options;
+
+        // Tear down old options
+        boolean hasObservers = mSnapshots.hasObservers();
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().removeObserver(this);
+        }
+        stopListening();
+
+        // Reinit Options
+        init();
+
+        if (hasObservers) {
+            startListening();
+        }
     }
 
     /**
@@ -183,7 +209,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     /**
      * Called whenever the loading state of the adapter changes.
-     *
+     * <p>
      * When the state is {@link LoadingState#ERROR} the adapter will stop loading any data unless
      * {@link #retry()} is called.
      */
@@ -193,7 +219,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     /**
      * Called whenever the {@link Exception} is caught.
-     *
+     * <p>
      * When {@link Exception} is caught the adapter will stop loading any data
      */
     protected void onError(@NonNull Exception e) {
