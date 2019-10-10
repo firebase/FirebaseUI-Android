@@ -31,11 +31,12 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
 
     private final String TAG = "FirebasePagingAdapter";
 
-    private final SnapshotParser<T> mParser;
-    private final LiveData<PagedList<DataSnapshot>> mPagedList;
-    private final LiveData<LoadingState> mLoadingState;
-    private final LiveData<DatabaseError> mDatabaseError;
-    private final LiveData<FirebaseDataSource> mDataSource;
+    private DatabasePagingOptions<T> mOptions;
+    private SnapshotParser<T> mParser;
+    private LiveData<PagedList<DataSnapshot>> mPagedList;
+    private LiveData<LoadingState> mLoadingState;
+    private LiveData<DatabaseError> mDatabaseError;
+    private LiveData<FirebaseDataSource> mDataSource;
 
 
     /*
@@ -86,7 +87,16 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
     public FirebaseRecyclerPagingAdapter(@NonNull DatabasePagingOptions<T> options){
         super(options.getDiffCallback());
 
-        mPagedList = options.getData();
+        mOptions = options;
+
+        init();
+    }
+
+    /**
+     * Initializes Snapshots and LiveData
+     */
+    public void init() {
+        mPagedList = mOptions.getData();
 
         //Init Data Source
         mDataSource = Transformations.map(mPagedList,
@@ -117,12 +127,11 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
                     }
                 });
 
-        mParser = options.getParser();
+        mParser = mOptions.getParser();
 
-        if (options.getOwner() != null) {
-            options.getOwner().getLifecycle().addObserver(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().addObserver(this);
         }
-
     }
 
     /**
@@ -149,6 +158,28 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
             return;
         }
         mFirebaseDataSource.invalidate();
+    }
+
+    /**
+     * Re-initialize the Adapter with a new set of options. Can be used to change the query without
+     * re-constructing the entire adapter.
+     */
+    public void updateOptions(@NonNull DatabasePagingOptions<T> options) {
+        mOptions = options;
+
+        // Tear down old options
+        boolean hasObservers = mPagedList.hasObservers();
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().removeObserver(this);
+        }
+        stopListening();
+
+        // Reinit Options
+        init();
+
+        if (hasObservers) {
+            startListening();
+        }
     }
 
     /**
