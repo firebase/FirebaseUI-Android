@@ -22,7 +22,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 1. [Snapshot Builds](#snapshot-builds)
 1. [Contributing](#contributing)
    1. [Installing](#installing-locally)
-   1. [License agreements](#contributor-license-agreements)
+   1. [License agreements](#contributor- license-agreements)
    1. [Process](#contribution-process)
 
 ## Usage
