@@ -43,7 +43,7 @@ object Config {
         }
 
         object Firebase {
-            const val auth = "com.google.firebase:firebase-auth:19.0.0"
+            const val auth = "com.google.firebase:firebase-auth:19.1.0"
             const val core = "com.google.firebase:firebase-core:17.2.0"
             const val database = "com.google.firebase:firebase-database:19.1.0"
             const val firestore = "com.google.firebase:firebase-firestore:21.1.1"
