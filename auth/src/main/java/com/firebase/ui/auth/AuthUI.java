@@ -68,10 +68,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.CallSuper;
@@ -104,6 +106,7 @@ public final class AuthUI {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String ANONYMOUS_PROVIDER = "anonymous";
     public static final String EMAIL_LINK_PROVIDER = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
+    public static final String GENERIC_OAUTH_PROVIDER = "genericOAuthProvider";
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -122,7 +125,8 @@ public final class AuthUI {
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID,
                     ANONYMOUS_PROVIDER,
-                    EMAIL_LINK_PROVIDER
+                    EMAIL_LINK_PROVIDER,
+                    GENERIC_OAUTH_PROVIDER
             )));
 
     /**
@@ -462,7 +466,8 @@ public final class AuthUI {
             EmailAuthProvider.PROVIDER_ID,
             PhoneAuthProvider.PROVIDER_ID,
             ANONYMOUS_PROVIDER,
-            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
+            GENERIC_OAUTH_PROVIDER,
     })
 
     @Retention(RetentionPolicy.SOURCE)
@@ -555,7 +560,8 @@ public final class AuthUI {
          */
         public static class Builder {
             private final Bundle mParams = new Bundle();
-            @SupportedProvider private String mProviderId;
+            @SupportedProvider
+            private String mProviderId;
 
             protected Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
@@ -638,7 +644,7 @@ public final class AuthUI {
              * This URL must be whitelisted in the Firebase Console.
              *
              * @throws IllegalStateException if canHandleCodeInApp is set to false
-             * @throws NullPointerException if ActionCodeSettings is null
+             * @throws NullPointerException  if ActionCodeSettings is null
              */
             @NonNull
             public EmailBuilder setActionCodeSettings(ActionCodeSettings actionCodeSettings) {
@@ -664,7 +670,7 @@ public final class AuthUI {
                             getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
                     Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
                             "null when using email link sign in.");
-                   if (!actionCodeSettings.canHandleCodeInApp()) {
+                    if (!actionCodeSettings.canHandleCodeInApp()) {
                         // Pre-emptively fail if actionCodeSettings are misconfigured. This would
                         // have happened when calling sendSignInLinkToEmail
                         throw new IllegalStateException(
@@ -1119,6 +1125,82 @@ public final class AuthUI {
                 super(ANONYMOUS_PROVIDER);
             }
         }
+
+        /**
+         * {@link IdpConfig} builder for the Microsoft provider.
+         */
+        public static final class MicrosoftBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Microsoft";
+            private static final String PROVIDER_ID = "microsoft.com";
+
+
+            public MicrosoftBuilder() {
+                setOAuthProviderName(PROVIDER_NAME);
+                setOAuthProviderId(PROVIDER_ID);
+                setButtonId(R.layout.fui_idp_button_microsoft);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for a Generic OAuth provider.
+         */
+        private static class GenericOAuthProviderBuilder extends Builder {
+
+            GenericOAuthProviderBuilder() {
+                super(GENERIC_OAUTH_PROVIDER);
+            }
+
+            @NonNull
+            protected GenericOAuthProviderBuilder setOAuthProviderId(@NonNull String providerId) {
+                Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");
+                getParams().putString(
+                        ExtraConstants.GENERIC_OAUTH_PROVIDER_ID, providerId);
+                setProviderId(providerId);
+                return this;
+            }
+
+            @NonNull
+            protected GenericOAuthProviderBuilder setOAuthProviderName(@NonNull String providerName) {
+                Preconditions.checkNotNull(providerName, "The provider name cannot be null.");
+                getParams().putString(
+                        ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME, providerName);
+                return this;
+            }
+
+
+            @NonNull
+            protected GenericOAuthProviderBuilder setButtonId(int buttonId) {
+                getParams().putInt(
+                        ExtraConstants.GENERIC_OAUTH_BUTTON_ID, buttonId);
+                return this;
+            }
+
+            @NonNull
+            public GenericOAuthProviderBuilder setScopes(@NonNull List<String> scopes) {
+                getParams().putStringArrayList(
+                        ExtraConstants.GENERIC_OAUTH_SCOPES, new ArrayList<>(scopes));
+                return this;
+            }
+
+            @NonNull
+            public GenericOAuthProviderBuilder setCustomParameters(@NonNull Map<String, String> scopes) {
+                getParams().putSerializable(
+                        ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS, new HashMap<>(scopes));
+                return this;
+            }
+
+            @NonNull
+            @Override
+            public IdpConfig build() {
+                if (!getParams().containsKey(ExtraConstants.GENERIC_OAUTH_PROVIDER_ID)
+                        || !getParams().containsKey(ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME)
+                        || !getParams().containsKey(ExtraConstants.GENERIC_OAUTH_BUTTON_ID)) {
+                    throw new IllegalStateException("You must provide a provider ID, provider name," +
+                            " and button ID when building a GenericOAuthProvider.");
+                }
+                return super.build();
+            }
+        }
     }
 
     /**
@@ -1205,9 +1287,8 @@ public final class AuthUI {
          *
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
          *                   configuration parameters for the IDP.
-         * @see IdpConfig
-         *
          * @throws IllegalStateException if anonymous provider is the only specified provider.
+         * @see IdpConfig
          */
         @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
@@ -1267,6 +1348,7 @@ public final class AuthUI {
         /**
          * Set a custom layout for the AuthMethodPickerActivity screen.
          * See {@link AuthMethodPickerLayout}.
+         *
          * @param authMethodPickerLayout custom layout descriptor object.
          */
         @NonNull
@@ -1274,7 +1356,7 @@ public final class AuthUI {
             mAuthMethodPickerLayout = authMethodPickerLayout;
             return (T) this;
         }
-          
+
         /**
          * Forces the sign-in method choice screen to always show, even if there is only
          * a single provider configured.
@@ -1329,7 +1411,7 @@ public final class AuthUI {
          * This is disabled by default.
          *
          * @throws IllegalStateException when you attempt to enable anonymous user upgrade
-         * without forcing the same device flow for email link sign in.
+         *                               without forcing the same device flow for email link sign in.
          */
         @NonNull
         public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {
