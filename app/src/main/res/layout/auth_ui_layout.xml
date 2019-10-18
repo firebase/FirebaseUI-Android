@@ -102,6 +102,13 @@
                 android:checked="true"
                 android:text="@string/providers_anonymous" />
 
+            <CheckBox
+                android:id="@+id/microsoft_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/providers_microsoft" />
+
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
