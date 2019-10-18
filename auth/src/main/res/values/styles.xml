@@ -244,6 +244,12 @@
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <style name="FirebaseUI.Button.AccountChooser.MicrosoftButton">
+        <item name="drawableStartCompat">@drawable/fui_ic_microsoft</item>
+        <item name="android:background">@drawable/fui_idp_button_background_microsoft</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
     <style name="FirebaseUI.TopProgressBar" parent="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">4dp</item>

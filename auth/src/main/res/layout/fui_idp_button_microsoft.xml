@@ -1,0 +1,4 @@
+<com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/microsoft_signin_button"
+    style="@style/FirebaseUI.Button.AccountChooser.MicrosoftButton"
+    android:text="@string/fui_sign_in_with_microsoft"/>

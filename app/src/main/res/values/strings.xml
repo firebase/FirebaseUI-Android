@@ -30,6 +30,7 @@
     <string name="providers_email_link">Email link</string>
     <string name="providers_phone">Phone</string>
     <string name="providers_anonymous">Anonymous</string>
+    <string name="providers_microsoft">Microsoft</string>
 
     <string name="layout_header">Layout</string>
     <string name="layout_default">Default</string>
