@@ -32,6 +32,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
@@ -43,14 +44,16 @@ import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -97,7 +100,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                     existingUser.getEmail());
         }
 
-        String providerId = existingUser.getProviderId();
+        final String providerId = existingUser.getProviderId();
         AuthUI.IdpConfig config =
                 ProviderUtils.getConfigFromIdps(getFlowParams().providers, providerId);
         if (config == null) {
@@ -109,28 +112,33 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             return;
         }
 
-        @StringRes int providerName;
+
+        String providerName;
+
+        String genericOAuthProviderId = config.getParams()
+                .getString(ExtraConstants.GENERIC_OAUTH_PROVIDER_ID);
+
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
                 GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
                 google.init(new GoogleSignInHandler.Params(config, existingUser.getEmail()));
                 mProvider = google;
 
-                providerName = R.string.fui_idp_name_google;
+                providerName = getString(R.string.fui_idp_name_google);
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
                 FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
                 facebook.init(config);
                 mProvider = facebook;
 
-                providerName = R.string.fui_idp_name_facebook;
+                providerName = getString(R.string.fui_idp_name_facebook);
                 break;
             case TwitterAuthProvider.PROVIDER_ID:
                 TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
                 twitter.init(null);
                 mProvider = twitter;
 
-                providerName = R.string.fui_idp_name_twitter;
+                providerName = getString(R.string.fui_idp_name_twitter);
                 break;
             case GithubAuthProvider.PROVIDER_ID:
                 ProviderSignInBase<AuthUI.IdpConfig> github =
@@ -138,15 +146,35 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 github.init(config);
                 mProvider = github;
 
-                providerName = R.string.fui_idp_name_github;
+                providerName = getString(R.string.fui_idp_name_github);
                 break;
             default:
-                throw new IllegalStateException("Invalid provider id: " + providerId);
+                if (TextUtils.equals(providerId, genericOAuthProviderId)) {
+                    String genericOAuthProviderName = config.getParams()
+                            .getString(ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME);
+
+                    GenericIdpSignInHandler genericIdp
+                            = supplier.get(GenericIdpSignInHandler.class);
+                    genericIdp.init(config);
+                    mProvider = genericIdp;
+
+                    providerName = genericOAuthProviderName;
+                } else {
+                    throw new IllegalStateException("Invalid provider id: " + providerId);
+                }
         }
 
         mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
+                if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())
+                        && response.getCredentialForLinking() == null
+                        && !handler.hasCredentialForLinking()) {
+                    // Generic Idp does not return a credential - if this is not a linking flow,
+                    // the user is already signed in and we are done.
+                    finish(RESULT_OK, response.toIntent());
+                    return;
+                }
                 handler.startSignIn(response);
             }
 
@@ -159,12 +187,17 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
                 existingUser.getEmail(),
-                getString(providerName)));
+                providerName));
 
         mDoneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProvider.startSignIn(WelcomeBackIdpPrompt.this);
+                if (mProvider instanceof GenericIdpSignInHandler) {
+                    ((GenericIdpSignInHandler) mProvider).startSignIn(FirebaseAuth.getInstance(),
+                            WelcomeBackIdpPrompt.this, providerId);
+                } else {
+                    mProvider.startSignIn(WelcomeBackIdpPrompt.this);
+                }
             }
         });
 

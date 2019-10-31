@@ -158,6 +158,12 @@ public class AuthMethodPickerLayout implements Parcelable {
             return this;
         }
 
+        public AuthMethodPickerLayout.Builder setGenericOAuthProviderButtonId(
+                @IdRes int genericOAuthProviderButtonId) {
+            providersMapping.put(AuthUI.GENERIC_OAUTH_PROVIDER, genericOAuthProviderButtonId);
+            return this;
+        }
+
         /**
          * Set the ID of a TextView where terms of service and privacy policy should be
          * displayed.

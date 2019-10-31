@@ -151,19 +151,13 @@ public class SignInKickstarter extends SignInViewModelBase {
                                 args),
                         RequestCodes.PHONE_FLOW)));
                 break;
-            case GoogleAuthProvider.PROVIDER_ID:
-            case FacebookAuthProvider.PROVIDER_ID:
-            case TwitterAuthProvider.PROVIDER_ID:
-            case GithubAuthProvider.PROVIDER_ID:
+            default:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         SingleSignInActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
                                 new User.Builder(provider, id).build()),
                         RequestCodes.PROVIDER_FLOW)));
-                break;
-            default:
-                startAuthMethodChoice();
         }
     }
 

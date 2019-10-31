@@ -3,6 +3,7 @@ package com.firebase.ui.auth.viewmodel.idp;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -26,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.List;
 
@@ -42,19 +44,27 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
     }
 
     public void startSignIn(@NonNull final IdpResponse response) {
-        if (!response.isSuccessful()) {
+        if (!response.isSuccessful() && !response.isRecoverableErrorResponse()) {
             setResult(Resource.<IdpResponse>forFailure(response.getError()));
             return;
         }
-        if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+
+        if (isInvalidProvider(response.getProviderType())) {
             throw new IllegalStateException(
                     "This handler cannot be used with email or phone providers");
         }
 
         setResult(Resource.<IdpResponse>forLoading());
 
-        final AuthCredential credential = ProviderUtils.getAuthCredential(response);
+        // Recoverable error flows (linking) for Generic OAuth providers are handled here.
+        // For Generic OAuth providers, the credential is set on the IdpResponse, as
+        // a credential made from the id token/access token cannot be used to sign-in.
+        if (isLinkingFlow(response)) {
+            handleGenericIdpLinkingFlow(response);
+            return;
+        }
 
+        final AuthCredential credential = ProviderUtils.getAuthCredential(response);
         AuthOperationManager.getInstance().signInAndLinkWithCredential(
                 getAuth(),
                 getArguments(),
@@ -110,7 +120,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                                     e));
                                         }
                                     });
-                        } else if (e instanceof FirebaseAuthInvalidUserException){
+                        } else if (e instanceof FirebaseAuthInvalidUserException) {
                             setResult(Resource.<IdpResponse>forFailure(
                                     new FirebaseUiException(
                                             ErrorCodes.ERROR_USER_DISABLED,
@@ -119,7 +129,6 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                             )
                                     )
                             ));
-                            return;
                         }
                     }
                 });
@@ -180,4 +189,34 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
         }
     }
 
+    private void handleGenericIdpLinkingFlow(@NonNull final IdpResponse idpResponse) {
+        ProviderUtils.fetchSortedProviders(getAuth(), getArguments(), idpResponse.getEmail())
+                .addOnSuccessListener(new OnSuccessListener<List<String>>() {
+                    @Override
+                    public void onSuccess(@NonNull List<String> providers) {
+                        if (providers.isEmpty()) {
+                            setResult(Resource.<IdpResponse>forFailure(
+                                    new FirebaseUiException(ErrorCodes.DEVELOPER_ERROR,
+                                            "No supported providers.")));
+                            return;
+                        }
+                        startWelcomeBackFlowForLinking(providers.get(0), idpResponse);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        setResult(Resource.<IdpResponse>forFailure(e));
+                    }
+                });
+    }
+
+    private boolean isLinkingFlow(@NonNull IdpResponse idpResponse) {
+        return idpResponse.getCredentialForLinking() != null;
+    }
+
+    private boolean isInvalidProvider(@NonNull String provider) {
+        return TextUtils.equals(provider, EmailAuthProvider.PROVIDER_ID)
+                || TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID);
+    }
 }

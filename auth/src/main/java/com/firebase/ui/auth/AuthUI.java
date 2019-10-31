@@ -1142,9 +1142,24 @@ public final class AuthUI {
         }
 
         /**
+         * {@link IdpConfig} builder for the Yahoo provider.
+         */
+        public static final class YahooBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Yahoo";
+            private static final String PROVIDER_ID = "yahoo.com";
+
+
+            public YahooBuilder() {
+                setOAuthProviderName(PROVIDER_NAME);
+                setOAuthProviderId(PROVIDER_ID);
+                setButtonId(R.layout.fui_idp_button_yahoo);
+            }
+        }
+
+        /**
          * {@link IdpConfig} builder for a Generic OAuth provider.
          */
-        private static class GenericOAuthProviderBuilder extends Builder {
+        public static class GenericOAuthProviderBuilder extends Builder {
 
             GenericOAuthProviderBuilder() {
                 super(GENERIC_OAUTH_PROVIDER);
@@ -1169,7 +1184,7 @@ public final class AuthUI {
 
 
             @NonNull
-            protected GenericOAuthProviderBuilder setButtonId(int buttonId) {
+            public GenericOAuthProviderBuilder setButtonId(int buttonId) {
                 getParams().putInt(
                         ExtraConstants.GENERIC_OAUTH_BUTTON_ID, buttonId);
                 return this;

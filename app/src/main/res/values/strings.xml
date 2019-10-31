@@ -31,6 +31,7 @@
     <string name="providers_phone">Phone</string>
     <string name="providers_anonymous">Anonymous</string>
     <string name="providers_microsoft">Microsoft</string>
+    <string name="providers_yahoo">Yahoo</string>
 
     <string name="layout_header">Layout</string>
     <string name="layout_default">Default</string>

@@ -3,6 +3,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -12,6 +13,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
@@ -32,6 +34,8 @@ import androidx.annotation.RestrictTo;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SingleSignInActivity extends InvisibleActivityBase {
     private SocialProviderResponseHandler mHandler;
@@ -46,7 +50,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         User user = User.getUser(getIntent());
-        String provider = user.getProviderId();
+        final String provider = user.getProviderId();
 
         AuthUI.IdpConfig providerConfig =
                 ProviderUtils.getConfigFromIdps(getFlowParams().providers, provider);
@@ -85,17 +89,36 @@ public class SingleSignInActivity extends InvisibleActivityBase {
                 mProvider = github;
                 break;
             default:
+                if (!TextUtils.isEmpty(
+                        providerConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
+                    GenericIdpSignInHandler genericIdp =
+                            supplier.get(GenericIdpSignInHandler.class);
+                    genericIdp.init(providerConfig);
+                    mProvider = genericIdp;
+
+                    break;
+                }
                 throw new IllegalStateException("Invalid provider id: " + provider);
         }
 
         mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                mHandler.startSignIn(response);
+                if (AuthUI.SOCIAL_PROVIDERS.contains(provider) || !response.isSuccessful()) {
+                    mHandler.startSignIn(response);
+                    return;
+                }
+                finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
+                        response.toIntent());
             }
 
             @Override
             protected void onFailure(@NonNull Exception e) {
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants
+                            .IDP_RESPONSE, IdpResponse.from(e)));
+                    return;
+                }
                 mHandler.startSignIn(IdpResponse.from(e));
             }
         });
