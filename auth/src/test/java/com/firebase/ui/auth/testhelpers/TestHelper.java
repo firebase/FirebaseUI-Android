@@ -152,10 +152,8 @@ public final class TestHelper {
                 case AuthUI.ANONYMOUS_PROVIDER:
                     idpConfigs.add(new IdpConfig.AnonymousBuilder().build());
                     break;
-                case MICROSOFT_PROVIDER:
-                    idpConfigs.add(new IdpConfig.MicrosoftBuilder().build());
-                    break;
                 case GENERIC_OAUTH_PROVIDER:
+                case MICROSOFT_PROVIDER:
                     idpConfigs.add(new IdpConfig.MicrosoftBuilder().build());
                     break;
                 default:
