@@ -1127,6 +1127,21 @@ public final class AuthUI {
         }
 
         /**
+         * {@link IdpConfig} builder for the Apple provider.
+         */
+        public static final class AppleBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Apple";
+            private static final String PROVIDER_ID = "apple.com";
+
+
+            public AppleBuilder() {
+                setOAuthProviderName(PROVIDER_NAME);
+                setOAuthProviderId(PROVIDER_ID);
+                setButtonId(R.layout.fui_idp_button_apple);
+            }
+        }
+
+        /**
          * {@link IdpConfig} builder for the Microsoft provider.
          */
         public static final class MicrosoftBuilder extends GenericOAuthProviderBuilder {

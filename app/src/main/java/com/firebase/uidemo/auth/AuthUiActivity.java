@@ -76,6 +76,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.email_link_provider) CheckBox mUseEmailLinkProvider;
     @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
     @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
+    @BindView(R.id.apple_provider) CheckBox mUseAppleProvider;
     @BindView(R.id.microsoft_provider) CheckBox mUseMicrosoftProvider;
     @BindView(R.id.yahoo_provider) CheckBox mUseYahooProvider;
 
@@ -429,6 +430,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseYahooProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.YahooBuilder().build());
+        }
+
+        if (mUseYahooProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.AppleBuilder().build());
         }
 
         return selectedProviders;
