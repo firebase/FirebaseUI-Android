@@ -432,7 +432,7 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.YahooBuilder().build());
         }
 
-        if (mUseYahooProvider.isChecked()) {
+        if (mUseAppleProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.AppleBuilder().build());
         }
 
