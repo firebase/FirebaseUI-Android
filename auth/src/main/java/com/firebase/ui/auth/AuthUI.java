@@ -108,6 +108,11 @@ public final class AuthUI {
     public static final String EMAIL_LINK_PROVIDER = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
     public static final String GENERIC_OAUTH_PROVIDER = "genericOAuthProvider";
 
+    public static final String MICROSOFT_PROVIDER = "microsoft.com";
+    public static final String YAHOO_PROVIDER = "yahoo.com";
+    public static final String APPLE_PROVIDER = "apple.com";
+
+
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
@@ -127,6 +132,16 @@ public final class AuthUI {
                     ANONYMOUS_PROVIDER,
                     EMAIL_LINK_PROVIDER,
                     GENERIC_OAUTH_PROVIDER
+            )));
+
+    /**
+     * The set of OAuth2.0 providers supported in Firebase Auth UI through Generic IDP (web flow).
+     */
+    public static final Set<String> SUPPORTED_OAUTH_PROVIDERS =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+                    MICROSOFT_PROVIDER,
+                    YAHOO_PROVIDER,
+                    APPLE_PROVIDER
             )));
 
     /**
@@ -1131,13 +1146,9 @@ public final class AuthUI {
          */
         public static final class AppleBuilder extends GenericOAuthProviderBuilder {
             private static final String PROVIDER_NAME = "Apple";
-            private static final String PROVIDER_ID = "apple.com";
-
 
             public AppleBuilder() {
-                setOAuthProviderName(PROVIDER_NAME);
-                setOAuthProviderId(PROVIDER_ID);
-                setButtonId(R.layout.fui_idp_button_apple);
+                super(APPLE_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_apple);
             }
         }
 
@@ -1146,13 +1157,9 @@ public final class AuthUI {
          */
         public static final class MicrosoftBuilder extends GenericOAuthProviderBuilder {
             private static final String PROVIDER_NAME = "Microsoft";
-            private static final String PROVIDER_ID = "microsoft.com";
-
 
             public MicrosoftBuilder() {
-                setOAuthProviderName(PROVIDER_NAME);
-                setOAuthProviderId(PROVIDER_ID);
-                setButtonId(R.layout.fui_idp_button_microsoft);
+                super(MICROSOFT_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_microsoft);
             }
         }
 
@@ -1161,13 +1168,9 @@ public final class AuthUI {
          */
         public static final class YahooBuilder extends GenericOAuthProviderBuilder {
             private static final String PROVIDER_NAME = "Yahoo";
-            private static final String PROVIDER_ID = "yahoo.com";
-
 
             public YahooBuilder() {
-                setOAuthProviderName(PROVIDER_NAME);
-                setOAuthProviderId(PROVIDER_ID);
-                setButtonId(R.layout.fui_idp_button_yahoo);
+                super(YAHOO_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_yahoo);
             }
         }
 
@@ -1176,33 +1179,28 @@ public final class AuthUI {
          */
         public static class GenericOAuthProviderBuilder extends Builder {
 
-            GenericOAuthProviderBuilder() {
+            GenericOAuthProviderBuilder(@NonNull String providerId,
+                                        @NonNull String providerName,
+                                        int buttonId) {
                 super(GENERIC_OAUTH_PROVIDER);
-            }
 
-            @NonNull
-            protected GenericOAuthProviderBuilder setOAuthProviderId(@NonNull String providerId) {
                 Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");
+                Preconditions.checkNotNull(providerName, "The provider name cannot be null.");
+
+                if (!SUPPORTED_OAUTH_PROVIDERS.contains(providerId)) {
+                    throw new IllegalStateException("You must specify a valid, " +
+                            "supported provider ID.");
+                }
+
+                setProviderId(providerId);
+
                 getParams().putString(
                         ExtraConstants.GENERIC_OAUTH_PROVIDER_ID, providerId);
-                setProviderId(providerId);
-                return this;
-            }
-
-            @NonNull
-            protected GenericOAuthProviderBuilder setOAuthProviderName(@NonNull String providerName) {
-                Preconditions.checkNotNull(providerName, "The provider name cannot be null.");
                 getParams().putString(
                         ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME, providerName);
-                return this;
-            }
-
-
-            @NonNull
-            public GenericOAuthProviderBuilder setButtonId(int buttonId) {
                 getParams().putInt(
                         ExtraConstants.GENERIC_OAUTH_BUTTON_ID, buttonId);
-                return this;
+
             }
 
             @NonNull
@@ -1217,18 +1215,6 @@ public final class AuthUI {
                 getParams().putSerializable(
                         ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS, new HashMap<>(scopes));
                 return this;
-            }
-
-            @NonNull
-            @Override
-            public IdpConfig build() {
-                if (!getParams().containsKey(ExtraConstants.GENERIC_OAUTH_PROVIDER_ID)
-                        || !getParams().containsKey(ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME)
-                        || !getParams().containsKey(ExtraConstants.GENERIC_OAUTH_BUTTON_ID)) {
-                    throw new IllegalStateException("You must provide a provider ID, provider name," +
-                            " and button ID when building a GenericOAuthProvider.");
-                }
-                return super.build();
             }
         }
     }

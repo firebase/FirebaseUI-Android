@@ -132,8 +132,8 @@ public class IdpResponse implements Parcelable {
                     /* token= */ null,
                     /* secret= */ null,
                     /* isNewUser= */ false,
-                    new FirebaseUiException(((FirebaseUiUserCollisionException) e).getErrorCode(),
-                            e.getMessage()),
+                    new FirebaseUiException(collisionException.getErrorCode(),
+                            collisionException.getMessage()),
                     collisionException.getCredential());
         } else {
             FirebaseUiException wrapped
@@ -362,7 +362,7 @@ public class IdpResponse implements Parcelable {
             return this;
         }
 
-        public Builder setPendingCredential(@NonNull AuthCredential credential) {
+        public Builder setPendingCredential(AuthCredential credential) {
             mPendingCredential = credential;
             return this;
         }

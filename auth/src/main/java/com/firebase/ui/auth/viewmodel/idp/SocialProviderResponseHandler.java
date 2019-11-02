@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
@@ -49,7 +48,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
             return;
         }
 
-        if (isInvalidProvider(response.getProviderType())) {
+        if (isEmailOrPhoneProvider(response.getProviderType())) {
             throw new IllegalStateException(
                     "This handler cannot be used with email or phone providers");
         }
@@ -215,7 +214,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
         return idpResponse.getCredentialForLinking() != null;
     }
 
-    private boolean isInvalidProvider(@NonNull String provider) {
+    private boolean isEmailOrPhoneProvider(@NonNull String provider) {
         return TextUtils.equals(provider, EmailAuthProvider.PROVIDER_ID)
                 || TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID);
     }

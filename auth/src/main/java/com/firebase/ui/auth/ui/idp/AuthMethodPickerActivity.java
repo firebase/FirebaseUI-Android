@@ -186,36 +186,37 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         for (IdpConfig idpConfig : providerConfigs) {
             @LayoutRes int buttonLayout;
 
-            if (TextUtils.isEmpty(idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
-                final String providerId = idpConfig.getProviderId();
-                switch (providerId) {
-                    case GoogleAuthProvider.PROVIDER_ID:
-                        buttonLayout = R.layout.fui_idp_button_google;
+            final String providerId = idpConfig.getProviderId();
+            switch (providerId) {
+                case GoogleAuthProvider.PROVIDER_ID:
+                    buttonLayout = R.layout.fui_idp_button_google;
+                    break;
+                case FacebookAuthProvider.PROVIDER_ID:
+                    buttonLayout = R.layout.fui_idp_button_facebook;
+                    break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    buttonLayout = R.layout.fui_idp_button_twitter;
+                    break;
+                case GithubAuthProvider.PROVIDER_ID:
+                    buttonLayout = R.layout.fui_idp_button_github;
+                    break;
+                case EMAIL_LINK_PROVIDER:
+                case EmailAuthProvider.PROVIDER_ID:
+                    buttonLayout = R.layout.fui_provider_button_email;
+                    break;
+                case PhoneAuthProvider.PROVIDER_ID:
+                    buttonLayout = R.layout.fui_provider_button_phone;
+                    break;
+                case AuthUI.ANONYMOUS_PROVIDER:
+                    buttonLayout = R.layout.fui_provider_button_anonymous;
+                    break;
+                default:
+                    if (!TextUtils.isEmpty(
+                            idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
+                        buttonLayout = idpConfig.getParams().getInt(GENERIC_OAUTH_BUTTON_ID);
                         break;
-                    case FacebookAuthProvider.PROVIDER_ID:
-                        buttonLayout = R.layout.fui_idp_button_facebook;
-                        break;
-                    case TwitterAuthProvider.PROVIDER_ID:
-                        buttonLayout = R.layout.fui_idp_button_twitter;
-                        break;
-                    case GithubAuthProvider.PROVIDER_ID:
-                        buttonLayout = R.layout.fui_idp_button_github;
-                        break;
-                    case EMAIL_LINK_PROVIDER:
-                    case EmailAuthProvider.PROVIDER_ID:
-                        buttonLayout = R.layout.fui_provider_button_email;
-                        break;
-                    case PhoneAuthProvider.PROVIDER_ID:
-                        buttonLayout = R.layout.fui_provider_button_phone;
-                        break;
-                    case AuthUI.ANONYMOUS_PROVIDER:
-                        buttonLayout = R.layout.fui_provider_button_anonymous;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown provider: " + providerId);
-                }
-            } else {
-                buttonLayout = idpConfig.getParams().getInt(GENERIC_OAUTH_BUTTON_ID);
+                    }
+                    throw new IllegalStateException("Unknown provider: " + providerId);
             }
 
             View loginButton = getLayoutInflater().inflate(buttonLayout, mProviderHolder, false);
@@ -322,8 +323,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             @Override
             protected void onFailure(@NonNull Exception e) {
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
-                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants
-                            .IDP_RESPONSE, IdpResponse.from(e)));
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE,
+                            IdpResponse.from(e)));
                     return;
                 }
                 handleResponse(IdpResponse.from(e));

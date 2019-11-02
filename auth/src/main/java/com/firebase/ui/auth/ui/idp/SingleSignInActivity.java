@@ -115,8 +115,8 @@ public class SingleSignInActivity extends InvisibleActivityBase {
             @Override
             protected void onFailure(@NonNull Exception e) {
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
-                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants
-                            .IDP_RESPONSE, IdpResponse.from(e)));
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE,
+                            IdpResponse.from(e)));
                     return;
                 }
                 mHandler.startSignIn(IdpResponse.from(e));
