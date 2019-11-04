@@ -185,6 +185,8 @@ public class AuthUiActivity extends AppCompatActivity {
                     mUseEmailLinkProvider.setChecked(false);
                     mUsePhoneProvider.setChecked(false);
                     mUseAnonymousProvider.setChecked(false);
+                    mUseYahooProvider.setChecked(false);
+                    mUseAppleProvider.setChecked(false);
                 }
             }
         });

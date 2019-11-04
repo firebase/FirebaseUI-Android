@@ -158,9 +158,21 @@ public class AuthMethodPickerLayout implements Parcelable {
             return this;
         }
 
-        public AuthMethodPickerLayout.Builder setGenericOAuthProviderButtonId(
-                @IdRes int genericOAuthProviderButtonId) {
-            providersMapping.put(AuthUI.GENERIC_OAUTH_PROVIDER, genericOAuthProviderButtonId);
+        public AuthMethodPickerLayout.Builder setMicrosoftButtonId(
+                @IdRes int microsoftButtonId) {
+            providersMapping.put(AuthUI.MICROSOFT_PROVIDER, microsoftButtonId);
+            return this;
+        }
+
+        public AuthMethodPickerLayout.Builder setAppleButtonId(
+                @IdRes int appleButtonId) {
+            providersMapping.put(AuthUI.APPLE_PROVIDER, appleButtonId);
+            return this;
+        }
+
+        public AuthMethodPickerLayout.Builder setYahooButtonId(
+                @IdRes int yahooButtonId) {
+            providersMapping.put(AuthUI.YAHOO_PROVIDER, yahooButtonId);
             return this;
         }
 
@@ -179,7 +191,8 @@ public class AuthMethodPickerLayout implements Parcelable {
             }
 
             for (String key : providersMapping.keySet()) {
-                if (!AuthUI.SUPPORTED_PROVIDERS.contains(key)) {
+                if (!AuthUI.SUPPORTED_PROVIDERS.contains(key)
+                        && !AuthUI.SUPPORTED_OAUTH_PROVIDERS.contains(key)) {
                     throw new IllegalArgumentException("Unknown provider: " + key);
                 }
             }
