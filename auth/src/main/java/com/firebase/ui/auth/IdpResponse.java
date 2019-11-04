@@ -183,9 +183,9 @@ public class IdpResponse implements Parcelable {
     /**
      * Get the type of provider. e.g. {@link GoogleAuthProvider#PROVIDER_ID}
      */
-    @NonNull
+    @Nullable
     public String getProviderType() {
-        return mUser.getProviderId();
+        return mUser != null ? mUser.getProviderId() : null;
     }
 
     /**
@@ -208,7 +208,7 @@ public class IdpResponse implements Parcelable {
      */
     @Nullable
     public String getPhoneNumber() {
-        return mUser.getPhoneNumber();
+        return mUser != null ? mUser.getPhoneNumber() : null;
     }
 
     /**
@@ -238,6 +238,11 @@ public class IdpResponse implements Parcelable {
     @Nullable
     public AuthCredential getCredentialForLinking() {
         return mPendingCredential;
+    }
+
+    @Nullable
+    public boolean hasCredentialForLinking() {
+        return mPendingCredential != null;
     }
 
     public boolean isRecoverableErrorResponse() {

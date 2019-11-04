@@ -58,7 +58,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
         // Recoverable error flows (linking) for Generic OAuth providers are handled here.
         // For Generic OAuth providers, the credential is set on the IdpResponse, as
         // a credential made from the id token/access token cannot be used to sign-in.
-        if (isLinkingFlow(response)) {
+        if (response.hasCredentialForLinking()) {
             handleGenericIdpLinkingFlow(response);
             return;
         }
@@ -208,10 +208,6 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                         setResult(Resource.<IdpResponse>forFailure(e));
                     }
                 });
-    }
-
-    private boolean isLinkingFlow(@NonNull IdpResponse idpResponse) {
-        return idpResponse.getCredentialForLinking() != null;
     }
 
     private boolean isEmailOrPhoneProvider(@NonNull String provider) {

@@ -168,7 +168,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())
-                        && response.getCredentialForLinking() == null
+                        && !response.hasCredentialForLinking()
                         && !handler.hasCredentialForLinking()) {
                     // Generic Idp does not return a credential - if this is not a linking flow,
                     // the user is already signed in and we are done.

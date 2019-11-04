@@ -56,7 +56,7 @@ public final class ProviderUtils {
 
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse response) {
-        if (response.getCredentialForLinking() != null) {
+        if (response.hasCredentialForLinking()  ) {
             return response.getCredentialForLinking();
         }
         switch (response.getProviderType()) {
