@@ -43,6 +43,7 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
@@ -193,7 +194,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             @Override
             public void onClick(View view) {
                 if (mProvider instanceof GenericIdpSignInHandler) {
-                    ((GenericIdpSignInHandler) mProvider).startSignIn(FirebaseAuth.getInstance(),
+                    FirebaseAuth auth = FirebaseAuth.getInstance(
+                            FirebaseApp.getInstance(getFlowParams().appName));
+                    mProvider.startSignIn(auth,
                             WelcomeBackIdpPrompt.this, providerId);
                 } else {
                     mProvider.startSignIn(WelcomeBackIdpPrompt.this);

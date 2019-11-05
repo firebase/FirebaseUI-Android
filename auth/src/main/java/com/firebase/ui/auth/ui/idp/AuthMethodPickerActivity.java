@@ -49,6 +49,7 @@ import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -360,10 +361,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
 
                 if (provider instanceof GenericIdpSignInHandler) {
-                    // Provider may not be set when initializing the handler as it may have been
-                    // already initialized.
-                    GenericIdpSignInHandler handler = (GenericIdpSignInHandler) provider;
-                    handler.startSignIn(FirebaseAuth.getInstance(), AuthMethodPickerActivity.this,
+                    FirebaseAuth auth = FirebaseAuth.getInstance(
+                            FirebaseApp.getInstance(getFlowParams().appName));
+                    provider.startSignIn(auth, AuthMethodPickerActivity.this,
                             idpConfig.getProviderId());
                 } else {
                     provider.startSignIn(AuthMethodPickerActivity.this);

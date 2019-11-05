@@ -29,6 +29,7 @@ import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,23 +50,21 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     @Override
     public void startSignIn(@NonNull HelperActivityBase activity) {
         setResult(Resource.<IdpResponse>forLoading());
-        start(FirebaseAuth.getInstance(), activity, getArguments().getProviderId());
+
+        FlowParameters flowParameters = activity.getFlowParams();
+
+        startSignIn(FirebaseAuth.getInstance(FirebaseApp.getInstance(flowParameters.appName)),
+                activity, getArguments().getProviderId());
     }
 
+    @Override
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        start(auth, activity, providerId);
-    }
-
-    public void start(@NonNull FirebaseAuth auth,
-                      @NonNull HelperActivityBase activity,
-                      @NonNull final String providerId) {
         setResult(Resource.<IdpResponse>forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
         OAuthProvider provider = buildOAuthProvider(providerId);
-
         if (flowParameters != null
                 && AuthOperationManager.getInstance().canUpgradeAnonymous(auth, flowParameters)) {
             if (activity instanceof WelcomeBackIdpPrompt) {
