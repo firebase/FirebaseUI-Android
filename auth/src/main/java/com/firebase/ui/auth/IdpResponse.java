@@ -246,6 +246,8 @@ public class IdpResponse implements Parcelable {
     }
 
     public boolean isRecoverableErrorResponse() {
+        // In a recoverable error flow, both a valid credential that can be used to sign-in and
+        // the email keying that account is returned.
         return mPendingCredential != null || getEmail() != null;
     }
 
