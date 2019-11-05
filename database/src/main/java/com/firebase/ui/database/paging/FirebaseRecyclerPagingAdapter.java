@@ -229,8 +229,8 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      *
      * When {@link DatabaseError} is caught the adapter will stop loading any data
      */
-    protected void onError(@NonNull DatabaseError databaseError){
-
+    protected void onError(@NonNull DatabaseError databaseError) {
+        Log.w(TAG, "onError", databaseError.toException());
     }
 
     @NonNull
