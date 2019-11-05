@@ -4,7 +4,7 @@ android {
     buildTypes {
         named("release").configure {
             isMinifyEnabled = false
-            consumerProguardFiles("proguard-rules.pro")
+            consumerProguardFiles("auth-proguard.pro")
         }
     }
 
