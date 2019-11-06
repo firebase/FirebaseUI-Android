@@ -106,7 +106,6 @@ public final class AuthUI {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String ANONYMOUS_PROVIDER = "anonymous";
     public static final String EMAIL_LINK_PROVIDER = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
-    public static final String GENERIC_OAUTH_PROVIDER = "genericOAuthProvider";
 
     public static final String MICROSOFT_PROVIDER = "microsoft.com";
     public static final String YAHOO_PROVIDER = "yahoo.com";
@@ -130,8 +129,7 @@ public final class AuthUI {
                     EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID,
                     ANONYMOUS_PROVIDER,
-                    EMAIL_LINK_PROVIDER,
-                    GENERIC_OAUTH_PROVIDER
+                    EMAIL_LINK_PROVIDER
             )));
 
     /**
@@ -481,13 +479,11 @@ public final class AuthUI {
             EmailAuthProvider.PROVIDER_ID,
             PhoneAuthProvider.PROVIDER_ID,
             ANONYMOUS_PROVIDER,
-            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
-            GENERIC_OAUTH_PROVIDER,
+            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
     })
 
     @Retention(RetentionPolicy.SOURCE)
-    public @interface SupportedProvider {
-    }
+    public @interface SupportedProvider {}
 
     /**
      * Configuration for an identity provider.
@@ -579,7 +575,8 @@ public final class AuthUI {
             private String mProviderId;
 
             protected Builder(@SupportedProvider @NonNull String providerId) {
-                if (!SUPPORTED_PROVIDERS.contains(providerId)) {
+                if (!SUPPORTED_PROVIDERS.contains(providerId)
+                        && !SUPPORTED_OAUTH_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
                 }
                 mProviderId = providerId;
@@ -1182,17 +1179,10 @@ public final class AuthUI {
             GenericOAuthProviderBuilder(@NonNull String providerId,
                                         @NonNull String providerName,
                                         int buttonId) {
-                super(GENERIC_OAUTH_PROVIDER);
+                super(providerId);
 
                 Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");
                 Preconditions.checkNotNull(providerName, "The provider name cannot be null.");
-
-                if (!SUPPORTED_OAUTH_PROVIDERS.contains(providerId)) {
-                    throw new IllegalStateException("You must specify a valid, " +
-                            "supported provider ID.");
-                }
-
-                setProviderId(providerId);
 
                 getParams().putString(
                         ExtraConstants.GENERIC_OAUTH_PROVIDER_ID, providerId);

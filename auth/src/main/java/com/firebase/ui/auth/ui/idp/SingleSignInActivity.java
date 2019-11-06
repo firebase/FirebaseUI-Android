@@ -23,7 +23,9 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -141,7 +143,10 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         });
 
         if (mHandler.getOperation().getValue() == null) {
-            mProvider.startSignIn(this);
+            FirebaseAuth auth = FirebaseAuth.getInstance(
+                    FirebaseApp.getInstance(getFlowParams().appName));
+            mProvider.startSignIn(auth,
+                    this, provider);
         }
     }
 

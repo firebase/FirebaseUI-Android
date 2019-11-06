@@ -43,7 +43,6 @@ import java.util.List;
 import androidx.test.core.app.ApplicationProvider;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
-import static com.firebase.ui.auth.AuthUI.GENERIC_OAUTH_PROVIDER;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -152,7 +151,6 @@ public final class TestHelper {
                 case AuthUI.ANONYMOUS_PROVIDER:
                     idpConfigs.add(new IdpConfig.AnonymousBuilder().build());
                     break;
-                case GENERIC_OAUTH_PROVIDER:
                 case MICROSOFT_PROVIDER:
                     idpConfigs.add(new IdpConfig.MicrosoftBuilder().build());
                     break;

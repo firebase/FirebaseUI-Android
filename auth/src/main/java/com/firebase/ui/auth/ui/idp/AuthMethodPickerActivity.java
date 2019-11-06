@@ -360,15 +360,10 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     return;
                 }
 
-                if (provider instanceof GenericIdpSignInHandler) {
-                    FirebaseAuth auth = FirebaseAuth.getInstance(
-                            FirebaseApp.getInstance(getFlowParams().appName));
-                    provider.startSignIn(auth, AuthMethodPickerActivity.this,
-                            idpConfig.getProviderId());
-                } else {
-                    provider.startSignIn(AuthMethodPickerActivity.this);
-                }
-
+                FirebaseAuth auth = FirebaseAuth.getInstance(
+                        FirebaseApp.getInstance(getFlowParams().appName));
+                provider.startSignIn(auth, AuthMethodPickerActivity.this,
+                        idpConfig.getProviderId());
             }
         });
     }
