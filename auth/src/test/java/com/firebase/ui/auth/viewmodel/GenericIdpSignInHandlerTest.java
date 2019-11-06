@@ -80,19 +80,10 @@ public class GenericIdpSignInHandlerTest {
     private FirebaseUser mMockUser;
 
     @Mock
-    private FirebaseAuth mScratchMockAuth;
-
-    @Mock
     private HelperActivityBase mMockActivity;
 
     @Mock
-    private WelcomeBackIdpPrompt mMockWelcomeBackIdpPrompt;
-
-    @Mock
     private Observer<Resource<IdpResponse>> mResponseObserver;
-
-    @Mock
-    private AuthResult mMockAuthResult;
 
     @Before
     public void setUp() {
@@ -104,7 +95,6 @@ public class GenericIdpSignInHandlerTest {
                 Arrays.asList(MICROSOFT_PROVIDER, GoogleAuthProvider.PROVIDER_ID),
                 /* enableAnonymousUpgrade= */ true);
         when(mMockActivity.getFlowParams()).thenReturn(testParams);
-        when(mMockWelcomeBackIdpPrompt.getFlowParams()).thenReturn(testParams);
 
         mHandler = new GenericIdpSignInHandler(
                 (Application) ApplicationProvider.getApplicationContext());
@@ -330,42 +320,6 @@ public class GenericIdpSignInHandlerTest {
                 (FirebaseUiUserCollisionException) resolveCaptor.getValue().getException();
         assertThat(e.getCredential()).isNotNull();
         assertThat(e.getEmail()).isEqualTo(EMAIL);
-    }
-
-    @Test
-    public void testStartSignIn_anonymousUpgradeLinkingFlow_expectIdpResponseWithCredential() {
-        setupAnonymousUpgrade();
-        AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
-        authOperationManager.mScratchAuth = mScratchMockAuth;
-
-        when(mScratchMockAuth.startActivityForSignInWithProvider(
-                any(HelperActivityBase.class), any(OAuthProvider.class)))
-                .thenReturn(AutoCompleteTask.forSuccess(mMockAuthResult));
-
-        AuthCredential credential
-                = OAuthProvider.getCredential(MICROSOFT_PROVIDER, ID_TOKEN, ACCESS_TOKEN);
-        when(mMockAuthResult.getCredential()).thenReturn(credential);
-        when(mMockAuthResult.getUser()).thenReturn(mMockUser);
-        when(mMockUser.getDisplayName()).thenReturn(DISPLAY_NAME);
-        when(mMockUser.getPhotoUrl()).thenReturn(new Uri.Builder().build());
-
-        mHandler.startSignIn(mMockAuth, mMockWelcomeBackIdpPrompt, MICROSOFT_PROVIDER);
-
-        ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
-        verify(mScratchMockAuth).startActivityForSignInWithProvider(eq(mMockWelcomeBackIdpPrompt),
-                providerCaptor.capture());
-        assertThat(providerCaptor.getValue().getProviderId()).isEqualTo(MICROSOFT_PROVIDER);
-
-        InOrder inOrder = inOrder(mResponseObserver);
-        inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
-
-        ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
-                ArgumentCaptor.forClass(Resource.class);
-        inOrder.verify(mResponseObserver).onChanged(resolveCaptor.capture());
-
-        IdpResponse idpResponse = resolveCaptor.getValue().getValue();
-        assertThat(idpResponse.getCredentialForLinking()).isNotNull();
     }
 
     private void setupAnonymousUpgrade() {

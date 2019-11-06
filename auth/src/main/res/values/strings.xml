@@ -28,9 +28,9 @@
     <string name="fui_sign_in_with_email" translation_description="Sign in button text">Sign in with email</string>
     <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Sign in with phone</string>
     <string name="fui_sign_in_anonymously" translation_description="Continue as guest">Continue as guest</string>
-    <string name="fui_sign_in_with_apple" translation_description="Sign in button text">Sign in with Apple</string>
-    <string name="fui_sign_in_with_microsoft" translation_description="Sign in button text">Sign in with Microsoft</string>
-    <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text">Sign in with Yahoo</string>
+    <string name="fui_sign_in_with_apple" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Apple</string>
+    <string name="fui_sign_in_with_microsoft" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Microsoft</string>
+    <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Yahoo</string>
 
     <!-- Email common-->
     <string name="fui_next_default" translation_description="Button text to continue">Next</string>

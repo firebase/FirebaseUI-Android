@@ -32,7 +32,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
-import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
+import com.firebase.ui.auth.data.remote.GenericIdpAnonymousUpgradeLinkingHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
@@ -154,8 +154,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                     String genericOAuthProviderName = config.getParams()
                             .getString(ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME);
 
-                    GenericIdpSignInHandler genericIdp
-                            = supplier.get(GenericIdpSignInHandler.class);
+                    GenericIdpAnonymousUpgradeLinkingHandler genericIdp
+                            = supplier.get(GenericIdpAnonymousUpgradeLinkingHandler.class);
                     genericIdp.init(config);
                     mProvider = genericIdp;
 

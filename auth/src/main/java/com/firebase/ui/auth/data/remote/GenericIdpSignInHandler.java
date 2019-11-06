@@ -67,40 +67,16 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         OAuthProvider provider = buildOAuthProvider(providerId);
         if (flowParameters != null
                 && AuthOperationManager.getInstance().canUpgradeAnonymous(auth, flowParameters)) {
-            if (activity instanceof WelcomeBackIdpPrompt) {
-                handleAnonymousUpgradeLinkingFlow(activity, provider, flowParameters);
-            } else {
-                handleAnonymousUpgradeFlow(auth, activity, provider, flowParameters);
-            }
+            handleAnonymousUpgradeFlow(auth, activity, provider, flowParameters);
             return;
         }
 
         handleNormalSignInFlow(auth, activity, provider);
     }
 
-    private OAuthProvider buildOAuthProvider(String providerId) {
-        OAuthProvider.Builder providerBuilder =
-                OAuthProvider.newBuilder(providerId);
-
-        List<String> scopes =
-                getArguments().getParams().getStringArrayList(ExtraConstants.GENERIC_OAUTH_SCOPES);
-        Map<String, String> customParams =
-                getArguments().getParams()
-                        .getParcelable(ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS);
-
-        if (scopes != null) {
-            providerBuilder.setScopes(scopes);
-        }
-        if (customParams != null) {
-            providerBuilder.addCustomParameters(customParams);
-        }
-
-        return providerBuilder.build();
-    }
-
-    private void handleNormalSignInFlow(final FirebaseAuth auth,
-                                        final HelperActivityBase activity,
-                                        final OAuthProvider provider) {
+    protected void handleNormalSignInFlow(final FirebaseAuth auth,
+                                          final HelperActivityBase activity,
+                                          final OAuthProvider provider) {
         auth.startActivityForSignInWithProvider(activity, provider)
                 .addOnSuccessListener(
                         new OnSuccessListener<AuthResult>() {
@@ -204,30 +180,27 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                         });
     }
 
-    private void handleAnonymousUpgradeLinkingFlow(final HelperActivityBase activity,
-                                                   final OAuthProvider provider,
-                                                   final FlowParameters flowParameters) {
+    protected OAuthProvider buildOAuthProvider(String providerId) {
+        OAuthProvider.Builder providerBuilder =
+                OAuthProvider.newBuilder(providerId);
 
-        AuthOperationManager.getInstance().safeGenericIdpSignIn(activity, provider, flowParameters)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // Pass the credential so we can sign-in on the after the merge
-                        // conflict is resolved.
-                        handleSuccess(provider.getProviderId(),
-                                authResult.getUser(), authResult.getCredential());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        setResult(Resource.<IdpResponse>forFailure(e));
-                    }
-                });
+        List<String> scopes =
+                getArguments().getParams().getStringArrayList(ExtraConstants.GENERIC_OAUTH_SCOPES);
+        Map<String, String> customParams =
+                getArguments().getParams()
+                        .getParcelable(ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS);
 
+        if (scopes != null) {
+            providerBuilder.setScopes(scopes);
+        }
+        if (customParams != null) {
+            providerBuilder.addCustomParameters(customParams);
+        }
+
+        return providerBuilder.build();
     }
 
-    private void handleSuccess(@NonNull String providerId,
+    protected void handleSuccess(@NonNull String providerId,
                                @NonNull FirebaseUser user,
                                @Nullable AuthCredential credential) {
         IdpResponse response = new IdpResponse.Builder(
@@ -242,7 +215,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     }
 
 
-    private void handleMergeFailure(@NonNull AuthCredential credential) {
+    protected void handleMergeFailure(@NonNull AuthCredential credential) {
         IdpResponse failureResponse = new IdpResponse.Builder()
                 .setPendingCredential(credential).build();
         setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
