@@ -223,6 +223,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * When {@link Exception} is caught the adapter will stop loading any data
      */
     protected void onError(@NonNull Exception e) {
-        // For overriding
+        Log.w(TAG, "onError", e);
     }
 }
