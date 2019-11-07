@@ -245,19 +245,19 @@
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.MicrosoftButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_microsoft</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_microsoft_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_microsoft</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.YahooButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_yahoo</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_yahoo_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_yahoo</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.AppleButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_apple</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_apple_white_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_apple</item>
         <item name="android:textColor">#ffffff</item>
     </style>
