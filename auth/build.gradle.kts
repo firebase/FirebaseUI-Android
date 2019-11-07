@@ -16,6 +16,7 @@ android {
         disable("MissingTranslation") // TODO add translations
         disable("LocaleFolder")
         disable("IconLocation")
+        disable("VectorPath")
     }
 
     testOptions {
