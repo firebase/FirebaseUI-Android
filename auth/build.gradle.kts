@@ -14,7 +14,6 @@ android {
         disable("TypographyQuotes") // Straight versus directional quotes
         disable("DuplicateStrings")
         disable("MissingTranslation") // TODO add translations
-        disable("WrongConstant")
         disable("LocaleFolder")
         disable("IconLocation")
     }
