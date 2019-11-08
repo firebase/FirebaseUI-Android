@@ -21,7 +21,6 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -35,6 +34,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.OAuthProvider;
 
 import java.util.List;
@@ -83,7 +83,8 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                             @Override
                             public void onSuccess(@NonNull AuthResult authResult) {
                                 handleSuccess(provider.getProviderId(),
-                                        authResult.getUser(), /* credential= */null);
+                                        authResult.getUser(), (OAuthCredential)
+                                                authResult.getCredential());
                             }
                         })
                 .addOnFailureListener(
@@ -121,7 +122,8 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                             @Override
                             public void onSuccess(@NonNull AuthResult authResult) {
                                 handleSuccess(provider.getProviderId(),
-                                        authResult.getUser(), /* credential= */null);
+                                        authResult.getUser(), (OAuthCredential)
+                                                authResult.getCredential());
                             }
                         })
                 .addOnFailureListener(
@@ -201,17 +203,29 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     }
 
     protected void handleSuccess(@NonNull String providerId,
-                               @NonNull FirebaseUser user,
-                               @Nullable AuthCredential credential) {
-        IdpResponse response = new IdpResponse.Builder(
+                                 @NonNull FirebaseUser user,
+                                 @NonNull OAuthCredential credential,
+                                 boolean setPendingCredential) {
+        IdpResponse.Builder response = new IdpResponse.Builder(
                 new User.Builder(
                         providerId, user.getEmail())
                         .setName(user.getDisplayName())
                         .setPhotoUri(user.getPhotoUrl())
                         .build())
-                .setPendingCredential(credential)
-                .build();
-        setResult(Resource.<IdpResponse>forSuccess(response));
+                .setToken(credential.getAccessToken())
+                .setSecret(credential.getSecret());
+
+        if (setPendingCredential) {
+            response.setPendingCredential(credential);
+        }
+
+        setResult(Resource.<IdpResponse>forSuccess(response.build()));
+    }
+
+    protected void handleSuccess(@NonNull String providerId,
+                                 @NonNull FirebaseUser user,
+                                 @NonNull OAuthCredential credential) {
+        handleSuccess(providerId, user, credential, /* setPendingCredential= */false);
     }
 
 

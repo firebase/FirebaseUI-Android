@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.OAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -44,7 +45,6 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
         OAuthProvider provider = buildOAuthProvider(providerId);
         if (flowParameters != null
                 && AuthOperationManager.getInstance().canUpgradeAnonymous(auth, flowParameters)) {
-
                 handleAnonymousUpgradeLinkingFlow(activity, provider, flowParameters);
             return;
         }
@@ -62,7 +62,8 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
                         // Pass the credential so we can sign-in on the after the merge
                         // conflict is resolved.
                         handleSuccess(provider.getProviderId(),
-                                authResult.getUser(), authResult.getCredential());
+                                authResult.getUser(), (OAuthCredential) authResult.getCredential(),
+                                /* setPendingCredential= */true);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
