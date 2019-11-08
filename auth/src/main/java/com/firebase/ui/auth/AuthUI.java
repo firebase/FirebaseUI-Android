@@ -1201,9 +1201,11 @@ public final class AuthUI {
             }
 
             @NonNull
-            public GenericOAuthProviderBuilder setCustomParameters(@NonNull Map<String, String> scopes) {
+            public GenericOAuthProviderBuilder setCustomParameters(
+                    @NonNull Map<String, String> customParameters) {
                 getParams().putSerializable(
-                        ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS, new HashMap<>(scopes));
+                        ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS,
+                        new HashMap<>(customParameters));
                 return this;
             }
         }
