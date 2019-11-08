@@ -13,6 +13,10 @@ android {
         disable("UnknownNullness")  // TODO fix in future PR
         disable("TypographyQuotes") // Straight versus directional quotes
         disable("DuplicateStrings")
+        disable("MissingTranslation") // TODO add translations
+        disable("LocaleFolder")
+        disable("IconLocation")
+        disable("VectorPath")
     }
 
     testOptions {

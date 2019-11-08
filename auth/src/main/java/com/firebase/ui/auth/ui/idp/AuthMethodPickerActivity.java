@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,17 +38,21 @@ import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -67,6 +72,8 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID;
+import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID;
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 /**
@@ -205,6 +212,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     buttonLayout = R.layout.fui_provider_button_anonymous;
                     break;
                 default:
+                    if (!TextUtils.isEmpty(
+                            idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
+                        buttonLayout = idpConfig.getParams().getInt(GENERIC_OAUTH_BUTTON_ID);
+                        break;
+                    }
                     throw new IllegalStateException("Unknown provider: " + providerId);
             }
 
@@ -238,7 +250,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         return providerId;
     }
 
-    private void handleSignInOperation(IdpConfig idpConfig, View view) {
+    private void handleSignInOperation(final IdpConfig idpConfig, View view) {
         ViewModelProvider supplier = ViewModelProviders.of(this);
         final String providerId = idpConfig.getProviderId();
         final ProviderSignInBase<?> provider;
@@ -289,8 +301,18 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
                 break;
             default:
+                if (!TextUtils.isEmpty(
+                        idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
+                    GenericIdpSignInHandler genericIdp =
+                            supplier.get(GenericIdpSignInHandler.class);
+                    genericIdp.init(idpConfig);
+                    provider = genericIdp;
+
+                    break;
+                }
                 throw new IllegalStateException("Unknown provider: " + providerId);
         }
+
         mProviders.add(provider);
 
         provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
@@ -301,6 +323,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
+                if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE,
+                            IdpResponse.from(e)));
+                    return;
+                }
                 handleResponse(IdpResponse.from(e));
             }
 
@@ -333,7 +360,10 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     return;
                 }
 
-                provider.startSignIn(AuthMethodPickerActivity.this);
+                FirebaseAuth auth = FirebaseAuth.getInstance(
+                        FirebaseApp.getInstance(getFlowParams().appName));
+                provider.startSignIn(auth, AuthMethodPickerActivity.this,
+                        idpConfig.getProviderId());
             }
         });
     }

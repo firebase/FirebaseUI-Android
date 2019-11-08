@@ -77,4 +77,11 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         return FirebaseAuth.getInstance(app);
     }
+
+    @Override
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        startSignIn(activity);
+    }
 }

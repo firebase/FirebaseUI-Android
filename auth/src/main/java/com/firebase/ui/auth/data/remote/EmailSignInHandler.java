@@ -11,6 +11,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,5 +42,12 @@ public class EmailSignInHandler extends ProviderSignInBase<Void> {
                 setResult(Resource.forSuccess(response));
             }
         }
+    }
+
+    @Override
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        startSignIn(activity);
     }
 }

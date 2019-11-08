@@ -192,8 +192,7 @@ public class SignedInActivity extends AppCompatActivity {
                         // Ignore this provider, it's not very meaningful
                         break;
                     default:
-                        throw new IllegalStateException(
-                                "Unknown provider: " + info.getProviderId());
+                        providers.add(info.getProviderId());
                 }
             }
         }

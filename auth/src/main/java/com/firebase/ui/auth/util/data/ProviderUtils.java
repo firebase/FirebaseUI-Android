@@ -56,6 +56,9 @@ public final class ProviderUtils {
 
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse response) {
+        if (response.hasCredentialForLinking()  ) {
+            return response.getCredentialForLinking();
+        }
         switch (response.getProviderType()) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
@@ -99,7 +102,7 @@ public final class ProviderUtils {
             case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
                 return EMAIL_LINK_PROVIDER;
             default:
-                throw new IllegalStateException("Unknown method: " + method);
+                return method;
         }
     }
 
