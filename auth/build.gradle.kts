@@ -41,7 +41,6 @@ dependencies {
     compileOnly(Config.Libs.Provider.facebook)
     implementation(Config.Libs.Androidx.legacySupportv4) // Needed to override deps
     implementation(Config.Libs.Androidx.cardView) // Needed to override Facebook
-    compileOnly(Config.Libs.Provider.twitter) { isTransitive = true }
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
@@ -49,7 +48,6 @@ dependencies {
     testImplementation(Config.Libs.Test.core)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     debugImplementation(project(":internal:lintchecks"))
 }

@@ -24,7 +24,6 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -61,7 +60,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -139,18 +137,18 @@ public final class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     MICROSOFT_PROVIDER,
                     YAHOO_PROVIDER,
-                    APPLE_PROVIDER
+                    APPLE_PROVIDER,
+                    TwitterAuthProvider.PROVIDER_ID
             )));
 
     /**
-     * The set of social authentication providers supported in Firebase Auth UI.
+     * The set of social authentication providers supported in Firebase Auth UI using their SDK.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final Set<String> SOCIAL_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
-                    TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID)));
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -454,10 +452,6 @@ public final class AuthUI {
     private Task<Void> signOutIdps(@NonNull Context context) {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
-        }
-        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            TwitterSignInHandler.initializeTwitter();
-            TwitterCore.getInstance().getSessionManager().clearActiveSession();
         }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
@@ -1069,29 +1063,6 @@ public final class AuthUI {
         }
 
         /**
-         * {@link IdpConfig} builder for the Twitter provider.
-         */
-        public static final class TwitterBuilder extends Builder {
-            public TwitterBuilder() {
-                super(TwitterAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_TWITTER_AVAILABLE) {
-                    throw new RuntimeException(
-                            "Twitter provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "Twitter provider unconfigured. Make sure to add your key and secret." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#twitter",
-                        R.string.twitter_consumer_key,
-                        R.string.twitter_consumer_secret);
-            }
-        }
-
-        /**
          * {@link IdpConfig} builder for the GitHub provider.
          */
         public static final class GitHubBuilder extends Builder {
@@ -1137,6 +1108,19 @@ public final class AuthUI {
                 super(ANONYMOUS_PROVIDER);
             }
         }
+
+        /**
+         * {@link IdpConfig} builder for the Twitter provider.
+         */
+        public static final class TwitterBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Twitter";
+
+            public TwitterBuilder() {
+                super(TwitterAuthProvider.PROVIDER_ID, PROVIDER_NAME,
+                        R.layout.fui_idp_button_twitter);
+            }
+        }
+
 
         /**
          * {@link IdpConfig} builder for the Apple provider.

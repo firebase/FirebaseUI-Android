@@ -149,12 +149,6 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (ConfigurationUtils.isTwitterMisconfigured(this)) {
-            mUseTwitterProvider.setChecked(false);
-            mUseTwitterProvider.setEnabled(false);
-            mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
-        }
-
         mUseEmailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -192,8 +186,7 @@ public class AuthUiActivity extends AppCompatActivity {
         });
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)
-                || ConfigurationUtils.isFacebookMisconfigured(this)
-                || ConfigurationUtils.isTwitterMisconfigured(this)) {
+                || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
         }
 
@@ -393,10 +386,6 @@ public class AuthUiActivity extends AppCompatActivity {
                     .build());
         }
 
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
-        }
-
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.EmailBuilder()
                     .setRequireName(mRequireName.isChecked())
@@ -424,6 +413,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseAnonymousProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.AnonymousBuilder().build());
+        }
+
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
         }
 
         if (mUseMicrosoftProvider.isChecked()) {
