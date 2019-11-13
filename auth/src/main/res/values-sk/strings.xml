@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Prihlásiť sa e-mailom</string>
     <string name="fui_sign_in_with_phone">Prihlásiť sa telefónom</string>
     <string name="fui_sign_in_anonymously">Pokračovať ako hosť</string>
+    <string name="fui_sign_in_with_apple">Prihlásiť sa cez Apple</string>
+    <string name="fui_sign_in_with_microsoft">Prihlásiť sa cez Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Prihlásiť sa cez Yahoo</string>
     <string name="fui_next_default">Ďalej</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefónne číslo</string>
@@ -32,7 +35,12 @@
     <string name="fui_name_hint">Krstné meno a priezvisko</string>
     <string name="fui_button_text_save">Uložiť</string>
     <string name="fui_progress_dialog_signing_up">Prebieha registrácia…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Heslo nie je dostatočne silné. Použite aspoň %1$d znak a kombináciu písmen a čísel</item> <item quantity="few">Heslo nie je dostatočne silné. Použite aspoň %1$d znaky a kombináciu písmen a čísel</item> <item quantity="many">Heslo nie je dostatočne silné. Použite aspoň %1$d znaku a kombináciu písmen a čísel</item> <item quantity="other">Heslo nie je dostatočne silné. Použite aspoň %1$d znakov a kombináciu písmen a čísel</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Heslo nie je dostatočne silné. Použite aspoň %1$d znak a kombináciu písmen a čísel</item>
+        <item quantity="few">Heslo nie je dostatočne silné. Použite aspoň %1$d znaky a kombináciu písmen a čísel</item>
+        <item quantity="many">Heslo nie je dostatočne silné. Použite aspoň %1$d znaku a kombináciu písmen a čísel</item>
+        <item quantity="other">Heslo nie je dostatočne silné. Použite aspoň %1$d znakov a kombináciu písmen a čísel</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Registrácia e-mailového účtu nebola úspešná</string>
     <string name="fui_terms_of_service">Zmluvné podmienky</string>
     <string name="fui_privacy_policy">Pravidlá ochrany súkromia</string>

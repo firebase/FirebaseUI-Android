@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Mit einer E-Mail-Adresse anmelden</string>
     <string name="fui_sign_in_with_phone">Mit einer Telefonnummer anmelden</string>
     <string name="fui_sign_in_anonymously">Als Gast fortfahren</string>
+    <string name="fui_sign_in_with_apple">Über Apple anmelden</string>
+    <string name="fui_sign_in_with_microsoft">Über Microsoft anmelden</string>
+    <string name="fui_sign_in_with_yahoo">Über Yahoo anmelden</string>
     <string name="fui_next_default">Weiter</string>
     <string name="fui_email_hint">E-Mail-Adresse</string>
     <string name="fui_phone_hint">Telefonnummer</string>
@@ -26,13 +29,16 @@
     <string name="fui_required_field">Pflichtfeld.</string>
     <string name="fui_invalid_email_address">Ungültige E-Mail-Adresse</string>
     <string name="fui_missing_email_address">E-Mail-Adresse eingeben, um fortzufahren</string>
-    <string name="fui_missing_first_and_last_name">Geben Sie einen Vor- und Nachnamen ein.</string>
+    <string name="fui_missing_first_and_last_name">Gib einen Vor- und Nachnamen ein.</string>
     <string name="fui_progress_dialog_checking_accounts">Auf vorhandene Konten wird geprüft…</string>
     <string name="fui_title_register_email">Registrieren</string>
     <string name="fui_name_hint">Vor- und Nachname</string>
     <string name="fui_button_text_save">Speichern</string>
     <string name="fui_progress_dialog_signing_up">Registrierung wird durchgeführt…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Das Passwort ist zu schwach. Verwenden Sie mindestens %1$d Zeichen und eine Mischung aus Buchstaben und Ziffern.</item> <item quantity="other">Das Passwort ist zu schwach. Verwenden Sie mindestens %1$d Zeichen und eine Mischung aus Buchstaben und Ziffern.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Das Passwort ist zu schwach. Verwenden Sie mindestens %1$d Zeichen und eine Mischung aus Buchstaben und Ziffern.</item>
+        <item quantity="other">Das Passwort ist zu schwach. Verwenden Sie mindestens %1$d Zeichen und eine Mischung aus Buchstaben und Ziffern.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Registrierung des E-Mail-Kontos fehlgeschlagen</string>
     <string name="fui_terms_of_service">Nutzungsbedingungen</string>
     <string name="fui_privacy_policy">Datenschutzerklärung</string>
@@ -40,7 +46,7 @@
     <string name="fui_welcome_back_email_header">Willkommen zurück!</string>
     <string name="fui_welcome_back_email_link_header">Sie haben schon ein Konto\n</string>
     <string name="fui_welcome_back_idp_prompt">Sie haben %1$s bereits verwendet. Melden Sie sich mit %2$s an, um fortzufahren.</string>
-    <string name="fui_welcome_back_password_prompt_body">Sie haben %1$s bereits zur Anmeldung verwendet. Geben Sie das Passwort für dieses Konto ein.</string>
+    <string name="fui_welcome_back_password_prompt_body">Sie haben %1$s bereits zur Anmeldung verwendet. Gib das Passwort für dieses Konto ein.</string>
     <string name="fui_welcome_back_email_link_prompt_body">Sie haben %1$s schon benutzt. Sie können Ihr %2$s-Konto mit %1$s verbinden, indem Sie sich über den folgenden E-Mail-Link anmelden.\n\nÖffnen Sie den Link mit demselben Gerät oder Browser, um Ihr %2$s-Konto mit dieser E-Mail-Adresse zu verbinden.</string>
     <string name="fui_progress_dialog_signing_in">Anmeldung wird durchgeführt…</string>
     <string name="fui_trouble_signing_in">Probleme bei der Anmeldung?</string>
@@ -72,8 +78,8 @@
     <string name="fui_email_link_cross_device_linking_text">Sie haben versucht, %1$s auf einem Gerät, auf dem Sie nicht angemeldet sind, mit Ihrem E-Mail-Konto zu verbinden.\n\nWenn Sie Ihr %1$s-Konto weiterhin verbinden möchten, öffnen Sie den Link bitte auf dem Gerät, auf dem Sie den Anmeldevorgang gestartet haben. Andernfalls tippen Sie auf \"Weiter\", um sich auf diesem Gerät anzumelden.</string>
     <string name="fui_email_link_cross_device_sign_in_button_text">Mit %1$s anmelden</string>
     <string name="fui_verify_phone_number_title">Telefonnummer eingeben</string>
-    <string name="fui_invalid_phone_number">Geben Sie eine gültige Telefonnummer ein</string>
-    <string name="fui_enter_confirmation_code">Geben Sie den 6-stelligen Code ein, der gesendet wurde an</string>
+    <string name="fui_invalid_phone_number">Gib eine gültige Telefonnummer ein</string>
+    <string name="fui_enter_confirmation_code">Gib den 6-stelligen Code ein, der gesendet wurde an</string>
     <string name="fui_resend_code_in">Code in 0:%02d erneut senden</string>
     <string name="fui_verify_your_phone_title">Telefonnummer bestätigen</string>
     <string name="fui_verifying">Wird verifiziert…</string>

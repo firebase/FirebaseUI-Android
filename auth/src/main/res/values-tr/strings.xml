@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">E-posta ile oturum aç</string>
     <string name="fui_sign_in_with_phone">Telefonla oturum aç</string>
     <string name="fui_sign_in_anonymously">Misafir olarak devam et</string>
+    <string name="fui_sign_in_with_apple">Apple ile oturum aç</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft ile oturum aç</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo ile oturum aç</string>
     <string name="fui_next_default">İleri</string>
     <string name="fui_email_hint">E-posta</string>
     <string name="fui_phone_hint">Telefon Numarası</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Ad ve Soyad</string>
     <string name="fui_button_text_save">Kaydet</string>
     <string name="fui_progress_dialog_signing_up">Kaydolunuyor…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item>
+        <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item>
+    </plurals>
     <string name="fui_email_account_creation_error">E-posta hesabı kaydı başarısız oldu</string>
     <string name="fui_terms_of_service">Hizmet Şartları</string>
     <string name="fui_privacy_policy">Gizlilik Politikası</string>

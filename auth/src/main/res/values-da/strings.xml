@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Log ind med mail</string>
     <string name="fui_sign_in_with_phone">Log ind med telefon</string>
     <string name="fui_sign_in_anonymously">Fortsæt som gæst</string>
+    <string name="fui_sign_in_with_apple">Log ind med Apple</string>
+    <string name="fui_sign_in_with_microsoft">Log ind med Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Log ind med Yahoo</string>
     <string name="fui_next_default">Næste</string>
     <string name="fui_email_hint">Mail</string>
     <string name="fui_phone_hint">Telefonnummer</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">For- og efternavn</string>
     <string name="fui_button_text_save">Gem</string>
     <string name="fui_progress_dialog_signing_up">Tilmelder…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item>
+        <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Registrering af mailkonto mislykkedes</string>
     <string name="fui_terms_of_service">Servicevilkår</string>
     <string name="fui_privacy_policy">Privatlivspolitik</string>

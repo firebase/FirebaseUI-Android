@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">ईमेल से प्रवेश करें</string>
     <string name="fui_sign_in_with_phone">फ़ोन से प्रवेश करें</string>
     <string name="fui_sign_in_anonymously">मेहमान के रूप में जारी रखें</string>
+    <string name="fui_sign_in_with_apple">Apple खाते से साइन इन करें</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft खाते से साइन इन करें</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo खाते से साइन इन करें</string>
     <string name="fui_next_default">अगला</string>
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फ़ोन नंबर</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">नाम और उपनाम</string>
     <string name="fui_button_text_save">सेव करें</string>
     <string name="fui_progress_dialog_signing_up">साइन अप करना…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड काफ़ी रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> <item quantity="other">पासवर्ड काफ़ी रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">पासवर्ड काफ़ी रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item>
+        <item quantity="other">पासवर्ड काफ़ी रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item>
+    </plurals>
     <string name="fui_email_account_creation_error">ईमेल खाता पंजीकरण असफल रहा</string>
     <string name="fui_terms_of_service">सेवा की शर्तें</string>
     <string name="fui_privacy_policy">निजता नीति</string>

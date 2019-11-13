@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Se connecter avec une adresse e-mail</string>
     <string name="fui_sign_in_with_phone">Se connecter avec un téléphone</string>
     <string name="fui_sign_in_anonymously">Continuer en tant qu\'invité</string>
+    <string name="fui_sign_in_with_apple">Se connecter avec Apple</string>
+    <string name="fui_sign_in_with_microsoft">Se connecter avec Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Se connecter avec Yahoo</string>
     <string name="fui_next_default">Suivant</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Numéro de téléphone</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Nom et prénom</string>
     <string name="fui_button_text_save">Enregistrer</string>
     <string name="fui_progress_dialog_signing_up">Inscription…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item> <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item>
+        <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Échec de la création du compte avec une adresse e-mail</string>
     <string name="fui_terms_of_service">Conditions d\'utilisation</string>
     <string name="fui_privacy_policy">Règles de confidentialité</string>

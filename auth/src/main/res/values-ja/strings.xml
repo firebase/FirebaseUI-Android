@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">メールアドレスでログイン</string>
     <string name="fui_sign_in_with_phone">電話番号でログイン</string>
     <string name="fui_sign_in_anonymously">ゲストとして続行</string>
+    <string name="fui_sign_in_with_apple">Apple アカウントでログイン</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft アカウントでログイン</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo アカウントでログイン</string>
     <string name="fui_next_default">次へ</string>
     <string name="fui_email_hint">メールアドレス</string>
     <string name="fui_phone_hint">電話番号</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">あなたの名前</string>
     <string name="fui_button_text_save">保存</string>
     <string name="fui_progress_dialog_signing_up">登録しています…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> <item quantity="other">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item>
+        <item quantity="other">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item>
+    </plurals>
     <string name="fui_email_account_creation_error">メール アカウントの登録に失敗しました</string>
     <string name="fui_terms_of_service">利用規約</string>
     <string name="fui_privacy_policy">プライバシー ポリシー</string>
