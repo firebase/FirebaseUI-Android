@@ -69,6 +69,7 @@ public final class ConfigurationUtils {
         providers.add(new AuthUI.IdpConfig.PhoneBuilder().build());
         providers.add(new AuthUI.IdpConfig.MicrosoftBuilder().build());
         providers.add(new AuthUI.IdpConfig.YahooBuilder().build());
+        providers.add(new AuthUI.IdpConfig.AppleBuilder().build());
 
         return providers;
     }
