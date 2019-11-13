@@ -5,7 +5,7 @@
     <string name="fui_continue">Continua</string>
     <string name="fui_tos_and_pp">En continuar, acceptes les nostres %1$s i la nostra %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
-    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error de xarxa; comprova la connexió a Internet.</string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Error de la xarxa; comprova la connexió a Internet.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Inicia la sessió amb l\'adreça electrònica</string>
     <string name="fui_sign_in_with_phone">Inicia la sessió amb el telèfon</string>
     <string name="fui_sign_in_anonymously">Continua com a convidat</string>
+    <string name="fui_sign_in_with_apple">Inicia la sessió amb Apple</string>
+    <string name="fui_sign_in_with_microsoft">Inicia la sessió amb Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Inicia la sessió amb Yahoo</string>
     <string name="fui_next_default">Següent</string>
     <string name="fui_email_hint">Adreça electrònica</string>
     <string name="fui_phone_hint">Número de telèfon</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Nom i cognoms</string>
     <string name="fui_button_text_save">Desa</string>
     <string name="fui_progress_dialog_signing_up">T\'estàs registrant…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcter i combina lletres i números.</item> <item quantity="other">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcters i combina lletres i números.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcter i combina lletres i números.</item>
+        <item quantity="other">La contrasenya no és prou segura. Utilitza com a mínim %1$d caràcters i combina lletres i números.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">No s\'ha pogut registrar el compte de correu electrònic</string>
     <string name="fui_terms_of_service">Condicions del servei</string>
     <string name="fui_privacy_policy">política de privadesa</string>

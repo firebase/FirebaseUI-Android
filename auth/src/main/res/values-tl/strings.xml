@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Mag-sign in gamit ang email</string>
     <string name="fui_sign_in_with_phone">Mag-sign in gamit ang telepono</string>
     <string name="fui_sign_in_anonymously">Magpatuloy bilang bisita</string>
+    <string name="fui_sign_in_with_apple">Mag-sign in sa Apple</string>
+    <string name="fui_sign_in_with_microsoft">Mag-sign in sa Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Mag-sign in sa Yahoo</string>
     <string name="fui_next_default">Susunod</string>
     <string name="fui_email_hint">Mag-email</string>
     <string name="fui_phone_hint">Numero ng Telepono</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Pangalan at apelyido</string>
     <string name="fui_button_text_save">I-save</string>
     <string name="fui_progress_dialog_signing_up">Nagsa-sign up…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Hindi masyadong malakas ang password. Gumamit ng %1$d character man lang at kumbinasyon ng mga titik at mga numero</item> <item quantity="other">Hindi masyadong malakas ang password. Gumamit ng %1$d na character man lang at kumbinasyon ng mga titik at mga numero</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Hindi masyadong malakas ang password. Gumamit ng %1$d character man lang at kumbinasyon ng mga titik at mga numero</item>
+        <item quantity="other">Hindi masyadong malakas ang password. Gumamit ng %1$d na character man lang at kumbinasyon ng mga titik at mga numero</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Hindi nagtagumpay ang pagpaparehistro ng email account</string>
     <string name="fui_terms_of_service">Mga Tuntunin ng Serbisyo</string>
     <string name="fui_privacy_policy">Patakaran sa Privacy</string>

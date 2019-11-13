@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Iniciar sesión con el correo electrónico</string>
     <string name="fui_sign_in_with_phone">Iniciar sesión con el teléfono</string>
     <string name="fui_sign_in_anonymously">Continuar como invitado</string>
+    <string name="fui_sign_in_with_apple">Iniciar sesión con Apple</string>
+    <string name="fui_sign_in_with_microsoft">Iniciar sesión con Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Iniciar sesión con Yahoo</string>
     <string name="fui_next_default">Siguiente</string>
     <string name="fui_email_hint">Correo electrónico</string>
     <string name="fui_phone_hint">Número de teléfono</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Nombre y apellidos</string>
     <string name="fui_button_text_save">Guardar</string>
     <string name="fui_progress_dialog_signing_up">Registrando…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">La contraseña no es lo suficientemente segura. Usa %1$d carácter como mínimo y combina letras y números.</item> <item quantity="other">La contraseña no es lo suficientemente segura. Usa %1$d caracteres como mínimo y combina letras y números.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">La contraseña no es lo suficientemente segura. Usa %1$d carácter como mínimo y combina letras y números.</item>
+        <item quantity="other">La contraseña no es lo suficientemente segura. Usa %1$d caracteres como mínimo y combina letras y números.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">No se ha podido registrar la cuenta de correo electrónico</string>
     <string name="fui_terms_of_service">Condiciones de Servicio</string>
     <string name="fui_privacy_policy">Política de Privacidad</string>

@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">使用电子邮件地址登录</string>
     <string name="fui_sign_in_with_phone">使用电话号码登录</string>
     <string name="fui_sign_in_anonymously">以访客身份继续</string>
+    <string name="fui_sign_in_with_apple">使用 Apple 帐号登录</string>
+    <string name="fui_sign_in_with_microsoft">使用 Microsoft 帐号登录</string>
+    <string name="fui_sign_in_with_yahoo">使用 Yahoo 帐号登录</string>
     <string name="fui_next_default">继续</string>
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">姓名</string>
     <string name="fui_button_text_save">保存</string>
     <string name="fui_progress_dialog_signing_up">正在注册…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item>
+        <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item>
+    </plurals>
     <string name="fui_email_account_creation_error">未能使用电子邮件地址注册帐号</string>
     <string name="fui_terms_of_service">服务条款</string>
     <string name="fui_privacy_policy">隐私权政策</string>

@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Login dengan email</string>
     <string name="fui_sign_in_with_phone">Login dengan nomor telepon</string>
     <string name="fui_sign_in_anonymously">Lanjutkan sebagai tamu</string>
+    <string name="fui_sign_in_with_apple">Login dengan Apple</string>
+    <string name="fui_sign_in_with_microsoft">Login dengan Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Login dengan Yahoo</string>
     <string name="fui_next_default">Berikutnya</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Nomor Telepon</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Nama depan &amp; belakang</string>
     <string name="fui_button_text_save">Simpan</string>
     <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item>
+        <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akun email tidak berhasil</string>
     <string name="fui_terms_of_service">Persyaratan Layanan</string>
     <string name="fui_privacy_policy">Kebijakan Privasi</string>
@@ -69,7 +75,7 @@
     <string name="fui_email_link_confirm_email_header">Konfirmasi email</string>
     <string name="fui_email_link_confirm_email_message">Konfirmasi email untuk melanjutkan login</string>
     <string name="fui_email_link_dismiss_button">Tutup</string>
-    <string name="fui_email_link_cross_device_linking_text">Anda sebelumnya ingin menghubungkan %1$s ke akun email Anda, tapi telah membuka link di perangkat berbeda yang tidak digunakan untuk login.\n\nJika Anda masih ingin menghubungkan ke akun %1$s, buka link di perangkat yang sama yang digunakan untuk login. Jika tidak, tap Lanjutkan untuk login di perangkat ini.</string>
+    <string name="fui_email_link_cross_device_linking_text">Anda sebelumnya ingin menghubungkan %1$s ke akun email Anda, tapi telah membuka link di perangkat berbeda yang tidak digunakan untuk login.\n\nJika Anda masih ingin menghubungkan ke akun %1$s, buka link di perangkat yang sama yang digunakan untuk login. Jika tidak, ketuk Lanjutkan untuk login di perangkat ini.</string>
     <string name="fui_email_link_cross_device_sign_in_button_text">Login dengan %1$s</string>
     <string name="fui_verify_phone_number_title">Masukkan nomor telepon Anda</string>
     <string name="fui_invalid_phone_number">Masukkan nomor telepon yang valid</string>
@@ -85,6 +91,6 @@
     <string name="fui_auto_verified">Nomor telepon terverifikasi secara otomatis</string>
     <string name="fui_resend_code">Kirim Ulang Kode</string>
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
-    <string name="fui_sms_terms_of_service">Dengan menge-tap “%1$s\", SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan menge-tap “%1$s”, Anda menyatakan bahwa Anda menyetujui %2$s dan %3$s kami. SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
+    <string name="fui_sms_terms_of_service">Dengan mengetuk “%1$s\", SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan mengetuk “%1$s”, Anda menyatakan bahwa Anda menyetujui %2$s dan %3$s kami. SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
 </resources>

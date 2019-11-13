@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Prijava z e-poštnim naslovom</string>
     <string name="fui_sign_in_with_phone">Prijava s telefonom</string>
     <string name="fui_sign_in_anonymously">Nadaljuj kot gost</string>
+    <string name="fui_sign_in_with_apple">Prijava z računom za Apple</string>
+    <string name="fui_sign_in_with_microsoft">Prijava z računom za Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Prijava z računom za Yahoo</string>
     <string name="fui_next_default">Naprej</string>
     <string name="fui_email_hint">E-pošta</string>
     <string name="fui_phone_hint">Telefonska številka</string>
@@ -32,7 +35,12 @@
     <string name="fui_name_hint">Ime in priimek</string>
     <string name="fui_button_text_save">Shrani</string>
     <string name="fui_progress_dialog_signing_up">Registriranje…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znak in kombinacijo črk ter številk.</item> <item quantity="two">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znaka in kombinacijo črk ter številk.</item> <item quantity="few">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znake in kombinacijo črk ter številk.</item> <item quantity="other">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znakov in kombinacijo črk ter številk.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znak in kombinacijo črk ter številk.</item>
+        <item quantity="two">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znaka in kombinacijo črk ter številk.</item>
+        <item quantity="few">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znake in kombinacijo črk ter številk.</item>
+        <item quantity="other">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znakov in kombinacijo črk ter številk.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Registracija e-poštnega računa ni bila uspešna</string>
     <string name="fui_terms_of_service">pogoji storitve</string>
     <string name="fui_privacy_policy">Pravilnik o zasebnosti</string>

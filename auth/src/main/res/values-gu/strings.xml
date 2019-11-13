@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">ઇમેઇલ વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_phone">ફોન વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_anonymously">અતિથિ તરીકે ચાલુ રાખો</string>
+    <string name="fui_sign_in_with_apple">Apple વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo વડે સાઇન ઇન કરો</string>
     <string name="fui_next_default">આગળ</string>
     <string name="fui_email_hint">ઇમેઇલ</string>
     <string name="fui_phone_hint">ફોન નંબર</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">નામ અને અટક</string>
     <string name="fui_button_text_save">સાચવો</string>
     <string name="fui_progress_dialog_signing_up">સાઇન અપ કરી રહ્યાં છીએ…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">પાસવર્ડ પૂરતો સશક્ત નથી. ઓછામાં ઓછા %1$d અક્ષર અને વર્ણ તથા સંખ્યાઓના સંયોજનનો ઉપયોગ કરો</item> <item quantity="other">પાસવર્ડ પૂરતો સશક્ત નથી. ઓછામાં ઓછા %1$d અક્ષર અને વર્ણ તથા સંખ્યાઓના સંયોજનનો ઉપયોગ કરો</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">પાસવર્ડ પૂરતો સશક્ત નથી. ઓછામાં ઓછા %1$d અક્ષર અને વર્ણ તથા સંખ્યાઓના સંયોજનનો ઉપયોગ કરો</item>
+        <item quantity="other">પાસવર્ડ પૂરતો સશક્ત નથી. ઓછામાં ઓછા %1$d અક્ષર અને વર્ણ તથા સંખ્યાઓના સંયોજનનો ઉપયોગ કરો</item>
+    </plurals>
     <string name="fui_email_account_creation_error">ઇમેઇલ એકાઉન્ટની નોંધણી અસફળ</string>
     <string name="fui_terms_of_service">સેવાની શરતો</string>
     <string name="fui_privacy_policy">ગોપનીયતા નીતિ</string>

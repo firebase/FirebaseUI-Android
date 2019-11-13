@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">이메일로 로그인</string>
     <string name="fui_sign_in_with_phone">전화로 로그인</string>
     <string name="fui_sign_in_anonymously">비회원으로 진행</string>
+    <string name="fui_sign_in_with_apple">Apple 계정으로 로그인</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft 계정으로 로그인</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo 계정으로 로그인</string>
     <string name="fui_next_default">다음</string>
     <string name="fui_email_hint">이메일</string>
     <string name="fui_phone_hint">전화번호</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">이름 및 성</string>
     <string name="fui_button_text_save">저장</string>
     <string name="fui_progress_dialog_signing_up">가입하는 중…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item> <item quantity="other">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item>
+        <item quantity="other">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">이메일 계정 등록 실패</string>
     <string name="fui_terms_of_service">서비스 약관</string>
     <string name="fui_privacy_policy">개인정보처리방침</string>
