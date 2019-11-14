@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.common.internal.Preconditions;
+import com.google.firebase.auth.AuthCredential;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +42,8 @@ public class EmailLinkPersistenceManager {
         return instance;
     }
 
+    private AuthCredential mCredentialForLinking;
+
     public void saveEmail(@NonNull Context context,
                           @NonNull String email,
                           @NonNull String sessionId,
@@ -57,6 +60,14 @@ public class EmailLinkPersistenceManager {
 
     public void saveIdpResponseForLinking(@NonNull Context context,
                                           @NonNull IdpResponse idpResponseForLinking) {
+        if (idpResponseForLinking.hasCredentialForLinking()) {
+            // Signing in via Generic IDP returns a credential that must be used for sign-in.
+            // We can't sign-in by rebuilding using the id token/access token, so we need to use the
+            // credential directly.
+            // We also can't store this credential in SharedPrefs, so this is just
+            // best effort.
+            mCredentialForLinking = idpResponseForLinking.getCredentialForLinking();
+        }
         Preconditions.checkNotNull(context);
         Preconditions.checkNotNull(idpResponseForLinking);
         SharedPreferences.Editor editor =
@@ -84,15 +95,17 @@ public class EmailLinkPersistenceManager {
         String idpSecret = sharedPreferences.getString(KEY_IDP_SECRET, null);
 
         SessionRecord sessionRecord = new SessionRecord(sessionId, anonymousUserId).setEmail(email);
-        if (provider != null && idpToken != null) {
+        if (provider != null && (idpToken != null || mCredentialForLinking != null)) {
             IdpResponse response = new IdpResponse.Builder(
                         new User.Builder(provider, email).build())
+                    .setPendingCredential(mCredentialForLinking)
                     .setToken(idpToken)
                     .setSecret(idpSecret)
                     .setNewUser(false)
                     .build();
             sessionRecord.setIdpResponseForLinking(response);
         }
+        mCredentialForLinking = null;
         return sessionRecord;
     }
 

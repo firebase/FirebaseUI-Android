@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">மின்னஞ்சல் மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_phone">ஃபோன் எண் மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_anonymously">விருந்தினராகத் தொடர்க</string>
+    <string name="fui_sign_in_with_apple">Apple மூலம் உள்நுழை</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft மூலம் உள்நுழை</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo மூலம் உள்நுழை</string>
     <string name="fui_next_default">அடுத்து</string>
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">பெயரின் முற்பகுதி மற்றும் பிற்பகுதி</string>
     <string name="fui_button_text_save">சேமி</string>
     <string name="fui_progress_dialog_signing_up">பதிவு செய்கிறது…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item>
+        <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item>
+    </plurals>
     <string name="fui_email_account_creation_error">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
     <string name="fui_terms_of_service">சேவை விதிமுறைகள்</string>
     <string name="fui_privacy_policy">தனியுரிமைக் கொள்கை</string>
@@ -53,7 +59,7 @@
     <string name="fui_error_email_does_not_exist">மின்னஞ்சல் முகவரி தற்போதைய கணக்குடன் பொருந்தவில்லை</string>
     <string name="fui_error_unknown">அறியப்படாத பிழை ஏற்பட்டது.</string>
     <string name="fui_error_invalid_password">தவறான கடவுச்சொல்.</string>
-    <string name="fui_accessibility_logo">பயன்பாட்டு லோகோ</string>
+    <string name="fui_accessibility_logo">ஆப்ஸ் லோகோ</string>
     <string name="fui_email_link_header">உள்நுழைவு மின்னஞ்சல் அனுப்பப்பட்டது\n</string>
     <string name="fui_email_link_email_sent">கூடுதல் வழிமுறைகளுடன் கூடிய உள்நுழைவு மின்னஞ்சல் %1$sக்கு அனுப்பப்பட்டது. உள்நுழைவை நிறைவு செய்ய, உங்கள் மின்னஞ்சலைப் பார்க்கவும்.</string>
     <string name="fui_email_link_trouble_getting_email_header">மின்னஞ்சலைப் பெறுவதில் சிக்கல் உள்ளதா?</string>

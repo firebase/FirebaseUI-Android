@@ -68,10 +68,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.CallSuper;
@@ -105,6 +107,11 @@ public final class AuthUI {
     public static final String ANONYMOUS_PROVIDER = "anonymous";
     public static final String EMAIL_LINK_PROVIDER = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
 
+    public static final String MICROSOFT_PROVIDER = "microsoft.com";
+    public static final String YAHOO_PROVIDER = "yahoo.com";
+    public static final String APPLE_PROVIDER = "apple.com";
+
+
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
@@ -123,6 +130,16 @@ public final class AuthUI {
                     PhoneAuthProvider.PROVIDER_ID,
                     ANONYMOUS_PROVIDER,
                     EMAIL_LINK_PROVIDER
+            )));
+
+    /**
+     * The set of OAuth2.0 providers supported in Firebase Auth UI through Generic IDP (web flow).
+     */
+    public static final Set<String> SUPPORTED_OAUTH_PROVIDERS =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+                    MICROSOFT_PROVIDER,
+                    YAHOO_PROVIDER,
+                    APPLE_PROVIDER
             )));
 
     /**
@@ -466,8 +483,7 @@ public final class AuthUI {
     })
 
     @Retention(RetentionPolicy.SOURCE)
-    public @interface SupportedProvider {
-    }
+    public @interface SupportedProvider {}
 
     /**
      * Configuration for an identity provider.
@@ -555,10 +571,12 @@ public final class AuthUI {
          */
         public static class Builder {
             private final Bundle mParams = new Bundle();
-            @SupportedProvider private String mProviderId;
+            @SupportedProvider
+            private String mProviderId;
 
             protected Builder(@SupportedProvider @NonNull String providerId) {
-                if (!SUPPORTED_PROVIDERS.contains(providerId)) {
+                if (!SUPPORTED_PROVIDERS.contains(providerId)
+                        && !SUPPORTED_OAUTH_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
                 }
                 mProviderId = providerId;
@@ -638,7 +656,7 @@ public final class AuthUI {
              * This URL must be whitelisted in the Firebase Console.
              *
              * @throws IllegalStateException if canHandleCodeInApp is set to false
-             * @throws NullPointerException if ActionCodeSettings is null
+             * @throws NullPointerException  if ActionCodeSettings is null
              */
             @NonNull
             public EmailBuilder setActionCodeSettings(ActionCodeSettings actionCodeSettings) {
@@ -664,7 +682,7 @@ public final class AuthUI {
                             getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
                     Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
                             "null when using email link sign in.");
-                   if (!actionCodeSettings.canHandleCodeInApp()) {
+                    if (!actionCodeSettings.canHandleCodeInApp()) {
                         // Pre-emptively fail if actionCodeSettings are misconfigured. This would
                         // have happened when calling sendSignInLinkToEmail
                         throw new IllegalStateException(
@@ -1119,6 +1137,78 @@ public final class AuthUI {
                 super(ANONYMOUS_PROVIDER);
             }
         }
+
+        /**
+         * {@link IdpConfig} builder for the Apple provider.
+         */
+        public static final class AppleBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Apple";
+
+            public AppleBuilder() {
+                super(APPLE_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_apple);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the Microsoft provider.
+         */
+        public static final class MicrosoftBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Microsoft";
+
+            public MicrosoftBuilder() {
+                super(MICROSOFT_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_microsoft);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the Yahoo provider.
+         */
+        public static final class YahooBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Yahoo";
+
+            public YahooBuilder() {
+                super(YAHOO_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_yahoo);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for a Generic OAuth provider.
+         */
+        public static class GenericOAuthProviderBuilder extends Builder {
+
+            GenericOAuthProviderBuilder(@NonNull String providerId,
+                                        @NonNull String providerName,
+                                        int buttonId) {
+                super(providerId);
+
+                Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");
+                Preconditions.checkNotNull(providerName, "The provider name cannot be null.");
+
+                getParams().putString(
+                        ExtraConstants.GENERIC_OAUTH_PROVIDER_ID, providerId);
+                getParams().putString(
+                        ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME, providerName);
+                getParams().putInt(
+                        ExtraConstants.GENERIC_OAUTH_BUTTON_ID, buttonId);
+
+            }
+
+            @NonNull
+            public GenericOAuthProviderBuilder setScopes(@NonNull List<String> scopes) {
+                getParams().putStringArrayList(
+                        ExtraConstants.GENERIC_OAUTH_SCOPES, new ArrayList<>(scopes));
+                return this;
+            }
+
+            @NonNull
+            public GenericOAuthProviderBuilder setCustomParameters(
+                    @NonNull Map<String, String> customParameters) {
+                getParams().putSerializable(
+                        ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS,
+                        new HashMap<>(customParameters));
+                return this;
+            }
+        }
     }
 
     /**
@@ -1205,9 +1295,8 @@ public final class AuthUI {
          *
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
          *                   configuration parameters for the IDP.
-         * @see IdpConfig
-         *
          * @throws IllegalStateException if anonymous provider is the only specified provider.
+         * @see IdpConfig
          */
         @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
@@ -1267,6 +1356,7 @@ public final class AuthUI {
         /**
          * Set a custom layout for the AuthMethodPickerActivity screen.
          * See {@link AuthMethodPickerLayout}.
+         *
          * @param authMethodPickerLayout custom layout descriptor object.
          */
         @NonNull
@@ -1274,7 +1364,7 @@ public final class AuthUI {
             mAuthMethodPickerLayout = authMethodPickerLayout;
             return (T) this;
         }
-          
+
         /**
          * Forces the sign-in method choice screen to always show, even if there is only
          * a single provider configured.
@@ -1329,7 +1419,7 @@ public final class AuthUI {
          * This is disabled by default.
          *
          * @throws IllegalStateException when you attempt to enable anonymous user upgrade
-         * without forcing the same device flow for email link sign in.
+         *                               without forcing the same device flow for email link sign in.
          */
         @NonNull
         public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {

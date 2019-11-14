@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">تسجيل الدخول عبر البريد الإلكتروني</string>
     <string name="fui_sign_in_with_phone">تسجيل الدخول عبر رقم الهاتف</string>
     <string name="fui_sign_in_anonymously">المتابعة كضيف</string>
+    <string name="fui_sign_in_with_apple">تسجيل الدخول باستخدام Apple</string>
+    <string name="fui_sign_in_with_microsoft">تسجيل الدخول باستخدام Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">تسجيل الدخول باستخدام Yahoo</string>
     <string name="fui_next_default">التالي</string>
     <string name="fui_email_hint">البريد الإلكتروني</string>
     <string name="fui_phone_hint">رقم الهاتف</string>
@@ -32,7 +35,14 @@
     <string name="fui_name_hint">الاسم الأول واسم العائلة</string>
     <string name="fui_button_text_save">حفظ</string>
     <string name="fui_progress_dialog_signing_up">جارٍ الاشتراك…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
+        <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
+        <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
+        <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item>
+        <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item>
+        <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
+    </plurals>
     <string name="fui_email_account_creation_error">فشل تسجيل حساب البريد الإلكتروني</string>
     <string name="fui_terms_of_service">بنود الخدمة</string>
     <string name="fui_privacy_policy">سياسة الخصوصية</string>

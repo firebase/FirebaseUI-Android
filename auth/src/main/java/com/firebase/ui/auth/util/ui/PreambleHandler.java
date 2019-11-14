@@ -5,8 +5,8 @@ import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -115,12 +115,13 @@ public class PreambleHandler {
         return null;
     }
 
-    private static final class CustomTabsSpan extends ClickableSpan {
+    private static final class CustomTabsSpan extends URLSpan {
         private final WeakReference<Context> mContext;
         private final String mUrl;
         private final CustomTabsIntent mCustomTabsIntent;
 
         public CustomTabsSpan(Context context, String url) {
+            super(url);
             mContext = new WeakReference<>(context);
             mUrl = url;
 

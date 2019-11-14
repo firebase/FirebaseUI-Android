@@ -55,6 +55,9 @@ public final class RequestCodes {
     /** Request code for prompting the user to enter their email to finish the sign in */
     public static final int EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW = 116;
 
+    /** Request code for starter a generic IDP sign-in flow */
+    public static final int GENERIC_IDP_SIGN_IN_FLOW = 117;
+
     private RequestCodes() {
         throw new AssertionError("No instance for you!");
     }

@@ -4,7 +4,7 @@ android {
     buildTypes {
         named("release").configure {
             isMinifyEnabled = false
-            consumerProguardFiles("proguard-rules.pro")
+            consumerProguardFiles("auth-proguard.pro")
         }
     }
 
@@ -13,6 +13,9 @@ android {
         disable("UnknownNullness")  // TODO fix in future PR
         disable("TypographyQuotes") // Straight versus directional quotes
         disable("DuplicateStrings")
+        disable("LocaleFolder")
+        disable("IconLocation")
+        disable("VectorPath")
     }
 
     testOptions {

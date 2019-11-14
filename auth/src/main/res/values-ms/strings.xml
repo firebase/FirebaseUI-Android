@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Log masuk dengan e-mel</string>
     <string name="fui_sign_in_with_phone">Log masuk dengan telefon</string>
     <string name="fui_sign_in_anonymously">Teruskan sebagai tetamu</string>
+    <string name="fui_sign_in_with_apple">Log masuk dengan Apple</string>
+    <string name="fui_sign_in_with_microsoft">Log masuk dengan Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Log masuk dengan Yahoo</string>
     <string name="fui_next_default">Seterusnya</string>
     <string name="fui_email_hint">E-mel</string>
     <string name="fui_phone_hint">Nombor Telefon</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Nama pertama &amp; keluarga</string>
     <string name="fui_button_text_save">Simpan</string>
     <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item>
+        <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akaun e-mel tidak berjaya</string>
     <string name="fui_terms_of_service">Syarat Perkhidmatan</string>
     <string name="fui_privacy_policy">Dasar Privasi</string>

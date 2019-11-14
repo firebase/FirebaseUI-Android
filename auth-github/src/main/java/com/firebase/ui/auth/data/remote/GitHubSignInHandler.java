@@ -20,6 +20,7 @@ import com.firebase.ui.auth.ui.github.R;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 
 import java.util.ArrayList;
@@ -182,5 +183,12 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     private interface GitHubApi {
         @GET("user")
         Call<GitHubProfile> getUser(@Header("Authorization") String token);
+    }
+
+    @Override
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        startSignIn(activity);
     }
 }

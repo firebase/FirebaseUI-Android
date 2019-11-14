@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">ای میل کے ساتھ سائن ان کریں</string>
     <string name="fui_sign_in_with_phone">فون کے ساتھ سائں ان کریں</string>
     <string name="fui_sign_in_anonymously">مہمان کے طور پر جاری رکھیں</string>
+    <string name="fui_sign_in_with_apple">Apple کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo کے ساتھ سائن ان کریں</string>
     <string name="fui_next_default">اگلا</string>
     <string name="fui_email_hint">ای میل</string>
     <string name="fui_phone_hint">فون نمبر</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">پہلا اور آخری نام</string>
     <string name="fui_button_text_save">محفوظ کریں</string>
     <string name="fui_progress_dialog_signing_up">سائن اپ ہو رہا ہے…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item> <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item>
+        <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item>
+    </plurals>
     <string name="fui_email_account_creation_error">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
     <string name="fui_terms_of_service">سروس کی شرائط</string>
     <string name="fui_privacy_policy">رازداری کی پالیسی</string>

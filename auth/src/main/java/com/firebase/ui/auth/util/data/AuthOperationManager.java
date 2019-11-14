@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.util.data;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -8,6 +9,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.OAuthProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -101,5 +103,13 @@ public class AuthOperationManager {
                         return task;
                     }
                 });
+    }
+
+    @NonNull
+    public Task<AuthResult> safeGenericIdpSignIn(@NonNull final HelperActivityBase activity,
+                                                 @NonNull final OAuthProvider provider,
+                                                 @NonNull final FlowParameters flowParameters) {
+        return getScratchAuth(flowParameters)
+                .startActivityForSignInWithProvider(activity, provider);
     }
 }

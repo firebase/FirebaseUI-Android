@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Пријави ме помоћу имејла</string>
     <string name="fui_sign_in_with_phone">Пријави ме помоћу телефона</string>
     <string name="fui_sign_in_anonymously">Наставите као гост</string>
+    <string name="fui_sign_in_with_apple">Пријавите се преко Apple налога</string>
+    <string name="fui_sign_in_with_microsoft">Пријавите се преко Microsoft налога</string>
+    <string name="fui_sign_in_with_yahoo">Пријавите се преко Yahoo налога</string>
     <string name="fui_next_default">Даље</string>
     <string name="fui_email_hint">Имејл</string>
     <string name="fui_phone_hint">Број телефона</string>
@@ -32,7 +35,11 @@
     <string name="fui_name_hint">Име и презиме</string>
     <string name="fui_button_text_save">Сачувај</string>
     <string name="fui_progress_dialog_signing_up">Регистрација је у току…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Лозинка није довољно јака. Употребите бар %1$d знак, уз комбинацију бројева и слова</item> <item quantity="few">Лозинка није довољно јака. Употребите бар %1$d знака, уз комбинацију бројева и слова</item> <item quantity="other">Лозинка није довољно јака. Употребите бар %1$d знакова, уз комбинацију бројева и слова</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Лозинка није довољно јака. Употребите бар %1$d знак, уз комбинацију бројева и слова</item>
+        <item quantity="few">Лозинка није довољно јака. Употребите бар %1$d знака, уз комбинацију бројева и слова</item>
+        <item quantity="other">Лозинка није довољно јака. Употребите бар %1$d знакова, уз комбинацију бројева и слова</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Регистрација налога преко имејла није успела</string>
     <string name="fui_terms_of_service">Услови коришћења услуге</string>
     <string name="fui_privacy_policy">Политику приватности</string>

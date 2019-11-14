@@ -65,7 +65,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
+    implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -97,8 +97,8 @@ for more information.
 
 ### Identity provider configuration
 
-In order to use either Google, Facebook or Twitter accounts with your app, ensure that
-these authentication methods are first configured in the Firebase console.
+In order to use either Google, Facebook, Twitter, Microsoft, Apple, or Yahoo accounts with your
+app, ensure that these authentication methods are first configured in the Firebase console.
 
 #### Google
 
@@ -147,6 +147,34 @@ allprojects {
     }
 }
 ```
+
+#### Microsoft, Apple, and Yahoo
+
+No FirebaseUI configuration is required for these providers.
+
+We support the use of scopes and custom parameters for these providers. For example:
+
+```java
+List<String> scopes =
+    new ArrayList<String>() {
+      {
+        add("mail.read");
+        add("calendars.read");
+      }
+    };
+
+Map<String, String> customParams = new HashMap<>();
+customParams.put("tenant", "TENANT_ID");
+
+IdpConfig microsoftConfig = new IdpConfig.MicrosoftBuilder()
+                    .setScopes(scopes)
+                    .setCustomParameters(customParams)
+                    .build();
+selectedProviders.add(microsoftConfig);
+```
+
+Note: unlike other sign-in methods, signing in with these providers involves the use of a
+[Custom Chrome Tab](https://developer.chrome.com/multidevice/android/customtabs).
 
 #### GitHub
 
@@ -236,6 +264,9 @@ startActivityForResult(
                         new AuthUI.IdpConfig.GoogleBuilder().build(),
                         new AuthUI.IdpConfig.FacebookBuilder().build(),
                         new AuthUI.IdpConfig.TwitterBuilder().build(),
+                        new AuthUI.IdpConfig.MicrosoftBuilder().build(),
+                        new AuthUI.IdpConfig.YahooBuilder().build(),
+                        new AuthUI.IdpConfig.AppleBuilder().build(),
                         new AuthUI.IdpConfig.EmailBuilder().build(),
                         new AuthUI.IdpConfig.PhoneBuilder().build(),
                         new AuthUI.IdpConfig.AnonymousBuilder().build()))

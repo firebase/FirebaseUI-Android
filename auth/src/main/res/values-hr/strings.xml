@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Prijava putem e-adrese</string>
     <string name="fui_sign_in_with_phone">Prijava putem telefona</string>
     <string name="fui_sign_in_anonymously">Nastavi kao gost</string>
+    <string name="fui_sign_in_with_apple">Prijavite se Apple računom</string>
+    <string name="fui_sign_in_with_microsoft">Prijavite se Microsoft računom</string>
+    <string name="fui_sign_in_with_yahoo">Prijavite se Yahoo računom</string>
     <string name="fui_next_default">Dalje</string>
     <string name="fui_email_hint">E-adresa</string>
     <string name="fui_phone_hint">Telefonski broj</string>
@@ -32,7 +35,11 @@
     <string name="fui_name_hint">Ime i prezime</string>
     <string name="fui_button_text_save">Spremi</string>
     <string name="fui_progress_dialog_signing_up">Registriranje….</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item>
+        <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item>
+        <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Registracija računa putem e-adrese nije uspjela</string>
     <string name="fui_terms_of_service">Uvjeti pružanja usluge</string>
     <string name="fui_privacy_policy">Pravila o privatnosti</string>

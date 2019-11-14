@@ -15,6 +15,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -113,5 +114,12 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
             setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
                     ErrorCodes.PROVIDER_ERROR, e)));
         }
+    }
+
+    @Override
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        startSignIn(activity);
     }
 }

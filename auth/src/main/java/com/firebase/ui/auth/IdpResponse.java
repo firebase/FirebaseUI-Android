@@ -74,8 +74,9 @@ public class IdpResponse implements Parcelable {
             @NonNull User user,
             @Nullable String token,
             @Nullable String secret,
+            @Nullable AuthCredential pendingCredential,
             boolean isNewUser) {
-        this(user, token, secret, isNewUser, null, null);
+        this(user, token, secret, isNewUser, null, pendingCredential);
     }
 
     private IdpResponse(AuthCredential credential, FirebaseUiException e) {
@@ -117,8 +118,26 @@ public class IdpResponse implements Parcelable {
     public static IdpResponse from(@NonNull Exception e) {
         if (e instanceof FirebaseUiException) {
             return new IdpResponse((FirebaseUiException) e);
+        } else if (e instanceof FirebaseAuthAnonymousUpgradeException) {
+            return ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
+        } else if (e instanceof FirebaseUiUserCollisionException) {
+            FirebaseUiUserCollisionException collisionException
+                    = (FirebaseUiUserCollisionException) e;
+            User user = new User.Builder(
+                    collisionException.getProviderId(),
+                    collisionException.getEmail())
+                    .build();
+
+            return new IdpResponse(user,
+                    /* token= */ null,
+                    /* secret= */ null,
+                    /* isNewUser= */ false,
+                    new FirebaseUiException(collisionException.getErrorCode(),
+                            collisionException.getMessage()),
+                    collisionException.getCredential());
         } else {
-            FirebaseUiException wrapped = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e);
+            FirebaseUiException wrapped
+                    = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e.getMessage());
             wrapped.setStackTrace(e.getStackTrace());
             return new IdpResponse(wrapped);
         }
@@ -164,10 +183,9 @@ public class IdpResponse implements Parcelable {
     /**
      * Get the type of provider. e.g. {@link GoogleAuthProvider#PROVIDER_ID}
      */
-    @NonNull
-    @AuthUI.SupportedProvider
+    @Nullable
     public String getProviderType() {
-        return mUser.getProviderId();
+        return mUser != null ? mUser.getProviderId() : null;
     }
 
     /**
@@ -182,7 +200,7 @@ public class IdpResponse implements Parcelable {
      */
     @Nullable
     public String getEmail() {
-        return mUser.getEmail();
+        return mUser != null ? mUser.getEmail() : null;
     }
 
     /**
@@ -190,7 +208,7 @@ public class IdpResponse implements Parcelable {
      */
     @Nullable
     public String getPhoneNumber() {
-        return mUser.getPhoneNumber();
+        return mUser != null ? mUser.getPhoneNumber() : null;
     }
 
     /**
@@ -220,6 +238,17 @@ public class IdpResponse implements Parcelable {
     @Nullable
     public AuthCredential getCredentialForLinking() {
         return mPendingCredential;
+    }
+
+    @Nullable
+    public boolean hasCredentialForLinking() {
+        return mPendingCredential != null;
+    }
+
+    public boolean isRecoverableErrorResponse() {
+        // In a recoverable error flow, both a valid credential that can be used to sign-in and
+        // the email keying that account is returned.
+        return mPendingCredential != null || getEmail() != null;
     }
 
     @Override
@@ -305,21 +334,16 @@ public class IdpResponse implements Parcelable {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
-        private final User mUser;
-        private final AuthCredential mPendingCredential;
-
+        private User mUser;
+        private AuthCredential mPendingCredential;
         private String mToken;
         private String mSecret;
         private boolean mIsNewUser;
 
+        public Builder() {}
+
         public Builder(@NonNull User user) {
             mUser = user;
-            mPendingCredential = null;
-        }
-
-        public Builder(@NonNull AuthCredential pendingCredential) {
-            mUser = null;
-            mPendingCredential = pendingCredential;
         }
 
         public Builder(@NonNull IdpResponse response) {
@@ -345,16 +369,18 @@ public class IdpResponse implements Parcelable {
             return this;
         }
 
+        public Builder setPendingCredential(AuthCredential credential) {
+            mPendingCredential = credential;
+            return this;
+        }
+
         public IdpResponse build() {
-            if (mPendingCredential != null) {
+            if (mPendingCredential != null && mUser == null) {
                 return new IdpResponse(mPendingCredential, new FirebaseUiException(ErrorCodes
                         .ANONYMOUS_UPGRADE_MERGE_CONFLICT));
             }
 
             String providerId = mUser.getProviderId();
-            if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
-                throw new IllegalStateException("Unknown provider: " + providerId);
-            }
             if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
@@ -364,7 +390,7 @@ public class IdpResponse implements Parcelable {
                 throw new IllegalStateException(
                         "Secret cannot be null when using the Twitter provider.");
             }
-            return new IdpResponse(mUser, mToken, mSecret, mIsNewUser);
+            return new IdpResponse(mUser, mToken, mSecret, mPendingCredential, mIsNewUser);
         }
     }
 }
