@@ -8,6 +8,8 @@ public final class ProviderAvailability {
             exists("com.firebase.ui.auth.data.remote.GitHubSignInHandler");
     public static final boolean IS_FACEBOOK_AVAILABLE =
             exists("com.facebook.login.LoginManager");
+    public static final boolean IS_TWITTER_AVAILABLE =
+            exists("com.twitter.sdk.android.core.identity.TwitterAuthClient");
 
     private ProviderAvailability() {
         throw new AssertionError("No instance for you!");

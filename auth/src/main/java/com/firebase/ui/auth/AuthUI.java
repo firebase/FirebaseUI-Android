@@ -201,6 +201,10 @@ public final class AuthUI {
      */
     @NonNull
     public static AuthUI getInstance(@NonNull FirebaseApp app) {
+        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
+            Log.w(TAG, "You no longer need TwitterKit to sign in with Twitter.");
+        }
+
         AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
