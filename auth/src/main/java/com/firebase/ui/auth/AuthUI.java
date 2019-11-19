@@ -209,7 +209,8 @@ public final class AuthUI {
             Log.w(TAG, String.format(devWarning, "the TwitterKit SDK", "Twitter", releaseUrl));
         }
         if (ProviderAvailability.IS_GITHUB_AVAILABLE) {
-            Log.w(TAG, String.format(devWarning, "auth-github", "GitHub", releaseUrl));
+            Log.w(TAG, String.format(devWarning, "com.firebaseui:firebase-ui-auth-github",
+                    "GitHub", releaseUrl));
         }
 
         AuthUI authUi;
