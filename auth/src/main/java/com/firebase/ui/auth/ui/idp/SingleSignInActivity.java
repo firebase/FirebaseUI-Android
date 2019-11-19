@@ -16,7 +16,6 @@ import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.InvisibleActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -28,7 +27,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,11 +76,6 @@ public class SingleSignInActivity extends InvisibleActivityBase {
                 FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
                 facebook.init(providerConfig);
                 mProvider = facebook;
-                break;
-            case TwitterAuthProvider.PROVIDER_ID:
-                TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
-                twitter.init(null);
-                mProvider = twitter;
                 break;
             case GithubAuthProvider.PROVIDER_ID:
                 ProviderSignInBase<AuthUI.IdpConfig> github =

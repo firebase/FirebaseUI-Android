@@ -42,7 +42,6 @@ import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
 import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
@@ -56,7 +55,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,9 +193,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 case FacebookAuthProvider.PROVIDER_ID:
                     buttonLayout = R.layout.fui_idp_button_facebook;
                     break;
-                case TwitterAuthProvider.PROVIDER_ID:
-                    buttonLayout = R.layout.fui_idp_button_twitter;
-                    break;
                 case GithubAuthProvider.PROVIDER_ID:
                     buttonLayout = R.layout.fui_idp_button_github;
                     break;
@@ -266,12 +261,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
                 facebook.init(idpConfig);
                 provider = facebook;
-
-                break;
-            case TwitterAuthProvider.PROVIDER_ID:
-                TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
-                twitter.init(null);
-                provider = twitter;
 
                 break;
             case GithubAuthProvider.PROVIDER_ID:

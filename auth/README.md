@@ -70,10 +70,6 @@ dependencies {
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation 'com.facebook.android:facebook-login:4.x'
-
-    // Required only if Twitter login support is required
-    // Find the latest Twitter SDK releases here: https://goo.gl/E5wZvQ
-    implementation("com.twitter.sdk.android:twitter-core:3.x@aar") { transitive = true }
 }
 ```
 
@@ -121,34 +117,7 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 </resources>
 ```
 
-#### Twitter
-
-If support for Twitter Sign-in is also required, define the resource strings
-`twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
-Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
-
-```xml
-<resources>
-  <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
-  <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
-</resources>
-```
-
-In addition, you must enable the "Request email addresses from users" permission
-in the "Permissions" tab of your Twitter app.
-
-In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
-
-```groovy
-allprojects {
-    repositories {
-        // ...
-        maven { url 'https://maven.fabric.io/public' }
-    }
-}
-```
-
-#### Microsoft, Apple, and Yahoo
+#### Microsoft, Apple, Twitter and Yahoo
 
 No FirebaseUI configuration is required for these providers.
 
@@ -175,6 +144,11 @@ selectedProviders.add(microsoftConfig);
 
 Note: unlike other sign-in methods, signing in with these providers involves the use of a
 [Custom Chrome Tab](https://developer.chrome.com/multidevice/android/customtabs).
+
+##### Twitter
+
+You must enable the "Request email addresses from users" permission in the "Permissions" tab of your
+Twitter app.
 
 #### GitHub
 
