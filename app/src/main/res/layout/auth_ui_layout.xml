@@ -123,6 +123,13 @@
                 android:checked="true"
                 android:text="@string/providers_yahoo" />
 
+            <CheckBox
+                android:id="@+id/github_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/providers_github" />
+
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
