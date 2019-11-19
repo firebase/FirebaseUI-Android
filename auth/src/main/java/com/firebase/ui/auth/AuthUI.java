@@ -202,7 +202,10 @@ public final class AuthUI {
     @NonNull
     public static AuthUI getInstance(@NonNull FirebaseApp app) {
         if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            Log.w(TAG, "You no longer need TwitterKit to sign in with Twitter.");
+            String releaseUrl = "https://github.com/firebase/FirebaseUI-Android/releases/tag/6.2.0";
+            Log.w(TAG, String.format("Beginning with FirebaseUI 6.2.0 you no longer need to " +
+                    "include the TwitterKit SDK to sign in with Twitter. " +
+                    "Go to %s for more information", releaseUrl));
         }
 
         AuthUI authUi;
@@ -481,7 +484,8 @@ public final class AuthUI {
     })
 
     @Retention(RetentionPolicy.SOURCE)
-    public @interface SupportedProvider {}
+    public @interface SupportedProvider {
+    }
 
     /**
      * Configuration for an identity provider.
