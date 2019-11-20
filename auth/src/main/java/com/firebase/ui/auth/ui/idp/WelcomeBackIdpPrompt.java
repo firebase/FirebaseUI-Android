@@ -33,7 +33,6 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GenericIdpAnonymousUpgradeLinkingHandler;
-import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -131,14 +130,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 mProvider = facebook;
 
                 providerName = getString(R.string.fui_idp_name_facebook);
-                break;
-            case GithubAuthProvider.PROVIDER_ID:
-                ProviderSignInBase<AuthUI.IdpConfig> github =
-                        supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
-                github.init(config);
-                mProvider = github;
-
-                providerName = getString(R.string.fui_idp_name_github);
                 break;
             default:
                 if (TextUtils.equals(providerId, genericOAuthProviderId)) {

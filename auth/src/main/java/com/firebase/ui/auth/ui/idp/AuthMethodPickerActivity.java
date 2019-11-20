@@ -39,7 +39,6 @@ import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
-import com.firebase.ui.auth.data.remote.GitHubSignInHandlerBridge;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -193,9 +192,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 case FacebookAuthProvider.PROVIDER_ID:
                     buttonLayout = R.layout.fui_idp_button_facebook;
                     break;
-                case GithubAuthProvider.PROVIDER_ID:
-                    buttonLayout = R.layout.fui_idp_button_github;
-                    break;
                 case EMAIL_LINK_PROVIDER:
                 case EmailAuthProvider.PROVIDER_ID:
                     buttonLayout = R.layout.fui_provider_button_email;
@@ -261,13 +257,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
                 facebook.init(idpConfig);
                 provider = facebook;
-
-                break;
-            case GithubAuthProvider.PROVIDER_ID:
-                ProviderSignInBase<IdpConfig> github =
-                        supplier.get(GitHubSignInHandlerBridge.HANDLER_CLASS);
-                github.init(idpConfig);
-                provider = github;
 
                 break;
             case EMAIL_LINK_PROVIDER:

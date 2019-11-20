@@ -37,7 +37,6 @@ dependencies {
     implementation(Config.Libs.Androidx.multidex)
 
     implementation(project(":auth"))
-    implementation(project(":auth-github"))
     implementation(project(":firestore"))
     implementation(project(":database"))
     implementation(project(":storage"))

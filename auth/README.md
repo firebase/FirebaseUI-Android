@@ -93,8 +93,8 @@ for more information.
 
 ### Identity provider configuration
 
-In order to use either Google, Facebook, Twitter, Microsoft, Apple, or Yahoo accounts with your
-app, ensure that these authentication methods are first configured in the Firebase console.
+In order to use either Google, Facebook, Twitter, Microsoft, Apple, GitHub or Yahoo accounts with
+your app, ensure that these authentication methods are first configured in the Firebase console.
 
 #### Google
 
@@ -117,7 +117,7 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 </resources>
 ```
 
-#### Microsoft, Apple, Twitter and Yahoo
+#### Microsoft, Apple, Twitter, GitHub and Yahoo
 
 No FirebaseUI configuration is required for these providers.
 
@@ -149,17 +149,6 @@ Note: unlike other sign-in methods, signing in with these providers involves the
 
 You must enable the "Request email addresses from users" permission in the "Permissions" tab of your
 Twitter app.
-
-#### GitHub
-
-We do not currently support Github as a sign-in method in FirebaseUI on Android. The current
-implementation relies on hard-coding the client secret which is discouraged for production workloads
-due to decreased security.
-
-We are actively working on a new way to sign-in with Github on FirebaseUI. This implementation will
-offer a more secure and easier to use solution, based on generic OAuth login which is now supported
-in the Firebase Auth Android SDK.
-
 
 ## Using FirebaseUI for authentication
 

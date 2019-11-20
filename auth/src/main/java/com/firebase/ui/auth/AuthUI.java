@@ -138,7 +138,8 @@ public final class AuthUI {
                     MICROSOFT_PROVIDER,
                     YAHOO_PROVIDER,
                     APPLE_PROVIDER,
-                    TwitterAuthProvider.PROVIDER_ID
+                    TwitterAuthProvider.PROVIDER_ID,
+                    GithubAuthProvider.PROVIDER_ID
             )));
 
     /**
@@ -201,11 +202,15 @@ public final class AuthUI {
      */
     @NonNull
     public static AuthUI getInstance(@NonNull FirebaseApp app) {
+        String releaseUrl = "https://github.com/firebase/FirebaseUI-Android/releases/tag/6.2.0";
+        String devWarning = "Beginning with FirebaseUI 6.2.0 you no longer need to include %s to " +
+                "sign in with %s. Go to %s for more information";
         if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            String releaseUrl = "https://github.com/firebase/FirebaseUI-Android/releases/tag/6.2.0";
-            Log.w(TAG, String.format("Beginning with FirebaseUI 6.2.0 you no longer need to " +
-                    "include the TwitterKit SDK to sign in with Twitter. " +
-                    "Go to %s for more information", releaseUrl));
+            Log.w(TAG, String.format(devWarning, "the TwitterKit SDK", "Twitter", releaseUrl));
+        }
+        if (ProviderAvailability.IS_GITHUB_AVAILABLE) {
+            Log.w(TAG, String.format(devWarning, "com.firebaseui:firebase-ui-auth-github",
+                    "GitHub", releaseUrl));
         }
 
         AuthUI authUi;
@@ -1071,44 +1076,6 @@ public final class AuthUI {
         }
 
         /**
-         * {@link IdpConfig} builder for the GitHub provider.
-         */
-        public static final class GitHubBuilder extends Builder {
-            public GitHubBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
-                super(GithubAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_GITHUB_AVAILABLE) {
-                    throw new RuntimeException(
-                            "GitHub provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.firebaseui:firebase-ui-auth-github:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "GitHub provider unconfigured. Make sure to add your client id and secret" +
-                                "." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#github",
-                        R.string.firebase_web_host,
-                        R.string.github_client_id,
-                        R.string.github_client_secret);
-            }
-
-            /**
-             * Specifies the additional permissions to be requested. Available permissions can be
-             * found
-             * <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
-             */
-            @NonNull
-            public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
-                getParams().putStringArrayList(
-                        ExtraConstants.GITHUB_PERMISSIONS, new ArrayList<>(permissions));
-                return this;
-            }
-        }
-
-        /**
          * {@link IdpConfig} builder for the Anonymous provider.
          */
         public static final class AnonymousBuilder extends Builder {
@@ -1129,6 +1096,32 @@ public final class AuthUI {
             }
         }
 
+        /**
+         * {@link IdpConfig} builder for the GitHub provider.
+         */
+        public static final class GitHubBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Github";
+
+            public GitHubBuilder() {
+                super(GithubAuthProvider.PROVIDER_ID, PROVIDER_NAME,
+                        R.layout.fui_idp_button_github);
+            }
+
+            /**
+             * Specifies the additional permissions to be requested.
+             *
+             * <p> Available permissions can be found
+             * <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
+             *
+             * @deprecated Please use {@link #setScopes(List)} instead.
+             */
+            @Deprecated
+            @NonNull
+            public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
+                setScopes(permissions);
+                return this;
+            }
+        }
 
         /**
          * {@link IdpConfig} builder for the Apple provider.

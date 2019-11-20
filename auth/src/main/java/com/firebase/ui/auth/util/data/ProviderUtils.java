@@ -64,8 +64,6 @@ public final class ProviderUtils {
                 return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
             case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookAuthProvider.getCredential(response.getIdpToken());
-            case GithubAuthProvider.PROVIDER_ID:
-                return GithubAuthProvider.getCredential(response.getIdpToken());
             default:
                 return null;
         }

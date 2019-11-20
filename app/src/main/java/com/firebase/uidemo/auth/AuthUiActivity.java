@@ -79,6 +79,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.apple_provider) CheckBox mUseAppleProvider;
     @BindView(R.id.microsoft_provider) CheckBox mUseMicrosoftProvider;
     @BindView(R.id.yahoo_provider) CheckBox mUseYahooProvider;
+    @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
 
     @BindView(R.id.default_layout) RadioButton mDefaultLayout;
     @BindView(R.id.custom_layout) RadioButton mCustomLayout;
@@ -182,6 +183,7 @@ public class AuthUiActivity extends AppCompatActivity {
                     mUseMicrosoftProvider.setChecked(false);
                     mUseYahooProvider.setChecked(false);
                     mUseAppleProvider.setChecked(false);
+                    mUseGitHubProvider.setChecked(false);
                 }
             }
         });
@@ -430,6 +432,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseAppleProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.AppleBuilder().build());
+        }
+
+        if (mUseGitHubProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.GitHubBuilder().build());
         }
 
         return selectedProviders;
