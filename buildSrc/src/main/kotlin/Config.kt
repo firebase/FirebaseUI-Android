@@ -1,6 +1,6 @@
 object Config {
-    const val version = "6.1.0"
-    val submodules = listOf("auth", "auth-github", "common", "firestore", "database", "storage")
+    const val version = "6.2.0"
+    val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.3.10"
 
@@ -43,10 +43,10 @@ object Config {
         }
 
         object Firebase {
-            const val auth = "com.google.firebase:firebase-auth:19.1.0"
+            const val auth = "com.google.firebase:firebase-auth:19.2.0"
             const val core = "com.google.firebase:firebase-core:17.2.1"
             const val database = "com.google.firebase:firebase-database:19.2.0"
-            const val firestore = "com.google.firebase:firebase-firestore:21.3.0"
+            const val firestore = "com.google.firebase:firebase-firestore:21.3.1"
             const val storage = "com.google.firebase:firebase-storage:19.1.0"
         }
 
@@ -56,9 +56,6 @@ object Config {
 
         object Provider {
             const val facebook = "com.facebook.android:facebook-login:4.38.1"
-            // WARNING: the Twitter requires Java 8 support. Therefore, the dep cannot be upgraded
-            // futher until we decide to force clients to enable Java 8 support.
-            const val twitter = "com.twitter.sdk.android:twitter-core:3.1.1@aar"
         }
 
         object Misc {

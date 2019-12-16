@@ -24,7 +24,6 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -61,7 +60,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -139,18 +137,19 @@ public final class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     MICROSOFT_PROVIDER,
                     YAHOO_PROVIDER,
-                    APPLE_PROVIDER
+                    APPLE_PROVIDER,
+                    TwitterAuthProvider.PROVIDER_ID,
+                    GithubAuthProvider.PROVIDER_ID
             )));
 
     /**
-     * The set of social authentication providers supported in Firebase Auth UI.
+     * The set of social authentication providers supported in Firebase Auth UI using their SDK.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final Set<String> SOCIAL_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
-                    TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID)));
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -203,6 +202,17 @@ public final class AuthUI {
      */
     @NonNull
     public static AuthUI getInstance(@NonNull FirebaseApp app) {
+        String releaseUrl = "https://github.com/firebase/FirebaseUI-Android/releases/tag/6.2.0";
+        String devWarning = "Beginning with FirebaseUI 6.2.0 you no longer need to include %s to " +
+                "sign in with %s. Go to %s for more information";
+        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
+            Log.w(TAG, String.format(devWarning, "the TwitterKit SDK", "Twitter", releaseUrl));
+        }
+        if (ProviderAvailability.IS_GITHUB_AVAILABLE) {
+            Log.w(TAG, String.format(devWarning, "com.firebaseui:firebase-ui-auth-github",
+                    "GitHub", releaseUrl));
+        }
+
         AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
@@ -455,10 +465,6 @@ public final class AuthUI {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            TwitterSignInHandler.initializeTwitter();
-            TwitterCore.getInstance().getSessionManager().clearActiveSession();
-        }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
@@ -483,7 +489,8 @@ public final class AuthUI {
     })
 
     @Retention(RetentionPolicy.SOURCE)
-    public @interface SupportedProvider {}
+    public @interface SupportedProvider {
+    }
 
     /**
      * Configuration for an identity provider.
@@ -1069,72 +1076,50 @@ public final class AuthUI {
         }
 
         /**
+         * {@link IdpConfig} builder for the Anonymous provider.
+         */
+        public static final class AnonymousBuilder extends Builder {
+            public AnonymousBuilder() {
+                super(ANONYMOUS_PROVIDER);
+            }
+        }
+
+        /**
          * {@link IdpConfig} builder for the Twitter provider.
          */
-        public static final class TwitterBuilder extends Builder {
+        public static final class TwitterBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Twitter";
+
             public TwitterBuilder() {
-                super(TwitterAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_TWITTER_AVAILABLE) {
-                    throw new RuntimeException(
-                            "Twitter provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "Twitter provider unconfigured. Make sure to add your key and secret." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#twitter",
-                        R.string.twitter_consumer_key,
-                        R.string.twitter_consumer_secret);
+                super(TwitterAuthProvider.PROVIDER_ID, PROVIDER_NAME,
+                        R.layout.fui_idp_button_twitter);
             }
         }
 
         /**
          * {@link IdpConfig} builder for the GitHub provider.
          */
-        public static final class GitHubBuilder extends Builder {
+        public static final class GitHubBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Github";
+
             public GitHubBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
-                super(GithubAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_GITHUB_AVAILABLE) {
-                    throw new RuntimeException(
-                            "GitHub provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.firebaseui:firebase-ui-auth-github:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "GitHub provider unconfigured. Make sure to add your client id and secret" +
-                                "." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#github",
-                        R.string.firebase_web_host,
-                        R.string.github_client_id,
-                        R.string.github_client_secret);
+                super(GithubAuthProvider.PROVIDER_ID, PROVIDER_NAME,
+                        R.layout.fui_idp_button_github);
             }
 
             /**
-             * Specifies the additional permissions to be requested. Available permissions can be
-             * found
+             * Specifies the additional permissions to be requested.
+             *
+             * <p> Available permissions can be found
              * <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
+             *
+             * @deprecated Please use {@link #setScopes(List)} instead.
              */
+            @Deprecated
             @NonNull
             public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
-                getParams().putStringArrayList(
-                        ExtraConstants.GITHUB_PERMISSIONS, new ArrayList<>(permissions));
+                setScopes(permissions);
                 return this;
-            }
-        }
-
-        /**
-         * {@link IdpConfig} builder for the Anonymous provider.
-         */
-        public static final class AnonymousBuilder extends Builder {
-            public AnonymousBuilder() {
-                super(ANONYMOUS_PROVIDER);
             }
         }
 

@@ -65,15 +65,11 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation 'com.facebook.android:facebook-login:4.x'
-
-    // Required only if Twitter login support is required
-    // Find the latest Twitter SDK releases here: https://goo.gl/E5wZvQ
-    implementation("com.twitter.sdk.android:twitter-core:3.x@aar") { transitive = true }
 }
 ```
 
@@ -97,8 +93,8 @@ for more information.
 
 ### Identity provider configuration
 
-In order to use either Google, Facebook, Twitter, Microsoft, Apple, or Yahoo accounts with your
-app, ensure that these authentication methods are first configured in the Firebase console.
+In order to use either Google, Facebook, Twitter, Microsoft, Apple, GitHub or Yahoo accounts with
+your app, ensure that these authentication methods are first configured in the Firebase console.
 
 #### Google
 
@@ -121,34 +117,7 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 </resources>
 ```
 
-#### Twitter
-
-If support for Twitter Sign-in is also required, define the resource strings
-`twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
-Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
-
-```xml
-<resources>
-  <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
-  <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
-</resources>
-```
-
-In addition, you must enable the "Request email addresses from users" permission
-in the "Permissions" tab of your Twitter app.
-
-In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
-
-```groovy
-allprojects {
-    repositories {
-        // ...
-        maven { url 'https://maven.fabric.io/public' }
-    }
-}
-```
-
-#### Microsoft, Apple, and Yahoo
+#### Microsoft, Apple, Twitter, GitHub and Yahoo
 
 No FirebaseUI configuration is required for these providers.
 
@@ -176,16 +145,10 @@ selectedProviders.add(microsoftConfig);
 Note: unlike other sign-in methods, signing in with these providers involves the use of a
 [Custom Chrome Tab](https://developer.chrome.com/multidevice/android/customtabs).
 
-#### GitHub
+##### Twitter
 
-We do not currently support Github as a sign-in method in FirebaseUI on Android. The current
-implementation relies on hard-coding the client secret which is discouraged for production workloads
-due to decreased security.
-
-We are actively working on a new way to sign-in with Github on FirebaseUI. This implementation will
-offer a more secure and easier to use solution, based on generic OAuth login which is now supported
-in the Firebase Auth Android SDK.
-
+You must enable the "Request email addresses from users" permission in the "Permissions" tab of your
+Twitter app.
 
 ## Using FirebaseUI for authentication
 

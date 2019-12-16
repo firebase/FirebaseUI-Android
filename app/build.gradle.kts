@@ -37,7 +37,6 @@ dependencies {
     implementation(Config.Libs.Androidx.multidex)
 
     implementation(project(":auth"))
-    implementation(project(":auth-github"))
     implementation(project(":firestore"))
     implementation(project(":database"))
     implementation(project(":storage"))
@@ -46,7 +45,6 @@ dependencies {
     // Needed to override Facebook
     implementation(Config.Libs.Androidx.cardView)
     implementation(Config.Libs.Androidx.customTabs)
-    implementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     implementation(Config.Libs.Misc.glide)
     annotationProcessor(Config.Libs.Misc.glideCompiler)

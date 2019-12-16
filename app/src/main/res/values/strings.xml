@@ -33,6 +33,7 @@
     <string name="providers_apple">Apple</string>
     <string name="providers_microsoft">Microsoft</string>
     <string name="providers_yahoo">Yahoo</string>
+    <string name="providers_github">GitHub</string>
 
     <string name="layout_header">Layout</string>
     <string name="layout_default">Default</string>
@@ -71,7 +72,6 @@
     <string name="configuration_required">Configuration required - see README.md</string>
     <string name="google_label_missing_config">Google configuration missing</string>
     <string name="facebook_label_missing_config">Facebook configuration missing</string>
-    <string name="twitter_label_missing_config">Twitter configuration missing</string>
 
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>

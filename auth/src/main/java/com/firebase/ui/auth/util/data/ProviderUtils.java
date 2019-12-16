@@ -56,7 +56,7 @@ public final class ProviderUtils {
 
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse response) {
-        if (response.hasCredentialForLinking()  ) {
+        if (response.hasCredentialForLinking()) {
             return response.getCredentialForLinking();
         }
         switch (response.getProviderType()) {
@@ -64,11 +64,6 @@ public final class ProviderUtils {
                 return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
             case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookAuthProvider.getCredential(response.getIdpToken());
-            case TwitterAuthProvider.PROVIDER_ID:
-                return TwitterAuthProvider.getCredential(response.getIdpToken(),
-                        response.getIdpSecret());
-            case GithubAuthProvider.PROVIDER_ID:
-                return GithubAuthProvider.getCredential(response.getIdpToken());
             default:
                 return null;
         }

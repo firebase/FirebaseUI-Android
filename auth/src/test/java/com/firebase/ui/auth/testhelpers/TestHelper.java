@@ -94,10 +94,6 @@ public final class TestHelper {
         when(CONTEXT.getString(R.string.firebase_web_host)).thenReturn("abc");
         when(CONTEXT.getString(R.string.default_web_client_id)).thenReturn("abc");
         when(CONTEXT.getString(R.string.facebook_application_id)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.twitter_consumer_key)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.github_client_id)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.github_client_secret)).thenReturn("abc");
     }
 
     public static FirebaseUser getMockFirebaseUser() {

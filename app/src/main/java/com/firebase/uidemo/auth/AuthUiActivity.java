@@ -79,6 +79,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.apple_provider) CheckBox mUseAppleProvider;
     @BindView(R.id.microsoft_provider) CheckBox mUseMicrosoftProvider;
     @BindView(R.id.yahoo_provider) CheckBox mUseYahooProvider;
+    @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
 
     @BindView(R.id.default_layout) RadioButton mDefaultLayout;
     @BindView(R.id.custom_layout) RadioButton mCustomLayout;
@@ -149,12 +150,6 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (ConfigurationUtils.isTwitterMisconfigured(this)) {
-            mUseTwitterProvider.setChecked(false);
-            mUseTwitterProvider.setEnabled(false);
-            mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
-        }
-
         mUseEmailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -188,13 +183,13 @@ public class AuthUiActivity extends AppCompatActivity {
                     mUseMicrosoftProvider.setChecked(false);
                     mUseYahooProvider.setChecked(false);
                     mUseAppleProvider.setChecked(false);
+                    mUseGitHubProvider.setChecked(false);
                 }
             }
         });
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)
-                || ConfigurationUtils.isFacebookMisconfigured(this)
-                || ConfigurationUtils.isTwitterMisconfigured(this)) {
+                || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
         }
 
@@ -394,10 +389,6 @@ public class AuthUiActivity extends AppCompatActivity {
                     .build());
         }
 
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
-        }
-
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.EmailBuilder()
                     .setRequireName(mRequireName.isChecked())
@@ -427,6 +418,10 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.AnonymousBuilder().build());
         }
 
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
+        }
+
         if (mUseMicrosoftProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.MicrosoftBuilder().build());
         }
@@ -437,6 +432,10 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseAppleProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.AppleBuilder().build());
+        }
+
+        if (mUseGitHubProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.GitHubBuilder().build());
         }
 
         return selectedProviders;
