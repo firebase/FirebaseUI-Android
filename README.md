@@ -48,16 +48,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:6.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:6.1.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:6.1.0'
+    implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
 }
 ```
 
