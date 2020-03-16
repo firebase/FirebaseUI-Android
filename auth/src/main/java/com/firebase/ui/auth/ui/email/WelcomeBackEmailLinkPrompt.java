@@ -22,8 +22,6 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
-import static android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD;
-
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.OnClickListener {
 
@@ -83,8 +81,8 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
 
         body.setText(spannableStringBuilder);
         // Justifies the text
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            body.setJustificationMode(android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
         }
     }
 

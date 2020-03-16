@@ -22,8 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
 
-import static android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD;
-
 /**
  * Fragment that tells the user that a linking flow cannot be completed as they have opened the
  * email link on a different device.
@@ -71,8 +69,8 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
         body.setText(spannableStringBuilder);
 
         // Justifies the text
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            body.setJustificationMode(android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
         }
 
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
