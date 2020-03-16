@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
 
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
+import static android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD;
 
 /**
  * Fragment that tells the user that a linking flow cannot be completed as they have opened the

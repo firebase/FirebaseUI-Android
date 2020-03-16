@@ -22,7 +22,7 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
+import static android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.OnClickListener {
