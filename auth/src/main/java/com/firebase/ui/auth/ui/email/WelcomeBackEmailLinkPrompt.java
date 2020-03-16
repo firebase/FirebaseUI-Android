@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -65,6 +66,7 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
         mProgressBar = findViewById(R.id.top_progress_bar);
     }
 
+    @SuppressLint("WrongConstant")
     private void setBodyText() {
         TextView body = findViewById(R.id.welcome_back_email_link_body);
         String bodyText = getString(R.string.fui_welcome_back_email_link_prompt_body,
@@ -81,8 +83,8 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
 
         body.setText(spannableStringBuilder);
         // Justifies the text
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            body.setJustificationMode(android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            body.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
     }
 

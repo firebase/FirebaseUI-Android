@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -49,6 +50,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
     }
 
     @Override
+    @SuppressLint("WrongConstant")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mProgressBar = view.findViewById(R.id.top_progress_bar);
         mContinueButton = view.findViewById(R.id.button_continue);
@@ -69,8 +71,8 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
         body.setText(spannableStringBuilder);
 
         // Justifies the text
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            body.setJustificationMode(android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            body.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
