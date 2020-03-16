@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Bejelentkezés e-mail-fiókkal</string>
     <string name="fui_sign_in_with_phone">Bejelentkezés telefonnal</string>
     <string name="fui_sign_in_anonymously">Folytatás vendégként</string>
+    <string name="fui_sign_in_with_apple">Bejelentkezés Apple-fiókkal</string>
+    <string name="fui_sign_in_with_microsoft">Bejelentkezés Microsoft-fiókkal</string>
+    <string name="fui_sign_in_with_yahoo">Bejelentkezés Yahoo-fiókkal</string>
     <string name="fui_next_default">Következő</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Utónév és vezetéknév</string>
     <string name="fui_button_text_save">Mentés</string>
     <string name="fui_progress_dialog_signing_up">Regisztráció…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item>
+        <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Az e-mail-fiók regisztrációja sikertelen volt.</string>
     <string name="fui_terms_of_service">Általános Szerződési Feltételek</string>
     <string name="fui_privacy_policy">Adatvédelmi irányelvek</string>

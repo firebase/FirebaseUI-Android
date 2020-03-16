@@ -52,6 +52,7 @@ public final class TestHelper {
 
     private static final String TAG = "TestHelper";
     private static final String DEFAULT_APP_NAME = "[DEFAULT]";
+    private static final String MICROSOFT_PROVIDER = "microsoft.com";
 
     public static final FirebaseApp MOCK_APP;
     private static Context CONTEXT = ApplicationProvider.getApplicationContext();
@@ -93,10 +94,6 @@ public final class TestHelper {
         when(CONTEXT.getString(R.string.firebase_web_host)).thenReturn("abc");
         when(CONTEXT.getString(R.string.default_web_client_id)).thenReturn("abc");
         when(CONTEXT.getString(R.string.facebook_application_id)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.twitter_consumer_key)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.github_client_id)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.github_client_secret)).thenReturn("abc");
     }
 
     public static FirebaseUser getMockFirebaseUser() {
@@ -150,6 +147,9 @@ public final class TestHelper {
                 case AuthUI.ANONYMOUS_PROVIDER:
                     idpConfigs.add(new IdpConfig.AnonymousBuilder().build());
                     break;
+                case MICROSOFT_PROVIDER:
+                    idpConfigs.add(new IdpConfig.MicrosoftBuilder().build());
+                    break;
                 default:
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
             }
@@ -171,8 +171,9 @@ public final class TestHelper {
 
     /**
      * Set a private, obfuscated field of an object.
-     * @param obj the object to modify.
-     * @param objClass the object's class.
+     *
+     * @param obj        the object to modify.
+     * @param objClass   the object's class.
      * @param fieldClass the class of the target field.
      * @param fieldValue the value to use for the field.
      */

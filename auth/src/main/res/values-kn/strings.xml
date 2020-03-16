@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">ಇಮೇಲ್ ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_sign_in_with_phone">ಫೋನ್‌ ಮೂಲಕ ಸೈನ್‌ ಇನ್‌ ಮಾಡಿ</string>
     <string name="fui_sign_in_anonymously">ಅತಿಥಿಯಂತೆ ಮುಂದುವರಿಸಿ</string>
+    <string name="fui_sign_in_with_apple">Apple ಮೂಲಕ ಸೈನ್‌ ಇನ್ ಮಾಡಿ</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo ಮೂಲಕ ಸೈನ್‌ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_next_default">ಮುಂದೆ</string>
     <string name="fui_email_hint">ಇಮೇಲ್</string>
     <string name="fui_phone_hint">ಫೋನ್ ಸಂಖ್ಯೆ</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರು</string>
     <string name="fui_button_text_save">ಉಳಿಸಿ</string>
     <string name="fui_progress_dialog_signing_up">ಸೈನ್ ಅಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item>
+        <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item>
+    </plurals>
     <string name="fui_email_account_creation_error">ಇಮೇಲ್ ಖಾತೆ ನೋಂದಣಿ ಮಾಡುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ</string>
     <string name="fui_terms_of_service">ಸೇವಾ ನಿಯಮಗಳು</string>
     <string name="fui_privacy_policy">ಗೌಪ್ಯತಾ ನೀತಿ</string>

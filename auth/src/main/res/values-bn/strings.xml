@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">ইমেল দিয়ে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_phone">ফোন দিয়ে সাইন-ইন করুন</string>
     <string name="fui_sign_in_anonymously">অতিথি হিসেবে চালিয়ে যান</string>
+    <string name="fui_sign_in_with_apple">Apple-এর সাথে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft-এর সাথে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo-এর সাথে সাইন-ইন করুন</string>
     <string name="fui_next_default">পরবর্তী</string>
     <string name="fui_email_hint">ইমেল</string>
     <string name="fui_phone_hint">ফোন নম্বর</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">নাম ও পদবি</string>
     <string name="fui_button_text_save">সেভ করুন</string>
     <string name="fui_progress_dialog_signing_up">সাইন-আপ করা হচ্ছে…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item>
+        <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item>
+    </plurals>
     <string name="fui_email_account_creation_error">ইমেল অ্যাকাউন্টটি রেজিস্টার করা যায়নি</string>
     <string name="fui_terms_of_service">পরিষেবার শর্তাবলি</string>
     <string name="fui_privacy_policy">গোপনীয়তা নীতি</string>

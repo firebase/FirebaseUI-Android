@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Zaloguj się za pomocą e-maila</string>
     <string name="fui_sign_in_with_phone">Zaloguj się z użyciem numeru telefonu</string>
     <string name="fui_sign_in_anonymously">Kontynuuj jako gość</string>
+    <string name="fui_sign_in_with_apple">Zaloguj się przez Apple</string>
+    <string name="fui_sign_in_with_microsoft">Zaloguj się przez Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Zaloguj się przez Yahoo</string>
     <string name="fui_next_default">Dalej</string>
     <string name="fui_email_hint">Adres e-mail</string>
     <string name="fui_phone_hint">Numer telefonu</string>
@@ -32,7 +35,12 @@
     <string name="fui_name_hint">Imię i nazwisko</string>
     <string name="fui_button_text_save">Zapisz</string>
     <string name="fui_progress_dialog_signing_up">Rejestruję…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item> <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item> <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item> <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item>
+        <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item>
+        <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item>
+        <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Rejestracja konta e-mail nie powiodła się</string>
     <string name="fui_terms_of_service">Warunki korzystania z usługi</string>
     <string name="fui_privacy_policy">Polityka prywatności</string>

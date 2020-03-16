@@ -49,6 +49,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
         return inflater.inflate(R.layout.fui_email_link_cross_device_linking, container, false);
     }
 
+    @SuppressWarnings("WrongConstant")
     @Override
     @SuppressLint("WrongConstant")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

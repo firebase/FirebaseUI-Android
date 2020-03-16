@@ -60,8 +60,7 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
                     finish(RESULT_CANCELED, null);
                 } else if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     IdpResponse res = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
-                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants
-                            .IDP_RESPONSE, res));
+                    finish(RESULT_CANCELED, new Intent().putExtra(ExtraConstants.IDP_RESPONSE, res));
                 } else if (e instanceof FirebaseUiException) {
                     int errorCode = ((FirebaseUiException) e).getErrorCode();
                     if (errorCode == ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR

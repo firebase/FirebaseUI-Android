@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Sign in with email</string>
     <string name="fui_sign_in_with_phone">Sign in with phone</string>
     <string name="fui_sign_in_anonymously">Continue as a guest</string>
+    <string name="fui_sign_in_with_apple">Sign in with Apple</string>
+    <string name="fui_sign_in_with_microsoft">Sign in with Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Sign in with Yahoo</string>
     <string name="fui_next_default">Next</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Phone number</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">First name &amp; surname</string>
     <string name="fui_button_text_save">Save</string>
     <string name="fui_progress_dialog_signing_up">Signing up…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item> <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
+        <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Email account registration unsuccessful</string>
     <string name="fui_terms_of_service">Terms of Service</string>
     <string name="fui_privacy_policy">Privacy Policy</string>

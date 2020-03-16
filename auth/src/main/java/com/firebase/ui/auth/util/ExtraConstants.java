@@ -47,6 +47,12 @@ public final class ExtraConstants {
     public static final String FORCE_SAME_DEVICE = "force_same_device";
     public static final String PROVIDER_ID = "provider_id";
 
+    public static final String GENERIC_OAUTH_PROVIDER_ID = "generic_oauth_provider_id";
+    public static final String GENERIC_OAUTH_PROVIDER_NAME = "generic_oauth_provider_name";
+    public static final String GENERIC_OAUTH_BUTTON_ID = "generic_oauth_button_id";
+    public static final String GENERIC_OAUTH_SCOPES = "generic_oauth_scopes";
+    public static final String GENERIC_OAUTH_CUSTOM_PARAMETERS = "generic_oauth_custom_parameters";
+
     private ExtraConstants() {
         throw new AssertionError("No instance for you!");
     }

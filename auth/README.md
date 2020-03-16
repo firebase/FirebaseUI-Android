@@ -65,15 +65,11 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation 'com.facebook.android:facebook-login:4.x'
-
-    // Required only if Twitter login support is required
-    // Find the latest Twitter SDK releases here: https://goo.gl/E5wZvQ
-    implementation("com.twitter.sdk.android:twitter-core:3.x@aar") { transitive = true }
 }
 ```
 
@@ -97,8 +93,8 @@ for more information.
 
 ### Identity provider configuration
 
-In order to use either Google, Facebook or Twitter accounts with your app, ensure that
-these authentication methods are first configured in the Firebase console.
+In order to use either Google, Facebook, Twitter, Microsoft, Apple, GitHub or Yahoo accounts with
+your app, ensure that these authentication methods are first configured in the Firebase console.
 
 #### Google
 
@@ -121,43 +117,38 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 </resources>
 ```
 
-#### Twitter
+#### Microsoft, Apple, Twitter, GitHub and Yahoo
 
-If support for Twitter Sign-in is also required, define the resource strings
-`twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
-Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
+No FirebaseUI configuration is required for these providers.
 
-```xml
-<resources>
-  <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
-  <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
-</resources>
+We support the use of scopes and custom parameters for these providers. For example:
+
+```java
+List<String> scopes =
+    new ArrayList<String>() {
+      {
+        add("mail.read");
+        add("calendars.read");
+      }
+    };
+
+Map<String, String> customParams = new HashMap<>();
+customParams.put("tenant", "TENANT_ID");
+
+IdpConfig microsoftConfig = new IdpConfig.MicrosoftBuilder()
+                    .setScopes(scopes)
+                    .setCustomParameters(customParams)
+                    .build();
+selectedProviders.add(microsoftConfig);
 ```
 
-In addition, you must enable the "Request email addresses from users" permission
-in the "Permissions" tab of your Twitter app.
+Note: unlike other sign-in methods, signing in with these providers involves the use of a
+[Custom Chrome Tab](https://developer.chrome.com/multidevice/android/customtabs).
 
-In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
+##### Twitter
 
-```groovy
-allprojects {
-    repositories {
-        // ...
-        maven { url 'https://maven.fabric.io/public' }
-    }
-}
-```
-
-#### GitHub
-
-We do not currently support Github as a sign-in method in FirebaseUI on Android. The current
-implementation relies on hard-coding the client secret which is discouraged for production workloads
-due to decreased security.
-
-We are actively working on a new way to sign-in with Github on FirebaseUI. This implementation will
-offer a more secure and easier to use solution, based on generic OAuth login which is now supported
-in the Firebase Auth Android SDK.
-
+You must enable the "Request email addresses from users" permission in the "Permissions" tab of your
+Twitter app.
 
 ## Using FirebaseUI for authentication
 
@@ -236,6 +227,9 @@ startActivityForResult(
                         new AuthUI.IdpConfig.GoogleBuilder().build(),
                         new AuthUI.IdpConfig.FacebookBuilder().build(),
                         new AuthUI.IdpConfig.TwitterBuilder().build(),
+                        new AuthUI.IdpConfig.MicrosoftBuilder().build(),
+                        new AuthUI.IdpConfig.YahooBuilder().build(),
+                        new AuthUI.IdpConfig.AppleBuilder().build(),
                         new AuthUI.IdpConfig.EmailBuilder().build(),
                         new AuthUI.IdpConfig.PhoneBuilder().build(),
                         new AuthUI.IdpConfig.AnonymousBuilder().build()))

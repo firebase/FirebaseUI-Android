@@ -66,7 +66,7 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
         mProgressBar = findViewById(R.id.top_progress_bar);
     }
 
-    @SuppressLint("WrongConstant")
+    @SuppressWarnings("WrongConstant")
     private void setBodyText() {
         TextView body = findViewById(R.id.welcome_back_email_link_body);
         String bodyText = getString(R.string.fui_welcome_back_email_link_prompt_body,

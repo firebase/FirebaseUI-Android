@@ -48,16 +48,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:5.1.0'
+    implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
 }
 ```
 
@@ -71,6 +71,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
+* [Upgrade from 5.1.0 to 6.x.x](./docs/upgrade-to-6.0.md)
 * [Upgrade from 4.3.2 to 5.x.x](./docs/upgrade-to-5.0.md)
 * [Upgrade from 3.3.1 to 4.x.x](./docs/upgrade-to-4.0.md)
 * [Upgrade from 2.3.0 to 3.x.x](./docs/upgrade-to-3.0.md)
@@ -104,45 +105,46 @@ You can see the specific dependencies associated with each release on the
 If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
 as Firebase, Play services, or the Android support libraries, you need to add explicit
 `implementation` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
-you want to use. For example if you want to use Play services/Firebase version `FOO` and support
-libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:
+you want to use. Here are some examples listing all of the critical dependencies:
 
 #### Auth
 
 ```groovy
-implementation "com.google.firebase:firebase-auth:$FOO"
-implementation "com.google.android.gms:play-services-auth:$FOO"
+implementation "com.google.firebase:firebase-auth:$X.Y.Z"
+implementation "com.google.android.gms:play-services-auth:$X.Y.Z"
 
-implementation "com.android.support:design:$BAR"
-implementation "com.android.support:customtabs:$BAR"
-implementation "com.android.support:cardview-v7:$BAR"
+implementation "android.arch.lifecycle:extensions:$X.Y.Z"
+implementation "androidx.browser:browser:$X.Y.Z"
+implementation "androidx.cardview:cardview:$X.Y.Z"
+implementation "androidx.constraintlayout:constraintlayout:$X.Y.Z"
+implementation "androidx.legacy:legacy-support-v4:$X.Y.Z"
+implementation "com.google.android.material:material:$X.Y.Z"
 ```
 
 #### Firestore
 
 ```groovy
-implementation "com.google.firebase:firebase-firestore:$FOO"
+implementation "com.google.firebase:firebase-firestore:$X.Y.Z"
 
-implementation "com.android.support:recyclerview-v7:$BAR"
-implementation "com.android.support:support-v4:$BAR"
+implementation "androidx.legacy:legacy-support-v4:$X.Y.Z"
+implementation "androidx.recyclerview:recyclerview:$X.Y.Z"
 ```
 
 #### Realtime Database
 
 ```groovy
-implementation "com.google.firebase:firebase-database:$FOO"
+implementation "com.google.firebase:firebase-database:$X.Y.Z"
 
-implementation "com.android.support:recyclerview-v7:$BAR"
-implementation "com.android.support:support-v4:$BAR"
+implementation "androidx.legacy:legacy-support-v4:$X.Y.Z"
+implementation "androidx.recyclerview:recyclerview:$X.Y.Z"
 ```
 
 #### Storage
 
 ```groovy
-implementation "com.google.firebase:firebase-storage:$FOO"
+implementation "com.google.firebase:firebase-storage:$X.Y.Z"
 
-implementation "com.android.support:appcompat-v7:$BAR"
-implementation "com.android.support:palette-v7:$BAR"
+implementation "androidx.legacy:legacy-support-v4:$X.Y.Z"
 ```
 
 
@@ -188,7 +190,7 @@ repositories {
 Then you can depend on snapshot versions:
 
 ```groovy
-implementation 'com.firebaseui:firebase-ui-auth:x.y.z-SNAPSHOT'
+implementation 'com.firebaseui:firebase-ui-auth:$X.Y.Z-SNAPSHOT'
 ```
 
 You can see which `SNAPSHOT` builds are avaiable here:

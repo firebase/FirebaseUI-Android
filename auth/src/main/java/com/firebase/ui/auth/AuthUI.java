@@ -24,7 +24,6 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -61,17 +60,18 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.CallSuper;
@@ -105,6 +105,11 @@ public final class AuthUI {
     public static final String ANONYMOUS_PROVIDER = "anonymous";
     public static final String EMAIL_LINK_PROVIDER = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
 
+    public static final String MICROSOFT_PROVIDER = "microsoft.com";
+    public static final String YAHOO_PROVIDER = "yahoo.com";
+    public static final String APPLE_PROVIDER = "apple.com";
+
+
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
@@ -126,14 +131,25 @@ public final class AuthUI {
             )));
 
     /**
-     * The set of social authentication providers supported in Firebase Auth UI.
+     * The set of OAuth2.0 providers supported in Firebase Auth UI through Generic IDP (web flow).
+     */
+    public static final Set<String> SUPPORTED_OAUTH_PROVIDERS =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+                    MICROSOFT_PROVIDER,
+                    YAHOO_PROVIDER,
+                    APPLE_PROVIDER,
+                    TwitterAuthProvider.PROVIDER_ID,
+                    GithubAuthProvider.PROVIDER_ID
+            )));
+
+    /**
+     * The set of social authentication providers supported in Firebase Auth UI using their SDK.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final Set<String> SOCIAL_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
-                    TwitterAuthProvider.PROVIDER_ID,
                     GithubAuthProvider.PROVIDER_ID)));
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -186,6 +202,17 @@ public final class AuthUI {
      */
     @NonNull
     public static AuthUI getInstance(@NonNull FirebaseApp app) {
+        String releaseUrl = "https://github.com/firebase/FirebaseUI-Android/releases/tag/6.2.0";
+        String devWarning = "Beginning with FirebaseUI 6.2.0 you no longer need to include %s to " +
+                "sign in with %s. Go to %s for more information";
+        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
+            Log.w(TAG, String.format(devWarning, "the TwitterKit SDK", "Twitter", releaseUrl));
+        }
+        if (ProviderAvailability.IS_GITHUB_AVAILABLE) {
+            Log.w(TAG, String.format(devWarning, "com.firebaseui:firebase-ui-auth-github",
+                    "GitHub", releaseUrl));
+        }
+
         AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
@@ -438,10 +465,6 @@ public final class AuthUI {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        if (ProviderAvailability.IS_TWITTER_AVAILABLE) {
-            TwitterSignInHandler.initializeTwitter();
-            TwitterCore.getInstance().getSessionManager().clearActiveSession();
-        }
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
@@ -555,10 +578,12 @@ public final class AuthUI {
          */
         public static class Builder {
             private final Bundle mParams = new Bundle();
-            @SupportedProvider private String mProviderId;
+            @SupportedProvider
+            private String mProviderId;
 
             protected Builder(@SupportedProvider @NonNull String providerId) {
-                if (!SUPPORTED_PROVIDERS.contains(providerId)) {
+                if (!SUPPORTED_PROVIDERS.contains(providerId)
+                        && !SUPPORTED_OAUTH_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
                 }
                 mProviderId = providerId;
@@ -638,7 +663,7 @@ public final class AuthUI {
              * This URL must be whitelisted in the Firebase Console.
              *
              * @throws IllegalStateException if canHandleCodeInApp is set to false
-             * @throws NullPointerException if ActionCodeSettings is null
+             * @throws NullPointerException  if ActionCodeSettings is null
              */
             @NonNull
             public EmailBuilder setActionCodeSettings(ActionCodeSettings actionCodeSettings) {
@@ -664,7 +689,7 @@ public final class AuthUI {
                             getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS);
                     Preconditions.checkNotNull(actionCodeSettings, "ActionCodeSettings cannot be " +
                             "null when using email link sign in.");
-                   if (!actionCodeSettings.canHandleCodeInApp()) {
+                    if (!actionCodeSettings.canHandleCodeInApp()) {
                         // Pre-emptively fail if actionCodeSettings are misconfigured. This would
                         // have happened when calling sendSignInLinkToEmail
                         throw new IllegalStateException(
@@ -1051,72 +1076,122 @@ public final class AuthUI {
         }
 
         /**
+         * {@link IdpConfig} builder for the Anonymous provider.
+         */
+        public static final class AnonymousBuilder extends Builder {
+            public AnonymousBuilder() {
+                super(ANONYMOUS_PROVIDER);
+            }
+        }
+
+        /**
          * {@link IdpConfig} builder for the Twitter provider.
          */
-        public static final class TwitterBuilder extends Builder {
+        public static final class TwitterBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Twitter";
+
             public TwitterBuilder() {
-                super(TwitterAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_TWITTER_AVAILABLE) {
-                    throw new RuntimeException(
-                            "Twitter provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "Twitter provider unconfigured. Make sure to add your key and secret." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#twitter",
-                        R.string.twitter_consumer_key,
-                        R.string.twitter_consumer_secret);
+                super(TwitterAuthProvider.PROVIDER_ID, PROVIDER_NAME,
+                        R.layout.fui_idp_button_twitter);
             }
         }
 
         /**
          * {@link IdpConfig} builder for the GitHub provider.
          */
-        public static final class GitHubBuilder extends Builder {
+        public static final class GitHubBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Github";
+
             public GitHubBuilder() {
-                //noinspection deprecation taking a hit for the backcompat team
-                super(GithubAuthProvider.PROVIDER_ID);
-                if (!ProviderAvailability.IS_GITHUB_AVAILABLE) {
-                    throw new RuntimeException(
-                            "GitHub provider cannot be configured " +
-                                    "without dependency. Did you forget to add " +
-                                    "'com.firebaseui:firebase-ui-auth-github:VERSION' dependency?");
-                }
-                Preconditions.checkConfigured(getApplicationContext(),
-                        "GitHub provider unconfigured. Make sure to add your client id and secret" +
-                                "." +
-                                " See the docs for more info:" +
-                                " https://github" +
-                                ".com/firebase/FirebaseUI-Android/blob/master/auth/README" +
-                                ".md#github",
-                        R.string.firebase_web_host,
-                        R.string.github_client_id,
-                        R.string.github_client_secret);
+                super(GithubAuthProvider.PROVIDER_ID, PROVIDER_NAME,
+                        R.layout.fui_idp_button_github);
             }
 
             /**
-             * Specifies the additional permissions to be requested. Available permissions can be
-             * found
+             * Specifies the additional permissions to be requested.
+             *
+             * <p> Available permissions can be found
              * <ahref="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes">here</a>.
+             *
+             * @deprecated Please use {@link #setScopes(List)} instead.
              */
+            @Deprecated
             @NonNull
             public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
-                getParams().putStringArrayList(
-                        ExtraConstants.GITHUB_PERMISSIONS, new ArrayList<>(permissions));
+                setScopes(permissions);
                 return this;
             }
         }
 
         /**
-         * {@link IdpConfig} builder for the Anonymous provider.
+         * {@link IdpConfig} builder for the Apple provider.
          */
-        public static final class AnonymousBuilder extends Builder {
-            public AnonymousBuilder() {
-                super(ANONYMOUS_PROVIDER);
+        public static final class AppleBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Apple";
+
+            public AppleBuilder() {
+                super(APPLE_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_apple);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the Microsoft provider.
+         */
+        public static final class MicrosoftBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Microsoft";
+
+            public MicrosoftBuilder() {
+                super(MICROSOFT_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_microsoft);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the Yahoo provider.
+         */
+        public static final class YahooBuilder extends GenericOAuthProviderBuilder {
+            private static final String PROVIDER_NAME = "Yahoo";
+
+            public YahooBuilder() {
+                super(YAHOO_PROVIDER, PROVIDER_NAME, R.layout.fui_idp_button_yahoo);
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for a Generic OAuth provider.
+         */
+        public static class GenericOAuthProviderBuilder extends Builder {
+
+            GenericOAuthProviderBuilder(@NonNull String providerId,
+                                        @NonNull String providerName,
+                                        int buttonId) {
+                super(providerId);
+
+                Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");
+                Preconditions.checkNotNull(providerName, "The provider name cannot be null.");
+
+                getParams().putString(
+                        ExtraConstants.GENERIC_OAUTH_PROVIDER_ID, providerId);
+                getParams().putString(
+                        ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME, providerName);
+                getParams().putInt(
+                        ExtraConstants.GENERIC_OAUTH_BUTTON_ID, buttonId);
+
+            }
+
+            @NonNull
+            public GenericOAuthProviderBuilder setScopes(@NonNull List<String> scopes) {
+                getParams().putStringArrayList(
+                        ExtraConstants.GENERIC_OAUTH_SCOPES, new ArrayList<>(scopes));
+                return this;
+            }
+
+            @NonNull
+            public GenericOAuthProviderBuilder setCustomParameters(
+                    @NonNull Map<String, String> customParameters) {
+                getParams().putSerializable(
+                        ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS,
+                        new HashMap<>(customParameters));
+                return this;
             }
         }
     }
@@ -1205,9 +1280,8 @@ public final class AuthUI {
          *
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
          *                   configuration parameters for the IDP.
-         * @see IdpConfig
-         *
          * @throws IllegalStateException if anonymous provider is the only specified provider.
+         * @see IdpConfig
          */
         @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
@@ -1267,6 +1341,7 @@ public final class AuthUI {
         /**
          * Set a custom layout for the AuthMethodPickerActivity screen.
          * See {@link AuthMethodPickerLayout}.
+         *
          * @param authMethodPickerLayout custom layout descriptor object.
          */
         @NonNull
@@ -1274,7 +1349,7 @@ public final class AuthUI {
             mAuthMethodPickerLayout = authMethodPickerLayout;
             return (T) this;
         }
-          
+
         /**
          * Forces the sign-in method choice screen to always show, even if there is only
          * a single provider configured.
@@ -1329,7 +1404,7 @@ public final class AuthUI {
          * This is disabled by default.
          *
          * @throws IllegalStateException when you attempt to enable anonymous user upgrade
-         * without forcing the same device flow for email link sign in.
+         *                               without forcing the same device flow for email link sign in.
          */
         @NonNull
         public SignInIntentBuilder enableAnonymousUsersAutoUpgrade() {

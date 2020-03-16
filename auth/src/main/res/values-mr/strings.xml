@@ -19,20 +19,26 @@
     <string name="fui_sign_in_with_email">ईमेलने साइन इन करा</string>
     <string name="fui_sign_in_with_phone">फोनने साइन इन करा</string>
     <string name="fui_sign_in_anonymously">अतिथी म्हणून सुरू ठेवा</string>
+    <string name="fui_sign_in_with_apple">Apple वरून साइन इन करा</string>
+    <string name="fui_sign_in_with_microsoft">Microsoft वरून साइन इन करा</string>
+    <string name="fui_sign_in_with_yahoo">Yahoo वरून साइन इन करा</string>
     <string name="fui_next_default">पुढील</string>
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फोन नंबर</string>
     <string name="fui_password_hint">पासवर्ड</string>
     <string name="fui_required_field">तुम्ही हे रिक्त सोडू शकत नाही.</string>
-    <string name="fui_invalid_email_address">तो ईमेल अॅड्रेस चुकीचा आहे</string>
-    <string name="fui_missing_email_address">सुरू ठेवण्यासाठी तुमचा ईमेल अॅड्रेस टाका</string>
+    <string name="fui_invalid_email_address">तो ईमेल ॲड्रेस चुकीचा आहे</string>
+    <string name="fui_missing_email_address">सुरू ठेवण्यासाठी तुमचा ईमेल ॲड्रेस टाका</string>
     <string name="fui_missing_first_and_last_name">कृपया नाव आणि आडनाव एंटर करा.</string>
     <string name="fui_progress_dialog_checking_accounts">सध्याच्या खात्यांसाठी तपासत आहे…</string>
     <string name="fui_title_register_email">साइन अप करा</string>
     <string name="fui_name_hint">नाव आणि आडनाव</string>
     <string name="fui_button_text_save">सेव्ह करा</string>
     <string name="fui_progress_dialog_signing_up">साइन अप करत आहे…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item> <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item>
+        <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item>
+    </plurals>
     <string name="fui_email_account_creation_error">ईमेल खात्याची नोंदणी अयशस्वी झाली</string>
     <string name="fui_terms_of_service">सेवा अटी</string>
     <string name="fui_privacy_policy">गोपनीयता धोरण</string>
@@ -50,7 +56,7 @@
     <string name="fui_button_text_send">पाठवा</string>
     <string name="fui_confirm_recovery_body">तुमचा पासवर्ड परत मिळवण्यासाठी %1$sवर पाठवलेल्या सूचनांचे पालन करा.</string>
     <string name="fui_progress_dialog_sending">पाठवत आहे…</string>
-    <string name="fui_error_email_does_not_exist">तो ईमेल अॅड्रेस सध्याच्या खात्याशी जुळत नाही</string>
+    <string name="fui_error_email_does_not_exist">तो ईमेल ॲड्रेस सध्याच्या खात्याशी जुळत नाही</string>
     <string name="fui_error_unknown">एक अज्ञात एरर आली.</string>
     <string name="fui_error_invalid_password">अयोग्य पासवर्ड</string>
     <string name="fui_accessibility_logo">अ‍ॅप लोगो</string>

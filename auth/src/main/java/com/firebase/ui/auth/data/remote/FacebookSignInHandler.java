@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,5 +160,12 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
 
             setResult(Resource.forSuccess(createIdpResponse(mResult, email, name, photoUri)));
         }
+    }
+
+    @Override
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        startSignIn(activity);
     }
 }
