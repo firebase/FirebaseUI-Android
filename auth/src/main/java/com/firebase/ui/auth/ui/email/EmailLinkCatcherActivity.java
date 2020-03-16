@@ -128,6 +128,7 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RequestCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_FLOW
                 || requestCode == RequestCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
