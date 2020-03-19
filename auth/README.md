@@ -786,11 +786,12 @@ AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
     // ...
     .setTosAndPrivacyPolicyId(R.id.baz)
     .build();
-
-AuthUI.getInstance(this).createSignInIntentBuilder()
-    // ...
-    .setAuthMethodPickerLayout(customLayout)
-    .build());
+    
+startActivityForResult(
+    AuthUI.getInstance(this).createSignInIntentBuilder()
+        // ...
+        .setAuthMethodPickerLayout(customLayout)
+        .build());
 ```
 
 ### Strings
