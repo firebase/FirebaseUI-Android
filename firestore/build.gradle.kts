@@ -15,6 +15,7 @@ android {
 }
 
 dependencies {
+    implementation(platform(Config.Libs.Firebase.bom))
     api(project(":common"))
     api(Config.Libs.Firebase.firestore)
 
