@@ -29,8 +29,8 @@ plugins {
 }
 
 buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }
 
 // See https://github.com/gradle/kotlin-dsl/issues/607#issuecomment-375687119
@@ -110,8 +110,8 @@ fun Project.configureAndroid() {
             isAbortOnError = true
 
             baselineFile = file("$configDir/lint-baseline.xml")
-            htmlOutput = file("$reportsDir/lint-results.html")
-            xmlOutput = file("$reportsDir/lint-results.xml")
+            // htmlOutput = file("$reportsDir/lint-results.html")
+            // xmlOutput = file("$reportsDir/lint-results.xml")
         }
     }
 }
@@ -298,22 +298,34 @@ fun Project.setupPublishing() {
 
                     withXml {
                         asNode().appendNode("dependencies").apply {
-                            fun Dependency.write(scope: String) = appendNode("dependency").apply {
-                                appendNode("groupId", group)
-                                appendNode("artifactId", if (group == groupName) {
-                                    "firebase-ui-$name"
+                            fun ResolvedDependency.write(scope: String) = appendNode("dependency").apply {
+                                val publicArtifactId = if (moduleGroup == groupName) {
+                                    "firebase-ui-$moduleName"
                                 } else {
-                                    name
-                                })
-                                appendNode("version", version)
+                                    moduleName
+                                }
+                                appendNode("groupId", moduleGroup)
+                                appendNode("artifactId", publicArtifactId)
+                                appendNode("version", moduleVersion)
                                 appendNode("scope", scope)
                             }
 
-                            for (dependency in configurations["api"].dependencies) {
-                                dependency.write("compile")
+                            val apiDependencyNames = configurations["api"].dependencies.map {
+                                it.name
                             }
-                            for (dependency in configurations["implementation"].dependencies) {
-                                dependency.write("runtime")
+
+                            val implementationDependencyNames = configurations["implementation"].dependencies.map {
+                                it.name
+                            }
+
+                            configurations["releaseCompileClasspath"].resolvedConfiguration.firstLevelModuleDependencies.forEach {
+                                if (apiDependencyNames.contains(it.moduleName)) {
+                                    it.write("compile")
+                                }
+
+                                if (implementationDependencyNames.contains(it.moduleName)) {
+                                    it.write("runtime")
+                                }
                             }
                         }
                     }

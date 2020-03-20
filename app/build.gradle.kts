@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-    implementation(Config.Libs.Firebase.core)
     implementation(Config.Libs.Androidx.design)
     implementation(Config.Libs.Androidx.multidex)
 
