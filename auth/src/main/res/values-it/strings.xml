@@ -3,7 +3,7 @@
     <string name="fui_sign_in_default">Accedi</string>
     <string name="fui_cancel">Annulla</string>
     <string name="fui_continue">Continua</string>
-    <string name="fui_tos_and_pp">Se continui, accetti le nostre %1$s e i nostri %2$s.</string>
+    <string name="fui_tos_and_pp">Se continui, accetti i nostri %1$s e le nostre %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
     <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Errore di rete. Controlla la connessione a Internet.</string>
     <string name="fui_idp_name_google">Google</string>
@@ -92,5 +92,5 @@
     <string name="fui_resend_code">Invia di nuovo il codice</string>
     <string name="fui_verify_phone_number">Verifica numero di telefono</string>
     <string name="fui_sms_terms_of_service">Se tocchi “%1$s”, è possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Se tocchi “%1$s”, accetti le nostre %2$s e i nostri %3$s. È possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Se tocchi “%1$s”, accetti i nostri %2$s e le nostre %3$s. È possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
 </resources>
