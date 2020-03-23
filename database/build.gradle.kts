@@ -7,22 +7,22 @@ android {
 
     buildTypes {
         named("release").configure {
-            postprocessing {
-                consumerProguardFiles("proguard-rules.pro")
-            }
+            isMinifyEnabled = false
+            consumerProguardFiles("proguard-rules.pro")
         }
     }
 }
 
 dependencies {
+    implementation(platform(Config.Libs.Firebase.bom))
     api(project(":common"))
     api(Config.Libs.Firebase.database)
 
     api(Config.Libs.Androidx.legacySupportv4)
     api(Config.Libs.Androidx.recyclerView)
 
-    compileOnly(Config.Libs.Arch.paging)
-    annotationProcessor(Config.Libs.Arch.compiler)
+    compileOnly(Config.Libs.Androidx.paging)
+    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     androidTestImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.junitExt)

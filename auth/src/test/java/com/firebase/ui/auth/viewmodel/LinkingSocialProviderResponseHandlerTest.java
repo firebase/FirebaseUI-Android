@@ -13,6 +13,7 @@ import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,11 +58,16 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class LinkingSocialProviderResponseHandlerTest {
 
+    private static final String MICROSOFT_PROVIDER = "microsoft.com";
+    private static final String DISPLAY_NAME = "displayName";
+
     @Mock FirebaseAuth mMockAuth;
     @Mock FirebaseAuth mScratchMockAuth;
 
     @Mock FirebaseUser mMockUser;
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
+    @Mock
+    HelperActivityBase mMockActivity;
 
     private LinkingSocialProviderResponseHandler mHandler;
 
@@ -235,7 +242,39 @@ public class LinkingSocialProviderResponseHandlerTest {
 
         assertThat(responseCredential.getProvider()).isEqualTo(credential.getProvider());
         assertThat(responseCredential.getSignInMethod()).isEqualTo(credential.getSignInMethod());
+    }
 
+    @Test
+    public void testSignIn_genericIdpLinkingFlow_expectImmediateLink() {
+        mHandler.getOperation().observeForever(mResponseObserver);
+
+        // Set Facebook credential
+        AuthCredential facebookAuthCredential =
+                FacebookAuthProvider.getCredential(TestConstants.TOKEN);
+        mHandler.setRequestedSignInCredentialForEmail(facebookAuthCredential, TestConstants.EMAIL);
+
+        // Fake social response from Microsoft
+        IdpResponse idpResponse = new IdpResponse.Builder(
+                new User.Builder(MICROSOFT_PROVIDER, TestConstants.EMAIL)
+                        .setName(DISPLAY_NAME)
+                        .build())
+                .build();
+
+        when(mMockAuth.getCurrentUser()).thenReturn(mMockUser);
+        when(mMockUser.linkWithCredential(any(AuthCredential.class)))
+                .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
+
+        mHandler.startSignIn(idpResponse);
+
+        InOrder inOrder = inOrder(mResponseObserver);
+        inOrder.verify(mResponseObserver)
+                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+
+        ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
+                ArgumentCaptor.forClass(Resource.class);
+        inOrder.verify(mResponseObserver).onChanged(resolveCaptor.capture());
+
+        assertThat(resolveCaptor.getValue().getValue()).isNotNull();
     }
 
     private void setupAnonymousUpgrade() {

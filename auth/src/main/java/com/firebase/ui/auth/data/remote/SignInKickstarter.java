@@ -65,6 +65,35 @@ public class SignInKickstarter extends SignInViewModelBase {
             return;
         }
 
+        // Signing in with Generic IDP puts the app in the background - it can be reclaimed by the
+        // OS during the sign in flow.
+        Task<AuthResult> pendingResultTask = getAuth().getPendingAuthResult();
+        if (pendingResultTask != null) {
+            pendingResultTask
+                    .addOnSuccessListener(
+                            new OnSuccessListener<AuthResult>() {
+                                @Override
+                                public void onSuccess(AuthResult authResult) {
+                                    final IdpResponse response = new IdpResponse.Builder(
+                                            new User.Builder(
+                                                    authResult.getCredential().getProvider(),
+                                                    authResult.getUser().getEmail()).build())
+                                            .build();
+                                    handleSuccess(response, authResult);
+
+                                }
+                            })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    setResult(Resource.<IdpResponse>forFailure(e));
+                                }
+                            });
+            return;
+        }
+
+
         // Only support password credentials if email auth is enabled
         boolean supportPasswords = ProviderUtils.getConfigFromIdps(
                 getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;
@@ -151,19 +180,13 @@ public class SignInKickstarter extends SignInViewModelBase {
                                 args),
                         RequestCodes.PHONE_FLOW)));
                 break;
-            case GoogleAuthProvider.PROVIDER_ID:
-            case FacebookAuthProvider.PROVIDER_ID:
-            case TwitterAuthProvider.PROVIDER_ID:
-            case GithubAuthProvider.PROVIDER_ID:
+            default:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         SingleSignInActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
                                 new User.Builder(provider, id).build()),
                         RequestCodes.PROVIDER_FLOW)));
-                break;
-            default:
-                startAuthMethodChoice();
         }
     }
 

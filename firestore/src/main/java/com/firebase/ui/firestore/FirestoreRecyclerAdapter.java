@@ -34,10 +34,11 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
      * FirestoreRecyclerOptions} for configuration options.
      */
     public FirestoreRecyclerAdapter(@NonNull FirestoreRecyclerOptions<T> options) {
+        mOptions = options;
         mSnapshots = options.getSnapshots();
 
-        if (options.getOwner() != null) {
-            options.getOwner().getLifecycle().addObserver(this);
+        if (mOptions.getOwner() != null) {
+            mOptions.getOwner().getLifecycle().addObserver(this);
         }
     }
 

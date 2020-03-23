@@ -32,12 +32,10 @@ android {
 }
 
 dependencies {
-    implementation(Config.Libs.Firebase.core)
     implementation(Config.Libs.Androidx.design)
     implementation(Config.Libs.Androidx.multidex)
 
     implementation(project(":auth"))
-    implementation(project(":auth-github"))
     implementation(project(":firestore"))
     implementation(project(":database"))
     implementation(project(":storage"))
@@ -46,13 +44,12 @@ dependencies {
     // Needed to override Facebook
     implementation(Config.Libs.Androidx.cardView)
     implementation(Config.Libs.Androidx.customTabs)
-    implementation(Config.Libs.Provider.twitter) { isTransitive = true }
 
     implementation(Config.Libs.Misc.glide)
     annotationProcessor(Config.Libs.Misc.glideCompiler)
 
     // Used for FirestorePagingActivity
-    implementation(Config.Libs.Arch.paging)
+    implementation(Config.Libs.Androidx.paging)
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for

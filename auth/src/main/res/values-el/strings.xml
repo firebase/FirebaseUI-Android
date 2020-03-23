@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Σύνδεση μέσω ηλεκτρονικού ταχυδρομείου</string>
     <string name="fui_sign_in_with_phone">Σύνδεση μέσω τηλεφώνου</string>
     <string name="fui_sign_in_anonymously">Συνέχεια ως επισκέπτης</string>
+    <string name="fui_sign_in_with_apple">Σύνδεση μέσω Apple</string>
+    <string name="fui_sign_in_with_microsoft">Σύνδεση μέσω Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Σύνδεση μέσω Yahoo</string>
     <string name="fui_next_default">Επόμενο</string>
     <string name="fui_email_hint">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="fui_phone_hint">Αριθμός τηλεφώνου</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Όνομα και επώνυμο</string>
     <string name="fui_button_text_save">Αποθήκευση</string>
     <string name="fui_progress_dialog_signing_up">Γίνεται εγγραφή…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρα και έναν συνδυασμό γραμμάτων και αριθμών</item> <item quantity="other">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρες και έναν συνδυασμό γραμμάτων και αριθμών</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρα και έναν συνδυασμό γραμμάτων και αριθμών</item>
+        <item quantity="other">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρες και έναν συνδυασμό γραμμάτων και αριθμών</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Η εγγραφή του λογαριασμού ηλεκτρονικού ταχυδρομείου δεν ήταν επιτυχής</string>
     <string name="fui_terms_of_service">Όρους Παροχής Υπηρεσιών</string>
     <string name="fui_privacy_policy">Πολιτική απορρήτου</string>

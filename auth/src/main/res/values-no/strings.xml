@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Logg på med e-postadresse</string>
     <string name="fui_sign_in_with_phone">Logg på med telefonnummeret ditt</string>
     <string name="fui_sign_in_anonymously">Fortsett som gjest</string>
+    <string name="fui_sign_in_with_apple">Logg på med Apple-ID-en din</string>
+    <string name="fui_sign_in_with_microsoft">Logg på med Microsoft-kontoen din</string>
+    <string name="fui_sign_in_with_yahoo">Logg på med Yahoo-kontoen din</string>
     <string name="fui_next_default">Neste</string>
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Fornavn og etternavn</string>
     <string name="fui_button_text_save">Lagre</string>
     <string name="fui_progress_dialog_signing_up">Registrerer…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item> <item quantity="other">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item>
+        <item quantity="other">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Kunne ikke registrere e-postkontoen</string>
     <string name="fui_terms_of_service">vilkårene</string>
     <string name="fui_privacy_policy">Personvernregler</string>

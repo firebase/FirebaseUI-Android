@@ -65,19 +65,13 @@ public class SocialProviderResponseHandlerTest {
 
     private SocialProviderResponseHandler mHandler;
 
-    private static final ArrayList<String> NON_GITHUB_PROVIDERS = new ArrayList<>();
-    static {
-        NON_GITHUB_PROVIDERS.addAll(AuthUI.SUPPORTED_PROVIDERS);
-        NON_GITHUB_PROVIDERS.remove(GithubAuthProvider.PROVIDER_ID);
-    }
-
     @Before
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
         mHandler = new SocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
-        FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS);
+        FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
 
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
     }
@@ -320,7 +314,7 @@ public class SocialProviderResponseHandlerTest {
 
     private void setupAnonymousUpgrade() {
         // enableAnonymousUpgrade must be set to true
-        FlowParameters testParams = TestHelper.getFlowParameters(NON_GITHUB_PROVIDERS,
+        FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS,
                 /* enableAnonymousUpgrade */ true);
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
 

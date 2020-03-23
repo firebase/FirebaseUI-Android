@@ -172,6 +172,9 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
                 }
             }
         }
+
+        mLooper.removeCallbacks(mCountdown);
+        mLooper.postDelayed(mCountdown, TICK_INTERVAL_MILLIS);
     }
 
     @Override

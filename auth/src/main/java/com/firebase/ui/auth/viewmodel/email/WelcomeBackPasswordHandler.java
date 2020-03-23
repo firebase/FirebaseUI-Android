@@ -61,6 +61,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
         } else {
             // New credential for an IDP (Phone or Social)
             outputResponse = new IdpResponse.Builder(inputResponse.getUser())
+                    .setPendingCredential(inputResponse.getCredentialForLinking())
                     .setToken(inputResponse.getIdpToken())
                     .setSecret(inputResponse.getIdpSecret())
                     .build();

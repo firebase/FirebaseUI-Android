@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Fazer login com o e-mail</string>
     <string name="fui_sign_in_with_phone">Fazer login com o telefone</string>
     <string name="fui_sign_in_anonymously">Continuar como convidado</string>
+    <string name="fui_sign_in_with_apple">Fazer login com a Apple</string>
+    <string name="fui_sign_in_with_microsoft">Fazer login com a Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Fazer login com o Yahoo</string>
     <string name="fui_next_default">Próxima</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Número de telefone</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Nome e sobrenome</string>
     <string name="fui_button_text_save">Salvar</string>
     <string name="fui_progress_dialog_signing_up">Concluindo sua inscrição…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item> <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item>
+        <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Falha no registro da conta do e-mail</string>
     <string name="fui_terms_of_service">Termos de Serviço</string>
     <string name="fui_privacy_policy">Política de privacidade</string>

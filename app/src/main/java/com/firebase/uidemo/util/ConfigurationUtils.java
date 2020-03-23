@@ -28,15 +28,6 @@ public final class ConfigurationUtils {
                 context.getString(R.string.facebook_application_id));
     }
 
-    public static boolean isTwitterMisconfigured(@NonNull Context context) {
-        List<String> twitterConfigs = Arrays.asList(
-                context.getString(R.string.twitter_consumer_key),
-                context.getString(R.string.twitter_consumer_secret)
-        );
-
-        return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
-    }
-
     @NonNull
     public static List<AuthUI.IdpConfig> getConfiguredProviders(@NonNull Context context) {
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
@@ -47,10 +38,6 @@ public final class ConfigurationUtils {
 
         if (!isFacebookMisconfigured(context)) {
             providers.add(new AuthUI.IdpConfig.FacebookBuilder().build());
-        }
-
-        if (!isTwitterMisconfigured(context)) {
-            providers.add(new AuthUI.IdpConfig.TwitterBuilder().build());
         }
 
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
@@ -65,9 +52,11 @@ public final class ConfigurationUtils {
                 .setActionCodeSettings(actionCodeSettings)
                 .build());
 
-
+        providers.add(new AuthUI.IdpConfig.TwitterBuilder().build());
         providers.add(new AuthUI.IdpConfig.PhoneBuilder().build());
-
+        providers.add(new AuthUI.IdpConfig.MicrosoftBuilder().build());
+        providers.add(new AuthUI.IdpConfig.YahooBuilder().build());
+        providers.add(new AuthUI.IdpConfig.AppleBuilder().build());
 
         return providers;
     }

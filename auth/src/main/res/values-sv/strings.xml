@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Logga in med e-post</string>
     <string name="fui_sign_in_with_phone">Logga in med telefon</string>
     <string name="fui_sign_in_anonymously">Fortsätt som gäst</string>
+    <string name="fui_sign_in_with_apple">Logga in med Apple</string>
+    <string name="fui_sign_in_with_microsoft">Logga in med Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Logga in med Yahoo</string>
     <string name="fui_next_default">Nästa</string>
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">För- och efternamn</string>
     <string name="fui_button_text_save">Spara</string>
     <string name="fui_progress_dialog_signing_up">Registrerar…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> <item quantity="other">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item>
+        <item quantity="other">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Det gick inte att registrera e-postkontot</string>
     <string name="fui_terms_of_service">användarvillkoren</string>
     <string name="fui_privacy_policy">Sekretesspolicy</string>

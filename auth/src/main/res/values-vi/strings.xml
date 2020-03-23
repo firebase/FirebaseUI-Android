@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Đăng nhập bằng email</string>
     <string name="fui_sign_in_with_phone">Đăng nhập bằng điện thoại</string>
     <string name="fui_sign_in_anonymously">Tiếp tục với vai trò người dùng khách</string>
+    <string name="fui_sign_in_with_apple">Đăng nhập bằng Apple</string>
+    <string name="fui_sign_in_with_microsoft">Đăng nhập bằng Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Đăng nhập bằng Yahoo</string>
     <string name="fui_next_default">Tiếp</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Họ và tên</string>
     <string name="fui_button_text_save">Lưu</string>
     <string name="fui_progress_dialog_signing_up">Đang đăng ký…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item>
+        <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Đăng ký tài khoản email không thành công</string>
     <string name="fui_terms_of_service">Điều khoản dịch vụ</string>
     <string name="fui_privacy_policy">Chính sách quyền riêng tư</string>

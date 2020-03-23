@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Войти по адресу электронной почты</string>
     <string name="fui_sign_in_with_phone">Войти по номеру телефона</string>
     <string name="fui_sign_in_anonymously">Продолжить как гость</string>
+    <string name="fui_sign_in_with_apple">Войти через аккаунт Apple</string>
+    <string name="fui_sign_in_with_microsoft">Войти через аккаунт Microsoft</string>
+    <string name="fui_sign_in_with_yahoo">Войти через аккаунт Yahoo</string>
     <string name="fui_next_default">Далее</string>
     <string name="fui_email_hint">Адрес электронной почты</string>
     <string name="fui_phone_hint">Номер телефона</string>
@@ -32,7 +35,12 @@
     <string name="fui_name_hint">Имя и фамилия</string>
     <string name="fui_button_text_save">Сохранить</string>
     <string name="fui_progress_dialog_signing_up">Идет регистрация…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item>
+        <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item>
+        <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item>
+        <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Не удалось зарегистрировать аккаунт</string>
     <string name="fui_terms_of_service">Условия использования</string>
     <string name="fui_privacy_policy">Политику конфиденциальности</string>

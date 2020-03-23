@@ -71,6 +71,11 @@ public final class ErrorCodes {
      */
     public static final int ERROR_USER_DISABLED = 12;
 
+    /**
+     *  Recoverable error occurred during the Generic IDP flow.
+     */
+    public static final int ERROR_GENERIC_IDP_RECOVERABLE_ERROR = 13;
+
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");
     }
@@ -107,6 +112,8 @@ public final class ErrorCodes {
                         "was cleared";
             case ERROR_USER_DISABLED:
                 return "The user account has been disabled by an administrator.";
+            case ERROR_GENERIC_IDP_RECOVERABLE_ERROR:
+                return "Generic IDP recoverable error.";
             default:
                 throw new IllegalArgumentException("Unknown code: " + code);
         }
@@ -128,7 +135,8 @@ public final class ErrorCodes {
             EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR,
             EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR,
             EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR,
-            ERROR_USER_DISABLED
+            ERROR_USER_DISABLED,
+            ERROR_GENERIC_IDP_RECOVERABLE_ERROR
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {

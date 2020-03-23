@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Pierakstīties ar e-pasta adresi</string>
     <string name="fui_sign_in_with_phone">Pierakstīties ar tālruni</string>
     <string name="fui_sign_in_anonymously">Turpināt kā viesim</string>
+    <string name="fui_sign_in_with_apple">Pierakstīties ar Apple kontu</string>
+    <string name="fui_sign_in_with_microsoft">Pierakstīties ar Microsoft kontu</string>
+    <string name="fui_sign_in_with_yahoo">Pierakstīties ar Yahoo kontu</string>
     <string name="fui_next_default">Tālāk</string>
     <string name="fui_email_hint">E-pasts</string>
     <string name="fui_phone_hint">Tālruņa numurs</string>
@@ -32,7 +35,11 @@
     <string name="fui_name_hint">Vārds un uzvārds</string>
     <string name="fui_button_text_save">Saglabāt</string>
     <string name="fui_progress_dialog_signing_up">Notiek reģistrācija…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="zero">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> <item quantity="one">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmi un burtu un ciparu kombināciju</item> <item quantity="other">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="zero">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item>
+        <item quantity="one">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmi un burtu un ciparu kombināciju</item>
+        <item quantity="other">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Nesekmīga e-pasta konta reģistrācija</string>
     <string name="fui_terms_of_service">Pakalpojumu sniegšanas noteikumi</string>
     <string name="fui_privacy_policy">Konfidencialitātes politika</string>

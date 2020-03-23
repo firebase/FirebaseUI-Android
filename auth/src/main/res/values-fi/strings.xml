@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Kirjaudu sähköpostilla</string>
     <string name="fui_sign_in_with_phone">Kirjaudu puhelimella</string>
     <string name="fui_sign_in_anonymously">Jatka vieraana</string>
+    <string name="fui_sign_in_with_apple">Kirjaudu sisään Apple-tilillä</string>
+    <string name="fui_sign_in_with_microsoft">Kirjaudu sisään Microsoft-tilillä</string>
+    <string name="fui_sign_in_with_yahoo">Kirjaudu sisään Yahoo-tilillä</string>
     <string name="fui_next_default">Seuraava</string>
     <string name="fui_email_hint">Sähköposti</string>
     <string name="fui_phone_hint">Puhelinnumero</string>
@@ -32,7 +35,10 @@
     <string name="fui_name_hint">Etu- ja sukunimi</string>
     <string name="fui_button_text_save">Tallenna</string>
     <string name="fui_progress_dialog_signing_up">Rekisteröityminen käynnissä…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> <item quantity="other">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item>
+        <item quantity="other">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">Sähköpostitilin rekisteröinti epäonnistui.</string>
     <string name="fui_terms_of_service">Käyttöehdot</string>
     <string name="fui_privacy_policy">tietosuojakäytännön</string>

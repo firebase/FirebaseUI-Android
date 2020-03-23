@@ -19,6 +19,9 @@
     <string name="fui_sign_in_with_email">Prisijungti nurodant el. pašto adresą</string>
     <string name="fui_sign_in_with_phone">Prisijungti nurodant telefono numerį</string>
     <string name="fui_sign_in_anonymously">Tęsti kaip svečiui</string>
+    <string name="fui_sign_in_with_apple">Prisijungti per „Apple“</string>
+    <string name="fui_sign_in_with_microsoft">Prisijungti per „Microsoft“</string>
+    <string name="fui_sign_in_with_yahoo">Prisijungti per „Yahoo“</string>
     <string name="fui_next_default">Kitas</string>
     <string name="fui_email_hint">El. pašto adresas</string>
     <string name="fui_phone_hint">Telefono numeris</string>
@@ -32,7 +35,12 @@
     <string name="fui_name_hint">Vardas ir pavardė</string>
     <string name="fui_button_text_save">Išsaugoti</string>
     <string name="fui_progress_dialog_signing_up">Prisiregistruojama…</string>
-    <plurals name="fui_error_weak_password"> <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item> <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item> <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item> <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item> </plurals>
+    <plurals name="fui_error_weak_password">
+        <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item>
+        <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item>
+        <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item>
+        <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item>
+    </plurals>
     <string name="fui_email_account_creation_error">El. pašto paskyros užregistruoti nepavyko</string>
     <string name="fui_terms_of_service">Paslaugų teikimo sąlygomis</string>
     <string name="fui_privacy_policy">Privatumo politika</string>
