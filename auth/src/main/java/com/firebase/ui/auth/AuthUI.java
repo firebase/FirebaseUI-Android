@@ -487,7 +487,6 @@ public final class AuthUI {
             ANONYMOUS_PROVIDER,
             EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
     })
-
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {
     }
