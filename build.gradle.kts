@@ -319,6 +319,10 @@ fun Project.setupPublishing() {
                             }
 
                             configurations["releaseCompileClasspath"].resolvedConfiguration.firstLevelModuleDependencies.forEach {
+                                if (it.moduleName == "firebase-bom") {
+                                    return@forEach
+                                }
+
                                 if (apiDependencyNames.contains(it.moduleName)) {
                                     it.write("compile")
                                 }
