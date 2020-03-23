@@ -166,9 +166,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
                             ((FirebaseAuthAnonymousUpgradeException) e).getResponse().toIntent());
-                } else if ((!(e instanceof UserCancellationException))) {
-                    String text = e instanceof FirebaseUiException ? e.getMessage() :
-                            getString(R.string.fui_error_unknown);
+                } else if (e instanceof FirebaseUiException) {
+                    FirebaseUiException fue = (FirebaseUiException) e;
+                    finish(RESULT_CANCELED, IdpResponse.from(fue).toIntent());
+                } else {
+                    String text = getString(R.string.fui_error_unknown);
                     Toast.makeText(AuthMethodPickerActivity.this,
                             text,
                             Toast.LENGTH_SHORT).show();

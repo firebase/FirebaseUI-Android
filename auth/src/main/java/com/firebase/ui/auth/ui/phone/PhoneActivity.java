@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -33,6 +34,7 @@ import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -159,8 +161,14 @@ public class PhoneActivity extends AppCompatBase {
             IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
             finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
         } else if (e instanceof FirebaseAuthException) {
-            errorView.setError(getErrorMessage(
-                    FirebaseAuthError.fromException((FirebaseAuthException) e)));
+            FirebaseAuthError error = FirebaseAuthError.fromException((FirebaseAuthException) e);
+            if (error == FirebaseAuthError.ERROR_USER_DISABLED) {
+                IdpResponse response = IdpResponse.from(
+                        new FirebaseUiException(ErrorCodes.ERROR_USER_DISABLED));
+                finish(RESULT_CANCELED, response.toIntent());
+                return;
+            }
+            errorView.setError(getErrorMessage(error));
         } else if (e != null) {
             errorView.setError(e.getLocalizedMessage());
         } else {
