@@ -996,7 +996,8 @@ public final class AuthUI {
             @NonNull
             public GoogleBuilder setScopes(@NonNull List<String> scopes) {
                 GoogleSignInOptions.Builder builder =
-                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN);
+                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail();
                 for (String scope : scopes) {
                     builder.requestScopes(new Scope(scope));
                 }
