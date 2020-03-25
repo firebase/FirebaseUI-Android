@@ -163,6 +163,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
+                if (e instanceof UserCancellationException) {
+                    // User pressed back, there is no error.
+                    return;
+                }
+
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
                             ((FirebaseAuthAnonymousUpgradeException) e).getResponse().toIntent());
