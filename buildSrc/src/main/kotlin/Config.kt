@@ -1,5 +1,5 @@
 object Config {
-    const val version = "6.2.0"
+    const val version = "6.2.1"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.3.10"
@@ -39,15 +39,15 @@ object Config {
             const val paging = "androidx.paging:paging-runtime:2.1.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
 
-            const val design = "com.google.android.material:material:1.0.0"
+            const val design = "com.google.android.material:material:1.1.0"
         }
 
         object Firebase {
-            const val auth = "com.google.firebase:firebase-auth:19.2.0"
-            const val core = "com.google.firebase:firebase-core:17.2.1"
-            const val database = "com.google.firebase:firebase-database:19.2.0"
-            const val firestore = "com.google.firebase:firebase-firestore:21.3.1"
-            const val storage = "com.google.firebase:firebase-storage:19.1.0"
+            const val bom = "com.google.firebase:firebase-bom:25.1.0"
+            const val auth = "com.google.firebase:firebase-auth"
+            const val database = "com.google.firebase:firebase-database"
+            const val firestore = "com.google.firebase:firebase-firestore"
+            const val storage = "com.google.firebase:firebase-storage"
         }
 
         object PlayServices {

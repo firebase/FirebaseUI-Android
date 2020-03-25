@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -21,8 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
-
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 /**
  * Fragment that tells the user that a linking flow cannot be completed as they have opened the
@@ -52,6 +51,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
 
     @SuppressWarnings("WrongConstant")
     @Override
+    @SuppressLint("WrongConstant")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mProgressBar = view.findViewById(R.id.top_progress_bar);
         mContinueButton = view.findViewById(R.id.button_continue);
@@ -73,7 +73,7 @@ public class EmailLinkCrossDeviceLinkingFragment extends FragmentBase
 
         // Justifies the text
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
+            body.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
 
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);

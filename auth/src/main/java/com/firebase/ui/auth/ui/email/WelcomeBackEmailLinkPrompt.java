@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -21,8 +22,6 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.OnClickListener {
@@ -85,7 +84,7 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
         body.setText(spannableStringBuilder);
         // Justifies the text
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            body.setJustificationMode(JUSTIFICATION_MODE_INTER_WORD);
+            body.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
     }
 

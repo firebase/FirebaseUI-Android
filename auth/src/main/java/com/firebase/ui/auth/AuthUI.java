@@ -487,7 +487,6 @@ public final class AuthUI {
             ANONYMOUS_PROVIDER,
             EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
     })
-
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {
     }
@@ -996,7 +995,8 @@ public final class AuthUI {
             @NonNull
             public GoogleBuilder setScopes(@NonNull List<String> scopes) {
                 GoogleSignInOptions.Builder builder =
-                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN);
+                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .requestEmail();
                 for (String scope : scopes) {
                     builder.requestScopes(new Scope(scope));
                 }

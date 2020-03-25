@@ -27,7 +27,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout" />
 
-            <com.firebase.ui.auth.util.ui.BaselineTextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phone_layout"
                 style="@style/FirebaseUI.TextInputLayout.PhoneField"
                 android:layout_width="0dp"
@@ -41,7 +41,7 @@
                     style="@style/FirebaseUI.TextInputEditText.PhoneField"
                     android:imeOptions="actionDone" />
 
-            </com.firebase.ui.auth.util.ui.BaselineTextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/send_code"

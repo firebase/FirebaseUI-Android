@@ -38,7 +38,6 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":storage"))
 
-    implementation(Config.Libs.Firebase.core)
     implementation(Config.Libs.Androidx.lifecycleExtensions)
 }
 

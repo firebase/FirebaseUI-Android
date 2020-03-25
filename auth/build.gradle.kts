@@ -34,6 +34,7 @@ dependencies {
     implementation(Config.Libs.Androidx.lifecycleExtensions)
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
+    implementation(platform(Config.Libs.Firebase.bom))
     api(Config.Libs.Firebase.auth)
     api(Config.Libs.PlayServices.auth)
 

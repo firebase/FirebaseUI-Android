@@ -3,7 +3,7 @@
 [![FirebaseOpensource.com](https://img.shields.io/badge/Docs-firebaseopensource.com-orange.svg)](
 https://firebaseopensource.com/projects/firebase/firebaseui-android
 )
-[![Build Status](https://travis-ci.org/firebase/FirebaseUI-Android.svg?branch=master)](https://travis-ci.org/firebase/FirebaseUI-Android)
+[![Actions Status][gh-actions-badge]][gh-actions]
 
 FirebaseUI is an open-source library for Android that allows you to
 quickly connect common UI elements to [Firebase](https://firebase.google.com) APIs.
@@ -48,16 +48,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-storage:6.2.1'
 }
 ```
 
@@ -241,3 +241,6 @@ accept your pull requests.
    you are contributing.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
 1. Submit a pull request targeting the latest dev branch.
+
+[gh-actions]: https://github.com/firebase/FirebaseUI-Android/actions
+[gh-actions-badge]: https://github.com/firebase/FirebaseUI-Android/workflows/Android%20CI/badge.svg

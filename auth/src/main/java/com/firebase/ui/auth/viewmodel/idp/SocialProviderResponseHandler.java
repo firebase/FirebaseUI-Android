@@ -15,6 +15,7 @@ import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackEmailLinkPrompt;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -24,6 +25,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -78,12 +81,28 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (e instanceof FirebaseAuthUserCollisionException) {
+                        // For some reason disabled users can hit FirebaseAuthUserCollisionException
+                        // so we have to handle this special case.
+                        boolean isDisabledUser = (e instanceof FirebaseAuthInvalidUserException);
+                        if (e instanceof FirebaseAuthException) {
+                            FirebaseAuthException authEx = (FirebaseAuthException) e;
+                            FirebaseAuthError fae = FirebaseAuthError.fromException(authEx);
+                            if (fae == FirebaseAuthError.ERROR_USER_DISABLED) {
+                               isDisabledUser = true;
+                            }
+                        }
+
+                        if (isDisabledUser) {
+                            setResult(Resource.<IdpResponse>forFailure(
+                                    new FirebaseUiException(ErrorCodes.ERROR_USER_DISABLED)
+                            ));
+                        } else if (e instanceof FirebaseAuthUserCollisionException) {
                             final String email = response.getEmail();
                             if (email == null) {
                                 setResult(Resource.<IdpResponse>forFailure(e));
                                 return;
                             }
+
                             // There can be a collision due to:
                             // CASE 1: Anon user signing in with a credential that belongs to an
                             // existing user.
@@ -119,15 +138,6 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                                                     e));
                                         }
                                     });
-                        } else if (e instanceof FirebaseAuthInvalidUserException) {
-                            setResult(Resource.<IdpResponse>forFailure(
-                                    new FirebaseUiException(
-                                            ErrorCodes.ERROR_USER_DISABLED,
-                                            ErrorCodes.toFriendlyMessage(
-                                                    ErrorCodes.ERROR_USER_DISABLED
-                                            )
-                                    )
-                            ));
                         }
                     }
                 });
