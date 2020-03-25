@@ -22,6 +22,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
@@ -32,6 +33,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.OAuthCredential;
@@ -91,17 +93,27 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                if (e instanceof FirebaseAuthUserCollisionException) {
-                                    FirebaseAuthUserCollisionException collisionException =
-                                            (FirebaseAuthUserCollisionException) e;
+                                if (e instanceof FirebaseAuthException) {
+                                    FirebaseAuthError error =
+                                            FirebaseAuthError.fromException((FirebaseAuthException) e);
 
-                                    setResult(Resource.<IdpResponse>forFailure(
-                                            new FirebaseUiUserCollisionException(
-                                                    ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR,
-                                                    "Recoverable error.",
-                                                    provider.getProviderId(),
-                                                    collisionException.getEmail(),
-                                                    collisionException.getUpdatedCredential())));
+                                    if (e instanceof FirebaseAuthUserCollisionException) {
+                                        FirebaseAuthUserCollisionException collisionException =
+                                                (FirebaseAuthUserCollisionException) e;
+
+                                        setResult(Resource.<IdpResponse>forFailure(
+                                                new FirebaseUiUserCollisionException(
+                                                        ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR,
+                                                        "Recoverable error.",
+                                                        provider.getProviderId(),
+                                                        collisionException.getEmail(),
+                                                        collisionException.getUpdatedCredential())));
+                                    } else if (error == FirebaseAuthError.ERROR_WEB_CONTEXT_CANCELED) {
+                                        setResult(Resource.<IdpResponse>forFailure(
+                                                new UserCancellationException()));
+                                    } else {
+                                        setResult(Resource.<IdpResponse>forFailure(e));
+                                    }
                                 } else {
                                     setResult(Resource.<IdpResponse>forFailure(e));
                                 }

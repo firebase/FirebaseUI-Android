@@ -2,6 +2,7 @@ package com.firebase.ui.auth.util;
 
 import com.google.firebase.auth.FirebaseAuthException;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 /**
@@ -82,6 +83,8 @@ public enum FirebaseAuthError {
     ERROR_APP_NOT_AUTHORIZED("This app is not authorized to use Firebase Authentication. Please verify that the correct package name and SHA-1 are configured in the Firebase Console."),
 
     ERROR_API_NOT_AVAILABLE("The API that you are calling is not available on devices without Google Play Services."),
+
+    ERROR_WEB_CONTEXT_CANCELED("The web operation was canceled by the user"),
 
     ERROR_UNKNOWN("An unknown error occurred.");
 
