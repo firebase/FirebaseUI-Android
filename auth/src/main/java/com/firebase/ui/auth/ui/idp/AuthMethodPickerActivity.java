@@ -230,7 +230,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             final String providerId = providerOrEmailLinkProvider(idpConfig.getProviderId());
 
             if (!providerButtonIds.containsKey(providerId)) {
-                throw new IllegalStateException("No button found for auth provider: " + providerId);
+                throw new IllegalStateException("No button found for auth provider: " + idpConfig.getProviderId());
             }
 
             @IdRes int buttonId = providerButtonIds.get(providerId);
