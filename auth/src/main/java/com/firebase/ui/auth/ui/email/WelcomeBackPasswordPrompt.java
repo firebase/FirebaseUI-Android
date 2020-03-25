@@ -28,11 +28,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -41,7 +43,10 @@ import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -120,9 +125,21 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 if (e instanceof FirebaseAuthAnonymousUpgradeException) {
                     IdpResponse response = ((FirebaseAuthAnonymousUpgradeException) e).getResponse();
                     finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response.toIntent());
-                } else {
-                    mPasswordLayout.setError(getString(getErrorMessage(e)));
+                    return;
                 }
+
+                if (e instanceof FirebaseAuthException) {
+                    FirebaseAuthException authEx = (FirebaseAuthException) e;
+                    FirebaseAuthError error = FirebaseAuthError.fromException(authEx);
+                    if (error == FirebaseAuthError.ERROR_USER_DISABLED) {
+                        IdpResponse resp = IdpResponse.from(
+                                new FirebaseUiException(ErrorCodes.ERROR_USER_DISABLED));
+                        finish(RESULT_CANCELED, resp.toIntent());
+                        return;
+                    }
+                }
+
+                mPasswordLayout.setError(getString(getErrorMessage(e)));
             }
         });
 

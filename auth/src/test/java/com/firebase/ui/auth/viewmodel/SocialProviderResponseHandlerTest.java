@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -25,9 +26,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
@@ -40,7 +41,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -119,6 +119,24 @@ public class SocialProviderResponseHandlerTest {
         mHandler.startSignIn(response);
 
         verify(mResultObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
+    }
+
+    @Test
+    public void testSignInIdp_disabled() {
+        mHandler.getOperation().observeForever(mResultObserver);
+
+        when(mMockAuth.signInWithCredential(any(AuthCredential.class)))
+                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
+                        new FirebaseAuthException("ERROR_USER_DISABLED", "disabled")));
+
+        IdpResponse response = new IdpResponse.Builder(new User.Builder(
+                GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build())
+                .setToken(TestConstants.TOKEN)
+                .build();
+        mHandler.startSignIn(response);
+
+        verify(mResultObserver).onChanged(
+                argThat(ResourceMatchers.<IdpResponse>isFailureWithCode(ErrorCodes.ERROR_USER_DISABLED)));
     }
 
     @Test

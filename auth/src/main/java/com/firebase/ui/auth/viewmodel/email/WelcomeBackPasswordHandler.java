@@ -7,6 +7,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
+import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
@@ -19,6 +20,8 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
