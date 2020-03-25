@@ -2,6 +2,7 @@ package com.firebase.ui.auth.util;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -16,6 +17,9 @@ import androidx.annotation.RestrictTo;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CredentialUtils {
+
+    private static final String TAG = "CredentialUtils";
+
     private CredentialUtils() {
         throw new AssertionError("No instance for you!");
     }
@@ -35,8 +39,14 @@ public class CredentialUtils {
         Uri profilePictureUri =
                 user.getPhotoUrl() == null ? null : Uri.parse(user.getPhotoUrl().toString());
 
-        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)) { return null; }
-        if (password == null && accountType == null) { return null; }
+        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)) {
+            Log.w(TAG, "User (accountType=" + accountType + ") has no email or phone number, cannot build credential.");
+            return null;
+        }
+        if (password == null && accountType == null) {
+            Log.w(TAG, "User has no accountType or password, cannot build credential.");
+            return null;
+        }
 
         Credential.Builder builder =
                 new Credential.Builder(TextUtils.isEmpty(email) ? phone : email)
