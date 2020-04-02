@@ -113,7 +113,7 @@ you want to use. Here are some examples listing all of the critical dependencies
 implementation "com.google.firebase:firebase-auth:$X.Y.Z"
 implementation "com.google.android.gms:play-services-auth:$X.Y.Z"
 
-implementation "android.arch.lifecycle:extensions:$X.Y.Z"
+implementation "androidx.lifecycle:lifecycle-extensions:$X.Y.Z"
 implementation "androidx.browser:browser:$X.Y.Z"
 implementation "androidx.cardview:cardview:$X.Y.Z"
 implementation "androidx.constraintlayout:constraintlayout:$X.Y.Z"
