@@ -49,7 +49,7 @@ public class RealtimeDbChatActivity extends AppCompatActivity
      * Get the last 50 chat messages.
      */
     @NonNull
-    protected static final Query sChatQuery =
+    protected final Query sChatQuery =
             FirebaseDatabase.getInstance().getReference().child("chats").limitToLast(50);
 
     @BindView(R.id.messagesList)
@@ -84,7 +84,9 @@ public class RealtimeDbChatActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        if (isSignedIn()) { attachRecyclerViewAdapter(); }
+        if (isSignedIn()) {
+            attachRecyclerViewAdapter();
+        }
         FirebaseAuth.getInstance().addAuthStateListener(this);
     }
 

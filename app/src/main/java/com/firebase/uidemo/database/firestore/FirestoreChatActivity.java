@@ -106,7 +106,9 @@ public class FirestoreChatActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        if (isSignedIn()) { attachRecyclerViewAdapter(); }
+        if (isSignedIn()) {
+            attachRecyclerViewAdapter();
+        }
         FirebaseAuth.getInstance().addAuthStateListener(this);
     }
 
