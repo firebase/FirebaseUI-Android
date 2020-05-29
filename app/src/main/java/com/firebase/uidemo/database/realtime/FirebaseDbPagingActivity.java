@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 
 public class FirebaseDbPagingActivity extends AppCompatActivity {
 
-    private final String TAG = "PagingActivity";
+    private static final String TAG = "PagingActivity";
 
     @BindView(R.id.paging_recycler)
     RecyclerView mRecycler;

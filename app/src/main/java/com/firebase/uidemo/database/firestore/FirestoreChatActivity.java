@@ -1,5 +1,6 @@
 package com.firebase.uidemo.database.firestore;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import butterknife.OnClick;
  * For a general intro to the RecyclerView, see <a href="https://developer.android.com/training/material/lists-cards.html">Creating
  * Lists</a>.
  */
+@SuppressLint("RestrictedApi")
 public class FirestoreChatActivity extends AppCompatActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "FirestoreChatActivity";
@@ -104,7 +106,9 @@ public class FirestoreChatActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        if (isSignedIn()) { attachRecyclerViewAdapter(); }
+        if (isSignedIn()) {
+            attachRecyclerViewAdapter();
+        }
         FirebaseAuth.getInstance().addAuthStateListener(this);
     }
 
