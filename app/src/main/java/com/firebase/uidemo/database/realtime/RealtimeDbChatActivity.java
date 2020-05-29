@@ -1,5 +1,6 @@
 package com.firebase.uidemo.database.realtime;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import butterknife.OnClick;
  * For a general intro to the RecyclerView, see <a href="https://developer.android.com/training/material/lists-cards.html">Creating
  * Lists</a>.
  */
+@SuppressLint("RestrictedApi")
 public class RealtimeDbChatActivity extends AppCompatActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RealtimeDatabaseDemo";
@@ -47,7 +49,7 @@ public class RealtimeDbChatActivity extends AppCompatActivity
      * Get the last 50 chat messages.
      */
     @NonNull
-    protected static final Query sChatQuery =
+    protected final Query sChatQuery =
             FirebaseDatabase.getInstance().getReference().child("chats").limitToLast(50);
 
     @BindView(R.id.messagesList)
@@ -82,7 +84,9 @@ public class RealtimeDbChatActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        if (isSignedIn()) { attachRecyclerViewAdapter(); }
+        if (isSignedIn()) {
+            attachRecyclerViewAdapter();
+        }
         FirebaseAuth.getInstance().addAuthStateListener(this);
     }
 
