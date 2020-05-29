@@ -39,7 +39,7 @@ allprojects {
         mavenLocal()
     }
 
-    if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
+    if ((group as String).isNotEmpty() && name != "lint" && name != "lintchecks" && name != "internal") {
         configureAndroid()
         configureQuality()
 
