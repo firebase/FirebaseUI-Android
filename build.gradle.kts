@@ -39,9 +39,12 @@ allprojects {
         mavenLocal()
     }
 
-    if ((group as String).isNotEmpty() && name != "lint" && name != "lintchecks" && name != "internal") {
+    if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
         configureAndroid()
-        configureQuality()
+
+        if (name != "lintchecks") {
+            configureQuality()
+        }
 
         if (Config.submodules.contains(name) || isLibrary) {
             setupPublishing()
