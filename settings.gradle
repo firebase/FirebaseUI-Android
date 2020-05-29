@@ -1,3 +1,15 @@
+// https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later
+plugins {
+    id "com.gradle.enterprise" version "3.3.3"
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
 rootProject.buildFileName = 'build.gradle.kts'
 
 include(

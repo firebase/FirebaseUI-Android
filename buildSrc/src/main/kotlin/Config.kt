@@ -2,21 +2,21 @@ object Config {
     const val version = "6.3.0-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.3.10"
+    private const val kotlinVersion = "1.3.72"
 
     object SdkVersions {
-        const val compile = 28
-        const val target = 28
+        const val compile = 29
+        const val target = 29
         const val min = 16
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:3.5.0"
+        const val android = "com.android.tools.build:gradle:4.0.0"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        const val google = "com.google.gms:google-services:4.3.1"
+        const val google = "com.google.gms:google-services:4.3.3"
 
-        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-        const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.7.5"
+        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
+        const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
     }
 
     object Libs {
@@ -25,7 +25,6 @@ object Config {
         }
 
         object Androidx {
-            const val appCompat = "androidx.appcompat:appcompat:1.1.0"
             const val annotations = "androidx.annotation:annotation:1.1.0"
             const val customTabs = "androidx.browser:browser:1.0.0"
             const val cardView = "androidx.cardview:cardview:1.0.0"
@@ -59,13 +58,9 @@ object Config {
         }
 
         object Misc {
-            private const val retrofitVersion = "2.4.0"
             private const val leakCanaryVersion = "1.6.1"
             private const val glideVersion = "4.8.0"
             private const val butterVersion = "10.1.0"
-
-            const val retrofit = "com.squareup.retrofit2:retrofit:$retrofitVersion"
-            const val retrofitGson = "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
             const val leakCanaryFragments =

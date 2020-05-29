@@ -1,5 +1,6 @@
 package com.firebase.uidemo.database.realtime;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ import butterknife.OnClick;
  * For a general intro to the RecyclerView, see <a href="https://developer.android.com/training/material/lists-cards.html">Creating
  * Lists</a>.
  */
+@SuppressLint("RestrictedApi")
 public class RealtimeDbChatActivity extends AppCompatActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RealtimeDatabaseDemo";
