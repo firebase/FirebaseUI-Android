@@ -1,0 +1,1 @@
+- Fixes issue with custom parameters for OAuth providers (#1805)
