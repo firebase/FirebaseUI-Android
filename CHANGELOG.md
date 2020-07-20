@@ -1,1 +1,2 @@
 - Fixes issue with custom parameters for OAuth providers (#1805)
+- Restore `setGithubButtonId` when using custom layouts (#1783)
