@@ -1,2 +1,3 @@
 - Fixes issue with custom parameters for OAuth providers (#1805)
 - Restore `setGithubButtonId` when using custom layouts (#1783)
+- Improve how network errors display when they are non-fatal (#1803)

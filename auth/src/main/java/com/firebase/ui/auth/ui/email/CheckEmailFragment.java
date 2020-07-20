@@ -23,7 +23,9 @@ import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import androidx.annotation.NonNull;
@@ -150,6 +152,11 @@ public class CheckEmailFragment extends FragmentBase implements
                         && ((FirebaseUiException) e).getErrorCode() == ErrorCodes.DEVELOPER_ERROR) {
                     mListener.onDeveloperFailure(e);
                 }
+
+                if (e instanceof FirebaseNetworkException) {
+                    Snackbar.make(getView(), getString(R.string.fui_no_internet), Snackbar.LENGTH_SHORT).show();
+                }
+
                 // Otherwise just let the user enter their data
             }
         });

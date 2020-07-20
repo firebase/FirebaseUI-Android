@@ -47,6 +47,7 @@ import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -362,7 +363,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             @Override
             public void onClick(View view) {
                 if (isOffline()) {
-                    Toast.makeText(AuthMethodPickerActivity.this, getString(R.string.fui_no_internet), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.fui_no_internet), Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 
