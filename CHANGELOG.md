@@ -1,0 +1,1 @@
+- Restore `setGithubButtonId` when using custom layouts (#1783)

@@ -149,8 +149,7 @@ public final class AuthUI {
     public static final Set<String> SOCIAL_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
-                    FacebookAuthProvider.PROVIDER_ID,
-                    GithubAuthProvider.PROVIDER_ID)));
+                    FacebookAuthProvider.PROVIDER_ID)));
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final String UNCONFIGURED_CONFIG_VALUE = "CHANGE-ME";
