@@ -143,6 +143,10 @@
         <item name="android:hint">@string/fui_password_hint</item>
     </style>
 
+    <style name="FirebaseUI.TextInputLayout.NewPasswordField">
+        <item name="android:hint">@string/fui_new_password_hint</item>
+    </style>
+
     <style name="FirebaseUI.Text.Link">
         <item name="android:minHeight">@dimen/fui_min_height_target</item>
         <item name="android:gravity">center_vertical</item>
