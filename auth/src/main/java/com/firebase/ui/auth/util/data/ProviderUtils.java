@@ -212,6 +212,17 @@ public final class ProviderUtils {
                             }
                         }
 
+                        // In this case the developer has configured EMAIL_LINK sign in but the
+                        // user is a password user. The valid use case here is that the developer
+                        // is using admin-created accounts and combining email-link sign in with
+                        // setAllowNewAccounts(false). So we manually enable EMAIL_LINK.  See:
+                        // https://github.com/firebase/FirebaseUI-Android/issues/1762#issuecomment-661115293
+                        if (allowedProviders.contains(EMAIL_LINK_PROVIDER)
+                                && methods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
+                                && !methods.contains(EMAIL_LINK_PROVIDER)) {
+                            lastSignedInProviders.add(0, signInMethodToProviderId(EMAIL_LINK_PROVIDER));
+                        }
+
                         if (task.isSuccessful() && lastSignedInProviders.isEmpty()
                                 && !methods.isEmpty()) {
                             // There is an existing user who only has unsupported sign in methods
