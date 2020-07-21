@@ -1,7 +1,10 @@
 package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
+import android.util.Log;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
@@ -23,6 +26,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
@@ -70,6 +74,8 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                                         password);
                                 handleMergeFailure(credential);
                             } else {
+                                Log.w(TAG, "Got a collision error during a non-upgrade flow", e);
+
                                 // Collision with existing user email without anonymous upgrade
                                 // it should be very hard for the user to even get to this error
                                 // due to CheckEmailFragment.
@@ -97,10 +103,14 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
         }
 
         @Override
-        public void onSuccess(String provider) {
+        public void onSuccess(@Nullable String provider) {
             if (provider == null) {
-                throw new IllegalStateException(
-                        "User has no providers even though we got a collision.");
+                Log.w(TAG, "No providers known for user ("
+                        + mEmail
+                        + ") this email address may be reserved.");
+                setResult(Resource.<IdpResponse>forFailure(
+                        new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR)));
+                return;
             }
 
             if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
