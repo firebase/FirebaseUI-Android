@@ -273,19 +273,19 @@ pass it to us via `setEmailLink`.
 
 ```java
 if (AuthUI.canHandleIntent(getIntent())) {
-    if (getIntent().getExtras() != null) {
-            return;
-        }
-        String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
-        if (link != null) {
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setEmailLink(link)
-                            .setAvailableProviders(getAvailableProviders())
-                            .build(),
-                    RC_SIGN_IN);
-        }
+   if (getIntent().getExtras() == null) {
+         return;
+   }
+   String link = getIntent().getData().toString();
+   if (link != null) {
+      startActivityForResult(
+              AuthUI.getInstance()
+                      .createSignInIntentBuilder()
+                      .setEmailLink(link)
+                      .setAvailableProviders(getAvailableProviders())
+                      .build(),
+              RC_SIGN_IN);
+   }
 }
 ```
 
