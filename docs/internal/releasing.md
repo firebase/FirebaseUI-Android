@@ -20,7 +20,7 @@ to create a new `version-x.y.z` branch:
 ```shell
 $ VERSION=1.2.3
 $ git checkout version-$VERSION-dev && git pull origin version-$VERSION-dev
-$ git checkout -b version-$VERSIOn
+$ git checkout -b version-$VERSION
 ```
 
 Next, make the following changes on the release branch:
@@ -28,6 +28,7 @@ Next, make the following changes on the release branch:
   * Update `Config.kt` to remove the `SNAPSHOT` from the version name.
   * Update `README.md` and `auth/README.md` to point to the latest version of the library
     and to have the correct descriptions of transitive dependencies.
+  * Empty `CHANGELOG.md`
 
 Commit the changes with a generic message:
 
