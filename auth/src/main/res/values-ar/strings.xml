@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> </plurals>
     <string name="fui_progress_dialog_loading">جارٍ التحميل…</string>
     <string name="fui_sign_in_default">تسجيل الدخول</string>
     <string name="fui_cancel">إلغاء</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">البريد الإلكتروني</string>
     <string name="fui_phone_hint">رقم الهاتف</string>
     <string name="fui_password_hint">كلمة المرور</string>
+    <string name="fui_new_password_hint">كلمة المرور الجديدة</string>
     <string name="fui_required_field">يجب ملء هذا الحقل.</string>
     <string name="fui_invalid_email_address">عنوان البريد الإلكتروني هذا غير صحيح</string>
     <string name="fui_missing_email_address">يجب إدخال عنوان بريدك الإلكتروني للمتابعة</string>
@@ -35,14 +37,6 @@
     <string name="fui_name_hint">الاسم الأول واسم العائلة</string>
     <string name="fui_button_text_save">حفظ</string>
     <string name="fui_progress_dialog_signing_up">جارٍ الاشتراك…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
-    </plurals>
     <string name="fui_email_account_creation_error">فشل تسجيل حساب البريد الإلكتروني</string>
     <string name="fui_terms_of_service">بنود الخدمة</string>
     <string name="fui_privacy_policy">سياسة الخصوصية</string>
@@ -56,7 +50,7 @@
     <string name="fui_trouble_signing_in">هل تواجه مشكلة في تسجيل الدخول؟</string>
     <string name="fui_title_recover_password_activity">استرداد كلمة المرور</string>
     <string name="fui_title_confirm_recover_password">إثبات ملكية بريدك الإلكتروني</string>
-    <string name="fui_password_recovery_body">تم إرسال تعليمات إلى البريد الإلكتروني هذا تشرح كيفية إعادة تعيين كلمة المرور.</string>
+    <string name="fui_password_recovery_body">تم إرسال تعليمات إلى البريد الإلكتروني هذا تشرح كيفية إعادة ضبط كلمة المرور.</string>
     <string name="fui_button_text_send">إرسال</string>
     <string name="fui_confirm_recovery_body">اتبع التعليمات التي تم إرسالها إلى %1$s لاسترداد كلمة المرور.</string>
     <string name="fui_progress_dialog_sending">جارٍ الإرسال…</string>

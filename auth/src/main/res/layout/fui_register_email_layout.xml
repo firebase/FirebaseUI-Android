@@ -59,7 +59,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/password_layout"
-                style="@style/FirebaseUI.TextInputLayout.PasswordField"
+                style="@style/FirebaseUI.TextInputLayout.NewPasswordField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fui_field_padding_vert"

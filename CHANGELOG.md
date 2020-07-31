@@ -3,3 +3,4 @@
 - Improve how network errors display when they are non-fatal (#1803)
 - Warn instead of crashing when a reserved email is used (#1644)
 - Allow `setAllowNewAccounts(false)` to be used with email link sign in (#1762)
+- Separate hint text for new / existing passwords (#1753)

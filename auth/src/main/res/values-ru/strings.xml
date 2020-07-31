@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item> <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item> </plurals>
     <string name="fui_progress_dialog_loading">Загрузка…</string>
     <string name="fui_sign_in_default">Войти</string>
     <string name="fui_cancel">Отмена</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">Адрес электронной почты</string>
     <string name="fui_phone_hint">Номер телефона</string>
     <string name="fui_password_hint">Пароль</string>
+    <string name="fui_new_password_hint">Новый пароль</string>
     <string name="fui_required_field">Это поле должно быть заполнено.</string>
     <string name="fui_invalid_email_address">Неверный адрес электронной почты.</string>
     <string name="fui_missing_email_address">Введите адрес электронной почты.</string>
@@ -35,12 +37,6 @@
     <string name="fui_name_hint">Имя и фамилия</string>
     <string name="fui_button_text_save">Сохранить</string>
     <string name="fui_progress_dialog_signing_up">Идет регистрация…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item>
-        <item quantity="few">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item>
-        <item quantity="many">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символов.</item>
-        <item quantity="other">Пароль должен состоять из букв и цифр и содержать не меньше %1$d символа.</item>
-    </plurals>
     <string name="fui_email_account_creation_error">Не удалось зарегистрировать аккаунт</string>
     <string name="fui_terms_of_service">Условия использования</string>
     <string name="fui_privacy_policy">Политику конфиденциальности</string>

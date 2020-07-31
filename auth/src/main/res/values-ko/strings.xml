@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item> <item quantity="other">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item> </plurals>
     <string name="fui_progress_dialog_loading">로드 중…</string>
     <string name="fui_sign_in_default">로그인</string>
     <string name="fui_cancel">취소</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">이메일</string>
     <string name="fui_phone_hint">전화번호</string>
     <string name="fui_password_hint">비밀번호</string>
+    <string name="fui_new_password_hint">새 비밀번호</string>
     <string name="fui_required_field">이 입력란을 비워둘 수 없습니다.</string>
     <string name="fui_invalid_email_address">이메일 주소가 잘못되었습니다.</string>
     <string name="fui_missing_email_address">계속하려면 이메일 주소를 입력하세요.</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">이름 및 성</string>
     <string name="fui_button_text_save">저장</string>
     <string name="fui_progress_dialog_signing_up">가입하는 중…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item>
-        <item quantity="other">안전한 비밀번호가 아닙니다. 길이가 %1$d자 이상이고 문자와 숫자가 조합되어야 합니다.</item>
-    </plurals>
     <string name="fui_email_account_creation_error">이메일 계정 등록 실패</string>
     <string name="fui_terms_of_service">서비스 약관</string>
     <string name="fui_privacy_policy">개인정보처리방침</string>

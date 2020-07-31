@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> </plurals>
     <string name="fui_progress_dialog_loading">Betöltés…</string>
     <string name="fui_sign_in_default">Bejelentkezés</string>
     <string name="fui_cancel">Mégse</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>
     <string name="fui_password_hint">Jelszó</string>
+    <string name="fui_new_password_hint">Az új jelszó</string>
     <string name="fui_required_field">Ezt nem hagyhatja üresen.</string>
     <string name="fui_invalid_email_address">Az e-mail-cím helytelen.</string>
     <string name="fui_missing_email_address">A folytatáshoz adja meg e-mail-címét.</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">Utónév és vezetéknév</string>
     <string name="fui_button_text_save">Mentés</string>
     <string name="fui_progress_dialog_signing_up">Regisztráció…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item>
-        <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item>
-    </plurals>
     <string name="fui_email_account_creation_error">Az e-mail-fiók regisztrációja sikertelen volt.</string>
     <string name="fui_terms_of_service">Általános Szerződési Feltételek</string>
     <string name="fui_privacy_policy">Adatvédelmi irányelvek</string>

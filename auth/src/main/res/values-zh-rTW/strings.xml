@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> <item quantity="other">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item> </plurals>
     <string name="fui_progress_dialog_loading">載入中…</string>
     <string name="fui_sign_in_default">登入</string>
     <string name="fui_cancel">取消</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">電子郵件</string>
     <string name="fui_phone_hint">電話號碼</string>
     <string name="fui_password_hint">密碼</string>
+    <string name="fui_new_password_hint">新密碼</string>
     <string name="fui_required_field">此欄位不可留空。</string>
     <string name="fui_invalid_email_address">電子郵件地址不正確</string>
     <string name="fui_missing_email_address">如要繼續，請輸入您的電子郵件地址</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">姓氏和名字</string>
     <string name="fui_button_text_save">儲存</string>
     <string name="fui_progress_dialog_signing_up">註冊中…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item>
-        <item quantity="other">密碼安全強度不足。請使用至少 %1$d 個字元並混用字母和數字</item>
-    </plurals>
     <string name="fui_email_account_creation_error">電子郵件帳戶註冊失敗</string>
     <string name="fui_terms_of_service">服務條款</string>
     <string name="fui_privacy_policy">隱私權政策</string>
