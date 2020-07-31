@@ -1,7 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <string name="app_name" translatable="false" tools:ignore="ResourceName">ui_flow</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
+        <item quantity="other" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
+    </plurals>
 
     <!-- Common -->
+    <string name="app_name" translatable="false" tools:ignore="ResourceName">ui_flow</string>
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
@@ -9,18 +13,18 @@
     <string name="fui_continue" translation_description="Button text to continue">Continue</string>
     <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
     <string name="fui_tos_and_pp_footer" translation_description="Global ToS and Privacy policy footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="Footer ToS text">%1$s</xliff:g> \u00A0 \u00A0 <xliff:g example="https://google.com/privacy" id="pp" translation_description="Footer privacy policy text">%2$s</xliff:g></string>
-    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Network error, check your internet connection.</string>
 
     <!-- Provider -->
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Network error, check your internet connection.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_idp_name_github">GitHub</string>
     <string name="fui_idp_name_phone">Phone</string>
-    <string name="fui_idp_name_email">Email</string>
 
 
     <!-- Auth method picker -->
+    <string name="fui_idp_name_email">Email</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Sign in with Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Sign in with Twitter</string>
@@ -30,9 +34,9 @@
     <string name="fui_sign_in_anonymously" translation_description="Continue as guest">Continue as guest</string>
     <string name="fui_sign_in_with_apple" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Apple</string>
     <string name="fui_sign_in_with_microsoft" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Microsoft</string>
-    <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Yahoo</string>
 
     <!-- Email common-->
+    <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Yahoo</string>
     <string name="fui_next_default" translation_description="Button text to continue">Next</string>
     <string name="fui_email_hint" translation_description="Hint in email input field">Email</string>
     <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone Number</string>
@@ -42,17 +46,13 @@
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Enter your email address to continue</string>
     <string name="fui_missing_first_and_last_name" translation_description="Inline error for empty email address in input field. [CHAR_LIMIT=60]">Please enter a first and last name.</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts…</string>
 
     <!-- Email sign up -->
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts…</string>
     <string name="fui_title_register_email" translation_description="Title for signup form">Sign up</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">First &amp; last name</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Save</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Signing up…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
-        <item quantity="other" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
-    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Email account registration unsuccessful</string>
     <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Terms of Service</string>
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privacy Policy</string>
