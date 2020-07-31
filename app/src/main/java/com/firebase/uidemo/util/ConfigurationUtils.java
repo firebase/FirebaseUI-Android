@@ -1,5 +1,6 @@
 package com.firebase.uidemo.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+@SuppressLint("RestrictedApi")
 public final class ConfigurationUtils {
 
     private ConfigurationUtils() {

@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item> </plurals>
     <string name="fui_progress_dialog_loading">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_sign_in_default">ಸೈನ್ ಇನ್‌</string>
     <string name="fui_cancel">ರದ್ದುಮಾಡಿ</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">ಇಮೇಲ್</string>
     <string name="fui_phone_hint">ಫೋನ್ ಸಂಖ್ಯೆ</string>
     <string name="fui_password_hint">ಪಾಸ್‌ವರ್ಡ್</string>
+    <string name="fui_new_password_hint">ಹೊಸ ಪಾಸ್‌ವರ್ಡ್</string>
     <string name="fui_required_field">ನೀವು ಇದನ್ನು ಖಾಲಿ ಬಿಡುವಂತಿಲ್ಲ.</string>
     <string name="fui_invalid_email_address">ಆ ಇಮೇಲ್ ವಿಳಾಸ ಸರಿಯಾಗಿಲ್ಲ</string>
     <string name="fui_missing_email_address">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರು</string>
     <string name="fui_button_text_save">ಉಳಿಸಿ</string>
     <string name="fui_progress_dialog_signing_up">ಸೈನ್ ಅಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item>
-        <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item>
-    </plurals>
     <string name="fui_email_account_creation_error">ಇಮೇಲ್ ಖಾತೆ ನೋಂದಣಿ ಮಾಡುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ</string>
     <string name="fui_terms_of_service">ಸೇವಾ ನಿಯಮಗಳು</string>
     <string name="fui_privacy_policy">ಗೌಪ್ಯತಾ ನೀತಿ</string>

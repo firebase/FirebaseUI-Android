@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> </plurals>
     <string name="fui_progress_dialog_loading">Indlæser…</string>
     <string name="fui_sign_in_default">Log ind</string>
     <string name="fui_cancel">Annuller</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">Mail</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_password_hint">Adgangskode</string>
+    <string name="fui_new_password_hint">Ny adgangskode</string>
     <string name="fui_required_field">Dette felt skal udfyldes.</string>
     <string name="fui_invalid_email_address">Mailadressen er ikke korrekt</string>
     <string name="fui_missing_email_address">Angiv din mailadresse for at fortsætte</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">For- og efternavn</string>
     <string name="fui_button_text_save">Gem</string>
     <string name="fui_progress_dialog_signing_up">Tilmelder…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item>
-        <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item>
-    </plurals>
     <string name="fui_email_account_creation_error">Registrering af mailkonto mislykkedes</string>
     <string name="fui_terms_of_service">Servicevilkår</string>
     <string name="fui_privacy_policy">Privatlivspolitik</string>

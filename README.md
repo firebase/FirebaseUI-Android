@@ -48,16 +48,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-database:6.3.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.3.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth:6.3.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-storage:6.3.0'
 }
 ```
 
@@ -113,7 +113,7 @@ you want to use. Here are some examples listing all of the critical dependencies
 implementation "com.google.firebase:firebase-auth:$X.Y.Z"
 implementation "com.google.android.gms:play-services-auth:$X.Y.Z"
 
-implementation "android.arch.lifecycle:extensions:$X.Y.Z"
+implementation "androidx.lifecycle:lifecycle-extensions:$X.Y.Z"
 implementation "androidx.browser:browser:$X.Y.Z"
 implementation "androidx.cardview:cardview:$X.Y.Z"
 implementation "androidx.constraintlayout:constraintlayout:$X.Y.Z"

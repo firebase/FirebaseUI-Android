@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
     <string name="fui_progress_dialog_loading">Đang tải…</string>
     <string name="fui_sign_in_default">Đăng nhập</string>
     <string name="fui_cancel">Hủy</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
     <string name="fui_password_hint">Mật khẩu</string>
+    <string name="fui_new_password_hint">Mật khẩu mới</string>
     <string name="fui_required_field">Bạn không được để trống trường này.</string>
     <string name="fui_invalid_email_address">Địa chỉ email đó không đúng</string>
     <string name="fui_missing_email_address">Nhập địa chỉ email của bạn để tiếp tục</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">Họ và tên</string>
     <string name="fui_button_text_save">Lưu</string>
     <string name="fui_progress_dialog_signing_up">Đang đăng ký…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item>
-        <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item>
-    </plurals>
     <string name="fui_email_account_creation_error">Đăng ký tài khoản email không thành công</string>
     <string name="fui_terms_of_service">Điều khoản dịch vụ</string>
     <string name="fui_privacy_policy">Chính sách quyền riêng tư</string>

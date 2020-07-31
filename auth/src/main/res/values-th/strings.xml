@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> <item quantity="other">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> </plurals>
     <string name="fui_progress_dialog_loading">กำลังโหลด…</string>
     <string name="fui_sign_in_default">ลงชื่อเข้าใช้</string>
     <string name="fui_cancel">ยกเลิก</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">อีเมล</string>
     <string name="fui_phone_hint">หมายเลขโทรศัพท์</string>
     <string name="fui_password_hint">รหัสผ่าน</string>
+    <string name="fui_new_password_hint">รหัสผ่านใหม่</string>
     <string name="fui_required_field">ต้องป้อนข้อมูลในช่องนี้</string>
     <string name="fui_invalid_email_address">ที่อยู่อีเมลนี้ไม่ถูกต้อง</string>
     <string name="fui_missing_email_address">ป้อนที่อยู่อีเมลของคุณเพื่อดำเนินการต่อ</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">ชื่อและนามสกุล</string>
     <string name="fui_button_text_save">บันทึก</string>
     <string name="fui_progress_dialog_signing_up">กำลังลงชื่อสมัครใช้…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item>
-        <item quantity="other">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item>
-    </plurals>
     <string name="fui_email_account_creation_error">การลงทะเบียนบัญชีอีเมลไม่สำเร็จ</string>
     <string name="fui_terms_of_service">ข้อกำหนดในการให้บริการ</string>
     <string name="fui_privacy_policy">นโยบายความเป็นส่วนตัว</string>

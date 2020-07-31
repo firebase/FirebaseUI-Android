@@ -47,11 +47,11 @@ import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -229,13 +229,35 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         for (IdpConfig idpConfig : providerConfigs) {
             final String providerId = providerOrEmailLinkProvider(idpConfig.getProviderId());
 
-            if (!providerButtonIds.containsKey(providerId)) {
+            Integer buttonResId = providerButtonIds.get(providerId);
+            if (buttonResId == null) {
                 throw new IllegalStateException("No button found for auth provider: " + idpConfig.getProviderId());
             }
 
-            @IdRes int buttonId = providerButtonIds.get(providerId);
+            @IdRes int buttonId = buttonResId;
             View loginButton = findViewById(buttonId);
             handleSignInOperation(idpConfig, loginButton);
+        }
+        //hide custom layout buttons that don't have their identity provider set
+        for (String providerBtnId : providerButtonIds.keySet()) {
+            if (providerBtnId == null) {
+                continue;
+            }
+            boolean hasProvider = false;
+            for (IdpConfig idpConfig : providerConfigs) {
+                if (providerBtnId.equals(idpConfig.getProviderId())) {
+                    hasProvider = true;
+                    break;
+                }
+            }
+            if (!hasProvider) {
+                Integer resId = providerButtonIds.get(providerBtnId);
+                if (resId == null) {
+                    continue;
+                }
+                @IdRes int buttonId = resId;
+                findViewById(buttonId).setVisibility(View.GONE);
+            }
         }
     }
 
@@ -341,7 +363,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             @Override
             public void onClick(View view) {
                 if (isOffline()) {
-                    Toast.makeText(AuthMethodPickerActivity.this, getString(R.string.fui_no_internet), Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.fui_no_internet), Snackbar.LENGTH_SHORT).show();
                     return;
                 }
 

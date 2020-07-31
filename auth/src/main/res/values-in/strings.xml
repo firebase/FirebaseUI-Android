@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> </plurals>
     <string name="fui_progress_dialog_loading">Memuat…</string>
     <string name="fui_sign_in_default">Login</string>
     <string name="fui_cancel">Batal</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Nomor Telepon</string>
     <string name="fui_password_hint">Sandi</string>
+    <string name="fui_new_password_hint">Sandi baru</string>
     <string name="fui_required_field">Anda wajib mengisinya.</string>
     <string name="fui_invalid_email_address">Alamat email yang dimasukkan salah</string>
     <string name="fui_missing_email_address">Masukkan alamat email Anda untuk melanjutkan</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">Nama depan &amp; belakang</string>
     <string name="fui_button_text_save">Simpan</string>
     <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item>
-        <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item>
-    </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akun email tidak berhasil</string>
     <string name="fui_terms_of_service">Persyaratan Layanan</string>
     <string name="fui_privacy_policy">Kebijakan Privasi</string>

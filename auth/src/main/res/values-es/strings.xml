@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">La contraseña no es lo suficientemente segura. Usa %1$d carácter como mínimo y combina letras y números.</item> <item quantity="other">La contraseña no es lo suficientemente segura. Usa %1$d caracteres como mínimo y combina letras y números.</item> </plurals>
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Iniciar sesión</string>
     <string name="fui_cancel">Cancelar</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">Correo electrónico</string>
     <string name="fui_phone_hint">Número de teléfono</string>
     <string name="fui_password_hint">Contraseña</string>
+    <string name="fui_new_password_hint">Nueva contraseña</string>
     <string name="fui_required_field">No puedes dejar este campo en blanco.</string>
     <string name="fui_invalid_email_address">La dirección de correo electrónico no es correcta</string>
     <string name="fui_missing_email_address">Para continuar, introduce tu dirección de correo electrónico</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">Nombre y apellidos</string>
     <string name="fui_button_text_save">Guardar</string>
     <string name="fui_progress_dialog_signing_up">Registrando…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">La contraseña no es lo suficientemente segura. Usa %1$d carácter como mínimo y combina letras y números.</item>
-        <item quantity="other">La contraseña no es lo suficientemente segura. Usa %1$d caracteres como mínimo y combina letras y números.</item>
-    </plurals>
     <string name="fui_email_account_creation_error">No se ha podido registrar la cuenta de correo electrónico</string>
     <string name="fui_terms_of_service">Condiciones de Servicio</string>
     <string name="fui_privacy_policy">Política de Privacidad</string>

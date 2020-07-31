@@ -65,7 +65,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-auth:6.3.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/blob/master/CHANGELOG.md
@@ -273,19 +273,19 @@ pass it to us via `setEmailLink`.
 
 ```java
 if (AuthUI.canHandleIntent(getIntent())) {
-    if (getIntent().getExtras() != null) {
-            return;
-        }
-        String link = getIntent().getExtras().getString(ExtraConstants.EMAIL_LINK_SIGN_IN);
-        if (link != null) {
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setEmailLink(link)
-                            .setAvailableProviders(getAvailableProviders())
-                            .build(),
-                    RC_SIGN_IN);
-        }
+   if (getIntent().getExtras() == null) {
+         return;
+   }
+   String link = getIntent().getData().toString();
+   if (link != null) {
+      startActivityForResult(
+              AuthUI.getInstance()
+                      .createSignInIntentBuilder()
+                      .setEmailLink(link)
+                      .setAvailableProviders(getAvailableProviders())
+                      .build(),
+              RC_SIGN_IN);
+   }
 }
 ```
 

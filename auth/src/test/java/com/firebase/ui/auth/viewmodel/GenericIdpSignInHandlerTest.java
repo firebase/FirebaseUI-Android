@@ -22,6 +22,7 @@ import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 import com.google.firebase.auth.AuthCredential;
@@ -69,8 +70,6 @@ public class GenericIdpSignInHandlerTest {
     private static final String DISPLAY_NAME = "displayName";
     private static final String EMAIL = "email";
     private static final String SCOPE = "scope";
-    private static final String CUSTOM_PARAMETER_KEY = "customParameterKey";
-    private static final String CUSTOM_PARAMETER_VALUE = "customParameterValue";
 
     private GenericIdpSignInHandler mHandler;
 
@@ -99,8 +98,9 @@ public class GenericIdpSignInHandlerTest {
         mHandler = new GenericIdpSignInHandler(
                 (Application) ApplicationProvider.getApplicationContext());
 
+        // See https://github.com/firebase/FirebaseUI-Android/issues/1805
         Map<String, String> customParams = new HashMap<>();
-        customParams.put(CUSTOM_PARAMETER_KEY, CUSTOM_PARAMETER_VALUE);
+        customParams.put("prompt", "select_account");
 
         AuthUI.IdpConfig config
                 = new AuthUI.IdpConfig.MicrosoftBuilder()
@@ -124,6 +124,11 @@ public class GenericIdpSignInHandlerTest {
         verify(mMockAuth).startActivityForSignInWithProvider(eq(mMockActivity), providerCaptor.capture());
 
         assertThat(providerCaptor.getValue().getProviderId()).isEqualTo(MICROSOFT_PROVIDER);
+
+        HashMap<String, String> customArgs = (HashMap<String, String>) mHandler.getArguments().getParams()
+                .getSerializable(ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS);
+        assertThat(customArgs).isNotNull();
+        assertThat(customArgs).hasSize(1);
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)

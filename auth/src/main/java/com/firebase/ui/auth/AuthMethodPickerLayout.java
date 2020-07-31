@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -155,6 +156,12 @@ public class AuthMethodPickerLayout implements Parcelable {
          */
         public AuthMethodPickerLayout.Builder setAnonymousButtonId(@IdRes int anonymousButton) {
             providersMapping.put(AuthUI.ANONYMOUS_PROVIDER, anonymousButton);
+            return this;
+        }
+
+        public AuthMethodPickerLayout.Builder setGithubButtonId(
+                @IdRes int githubButtonId) {
+            providersMapping.put(GithubAuthProvider.PROVIDER_ID, githubButtonId);
             return this;
         }
 

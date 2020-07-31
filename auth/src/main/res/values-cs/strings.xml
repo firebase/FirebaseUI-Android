@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">Heslo není dostatečně silné. Použijte alespoň %1$d znak a kombinaci písmen a číslic</item> <item quantity="few">Heslo není dostatečně silné. Použijte alespoň %1$d znaky a kombinaci písmen a číslic</item> <item quantity="many">Heslo není dostatečně silné. Použijte alespoň %1$d znaku a kombinaci písmen a číslic</item> <item quantity="other">Heslo není dostatečně silné. Použijte alespoň %1$d znaků a kombinaci písmen a číslic</item> </plurals>
     <string name="fui_progress_dialog_loading">Načítání…</string>
     <string name="fui_sign_in_default">Přihlásit se</string>
     <string name="fui_cancel">Zrušit</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonní číslo</string>
     <string name="fui_password_hint">Heslo</string>
+    <string name="fui_new_password_hint">Nové heslo</string>
     <string name="fui_required_field">Toto pole nesmí zůstat prázdné.</string>
     <string name="fui_invalid_email_address">E-mailová adresa není správná</string>
     <string name="fui_missing_email_address">Nejprve zadejte svou e-mailovou adresu</string>
@@ -35,12 +37,6 @@
     <string name="fui_name_hint">Jméno a příjmení</string>
     <string name="fui_button_text_save">Uložit</string>
     <string name="fui_progress_dialog_signing_up">Registrace…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">Heslo není dostatečně silné. Použijte alespoň %1$d znak a kombinaci písmen a číslic</item>
-        <item quantity="few">Heslo není dostatečně silné. Použijte alespoň %1$d znaky a kombinaci písmen a číslic</item>
-        <item quantity="many">Heslo není dostatečně silné. Použijte alespoň %1$d znaku a kombinaci písmen a číslic</item>
-        <item quantity="other">Heslo není dostatečně silné. Použijte alespoň %1$d znaků a kombinaci písmen a číslic</item>
-    </plurals>
     <string name="fui_email_account_creation_error">Registrace e-mailového účtu se nezdařila</string>
     <string name="fui_terms_of_service">Smluvní podmínky</string>
     <string name="fui_privacy_policy">Zásady ochrany soukromí</string>

@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> </plurals>
     <string name="fui_progress_dialog_loading">正在加载…</string>
     <string name="fui_sign_in_default">登录</string>
     <string name="fui_cancel">取消</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>
     <string name="fui_password_hint">密码</string>
+    <string name="fui_new_password_hint">新密码</string>
     <string name="fui_required_field">此处不能留空。</string>
     <string name="fui_invalid_email_address">该电子邮件地址不正确</string>
     <string name="fui_missing_email_address">请输入您的电子邮件地址以继续</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">姓名</string>
     <string name="fui_button_text_save">保存</string>
     <string name="fui_progress_dialog_signing_up">正在注册…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item>
-        <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item>
-    </plurals>
     <string name="fui_email_account_creation_error">未能使用电子邮件地址注册帐号</string>
     <string name="fui_terms_of_service">服务条款</string>
     <string name="fui_privacy_policy">隐私权政策</string>

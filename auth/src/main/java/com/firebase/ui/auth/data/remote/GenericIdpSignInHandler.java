@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.OAuthProvider;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -200,9 +201,12 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
 
         List<String> scopes =
                 getArguments().getParams().getStringArrayList(ExtraConstants.GENERIC_OAUTH_SCOPES);
-        Map<String, String> customParams =
-                getArguments().getParams()
-                        .getParcelable(ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS);
+
+        // This unchecked cast is safe, this extra is put in as a serializable
+        // in AuthUI.setCustomParameters
+        HashMap<String, String> customParams =
+                (HashMap<String, String>) getArguments().getParams()
+                        .getSerializable(ExtraConstants.GENERIC_OAUTH_CUSTOM_PARAMETERS);
 
         if (scopes != null) {
             providerBuilder.setScopes(scopes);

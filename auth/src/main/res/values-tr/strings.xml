@@ -1,4 +1,5 @@
-<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
+    <plurals name="fui_error_weak_password"> <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item> </plurals>
     <string name="fui_progress_dialog_loading">Yükleniyor…</string>
     <string name="fui_sign_in_default">Oturum aç</string>
     <string name="fui_cancel">İptal</string>
@@ -26,6 +27,7 @@
     <string name="fui_email_hint">E-posta</string>
     <string name="fui_phone_hint">Telefon Numarası</string>
     <string name="fui_password_hint">Şifre</string>
+    <string name="fui_new_password_hint">Yeni şifre</string>
     <string name="fui_required_field">Bu alanı boş bırakamazsınız.</string>
     <string name="fui_invalid_email_address">E-posta adresi doğru değil</string>
     <string name="fui_missing_email_address">Devam etmek için e-posta adresinizi girin</string>
@@ -35,10 +37,6 @@
     <string name="fui_name_hint">Ad ve Soyad</string>
     <string name="fui_button_text_save">Kaydet</string>
     <string name="fui_progress_dialog_signing_up">Kaydolunuyor…</string>
-    <plurals name="fui_error_weak_password">
-        <item quantity="one">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item>
-        <item quantity="other">Şifre yeterince güçlü değil. En az %1$d karakter kullanın ve hem harf hem de rakam ekleyin</item>
-    </plurals>
     <string name="fui_email_account_creation_error">E-posta hesabı kaydı başarısız oldu</string>
     <string name="fui_terms_of_service">Hizmet Şartları</string>
     <string name="fui_privacy_policy">Gizlilik Politikası</string>

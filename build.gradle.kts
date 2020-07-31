@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.jfrog.bintray.gradle.BintrayExtension
@@ -24,13 +26,7 @@ buildscript {
 }
 
 plugins {
-    `build-scan` version "2.0.2"
     id("com.github.ben-manes.versions") version "0.20.0"
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
 }
 
 // See https://github.com/gradle/kotlin-dsl/issues/607#issuecomment-375687119
@@ -45,7 +41,10 @@ allprojects {
 
     if ((group as String).isNotEmpty() && name != "lint" && name != "internal") {
         configureAndroid()
-        configureQuality()
+
+        if (name != "lintchecks") {
+            configureQuality()
+        }
 
         if (Config.submodules.contains(name) || isLibrary) {
             setupPublishing()

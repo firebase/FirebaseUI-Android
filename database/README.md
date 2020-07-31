@@ -251,7 +251,7 @@ The `FirebaseRecyclerPagingAdapter` is built on top of the [Android Paging Suppo
 Before using the adapter in your application, you must add a dependency on the support library:
 
 ```groovy
-implementation 'android.arch.paging:runtime:1.x.x'
+implementation 'androidx.paging:paging-runtime:2.x.x'
 ```
 
 First, configure the adapter by building `DatabasePagingOptions`. Since the paging adapter
@@ -264,7 +264,7 @@ an adapter that loads a generic `Item`:
 Query baseQuery = mDatabase.getReference().child("items");
 
 // This configuration comes from the Paging Support Library
-// https://developer.android.com/reference/android/arch/paging/PagedList.Config.html
+// https://developer.android.com/reference/androidx/paging/PagedList.Config
 PagedList.Config config = new PagedList.Config.Builder()
         .setEnablePlaceholders(false)
         .setPrefetchDistance(10)
@@ -456,5 +456,6 @@ The order in which you receive your data depends on the order from `keyRef`, not
 
 [firebase-lists]: https://firebase.google.com/docs/database/android/lists-of-data
 [indexed-data]: https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure
-[recyclerview]: https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html
+[recyclerview]: https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView
 [arch-components]: https://developer.android.com/topic/libraries/architecture/index.html
+[paging-support]: https://developer.android.com/topic/libraries/architecture/paging

@@ -27,7 +27,7 @@ android {
 
     variantFilter {
         if (inCiBuild && name == "debug") {
-            setIgnore(true)
+            ignore = true
         }
     }
 }
