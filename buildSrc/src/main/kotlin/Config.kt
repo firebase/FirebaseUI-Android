@@ -36,13 +36,13 @@ object Config {
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
             const val paging = "androidx.paging:paging-runtime:2.1.0"
-            const val recyclerView = "androidx.recyclerview:recyclerview:1.0.0"
+            const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
 
             const val design = "com.google.android.material:material:1.1.0"
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:25.1.0"
+            const val bom = "com.google.firebase:firebase-bom:25.7.0"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"
