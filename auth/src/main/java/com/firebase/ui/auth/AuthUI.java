@@ -1201,6 +1201,7 @@ public final class AuthUI {
     @SuppressWarnings(value = "unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
         final List<IdpConfig> mProviders = new ArrayList<>();
+        IdpConfig mDefaultProvider = null;
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();
         String mTosUrl;
@@ -1270,7 +1271,7 @@ public final class AuthUI {
         }
 
         /**
-         * Specified the set of supported authentication providers. At least one provider must
+         * Specifies the set of supported authentication providers. At least one provider must
          * be specified. There may only be one instance of each provider. Anonymous provider cannot
          * be the only provider specified.
          * <p>
@@ -1304,6 +1305,29 @@ public final class AuthUI {
                 }
             }
 
+            return (T) this;
+        }
+
+        /**
+         * Specifies the default authentication provider, bypassing the provider selection screen.
+         * The provider here must already be included via {@link #setAvailableProviders(List)}, and
+         * this method is incompatible with {@link #setAlwaysShowSignInMethodScreen(boolean)}.
+         *
+         * @param config the default {@link IdpConfig} to use.
+         */
+        @NonNull
+        public T setDefaultProvider(@Nullable IdpConfig config) {
+            if (config != null) {
+                if (!mProviders.contains(config)) {
+                    throw new IllegalStateException(
+                            "Default provider not in available providers list.");
+                }
+                if (mAlwaysShowProviderChoice) {
+                    throw new IllegalStateException(
+                            "Can't set default provider and always show provider choice.");
+                }
+            }
+            mDefaultProvider = config;
             return (T) this;
         }
 
@@ -1359,6 +1383,10 @@ public final class AuthUI {
          */
         @NonNull
         public T setAlwaysShowSignInMethodScreen(boolean alwaysShow) {
+            if (alwaysShow && mDefaultProvider != null) {
+                throw new IllegalStateException(
+                        "Can't show provider choice with a default provider.");
+            }
             mAlwaysShowProviderChoice = alwaysShow;
             return (T) this;
         }
@@ -1431,6 +1459,7 @@ public final class AuthUI {
             return new FlowParameters(
                     mApp.getName(),
                     mProviders,
+                    mDefaultProvider,
                     mTheme,
                     mLogo,
                     mTosUrl,
