@@ -1,0 +1,1 @@
+- Add ability to always skip provider choice (#1825) (contributed by @ubragg)
