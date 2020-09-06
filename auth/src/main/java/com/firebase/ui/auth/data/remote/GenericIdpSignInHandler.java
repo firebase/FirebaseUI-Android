@@ -86,8 +86,9 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                             @Override
                             public void onSuccess(@NonNull AuthResult authResult) {
                                 handleSuccess(provider.getProviderId(),
-                                        authResult.getUser(), (OAuthCredential)
-                                                authResult.getCredential());
+                                        authResult.getUser(),
+                                        (OAuthCredential) authResult.getCredential(),
+                                        authResult.getAdditionalUserInfo().isNewUser());
                             }
                         })
                 .addOnFailureListener(
@@ -135,8 +136,9 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                             @Override
                             public void onSuccess(@NonNull AuthResult authResult) {
                                 handleSuccess(provider.getProviderId(),
-                                        authResult.getUser(), (OAuthCredential)
-                                                authResult.getCredential());
+                                        authResult.getUser(),
+                                        (OAuthCredential) authResult.getCredential(),
+                                        authResult.getAdditionalUserInfo().isNewUser());
                             }
                         })
                 .addOnFailureListener(
@@ -221,6 +223,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     protected void handleSuccess(@NonNull String providerId,
                                  @NonNull FirebaseUser user,
                                  @NonNull OAuthCredential credential,
+                                 boolean isNewUser,
                                  boolean setPendingCredential) {
         IdpResponse.Builder response = new IdpResponse.Builder(
                 new User.Builder(
@@ -234,14 +237,16 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         if (setPendingCredential) {
             response.setPendingCredential(credential);
         }
+        response.setNewUser(isNewUser);
 
         setResult(Resource.<IdpResponse>forSuccess(response.build()));
     }
 
     protected void handleSuccess(@NonNull String providerId,
                                  @NonNull FirebaseUser user,
-                                 @NonNull OAuthCredential credential) {
-        handleSuccess(providerId, user, credential, /* setPendingCredential= */false);
+                                 @NonNull OAuthCredential credential,
+                                 boolean isNewUser) {
+        handleSuccess(providerId, user, credential,isNewUser, /* setPendingCredential= */false);
     }
 
 
