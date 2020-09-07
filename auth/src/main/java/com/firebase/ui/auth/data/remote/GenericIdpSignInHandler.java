@@ -246,7 +246,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                                  @NonNull FirebaseUser user,
                                  @NonNull OAuthCredential credential,
                                  boolean isNewUser) {
-        handleSuccess(providerId, user, credential,isNewUser, /* setPendingCredential= */false);
+        handleSuccess(providerId, user, credential, isNewUser, /* setPendingCredential= */true);
     }
 
 
