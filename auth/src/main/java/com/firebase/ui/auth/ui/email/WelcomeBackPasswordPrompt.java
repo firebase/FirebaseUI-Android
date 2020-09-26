@@ -143,6 +143,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             }
         });
 
+        if (getFlowParams().lockOrientation) {
+            lockOrientation();
+        }
+
         TextView footerText = findViewById(R.id.email_footer_tos_and_pp_text);
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(this, getFlowParams(), footerText);
     }

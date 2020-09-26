@@ -1207,6 +1207,7 @@ public final class AuthUI {
         String mTosUrl;
         String mPrivacyPolicyUrl;
         boolean mAlwaysShowProviderChoice = false;
+        boolean mLockOrientation = false;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
         AuthMethodPickerLayout mAuthMethodPickerLayout = null;
@@ -1391,6 +1392,20 @@ public final class AuthUI {
             return (T) this;
         }
 
+        /**
+         * Enable or disables the orientation for small devices to be locked in
+         * Portrait orientation
+         * <p>
+         * <p>This is false by default.
+         *
+         * @param lockOrientation if true, force the activities to be in Portrait orientation.
+         */
+        @NonNull
+        public T setLockOrientation(boolean lockOrientation) {
+            mLockOrientation = lockOrientation;
+            return (T) this;
+        }
+
         @CallSuper
         @NonNull
         public Intent build() {
@@ -1468,6 +1483,7 @@ public final class AuthUI {
                     mEnableHints,
                     mEnableAnonymousUpgrade,
                     mAlwaysShowProviderChoice,
+                    mLockOrientation,
                     mEmailLink,
                     mAuthMethodPickerLayout);
         }

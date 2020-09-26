@@ -47,6 +47,9 @@ public class WelcomeBackEmailLinkPrompt extends AppCompatBase implements View.On
         setBodyText();
         setOnClickListeners();
         setPrivacyFooter();
+        if (getFlowParams().lockOrientation) {
+            lockOrientation();
+        }
     }
 
     private void startEmailLinkFlow() {
