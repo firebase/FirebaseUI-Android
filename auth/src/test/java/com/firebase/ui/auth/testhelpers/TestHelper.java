@@ -166,6 +166,7 @@ public final class TestHelper {
                 true,
                 enableAnonymousUpgrade,
                 false,
+                true,
                 null,
                 customLayout);
     }

@@ -14,8 +14,10 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -101,6 +103,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
+       if (params.lockOrientation) {
+           lockOrientation();
+       }
 
         mProviders = new ArrayList<>();
         if (customLayout != null) {
@@ -269,6 +274,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
         return providerId;
     }
+
+
 
     private void handleSignInOperation(final IdpConfig idpConfig, View view) {
         ViewModelProvider supplier = ViewModelProviders.of(this);

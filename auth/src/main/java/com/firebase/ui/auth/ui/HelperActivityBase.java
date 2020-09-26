@@ -1,13 +1,16 @@
 package com.firebase.ui.auth.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.CredentialUtils;
@@ -56,6 +59,13 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
             mParams = FlowParameters.fromIntent(getIntent());
         }
         return mParams;
+    }
+
+    @SuppressLint("all")
+    public void lockOrientation() {
+        if (getResources().getBoolean(R.bool.fui_portrait_orientation)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     public void finish(int resultCode, @Nullable Intent intent) {
