@@ -85,10 +85,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         mDoneButton = findViewById(R.id.welcome_back_idp_button);
         mProgressBar = findViewById(R.id.top_progress_bar);
 
-        if (getFlowParams().lockOrientation) {
-            lockOrientation();
-        }
-
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
         ViewModelProvider supplier = ViewModelProviders.of(this);

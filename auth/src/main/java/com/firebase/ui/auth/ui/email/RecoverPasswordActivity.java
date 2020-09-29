@@ -67,10 +67,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_forgot_password_layout);
 
-        if (getFlowParams().lockOrientation) {
-            lockOrientation();
-        }
-
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<String>(

@@ -40,10 +40,6 @@ public class InvisibleActivityBase extends HelperActivityBase {
         mProgressBar.setIndeterminate(true);
         mProgressBar.setVisibility(View.GONE);
 
-        if (getFlowParams().lockOrientation) {
-            lockOrientation();
-        }
-
         // Set bar to float in the center
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
