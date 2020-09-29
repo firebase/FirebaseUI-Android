@@ -157,6 +157,7 @@ public final class TestHelper {
         return new FlowParameters(
                 DEFAULT_APP_NAME,
                 idpConfigs,
+                null,
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
                 null,

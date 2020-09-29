@@ -34,6 +34,8 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthUITest {
@@ -65,6 +67,35 @@ public class AuthUITest {
                 new IdpConfig.EmailBuilder().build()));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testCreateStartIntent_defaultProviderMustBeAvailable() {
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
+        startIntent.setAvailableProviders(Arrays.asList(
+                new IdpConfig.EmailBuilder().build(),
+                new IdpConfig.GoogleBuilder().build()))
+                .setDefaultProvider(new IdpConfig.FacebookBuilder().build());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCreateStartIntent_incompatibleOptions() {
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
+        startIntent.setAvailableProviders(Arrays.asList(
+                new IdpConfig.EmailBuilder().build(),
+                new IdpConfig.GoogleBuilder().build()))
+                .setDefaultProvider(new IdpConfig.GoogleBuilder().build())
+                .setAlwaysShowSignInMethodScreen(true);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCreateStartIntent_incompatibleOptionsReverseOrder() {
+        SignInIntentBuilder startIntent = mAuthUi.createSignInIntentBuilder();
+        startIntent.setAvailableProviders(Arrays.asList(
+                new IdpConfig.EmailBuilder().build(),
+                new IdpConfig.GoogleBuilder().build()))
+                .setAlwaysShowSignInMethodScreen(true)
+                .setDefaultProvider(new IdpConfig.GoogleBuilder().build());
+    }
+
     @Test
     public void testCreatingStartIntent() {
         FlowParameters flowParameters = mAuthUi
@@ -83,6 +114,26 @@ public class AuthUITest {
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
+        assertTrue(flowParameters.shouldShowProviderChoice());
+        assertEquals(new IdpConfig.EmailBuilder().build(),
+                flowParameters.getDefaultOrFirstProvider());
+    }
+
+    @Test
+    public void testCreatingStartIntentWithDefaultProvider() {
+        FlowParameters flowParameters = mAuthUi
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(
+                        new IdpConfig.EmailBuilder().build(),
+                        new IdpConfig.GoogleBuilder().build(),
+                        new IdpConfig.FacebookBuilder().build()))
+                .setDefaultProvider(new IdpConfig.FacebookBuilder().build())
+                .build()
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
+        assertEquals(new IdpConfig.FacebookBuilder().build(), flowParameters.defaultProvider);
+        assertFalse(flowParameters.shouldShowProviderChoice());
+        assertEquals(new IdpConfig.FacebookBuilder().build(),
+                flowParameters.getDefaultOrFirstProvider());
     }
 
     @Test(expected = NullPointerException.class)
