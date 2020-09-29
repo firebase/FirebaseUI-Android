@@ -18,7 +18,7 @@ public class TextHelper {
         while (fromIndex < text.length()) {
             int start = text.indexOf(textToBold, fromIndex);
             int end = start + textToBold.length();
-            if (start == -1 || end >= text.length()) {
+            if (start == -1 || end > text.length()) {
                 break;
             }
             builder.setSpan(new StyleSpan(Typeface.BOLD),
