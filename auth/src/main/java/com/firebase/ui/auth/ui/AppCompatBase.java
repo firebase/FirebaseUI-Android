@@ -60,7 +60,7 @@ public abstract class AppCompatBase extends HelperActivityBase {
         switchFragment(fragment, fragmentId, tag, false, false);
     }
 
-    @SuppressLint("all")
+    @SuppressLint("SourceLockedOrientationActivity")
     private void lockOrientation() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
