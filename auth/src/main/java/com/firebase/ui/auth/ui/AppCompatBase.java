@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui;
 
+import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.R;
@@ -31,6 +33,10 @@ public abstract class AppCompatBase extends HelperActivityBase {
         super.onCreate(savedInstanceState);
         setTheme(R.style.FirebaseUI); // Provides default values
         setTheme(getFlowParams().themeId);
+
+        if (getFlowParams().lockOrientation) {
+            lockOrientation();
+        }
     }
 
     protected void switchFragment(@NonNull Fragment fragment,
@@ -52,5 +58,10 @@ public abstract class AppCompatBase extends HelperActivityBase {
 
     protected void switchFragment(@NonNull Fragment fragment, int fragmentId, @NonNull String tag) {
         switchFragment(fragment, fragmentId, tag, false, false);
+    }
+
+    @SuppressLint("all")
+    private void lockOrientation() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 }

@@ -62,10 +62,6 @@ public class PhoneActivity extends AppCompatBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
-        if (getFlowParams().lockOrientation) {
-            lockOrientation();
-        }
-
         final PhoneProviderResponseHandler handler =
                 ViewModelProviders.of(this).get(PhoneProviderResponseHandler.class);
         handler.init(getFlowParams());

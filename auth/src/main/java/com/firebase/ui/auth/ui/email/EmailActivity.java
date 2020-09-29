@@ -77,10 +77,6 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
             return;
         }
 
-        if (getFlowParams().lockOrientation) {
-            lockOrientation();
-        }
-
         // Get email from intent (can be null)
         String email = getIntent().getExtras().getString(ExtraConstants.EMAIL);
 
