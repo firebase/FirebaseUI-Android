@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
