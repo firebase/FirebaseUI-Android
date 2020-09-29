@@ -101,6 +101,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
+
         mProviders = new ArrayList<>();
         if (customLayout != null) {
             setContentView(customLayout.getMainLayout());
@@ -268,8 +269,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
         return providerId;
     }
-
-
 
     private void handleSignInOperation(final IdpConfig idpConfig, View view) {
         ViewModelProvider supplier = ViewModelProviders.of(this);
