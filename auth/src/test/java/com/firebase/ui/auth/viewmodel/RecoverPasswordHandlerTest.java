@@ -68,7 +68,7 @@ public class RecoverPasswordHandlerTest {
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
-        mHandler.startReset(TestConstants.EMAIL);
+        mHandler.startReset(TestConstants.EMAIL, null);
 
         // Should get in-progress resource
         verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
@@ -88,7 +88,7 @@ public class RecoverPasswordHandlerTest {
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
-        mHandler.startReset(TestConstants.EMAIL);
+        mHandler.startReset(TestConstants.EMAIL, null);
 
         // Should get in-progress resource
         verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
@@ -108,7 +108,7 @@ public class RecoverPasswordHandlerTest {
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
-        mHandler.startCustomReset(TestConstants.EMAIL, mPasswordResetSettings);
+        mHandler.startReset(TestConstants.EMAIL, mPasswordResetSettings);
 
         // Should get in-progress resource
         verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
@@ -128,7 +128,7 @@ public class RecoverPasswordHandlerTest {
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
-        mHandler.startCustomReset(TestConstants.EMAIL, mPasswordResetSettings);
+        mHandler.startReset(TestConstants.EMAIL, mPasswordResetSettings);
 
         // Should get in-progress resource
         verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));

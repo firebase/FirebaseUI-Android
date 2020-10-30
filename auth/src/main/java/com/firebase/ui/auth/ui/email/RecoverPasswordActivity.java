@@ -34,6 +34,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.RecoverPasswordHandler;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
@@ -118,21 +119,18 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     public void onDonePressed() {
         if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-            if (getFlowParams().passwordResetSettings != null)
-                customResetPassword();
-            else
-                normalResetPassword();
+            if (getFlowParams().passwordResetSettings != null) {
+                resetPassword(mEmailEditText.getText().toString(), getFlowParams().passwordResetSettings);
+            }
+            else {
+                resetPassword(mEmailEditText.getText().toString(), null);
+            }
         }
     }
 
-    private void normalResetPassword() {
-        mHandler.startReset(mEmailEditText.getText().toString());
+    private void resetPassword(String email, @Nullable ActionCodeSettings passwordResetSettings) {
+        mHandler.startReset(email, passwordResetSettings);
     }
-
-    private void customResetPassword() {
-        mHandler.startCustomReset(mEmailEditText.getText().toString(), getFlowParams().passwordResetSettings);
-    }
-
     private void showEmailSentDialog(String email) {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.fui_title_confirm_recover_password)

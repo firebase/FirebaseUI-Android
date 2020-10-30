@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.ActionCodeSettings;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -17,24 +18,13 @@ public class RecoverPasswordHandler extends AuthViewModelBase<String> {
         super(application);
     }
 
-    public void startReset(@NonNull final String email) {
+    public void startReset(@NonNull final String email, @Nullable ActionCodeSettings actionCodeSettings) {
         setResult(Resource.<String>forLoading());
-        getAuth().sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Resource<String> resource = task.isSuccessful()
-                                ? Resource.forSuccess(email)
-                                : Resource.<String>forFailure(task.getException());
-                        setResult(resource);
-                    }
-                });
-    }
+        Task<Void> reset = actionCodeSettings != null
+                ? getAuth().sendPasswordResetEmail(email, actionCodeSettings)
+                : getAuth().sendPasswordResetEmail(email);
 
-    public void startCustomReset(@NonNull final String email, @NonNull ActionCodeSettings actionCodeSettings) {
-        setResult(Resource.<String>forLoading());
-        getAuth().sendPasswordResetEmail(email, actionCodeSettings)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        reset.addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Resource<String> resource = task.isSuccessful()
