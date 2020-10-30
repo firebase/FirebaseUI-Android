@@ -6,6 +6,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.ActionCodeSettings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -19,6 +20,20 @@ public class RecoverPasswordHandler extends AuthViewModelBase<String> {
     public void startReset(@NonNull final String email) {
         setResult(Resource.<String>forLoading());
         getAuth().sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Resource<String> resource = task.isSuccessful()
+                                ? Resource.forSuccess(email)
+                                : Resource.<String>forFailure(task.getException());
+                        setResult(resource);
+                    }
+                });
+    }
+
+    public void startCustomReset(@NonNull final String email, @NonNull ActionCodeSettings actionCodeSettings) {
+        setResult(Resource.<String>forLoading());
+        getAuth().sendPasswordResetEmail(email, actionCodeSettings)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

@@ -118,8 +118,19 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     public void onDonePressed() {
         if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-            mHandler.startReset(mEmailEditText.getText().toString());
+            if (getFlowParams().passwordResetSettings != null)
+                customResetPassword();
+            else
+                normalResetPassword();
         }
+    }
+
+    private void normalResetPassword() {
+        mHandler.startReset(mEmailEditText.getText().toString());
+    }
+
+    private void customResetPassword() {
+        mHandler.startCustomReset(mEmailEditText.getText().toString(), getFlowParams().passwordResetSettings);
     }
 
     private void showEmailSentDialog(String email) {

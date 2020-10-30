@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
+import com.google.firebase.auth.ActionCodeSettings;
 
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +56,7 @@ public class FlowParameters implements Parcelable {
             boolean alwaysShowProviderChoice = in.readInt() != 0;
             boolean lockOrientation = in.readInt() != 0;
             String emailLink = in.readString();
+            ActionCodeSettings passwordResetSettings = in.readParcelable(ActionCodeSettings.class.getClassLoader());
             AuthMethodPickerLayout customLayout = in.readParcelable(AuthMethodPickerLayout.class.getClassLoader());
 
             return new FlowParameters(
@@ -71,6 +73,7 @@ public class FlowParameters implements Parcelable {
                     alwaysShowProviderChoice,
                     lockOrientation,
                     emailLink,
+                    passwordResetSettings,
                     customLayout);
         }
 
@@ -104,6 +107,9 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public String emailLink;
 
+    @Nullable
+    public final ActionCodeSettings passwordResetSettings;
+
     public final boolean enableCredentials;
     public final boolean enableHints;
     public final boolean enableAnonymousUpgrade;
@@ -127,6 +133,7 @@ public class FlowParameters implements Parcelable {
             boolean alwaysShowProviderChoice,
             boolean lockOrientation,
             @Nullable String emailLink,
+            @Nullable ActionCodeSettings passwordResetSettings,
             @Nullable AuthMethodPickerLayout authMethodPickerLayout) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providers = Collections.unmodifiableList(
@@ -142,6 +149,7 @@ public class FlowParameters implements Parcelable {
         this.alwaysShowProviderChoice = alwaysShowProviderChoice;
         this.lockOrientation = lockOrientation;
         this.emailLink = emailLink;
+        this.passwordResetSettings = passwordResetSettings;
         this.authMethodPickerLayout = authMethodPickerLayout;
     }
 
@@ -167,6 +175,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(alwaysShowProviderChoice ? 1 : 0);
         dest.writeInt(lockOrientation ? 1 : 0);
         dest.writeString(emailLink);
+        dest.writeParcelable(passwordResetSettings, flags);
         dest.writeParcelable(authMethodPickerLayout, flags);
     }
 

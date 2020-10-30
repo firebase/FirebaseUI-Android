@@ -168,6 +168,7 @@ public final class TestHelper {
                 false,
                 true,
                 null,
+                null,
                 customLayout);
     }
 
