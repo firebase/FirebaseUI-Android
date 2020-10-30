@@ -1211,6 +1211,7 @@ public final class AuthUI {
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
         AuthMethodPickerLayout mAuthMethodPickerLayout = null;
+        ActionCodeSettings mPasswordSettings = null;
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified, a
@@ -1406,6 +1407,17 @@ public final class AuthUI {
             return (T) this;
         }
 
+        /**
+         * Set custom settings for the RecoverPasswordActivity.
+         *
+         * @param passwordSettings to allow additional state via a continue URL.
+         */
+        @NonNull
+        public T setResetPasswordSettings(ActionCodeSettings passwordSettings) {
+            mPasswordSettings = passwordSettings;
+            return (T) this;
+        }
+
         @CallSuper
         @NonNull
         public Intent build() {
@@ -1485,6 +1497,7 @@ public final class AuthUI {
                     mAlwaysShowProviderChoice,
                     mLockOrientation,
                     mEmailLink,
+                    mPasswordSettings,
                     mAuthMethodPickerLayout);
         }
     }
