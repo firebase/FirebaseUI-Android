@@ -1,5 +1,5 @@
 object Config {
-    const val version = "6.4.0-SNAPSHOT"
+    const val version = "6.4.0"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.3.72"
@@ -42,7 +42,7 @@ object Config {
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:25.7.0"
+            const val bom = "com.google.firebase:firebase-bom:25.12.0"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"

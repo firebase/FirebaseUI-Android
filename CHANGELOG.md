@@ -1,4 +1,0 @@
-- Add ability to always skip provider choice (#1825) (contributed by @ubragg)
-- Fix a bug with `isNewUser` for some providers (#1737) (contributed by @laurentiu-git)
-- Add ability to lock the Orientation (#1834) (contributed by @laurentiu-git)
-- Add ability to customize password reset (#1747) (contributed by @laurentiu-git)
