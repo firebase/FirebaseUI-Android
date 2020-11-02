@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
+import com.google.firebase.auth.ActionCodeSettings;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +45,7 @@ public class FlowParameters implements Parcelable {
         public FlowParameters createFromParcel(Parcel in) {
             String appName = in.readString();
             List<IdpConfig> providerInfo = in.createTypedArrayList(IdpConfig.CREATOR);
+            IdpConfig defaultProvider = in.readParcelable(IdpConfig.class.getClassLoader());
             int themeId = in.readInt();
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
@@ -52,12 +54,15 @@ public class FlowParameters implements Parcelable {
             boolean enableHints = in.readInt() != 0;
             boolean enableAnonymousUpgrade = in.readInt() != 0;
             boolean alwaysShowProviderChoice = in.readInt() != 0;
+            boolean lockOrientation = in.readInt() != 0;
             String emailLink = in.readString();
+            ActionCodeSettings passwordResetSettings = in.readParcelable(ActionCodeSettings.class.getClassLoader());
             AuthMethodPickerLayout customLayout = in.readParcelable(AuthMethodPickerLayout.class.getClassLoader());
 
             return new FlowParameters(
                     appName,
                     providerInfo,
+                    defaultProvider,
                     themeId,
                     logoId,
                     termsOfServiceUrl,
@@ -66,7 +71,9 @@ public class FlowParameters implements Parcelable {
                     enableHints,
                     enableAnonymousUpgrade,
                     alwaysShowProviderChoice,
+                    lockOrientation,
                     emailLink,
+                    passwordResetSettings,
                     customLayout);
         }
 
@@ -81,6 +88,9 @@ public class FlowParameters implements Parcelable {
 
     @NonNull
     public final List<IdpConfig> providers;
+
+    @Nullable
+    public final IdpConfig defaultProvider;
 
     @StyleRes
     public final int themeId;
@@ -97,10 +107,14 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public String emailLink;
 
+    @Nullable
+    public final ActionCodeSettings passwordResetSettings;
+
     public final boolean enableCredentials;
     public final boolean enableHints;
     public final boolean enableAnonymousUpgrade;
     public final boolean alwaysShowProviderChoice;
+    public final boolean lockOrientation;
 
     @Nullable
     public final AuthMethodPickerLayout authMethodPickerLayout;
@@ -108,6 +122,7 @@ public class FlowParameters implements Parcelable {
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IdpConfig> providers,
+            @Nullable IdpConfig defaultProvider,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
@@ -116,11 +131,14 @@ public class FlowParameters implements Parcelable {
             boolean enableHints,
             boolean enableAnonymousUpgrade,
             boolean alwaysShowProviderChoice,
+            boolean lockOrientation,
             @Nullable String emailLink,
+            @Nullable ActionCodeSettings passwordResetSettings,
             @Nullable AuthMethodPickerLayout authMethodPickerLayout) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providers = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providers, "providers cannot be null"));
+        this.defaultProvider = defaultProvider;
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
@@ -129,7 +147,9 @@ public class FlowParameters implements Parcelable {
         this.enableHints = enableHints;
         this.enableAnonymousUpgrade = enableAnonymousUpgrade;
         this.alwaysShowProviderChoice = alwaysShowProviderChoice;
+        this.lockOrientation = lockOrientation;
         this.emailLink = emailLink;
+        this.passwordResetSettings = passwordResetSettings;
         this.authMethodPickerLayout = authMethodPickerLayout;
     }
 
@@ -144,6 +164,7 @@ public class FlowParameters implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(appName);
         dest.writeTypedList(providers);
+        dest.writeParcelable(defaultProvider, flags);
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
@@ -152,7 +173,9 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
         dest.writeInt(alwaysShowProviderChoice ? 1 : 0);
+        dest.writeInt(lockOrientation ? 1 : 0);
         dest.writeString(emailLink);
+        dest.writeParcelable(passwordResetSettings, flags);
         dest.writeParcelable(authMethodPickerLayout, flags);
     }
 
@@ -178,6 +201,10 @@ public class FlowParameters implements Parcelable {
     }
 
     public boolean shouldShowProviderChoice() {
-        return !isSingleProviderFlow() || alwaysShowProviderChoice;
+        return defaultProvider == null && (!isSingleProviderFlow() || alwaysShowProviderChoice);
+    }
+
+    public IdpConfig getDefaultOrFirstProvider() {
+        return defaultProvider != null ? defaultProvider : providers.get(0);
     }
 }
