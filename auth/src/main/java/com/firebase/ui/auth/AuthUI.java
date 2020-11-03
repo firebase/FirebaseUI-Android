@@ -1211,7 +1211,7 @@ public final class AuthUI {
          */
         public static class GenericOAuthProviderBuilder extends Builder {
 
-            GenericOAuthProviderBuilder(@NonNull String providerId,
+            public GenericOAuthProviderBuilder(@NonNull String providerId,
                                         @NonNull String providerName,
                                         int buttonId) {
                 super(providerId);

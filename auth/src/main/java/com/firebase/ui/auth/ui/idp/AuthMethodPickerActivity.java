@@ -274,37 +274,56 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         final String providerId = idpConfig.getProviderId();
         final ProviderSignInBase<?> provider;
 
+        AuthUI authUI = AuthUI.getInstance(getFlowParams().appName);
+
         switch (providerId) {
-            case GoogleAuthProvider.PROVIDER_ID:
-                GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
-                google.init(new GoogleSignInHandler.Params(idpConfig));
-                provider = google;
-
-                break;
-            case FacebookAuthProvider.PROVIDER_ID:
-                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
-                facebook.init(idpConfig);
-                provider = facebook;
-
-                break;
             case EMAIL_LINK_PROVIDER:
             case EmailAuthProvider.PROVIDER_ID:
                 EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
                 email.init(null);
                 provider = email;
-
                 break;
             case PhoneAuthProvider.PROVIDER_ID:
                 PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
                 phone.init(idpConfig);
                 provider = phone;
-
                 break;
             case AuthUI.ANONYMOUS_PROVIDER:
                 AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
                 anonymous.init(getFlowParams());
                 provider = anonymous;
-
+                break;
+            case GoogleAuthProvider.PROVIDER_ID:
+                if (authUI.isUseEmulator()) {
+                    GenericIdpSignInHandler genericIdp
+                            = supplier.get(GenericIdpSignInHandler.class);
+                    genericIdp.init(new IdpConfig.GenericOAuthProviderBuilder(
+                            GoogleAuthProvider.PROVIDER_ID,
+                            "Google",
+                            R.layout.fui_idp_button_google
+                    ).build());
+                    provider = genericIdp;
+                } else {
+                    GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
+                    google.init(new GoogleSignInHandler.Params(idpConfig));
+                    provider = google;
+                }
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                if (authUI.isUseEmulator()) {
+                    GenericIdpSignInHandler genericIdp
+                            = supplier.get(GenericIdpSignInHandler.class);
+                    genericIdp.init(new IdpConfig.GenericOAuthProviderBuilder(
+                            FacebookAuthProvider.PROVIDER_ID,
+                            "Facebook",
+                            R.layout.fui_idp_button_facebook
+                    ).build());
+                    provider = genericIdp;
+                } else {
+                    FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
+                    facebook.init(idpConfig);
+                    provider = facebook;
+                }
                 break;
             default:
                 if (!TextUtils.isEmpty(
@@ -313,7 +332,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                             supplier.get(GenericIdpSignInHandler.class);
                     genericIdp.init(idpConfig);
                     provider = genericIdp;
-
                     break;
                 }
                 throw new IllegalStateException("Unknown provider: " + providerId);
