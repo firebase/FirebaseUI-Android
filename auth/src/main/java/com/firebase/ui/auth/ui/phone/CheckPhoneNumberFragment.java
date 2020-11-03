@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.phone;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -28,6 +30,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 /**
@@ -61,9 +64,9 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mVerificationHandler = ViewModelProviders.of(requireActivity())
+        mVerificationHandler = new ViewModelProvider(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
-        mCheckPhoneHandler = ViewModelProviders.of(this)
+        mCheckPhoneHandler = new ViewModelProvider(this)
                 .get(CheckPhoneHandler.class);
     }
 
@@ -107,7 +110,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCheckPhoneHandler.getOperation().observe(this, new ResourceObserver<PhoneNumber>(this) {
+        mCheckPhoneHandler.getOperation().observe(getViewLifecycleOwner(), new ResourceObserver<PhoneNumber>(this) {
             @Override
             protected void onSuccess(@NonNull PhoneNumber number) {
                 start(number);
@@ -161,7 +164,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         if (phoneNumber == null) {
             mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
         } else {
-            mVerificationHandler.verifyPhoneNumber(phoneNumber, false);
+            mVerificationHandler.verifyPhoneNumber(requireActivity(), phoneNumber, false);
         }
     }
 

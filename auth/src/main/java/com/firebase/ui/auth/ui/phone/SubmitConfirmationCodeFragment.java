@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -32,6 +33,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
@@ -43,6 +45,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 /**
@@ -89,7 +92,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(requireActivity())
+        mHandler = new ViewModelProvider(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
         mPhoneNumber = getArguments().getString(ExtraConstants.PHONE);
         if (savedInstanceState != null) {
@@ -127,10 +130,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(requireActivity())
+        new ViewModelProvider(requireActivity())
                 .get(PhoneProviderResponseHandler.class)
                 .getOperation()
-                .observe(this, new Observer<Resource<IdpResponse>>() {
+                .observe(getViewLifecycleOwner(), new Observer<Resource<IdpResponse>>() {
                     @Override
                     public void onChanged(@Nullable Resource<IdpResponse> resource) {
                         if (resource.getState() == State.FAILURE) {
@@ -211,7 +214,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mPhoneTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().popBackStack();
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -220,7 +223,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mResendCodeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHandler.verifyPhoneNumber(mPhoneNumber, true);
+                mHandler.verifyPhoneNumber(requireActivity(), mPhoneNumber, true);
 
                 mResendCodeTextView.setVisibility(View.GONE);
                 mCountDownTextView.setVisibility(View.VISIBLE);

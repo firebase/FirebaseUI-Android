@@ -59,7 +59,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
             return;
         }
 
-        ViewModelProvider supplier = ViewModelProviders.of(this);
+        ViewModelProvider supplier = new ViewModelProvider(this);
 
         mHandler = supplier.get(SocialProviderResponseHandler.class);
         mHandler.init(getFlowParams());

@@ -87,7 +87,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
-        ViewModelProvider supplier = ViewModelProviders.of(this);
+        ViewModelProvider supplier = new ViewModelProvider(this);
 
         final LinkingSocialProviderResponseHandler handler =
                 supplier.get(LinkingSocialProviderResponseHandler.class);

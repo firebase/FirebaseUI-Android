@@ -15,6 +15,7 @@
 package com.firebase.ui.database;
 
 import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.firebase.FirebaseApp;
@@ -41,7 +42,7 @@ public class FirebaseArrayTest {
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
+        FirebaseApp app = getAppInstance(ApplicationProvider.getApplicationContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
         mArray = new FirebaseArray<>(mRef, new ClassSnapshotParser<>(Integer.class));
         mRef.removeValue();

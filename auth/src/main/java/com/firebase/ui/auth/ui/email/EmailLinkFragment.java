@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 
@@ -115,11 +116,11 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     }
 
     private void initHandler() {
-        mEmailLinkSendEmailHandler = ViewModelProviders.of(this).get(EmailLinkSendEmailHandler
+        mEmailLinkSendEmailHandler = new ViewModelProvider(this).get(EmailLinkSendEmailHandler
                 .class);
         mEmailLinkSendEmailHandler.init(getFlowParams());
 
-        mEmailLinkSendEmailHandler.getOperation().observe(this, new ResourceObserver<String>(this,
+        mEmailLinkSendEmailHandler.getOperation().observe(getViewLifecycleOwner(), new ResourceObserver<String>(this,
                 R.string.fui_progress_dialog_sending) {
             @Override
             protected void onSuccess(@NonNull String email) {

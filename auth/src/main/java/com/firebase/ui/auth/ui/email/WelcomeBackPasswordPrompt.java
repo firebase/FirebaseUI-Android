@@ -52,6 +52,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.StringRes;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 /**
@@ -108,7 +109,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
 
         // Initialize ViewModel with arguments
-        mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
+        mHandler = new ViewModelProvider(this).get(WelcomeBackPasswordHandler.class);
         mHandler.init(getFlowParams());
 
         // Observe the state of the main auth operation

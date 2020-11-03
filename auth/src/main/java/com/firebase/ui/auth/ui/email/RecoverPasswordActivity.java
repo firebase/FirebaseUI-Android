@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 /**
@@ -68,7 +69,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_forgot_password_layout);
 
-        mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
+        mHandler = new ViewModelProvider(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<String>(
                 this, R.string.fui_progress_dialog_sending) {

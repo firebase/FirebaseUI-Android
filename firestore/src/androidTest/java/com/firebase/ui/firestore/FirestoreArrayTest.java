@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.assertTrue;
@@ -104,7 +105,7 @@ public class FirestoreArrayTest {
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
+        FirebaseApp app = getAppInstance(ApplicationProvider.getApplicationContext());
 
         // Configure Firestore and disable persistence
         FirebaseFirestore.getInstance(app)
