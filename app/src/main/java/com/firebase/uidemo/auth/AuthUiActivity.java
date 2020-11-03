@@ -233,6 +233,7 @@ public class AuthUiActivity extends AppCompatActivity {
         startActivityForResult(buildSignInIntent(link), RC_SIGN_IN);
     }
 
+    @NonNull
     public AuthUI getAuthUI() {
         AuthUI authUI = AuthUI.getInstance();
         if (mUseEmulator.isChecked()) {
