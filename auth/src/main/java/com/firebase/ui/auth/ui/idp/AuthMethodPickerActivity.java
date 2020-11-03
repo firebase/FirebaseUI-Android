@@ -366,9 +366,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     return;
                 }
 
-                FirebaseAuth auth = FirebaseAuth.getInstance(
-                        FirebaseApp.getInstance(getFlowParams().appName));
-                provider.startSignIn(auth, AuthMethodPickerActivity.this,
+                provider.startSignIn(getAuth(), AuthMethodPickerActivity.this,
                         idpConfig.getProviderId());
             }
         });

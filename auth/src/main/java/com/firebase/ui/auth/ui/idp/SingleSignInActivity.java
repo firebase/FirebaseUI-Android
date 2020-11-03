@@ -127,10 +127,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         });
 
         if (mHandler.getOperation().getValue() == null) {
-            FirebaseAuth auth = FirebaseAuth.getInstance(
-                    FirebaseApp.getInstance(getFlowParams().appName));
-            mProvider.startSignIn(auth,
-                    this, provider);
+            mProvider.startSignIn(getAuth(), this, provider);
         }
     }
 

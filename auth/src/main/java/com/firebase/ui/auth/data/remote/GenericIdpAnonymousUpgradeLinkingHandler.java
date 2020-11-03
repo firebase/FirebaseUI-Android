@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
@@ -31,7 +32,7 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
 
         FlowParameters flowParameters = activity.getFlowParams();
 
-        startSignIn(FirebaseAuth.getInstance(FirebaseApp.getInstance(flowParameters.appName)),
+        startSignIn(AuthUI.getInstance(flowParameters.appName).getAuth(),
                 activity, getArguments().getProviderId());
     }
 

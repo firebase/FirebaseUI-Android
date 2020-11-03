@@ -55,7 +55,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
 
         FlowParameters flowParameters = activity.getFlowParams();
 
-        startSignIn(FirebaseAuth.getInstance(FirebaseApp.getInstance(flowParameters.appName)),
+        startSignIn(AuthUI.getInstance(flowParameters.appName).getAuth(),
                 activity, getArguments().getProviderId());
     }
 

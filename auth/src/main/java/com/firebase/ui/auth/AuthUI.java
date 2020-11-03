@@ -161,6 +161,9 @@ public final class AuthUI {
     private final FirebaseApp mApp;
     private final FirebaseAuth mAuth;
 
+    private String mEmulatorHost = null;
+    private int mEmulatorPort = -1;
+
     private AuthUI(FirebaseApp app) {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
@@ -197,6 +200,16 @@ public final class AuthUI {
     }
 
     /**
+     * Retrieves the {@link AuthUI} instance associated the the specified app name.
+     *
+     * @throws IllegalStateException if the app is not initialized.
+     */
+    @NonNull
+    public static AuthUI getInstance(@NonNull String appName) {
+        return getInstance(FirebaseApp.getInstance(appName));
+    }
+
+    /**
      * Retrieves the {@link AuthUI} instance associated the the specified app.
      */
     @NonNull
@@ -221,6 +234,18 @@ public final class AuthUI {
             }
         }
         return authUi;
+    }
+
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public FirebaseApp getApp() {
+        return mApp;
+    }
+
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public FirebaseAuth getAuth() {
+        return mAuth;
     }
 
     /**
@@ -458,6 +483,32 @@ public final class AuthUI {
                 return currentUser.delete();
             }
         });
+    }
+
+    /**
+     * Connect to the Firebase Authentication emulator.
+     * @see FirebaseAuth#useEmulator(String, int)
+     */
+    public void useEmulator(@NonNull String host, int port) {
+        mEmulatorHost = host;
+        mEmulatorPort = port;
+
+        mAuth.useEmulator(host, port);
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public boolean isUseEmulator() {
+        return mEmulatorHost != null && mEmulatorPort >= 0;
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public String getEmulatorHost() {
+        return mEmulatorHost;
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public int getEmulatorPort() {
+        return mEmulatorPort;
     }
 
     private Task<Void> signOutIdps(@NonNull Context context) {

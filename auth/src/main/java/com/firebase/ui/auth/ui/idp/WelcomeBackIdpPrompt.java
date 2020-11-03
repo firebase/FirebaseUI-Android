@@ -173,10 +173,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         mDoneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth auth = FirebaseAuth.getInstance(
-                        FirebaseApp.getInstance(getFlowParams().appName));
-                mProvider.startSignIn(auth,
-                        WelcomeBackIdpPrompt.this, providerId);
+                mProvider.startSignIn(getAuth(), WelcomeBackIdpPrompt.this, providerId);
             }
         });
 

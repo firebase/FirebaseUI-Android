@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.GoogleApiUtils;
@@ -27,8 +28,7 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
 
     @Override
     protected void onCreate() {
-        FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
-        mAuth = FirebaseAuth.getInstance(app);
+        mAuth = AuthUI.getInstance(getArguments().appName).getAuth();
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
         mCredentialsClient = GoogleApiUtils.getCredentialsClient(getApplication());
     }

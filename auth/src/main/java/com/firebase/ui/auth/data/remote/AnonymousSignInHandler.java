@@ -74,8 +74,7 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
     // TODO: We need to centralize the auth logic. ProviderSignInBase classes were originally
     // meant to only retrieve remote provider data.
     private FirebaseAuth getAuth() {
-        FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
-        return FirebaseAuth.getInstance(app);
+        return AuthUI.getInstance(getArguments().appName).getAuth();
     }
 
     @Override
