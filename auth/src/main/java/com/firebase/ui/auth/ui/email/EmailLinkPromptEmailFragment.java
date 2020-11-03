@@ -23,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 /** Prompts the user to enter their email to finish the cross-device email link sign in flow. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)

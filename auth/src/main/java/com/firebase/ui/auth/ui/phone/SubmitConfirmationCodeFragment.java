@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.phone;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -33,7 +32,6 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
@@ -46,7 +44,6 @@ import androidx.annotation.RestrictTo;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Display confirmation code to verify phone numbers input in {@link CheckPhoneNumberFragment}

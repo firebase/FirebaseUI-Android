@@ -34,7 +34,6 @@ import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -43,7 +42,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Activity to control the entire phone verification flow. Plays host to {@link

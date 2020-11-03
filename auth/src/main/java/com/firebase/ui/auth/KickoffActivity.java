@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends InvisibleActivityBase {

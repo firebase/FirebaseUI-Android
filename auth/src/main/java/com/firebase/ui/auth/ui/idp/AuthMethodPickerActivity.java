@@ -67,7 +67,6 @@ import androidx.annotation.RestrictTo;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID;
 import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID;

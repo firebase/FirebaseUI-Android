@@ -7,7 +7,6 @@ import android.os.Bundle;
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
-import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;

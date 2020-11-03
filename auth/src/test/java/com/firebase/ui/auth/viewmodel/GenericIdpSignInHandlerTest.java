@@ -2,7 +2,6 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Activity;
 import android.app.Application;
-import android.net.Uri;
 
 import androidx.lifecycle.Observer;
 import androidx.test.core.app.ApplicationProvider;
@@ -21,9 +20,7 @@ import com.firebase.ui.auth.testhelpers.FakeSignInMethodQueryResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;

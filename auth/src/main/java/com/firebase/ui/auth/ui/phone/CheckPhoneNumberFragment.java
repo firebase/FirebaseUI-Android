@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.phone;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -31,7 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Displays country selector and phone number input form for users
