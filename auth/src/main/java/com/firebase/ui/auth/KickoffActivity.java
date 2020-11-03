@@ -18,7 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends InvisibleActivityBase {
@@ -31,7 +31,7 @@ public class KickoffActivity extends InvisibleActivityBase {
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
+        mKickstarter = new ViewModelProvider(this).get(SignInKickstarter.class);
         mKickstarter.init(getFlowParams());
         mKickstarter.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override

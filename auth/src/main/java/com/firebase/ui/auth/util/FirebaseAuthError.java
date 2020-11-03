@@ -2,7 +2,6 @@ package com.firebase.ui.auth.util;
 
 import com.google.firebase.auth.FirebaseAuthException;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
 
 /**

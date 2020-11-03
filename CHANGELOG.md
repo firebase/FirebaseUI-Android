@@ -1,0 +1,1 @@
+- Update all dependencies to latest major version.

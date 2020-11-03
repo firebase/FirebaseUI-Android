@@ -67,7 +67,6 @@ import androidx.annotation.RestrictTo;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID;
 import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID;
@@ -98,7 +97,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         FlowParameters params = getFlowParams();
         customLayout = params.authMethodPickerLayout;
 
-        mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
+        mHandler = new ViewModelProvider(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
 
@@ -186,7 +185,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
     private void populateIdpList(List<IdpConfig> providerConfigs) {
 
-        ViewModelProvider supplier = ViewModelProviders.of(this);
+        ViewModelProvider supplier = new ViewModelProvider(this);
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             @LayoutRes int buttonLayout;
@@ -271,7 +270,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     }
 
     private void handleSignInOperation(final IdpConfig idpConfig, View view) {
-        ViewModelProvider supplier = ViewModelProviders.of(this);
+        ViewModelProvider supplier = new ViewModelProvider(this);
         final String providerId = idpConfig.getProviderId();
         final ProviderSignInBase<?> provider;
 

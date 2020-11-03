@@ -1,12 +1,12 @@
 package com.firebase.ui.auth.ui.phone;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
-import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -27,13 +27,13 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
         super(application);
     }
 
-    public void verifyPhoneNumber(final String number, boolean force) {
+    public void verifyPhoneNumber(@NonNull Activity activity, final String number, boolean force) {
         setResult(Resource.<PhoneVerification>forLoading());
         getPhoneAuth().verifyPhoneNumber(
                 number,
                 AUTO_RETRIEVAL_TIMEOUT_SECONDS,
                 TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
+                activity,
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {

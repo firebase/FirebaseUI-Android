@@ -41,7 +41,6 @@ import com.google.firebase.auth.OAuthProvider;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
