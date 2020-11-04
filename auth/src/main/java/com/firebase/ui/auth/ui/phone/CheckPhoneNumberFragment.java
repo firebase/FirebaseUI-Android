@@ -161,7 +161,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         if (phoneNumber == null) {
             mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
         } else {
-            mVerificationHandler.verifyPhoneNumber(phoneNumber, false);
+            mVerificationHandler.verifyPhoneNumber(requireActivity(), phoneNumber, false);
         }
     }
 

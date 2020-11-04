@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.phone;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
@@ -27,13 +28,13 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
         super(application);
     }
 
-    public void verifyPhoneNumber(final String number, boolean force) {
+    public void verifyPhoneNumber(Activity activity, final String number, boolean force) {
         setResult(Resource.<PhoneVerification>forLoading());
         getPhoneAuth().verifyPhoneNumber(
                 number,
                 AUTO_RETRIEVAL_TIMEOUT_SECONDS,
                 TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
+                activity,
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {

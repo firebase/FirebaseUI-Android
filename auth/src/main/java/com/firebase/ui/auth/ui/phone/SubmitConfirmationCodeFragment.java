@@ -220,7 +220,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mResendCodeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHandler.verifyPhoneNumber(mPhoneNumber, true);
+                mHandler.verifyPhoneNumber(requireActivity(), mPhoneNumber, true);
 
                 mResendCodeTextView.setVisibility(View.GONE);
                 mCountDownTextView.setVisibility(View.VISIBLE);
