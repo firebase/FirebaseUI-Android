@@ -8,7 +8,6 @@ import com.firebase.uidemo.R;
 import com.google.firebase.auth.ActionCodeSettings;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;

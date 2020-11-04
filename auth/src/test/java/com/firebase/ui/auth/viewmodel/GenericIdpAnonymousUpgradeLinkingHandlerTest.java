@@ -119,8 +119,10 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
                 any(HelperActivityBase.class), any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.forSuccess(mMockAuthResult));
 
-        AuthCredential credential
-                = OAuthProvider.getCredential(MICROSOFT_PROVIDER, ID_TOKEN, ACCESS_TOKEN);
+        AuthCredential credential = OAuthProvider.newCredentialBuilder(MICROSOFT_PROVIDER)
+                .setIdToken(ID_TOKEN)
+                .setAccessToken(ACCESS_TOKEN)
+                .build();
         when(mMockAuthResult.getCredential()).thenReturn(credential);
         when(mMockAuthResult.getUser()).thenReturn(mMockUser);
         when(mMockUser.getDisplayName()).thenReturn(DISPLAY_NAME);

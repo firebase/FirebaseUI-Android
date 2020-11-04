@@ -28,7 +28,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * Displays country selector and phone number input form for users
@@ -61,9 +61,9 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mVerificationHandler = ViewModelProviders.of(requireActivity())
+        mVerificationHandler = new ViewModelProvider(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
-        mCheckPhoneHandler = ViewModelProviders.of(this)
+        mCheckPhoneHandler = new ViewModelProvider(this)
                 .get(CheckPhoneHandler.class);
     }
 
@@ -107,7 +107,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mCheckPhoneHandler.getOperation().observe(this, new ResourceObserver<PhoneNumber>(this) {
+        mCheckPhoneHandler.getOperation().observe(getViewLifecycleOwner(), new ResourceObserver<PhoneNumber>(this) {
             @Override
             protected void onSuccess(@NonNull PhoneNumber number) {
                 start(number);

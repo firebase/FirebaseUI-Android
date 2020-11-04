@@ -44,7 +44,11 @@ public final class Preconditions {
             @NonNull String errorMessageTemplate,
             @Nullable Object... errorMessageArgs) {
         if (val == null) {
-            throw new NullPointerException(String.format(errorMessageTemplate, errorMessageArgs));
+            if (errorMessageArgs == null) {
+                throw new NullPointerException(errorMessageTemplate);
+            } else {
+                throw new NullPointerException(String.format(errorMessageTemplate, errorMessageArgs));
+            }
         }
         return val;
     }

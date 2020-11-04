@@ -16,6 +16,7 @@ package com.firebase.uidemo.auth;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -348,8 +349,10 @@ public class AuthUiActivity extends AppCompatActivity {
     public void toggleDarkTheme() {
         int mode = mDarkTheme.isChecked() ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
-        AppCompatDelegate.setDefaultNightMode(mode);
-        getDelegate().setLocalNightMode(mode);
+        if (Build.VERSION.SDK_INT >= 17) {
+            AppCompatDelegate.setDefaultNightMode(mode);
+            getDelegate().setLocalNightMode(mode);
+        }
     }
 
     @StyleRes

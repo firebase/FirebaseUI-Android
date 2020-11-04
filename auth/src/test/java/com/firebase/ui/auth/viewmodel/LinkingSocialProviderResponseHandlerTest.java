@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.OAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;

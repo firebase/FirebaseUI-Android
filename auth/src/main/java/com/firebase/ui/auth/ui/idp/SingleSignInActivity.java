@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import static com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID;
 
@@ -59,7 +58,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
             return;
         }
 
-        ViewModelProvider supplier = ViewModelProviders.of(this);
+        ViewModelProvider supplier = new ViewModelProvider(this);
 
         mHandler = supplier.get(SocialProviderResponseHandler.class);
         mHandler.init(getFlowParams());
