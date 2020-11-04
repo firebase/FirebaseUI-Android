@@ -11,6 +11,7 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -40,10 +41,16 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class AnonymousSignInHandlerTest {
 
-    @Mock FirebaseAuth mMockAuth;
-    AnonymousSignInHandler mHandler;
+    @Mock
+    FirebaseAuth mMockAuth;
 
-    @Mock Observer<Resource<IdpResponse>> mResponseObserver;
+    @Mock
+    HelperActivityBase mMockActivity;
+
+    @Mock
+    Observer<Resource<IdpResponse>> mResponseObserver;
+
+    AnonymousSignInHandler mHandler;
 
     @Before
     public void setUp() {
@@ -63,7 +70,7 @@ public class AnonymousSignInHandlerTest {
         when(mMockAuth.signInAnonymously())
                 .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
-        mHandler.startSignIn(null);
+        mHandler.startSignIn(mMockActivity);
 
         verify(mMockAuth).signInAnonymously();
 
@@ -86,7 +93,7 @@ public class AnonymousSignInHandlerTest {
         when(mMockAuth.signInAnonymously())
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(new Exception("FAILED")));
 
-        mHandler.startSignIn(null);
+        mHandler.startSignIn(mMockActivity);
 
         verify(mMockAuth).signInAnonymously();
 

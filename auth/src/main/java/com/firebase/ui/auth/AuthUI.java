@@ -109,7 +109,6 @@ public final class AuthUI {
     public static final String YAHOO_PROVIDER = "yahoo.com";
     public static final String APPLE_PROVIDER = "apple.com";
 
-
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
@@ -1212,8 +1211,8 @@ public final class AuthUI {
         public static class GenericOAuthProviderBuilder extends Builder {
 
             public GenericOAuthProviderBuilder(@NonNull String providerId,
-                                        @NonNull String providerName,
-                                        int buttonId) {
+                                               @NonNull String providerName,
+                                               int buttonId) {
                 super(providerId);
 
                 Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");

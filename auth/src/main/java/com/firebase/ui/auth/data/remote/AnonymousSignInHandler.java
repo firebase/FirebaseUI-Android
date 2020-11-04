@@ -23,13 +23,13 @@ import androidx.annotation.VisibleForTesting;
 
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
+public class AnonymousSignInHandler extends SingleProviderSignInHandler<FlowParameters> {
 
     @VisibleForTesting
     public FirebaseAuth mAuth;
 
     public AnonymousSignInHandler(Application application) {
-        super(application);
+        super(application, AuthUI.ANONYMOUS_PROVIDER);
     }
 
     @Override
@@ -38,7 +38,10 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        super.startSignIn(auth, activity, providerId);
         setResult(Resource.<IdpResponse>forLoading());
 
         // Calling signInAnonymously() will always return the same anonymous user if already
@@ -75,12 +78,5 @@ public class AnonymousSignInHandler extends ProviderSignInBase<FlowParameters> {
     // meant to only retrieve remote provider data.
     private FirebaseAuth getAuth() {
         return AuthUI.getInstance(getArguments().appName).getAuth();
-    }
-
-    @Override
-    public void startSignIn(@NonNull FirebaseAuth auth,
-                            @NonNull HelperActivityBase activity,
-                            @NonNull String providerId) {
-        startSignIn(activity);
     }
 }

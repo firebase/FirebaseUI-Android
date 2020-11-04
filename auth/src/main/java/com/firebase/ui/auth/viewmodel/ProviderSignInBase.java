@@ -8,6 +8,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.firebase.auth.FirebaseAuth;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -17,6 +18,9 @@ import androidx.annotation.RestrictTo;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ProviderSignInBase<T> extends OperableViewModel<T, Resource<IdpResponse>> {
+
+    private boolean mUseEmulator = false;
+
     protected ProviderSignInBase(Application application) {
         super(application);
     }
@@ -26,7 +30,10 @@ public abstract class ProviderSignInBase<T> extends OperableViewModel<T, Resourc
      *
      * @param activity from which to start the login, DO NOT USE OUTSIDE OF THIS METHOD!!!
      */
-    public abstract void startSignIn(@NonNull HelperActivityBase activity);
+    @CallSuper
+    public void startSignIn(@NonNull HelperActivityBase activity) {
+        this.mUseEmulator = activity.getAuthUI().isUseEmulator();
+    }
 
 
     /**
@@ -37,9 +44,24 @@ public abstract class ProviderSignInBase<T> extends OperableViewModel<T, Resourc
      * @param activity   from which to start the login, DO NOT USE OUTSIDE OF THIS METHOD!!!
      * @param providerId the provider to sign-in with (e.g. "microsoft.com")
      */
-    public abstract void startSignIn(@NonNull FirebaseAuth auth,
-                                     @NonNull HelperActivityBase activity,
-                                     @NonNull String providerId);
+    @CallSuper
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        this.mUseEmulator = activity.getAuthUI().isUseEmulator();
+    }
 
     public abstract void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
+
+    protected boolean isUseEmulator() {
+        return mUseEmulator;
+    }
+
+    /**
+     * Just a convenience method that makes certain chaining logic easier.
+     */
+    public ProviderSignInBase<T> initWith(T args) {
+        super.init(args);
+        return this;
+    }
 }

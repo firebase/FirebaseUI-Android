@@ -21,9 +21,7 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import androidx.annotation.NonNull;
@@ -63,25 +61,30 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         mHandler = supplier.get(SocialProviderResponseHandler.class);
         mHandler.init(getFlowParams());
 
+        boolean useEmulator = getAuthUI().isUseEmulator();
+
         switch (provider) {
             case GoogleAuthProvider.PROVIDER_ID:
-                GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
-                google.init(new GoogleSignInHandler.Params(providerConfig, user.getEmail()));
-                mProvider = google;
+                if (useEmulator) {
+                    mProvider = supplier.get(GenericIdpSignInHandler.class)
+                            .initWith(GenericIdpSignInHandler.getGenericGoogleConfig());
+                } else {
+                    mProvider = supplier.get(GoogleSignInHandler.class).initWith(
+                            new GoogleSignInHandler.Params(providerConfig, user.getEmail()));
+                }
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
-                facebook.init(providerConfig);
-                mProvider = facebook;
+                if (useEmulator) {
+                    mProvider = supplier.get(GenericIdpSignInHandler.class)
+                            .initWith(GenericIdpSignInHandler.getGenericFacebookConfig());
+                } else {
+                    mProvider = supplier.get(FacebookSignInHandler.class).initWith(providerConfig);
+                }
                 break;
             default:
                 if (!TextUtils.isEmpty(
                         providerConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
-                    GenericIdpSignInHandler genericIdp =
-                            supplier.get(GenericIdpSignInHandler.class);
-                    genericIdp.init(providerConfig);
-                    mProvider = genericIdp;
-
+                    mProvider = supplier.get(GenericIdpSignInHandler.class).initWith(providerConfig);
                     break;
                 }
                 throw new IllegalStateException("Invalid provider id: " + provider);
@@ -90,6 +93,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
+                // TODO: Audit this use of SOCIAL_PROVIDERS
                 if (AuthUI.SOCIAL_PROVIDERS.contains(provider) || !response.isSuccessful()) {
                     mHandler.startSignIn(response);
                     return;

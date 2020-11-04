@@ -5,6 +5,7 @@ import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.FirebaseUiUserCollisionException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 
 import android.app.Application;
@@ -31,10 +32,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthCredential;
 import com.google.firebase.auth.OAuthProvider;
 
@@ -44,30 +47,41 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
 
-    private boolean mUseEmulator = false;
-
     public GenericIdpSignInHandler(Application application) {
         super(application);
     }
 
+    @NonNull
+    public static AuthUI.IdpConfig getGenericGoogleConfig() {
+        return new AuthUI.IdpConfig.GenericOAuthProviderBuilder(
+                GoogleAuthProvider.PROVIDER_ID,
+                "Google",
+                R.layout.fui_idp_button_google
+        ).build();
+    }
+
+    @NonNull
+    public static AuthUI.IdpConfig getGenericFacebookConfig() {
+        return new AuthUI.IdpConfig.GenericOAuthProviderBuilder(
+                FacebookAuthProvider.PROVIDER_ID,
+                "Facebook",
+                R.layout.fui_idp_button_facebook
+        ).build();
+    }
+
     @Override
     public void startSignIn(@NonNull HelperActivityBase activity) {
+        super.startSignIn(activity);
         setResult(Resource.<IdpResponse>forLoading());
-
-        FlowParameters flowParameters = activity.getFlowParams();
-
-        AuthUI authUI = AuthUI.getInstance(flowParameters.appName);
-        startSignIn(authUI.getAuth(), activity, getArguments().getProviderId());
+        startSignIn(activity.getAuth(), activity, getArguments().getProviderId());
     }
 
     @Override
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
+        super.startSignIn(auth, activity, providerId);
         setResult(Resource.<IdpResponse>forLoading());
-
-        AuthUI authUI = AuthUI.getInstance(activity.getFlowParams().appName);
-        mUseEmulator = authUI.isUseEmulator();
 
         FlowParameters flowParameters = activity.getFlowParams();
         OAuthProvider provider = buildOAuthProvider(providerId, auth);
@@ -229,11 +243,11 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                                  boolean isNewUser,
                                  boolean setPendingCredential) {
 
-        String accessToken = mUseEmulator
+        String accessToken = isUseEmulator()
                 ? "fake_access_token"
                 : credential.getAccessToken();
 
-        String secret = mUseEmulator
+        String secret = isUseEmulator()
                 ? "fake_secret"
                 : credential.getAccessToken();
 

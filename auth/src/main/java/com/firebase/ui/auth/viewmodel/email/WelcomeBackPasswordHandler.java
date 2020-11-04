@@ -71,6 +71,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
         if (authOperationManager.canUpgradeAnonymous(getAuth(), getArguments())) {
             final AuthCredential credToValidate = EmailAuthProvider.getCredential(email, password);
 
+            // TODO: Audit this use of SOCIAL_PROVIDERS
             // Check to see if we need to link (for social providers with the same email)
             if (AuthUI.SOCIAL_PROVIDERS.contains(inputResponse.getProviderType())) {
                 // Add the provider to the same account before triggering a merge failure.

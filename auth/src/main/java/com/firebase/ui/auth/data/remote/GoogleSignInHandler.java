@@ -31,14 +31,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.Params> {
+public class GoogleSignInHandler extends SingleProviderSignInHandler<GoogleSignInHandler.Params> {
     private static final String TAG = "GoogleSignInHandler";
 
     private AuthUI.IdpConfig mConfig;
     @Nullable private String mEmail;
 
     public GoogleSignInHandler(Application application) {
-        super(application);
+        super(application, GoogleAuthProvider.PROVIDER_ID);
     }
 
     private static IdpResponse createIdpResponse(GoogleSignInAccount account) {
@@ -59,7 +59,11 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
+        super.startSignIn(auth, activity, providerId);
+        super.startSignIn(activity);
         start();
     }
 
@@ -126,12 +130,5 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
             this.config = config;
             this.email = email;
         }
-    }
-
-    @Override
-    public void startSignIn(@NonNull FirebaseAuth auth,
-                            @NonNull HelperActivityBase activity,
-                            @NonNull String providerId) {
-        startSignIn(activity);
     }
 }

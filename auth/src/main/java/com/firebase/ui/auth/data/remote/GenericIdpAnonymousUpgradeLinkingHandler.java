@@ -27,25 +27,23 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
 
     @Override
     public void startSignIn(@NonNull HelperActivityBase activity) {
+        super.startSignIn(activity);
         setResult(Resource.<IdpResponse>forLoading());
-
-        FlowParameters flowParameters = activity.getFlowParams();
-
-        startSignIn(AuthUI.getInstance(flowParameters.appName).getAuth(),
-                activity, getArguments().getProviderId());
+        startSignIn(activity.getAuth(), activity, getArguments().getProviderId());
     }
 
     @Override
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
+        super.startSignIn(auth, activity, providerId);
         setResult(Resource.<IdpResponse>forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
         OAuthProvider provider = buildOAuthProvider(providerId, auth);
         if (flowParameters != null
                 && AuthOperationManager.getInstance().canUpgradeAnonymous(auth, flowParameters)) {
-                handleAnonymousUpgradeLinkingFlow(activity, provider, flowParameters);
+            handleAnonymousUpgradeLinkingFlow(activity, provider, flowParameters);
             return;
         }
 
