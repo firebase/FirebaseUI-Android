@@ -62,7 +62,7 @@ public class SmartLockHandlerTest {
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID));
 
-        mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials);
         mHandler.setResponse(new IdpResponse.Builder(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build()
         ).build());
