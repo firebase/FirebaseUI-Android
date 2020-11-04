@@ -1,11 +1,47 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
-    <!-- See auth/src/main/res/values/config.xml for documentation -->
+<resources>
+    <!-- Example: project-id.firebaseapp.com. Used for OAuth redirects -->
+    <string name="firebase_web_host" translatable="false">firuidemo.firebaseapp.com</string>
 
-    <string name="firebase_web_host" translatable="false">CHANGE-ME</string>
+    <!--
+    The Facebook Application ID associated with this Android application. To
+    use Facebook accounts with the demo application, register an application
+    and provide your value here.
+    -->
+    <string name="facebook_application_id" translatable="false">594911404040369</string>
 
-    <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <!--
+    Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs.
+    -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fb594911404040369</string>
 
-    <string name="github_client_id" translatable="false">CHANGE-ME</string>
-    <string name="github_client_secret" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
+    application with Twitter and provide the following two values.
+    -->
+    <string name="twitter_consumer_key" translatable="false">2XBO5vJdVSExhe43bkv0yHd8J</string>
+
+    <!--
+    Your Twitter Consumer Secret
+
+    WARNING: By obtaining your Consumer Key and Consumer Secret other programs can perform API
+    operations as your app. Embedding the Consumer Key and Consumer Secret in your app, no matter
+    how obfuscated, makes it vulnerable to being stolen.
+    -->
+    <string name="twitter_consumer_secret" translatable="false">dhntHBkIHq4qFVj8RhCfPJDi45ym7YchLW24WEwaL4tFONe7cb</string>
+
+    <!--
+    Your GitHub Client ID. To use GitHub accounts with the demo application, register an
+    application with GitHub and provide the following two values.
+    -->
+    <string name="github_client_id" translatable="false">24480d307aa2b68bc759</string>
+
+    <!--
+    Your GitHub Client Secret.
+
+    WARNING: By obtaining your Client ID and Client Secret other programs can perform API
+    operations as your app. Embedding the Client ID and Client Secret in your app, no matter
+    how obfuscated, makes it vulnerable to being stolen.
+    -->
+    <string name="github_client_secret" translatable="false">338b5db22a32db37a88617ef6776da0e4d7b0a8a</string>
 </resources>

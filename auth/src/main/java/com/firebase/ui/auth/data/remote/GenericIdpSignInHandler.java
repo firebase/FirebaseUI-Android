@@ -29,7 +29,6 @@ import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +44,8 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
 
+    private boolean mUseEmulator = false;
+
     public GenericIdpSignInHandler(Application application) {
         super(application);
     }
@@ -55,8 +56,8 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
 
         FlowParameters flowParameters = activity.getFlowParams();
 
-        startSignIn(AuthUI.getInstance(flowParameters.appName).getAuth(),
-                activity, getArguments().getProviderId());
+        AuthUI authUI = AuthUI.getInstance(flowParameters.appName);
+        startSignIn(authUI.getAuth(), activity, getArguments().getProviderId());
     }
 
     @Override
@@ -65,8 +66,11 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                             @NonNull String providerId) {
         setResult(Resource.<IdpResponse>forLoading());
 
+        AuthUI authUI = AuthUI.getInstance(activity.getFlowParams().appName);
+        mUseEmulator = authUI.isUseEmulator();
+
         FlowParameters flowParameters = activity.getFlowParams();
-        OAuthProvider provider = buildOAuthProvider(providerId);
+        OAuthProvider provider = buildOAuthProvider(providerId, auth);
         if (flowParameters != null
                 && AuthOperationManager.getInstance().canUpgradeAnonymous(auth, flowParameters)) {
             handleAnonymousUpgradeFlow(auth, activity, provider, flowParameters);
@@ -196,9 +200,9 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                         });
     }
 
-    protected OAuthProvider buildOAuthProvider(String providerId) {
+    protected OAuthProvider buildOAuthProvider(String providerId, FirebaseAuth auth) {
         OAuthProvider.Builder providerBuilder =
-                OAuthProvider.newBuilder(providerId);
+                OAuthProvider.newBuilder(providerId, auth);
 
         List<String> scopes =
                 getArguments().getParams().getStringArrayList(ExtraConstants.GENERIC_OAUTH_SCOPES);
@@ -224,14 +228,23 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                                  @NonNull OAuthCredential credential,
                                  boolean isNewUser,
                                  boolean setPendingCredential) {
+
+        String accessToken = mUseEmulator
+                ? "fake_access_token"
+                : credential.getAccessToken();
+
+        String secret = mUseEmulator
+                ? "fake_secret"
+                : credential.getAccessToken();
+
         IdpResponse.Builder response = new IdpResponse.Builder(
                 new User.Builder(
                         providerId, user.getEmail())
                         .setName(user.getDisplayName())
                         .setPhotoUri(user.getPhotoUrl())
                         .build())
-                .setToken(credential.getAccessToken())
-                .setSecret(credential.getSecret());
+                .setToken(accessToken)
+                .setSecret(secret);
 
         if (setPendingCredential) {
             response.setPendingCredential(credential);

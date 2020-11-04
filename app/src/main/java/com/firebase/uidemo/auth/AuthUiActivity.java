@@ -190,6 +190,17 @@ public class AuthUiActivity extends AppCompatActivity {
             }
         });
 
+        // useEmulator can't be reversed until the FirebaseApp is cleared, so we make this
+        // checkbox "sticky" until the app is restarted
+        mUseEmulator.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mUseEmulator.setEnabled(false);
+                }
+            }
+        });
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);

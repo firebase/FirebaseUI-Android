@@ -274,7 +274,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         final String providerId = idpConfig.getProviderId();
         final ProviderSignInBase<?> provider;
 
-        AuthUI authUI = AuthUI.getInstance(getFlowParams().appName);
+        AuthUI authUI = getAuthUI();
 
         switch (providerId) {
             case EMAIL_LINK_PROVIDER:
@@ -356,11 +356,16 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
 
             private void handleResponse(@NonNull IdpResponse response) {
+                // If we're using the emulator then the social flows actually use Generic IDP
+                // instead which means we shouldn't use the social response handler.
+                boolean handleSocialResponse = AuthUI.SOCIAL_PROVIDERS.contains(providerId)
+                        && !getAuthUI().isUseEmulator();
+
                 if (!response.isSuccessful()) {
                     // We have no idea what provider this error stemmed from so just forward
                     // this along to the handler.
                     mHandler.startSignIn(response);
-                } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
+                } else if (handleSocialResponse) {
                     // Don't use the response's provider since it can be different than the one
                     // that launched the sign-in attempt. Ex: the email flow is started, but
                     // ends up turning into a Google sign-in because that account already
@@ -368,9 +373,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     // started.
                     mHandler.startSignIn(response);
                 } else {
-                    // Email or phone: the credentials should have already been saved so
-                    // simply move along. Anononymous sign in also does not require any
-                    // other operations.
+                    // Email, phone, or generic: the credentials should have already been saved so
+                    // simply move along.
+                    // Anononymous sign in also does not require any other operations.
                     finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
                             response.toIntent());
                 }

@@ -59,8 +59,12 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
         return mParams;
     }
 
+    public AuthUI getAuthUI() {
+        return AuthUI.getInstance(getFlowParams().appName);
+    }
+
     public FirebaseAuth getAuth() {
-        return AuthUI.getInstance(getFlowParams().appName).getAuth();
+        return getAuthUI().getAuth();
     }
 
     public void finish(int resultCode, @Nullable Intent intent) {

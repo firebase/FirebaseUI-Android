@@ -13,7 +13,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.OAuthCredential;
@@ -43,7 +42,7 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
         setResult(Resource.<IdpResponse>forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
-        OAuthProvider provider = buildOAuthProvider(providerId);
+        OAuthProvider provider = buildOAuthProvider(providerId, auth);
         if (flowParameters != null
                 && AuthOperationManager.getInstance().canUpgradeAnonymous(auth, flowParameters)) {
                 handleAnonymousUpgradeLinkingFlow(activity, provider, flowParameters);
