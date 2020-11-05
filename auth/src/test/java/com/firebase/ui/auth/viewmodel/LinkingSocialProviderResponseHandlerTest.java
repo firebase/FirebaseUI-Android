@@ -79,7 +79,7 @@ public class LinkingSocialProviderResponseHandlerTest {
         mHandler = new LinkingSocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 GoogleAuthProvider.PROVIDER_ID));
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
     }
 
     @Test
@@ -279,7 +279,7 @@ public class LinkingSocialProviderResponseHandlerTest {
     private void setupAnonymousUpgrade() {
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 GoogleAuthProvider.PROVIDER_ID), true);
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
         when(mMockAuth.getCurrentUser()).thenReturn(mMockUser);
         when(mMockUser.isAnonymous()).thenReturn(true);
         AuthOperationManager.getInstance().mScratchAuth = mScratchMockAuth;
