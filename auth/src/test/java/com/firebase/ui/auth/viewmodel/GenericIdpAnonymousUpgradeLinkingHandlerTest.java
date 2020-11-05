@@ -15,9 +15,9 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.viewmodel.email.EmailLinkSignInHandler;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,9 +40,13 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,6 +65,7 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
     private static final String CUSTOM_PARAMETER_VALUE = "customParameterValue";
 
     private GenericIdpAnonymousUpgradeLinkingHandler mHandler;
+    private HelperActivityBase mMockActivity;
 
     @Mock
     private FirebaseAuth mMockAuth;
@@ -69,12 +74,6 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
 
     @Mock
     private FirebaseAuth mScratchMockAuth;
-
-    @Mock
-    private HelperActivityBase mMockActivity;
-
-    @Mock
-    private WelcomeBackIdpPrompt mMockWelcomeBackIdpPrompt;
 
     @Mock
     private Observer<Resource<IdpResponse>> mResponseObserver;
@@ -91,11 +90,10 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
                 = TestHelper.getFlowParameters(
                 Arrays.asList(MICROSOFT_PROVIDER, GoogleAuthProvider.PROVIDER_ID),
                 /* enableAnonymousUpgrade= */ true);
-        when(mMockActivity.getFlowParams()).thenReturn(testParams);
-        when(mMockWelcomeBackIdpPrompt.getFlowParams()).thenReturn(testParams);
+        mMockActivity = TestHelper.getHelperActivity(testParams);
 
-        mHandler = new GenericIdpAnonymousUpgradeLinkingHandler(
-                (Application) ApplicationProvider.getApplicationContext());
+        mHandler = spy(new GenericIdpAnonymousUpgradeLinkingHandler(
+                (Application) ApplicationProvider.getApplicationContext()));
 
         Map<String, String> customParams = new HashMap<>();
         customParams.put(CUSTOM_PARAMETER_KEY, CUSTOM_PARAMETER_VALUE);
@@ -112,6 +110,7 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
     @Test
     public void testStartSignIn_anonymousUpgradeLinkingFlow_expectIdpResponseWithCredential() {
         setupAnonymousUpgrade();
+
         AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
         authOperationManager.mScratchAuth = mScratchMockAuth;
 
@@ -128,10 +127,11 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
         when(mMockUser.getDisplayName()).thenReturn(DISPLAY_NAME);
         when(mMockUser.getPhotoUrl()).thenReturn(new Uri.Builder().build());
 
-        mHandler.startSignIn(mMockAuth, mMockWelcomeBackIdpPrompt, MICROSOFT_PROVIDER);
+        mockOAuthProvider(MICROSOFT_PROVIDER);
+        mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
-        verify(mScratchMockAuth).startActivityForSignInWithProvider(eq(mMockWelcomeBackIdpPrompt),
+        verify(mScratchMockAuth).startActivityForSignInWithProvider(eq(mMockActivity),
                 providerCaptor.capture());
         assertThat(providerCaptor.getValue().getProviderId()).isEqualTo(MICROSOFT_PROVIDER);
 
@@ -151,5 +151,14 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
         // Mock isAnonymous() to return true so canUpgradeAnonymous will return true
         when(mMockUser.isAnonymous()).thenReturn(true);
         when(mMockAuth.getCurrentUser()).thenReturn(mMockUser);
+    }
+
+    private void mockOAuthProvider(String providerId) {
+        // TODO(samstern): I wish we did not have to do this but the OAuthProvider() builder
+        //                 throws a NPE and we can't fix it due to b/172544960
+        OAuthProvider mockProvider = mock(OAuthProvider.class);
+        when(mockProvider.getProviderId()).thenReturn(providerId);
+        doReturn(mockProvider).when(mHandler)
+                .buildOAuthProvider(anyString(), any(FirebaseAuth.class));
     }
 }

@@ -25,8 +25,9 @@ public class PhoneSignInHandler extends SingleProviderSignInHandler<AuthUI.IdpCo
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
-        super.startSignIn(activity);
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
         activity.startActivityForResult(
                 PhoneActivity.createIntent(
                         activity, activity.getFlowParams(), getArguments().getParams()),

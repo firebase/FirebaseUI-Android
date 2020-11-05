@@ -62,8 +62,6 @@ public class GoogleSignInHandler extends SingleProviderSignInHandler<GoogleSignI
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        super.startSignIn(auth, activity, providerId);
-        super.startSignIn(activity);
         start();
     }
 

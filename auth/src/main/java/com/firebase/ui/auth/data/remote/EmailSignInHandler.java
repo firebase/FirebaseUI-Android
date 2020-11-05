@@ -30,7 +30,6 @@ public class EmailSignInHandler extends SingleProviderSignInHandler<Void> {
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        super.startSignIn(auth, activity, providerId);
         activity.startActivityForResult(
                 EmailActivity.createIntent(activity, activity.getFlowParams()),
                 RequestCodes.EMAIL_FLOW);

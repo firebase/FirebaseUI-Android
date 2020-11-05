@@ -44,7 +44,6 @@ public class AnonymousSignInHandlerTest {
     @Mock
     FirebaseAuth mMockAuth;
 
-    @Mock
     HelperActivityBase mMockActivity;
 
     @Mock
@@ -57,8 +56,10 @@ public class AnonymousSignInHandlerTest {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new AnonymousSignInHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(new ArrayList<String>());
+        mMockActivity = TestHelper.getHelperActivity(testParams);
+
+        mHandler = new AnonymousSignInHandler((Application) ApplicationProvider.getApplicationContext());
         mHandler.init(testParams);
         mHandler.mAuth = mMockAuth;
     }

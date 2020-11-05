@@ -83,8 +83,6 @@ public class FacebookSignInHandler extends SingleProviderSignInHandler<AuthUI.Id
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        super.startSignIn(auth, activity, providerId);
-        super.startSignIn(activity);
         WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
         LoginManager.getInstance().logInWithReadPermissions(activity, mPermissions);
     }

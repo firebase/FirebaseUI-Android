@@ -41,7 +41,6 @@ public class AnonymousSignInHandler extends SingleProviderSignInHandler<FlowPara
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        super.startSignIn(auth, activity, providerId);
         setResult(Resource.<IdpResponse>forLoading());
 
         // Calling signInAnonymously() will always return the same anonymous user if already

@@ -2,7 +2,6 @@ package com.firebase.ui.auth.data.remote;
 
 import android.app.Application;
 
-import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 
@@ -20,8 +19,7 @@ public abstract class SingleProviderSignInHandler<T> extends ProviderSignInBase<
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
-        super.startSignIn(activity);
+    public final void startSignIn(@NonNull HelperActivityBase activity) {
         this.startSignIn(activity.getAuth(), activity, mProviderId);
     }
 }

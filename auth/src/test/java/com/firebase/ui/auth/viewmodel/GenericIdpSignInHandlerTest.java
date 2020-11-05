@@ -48,9 +48,13 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,15 +73,12 @@ public class GenericIdpSignInHandlerTest {
     private static final String SCOPE = "scope";
 
     private GenericIdpSignInHandler mHandler;
+    private HelperActivityBase mMockActivity;
 
     @Mock
     private FirebaseAuth mMockAuth;
     @Mock
     private FirebaseUser mMockUser;
-
-    @Mock
-    private HelperActivityBase mMockActivity;
-
     @Mock
     private Observer<Resource<IdpResponse>> mResponseObserver;
 
@@ -90,10 +91,10 @@ public class GenericIdpSignInHandlerTest {
                 = TestHelper.getFlowParameters(
                 Arrays.asList(MICROSOFT_PROVIDER, GoogleAuthProvider.PROVIDER_ID),
                 /* enableAnonymousUpgrade= */ true);
-        when(mMockActivity.getFlowParams()).thenReturn(testParams);
+        mMockActivity = TestHelper.getHelperActivity(testParams);
 
-        mHandler = new GenericIdpSignInHandler(
-                (Application) ApplicationProvider.getApplicationContext());
+        mHandler = spy(new GenericIdpSignInHandler(
+                (Application) ApplicationProvider.getApplicationContext()));
 
         // See https://github.com/firebase/FirebaseUI-Android/issues/1805
         Map<String, String> customParams = new HashMap<>();
@@ -115,6 +116,7 @@ public class GenericIdpSignInHandlerTest {
         when(mMockAuth.startActivityForSignInWithProvider(any(Activity.class), any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
+        mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
@@ -155,6 +157,7 @@ public class GenericIdpSignInHandlerTest {
         when(mMockAuth.startActivityForSignInWithProvider(any(Activity.class), any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(collisionException));
 
+        mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
@@ -186,6 +189,7 @@ public class GenericIdpSignInHandlerTest {
                 any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(firebaseAuthException));
 
+        mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor
@@ -216,7 +220,7 @@ public class GenericIdpSignInHandlerTest {
                 any(Activity.class), any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
-
+        mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor
@@ -263,6 +267,7 @@ public class GenericIdpSignInHandlerTest {
                         new FakeSignInMethodQueryResult(Arrays.asList(
                                 MICROSOFT_PROVIDER))));
 
+        mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
@@ -308,6 +313,7 @@ public class GenericIdpSignInHandlerTest {
                         new FakeSignInMethodQueryResult(Arrays.asList(
                                 GoogleAuthProvider.PROVIDER_ID))));
 
+        mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
@@ -334,5 +340,14 @@ public class GenericIdpSignInHandlerTest {
         // Mock isAnonymous() to return true so canUpgradeAnonymous will return true
         when(mMockUser.isAnonymous()).thenReturn(true);
         when(mMockAuth.getCurrentUser()).thenReturn(mMockUser);
+    }
+
+    private void mockOAuthProvider(String providerId) {
+        // TODO(samstern): I wish we did not have to do this but the OAuthProvider() builder
+        //                 throws a NPE and we can't fix it due to b/172544960
+        OAuthProvider mockProvider = mock(OAuthProvider.class);
+        when(mockProvider.getProviderId()).thenReturn(providerId);
+        doReturn(mockProvider).when(mHandler)
+                .buildOAuthProvider(anyString(), any(FirebaseAuth.class));
     }
 }

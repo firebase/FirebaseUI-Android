@@ -70,8 +70,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
-        super.startSignIn(activity);
+    public final void startSignIn(@NonNull HelperActivityBase activity) {
         setResult(Resource.<IdpResponse>forLoading());
         startSignIn(activity.getAuth(), activity, getArguments().getProviderId());
     }
@@ -80,7 +79,6 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        super.startSignIn(auth, activity, providerId);
         setResult(Resource.<IdpResponse>forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
@@ -97,12 +95,15 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     protected void handleNormalSignInFlow(final FirebaseAuth auth,
                                           final HelperActivityBase activity,
                                           final OAuthProvider provider) {
+        final boolean useEmulator = activity.getAuthUI().isUseEmulator();
         auth.startActivityForSignInWithProvider(activity, provider)
                 .addOnSuccessListener(
                         new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(@NonNull AuthResult authResult) {
-                                handleSuccess(provider.getProviderId(),
+                                handleSuccess(
+                                        useEmulator,
+                                        provider.getProviderId(),
                                         authResult.getUser(),
                                         (OAuthCredential) authResult.getCredential(),
                                         authResult.getAdditionalUserInfo().isNewUser());
@@ -146,13 +147,16 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                                             final HelperActivityBase activity,
                                             final OAuthProvider provider,
                                             final FlowParameters flowParameters) {
+        final boolean useEmulator = activity.getAuthUI().isUseEmulator();
         auth.getCurrentUser()
                 .startActivityForLinkWithProvider(activity, provider)
                 .addOnSuccessListener(
                         new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(@NonNull AuthResult authResult) {
-                                handleSuccess(provider.getProviderId(),
+                                handleSuccess(
+                                        useEmulator,
+                                        provider.getProviderId(),
                                         authResult.getUser(),
                                         (OAuthCredential) authResult.getCredential(),
                                         authResult.getAdditionalUserInfo().isNewUser());
@@ -214,7 +218,8 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                         });
     }
 
-    protected OAuthProvider buildOAuthProvider(String providerId, FirebaseAuth auth) {
+    @VisibleForTesting
+    public OAuthProvider buildOAuthProvider(String providerId, FirebaseAuth auth) {
         OAuthProvider.Builder providerBuilder =
                 OAuthProvider.newBuilder(providerId, auth);
 
@@ -237,17 +242,18 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         return providerBuilder.build();
     }
 
-    protected void handleSuccess(@NonNull String providerId,
+    protected void handleSuccess(boolean isUseEmulator,
+                                 @NonNull String providerId,
                                  @NonNull FirebaseUser user,
                                  @NonNull OAuthCredential credential,
                                  boolean isNewUser,
                                  boolean setPendingCredential) {
 
-        String accessToken = isUseEmulator()
+        String accessToken = isUseEmulator
                 ? "fake_access_token"
                 : credential.getAccessToken();
 
-        String secret = isUseEmulator()
+        String secret = isUseEmulator
                 ? "fake_secret"
                 : credential.getAccessToken();
 
@@ -268,11 +274,12 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         setResult(Resource.<IdpResponse>forSuccess(response.build()));
     }
 
-    protected void handleSuccess(@NonNull String providerId,
+    protected void handleSuccess(boolean isUseEmulator,
+                                 @NonNull String providerId,
                                  @NonNull FirebaseUser user,
                                  @NonNull OAuthCredential credential,
                                  boolean isNewUser) {
-        handleSuccess(providerId, user, credential, isNewUser, /* setPendingCredential= */true);
+        handleSuccess(isUseEmulator, providerId, user, credential, isNewUser, /* setPendingCredential= */true);
     }
 
 

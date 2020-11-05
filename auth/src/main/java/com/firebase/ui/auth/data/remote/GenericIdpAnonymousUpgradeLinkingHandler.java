@@ -26,17 +26,9 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
-        super.startSignIn(activity);
-        setResult(Resource.<IdpResponse>forLoading());
-        startSignIn(activity.getAuth(), activity, getArguments().getProviderId());
-    }
-
-    @Override
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        super.startSignIn(auth, activity, providerId);
         setResult(Resource.<IdpResponse>forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
@@ -53,13 +45,16 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
     private void handleAnonymousUpgradeLinkingFlow(final HelperActivityBase activity,
                                                    final OAuthProvider provider,
                                                    final FlowParameters flowParameters) {
+        final boolean useEmulator = activity.getAuthUI().isUseEmulator();
         AuthOperationManager.getInstance().safeGenericIdpSignIn(activity, provider, flowParameters)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Pass the credential so we can sign-in on the after the merge
                         // conflict is resolved.
-                        handleSuccess(provider.getProviderId(),
+                        handleSuccess(
+                                useEmulator,
+                                provider.getProviderId(),
                                 authResult.getUser(), (OAuthCredential) authResult.getCredential(),
                                 /* setPendingCredential= */true);
                     }
