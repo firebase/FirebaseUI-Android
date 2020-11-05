@@ -218,7 +218,6 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                         });
     }
 
-    @VisibleForTesting
     public OAuthProvider buildOAuthProvider(String providerId, FirebaseAuth auth) {
         OAuthProvider.Builder providerBuilder =
                 OAuthProvider.newBuilder(providerId, auth);
