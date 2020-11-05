@@ -9,6 +9,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
@@ -29,12 +30,11 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
 
     public void verifyPhoneNumber(@NonNull Activity activity, final String number, boolean force) {
         setResult(Resource.<PhoneVerification>forLoading());
-        getPhoneAuth().verifyPhoneNumber(
-                number,
-                AUTO_RETRIEVAL_TIMEOUT_SECONDS,
-                TimeUnit.SECONDS,
-                activity,
-                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        PhoneAuthOptions.Builder optionsBuilder = PhoneAuthOptions.newBuilder(getAuth())
+                .setPhoneNumber(number)
+                .setTimeout(AUTO_RETRIEVAL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .setActivity(activity)
+                .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential credential) {
                         setResult(Resource.forSuccess(new PhoneVerification(
@@ -42,7 +42,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
                     }
 
                     @Override
-                    public void onVerificationFailed(FirebaseException e) {
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
                         setResult(Resource.<PhoneVerification>forFailure(e));
                     }
 
@@ -54,8 +54,11 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
                         setResult(Resource.<PhoneVerification>forFailure(
                                 new PhoneNumberVerificationRequiredException(number)));
                     }
-                },
-                force ? mForceResendingToken : null);
+                });
+        if (force) {
+            optionsBuilder.setForceResendingToken(mForceResendingToken);
+        }
+        PhoneAuthProvider.verifyPhoneNumber(optionsBuilder.build());
     }
 
     public void submitVerificationCode(String number, String code) {

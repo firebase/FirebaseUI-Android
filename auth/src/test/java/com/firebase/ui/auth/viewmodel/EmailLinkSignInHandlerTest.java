@@ -659,7 +659,7 @@ public class EmailLinkSignInHandlerTest {
                 EmailAuthProvider.PROVIDER_ID), /* enableAnonymousUpgrade */ true);
 
         testParams.emailLink = mHandler.getArguments().emailLink;
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
 
         // Mock isAnonymous() to return true so canUpgradeAnonymous will return true
         when(mMockAnonUser.isAnonymous()).thenReturn(true);
@@ -679,6 +679,6 @@ public class EmailLinkSignInHandlerTest {
 
         testParams.emailLink = EMAIL_LINK + continueUrlBuilder.build();
 
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
     }
 }
