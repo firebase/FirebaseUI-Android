@@ -1,1 +1,2 @@
 - Update all dependencies to latest major version.
+- [Auth] Remove SupportVectorDrawablesButton (#1860) (contributed by @AryanNajafi)
