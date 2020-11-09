@@ -73,12 +73,7 @@
 
     </FrameLayout>
 
-    <!--
-      NOTE: This sample app uses this class from the FirebaseUI library to show the Google Sign
-      in button. However this button is NOT considered part of the public API and you should not
-      use it in your own app.
-    -->
-    <com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+    <Button
         android:id="@+id/custom_google_signin_button"
         style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
         android:layout_width="wrap_content"
