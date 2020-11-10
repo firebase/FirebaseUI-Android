@@ -1,2 +1,3 @@
-- Update all dependencies to latest major version.
-- Add `AuthUI#useEmulator()` method  to use FirebaseUI with the Firebase Auth Emulator (#1849)
+- [All] Update all dependencies to latest major version.
+- [Auth] Remove SupportVectorDrawablesButton (#1860) (contributed by @AryanNajafi)
+- [Auth] Add `AuthUI#useEmulator()` method  to use FirebaseUI with the Firebase Auth Emulator (#1849)
