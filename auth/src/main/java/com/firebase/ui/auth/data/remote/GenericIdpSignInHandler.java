@@ -248,13 +248,16 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
                                  boolean isNewUser,
                                  boolean setPendingCredential) {
 
-        String accessToken = isUseEmulator
-                ? "fake_access_token"
-                : credential.getAccessToken();
+        String accessToken = credential.getAccessToken();
+        // noinspection ConstantConditions
+        if (accessToken == null && isUseEmulator) {
+            accessToken = "fake_access_token";
+        }
 
-        String secret = isUseEmulator
-                ? "fake_secret"
-                : credential.getAccessToken();
+        String secret = credential.getSecret();
+        if (secret == null && isUseEmulator) {
+            secret = "fake_secret";
+        }
 
         IdpResponse.Builder response = new IdpResponse.Builder(
                 new User.Builder(

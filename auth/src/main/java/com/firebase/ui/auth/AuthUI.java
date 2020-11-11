@@ -489,6 +489,8 @@ public final class AuthUI {
      * @see FirebaseAuth#useEmulator(String, int)
      */
     public void useEmulator(@NonNull String host, int port) {
+        Preconditions.checkArgument(port >= 0, "Port must be >= 0");
+        Preconditions.checkArgument(port <= 65535, "Port must be <= 65535");
         mEmulatorHost = host;
         mEmulatorPort = port;
 
