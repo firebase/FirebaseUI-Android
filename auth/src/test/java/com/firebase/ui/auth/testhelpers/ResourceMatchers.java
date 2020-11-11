@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.testhelpers;
 
 import com.firebase.ui.auth.FirebaseUiException;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 

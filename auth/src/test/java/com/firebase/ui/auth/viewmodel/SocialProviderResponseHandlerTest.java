@@ -73,7 +73,7 @@ public class SocialProviderResponseHandlerTest {
         mHandler = new SocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
 
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
     }
 
     @Test
@@ -334,7 +334,7 @@ public class SocialProviderResponseHandlerTest {
         // enableAnonymousUpgrade must be set to true
         FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS,
                 /* enableAnonymousUpgrade */ true);
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
 
         when(mUser.isAnonymous()).thenReturn(true);
         when(mMockAuth.getCurrentUser()).thenReturn(mUser);

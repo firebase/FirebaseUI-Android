@@ -32,6 +32,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [Demo](#demo)
 1. [Configuration](#configuration)
    1. [Provider config](#identity-provider-configuration)
+   1. [Auth emulator config](#auth-emulator-configuration)
 1. [Usage instructions](#using-firebaseui-for-authentication)
    1. [AuthUI sign-in](#authui-sign-in)
    1. [Handling responses](#handling-the-sign-in-response)
@@ -65,11 +66,11 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-auth:7.0.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/blob/master/CHANGELOG.md
-    implementation 'com.facebook.android:facebook-login:4.x'
+    implementation 'com.facebook.android:facebook-login:8.1.0'
 }
 ```
 
@@ -149,6 +150,25 @@ Note: unlike other sign-in methods, signing in with these providers involves the
 
 You must enable the "Request email addresses from users" permission in the "Permissions" tab of your
 Twitter app.
+
+### Auth emulator configuration
+
+As of version `7.0.0` FirebaseUI is compatible with the Firebase Authentication emulator:
+https://firebase.google.com/docs/emulator-suite
+
+Use the `useEmulator` method to point an AuthUI instance at the emulator:
+
+```java
+AuthUI authUI = AuthUI.getInstance();
+
+// "10.0.2.2" is the special host value for contacting "localhost" from within
+// the Android Emulator
+authUI.useEmulator("10.0.2.2", 9099);
+```
+
+By default Android blocks connections to `http://` endpoints such as the Auth emulator.
+To allow your app to communicate with the Auth emulator, use a [network security configuration](https://developer.android.com/training/articles/security-config)
+or set `android:usesCleartextTraffic="true"` in `AndroidManifest.xml`.
 
 ## Using FirebaseUI for authentication
 

@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.GoogleApiUtils;
@@ -9,7 +10,6 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -19,7 +19,6 @@ import androidx.annotation.VisibleForTesting;
 public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParameters, Resource<T>> {
     private CredentialsClient mCredentialsClient;
     private FirebaseAuth mAuth;
-    private PhoneAuthProvider mPhoneAuth;
 
     protected AuthViewModelBase(Application application) {
         super(application);
@@ -29,7 +28,7 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
     protected void onCreate() {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         mAuth = FirebaseAuth.getInstance(app);
-        mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
+
         mCredentialsClient = GoogleApiUtils.getCredentialsClient(getApplication());
     }
 
@@ -42,10 +41,6 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
         return mAuth;
     }
 
-    protected PhoneAuthProvider getPhoneAuth() {
-        return mPhoneAuth;
-    }
-
     protected CredentialsClient getCredentialsClient() {
         return mCredentialsClient;
     }
@@ -53,11 +48,9 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
     @VisibleForTesting
     public void initializeForTesting(FlowParameters parameters,
                                      FirebaseAuth auth,
-                                     CredentialsClient client,
-                                     PhoneAuthProvider phoneAuth) {
+                                     CredentialsClient client) {
         setArguments(parameters);
         mAuth = auth;
         mCredentialsClient = client;
-        mPhoneAuth = phoneAuth;
     }
 }

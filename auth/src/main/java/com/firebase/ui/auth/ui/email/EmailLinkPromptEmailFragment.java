@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 /** Prompts the user to enter their email to finish the cross-device email link sign in flow. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -90,9 +90,9 @@ public class EmailLinkPromptEmailFragment extends FragmentBase implements
     }
 
     private void initHandler() {
-        mHandler = ViewModelProviders.of(this).get(EmailLinkSignInHandler.class);
+        mHandler = new ViewModelProvider(this).get(EmailLinkSignInHandler.class);
         mHandler.init(getFlowParams());
-        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
+        mHandler.getOperation().observe(getViewLifecycleOwner(), new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 mListener.onEmailPromptSuccess(response);

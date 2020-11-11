@@ -51,7 +51,7 @@ public class RecoverPasswordHandlerTest {
 
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID));
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
 
         mPasswordResetSettings = ActionCodeSettings.newBuilder()
                 .setAndroidPackageName("com.firebase.uidemo", true, null)

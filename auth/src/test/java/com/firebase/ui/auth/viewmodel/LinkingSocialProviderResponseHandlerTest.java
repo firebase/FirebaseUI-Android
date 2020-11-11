@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.OAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,8 +65,6 @@ public class LinkingSocialProviderResponseHandlerTest {
 
     @Mock FirebaseUser mMockUser;
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
-    @Mock
-    HelperActivityBase mMockActivity;
 
     private LinkingSocialProviderResponseHandler mHandler;
 
@@ -80,7 +77,7 @@ public class LinkingSocialProviderResponseHandlerTest {
         mHandler = new LinkingSocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 GoogleAuthProvider.PROVIDER_ID));
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
     }
 
     @Test
@@ -280,7 +277,7 @@ public class LinkingSocialProviderResponseHandlerTest {
     private void setupAnonymousUpgrade() {
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 GoogleAuthProvider.PROVIDER_ID), true);
-        mHandler.initializeForTesting(testParams, mMockAuth, null, null);
+        mHandler.initializeForTesting(testParams, mMockAuth, null);
         when(mMockAuth.getCurrentUser()).thenReturn(mMockUser);
         when(mMockUser.isAnonymous()).thenReturn(true);
         AuthOperationManager.getInstance().mScratchAuth = mScratchMockAuth;

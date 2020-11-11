@@ -16,7 +16,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * Invisible Activity used for saving credentials to SmartLock.
@@ -43,7 +43,7 @@ public class CredentialSaveActivity extends InvisibleActivityBase {
         final IdpResponse response = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
         Credential credential = getIntent().getParcelableExtra(ExtraConstants.CREDENTIAL);
 
-        mHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
+        mHandler = new ViewModelProvider(this).get(SmartLockHandler.class);
         mHandler.init(getFlowParams());
         mHandler.setResponse(response);
 
