@@ -15,7 +15,7 @@ androidx.lifecycle:lifecycle-extensions:2.2.0
 androidx.legacy:legacy-support-v4:1.0.0
 com.google.android.material:material:1.2.1
 com.google.android.gms:play-services-auth:19.0.0 (breaking)
-com.google.firebase:firebase-auth:19.0.0 (breaking)
+com.google.firebase:firebase-auth:20.0.0 (breaking)
 ```
 
 **Common**
