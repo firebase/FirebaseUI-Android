@@ -43,6 +43,7 @@ import java.util.List;
 import androidx.test.core.app.ApplicationProvider;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthMethodPickerActivityTest {

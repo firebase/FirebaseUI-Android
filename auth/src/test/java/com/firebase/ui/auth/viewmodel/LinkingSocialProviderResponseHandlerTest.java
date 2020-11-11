@@ -65,8 +65,6 @@ public class LinkingSocialProviderResponseHandlerTest {
 
     @Mock FirebaseUser mMockUser;
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
-    @Mock
-    HelperActivityBase mMockActivity;
 
     private LinkingSocialProviderResponseHandler mHandler;
 

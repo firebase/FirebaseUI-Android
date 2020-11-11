@@ -23,6 +23,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.ActionCodeSettings;
@@ -82,7 +83,9 @@ public final class TestHelper {
     }
 
     private static void initializeApp(Context context) {
-        if (!FirebaseApp.getApps(context).isEmpty()) return;
+        if (!FirebaseApp.getApps(context).isEmpty()) {
+            return;
+        }
 
         FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
                 .setApiKey("fake")
@@ -104,6 +107,17 @@ public final class TestHelper {
         when(user.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
 
         return user;
+    }
+
+    public static HelperActivityBase getHelperActivity(FlowParameters parameters) {
+        AuthUI authUI = AuthUI.getInstance(parameters.appName);
+
+        HelperActivityBase activity = mock(HelperActivityBase.class);
+        when(activity.getFlowParams()).thenReturn(parameters);
+        when(activity.getAuthUI()).thenReturn(authUI);
+        when(activity.getAuth()).thenReturn(authUI.getAuth());
+
+        return activity;
     }
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds) {

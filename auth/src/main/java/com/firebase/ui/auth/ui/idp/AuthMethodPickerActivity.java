@@ -48,10 +48,8 @@ import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -274,46 +272,40 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         final String providerId = idpConfig.getProviderId();
         final ProviderSignInBase<?> provider;
 
+        AuthUI authUI = getAuthUI();
+
         switch (providerId) {
-            case GoogleAuthProvider.PROVIDER_ID:
-                GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
-                google.init(new GoogleSignInHandler.Params(idpConfig));
-                provider = google;
-
-                break;
-            case FacebookAuthProvider.PROVIDER_ID:
-                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
-                facebook.init(idpConfig);
-                provider = facebook;
-
-                break;
             case EMAIL_LINK_PROVIDER:
             case EmailAuthProvider.PROVIDER_ID:
-                EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
-                email.init(null);
-                provider = email;
-
+                provider = supplier.get(EmailSignInHandler.class).initWith(null);
                 break;
             case PhoneAuthProvider.PROVIDER_ID:
-                PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
-                phone.init(idpConfig);
-                provider = phone;
-
+                provider = supplier.get(PhoneSignInHandler.class).initWith(idpConfig);
                 break;
             case AuthUI.ANONYMOUS_PROVIDER:
-                AnonymousSignInHandler anonymous = supplier.get(AnonymousSignInHandler.class);
-                anonymous.init(getFlowParams());
-                provider = anonymous;
-
+                provider = supplier.get(AnonymousSignInHandler.class).initWith(getFlowParams());
+                break;
+            case GoogleAuthProvider.PROVIDER_ID:
+                if (authUI.isUseEmulator()) {
+                    provider = supplier.get(GenericIdpSignInHandler.class)
+                            .initWith(GenericIdpSignInHandler.getGenericGoogleConfig());
+                } else {
+                    provider = supplier.get(GoogleSignInHandler.class).initWith(
+                            new GoogleSignInHandler.Params(idpConfig));
+                }
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                if (authUI.isUseEmulator()) {
+                    provider = supplier.get(GenericIdpSignInHandler.class)
+                            .initWith(GenericIdpSignInHandler.getGenericFacebookConfig());
+                } else {
+                    provider = supplier.get(FacebookSignInHandler.class).initWith(idpConfig);
+                }
                 break;
             default:
                 if (!TextUtils.isEmpty(
                         idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
-                    GenericIdpSignInHandler genericIdp =
-                            supplier.get(GenericIdpSignInHandler.class);
-                    genericIdp.init(idpConfig);
-                    provider = genericIdp;
-
+                    provider = supplier.get(GenericIdpSignInHandler.class).initWith(idpConfig);
                     break;
                 }
                 throw new IllegalStateException("Unknown provider: " + providerId);
@@ -338,11 +330,16 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
 
             private void handleResponse(@NonNull IdpResponse response) {
+                // If we're using the emulator then the social flows actually use Generic IDP
+                // instead which means we shouldn't use the social response handler.
+                boolean isSocialResponse = AuthUI.SOCIAL_PROVIDERS.contains(providerId)
+                        && !getAuthUI().isUseEmulator();
+
                 if (!response.isSuccessful()) {
                     // We have no idea what provider this error stemmed from so just forward
                     // this along to the handler.
                     mHandler.startSignIn(response);
-                } else if (AuthUI.SOCIAL_PROVIDERS.contains(providerId)) {
+                } else if (isSocialResponse) {
                     // Don't use the response's provider since it can be different than the one
                     // that launched the sign-in attempt. Ex: the email flow is started, but
                     // ends up turning into a Google sign-in because that account already
@@ -350,9 +347,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     // started.
                     mHandler.startSignIn(response);
                 } else {
-                    // Email or phone: the credentials should have already been saved so
-                    // simply move along. Anononymous sign in also does not require any
-                    // other operations.
+                    // Email, phone, or generic: the credentials should have already been saved so
+                    // simply move along.
+                    // Anononymous sign in also does not require any other operations.
                     finish(response.isSuccessful() ? RESULT_OK : RESULT_CANCELED,
                             response.toIntent());
                 }
@@ -366,9 +363,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     return;
                 }
 
-                FirebaseAuth auth = FirebaseAuth.getInstance(
-                        FirebaseApp.getInstance(getFlowParams().appName));
-                provider.startSignIn(auth, AuthMethodPickerActivity.this,
+                provider.startSignIn(getAuth(), AuthMethodPickerActivity.this,
                         idpConfig.getProviderId());
             }
         });

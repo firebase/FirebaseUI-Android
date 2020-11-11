@@ -109,6 +109,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.hint_selector_enabled) CheckBox mEnableHintSelector;
     @BindView(R.id.allow_new_email_accounts) CheckBox mAllowNewEmailAccounts;
     @BindView(R.id.require_name) CheckBox mRequireName;
+    @BindView(R.id.use_auth_emulator) CheckBox mUseEmulator;
 
     @NonNull
     public static Intent createIntent(@NonNull Context context) {
@@ -189,6 +190,17 @@ public class AuthUiActivity extends AppCompatActivity {
             }
         });
 
+        // useEmulator can't be reversed until the FirebaseApp is cleared, so we make this
+        // checkbox "sticky" until the app is restarted
+        mUseEmulator.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mUseEmulator.setEnabled(false);
+                }
+            }
+        });
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
@@ -233,8 +245,18 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @NonNull
+    public AuthUI getAuthUI() {
+        AuthUI authUI = AuthUI.getInstance();
+        if (mUseEmulator.isChecked()) {
+            authUI.useEmulator("10.0.2.2", 9099);
+        }
+
+        return authUI;
+    }
+
+    @NonNull
     public Intent buildSignInIntent(@Nullable String link) {
-        AuthUI.SignInIntentBuilder builder = AuthUI.getInstance().createSignInIntentBuilder()
+        AuthUI.SignInIntentBuilder builder = getAuthUI().createSignInIntentBuilder()
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
                 .setAvailableProviders(getSelectedProviders())
@@ -274,7 +296,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @OnClick(R.id.sign_in_silent)
     public void silentSignIn() {
-        AuthUI.getInstance().silentSignIn(this, getSelectedProviders())
+        getAuthUI().silentSignIn(this, getSelectedProviders())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

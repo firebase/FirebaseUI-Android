@@ -12,19 +12,22 @@ import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PhoneSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
+public class PhoneSignInHandler extends SingleProviderSignInHandler<AuthUI.IdpConfig> {
     public PhoneSignInHandler(Application application) {
-        super(application);
+        super(application, PhoneAuthProvider.PROVIDER_ID);
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
         activity.startActivityForResult(
                 PhoneActivity.createIntent(
                         activity, activity.getFlowParams(), getArguments().getParams()),
@@ -41,12 +44,5 @@ public class PhoneSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
                 setResult(Resource.forSuccess(response));
             }
         }
-    }
-
-    @Override
-    public void startSignIn(@NonNull FirebaseAuth auth,
-                            @NonNull HelperActivityBase activity,
-                            @NonNull String providerId) {
-        startSignIn(activity);
     }
 }

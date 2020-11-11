@@ -33,6 +33,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GenericIdpAnonymousUpgradeLinkingHandler;
+import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -41,9 +42,8 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
-import com.google.firebase.FirebaseApp;
+import com.google.android.gms.auth.api.Auth;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import android.text.TextUtils;
@@ -59,6 +59,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
     private Button mDoneButton;
     private ProgressBar mProgressBar;
+    private TextView mPromptText;
 
     public static Intent createIntent(
             Context context, FlowParameters flowParams, User existingUser) {
@@ -82,6 +83,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         mDoneButton = findViewById(R.id.welcome_back_idp_button);
         mProgressBar = findViewById(R.id.top_progress_bar);
+        mPromptText = findViewById(R.id.welcome_back_idp_prompt);
 
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
@@ -114,32 +116,34 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         String genericOAuthProviderId = config.getParams()
                 .getString(ExtraConstants.GENERIC_OAUTH_PROVIDER_ID);
 
+        boolean useEmulator = getAuthUI().isUseEmulator();
+
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
-                GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
-                google.init(new GoogleSignInHandler.Params(config, existingUser.getEmail()));
-                mProvider = google;
-
+                if (useEmulator) {
+                    mProvider = supplier.get(GenericIdpAnonymousUpgradeLinkingHandler.class)
+                            .initWith(GenericIdpSignInHandler.getGenericGoogleConfig());
+                } else {
+                    mProvider = supplier.get(GoogleSignInHandler.class).initWith(
+                            new GoogleSignInHandler.Params(config, existingUser.getEmail()));
+                }
                 providerName = getString(R.string.fui_idp_name_google);
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
-                facebook.init(config);
-                mProvider = facebook;
-
+                if (useEmulator) {
+                    mProvider = supplier.get(GenericIdpAnonymousUpgradeLinkingHandler.class)
+                            .initWith(GenericIdpSignInHandler.getGenericFacebookConfig());
+                } else {
+                    mProvider = supplier.get(FacebookSignInHandler.class).initWith(config);
+                }
                 providerName = getString(R.string.fui_idp_name_facebook);
                 break;
             default:
                 if (TextUtils.equals(providerId, genericOAuthProviderId)) {
-                    String genericOAuthProviderName = config.getParams()
+                    mProvider = supplier.get(GenericIdpAnonymousUpgradeLinkingHandler.class)
+                            .initWith(config);
+                    providerName = config.getParams()
                             .getString(ExtraConstants.GENERIC_OAUTH_PROVIDER_NAME);
-
-                    GenericIdpAnonymousUpgradeLinkingHandler genericIdp
-                            = supplier.get(GenericIdpAnonymousUpgradeLinkingHandler.class);
-                    genericIdp.init(config);
-                    mProvider = genericIdp;
-
-                    providerName = genericOAuthProviderName;
                 } else {
                     throw new IllegalStateException("Invalid provider id: " + providerId);
                 }
@@ -148,7 +152,10 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())
+                boolean isGenericIdp = getAuthUI().isUseEmulator()
+                        || !AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType());
+
+                if (isGenericIdp
                         && !response.hasCredentialForLinking()
                         && !handler.hasCredentialForLinking()) {
                     // Generic Idp does not return a credential - if this is not a linking flow,
@@ -165,7 +172,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         });
 
-        ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
+        mPromptText.setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
                 existingUser.getEmail(),
                 providerName));
@@ -173,10 +180,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         mDoneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth auth = FirebaseAuth.getInstance(
-                        FirebaseApp.getInstance(getFlowParams().appName));
-                mProvider.startSignIn(auth,
-                        WelcomeBackIdpPrompt.this, providerId);
+                mProvider.startSignIn(getAuth(), WelcomeBackIdpPrompt.this, providerId);
             }
         });
 
