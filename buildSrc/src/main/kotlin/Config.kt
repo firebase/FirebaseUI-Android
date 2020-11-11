@@ -50,7 +50,7 @@ object Config {
         }
 
         object PlayServices {
-            const val auth = "com.google.android.gms:play-services-auth:18.0.0"
+            const val auth = "com.google.android.gms:play-services-auth:19.0.0"
         }
 
         object Provider {
