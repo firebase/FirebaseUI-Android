@@ -14,6 +14,9 @@ import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,8 +56,11 @@ public class KickoffActivity extends InvisibleActivityBase {
             }
         });
 
-        GoogleApiAvailability.getInstance()
-                .makeGooglePlayServicesAvailable(this)
+        Task<Void> checkPlayServicesTask = getFlowParams().isPlayServicesRequired()
+                ? GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+                : Tasks.forResult((Void) null);
+
+        checkPlayServicesTask
                 .addOnSuccessListener(this, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

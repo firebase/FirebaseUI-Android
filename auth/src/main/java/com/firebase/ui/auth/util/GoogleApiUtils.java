@@ -6,6 +6,8 @@ import android.content.Context;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
@@ -14,6 +16,12 @@ import androidx.annotation.RestrictTo;
 public final class GoogleApiUtils {
     private GoogleApiUtils() {
         throw new AssertionError("No instance for you!");
+    }
+
+    public static boolean isPlayServicesAvailable(@NonNull Context context) {
+        return GoogleApiAvailability
+                .getInstance()
+                .isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS;
     }
 
     @NonNull
