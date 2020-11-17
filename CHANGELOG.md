@@ -1,0 +1,1 @@
+- Allow most auth flows on devices without Google Play services (#1858)
