@@ -19,10 +19,12 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
 import com.google.firebase.auth.ActionCodeSettings;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -198,6 +200,23 @@ public class FlowParameters implements Parcelable {
 
     public boolean isAnonymousUpgradeEnabled() {
         return enableAnonymousUpgrade;
+    }
+
+    public boolean isPlayServicesRequired() {
+        // Play services only required for Google Sign In and the Credentials API
+        return isProviderEnabled(GoogleAuthProvider.PROVIDER_ID)
+                || enableHints
+                || enableCredentials;
+    }
+
+    public boolean isProviderEnabled(@AuthUI.SupportedProvider String provider) {
+        for (AuthUI.IdpConfig idp : providers) {
+            if (idp.getProviderId().equals(provider)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean shouldShowProviderChoice() {
