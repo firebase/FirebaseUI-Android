@@ -1,1 +1,2 @@
-Add ability to setDefaultEmail to the EmailBuilder (#1670) (contributed by @laurentiu-git)
+- Allow most auth flows on devices without Google Play services (#1858)
+- Add ability to setDefaultEmail to the EmailBuilder (#1670) (contributed by @laurentiu-git)

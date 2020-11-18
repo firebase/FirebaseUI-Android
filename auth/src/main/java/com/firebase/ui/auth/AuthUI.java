@@ -39,8 +39,11 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -340,6 +343,12 @@ public final class AuthUI {
                     .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
         }
 
+        // If Play services are not available we can't attempt to use the credentials client.
+        if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+            return Tasks.forException(
+                    new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED));
+        }
+
         return GoogleApiUtils.getCredentialsClient(context)
                 .request(new CredentialRequest.Builder()
                         // We can support both email and Google at the same time here because they
@@ -392,8 +401,16 @@ public final class AuthUI {
      */
     @NonNull
     public Task<Void> signOut(@NonNull Context context) {
-        Task<Void> maybeDisableAutoSignIn = GoogleApiUtils.getCredentialsClient(context)
-                .disableAutoSignIn()
+        boolean playServicesAvailable = GoogleApiUtils.isPlayServicesAvailable(context);
+        if (!playServicesAvailable) {
+            Log.w(TAG, "Google Play services not available during signOut");
+        }
+
+        Task<Void> maybeDisableAutoSignIn = playServicesAvailable
+                ? GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn()
+                : Tasks.forResult((Void) null);
+
+        maybeDisableAutoSignIn
                 .continueWith(new Continuation<Void, Void>() {
                     @Override
                     public Void then(@NonNull Task<Void> task) {
@@ -434,7 +451,7 @@ public final class AuthUI {
      * @param context the calling {@link Context}.
      */
     @NonNull
-    public Task<Void> delete(@NonNull Context context) {
+    public Task<Void> delete(@NonNull final Context context) {
         final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             return Tasks.forException(new FirebaseAuthInvalidUserException(
@@ -443,7 +460,6 @@ public final class AuthUI {
         }
 
         final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
-        final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
 
         // Ensure the order in which tasks are executed properly destructures the user.
         return signOutIdps(context).continueWithTask(new Continuation<Void, Task<Void>>() {
@@ -451,6 +467,12 @@ public final class AuthUI {
             public Task<Void> then(@NonNull Task<Void> task) {
                 task.getResult(); // Propagate exception if there was one
 
+                if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+                    Log.w(TAG, "Google Play services not available during delete");
+                    return Tasks.forResult((Void) null);
+                }
+
+                final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
                 List<Task<?>> credentialTasks = new ArrayList<>();
                 for (Credential credential : credentials) {
                     credentialTasks.add(client.delete(credential));
@@ -516,7 +538,11 @@ public final class AuthUI {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+        if (GoogleApiUtils.isPlayServicesAvailable(context)) {
+            return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+        } else {
+            return Tasks.forResult((Void) null);
+        }
     }
 
     /**
