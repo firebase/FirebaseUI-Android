@@ -203,7 +203,7 @@ public class AuthUITest {
     }
 
     @Test
-    public void testPhoneBuilder_withBlacklistedCountryWithSameCountryCode_expectSucess() {
+    public void testPhoneBuilder_withBlacklistedCountryWithSameCountryCode_expectSuccess() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("+1123456789")
                 .setBlacklistedCountries(Arrays.asList("ca"))
@@ -331,6 +331,19 @@ public class AuthUITest {
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
         new IdpConfig.EmailBuilder().enableEmailLinkSignIn().setActionCodeSettings
                 (actionCodeSettings).build();
+    }
+
+    @Test
+    public void testEmailBuilder_withSetDefaultEmail_expectSuccess() {
+        ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
+
+        IdpConfig config = new IdpConfig.EmailBuilder()
+                .setDefaultEmail(TestConstants.EMAIL)
+                .setActionCodeSettings(actionCodeSettings)
+                .build();
+
+        assertThat(config.getParams().getString(ExtraConstants.DEFAULT_EMAIL))
+                .isEqualTo(TestConstants.EMAIL);
     }
 
     @Test(expected = IllegalStateException.class)

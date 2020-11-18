@@ -25,6 +25,7 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -34,6 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
 
@@ -73,7 +76,7 @@ public class EmailActivityTest {
         EmailLinkPersistenceManager.getInstance().saveEmail(ApplicationProvider.getApplicationContext(),
                 EMAIL, TestConstants.SESSION_ID, TestConstants.UID);
 
-        EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER, true);
+        EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER, true, false);
 
         EmailLinkFragment fragment = (EmailLinkFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(EmailLinkFragment.TAG);
@@ -141,15 +144,58 @@ public class EmailActivityTest {
                 passwordLayout.getError().toString());
     }
 
+    @Test
+    public void testSetDefaultEmail_validField() {
+        EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
 
-    private EmailActivity createActivity(String providerId) {
-        return createActivity(providerId, false);
+        CheckEmailFragment fragment = (CheckEmailFragment) emailActivity
+                .getSupportFragmentManager().findFragmentByTag(CheckEmailFragment.TAG);
+        assertThat(fragment).isNotNull();
+
+      TextInputEditText email = emailActivity.findViewById(R.id.email);
+      assertEquals(TestConstants.EMAIL, email.getText().toString());
+
     }
 
-    private EmailActivity createActivity(String providerId, boolean emailLinkLinkingFlow) {
+    @Test
+    public void testSetDefaultEmail_expectWelcomeBackPasswordPrompt() {
+        EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
+
+        emailActivity.onExistingEmailUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
+
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(emailActivity).getNextStartedActivityForResult();
+        assertEquals(WelcomeBackPasswordPrompt.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
+
+    }
+
+    @Test
+    public void testSetDefaultEmail_expectRegisterEmailFragment() {
+        EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
+
+        emailActivity.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
+
+        RegisterEmailFragment registerEmailFragment = (RegisterEmailFragment) emailActivity
+                .getSupportFragmentManager().findFragmentByTag(RegisterEmailFragment.TAG);
+        assertThat(registerEmailFragment).isNotNull();
+    }
+
+
+    private EmailActivity createActivity(String providerId) {
+        return createActivity(providerId, false, false);
+    }
+
+    private EmailActivity createActivity(String providerId, boolean emailLinkLinkingFlow, boolean hasDefaultEmail) {
         Intent startIntent = EmailActivity.createIntent(
                 ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(Collections.singletonList(providerId)));
+
+        if (hasDefaultEmail) {
+             startIntent = EmailActivity.createIntent(
+                    ApplicationProvider.getApplicationContext(),
+                    TestHelper.getFlowParameters(Collections.singletonList(providerId), false, null, true));
+        }
 
         if (emailLinkLinkingFlow) {
             startIntent.putExtra(ExtraConstants.EMAIL, EMAIL);

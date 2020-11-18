@@ -758,6 +758,17 @@ public final class AuthUI {
                 return this;
             }
 
+            /**
+             * Sets a default sign in email, if the given email has been registered before, then
+             * it will ask the user for password, if the given email it's not registered, then
+             * it starts signing up the default email.
+             */
+            @NonNull
+            public EmailBuilder setDefaultEmail(String email) {
+                getParams().putString(ExtraConstants.DEFAULT_EMAIL, email);
+                return this;
+            }
+
             @Override
             public IdpConfig build() {
                 if (super.mProviderId.equals(EMAIL_LINK_PROVIDER)) {
