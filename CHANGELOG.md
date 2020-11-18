@@ -1,0 +1,1 @@
+Add ability to setDefaultEmail to the EmailBuilder (#1670) (contributed by @laurentiu-git)
