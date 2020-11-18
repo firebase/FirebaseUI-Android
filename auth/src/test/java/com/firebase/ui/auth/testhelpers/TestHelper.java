@@ -126,12 +126,13 @@ public final class TestHelper {
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds,
                                                    boolean enableAnonymousUpgrade) {
-        return getFlowParameters(providerIds, enableAnonymousUpgrade, null);
+        return getFlowParameters(providerIds, enableAnonymousUpgrade, null, false);
     }
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds,
                                                    boolean enableAnonymousUpgrade,
-                                                   AuthMethodPickerLayout customLayout) {
+                                                   AuthMethodPickerLayout customLayout,
+                                                   boolean hasDefaultEmail) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -153,7 +154,13 @@ public final class TestHelper {
                                     .setHandleCodeInApp(true).build()).build());
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    idpConfigs.add(new IdpConfig.EmailBuilder().build());
+                    if (hasDefaultEmail) { idpConfigs.add(new IdpConfig.EmailBuilder()
+                                .setDefaultEmail(TestConstants.EMAIL)
+                                .build());
+                    } else
+                    {
+                        idpConfigs.add(new IdpConfig.EmailBuilder().build());
+                    }
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.PhoneBuilder().build());
