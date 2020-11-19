@@ -67,6 +67,19 @@ public final class FirestorePagingOptions<T> {
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
 
         /**
+         * Directly set the {@link DocumentSnapshot}.
+         * <p>
+         * Do not call this method after calling {@code setQuery}.
+         */
+        @NonNull
+        public Builder<T> setDocumentSnapshot(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
+                                              @NonNull Class<T> modelClass) {
+            mData =  data;
+            mParser = new ClassSnapshotParser<>(modelClass);
+            return this;
+        }
+
+        /**
          * Sets the query using {@link Source#DEFAULT} and a {@link ClassSnapshotParser} based
          * on the given Class.
          *
@@ -162,7 +175,8 @@ public final class FirestorePagingOptions<T> {
         @NonNull
         public FirestorePagingOptions<T> build() {
             if (mData == null || mParser == null) {
-                throw new IllegalStateException("Must call setQuery() before calling build().");
+                throw new IllegalStateException("Must call setQuery() or setDocumentSnapshot()" +
+                        " before calling build().");
             }
 
             if (mDiffCallback == null) {
