@@ -1,4 +1,4 @@
 - Allow most auth flows on devices without Google Play services (#1858)
 - Add ability to setDefaultEmail to the EmailBuilder (#1670) (contributed by @laurentiu-git)
-- Add ability to setDocumentSnapshot to the FirestorePagingOption (#1750) (contributed by @laurentiu-git)
+- Add ability to setData to the FirestorePagingOption (#1750) (contributed by @laurentiu-git)
 
