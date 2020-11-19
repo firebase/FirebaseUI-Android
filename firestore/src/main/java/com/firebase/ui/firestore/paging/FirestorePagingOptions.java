@@ -72,7 +72,8 @@ public final class FirestorePagingOptions<T> {
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
 
         /**
-         * Directly set Data using a {@link ClassSnapshotParser} based on the given class.
+         * Directly set data using and parse with a {@link ClassSnapshotParser} based on
+         * the given class.
          * <p>
          * Do not call this method after calling {@code setQuery}.
          */
@@ -84,7 +85,7 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
-         * Directly set Data using a custom {@link SnapshotParser}.
+         * Directly set data and parse with a custom {@link SnapshotParser}.
          * <p>
          * Do not call this method after calling {@code setQuery}.
          */
