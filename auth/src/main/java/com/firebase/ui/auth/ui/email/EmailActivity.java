@@ -98,6 +98,12 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
                     responseForLinking, forceSameDevice);
             switchFragment(fragment, R.id.fragment_register_email, EmailLinkFragment.TAG);
         } else {
+            AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+                    getFlowParams().providers, EmailAuthProvider.PROVIDER_ID);
+
+            if (emailConfig != null) {
+                email =  emailConfig.getParams().getString(ExtraConstants.DEFAULT_EMAIL);;
+            }
             // Start with check email
             CheckEmailFragment fragment = CheckEmailFragment.newInstance(email);
             switchFragment(fragment, R.id.fragment_register_email, CheckEmailFragment.TAG);
