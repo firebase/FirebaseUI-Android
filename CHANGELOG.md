@@ -1,1 +1,1 @@
-- Fix broken button styling (#1864)
+- Fix broken button styling (#1874)
