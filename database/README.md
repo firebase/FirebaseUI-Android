@@ -245,7 +245,7 @@ FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
 
 The `FirebaseRecyclerPagingAdapter` binds a `Query` to a `RecyclerView` by loading documents in pages.
 This results in a time and memory efficient binding, however it gives up the real-time events
-afforted by the `FirestoreRecyclerAdapter`.
+afforded by the `FirestoreRecyclerAdapter`.
 
 The `FirebaseRecyclerPagingAdapter` is built on top of the [Android Paging Support Library][paging-support].
 Before using the adapter in your application, you must add a dependency on the support library:
