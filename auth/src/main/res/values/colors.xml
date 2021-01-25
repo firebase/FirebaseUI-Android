@@ -3,7 +3,7 @@
     <!-- Eventually, we should remove these so the developer knows they have to style FirebaseUI -->
     <color name="colorPrimary" tools:ignore="ResourceName">#3F51B5</color>
     <color name="colorPrimaryDark" tools:ignore="ResourceName">#303F9F</color>
-    <color name="colorAccent" tools:ignore="ResourceName">#FF4081</color>
+    <color name="colorSecondary" tools:ignore="ResourceName">#FF4081</color>
 
     <color name="fui_linkColor">#4285F4</color>
     <color name="fui_transparent">#00000000</color>
@@ -15,5 +15,8 @@
     <color name="fui_bgEmail">#D0021B</color>
     <color name="fui_bgPhone">#43C5A5</color>
     <color name="fui_bgAnonymous">#f4b400</color>
+    <color name="fui_bgMicrosoft">#2F2F2F</color>
+    <color name="fui_bgYahoo">#720E9E</color>
+    <color name="fui_bgApple">#000000</color>
     <color name="fui_buttonShadow">#64BEBEBE</color>
 </resources>

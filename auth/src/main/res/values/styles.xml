@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
 
-    <style name="FirebaseUI" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="FirebaseUI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
     </style>
 
@@ -92,7 +92,7 @@
     </style>
 
     <!-- Common styles -->
-    <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button.Colored">
+    <style name="FirebaseUI.Button" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">end</item>
@@ -125,7 +125,7 @@
         <item name="android:inputType">textPassword</item>
     </style>
 
-    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout" />
+    <style name="FirebaseUI.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
     <style name="FirebaseUI.TextInputLayout.EmailField">
         <item name="android:hint">@string/fui_email_hint</item>
@@ -163,6 +163,7 @@
         <item name="android:layout_marginBottom">@dimen/fui_body_padding_bottom</item>
     </style>
 
+    <!-- TODO: Figure out what the Material equivalent is -->
     <style name="FirebaseUI.CountrySpinner" parent="Widget.AppCompat.Spinner.Underlined">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -204,63 +205,72 @@
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_googleg_color_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_google</item>
+    <style name="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="iconGravity">start</item>
+        <item name="iconTint">@null</item>
+        <item name="android:insetBottom">@dimen/fui_button_inset_bottom</item>
+        <item name="android:insetTop">@dimen/fui_button_inset_top</item>
+        <item name="android:insetLeft">@dimen/fui_button_inset_left</item>
+        <item name="android:insetRight">@dimen/fui_button_inset_right</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.GoogleButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_googleg_color_24dp</item>
+        <item name="backgroundTint">@color/fui_bgGoogle</item>
         <item name="android:textColor">#757575</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_facebook_white_22dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_facebook</item>
+    <style name="FirebaseUI.Button.AccountChooser.FacebookButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_facebook_white_22dp</item>
+        <item name="backgroundTint">@color/fui_bgFacebook</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_twitter_bird_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_twitter</item>
+    <style name="FirebaseUI.Button.AccountChooser.TwitterButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_twitter_bird_white_24dp</item>
+        <item name="backgroundTint">@color/fui_bgTwitter</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.GitHubButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_github_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_github</item>
+    <style name="FirebaseUI.Button.AccountChooser.GitHubButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_github_white_24dp</item>
+        <item name="backgroundTint">@color/fui_bgGitHub</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.EmailButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_mail_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_email</item>
+    <style name="FirebaseUI.Button.AccountChooser.EmailButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_mail_white_24dp</item>
+        <item name="backgroundTint">@color/fui_bgEmail</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_phone_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_phone</item>
+    <style name="FirebaseUI.Button.AccountChooser.PhoneButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_phone_white_24dp</item>
+        <item name="backgroundTint">@color/fui_bgPhone</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.AnonymousButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_anonymous_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_anonymous</item>
+    <style name="FirebaseUI.Button.AccountChooser.AnonymousButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_anonymous_white_24dp</item>
+        <item name="backgroundTint">@color/fui_bgAnonymous</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.MicrosoftButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_microsoft_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_microsoft</item>
+    <style name="FirebaseUI.Button.AccountChooser.MicrosoftButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_microsoft_24dp</item>
+        <item name="backgroundTint">@color/fui_bgMicrosoft</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.YahooButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_yahoo_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_yahoo</item>
+    <style name="FirebaseUI.Button.AccountChooser.YahooButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_yahoo_24dp</item>
+        <item name="backgroundTint">@color/fui_bgYahoo</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.AppleButton">
-        <item name="drawableStartCompat">@drawable/fui_ic_apple_white_24dp</item>
-        <item name="android:background">@drawable/fui_idp_button_background_apple</item>
+    <style name="FirebaseUI.Button.AccountChooser.AppleButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+        <item name="icon">@drawable/fui_ic_apple_white_24dp</item>
+        <item name="backgroundTint">@color/fui_bgApple</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 

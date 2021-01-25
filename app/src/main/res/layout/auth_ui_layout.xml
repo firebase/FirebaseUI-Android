@@ -21,8 +21,8 @@
             android:orientation="vertical"
             android:paddingBottom="32dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Base.TextAppearance.AppCompat.Headline"
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.MaterialComponents.Headline5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -31,7 +31,7 @@
 
             <Button
                 android:id="@+id/sign_in"
-                style="@style/Widget.AppCompat.Button.Colored"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -40,7 +40,7 @@
 
             <Button
                 android:id="@+id/sign_in_silent"
-                style="@style/Widget.AppCompat.Button.Colored"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -48,7 +48,7 @@
                 android:text="@string/sign_in_silent" />
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -132,7 +132,7 @@
                 android:text="@string/providers_github" />
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -160,7 +160,7 @@
             </RadioGroup>
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -199,7 +199,7 @@
             </RadioGroup>
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -233,7 +233,7 @@
             </RadioGroup>
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -267,7 +267,7 @@
 
             <TextView
                 android:id="@+id/google_scopes_header"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -290,7 +290,7 @@
 
             <TextView
                 android:id="@+id/facebook_permissions_header"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -312,7 +312,7 @@
                 android:text="@string/facebook_permission_photos" />
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
