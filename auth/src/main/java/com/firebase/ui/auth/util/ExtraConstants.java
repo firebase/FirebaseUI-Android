@@ -40,8 +40,8 @@ public final class ExtraConstants {
     public static final String COUNTRY_ISO = "extra_country_iso";
     public static final String NATIONAL_NUMBER = "extra_national_number";
 
-    public static final String WHITELISTED_COUNTRIES = "whitelisted_countries";
-    public static final String BLACKLISTED_COUNTRIES = "blacklisted_countries";
+    public static final String ALLOWLISTED_COUNTRIES = "allowlisted_countries";
+    public static final String BLOCKLISTED_COUNTRIES = "blocklisted_countries";
 
     public static final String EMAIL_LINK_SIGN_IN = "email_link_sign_in";
     public static final String ACTION_CODE_SETTINGS = "action_code_settings";

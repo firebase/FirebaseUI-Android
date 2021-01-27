@@ -736,7 +736,7 @@ public final class AuthUI {
              * <p>
              * {@link ActionCodeSettings#canHandleCodeInApp()} must be set to true, and a valid
              * continueUrl must be passed via {@link ActionCodeSettings.Builder#setUrl(String)}.
-             * This URL must be whitelisted in the Firebase Console.
+             * This URL must be allowlisted in the Firebase Console.
              *
              * @throws IllegalStateException if canHandleCodeInApp is set to false
              * @throws NullPointerException  if ActionCodeSettings is null
@@ -878,26 +878,26 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param whitelistedCountries a non empty case insensitive list of country codes
-             *                             and/or isos to be whitelisted
-             * @throws IllegalArgumentException if an empty whitelist is provided.
-             * @throws NullPointerException     if a null whitelist is provided.
+             * @param countries a non empty case insensitive list of country codes
+             *                  and/or isos to be allowlisted
+             * @throws IllegalArgumentException if an empty allowlist is provided.
+             * @throws NullPointerException     if a null allowlist is provided.
              */
             public PhoneBuilder setWhitelistedCountries(
-                    @NonNull List<String> whitelistedCountries) {
-                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRIES)) {
+                    @NonNull List<String> countries) {
+                if (getParams().containsKey(ExtraConstants.BLOCKLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
-                            "You can either whitelist or blacklist country codes for phone " +
+                            "You can either allowlist or blocklist country codes for phone " +
                                     "authentication.");
                 }
 
-                String message = "Invalid argument: Only non-%s whitelists are valid. " +
-                        "To specify no whitelist, do not call this method.";
-                Preconditions.checkNotNull(whitelistedCountries, String.format(message, "null"));
-                Preconditions.checkArgument(!whitelistedCountries.isEmpty(), String.format
+                String message = "Invalid argument: Only non-%s allowlists are valid. " +
+                        "To specify no allowlist, do not call this method.";
+                Preconditions.checkNotNull(countries, String.format(message, "null"));
+                Preconditions.checkArgument(!countries.isEmpty(), String.format
                         (message, "empty"));
 
-                addCountriesToBundle(whitelistedCountries, ExtraConstants.WHITELISTED_COUNTRIES);
+                addCountriesToBundle(countries, ExtraConstants.ALLOWLISTED_COUNTRIES);
                 return this;
             }
 
@@ -915,26 +915,26 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param blacklistedCountries a non empty case insensitive list of country codes
-             *                             and/or isos to be blacklisted
-             * @throws IllegalArgumentException if an empty blacklist is provided.
-             * @throws NullPointerException     if a null blacklist is provided.
+             * @param countries a non empty case insensitive list of country codes
+             *                  and/or isos to be blocklisted
+             * @throws IllegalArgumentException if an empty blocklist is provided.
+             * @throws NullPointerException     if a null blocklist is provided.
              */
             public PhoneBuilder setBlacklistedCountries(
-                    @NonNull List<String> blacklistedCountries) {
-                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRIES)) {
+                    @NonNull List<String> countries) {
+                if (getParams().containsKey(ExtraConstants.ALLOWLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
-                            "You can either whitelist or blacklist country codes for phone " +
+                            "You can either allowlist or blocklist country codes for phone " +
                                     "authentication.");
                 }
 
-                String message = "Invalid argument: Only non-%s blacklists are valid. " +
+                String message = "Invalid argument: Only non-%s blocklists are valid. " +
                         "To specify no blacklist, do not call this method.";
-                Preconditions.checkNotNull(blacklistedCountries, String.format(message, "null"));
-                Preconditions.checkArgument(!blacklistedCountries.isEmpty(), String.format
+                Preconditions.checkNotNull(countries, String.format(message, "null"));
+                Preconditions.checkArgument(!countries.isEmpty(), String.format
                         (message, "empty"));
 
-                addCountriesToBundle(blacklistedCountries, ExtraConstants.BLACKLISTED_COUNTRIES);
+                addCountriesToBundle(countries, ExtraConstants.BLOCKLISTED_COUNTRIES);
                 return this;
             }
 
@@ -954,27 +954,26 @@ public final class AuthUI {
             }
 
             private void validateInputs() {
-                List<String> whitelistedCountries = getParams().getStringArrayList(
-                        ExtraConstants.WHITELISTED_COUNTRIES);
-                List<String> blacklistedCountries = getParams().getStringArrayList(
-                        ExtraConstants.BLACKLISTED_COUNTRIES);
+                List<String> allowedCountries = getParams().getStringArrayList(
+                        ExtraConstants.ALLOWLISTED_COUNTRIES);
+                List<String> blockedCountries = getParams().getStringArrayList(
+                        ExtraConstants.BLOCKLISTED_COUNTRIES);
 
-                if (whitelistedCountries != null &&
-                        blacklistedCountries != null) {
+                if (allowedCountries != null && blockedCountries != null) {
                     throw new IllegalStateException(
-                            "You can either whitelist or blacklist country codes for phone " +
+                            "You can either allowlist or blocked country codes for phone " +
                                     "authentication.");
-                } else if (whitelistedCountries != null) {
-                    validateInputs(whitelistedCountries, true);
+                } else if (allowedCountries != null) {
+                    validateInputs(allowedCountries, true);
 
-                } else if (blacklistedCountries != null) {
-                    validateInputs(blacklistedCountries, false);
+                } else if (blockedCountries != null) {
+                    validateInputs(blockedCountries, false);
                 }
             }
 
-            private void validateInputs(List<String> countries, boolean whitelisted) {
+            private void validateInputs(List<String> countries, boolean allowed) {
                 validateCountryInput(countries);
-                validateDefaultCountryInput(countries, whitelisted);
+                validateDefaultCountryInput(countries, allowed);
             }
 
             private void validateCountryInput(List<String> codes) {
@@ -986,40 +985,40 @@ public final class AuthUI {
                 }
             }
 
-            private void validateDefaultCountryInput(List<String> codes, boolean whitelisted) {
+            private void validateDefaultCountryInput(List<String> codes, boolean allowed) {
                 // A default iso/code can be set via #setDefaultCountryIso() or #setDefaultNumber()
                 if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) ||
                         getParams().containsKey(ExtraConstants.PHONE)) {
 
-                    if (!validateDefaultCountryIso(codes, whitelisted)
-                            || !validateDefaultPhoneIsos(codes, whitelisted)) {
+                    if (!validateDefaultCountryIso(codes, allowed)
+                            || !validateDefaultPhoneIsos(codes, allowed)) {
                         throw new IllegalArgumentException("Invalid default country iso. Make " +
-                                "sure it is either part of the whitelisted list or that you "
-                                + "haven't blacklisted it.");
+                                "sure it is either part of the allowed list or that you "
+                                + "haven't blocked it.");
                     }
                 }
 
             }
 
-            private boolean validateDefaultCountryIso(List<String> codes, boolean whitelisted) {
+            private boolean validateDefaultCountryIso(List<String> codes, boolean allowed) {
                 String defaultIso = getDefaultIso();
-                return isValidDefaultIso(codes, defaultIso, whitelisted);
+                return isValidDefaultIso(codes, defaultIso, allowed);
             }
 
-            private boolean validateDefaultPhoneIsos(List<String> codes, boolean whitelisted) {
+            private boolean validateDefaultPhoneIsos(List<String> codes, boolean allowed) {
                 List<String> phoneIsos = getPhoneIsosFromCode();
                 for (String iso : phoneIsos) {
-                    if (isValidDefaultIso(codes, iso, whitelisted)) {
+                    if (isValidDefaultIso(codes, iso, allowed)) {
                         return true;
                     }
                 }
                 return phoneIsos.isEmpty();
             }
 
-            private boolean isValidDefaultIso(List<String> codes, String iso, boolean whitelisted) {
+            private boolean isValidDefaultIso(List<String> codes, String iso, boolean allowed) {
                 if (iso == null) return true;
                 boolean containsIso = containsCountryIso(codes, iso);
-                return containsIso && whitelisted || !containsIso && !whitelisted;
+                return containsIso && allowed || !containsIso && !allowed;
 
             }
 
