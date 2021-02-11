@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailLinkCatcherActivity extends InvisibleActivityBase {
@@ -46,7 +46,7 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
     }
 
     private void initHandler() {
-        mHandler = ViewModelProviders.of(this).get(EmailLinkSignInHandler.class);
+        mHandler = new ViewModelProvider(this).get(EmailLinkSignInHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override

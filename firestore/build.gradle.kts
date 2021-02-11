@@ -23,6 +23,7 @@ dependencies {
     api(Config.Libs.Androidx.recyclerView)
 
     compileOnly(Config.Libs.Androidx.paging)
+    api(Config.Libs.Androidx.pagingRxJava3)
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     lintChecks(project(":lint"))

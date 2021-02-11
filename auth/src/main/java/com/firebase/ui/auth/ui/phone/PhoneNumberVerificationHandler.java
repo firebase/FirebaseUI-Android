@@ -28,7 +28,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
         super(application);
     }
 
-    public void verifyPhoneNumber(Activity activity, final String number, boolean force) {
+    public void verifyPhoneNumber(@NonNull Activity activity, final String number, boolean force) {
         setResult(Resource.<PhoneVerification>forLoading());
         PhoneAuthOptions.Builder optionsBuilder = PhoneAuthOptions.newBuilder(getAuth())
                 .setPhoneNumber(number)

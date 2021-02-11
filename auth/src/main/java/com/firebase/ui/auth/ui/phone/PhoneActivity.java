@@ -34,7 +34,6 @@ import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -42,7 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * Activity to control the entire phone verification flow. Plays host to {@link
@@ -63,7 +62,7 @@ public class PhoneActivity extends AppCompatBase {
         setContentView(R.layout.fui_activity_register_phone);
 
         final PhoneProviderResponseHandler handler =
-                ViewModelProviders.of(this).get(PhoneProviderResponseHandler.class);
+                new ViewModelProvider(this).get(PhoneProviderResponseHandler.class);
         handler.init(getFlowParams());
         handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
                 this, R.string.fui_progress_dialog_signing_in) {
@@ -78,7 +77,7 @@ public class PhoneActivity extends AppCompatBase {
             }
         });
 
-        mPhoneVerifier = ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
+        mPhoneVerifier = new ViewModelProvider(this).get(PhoneNumberVerificationHandler.class);
         mPhoneVerifier.init(getFlowParams());
         mPhoneVerifier.onRestoreInstanceState(savedInstanceState);
         mPhoneVerifier.getOperation().observe(this, new ResourceObserver<PhoneVerification>(

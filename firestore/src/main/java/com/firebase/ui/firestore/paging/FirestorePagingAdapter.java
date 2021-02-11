@@ -32,9 +32,9 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         LiveData created via Transformation do not have a value until an Observer is attached.
         We attach this empty observer so that our getValue() calls return non-null later.
     */
-    private final Observer<FirestoreDataSource> mDataSourceObserver = new Observer<FirestoreDataSource>() {
+    private final Observer<FirestorePagingSource> mPagingSourceObserver = new Observer<FirestorePagingSource>() {
         @Override
-        public void onChanged(@Nullable FirestoreDataSource source) {
+        public void onChanged(@Nullable FirestorePagingSource source) {
 
         }
     };
@@ -72,7 +72,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     private LiveData<PagedList<DocumentSnapshot>> mSnapshots;
     private LiveData<LoadingState> mLoadingState;
     private LiveData<Exception> mException;
-    private LiveData<FirestoreDataSource> mDataSource;
+    private LiveData<FirestorePagingSource> mPagingSource;
 
     /**
      * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
@@ -95,16 +95,16 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 new Function<PagedList<DocumentSnapshot>, LiveData<LoadingState>>() {
                     @Override
                     public LiveData<LoadingState> apply(PagedList<DocumentSnapshot> input) {
-                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
-                        return dataSource.getLoadingState();
+                        FirestorePagingSource pagingSource = (FirestorePagingSource) input.getPagingSource();
+                        return pagingSource.getLoadingState();
                     }
                 });
 
-        mDataSource = Transformations.map(mSnapshots,
-                new Function<PagedList<DocumentSnapshot>, FirestoreDataSource>() {
+        mPagingSource = Transformations.map(mSnapshots,
+                new Function<PagedList<DocumentSnapshot>, FirestorePagingSource>() {
                     @Override
-                    public FirestoreDataSource apply(PagedList<DocumentSnapshot> input) {
-                        return (FirestoreDataSource) input.getDataSource();
+                    public FirestorePagingSource apply(PagedList<DocumentSnapshot> input) {
+                        return (FirestorePagingSource) input.getPagingSource();
                     }
                 });
 
@@ -112,8 +112,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 new Function<PagedList<DocumentSnapshot>, LiveData<Exception>>() {
                     @Override
                     public LiveData<Exception> apply(PagedList<DocumentSnapshot> input) {
-                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
-                        return dataSource.getLastError();
+                        FirestorePagingSource pagingSource = (FirestorePagingSource) input.getPagingSource();
+                        return pagingSource.getLastError();
                     }
                 });
 
@@ -129,25 +129,25 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * attempt to retry the most recent failure.
      */
     public void retry() {
-        FirestoreDataSource source = mDataSource.getValue();
+        FirestorePagingSource source = mPagingSource.getValue();
         if (source == null) {
-            Log.w(TAG, "Called retry() when FirestoreDataSource is null!");
+            Log.w(TAG, "Called retry() when FirestorePagingSource is null!");
             return;
         }
 
-        source.retry();
+//        source.retry(); TODO: Bring this back
     }
 
     /**
      * To attempt to refresh the list. It will reload the list from beginning.
      */
     public void refresh() {
-        FirestoreDataSource mFirebaseDataSource = mDataSource.getValue();
-        if (mFirebaseDataSource == null) {
-            Log.w(TAG, "Called refresh() when FirestoreDataSource is null!");
+        FirestorePagingSource mFirebasePagingSource = mPagingSource.getValue();
+        if (mFirebasePagingSource == null) {
+            Log.w(TAG, "Called refresh() when FirestorePagingSource is null!");
             return;
         }
-        mFirebaseDataSource.invalidate();
+        mFirebasePagingSource.invalidate();
     }
 
     /**
@@ -179,7 +179,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public void startListening() {
         mSnapshots.observeForever(mDataObserver);
         mLoadingState.observeForever(mStateObserver);
-        mDataSource.observeForever(mDataSourceObserver);
+        mPagingSource.observeForever(mPagingSourceObserver);
         mException.observeForever(mErrorObserver);
     }
 
@@ -191,7 +191,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public void stopListening() {
         mSnapshots.removeObserver(mDataObserver);
         mLoadingState.removeObserver(mStateObserver);
-        mDataSource.removeObserver(mDataSourceObserver);
+        mPagingSource.removeObserver(mPagingSourceObserver);
         mException.removeObserver(mErrorObserver);
     }
 

@@ -1,6 +1,6 @@
 package com.firebase.ui.firestore;
 
-import com.firebase.ui.firestore.paging.FirestoreDataSource;
+import com.firebase.ui.firestore.paging.FirestorePagingSource;
 import com.firebase.ui.firestore.paging.LoadingState;
 import com.firebase.ui.firestore.paging.PageKey;
 import com.google.android.gms.tasks.Tasks;
@@ -26,6 +26,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 import androidx.paging.PageKeyedDataSource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import io.reactivex.rxjava3.core.Single;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class FirestoreDataSourceTest {
 
-    private FirestoreDataSource mDataSource;
+    private FirestorePagingSource mPagingSource;
 
     /**
      * Needed to run tasks on the main thread so observeForever() doesn't throw.
@@ -54,7 +55,7 @@ public class FirestoreDataSourceTest {
         initMockQuery();
 
         // Create a testing data source
-        mDataSource = new FirestoreDataSource(mMockQuery, Source.DEFAULT);
+        mPagingSource = new FirestorePagingSource(mMockQuery, Source.DEFAULT);
     }
 
     @Test
@@ -62,12 +63,14 @@ public class FirestoreDataSourceTest {
         mockQuerySuccess(new ArrayList<DocumentSnapshot>());
 
         TestObserver<LoadingState> observer = new TestObserver<>(2);
-        mDataSource.getLoadingState().observeForever(observer);
+        mPagingSource.getLoadingState().observeForever(observer);
 
         // Kick off an initial load of 20 items
         PageKeyedDataSource.LoadInitialParams<PageKey> params =
                 new PageKeyedDataSource.LoadInitialParams<>(20, false);
-        mDataSource.loadInitial(params, mInitialCallback);
+
+//        mPagingSource.loadSingle().test().assertResult()
+        mPagingSource.loadInitial(params, mInitialCallback);
 
         // Should go from LOADING_INITIAL --> LOADED
         observer.await();
@@ -79,12 +82,12 @@ public class FirestoreDataSourceTest {
         mockQueryFailure("Could not get initial documents.");
 
         TestObserver<LoadingState> observer = new TestObserver<>(2);
-        mDataSource.getLoadingState().observeForever(observer);
+        mPagingSource.getLoadingState().observeForever(observer);
 
         // Kick off an initial load of 20 items
         PageKeyedDataSource.LoadInitialParams<PageKey> params =
                 new PageKeyedDataSource.LoadInitialParams<>(20, false);
-        mDataSource.loadInitial(params, mInitialCallback);
+        mPagingSource.loadInitial(params, mInitialCallback);
 
         // Should go from LOADING_INITIAL --> ERROR
         observer.await();
@@ -96,13 +99,13 @@ public class FirestoreDataSourceTest {
         mockQuerySuccess(new ArrayList<DocumentSnapshot>());
 
         TestObserver<LoadingState> observer = new TestObserver<>(2);
-        mDataSource.getLoadingState().observeForever(observer);
+        mPagingSource.getLoadingState().observeForever(observer);
 
         // Kick off an initial load of 20 items
         PageKey pageKey = new PageKey(null, null);
         PageKeyedDataSource.LoadParams<PageKey> params =
                 new PageKeyedDataSource.LoadParams<>(pageKey, 20);
-        mDataSource.loadAfter(params, mAfterCallback);
+        mPagingSource.loadAfter(params, mAfterCallback);
 
         // Should go from LOADING_MORE --> LOADED
         observer.await();
@@ -114,13 +117,13 @@ public class FirestoreDataSourceTest {
         mockQueryFailure("Could not load more documents.");
 
         TestObserver<LoadingState> observer = new TestObserver<>(2);
-        mDataSource.getLoadingState().observeForever(observer);
+        mPagingSource.getLoadingState().observeForever(observer);
 
         // Kick off an initial load of 20 items
         PageKey pageKey = new PageKey(null, null);
         PageKeyedDataSource.LoadParams<PageKey> params =
                 new PageKeyedDataSource.LoadParams<>(pageKey, 20);
-        mDataSource.loadAfter(params, mAfterCallback);
+        mPagingSource.loadAfter(params, mAfterCallback);
 
         // Should go from LOADING_MORE --> ERROR
         observer.await();
@@ -132,13 +135,13 @@ public class FirestoreDataSourceTest {
         mockQueryFailure("Could not load more documents.");
 
         TestObserver<LoadingState> observer1 = new TestObserver<>(2);
-        mDataSource.getLoadingState().observeForever(observer1);
+        mPagingSource.getLoadingState().observeForever(observer1);
 
         // Kick off an initial load of 20 items
         PageKey pageKey = new PageKey(null, null);
         PageKeyedDataSource.LoadParams<PageKey> params =
                 new PageKeyedDataSource.LoadParams<>(pageKey, 20);
-        mDataSource.loadAfter(params, mAfterCallback);
+        mPagingSource.loadAfter(params, mAfterCallback);
 
         // Should go from LOADING_MORE --> ERROR
         observer1.await();
@@ -146,11 +149,11 @@ public class FirestoreDataSourceTest {
 
         // Create a new observer
         TestObserver<LoadingState> observer2 = new TestObserver<>(3);
-        mDataSource.getLoadingState().observeForever(observer2);
+        mPagingSource.getLoadingState().observeForever(observer2);
 
         // Retry the load
         mockQuerySuccess(new ArrayList<DocumentSnapshot>());
-        mDataSource.retry();
+        mPagingSource.retry();
 
         // Should go from ERROR --> LOADING_MORE --> SUCCESS
         observer2.await();

@@ -49,7 +49,10 @@ public final class FakeAuthResult implements AuthResult {
 
     @Override
     public AuthCredential getCredential() {
-        return OAuthProvider.getCredential("provider", "foo", "bar");
+        return OAuthProvider.newCredentialBuilder("provider")
+                .setAccessToken("foo")
+                .setIdToken("bar")
+                .build();
     }
 
     @Override

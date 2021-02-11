@@ -48,16 +48,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-storage:7.1.1'
 }
 ```
 
@@ -71,6 +71,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
+* [Upgrade from 6.4.0 to 7.x.x](./docs/upgrade-to-7.0.md)
 * [Upgrade from 5.1.0 to 6.x.x](./docs/upgrade-to-6.0.md)
 * [Upgrade from 4.3.2 to 5.x.x](./docs/upgrade-to-5.0.md)
 * [Upgrade from 3.3.1 to 4.x.x](./docs/upgrade-to-4.0.md)

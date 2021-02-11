@@ -15,6 +15,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
@@ -56,6 +57,14 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
             mParams = FlowParameters.fromIntent(getIntent());
         }
         return mParams;
+    }
+
+    public AuthUI getAuthUI() {
+        return AuthUI.getInstance(getFlowParams().appName);
+    }
+
+    public FirebaseAuth getAuth() {
+        return getAuthUI().getAuth();
     }
 
     public void finish(int resultCode, @Nullable Intent intent) {

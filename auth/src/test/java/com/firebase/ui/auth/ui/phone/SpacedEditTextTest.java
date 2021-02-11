@@ -24,12 +24,14 @@ import android.text.style.ScaleXSpan;
 import android.util.AttributeSet;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.TestApplication;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import androidx.test.core.app.ApplicationProvider;
 
@@ -39,6 +41,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(application = TestApplication.class)
 public class SpacedEditTextTest {
     private static final float SPACING_PROPORTION = 1.1f;
 

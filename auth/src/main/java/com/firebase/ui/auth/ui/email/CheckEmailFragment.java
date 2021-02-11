@@ -32,7 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
@@ -115,7 +115,7 @@ public class CheckEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mHandler = ViewModelProviders.of(this).get(CheckEmailHandler.class);
+        mHandler = new ViewModelProvider(this).get(CheckEmailHandler.class);
         mHandler.init(getFlowParams());
 
         FragmentActivity activity = getActivity();
@@ -124,7 +124,7 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) activity;
 
-        mHandler.getOperation().observe(this, new ResourceObserver<User>(
+        mHandler.getOperation().observe(getViewLifecycleOwner(), new ResourceObserver<User>(
                 this, R.string.fui_progress_dialog_checking_accounts) {
             @Override
             protected void onSuccess(@NonNull User user) {
