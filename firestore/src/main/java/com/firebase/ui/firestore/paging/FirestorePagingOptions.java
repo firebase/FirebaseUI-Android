@@ -14,12 +14,17 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.DiffUtil;
 
+import static com.firebase.ui.common.Preconditions.assertNull;
+
 /**
  * Options to configure an {@link FirestorePagingAdapter}.
  *
  * Use {@link Builder} to create a new instance.
  */
 public final class FirestorePagingOptions<T> {
+
+    private static final String ERR_DATA_SET = "Data  already set. " +
+            "Call only one of setData() or setQuery()";
 
     private final LiveData<PagedList<DocumentSnapshot>> mData;
     private final SnapshotParser<T> mParser;
@@ -65,6 +70,34 @@ public final class FirestorePagingOptions<T> {
         private SnapshotParser<T> mParser;
         private LifecycleOwner mOwner;
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
+
+        /**
+         * Directly set data using and parse with a {@link ClassSnapshotParser} based on
+         * the given class.
+         * <p>
+         * Do not call this method after calling {@code setQuery}.
+         */
+        @NonNull
+        public Builder<T> setData(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
+                                              @NonNull Class<T> modelClass) {
+
+         return setData(data, new ClassSnapshotParser<>(modelClass));
+        }
+
+        /**
+         * Directly set data and parse with a custom {@link SnapshotParser}.
+         * <p>
+         * Do not call this method after calling {@code setQuery}.
+         */
+        @NonNull
+        public Builder<T> setData(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
+                                  @NonNull SnapshotParser<T> parser) {
+            assertNull(mData, ERR_DATA_SET);
+
+            mData = data;
+            mParser = parser;
+            return this;
+        }
 
         /**
          * Sets the query using {@link Source#DEFAULT} and a {@link ClassSnapshotParser} based
@@ -121,6 +154,8 @@ public final class FirestorePagingOptions<T> {
                                    @NonNull Source source,
                                    @NonNull PagedList.Config config,
                                    @NonNull SnapshotParser<T> parser) {
+            assertNull(mData, ERR_DATA_SET);
+
             // Build paged list
             FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query, source);
             mData = new LivePagedListBuilder<>(factory, config).build();
@@ -162,7 +197,8 @@ public final class FirestorePagingOptions<T> {
         @NonNull
         public FirestorePagingOptions<T> build() {
             if (mData == null || mParser == null) {
-                throw new IllegalStateException("Must call setQuery() before calling build().");
+                throw new IllegalStateException("Must call setQuery() or setDocumentSnapshot()" +
+                        " before calling build().");
             }
 
             if (mDiffCallback == null) {

@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.util.data;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.tasks.Continuation;
@@ -50,8 +51,12 @@ public class AuthOperationManager {
         // Use a different FirebaseApp so that the anonymous user state is not lost in our
         // original FirebaseAuth instance.
         if (mScratchAuth == null) {
-            FirebaseApp app = FirebaseApp.getInstance(flowParameters.appName);
-            mScratchAuth = FirebaseAuth.getInstance(getScratchApp(app));
+            AuthUI authUI = AuthUI.getInstance(flowParameters.appName);
+            mScratchAuth = FirebaseAuth.getInstance(getScratchApp(authUI.getApp()));
+
+            if (authUI.isUseEmulator()) {
+                mScratchAuth.useEmulator(authUI.getEmulatorHost(), authUI.getEmulatorPort());
+            }
         }
         return mScratchAuth;
     }

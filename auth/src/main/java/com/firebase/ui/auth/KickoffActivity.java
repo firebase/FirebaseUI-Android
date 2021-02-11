@@ -14,11 +14,14 @@ import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends InvisibleActivityBase {
@@ -31,7 +34,7 @@ public class KickoffActivity extends InvisibleActivityBase {
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
+        mKickstarter = new ViewModelProvider(this).get(SignInKickstarter.class);
         mKickstarter.init(getFlowParams());
         mKickstarter.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
@@ -53,8 +56,11 @@ public class KickoffActivity extends InvisibleActivityBase {
             }
         });
 
-        GoogleApiAvailability.getInstance()
-                .makeGooglePlayServicesAvailable(this)
+        Task<Void> checkPlayServicesTask = getFlowParams().isPlayServicesRequired()
+                ? GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+                : Tasks.forResult((Void) null);
+
+        checkPlayServicesTask
                 .addOnSuccessListener(this, new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

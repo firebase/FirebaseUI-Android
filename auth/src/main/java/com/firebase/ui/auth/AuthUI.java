@@ -39,8 +39,11 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -109,7 +112,6 @@ public final class AuthUI {
     public static final String YAHOO_PROVIDER = "yahoo.com";
     public static final String APPLE_PROVIDER = "apple.com";
 
-
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
@@ -161,6 +163,9 @@ public final class AuthUI {
     private final FirebaseApp mApp;
     private final FirebaseAuth mAuth;
 
+    private String mEmulatorHost = null;
+    private int mEmulatorPort = -1;
+
     private AuthUI(FirebaseApp app) {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
@@ -197,6 +202,16 @@ public final class AuthUI {
     }
 
     /**
+     * Retrieves the {@link AuthUI} instance associated the the specified app name.
+     *
+     * @throws IllegalStateException if the app is not initialized.
+     */
+    @NonNull
+    public static AuthUI getInstance(@NonNull String appName) {
+        return getInstance(FirebaseApp.getInstance(appName));
+    }
+
+    /**
      * Retrieves the {@link AuthUI} instance associated the the specified app.
      */
     @NonNull
@@ -221,6 +236,18 @@ public final class AuthUI {
             }
         }
         return authUi;
+    }
+
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public FirebaseApp getApp() {
+        return mApp;
+    }
+
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public FirebaseAuth getAuth() {
+        return mAuth;
     }
 
     /**
@@ -316,6 +343,12 @@ public final class AuthUI {
                     .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
         }
 
+        // If Play services are not available we can't attempt to use the credentials client.
+        if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+            return Tasks.forException(
+                    new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED));
+        }
+
         return GoogleApiUtils.getCredentialsClient(context)
                 .request(new CredentialRequest.Builder()
                         // We can support both email and Google at the same time here because they
@@ -368,8 +401,16 @@ public final class AuthUI {
      */
     @NonNull
     public Task<Void> signOut(@NonNull Context context) {
-        Task<Void> maybeDisableAutoSignIn = GoogleApiUtils.getCredentialsClient(context)
-                .disableAutoSignIn()
+        boolean playServicesAvailable = GoogleApiUtils.isPlayServicesAvailable(context);
+        if (!playServicesAvailable) {
+            Log.w(TAG, "Google Play services not available during signOut");
+        }
+
+        Task<Void> maybeDisableAutoSignIn = playServicesAvailable
+                ? GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn()
+                : Tasks.forResult((Void) null);
+
+        maybeDisableAutoSignIn
                 .continueWith(new Continuation<Void, Void>() {
                     @Override
                     public Void then(@NonNull Task<Void> task) {
@@ -410,7 +451,7 @@ public final class AuthUI {
      * @param context the calling {@link Context}.
      */
     @NonNull
-    public Task<Void> delete(@NonNull Context context) {
+    public Task<Void> delete(@NonNull final Context context) {
         final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             return Tasks.forException(new FirebaseAuthInvalidUserException(
@@ -419,7 +460,6 @@ public final class AuthUI {
         }
 
         final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
-        final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
 
         // Ensure the order in which tasks are executed properly destructures the user.
         return signOutIdps(context).continueWithTask(new Continuation<Void, Task<Void>>() {
@@ -427,6 +467,12 @@ public final class AuthUI {
             public Task<Void> then(@NonNull Task<Void> task) {
                 task.getResult(); // Propagate exception if there was one
 
+                if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+                    Log.w(TAG, "Google Play services not available during delete");
+                    return Tasks.forResult((Void) null);
+                }
+
+                final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
                 List<Task<?>> credentialTasks = new ArrayList<>();
                 for (Credential credential : credentials) {
                     credentialTasks.add(client.delete(credential));
@@ -460,11 +506,43 @@ public final class AuthUI {
         });
     }
 
+    /**
+     * Connect to the Firebase Authentication emulator.
+     * @see FirebaseAuth#useEmulator(String, int)
+     */
+    public void useEmulator(@NonNull String host, int port) {
+        Preconditions.checkArgument(port >= 0, "Port must be >= 0");
+        Preconditions.checkArgument(port <= 65535, "Port must be <= 65535");
+        mEmulatorHost = host;
+        mEmulatorPort = port;
+
+        mAuth.useEmulator(host, port);
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public boolean isUseEmulator() {
+        return mEmulatorHost != null && mEmulatorPort >= 0;
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public String getEmulatorHost() {
+        return mEmulatorHost;
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public int getEmulatorPort() {
+        return mEmulatorPort;
+    }
+
     private Task<Void> signOutIdps(@NonNull Context context) {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+        if (GoogleApiUtils.isPlayServicesAvailable(context)) {
+            return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+        } else {
+            return Tasks.forResult((Void) null);
+        }
     }
 
     /**
@@ -658,7 +736,7 @@ public final class AuthUI {
              * <p>
              * {@link ActionCodeSettings#canHandleCodeInApp()} must be set to true, and a valid
              * continueUrl must be passed via {@link ActionCodeSettings.Builder#setUrl(String)}.
-             * This URL must be whitelisted in the Firebase Console.
+             * This URL must be allowlisted in the Firebase Console.
              *
              * @throws IllegalStateException if canHandleCodeInApp is set to false
              * @throws NullPointerException  if ActionCodeSettings is null
@@ -677,6 +755,17 @@ public final class AuthUI {
             @NonNull
             public EmailBuilder setForceSameDevice() {
                 getParams().putBoolean(ExtraConstants.FORCE_SAME_DEVICE, true);
+                return this;
+            }
+
+            /**
+             * Sets a default sign in email, if the given email has been registered before, then
+             * it will ask the user for password, if the given email it's not registered, then
+             * it starts signing up the default email.
+             */
+            @NonNull
+            public EmailBuilder setDefaultEmail(String email) {
+                getParams().putString(ExtraConstants.DEFAULT_EMAIL, email);
                 return this;
             }
 
@@ -789,26 +878,26 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param whitelistedCountries a non empty case insensitive list of country codes
-             *                             and/or isos to be whitelisted
-             * @throws IllegalArgumentException if an empty whitelist is provided.
-             * @throws NullPointerException     if a null whitelist is provided.
+             * @param countries a non empty case insensitive list of country codes
+             *                  and/or isos to be allowlisted
+             * @throws IllegalArgumentException if an empty allowlist is provided.
+             * @throws NullPointerException     if a null allowlist is provided.
              */
             public PhoneBuilder setWhitelistedCountries(
-                    @NonNull List<String> whitelistedCountries) {
-                if (getParams().containsKey(ExtraConstants.BLACKLISTED_COUNTRIES)) {
+                    @NonNull List<String> countries) {
+                if (getParams().containsKey(ExtraConstants.BLOCKLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
-                            "You can either whitelist or blacklist country codes for phone " +
+                            "You can either allowlist or blocklist country codes for phone " +
                                     "authentication.");
                 }
 
-                String message = "Invalid argument: Only non-%s whitelists are valid. " +
-                        "To specify no whitelist, do not call this method.";
-                Preconditions.checkNotNull(whitelistedCountries, String.format(message, "null"));
-                Preconditions.checkArgument(!whitelistedCountries.isEmpty(), String.format
+                String message = "Invalid argument: Only non-%s allowlists are valid. " +
+                        "To specify no allowlist, do not call this method.";
+                Preconditions.checkNotNull(countries, String.format(message, "null"));
+                Preconditions.checkArgument(!countries.isEmpty(), String.format
                         (message, "empty"));
 
-                addCountriesToBundle(whitelistedCountries, ExtraConstants.WHITELISTED_COUNTRIES);
+                addCountriesToBundle(countries, ExtraConstants.ALLOWLISTED_COUNTRIES);
                 return this;
             }
 
@@ -826,26 +915,26 @@ public final class AuthUI {
              * https://en.wikipedia.org/wiki/ISO_3166-1
              * and e-164 codes here: https://en.wikipedia.org/wiki/List_of_country_calling_codes
              *
-             * @param blacklistedCountries a non empty case insensitive list of country codes
-             *                             and/or isos to be blacklisted
-             * @throws IllegalArgumentException if an empty blacklist is provided.
-             * @throws NullPointerException     if a null blacklist is provided.
+             * @param countries a non empty case insensitive list of country codes
+             *                  and/or isos to be blocklisted
+             * @throws IllegalArgumentException if an empty blocklist is provided.
+             * @throws NullPointerException     if a null blocklist is provided.
              */
             public PhoneBuilder setBlacklistedCountries(
-                    @NonNull List<String> blacklistedCountries) {
-                if (getParams().containsKey(ExtraConstants.WHITELISTED_COUNTRIES)) {
+                    @NonNull List<String> countries) {
+                if (getParams().containsKey(ExtraConstants.ALLOWLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
-                            "You can either whitelist or blacklist country codes for phone " +
+                            "You can either allowlist or blocklist country codes for phone " +
                                     "authentication.");
                 }
 
-                String message = "Invalid argument: Only non-%s blacklists are valid. " +
+                String message = "Invalid argument: Only non-%s blocklists are valid. " +
                         "To specify no blacklist, do not call this method.";
-                Preconditions.checkNotNull(blacklistedCountries, String.format(message, "null"));
-                Preconditions.checkArgument(!blacklistedCountries.isEmpty(), String.format
+                Preconditions.checkNotNull(countries, String.format(message, "null"));
+                Preconditions.checkArgument(!countries.isEmpty(), String.format
                         (message, "empty"));
 
-                addCountriesToBundle(blacklistedCountries, ExtraConstants.BLACKLISTED_COUNTRIES);
+                addCountriesToBundle(countries, ExtraConstants.BLOCKLISTED_COUNTRIES);
                 return this;
             }
 
@@ -865,27 +954,26 @@ public final class AuthUI {
             }
 
             private void validateInputs() {
-                List<String> whitelistedCountries = getParams().getStringArrayList(
-                        ExtraConstants.WHITELISTED_COUNTRIES);
-                List<String> blacklistedCountries = getParams().getStringArrayList(
-                        ExtraConstants.BLACKLISTED_COUNTRIES);
+                List<String> allowedCountries = getParams().getStringArrayList(
+                        ExtraConstants.ALLOWLISTED_COUNTRIES);
+                List<String> blockedCountries = getParams().getStringArrayList(
+                        ExtraConstants.BLOCKLISTED_COUNTRIES);
 
-                if (whitelistedCountries != null &&
-                        blacklistedCountries != null) {
+                if (allowedCountries != null && blockedCountries != null) {
                     throw new IllegalStateException(
-                            "You can either whitelist or blacklist country codes for phone " +
+                            "You can either allowlist or blocked country codes for phone " +
                                     "authentication.");
-                } else if (whitelistedCountries != null) {
-                    validateInputs(whitelistedCountries, true);
+                } else if (allowedCountries != null) {
+                    validateInputs(allowedCountries, true);
 
-                } else if (blacklistedCountries != null) {
-                    validateInputs(blacklistedCountries, false);
+                } else if (blockedCountries != null) {
+                    validateInputs(blockedCountries, false);
                 }
             }
 
-            private void validateInputs(List<String> countries, boolean whitelisted) {
+            private void validateInputs(List<String> countries, boolean allowed) {
                 validateCountryInput(countries);
-                validateDefaultCountryInput(countries, whitelisted);
+                validateDefaultCountryInput(countries, allowed);
             }
 
             private void validateCountryInput(List<String> codes) {
@@ -897,40 +985,40 @@ public final class AuthUI {
                 }
             }
 
-            private void validateDefaultCountryInput(List<String> codes, boolean whitelisted) {
+            private void validateDefaultCountryInput(List<String> codes, boolean allowed) {
                 // A default iso/code can be set via #setDefaultCountryIso() or #setDefaultNumber()
                 if (getParams().containsKey(ExtraConstants.COUNTRY_ISO) ||
                         getParams().containsKey(ExtraConstants.PHONE)) {
 
-                    if (!validateDefaultCountryIso(codes, whitelisted)
-                            || !validateDefaultPhoneIsos(codes, whitelisted)) {
+                    if (!validateDefaultCountryIso(codes, allowed)
+                            || !validateDefaultPhoneIsos(codes, allowed)) {
                         throw new IllegalArgumentException("Invalid default country iso. Make " +
-                                "sure it is either part of the whitelisted list or that you "
-                                + "haven't blacklisted it.");
+                                "sure it is either part of the allowed list or that you "
+                                + "haven't blocked it.");
                     }
                 }
 
             }
 
-            private boolean validateDefaultCountryIso(List<String> codes, boolean whitelisted) {
+            private boolean validateDefaultCountryIso(List<String> codes, boolean allowed) {
                 String defaultIso = getDefaultIso();
-                return isValidDefaultIso(codes, defaultIso, whitelisted);
+                return isValidDefaultIso(codes, defaultIso, allowed);
             }
 
-            private boolean validateDefaultPhoneIsos(List<String> codes, boolean whitelisted) {
+            private boolean validateDefaultPhoneIsos(List<String> codes, boolean allowed) {
                 List<String> phoneIsos = getPhoneIsosFromCode();
                 for (String iso : phoneIsos) {
-                    if (isValidDefaultIso(codes, iso, whitelisted)) {
+                    if (isValidDefaultIso(codes, iso, allowed)) {
                         return true;
                     }
                 }
                 return phoneIsos.isEmpty();
             }
 
-            private boolean isValidDefaultIso(List<String> codes, String iso, boolean whitelisted) {
+            private boolean isValidDefaultIso(List<String> codes, String iso, boolean allowed) {
                 if (iso == null) return true;
                 boolean containsIso = containsCountryIso(codes, iso);
-                return containsIso && whitelisted || !containsIso && !whitelisted;
+                return containsIso && allowed || !containsIso && !allowed;
 
             }
 
@@ -1160,9 +1248,9 @@ public final class AuthUI {
          */
         public static class GenericOAuthProviderBuilder extends Builder {
 
-            GenericOAuthProviderBuilder(@NonNull String providerId,
-                                        @NonNull String providerName,
-                                        int buttonId) {
+            public GenericOAuthProviderBuilder(@NonNull String providerId,
+                                               @NonNull String providerName,
+                                               int buttonId) {
                 super(providerId);
 
                 Preconditions.checkNotNull(providerId, "The provider ID cannot be null.");

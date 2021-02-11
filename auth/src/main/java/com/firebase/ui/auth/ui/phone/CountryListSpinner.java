@@ -55,8 +55,8 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     private String mSelectedCountryName;
     private CountryInfo mSelectedCountryInfo;
 
-    private Set<String> mWhitelistedCountryIsos = new HashSet<>();
-    private Set<String> mBlacklistedCountryIsos = new HashSet<>();
+    private Set<String> mAllowedCountryIsos = new HashSet<>();
+    private Set<String> mBlockedCountryIsos = new HashSet<>();
 
     public CountryListSpinner(Context context) {
         this(context, null, android.R.attr.spinnerStyle);
@@ -88,25 +88,25 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
         initCountrySpinnerIsosFromParams(params);
         Map<String, Integer> countryInfoMap = PhoneNumberUtils.getImmutableCountryIsoMap();
         
-        // We consider all countries to be whitelisted if there are no whitelisted
-        // or blacklisted countries given as input.
-        if (mWhitelistedCountryIsos.isEmpty() && mBlacklistedCountryIsos.isEmpty()) {
-            this.mWhitelistedCountryIsos = new HashSet<>(countryInfoMap.keySet());
+        // We consider all countries to be allowed if there are no allowed
+        // or blocked countries given as input.
+        if (mAllowedCountryIsos.isEmpty() && mBlockedCountryIsos.isEmpty()) {
+            this.mAllowedCountryIsos = new HashSet<>(countryInfoMap.keySet());
         }
 
         List<CountryInfo> countryInfoList = new ArrayList<>();
 
-        // At this point either mWhitelistedCountryIsos or mBlacklistedCountryIsos is null.
+        // At this point either mAllowedCountryIsos or mBlockedCountryIsos is null.
         // We assume no countries are to be excluded. Here, we correct this assumption based on the
         // contents of either lists.
         Set<String> excludedCountries = new HashSet<>();
-        if (!mBlacklistedCountryIsos.isEmpty()) {
-            // Exclude all countries in the mBlacklistedCountryIsos list.
-            excludedCountries.addAll(mBlacklistedCountryIsos);
+        if (!mBlockedCountryIsos.isEmpty()) {
+            // Exclude all countries in the mBlockedCountryIsos list.
+            excludedCountries.addAll(mBlockedCountryIsos);
         } else {
-            // Exclude all countries that are not present in the mWhitelistedCountryIsos list.
+            // Exclude all countries that are not present in the mAllowedCountryIsos list.
             excludedCountries.addAll(countryInfoMap.keySet());
-            excludedCountries.removeAll(mWhitelistedCountryIsos);
+            excludedCountries.removeAll(mAllowedCountryIsos);
         }
 
         // Once we know which countries need to be excluded, we loop through the country isos,
@@ -122,17 +122,17 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     }
 
     private void initCountrySpinnerIsosFromParams(@NonNull Bundle params) {
-        List<String> whitelistedCountries =
-                params.getStringArrayList(ExtraConstants.WHITELISTED_COUNTRIES);
-        List<String> blacklistedCountries =
-                params.getStringArrayList(ExtraConstants.BLACKLISTED_COUNTRIES);
+        List<String> allowedCountries =
+                params.getStringArrayList(ExtraConstants.ALLOWLISTED_COUNTRIES);
+        List<String> blockedCountries =
+                params.getStringArrayList(ExtraConstants.BLOCKLISTED_COUNTRIES);
 
-        if (whitelistedCountries != null) {
-            mWhitelistedCountryIsos = convertCodesToIsos(whitelistedCountries);
+        if (allowedCountries != null) {
+            mAllowedCountryIsos = convertCodesToIsos(allowedCountries);
         }
 
-        if (blacklistedCountries != null) {
-            mBlacklistedCountryIsos = convertCodesToIsos(blacklistedCountries);
+        if (blockedCountries != null) {
+            mBlockedCountryIsos = convertCodesToIsos(blockedCountries);
         }
     }
 
@@ -167,12 +167,12 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     public boolean isValidIso(String iso) {
         iso = iso.toUpperCase(Locale.getDefault());
         boolean valid = true;
-        if (!mWhitelistedCountryIsos.isEmpty()) {
-            valid = valid && mWhitelistedCountryIsos.contains(iso);
+        if (!mAllowedCountryIsos.isEmpty()) {
+            valid = valid && mAllowedCountryIsos.contains(iso);
         }
 
-        if (!mBlacklistedCountryIsos.isEmpty()) {
-            valid = valid && !mBlacklistedCountryIsos.contains(iso);
+        if (!mBlockedCountryIsos.isEmpty()) {
+            valid = valid && !mBlockedCountryIsos.contains(iso);
         }
 
         return valid;

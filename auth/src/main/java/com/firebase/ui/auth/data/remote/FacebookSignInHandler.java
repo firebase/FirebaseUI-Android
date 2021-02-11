@@ -39,7 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
+public class FacebookSignInHandler extends SingleProviderSignInHandler<AuthUI.IdpConfig> {
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
@@ -49,7 +49,7 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
     private final CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
     public FacebookSignInHandler(Application application) {
-        super(application);
+        super(application, FacebookAuthProvider.PROVIDER_ID);
     }
 
     private static IdpResponse createIdpResponse(
@@ -80,7 +80,9 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
     }
 
     @Override
-    public void startSignIn(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull FirebaseAuth auth,
+                            @NonNull HelperActivityBase activity,
+                            @NonNull String providerId) {
         WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
         LoginManager.getInstance().logInWithReadPermissions(activity, mPermissions);
     }
@@ -161,12 +163,5 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
 
             setResult(Resource.forSuccess(createIdpResponse(mResult, email, name, photoUri)));
         }
-    }
-
-    @Override
-    public void startSignIn(@NonNull FirebaseAuth auth,
-                            @NonNull HelperActivityBase activity,
-                            @NonNull String providerId) {
-        startSignIn(activity);
     }
 }

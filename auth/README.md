@@ -32,6 +32,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [Demo](#demo)
 1. [Configuration](#configuration)
    1. [Provider config](#identity-provider-configuration)
+   1. [Auth emulator config](#auth-emulator-configuration)
 1. [Usage instructions](#using-firebaseui-for-authentication)
    1. [AuthUI sign-in](#authui-sign-in)
    1. [Handling responses](#handling-the-sign-in-response)
@@ -65,11 +66,11 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/blob/master/CHANGELOG.md
-    implementation 'com.facebook.android:facebook-login:4.x'
+    implementation 'com.facebook.android:facebook-login:8.1.0'
 }
 ```
 
@@ -149,6 +150,25 @@ Note: unlike other sign-in methods, signing in with these providers involves the
 
 You must enable the "Request email addresses from users" permission in the "Permissions" tab of your
 Twitter app.
+
+### Auth emulator configuration
+
+As of version `7.0.0` FirebaseUI is compatible with the Firebase Authentication emulator:
+https://firebase.google.com/docs/emulator-suite
+
+Use the `useEmulator` method to point an AuthUI instance at the emulator:
+
+```java
+AuthUI authUI = AuthUI.getInstance();
+
+// "10.0.2.2" is the special host value for contacting "localhost" from within
+// the Android Emulator
+authUI.useEmulator("10.0.2.2", 9099);
+```
+
+By default Android blocks connections to `http://` endpoints such as the Auth emulator.
+To allow your app to communicate with the Auth emulator, use a [network security configuration](https://developer.android.com/training/articles/security-config)
+or set `android:usesCleartextTraffic="true"` in `AndroidManifest.xml`.
 
 ## Using FirebaseUI for authentication
 
@@ -243,7 +263,7 @@ To use email link sign in, you will first need to enable it in the Firebase Cons
 also have to enable Firebase Dynamic Links.
 
 You can enable email link sign in by calling the `enableEmailLinkSignIn` on an `EmailBuilder` instance. You will also need
-to provide a valid `ActionCodeSettings` object with `setHandleCodeInApp` set to true. Additionally, you need to whitelist the
+to provide a valid `ActionCodeSettings` object with `setHandleCodeInApp` set to true. Additionally, you need to allowlist the
 URL you pass to `setUrl`; you can do so in the Firebase Console (Authentication -> Sign in Methods -> Authorized domains).
 
 ```java
@@ -251,7 +271,7 @@ URL you pass to `setUrl`; you can do so in the Firebase Console (Authentication 
 ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
         .setAndroidPackageName(/*yourPackageName*/, /*installIfNotAvailable*/true, /*minimumVersion*/null)
         .setHandleCodeInApp(true)
-        .setUrl("https://google.com") // This URL needs to be whitelisted
+        .setUrl("https://google.com") // This URL needs to be allowlisted
         .build();
 
 startActivityForResult(
@@ -389,37 +409,37 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
 
 You can limit the countries shown in the country selector list. By default, all countries are shown.
 
-You can provide a list of countries to whitelist or blacklist. You can populate these lists with
+You can provide a list of countries to allowlist or blocklist. You can populate these lists with
 ISO (alpha-2) and E164 formatted country codes.
 
 ```java
-List<String> whitelistedCountries = new ArrayList<String>();
-whitelistedCountries.add("+1");
-whitelistedCountries.add("gr");
+List<String> allowedCountries = new ArrayList<String>();
+allowedCountries.add("+1");
+allowedCountries.add("gr");
 
-IdpConfig phoneConfigWithWhitelistedCountries = new IdpConfig.PhoneBuilder()
-        .setWhitelistedCountries(whitelistedCountries)
+IdpConfig phoneConfigWithAllowedCountries = new IdpConfig.PhoneBuilder()
+        .setWhitelistedCountries(allowedCountries)
         .build();
 ```
 All countries with the country code +1 will be present in the selector as well as Greece ('gr').
 
-You may want to exclude a few countries from the list and avoid creating a whitelist with
-many countries. You can instead provide a list of countries to blacklist. By doing so, all countries
+You may want to exclude a few countries from the list and avoid creating a allowlist with
+many countries. You can instead provide a list of countries to blocklist. By doing so, all countries
 excluding the ones you provide will be in the selector.
 
 ```java
-List<String> blacklistedCountries = new ArrayList<String>();
-blacklistedCountries.add("+1");
-blacklistedCountries.add("gr");
+List<String> blockedCountries = new ArrayList<String>();
+blockedCountries.add("+1");
+blockedCountries.add("gr");
 
-IdpConfig phoneConfigWithBlacklistedCountries = new IdpConfig.PhoneBuilder()
-        .setBlacklistedCountries(blacklistedCountries)
+IdpConfig phoneConfigWithBlockedCountries = new IdpConfig.PhoneBuilder()
+        .setBlacklistedCountries(blockedCountries)
         .build();
 ```
 
 The country code selector will exclude all countries with a country code of +1 and Greece ('gr').
 
-Note: You can't provide both a list of countries to whitelist and blacklist. If you do, a runtime
+Note: You can't provide both a list of countries to allowlist and blocklist. If you do, a runtime
 exception will be thrown.
 
 This change is purely UI based. We do not restrict users from signing in with their phone number.

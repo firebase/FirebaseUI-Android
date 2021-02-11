@@ -381,6 +381,7 @@ public class IdpResponse implements Parcelable {
             }
 
             String providerId = mUser.getProviderId();
+
             if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
@@ -390,6 +391,7 @@ public class IdpResponse implements Parcelable {
                 throw new IllegalStateException(
                         "Secret cannot be null when using the Twitter provider.");
             }
+
             return new IdpResponse(mUser, mToken, mSecret, mPendingCredential, mIsNewUser);
         }
     }

@@ -14,7 +14,7 @@
 
 package com.firebase.ui.database;
 
-import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.google.firebase.database.DatabaseReference;
@@ -43,7 +43,7 @@ public class FirebaseIndexArrayTest {
     @Before
     public void setUp() throws Exception {
         FirebaseDatabase databaseInstance =
-                FirebaseDatabase.getInstance(getAppInstance(InstrumentationRegistry.getContext()));
+                FirebaseDatabase.getInstance(getAppInstance(ApplicationProvider.getApplicationContext()));
         mRef = databaseInstance.getReference().child("firebasearray");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray");
 

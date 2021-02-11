@@ -43,7 +43,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * Display confirmation code to verify phone numbers input in {@link CheckPhoneNumberFragment}
@@ -89,7 +89,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(requireActivity())
+        mHandler = new ViewModelProvider(requireActivity())
                 .get(PhoneNumberVerificationHandler.class);
         mPhoneNumber = getArguments().getString(ExtraConstants.PHONE);
         if (savedInstanceState != null) {
@@ -127,10 +127,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewModelProviders.of(requireActivity())
+        new ViewModelProvider(requireActivity())
                 .get(PhoneProviderResponseHandler.class)
                 .getOperation()
-                .observe(this, new Observer<Resource<IdpResponse>>() {
+                .observe(getViewLifecycleOwner(), new Observer<Resource<IdpResponse>>() {
                     @Override
                     public void onChanged(@Nullable Resource<IdpResponse> resource) {
                         if (resource.getState() == State.FAILURE) {
@@ -211,7 +211,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mPhoneTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().popBackStack();
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
