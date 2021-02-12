@@ -319,9 +319,8 @@ public final class FirestorePagingOptions<T> {
                         }
                     });
 
-            LiveData<PagingData<DocumentSnapshot>> liveData = PagingLiveData
-                    .cachedIn(PagingLiveData.getLiveData(pager), mOwner.getLifecycle());
-            mPagingData = liveData;
+            mPagingData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager),
+                    mOwner.getLifecycle());
             return this;
         }
 

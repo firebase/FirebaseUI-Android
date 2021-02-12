@@ -19,10 +19,13 @@ import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
+ * This class is deprecated. Consider using {@link FirestorePagingDataAdapter} instead.
+ *
  * Paginated RecyclerView Adapter for a Cloud Firestore query.
  *
  * Configured with {@link FirestorePagingOptions}.
  */
+@Deprecated
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
         extends PagedListAdapter<DocumentSnapshot, VH>
         implements LifecycleObserver {
@@ -75,6 +78,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     private LiveData<FirestorePagingSource> mPagingSource;
 
     /**
+     * This class is deprecated. Consider using {@link FirestorePagingDataAdapter} instead.
+     *
      * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
      */
     public FirestorePagingAdapter(@NonNull FirestorePagingOptions<T> options) {

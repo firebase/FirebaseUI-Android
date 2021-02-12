@@ -46,7 +46,7 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
     private LiveData<PagingData<DocumentSnapshot>> mSnapshots;
 
     /**
-     * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
+     * Construct a new FirestorePagingDataAdapter from the given {@link FirestorePagingOptions}.
      */
     public FirestorePagingDataAdapter(@NonNull FirestorePagingOptions<T> options) {
         super(options.getDiffCallback());
@@ -57,7 +57,7 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
     }
 
     /**
-     * Initializes Snapshots and LiveData
+     * Initializes Snapshots and LoadListener
      */
     private void init() {
         mSnapshots = mOptions.getPagingData();
