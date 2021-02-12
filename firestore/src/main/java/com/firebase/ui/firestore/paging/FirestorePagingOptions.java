@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
+import androidx.paging.PagingConfig;
 import androidx.paging.PagingSource;
 import androidx.recyclerview.widget.DiffUtil;
 import kotlin.jvm.functions.Function0;
@@ -102,11 +103,15 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
+         * This method has been deprecated. Use {@link #setQuery(Query, PagingConfig, Class)}
+         * instead.
+         *
          * Sets the query using {@link Source#DEFAULT} and a {@link ClassSnapshotParser} based
          * on the given Class.
          *
          * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
          */
+        @Deprecated
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
@@ -115,10 +120,28 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
+         *
+         * Sets the query using {@link Source#DEFAULT} and a {@link ClassSnapshotParser} based
+         * on the given Class.
+         *
+         * See {@link #setQuery(Query, Source, PagingConfig, SnapshotParser)}.
+         */
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull PagingConfig config,
+                                   @NonNull Class<T> modelClass) {
+            return setQuery(query, Source.DEFAULT, config, modelClass);
+        }
+
+        /**
+         * This method has been deprecated.
+         * Use {@link #setQuery(Query, PagingConfig, SnapshotParser)} instead.
+         *
          * Sets the query using {@link Source#DEFAULT} and a custom {@link SnapshotParser}.
          *
          * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
          */
+        @Deprecated
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagedList.Config config,
@@ -127,11 +150,28 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
+         *
+         * Sets the query using {@link Source#DEFAULT} and a custom {@link SnapshotParser}.
+         *
+         * See {@link #setQuery(Query, Source, PagingConfig, SnapshotParser)}.
+         */
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull PagingConfig config,
+                                   @NonNull SnapshotParser<T> parser) {
+            return setQuery(query, Source.DEFAULT, config, parser);
+        }
+
+        /**
+         * This method has been deprecated.
+         * Use {@link #setQuery(Query, Source, PagingConfig, Class)} instead.
+         *
          * Sets the query using a custom {@link Source} and a {@link ClassSnapshotParser} based
          * on the given class.
          *
          * See {@link #setQuery(Query, Source, PagedList.Config, SnapshotParser)}.
          */
+        @Deprecated
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull Source source,
@@ -141,6 +181,24 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
+         *
+         * Sets the query using a custom {@link Source} and a {@link ClassSnapshotParser} based
+         * on the given class.
+         *
+         * See {@link #setQuery(Query, Source, PagingConfig, SnapshotParser)}.
+         */
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull Source source,
+                                   @NonNull PagingConfig config,
+                                   @NonNull Class<T> modelClass) {
+            return setQuery(query, source, config, new ClassSnapshotParser<>(modelClass));
+        }
+
+        /**
+         * This method has been deprecated.
+         * Use {@link #setQuery(Query, Source, PagingConfig, SnapshotParser)} instead.
+         *
          * Sets the Firestore query to paginate.
          *
          * @param query the Firestore query. This query should only contain where() and
@@ -151,6 +209,7 @@ public final class FirestorePagingOptions<T> {
          *               objects.
          * @return this, for chaining.
          */
+        @Deprecated
         @NonNull
         public Builder<T> setQuery(@NonNull final Query query,
                                    @NonNull final Source source,
@@ -169,6 +228,42 @@ public final class FirestorePagingOptions<T> {
             mParser = parser;
             return this;
         }
+
+        /**
+         *
+         * Sets the Firestore query to paginate.
+         *
+         * @param query the Firestore query. This query should only contain where() and
+         *              orderBy() clauses. Any limit() or pagination clauses will cause errors.
+         * @param source the data source to use for query data.
+         * @param config paging configuration, passed directly to the support paging library.
+         * @param parser the {@link SnapshotParser} to parse {@link DocumentSnapshot} into model
+         *               objects.
+         * @return this, for chaining.
+         */
+        @NonNull
+        public Builder<T> setQuery(@NonNull final Query query,
+                                   @NonNull final Source source,
+                                   @NonNull PagingConfig config,
+                                   @NonNull SnapshotParser<T> parser) {
+            assertNull(mData, ERR_DATA_SET);
+
+            // This should be removed once we fully migrate to Paging 3
+            PagedList.Config oldConfig = toOldConfig(config);
+
+            // Build paged list
+            mData = new LivePagedListBuilder(new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
+                @Override
+                public PagingSource<PageKey, DocumentSnapshot> invoke() {
+                    return new FirestorePagingSource(query, source);
+                }
+            }, oldConfig).build();
+
+            mParser = parser;
+            return this;
+        }
+
+
 
         /**
          * Sets an optional custom {@link DiffUtil.ItemCallback} to compare
@@ -212,6 +307,22 @@ public final class FirestorePagingOptions<T> {
             }
 
             return new FirestorePagingOptions<>(mData, mParser, mDiffCallback, mOwner);
+        }
+
+        /**
+         * Workaround to support the new PagingConfig class
+         * This should be removed once we fully migrate to Paging 3
+         * @param config the new PagingConfig
+         * @return the old PagedList.Config
+         */
+        private PagedList.Config toOldConfig(@NonNull PagingConfig config) {
+            return new PagedList.Config.Builder()
+                    .setEnablePlaceholders(config.enablePlaceholders)
+                    .setInitialLoadSizeHint(config.initialLoadSize)
+                    .setMaxSize(config.maxSize)
+                    .setPrefetchDistance(config.prefetchDistance)
+                    .setPageSize(config.pageSize)
+                    .build();
         }
 
     }
