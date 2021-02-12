@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PagingState;
 import androidx.paging.rxjava3.RxPagingSource;
 import io.reactivex.rxjava3.core.Single;
@@ -23,9 +21,6 @@ import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnapshot> {
-
-    private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
-    private final MutableLiveData<Exception> mException = new MutableLiveData<>();
 
     private final Query mQuery;
     private final Source mSource;
@@ -40,10 +35,8 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
     public Single<LoadResult<PageKey, DocumentSnapshot>> loadSingle(@NotNull LoadParams<PageKey> params) {
         final Task<QuerySnapshot> task;
         if (params.getKey() == null) {
-            mLoadingState.postValue(LoadingState.LOADING_INITIAL);
             task = mQuery.limit(params.getLoadSize()).get(mSource);
         } else {
-            mLoadingState.postValue(LoadingState.LOADING_MORE);
             task = params.getKey().getPageQuery(mQuery, params.getLoadSize()).get(mSource);
         }
 
@@ -54,21 +47,16 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 if (task.isSuccessful()) {
                     QuerySnapshot snapshot = task.getResult();
                     PageKey nextPage = getNextPageKey(snapshot);
-                    mLoadingState.postValue(LoadingState.LOADED);
                     if (snapshot.getDocuments().isEmpty()) {
-                        mLoadingState.postValue(LoadingState.FINISHED);
                         return toLoadResult(snapshot.getDocuments(), null);
                     }
                     return toLoadResult(snapshot.getDocuments(), nextPage);
                 }
-                mLoadingState.postValue(LoadingState.ERROR);
                 throw task.getException();
             }
         }).subscribeOn(Schedulers.io()).onErrorReturn(new Function<Throwable, LoadResult<PageKey, DocumentSnapshot>>() {
             @Override
-            public LoadResult<PageKey, DocumentSnapshot> apply(Throwable throwable) throws Throwable {
-                mLoadingState.postValue(LoadingState.ERROR);
-                mException.postValue((Exception) throwable);
+            public LoadResult<PageKey, DocumentSnapshot> apply(Throwable throwable) {
                 return new LoadResult.Error<>(throwable);
             }
         });
@@ -86,16 +74,6 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 LoadResult.Page.COUNT_UNDEFINED);
     }
 
-    @NonNull
-    public LiveData<LoadingState> getLoadingState() {
-        return mLoadingState;
-    }
-
-    @NonNull
-    public LiveData<Exception> getLastError() {
-        return mException;
-    }
-
     @Nullable
     @Override
     public PageKey getRefreshKey(@NotNull PagingState<PageKey, DocumentSnapshot> state) {
@@ -106,9 +84,6 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
     private PageKey getNextPageKey(@NonNull QuerySnapshot snapshot) {
         List<DocumentSnapshot> data = snapshot.getDocuments();
         DocumentSnapshot last = getLast(data);
-        if (last == null) {
-            mLoadingState.postValue(LoadingState.FINISHED);
-        }
         return new PageKey(last, null);
     }
 

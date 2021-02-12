@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 import androidx.paging.Pager;
@@ -35,19 +34,16 @@ public final class FirestorePagingOptions<T> {
 
     private final LiveData<PagedList<DocumentSnapshot>> mData;
     private final LiveData<PagingData<DocumentSnapshot>> mPagingData;
-    private final LiveData<FirestorePagingSource> mPagingSource;
     private final SnapshotParser<T> mParser;
     private final DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
     private final LifecycleOwner mOwner;
 
     private FirestorePagingOptions(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
                                    @NonNull LiveData<PagingData<DocumentSnapshot>> pagingData,
-                                   @NonNull LiveData<FirestorePagingSource> pagingSource,
                                    @NonNull SnapshotParser<T> parser,
                                    @NonNull DiffUtil.ItemCallback<DocumentSnapshot> diffCallback,
                                    @Nullable LifecycleOwner owner) {
         mData = data;
-        mPagingSource = pagingSource;
         mPagingData = pagingData;
         mParser = parser;
         mDiffCallback = diffCallback;
@@ -63,9 +59,6 @@ public final class FirestorePagingOptions<T> {
     public LiveData<PagingData<DocumentSnapshot>> getPagingData() {
         return mPagingData;
     }
-
-    @NonNull
-    public LiveData<FirestorePagingSource> getPagingSource() { return mPagingSource; }
 
     @NonNull
     public SnapshotParser<T> getParser() {
@@ -89,7 +82,6 @@ public final class FirestorePagingOptions<T> {
 
         private LiveData<PagedList<DocumentSnapshot>> mData;
         private LiveData<PagingData<DocumentSnapshot>> mPagingData;
-        private MutableLiveData<FirestorePagingSource> mPagingSource;
         private SnapshotParser<T> mParser;
         private LifecycleOwner mOwner;
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
@@ -319,15 +311,11 @@ public final class FirestorePagingOptions<T> {
 
 
             // For Paging 3 support
-            mPagingSource = new MutableLiveData<>();
             final Pager<PageKey, DocumentSnapshot> pager = new Pager<>(config,
                     new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
                         @Override
                         public PagingSource<PageKey, DocumentSnapshot> invoke() {
-                            FirestorePagingSource pagingSource =
-                                    new FirestorePagingSource(query, source);
-                            mPagingSource.postValue(pagingSource);
-                            return pagingSource;
+                            return new FirestorePagingSource(query, source);
                         }
                     });
 
@@ -380,8 +368,7 @@ public final class FirestorePagingOptions<T> {
                 mDiffCallback = new DefaultSnapshotDiffCallback<T>(mParser);
             }
 
-            return new FirestorePagingOptions<>(mData, mPagingData, mPagingSource, mParser,
-                    mDiffCallback, mOwner);
+            return new FirestorePagingOptions<>(mData, mPagingData, mParser, mDiffCallback, mOwner);
         }
 
         /**

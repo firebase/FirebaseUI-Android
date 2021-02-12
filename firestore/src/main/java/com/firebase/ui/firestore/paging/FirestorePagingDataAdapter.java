@@ -7,16 +7,18 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.Transformations;
+import androidx.paging.CombinedLoadStates;
+import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Paginated RecyclerView Adapter for a Cloud Firestore query.
@@ -27,24 +29,7 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
         extends PagingDataAdapter<DocumentSnapshot, VH>
         implements LifecycleObserver {
 
-    private static final String TAG = "FirestorePagingAdapter";
-    private final Observer<Exception> mErrorObserver = new Observer<Exception>() {
-        @Override
-        public void onChanged(@Nullable Exception e) {
-            onError(e);
-        }
-    };
-    private final Observer<LoadingState> mStateObserver =
-            new Observer<LoadingState>() {
-                @Override
-                public void onChanged(@Nullable LoadingState state) {
-                    if (state == null) {
-                        return;
-                    }
-
-                    onLoadingStateChanged(state);
-                }
-            };
+    private static final String TAG = "FirestorePaging3Adapter";
     private final Observer<PagingData<DocumentSnapshot>> mDataObserver =
             new Observer<PagingData<DocumentSnapshot>>() {
                 @Override
@@ -59,8 +44,6 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
     private FirestorePagingOptions<T> mOptions;
     private SnapshotParser<T> mParser;
     private LiveData<PagingData<DocumentSnapshot>> mSnapshots;
-    private LiveData<LoadingState> mLoadingState;
-    private LiveData<Exception> mException;
 
     /**
      * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
@@ -79,27 +62,52 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
     private void init() {
         mSnapshots = mOptions.getPagingData();
 
-        mLoadingState = Transformations.switchMap(mOptions.getPagingSource(),
-                new Function<FirestorePagingSource, LiveData<LoadingState>>() {
-                    @Override
-                    public LiveData<LoadingState> apply(FirestorePagingSource input) {
-                        return input.getLoadingState();
-                    }
-                });
-
-        mException = Transformations.switchMap(mOptions.getPagingSource(),
-                new Function<FirestorePagingSource, LiveData<Exception>>() {
-                    @Override
-                    public LiveData<Exception> apply(FirestorePagingSource input) {
-                        return input.getLastError();
-                    }
-                });
-
         mParser = mOptions.getParser();
 
         if (mOptions.getOwner() != null) {
             mOptions.getOwner().getLifecycle().addObserver(this);
         }
+
+        addLoadStateListener(new Function1<CombinedLoadStates, Unit>() {
+            @Override
+            public Unit invoke(CombinedLoadStates states) {
+                LoadState refresh = states.getRefresh();
+                LoadState append = states.getAppend();
+
+                if (refresh instanceof LoadState.Loading) {
+                    onLoadingStateChanged(LoadingState.LOADING_INITIAL);
+                    return null;
+                }
+
+                if (refresh instanceof LoadState.Error) {
+                    LoadState.Error errorLoadState = (LoadState.Error) refresh;
+                    onError(new Exception(errorLoadState.getError()));
+                }
+
+                if (append instanceof LoadState.NotLoading) {
+                    LoadState.NotLoading notLoading = (LoadState.NotLoading) append;
+                    if (notLoading.getEndOfPaginationReached()) {
+                        onLoadingStateChanged(LoadingState.FINISHED);
+                        return null;
+                    }
+                    if (refresh instanceof LoadState.NotLoading) {
+                        onLoadingStateChanged(LoadingState.LOADED);
+                        return null;
+                    }
+                }
+
+                if (append instanceof LoadState.Loading) {
+                    onLoadingStateChanged(LoadingState.LOADING_MORE);
+                    return null;
+                }
+
+                if (append instanceof LoadState.Error) {
+                    LoadState.Error errorLoadState = (LoadState.Error) append;
+                    onError(new Exception(errorLoadState.getError()));
+                }
+                return null;
+            }
+        });
     }
 
     /**
@@ -130,8 +138,6 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         mSnapshots.observeForever(mDataObserver);
-        mLoadingState.observeForever(mStateObserver);
-        mException.observeForever(mErrorObserver);
     }
 
     /**
@@ -141,8 +147,6 @@ public abstract class FirestorePagingDataAdapter<T, VH extends RecyclerView.View
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeObserver(mDataObserver);
-        mLoadingState.removeObserver(mStateObserver);
-        mException.removeObserver(mErrorObserver);
     }
 
     @Override
