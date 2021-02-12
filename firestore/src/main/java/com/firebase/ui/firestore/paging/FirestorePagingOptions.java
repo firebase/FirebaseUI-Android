@@ -30,8 +30,8 @@ import static com.firebase.ui.common.Preconditions.assertNull;
  */
 public final class FirestorePagingOptions<T> {
 
-    private static final String ERR_DATA_SET = "Data  already set. " +
-            "Call only one of setData() or setQuery()";
+    private static final String ERR_DATA_SET = "Data already set. " +
+            "Call only one of setPagingData() or setQuery()";
 
     private final LiveData<PagedList<DocumentSnapshot>> mData;
     private final LiveData<PagingData<DocumentSnapshot>> mPagingData;
@@ -95,11 +95,16 @@ public final class FirestorePagingOptions<T> {
         private DiffUtil.ItemCallback<DocumentSnapshot> mDiffCallback;
 
         /**
+         *
+         * This method has been deprecated. Use {@link #setPagingData(LiveData, Class)}
+         * instead.
+         *
          * Directly set data using and parse with a {@link ClassSnapshotParser} based on
          * the given class.
          * <p>
          * Do not call this method after calling {@code setQuery}.
          */
+        @Deprecated
         @NonNull
         public Builder<T> setData(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
                                               @NonNull Class<T> modelClass) {
@@ -108,16 +113,48 @@ public final class FirestorePagingOptions<T> {
         }
 
         /**
+         * Directly set data using and parse with a {@link ClassSnapshotParser} based on
+         * the given class.
+         * <p>
+         * Do not call this method after calling {@code setQuery}.
+         */
+        @NonNull
+        public Builder<T> setPagingData(@NonNull LiveData<PagingData<DocumentSnapshot>> data,
+                                  @NonNull Class<T> modelClass) {
+            return setPagingData(data, new ClassSnapshotParser<>(modelClass));
+        }
+
+        /**
+         *
+         * This method has been deprecated. Use {@link #setPagingData(LiveData, SnapshotParser)}
+         * instead.
+         *
          * Directly set data and parse with a custom {@link SnapshotParser}.
          * <p>
          * Do not call this method after calling {@code setQuery}.
          */
+        @Deprecated
         @NonNull
         public Builder<T> setData(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
                                   @NonNull SnapshotParser<T> parser) {
             assertNull(mData, ERR_DATA_SET);
 
             mData = data;
+            mParser = parser;
+            return this;
+        }
+
+        /**
+         * Directly set data and parse with a custom {@link SnapshotParser}.
+         * <p>
+         * Do not call this method after calling {@code setQuery}.
+         */
+        @NonNull
+        public Builder<T> setPagingData(@NonNull LiveData<PagingData<DocumentSnapshot>> pagingData,
+                                  @NonNull SnapshotParser<T> parser) {
+            assertNull(mPagingData, ERR_DATA_SET);
+
+            mPagingData = pagingData;
             mParser = parser;
             return this;
         }
@@ -335,7 +372,7 @@ public final class FirestorePagingOptions<T> {
         @NonNull
         public FirestorePagingOptions<T> build() {
             if ((mData == null && mPagingData == null) || mParser == null) {
-                throw new IllegalStateException("Must call setQuery() or setDocumentSnapshot()" +
+                throw new IllegalStateException("Must call setQuery() or setPagingData()" +
                         " before calling build().");
             }
 
