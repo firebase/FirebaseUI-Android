@@ -57,6 +57,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                     mLoadingState.postValue(LoadingState.LOADED);
                     if (snapshot.getDocuments().isEmpty()) {
                         mLoadingState.postValue(LoadingState.FINISHED);
+                        return toLoadResult(snapshot.getDocuments(), null);
                     }
                     return toLoadResult(snapshot.getDocuments(), nextPage);
                 }
@@ -75,7 +76,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
 
     private LoadResult<PageKey, DocumentSnapshot> toLoadResult(
             @NonNull List<DocumentSnapshot> snapshots,
-            @NonNull PageKey nextPage
+            @Nullable PageKey nextPage
     ) {
         return new LoadResult.Page<>(
                 snapshots,
