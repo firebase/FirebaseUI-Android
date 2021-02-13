@@ -473,7 +473,6 @@ public final class PhoneNumberUtils {
         map.put("HM", 672);
         map.put("GS", 500);
 
-
         COUNTRY_TO_ISO_CODES = Collections.unmodifiableMap(map);
     }
 }
