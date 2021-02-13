@@ -32,7 +32,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
     private final Query mQuery;
     private final Source mSource;
 
-    public FirestorePagingSource(Query query, Source source) {
+    public FirestorePagingSource(@NonNull Query query,@NonNull Source source) {
         mQuery = query;
         mSource = source;
     }
