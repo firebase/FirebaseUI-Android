@@ -70,7 +70,8 @@ public class FirestorePagingSourceTest {
 
         // Should go from LOADING_INITIAL --> LOADED --> LOADING_FINISHED
         observer.await();
-        observer.assertResults(Arrays.asList(LoadingState.LOADING_INITIAL, LoadingState.LOADED, LoadingState.FINISHED));
+        observer.assertResults(Arrays.asList(LoadingState.LOADING_INITIAL, LoadingState.LOADED,
+                LoadingState.FINISHED));
     }
 
     @Test
@@ -103,7 +104,8 @@ public class FirestorePagingSourceTest {
 
         // Should go from LOADING_MORE --> LOADED --> LOADING_FINISHED
         observer.await();
-        observer.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.LOADED, LoadingState.FINISHED));
+        observer.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.LOADED,
+                LoadingState.FINISHED));
     }
 
     @Test
@@ -132,7 +134,8 @@ public class FirestorePagingSourceTest {
 //
 //        // Kick off an initial load of 20 items
 //        PageKey pageKey = new PageKey(null, null);
-//        PagingSource.LoadParams.Append<PageKey> params = new PagingSource.LoadParams.Append<>(pageKey, 20, false);
+//        PagingSource.LoadParams.Append<PageKey> params = new PagingSource.LoadParams.Append<>
+//        (pageKey, 20, false);
 //        mPagingSource.loadSingle(params).blockingSubscribe();
 //
 //        // Should go from LOADING_MORE --> ERROR

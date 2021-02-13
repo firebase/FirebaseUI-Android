@@ -32,7 +32,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
     private final Query mQuery;
     private final Source mSource;
 
-    public FirestorePagingSource(@NonNull Query query,@NonNull Source source) {
+    public FirestorePagingSource(@NonNull Query query, @NonNull Source source) {
         mQuery = query;
         mSource = source;
     }
@@ -66,14 +66,15 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 mLoadingState.postValue(LoadingState.ERROR);
                 throw task.getException();
             }
-        }).subscribeOn(Schedulers.io()).onErrorReturn(new Function<Throwable, LoadResult<PageKey, DocumentSnapshot>>() {
-            @Override
-            public LoadResult<PageKey, DocumentSnapshot> apply(Throwable throwable) {
-                mLoadingState.postValue(LoadingState.ERROR);
-                mException.postValue((Exception) throwable);
-                return new LoadResult.Error<>(throwable);
-            }
-        });
+        }).subscribeOn(Schedulers.io())
+                .onErrorReturn(new Function<Throwable, LoadResult<PageKey, DocumentSnapshot>>() {
+                    @Override
+                    public LoadResult<PageKey, DocumentSnapshot> apply(Throwable throwable) {
+                        mLoadingState.postValue(LoadingState.ERROR);
+                        mException.postValue((Exception) throwable);
+                        return new LoadResult.Error<>(throwable);
+                    }
+                });
     }
 
     private LoadResult<PageKey, DocumentSnapshot> toLoadResult(
