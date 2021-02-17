@@ -125,37 +125,6 @@ public class FirestorePagingSourceTest {
         observer.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.ERROR));
     }
 
-//    @Test
-//    public void testLoadAfter_retry() throws Exception {
-//        mockQueryFailure("Could not load more documents.");
-//
-//        TestObserver<LoadingState> observer1 = new TestObserver<>(2);
-//        mPagingSource.getLoadingState().observeForever(observer1);
-//
-//        // Kick off an initial load of 20 items
-//        PageKey pageKey = new PageKey(null, null);
-//        PagingSource.LoadParams.Append<PageKey> params = new PagingSource.LoadParams.Append<>
-//        (pageKey, 20, false);
-//        mPagingSource.loadSingle(params).blockingSubscribe();
-//
-//        // Should go from LOADING_MORE --> ERROR
-//        observer1.await();
-//        observer1.assertResults(Arrays.asList(LoadingState.LOADING_MORE, LoadingState.ERROR));
-//
-//        // Create a new observer
-//        TestObserver<LoadingState> observer2 = new TestObserver<>(3);
-//        mPagingSource.getLoadingState().observeForever(observer2);
-//
-//        // Retry the load
-//        mockQuerySuccess(new ArrayList<DocumentSnapshot>());
-////        mPagingSource.retry();
-//
-//        // Should go from ERROR --> LOADING_MORE --> SUCCESS
-//        observer2.await();
-//        observer2.assertResults(
-//                Arrays.asList(LoadingState.ERROR, LoadingState.LOADING_MORE, LoadingState.LOADED));
-//    }
-
     private void initMockQuery() {
         when(mMockQuery.startAfter(any(DocumentSnapshot.class))).thenReturn(mMockQuery);
         when(mMockQuery.endBefore(any(DocumentSnapshot.class))).thenReturn(mMockQuery);
@@ -203,7 +172,6 @@ public class FirestorePagingSourceTest {
             assertEquals(expected.size(), mResults.size());
 
             for (int i = 0; i < mResults.size(); i++) {
-//                Log.e("Test", mResults.get(i) + "");
                 assertEquals(mResults.get(i), expected.get(i));
             }
         }

@@ -134,13 +134,12 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * attempt to retry the most recent failure.
      */
     public void retry() {
-        FirestorePagingSource source = mPagingSource.getValue();
-        if (source == null) {
-            Log.w(TAG, "Called retry() when FirestorePagingSource is null!");
+        PagedList<DocumentSnapshot> pagedList = mSnapshots.getValue();
+        if (pagedList == null) {
+            Log.w(TAG, "Called retry() when PagedList is null!");
             return;
         }
-
-//        source.retry(); TODO: Bring this back
+        pagedList.retry();
     }
 
     /**
