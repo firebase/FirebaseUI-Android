@@ -7,13 +7,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PagingState;
@@ -25,7 +23,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnapshot> {
 
     // Workaround to show loading states in Paging 2
-    // These can be removed once we fully migrate to Paging 3
+    // These 2 can be removed once we fully migrate to Paging 3
     private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
     private final MutableLiveData<Exception> mException = new MutableLiveData<>();
 
@@ -37,9 +35,9 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
         mSource = source;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public Single<LoadResult<PageKey, DocumentSnapshot>> loadSingle(@NotNull LoadParams<PageKey> params) {
+    public Single<LoadResult<PageKey, DocumentSnapshot>> loadSingle(@NonNull LoadParams<PageKey> params) {
         final Task<QuerySnapshot> task;
         if (params.getKey() == null) {
             mLoadingState.postValue(LoadingState.LOADING_INITIAL);
@@ -101,7 +99,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
 
     @Nullable
     @Override
-    public PageKey getRefreshKey(@NotNull PagingState<PageKey, DocumentSnapshot> state) {
+    public PageKey getRefreshKey(@NonNull PagingState<PageKey, DocumentSnapshot> state) {
         return null;
     }
 
@@ -112,7 +110,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
         return new PageKey(last, null);
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     private DocumentSnapshot getLast(@NonNull List<DocumentSnapshot> data) {
         if (data.isEmpty()) {
             return null;
