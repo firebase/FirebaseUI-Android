@@ -267,12 +267,8 @@ public final class FirestorePagingOptions<T> {
             assertNull(mData, ERR_DATA_SET);
 
             // Build paged list
-            mData = new LivePagedListBuilder(new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
-                @Override
-                public PagingSource<PageKey, DocumentSnapshot> invoke() {
-                    return new FirestorePagingSource(query, source);
-                }
-            }, config).build();
+            final FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query, source);
+            mData = new LivePagedListBuilder<PageKey, DocumentSnapshot>(factory, config).build();
 
             mParser = parser;
             return this;
@@ -302,12 +298,8 @@ public final class FirestorePagingOptions<T> {
 
             // Paging 2 support
             PagedList.Config oldConfig = toOldConfig(config);
-            mData = new LivePagedListBuilder(new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
-                @Override
-                public PagingSource<PageKey, DocumentSnapshot> invoke() {
-                    return new FirestorePagingSource(query, source);
-                }
-            }, oldConfig).build();
+            final FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query, source);
+            mData = new LivePagedListBuilder<PageKey, DocumentSnapshot>(factory, oldConfig).build();
 
 
             // For Paging 3 support
@@ -315,9 +307,10 @@ public final class FirestorePagingOptions<T> {
                     new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
                         @Override
                         public PagingSource<PageKey, DocumentSnapshot> invoke() {
-                            return new FirestorePagingSource(query, source);
+                            return factory.asPagingSourceFactory().invoke();
                         }
                     });
+
 
             mPagingData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager),
                     mOwner.getLifecycle());
