@@ -260,15 +260,15 @@ public final class FirestorePagingOptions<T> {
          */
         @Deprecated
         @NonNull
-        public Builder<T> setQuery(@NonNull final Query query,
-                                   @NonNull final Source source,
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull Source source,
                                    @NonNull PagedList.Config config,
                                    @NonNull SnapshotParser<T> parser) {
             assertNull(mData, ERR_DATA_SET);
 
             // Build paged list
-            final FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query, source);
-            mData = new LivePagedListBuilder<PageKey, DocumentSnapshot>(factory, config).build();
+            FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query, source);
+            mData = new LivePagedListBuilder<>(factory, config).build();
 
             mParser = parser;
             return this;

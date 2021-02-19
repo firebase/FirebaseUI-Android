@@ -35,7 +35,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         LiveData created via Transformation do not have a value until an Observer is attached.
         We attach this empty observer so that our getValue() calls return non-null later.
     */
-    private final Observer<FirestoreDataSource> mPagingSourceObserver = new Observer<FirestoreDataSource>() {
+    private final Observer<FirestoreDataSource> mDataSourceObserver = new Observer<FirestoreDataSource>() {
         @Override
         public void onChanged(@Nullable FirestoreDataSource source) {
 
@@ -100,8 +100,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 new Function<PagedList<DocumentSnapshot>, LiveData<LoadingState>>() {
                     @Override
                     public LiveData<LoadingState> apply(PagedList<DocumentSnapshot> input) {
-                        FirestoreDataSource pagingSource = (FirestoreDataSource) input.getDataSource();
-                        return pagingSource.getLoadingState();
+                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
+                        return dataSource.getLoadingState();
                     }
                 });
 
@@ -117,8 +117,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 new Function<PagedList<DocumentSnapshot>, LiveData<Exception>>() {
                     @Override
                     public LiveData<Exception> apply(PagedList<DocumentSnapshot> input) {
-                        FirestoreDataSource pagingSource = (FirestoreDataSource) input.getDataSource();
-                        return pagingSource.getLastError();
+                        FirestoreDataSource dataSource = (FirestoreDataSource) input.getDataSource();
+                        return dataSource.getLastError();
                     }
                 });
 
@@ -134,24 +134,24 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * attempt to retry the most recent failure.
      */
     public void retry() {
-        PagedList<DocumentSnapshot> pagedList = mSnapshots.getValue();
-        if (pagedList == null) {
-            Log.w(TAG, "Called retry() when PagedList is null!");
+        FirestoreDataSource source = mDataSource.getValue();
+        if (source == null) {
+            Log.w(TAG, "Called retry() when FirestoreDataSource is null!");
             return;
         }
-        pagedList.retry();
+        source.retry();
     }
 
     /**
      * To attempt to refresh the list. It will reload the list from beginning.
      */
     public void refresh() {
-        FirestoreDataSource mFirebasePagingSource = mDataSource.getValue();
-        if (mFirebasePagingSource == null) {
-            Log.w(TAG, "Called refresh() when FirestorePagingSource is null!");
+        FirestoreDataSource mFirebaseDataSource = mDataSource.getValue();
+        if (mFirebaseDataSource == null) {
+            Log.w(TAG, "Called refresh() when FirestoreDataSource is null!");
             return;
         }
-        mFirebasePagingSource.invalidate();
+        mFirebaseDataSource.invalidate();
     }
 
     /**
@@ -183,7 +183,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public void startListening() {
         mSnapshots.observeForever(mDataObserver);
         mLoadingState.observeForever(mStateObserver);
-        mDataSource.observeForever(mPagingSourceObserver);
+        mDataSource.observeForever(mDataSourceObserver);
         mException.observeForever(mErrorObserver);
     }
 
@@ -195,7 +195,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public void stopListening() {
         mSnapshots.removeObserver(mDataObserver);
         mLoadingState.removeObserver(mStateObserver);
-        mDataSource.removeObserver(mPagingSourceObserver);
+        mDataSource.removeObserver(mDataSourceObserver);
         mException.removeObserver(mErrorObserver);
     }
 
