@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+    implementation(Config.Libs.Androidx.activity)
     implementation(Config.Libs.Androidx.design)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)

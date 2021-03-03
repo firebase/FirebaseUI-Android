@@ -26,6 +26,7 @@ object Config {
 
         object Androidx {
             const val annotations = "androidx.annotation:annotation:1.1.0"
+            const val activity = "androidx.activity:activity:1.2.0"
             const val customTabs = "androidx.browser:browser:1.0.0"
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:2.0.4"
