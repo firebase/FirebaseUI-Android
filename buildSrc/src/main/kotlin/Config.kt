@@ -30,6 +30,7 @@ object Config {
             const val customTabs = "androidx.browser:browser:1.0.0"
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:2.0.4"
+            const val fragment = "androidx.fragment:fragment:1.3.0"
             const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.2.0"
             const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:2.2.0"
             const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.2.0"
