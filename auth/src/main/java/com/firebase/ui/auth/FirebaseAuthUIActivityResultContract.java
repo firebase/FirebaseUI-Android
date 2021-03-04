@@ -26,6 +26,7 @@ public class FirebaseAuthUIActivityResultContract extends
     }
 
     @Override
+    @NonNull
     public FirebaseAuthUIAuthenticationResult parseResult(int resultCode, @Nullable Intent intent) {
         return new FirebaseAuthUIAuthenticationResult(resultCode, IdpResponse.fromResultIntent(intent));
     }

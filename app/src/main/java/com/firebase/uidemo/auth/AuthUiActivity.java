@@ -525,7 +525,7 @@ public class AuthUiActivity extends AppCompatActivity
     }
 
     @Override
-    public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+    public void onActivityResult(@NonNull FirebaseAuthUIAuthenticationResult result) {
         // Successfully signed in
         IdpResponse response = result.getIdpResponse();
         handleSignInResponse(result.getResultCode(), response);

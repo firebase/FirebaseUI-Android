@@ -210,7 +210,7 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
     }
 
     @Override
-    public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+    public void onActivityResult(@NonNull FirebaseAuthUIAuthenticationResult result) {
         handleSignInResult(result.getResultCode(), result.getIdpResponse());
     }
 }
