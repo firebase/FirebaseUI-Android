@@ -10,17 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * A {@link ActivityResultContract} describing that the caller can launch authentication with a
- * {@link com.firebase.ui.auth.AuthUI.SignInIntentBuilder} and is guaranteed to receive a
- * {@link FirebaseAuthUIAuthenticationResult} as result.
+ * A {@link ActivityResultContract} describing that the caller can launch authentication flow with a
+ * {@link Intent} and is guaranteed to receive a {@link FirebaseAuthUIAuthenticationResult} as
+ * result. The given input intent <b>must</b> be created using a
+ * {@link com.firebase.ui.auth.AuthUI.SignInIntentBuilder} in order to guarantee a successful
+ * launch of the authentication flow.
  */
 public class FirebaseAuthUIActivityResultContract extends
-        ActivityResultContract<AuthUI.SignInIntentBuilder, FirebaseAuthUIAuthenticationResult> {
+        ActivityResultContract<Intent, FirebaseAuthUIAuthenticationResult> {
 
     @NonNull
     @Override
-    public Intent createIntent(@NonNull Context context, AuthUI.SignInIntentBuilder input) {
-        return input.build();
+    public Intent createIntent(@NonNull Context context, Intent input) {
+        return input;
     }
 
     @Override

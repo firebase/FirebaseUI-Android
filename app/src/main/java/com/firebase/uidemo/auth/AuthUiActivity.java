@@ -71,8 +71,6 @@ public class AuthUiActivity extends AppCompatActivity
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google" +
             ".com/terms/analytics/#7_privacy";
 
-    private static final int RC_SIGN_IN = 100;
-
     @BindView(R.id.root) View mRootView;
 
     @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
@@ -116,7 +114,7 @@ public class AuthUiActivity extends AppCompatActivity
     @BindView(R.id.require_name) CheckBox mRequireName;
     @BindView(R.id.use_auth_emulator) CheckBox mUseEmulator;
 
-    private final ActivityResultLauncher<AuthUI.SignInIntentBuilder> signIn =
+    private final ActivityResultLauncher<Intent> signIn =
             registerForActivityResult(new FirebaseAuthUIActivityResultContract(), this);
 
     @NonNull
@@ -245,11 +243,11 @@ public class AuthUiActivity extends AppCompatActivity
 
     @OnClick(R.id.sign_in)
     public void signIn() {
-        signIn.launch(getSignInIntentBuilder(/*link=*/null));
+        signIn.launch(getSignInIntent(/*link=*/null));
     }
 
     public void signInWithEmailLink(@Nullable String link) {
-        signIn.launch(getSignInIntentBuilder(link));
+        signIn.launch(getSignInIntent(link));
     }
 
     @NonNull
@@ -262,7 +260,7 @@ public class AuthUiActivity extends AppCompatActivity
         return authUI;
     }
 
-    private AuthUI.SignInIntentBuilder getSignInIntentBuilder(@Nullable String link) {
+    private Intent getSignInIntent(@Nullable String link) {
         AuthUI.SignInIntentBuilder builder = getAuthUI().createSignInIntentBuilder()
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
@@ -297,7 +295,7 @@ public class AuthUiActivity extends AppCompatActivity
         if (auth.getCurrentUser() != null && auth.getCurrentUser().isAnonymous()) {
             builder.enableAnonymousUsersAutoUpgrade();
         }
-        return builder;
+        return builder.build();
     }
 
     @OnClick(R.id.sign_in_silent)

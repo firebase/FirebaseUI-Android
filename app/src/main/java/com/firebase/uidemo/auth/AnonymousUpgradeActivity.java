@@ -1,5 +1,6 @@
 package com.firebase.uidemo.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,8 +10,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.util.ConfigurationUtils;
@@ -37,8 +38,6 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
 
     private static final String TAG = "AccountLink";
 
-    private static final int RC_SIGN_IN = 123;
-
     @BindView(R.id.status_text)
     TextView mStatus;
 
@@ -56,7 +55,7 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
 
     private AuthCredential mPendingCredential;
 
-    private final ActivityResultLauncher<AuthUI.SignInIntentBuilder> signIn =
+    private final ActivityResultLauncher<Intent> signIn =
             registerForActivityResult(new FirebaseAuthUIActivityResultContract(), this);
 
     @Override
@@ -96,11 +95,12 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
     @OnClick(R.id.begin_flow)
     public void startAuthUI() {
         List<AuthUI.IdpConfig> providers = ConfigurationUtils.getConfiguredProviders(this);
-        AuthUI.SignInIntentBuilder intentBuilder = AuthUI.getInstance().createSignInIntentBuilder()
+        Intent signInIntent = AuthUI.getInstance().createSignInIntentBuilder()
                 .setLogo(R.drawable.firebase_auth_120dp)
                 .setAvailableProviders(providers)
-                .enableAnonymousUsersAutoUpgrade();
-        signIn.launch(intentBuilder);
+                .enableAnonymousUsersAutoUpgrade()
+                .build();
+        signIn.launch(signInIntent);
     }
 
     @OnClick(R.id.resolve_merge)
