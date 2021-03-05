@@ -11,7 +11,7 @@
 
     <style name="FirebaseUI.Transparent" parent="FirebaseUI">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/fui_transparent</item>
+        <item name="android:colorBackground">@color/fui_transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
