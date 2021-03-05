@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="android:textColorLink">@color/fui_linkColor</item>
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
     </style>
 
@@ -149,6 +150,7 @@
 
     <style name="FirebaseUI.Text.Link">
         <item name="android:minHeight">@dimen/fui_min_height_target</item>
+        <item name="android:textIsSelectable">false</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/fui_linkColor</item>
     </style>
