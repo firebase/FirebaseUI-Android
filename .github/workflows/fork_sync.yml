@@ -15,5 +15,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           owner: firebase
-          base: version-7.2.0-dev
-          head: compose-dev
+          base: compose-dev
+          head: version-7.2.0-dev
