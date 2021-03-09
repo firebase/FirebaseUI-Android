@@ -759,7 +759,7 @@ to override certain or all styling attributes. For example, a green sign-in them
     <item name="colorControlNormal">@color/material_green_500</item>
     <item name="colorControlActivated">@color/material_lime_a700</item>
     <item name="colorControlHighlight">@color/material_green_a200</item>
-    <item name="android:windowBackground">@color/material_green_50</item>
+    <item name="android:colorBackground">@color/material_green_50</item>
 </style>
 ```
 

@@ -11,14 +11,14 @@
         <item name="colorPrimary">@color/material_deep_purple_500</item>
         <item name="colorPrimaryDark">@color/material_deep_purple_700</item>
         <item name="colorSecondary">@color/material_lime_a700</item>
-        <item name="android:windowBackground">@color/material_deep_purple_50</item>
+        <item name="android:colorBackground">@color/material_deep_purple_50</item>
     </style>
 
     <style name="GreenTheme">
         <item name="colorPrimary">@color/material_green_500</item>
         <item name="colorPrimaryDark">@color/material_green_700</item>
         <item name="colorSecondary">@color/material_purple_a700</item>
-        <item name="android:windowBackground">@color/material_green_50</item>
+        <item name="android:colorBackground">@color/material_green_50</item>
     </style>
 
     <style name="WarnButton" parent="Widget.MaterialComponents.Button">
