@@ -38,7 +38,7 @@ object Config {
             const val paging = "androidx.paging:paging-runtime:2.1.2"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
 
-            const val design = "com.google.android.material:material:1.2.1"
+            const val materialDesign = "com.google.android.material:material:1.3.0"
         }
 
         object Firebase {
