@@ -75,7 +75,6 @@ object Config {
             const val butterKnifeCompiler = "com.jakewharton:butterknife-compiler:$butterVersion"
 
             const val permissions = "pub.devrel:easypermissions:3.0.0"
-            const val materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
         }
 
         object Test {

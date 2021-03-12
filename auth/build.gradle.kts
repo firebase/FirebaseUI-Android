@@ -29,7 +29,6 @@ dependencies {
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
-    implementation(Config.Libs.Misc.materialProgress)
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
