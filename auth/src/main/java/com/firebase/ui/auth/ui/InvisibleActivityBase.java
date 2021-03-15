@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.firebase.ui.auth.R;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Base classes for activities that are just simple overlays.
@@ -25,7 +25,7 @@ public class InvisibleActivityBase extends HelperActivityBase {
     private static final long MIN_SPINNER_MS = 750;
 
     private Handler mHandler = new Handler();
-    private MaterialProgressBar mProgressBar;
+    private CircularProgressIndicator mProgressBar;
 
     // Last time that the progress bar was actually shown
     private long mLastShownTime = 0;
@@ -36,7 +36,7 @@ public class InvisibleActivityBase extends HelperActivityBase {
         setContentView(R.layout.fui_activity_invisible);
 
         // Create an indeterminate, circular progress bar in the app's theme
-        mProgressBar = new MaterialProgressBar(new ContextThemeWrapper(this, getFlowParams().themeId));
+        mProgressBar = new CircularProgressIndicator(new ContextThemeWrapper(this, getFlowParams().themeId));
         mProgressBar.setIndeterminate(true);
         mProgressBar.setVisibility(View.GONE);
 
