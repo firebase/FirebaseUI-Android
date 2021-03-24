@@ -1,7 +1,23 @@
 // NOTE: this project uses Gradle Kotlin DSL. More common build.gradle instructions can be found in
 // the main README.
+plugins {
+  id("com.android.application")
+}
 
 android {
+    compileSdkVersion(Config.SdkVersions.compile)
+
+    defaultConfig {
+        minSdkVersion(Config.SdkVersions.min)
+        targetSdkVersion(Config.SdkVersions.target)
+
+        versionName = Config.version
+        versionCode = 1
+
+        resourcePrefix("fui_")
+        vectorDrawables.useSupportLibrary = true
+    }
+
     defaultConfig {
         multiDexEnabled = true
     }
@@ -22,7 +38,23 @@ android {
     }
 
     lintOptions {
+        // Common lint options across all modules
+        disable(
+            "ObsoleteLintCustomCheck", // ButterKnife will fix this in v9.0
+            "IconExpectedSize",
+            "InvalidPackage", // Firestore uses GRPC which makes lint mad
+            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
+            "SelectableText", "SyntheticAccessor" // We almost never care about this
+        )
+
+        // Module-specific
         disable("ResourceName", "MissingTranslation", "DuplicateStrings")
+
+        isCheckAllWarnings = true
+        isWarningsAsErrors = true
+        isAbortOnError = true
+
+        baselineFile = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
     compileOptions {
