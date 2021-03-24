@@ -15,9 +15,7 @@ android {
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
-    }
 
-    defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

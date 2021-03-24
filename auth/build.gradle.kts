@@ -19,14 +19,12 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-
     buildTypes {
         named("release").configure {
             isMinifyEnabled = false
             consumerProguardFiles("auth-proguard.pro")
         }
     }
-
 
     lintOptions {
         // Common lint options across all modules
