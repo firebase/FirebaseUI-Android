@@ -209,7 +209,7 @@ You can download FirebaseUI and install it locally by cloning this
 repository and running:
 
 ```sh
-./gradlew :library:prepareArtifacts :library:publishAllToMavenLocal
+./gradlew :library:prepareArtifacts publishToMavenLocal
 ```
 
 ### Contributor License Agreements

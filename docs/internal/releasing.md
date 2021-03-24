@@ -25,7 +25,7 @@ $ git checkout -b version-$VERSION
 
 Next, make the following changes on the release branch:
 
-  * Update `Config.kt` to remove the `SNAPSHOT` from the version name.
+  * Update `Config.kt` and `gradle.properties` to remove the `SNAPSHOT` from the version name and set the release version.
   * Update `README.md` and `auth/README.md` to point to the latest version of the library
     and to have the correct descriptions of transitive dependencies.
   * Empty `CHANGELOG.md`
@@ -44,19 +44,73 @@ $ git push -u origin HEAD:version-$VERSION
 
 When ready, merge the pull request.
 
-## 2 - Upload to Bintray
+## 2a - Set up publishing environment
+
+### Credentials
+
+The library is published to Maven Central by the firebase-sonatype account, Googlers can find the
+password for this account in [Valentine](http://valentine/)
+
+### GPG Key
+
+You will need to create a private GPG keyring on your machine, if you don't have one do the
+following steps:
+
+  1. Run `gpg --full-generate-key`
+  1. Choose `RSA and RSA` for the key type
+  1. Use `4096` for the key size
+  1. Use `0` for the expiration (never)
+  1. Use any name, email address, and password
+  
+This creates your key in `~/.gnupg/openpgp-revocs.d/` with `.rev` format. The last 8 characters
+before the `.rev` extension are your **Key ID**.
+
+To export the key, run:
+
+```
+gpg --export-secret-keys -o $HOME/sonatype.gpg
+```
+
+Finally upload your key to the keyserver:
+
+```
+gpg --keyserver hkp://keys.openpgp.org --send-keys <YOUR KEY ID>
+```
+
+### Local Properties
+
+Open your `$HOME/.gradle/gradle.properties` file at and fill in the values:
+
+```
+signing.keyId=<KEY ID>
+signing.password=<PASSWORD YOU CHOSE>
+signing.secretKeyRingFile=<FULL PATH TO YOUR GPG FILE>
+mavenCentralRepositoryUsername=firebase-sonatype
+mavenCentralRepositoryUsername=<PASSWORD FROM VALENTINE>
+```
+
+## 2b - Publish and Release
+
+### Publish
 
 Once you are sure the release branch is healthy, run the following command:
 
 ```shell
-$ ./gradlew clean :library:prepareArtifacts :library:bintrayUploadAll
+$ ./gradlew clean :library:prepareArtifacts publish
 ```
 
-This will upload the release to Bintray as a draft. You will need to go to this page and click
-**Publish** to release the draft artifacts. When done correctly you should see 8 pending draft
-artifacts per library:
+### Release
 
-https://bintray.com/firebaseui/firebase-ui
+Follow [the instructions here](https://central.sonatype.org/pages/releasing-the-deployment.html):
+
+  1. Navigate to https://oss.sonatype.org/ and **Log In**
+  1. On the left side click **Build Promotion** and look for the `com.firebaseui` repos. There will be multiple.
+  1. Click **Close** ... wait a few minutes (you can check status with **Refresh**)
+  1. Click **Release**
+
+[gh-actions]: https://github.com/firebase/geofire-android/actions
+[gh-actions-badge]: https://github.com/firebase/geofire-android/workflows/Android%20CI/badge.svg
+
 
 ## 3 - Update issues, milestones, and release notes
 
