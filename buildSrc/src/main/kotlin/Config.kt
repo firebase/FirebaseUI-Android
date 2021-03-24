@@ -15,7 +15,7 @@ object Config {
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.3.3"
 
-        const val bintray = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
+        const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
     }
 
