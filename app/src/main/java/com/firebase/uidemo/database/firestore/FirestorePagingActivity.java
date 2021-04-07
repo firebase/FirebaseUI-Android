@@ -14,6 +14,7 @@ import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.firebase.ui.firestore.paging.LoadingState;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.databinding.ActivityFirestorePagingBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -30,18 +31,12 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class FirestorePagingActivity extends AppCompatActivity {
 
     private static final String TAG = "FirestorePagingActivity";
 
-    @BindView(R.id.paging_recycler)
-    RecyclerView mRecycler;
-
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private ActivityFirestorePagingBinding mBinding;
 
     private FirebaseFirestore mFirestore;
     private CollectionReference mItemsCollection;
@@ -49,8 +44,8 @@ public class FirestorePagingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_firestore_paging);
-        ButterKnife.bind(this);
+        mBinding = ActivityFirestorePagingBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
 
         mFirestore = FirebaseFirestore.getInstance();
         mItemsCollection = mFirestore.collection("items");
@@ -95,13 +90,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
                         switch (state) {
                             case LOADING_INITIAL:
                             case LOADING_MORE:
-                                mSwipeRefreshLayout.setRefreshing(true);
+                                mBinding.swipeRefreshLayout.setRefreshing(true);
                                 break;
                             case LOADED:
-                                mSwipeRefreshLayout.setRefreshing(false);
+                                mBinding.swipeRefreshLayout.setRefreshing(false);
                                 break;
                             case FINISHED:
-                                mSwipeRefreshLayout.setRefreshing(false);
+                                mBinding.swipeRefreshLayout.setRefreshing(false);
                                 showToast("Reached end of data set.");
                                 break;
                             case ERROR:
@@ -113,15 +108,15 @@ public class FirestorePagingActivity extends AppCompatActivity {
 
                     @Override
                     protected void onError(@NonNull Exception e) {
-                        mSwipeRefreshLayout.setRefreshing(false);
+                        mBinding.swipeRefreshLayout.setRefreshing(false);
                         Log.e(TAG, e.getMessage(), e);
                     }
                 };
 
-        mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        mRecycler.setAdapter(adapter);
+        mBinding.pagingRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mBinding.pagingRecycler.setAdapter(adapter);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 adapter.refresh();
@@ -191,16 +186,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.item_text)
         TextView mTextView;
-
-        @BindView(R.id.item_value)
         TextView mValueView;
 
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            mTextView = itemView.findViewById(R.id.item_text);
+            mValueView = itemView.findViewById(R.id.item_value);
         }
 
         void bind(@NonNull Item item) {

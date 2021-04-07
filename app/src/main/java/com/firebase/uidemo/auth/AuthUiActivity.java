@@ -20,11 +20,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
@@ -33,6 +30,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.databinding.AuthUiLayoutBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,9 +50,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
     private static final String TAG = "AuthUiActivity";
@@ -68,48 +63,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
 
-    @BindView(R.id.root) View mRootView;
-
-    @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
-    @BindView(R.id.facebook_provider) CheckBox mUseFacebookProvider;
-    @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
-    @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
-    @BindView(R.id.email_link_provider) CheckBox mUseEmailLinkProvider;
-    @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
-    @BindView(R.id.anonymous_provider) CheckBox mUseAnonymousProvider;
-    @BindView(R.id.apple_provider) CheckBox mUseAppleProvider;
-    @BindView(R.id.microsoft_provider) CheckBox mUseMicrosoftProvider;
-    @BindView(R.id.yahoo_provider) CheckBox mUseYahooProvider;
-    @BindView(R.id.github_provider) CheckBox mUseGitHubProvider;
-
-    @BindView(R.id.default_layout) RadioButton mDefaultLayout;
-    @BindView(R.id.custom_layout) RadioButton mCustomLayout;
-
-    @BindView(R.id.default_theme) RadioButton mDefaultTheme;
-    @BindView(R.id.green_theme) RadioButton mGreenTheme;
-    @BindView(R.id.purple_theme) RadioButton mPurpleTheme;
-    @BindView(R.id.dark_theme) RadioButton mDarkTheme;
-
-    @BindView(R.id.firebase_logo) RadioButton mFirebaseLogo;
-    @BindView(R.id.google_logo) RadioButton mGoogleLogo;
-    @BindView(R.id.no_logo) RadioButton mNoLogo;
-
-    @BindView(R.id.google_tos_privacy) RadioButton mUseGoogleTosPp;
-    @BindView(R.id.firebase_tos_privacy) RadioButton mUseFirebaseTosPp;
-
-    @BindView(R.id.google_scopes_header) TextView mGoogleScopesHeader;
-    @BindView(R.id.google_scope_drive_file) CheckBox mGoogleScopeDriveFile;
-    @BindView(R.id.google_scope_youtube_data) CheckBox mGoogleScopeYoutubeData;
-
-    @BindView(R.id.facebook_permissions_header) TextView mFacebookPermissionsHeader;
-    @BindView(R.id.facebook_permission_friends) CheckBox mFacebookPermissionFriends;
-    @BindView(R.id.facebook_permission_photos) CheckBox mFacebookPermissionPhotos;
-
-    @BindView(R.id.credential_selector_enabled) CheckBox mEnableCredentialSelector;
-    @BindView(R.id.hint_selector_enabled) CheckBox mEnableHintSelector;
-    @BindView(R.id.allow_new_email_accounts) CheckBox mAllowNewEmailAccounts;
-    @BindView(R.id.require_name) CheckBox mRequireName;
-    @BindView(R.id.use_auth_emulator) CheckBox mUseEmulator;
+    private AuthUiLayoutBinding mBinding;
 
     @NonNull
     public static Intent createIntent(@NonNull Context context) {
@@ -119,17 +73,17 @@ public class AuthUiActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auth_ui_layout);
-        ButterKnife.bind(this);
+        mBinding = AuthUiLayoutBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)) {
-            mUseGoogleProvider.setChecked(false);
-            mUseGoogleProvider.setEnabled(false);
-            mUseGoogleProvider.setText(R.string.google_label_missing_config);
+            mBinding.googleProvider.setChecked(false);
+            mBinding.googleProvider.setEnabled(false);
+            mBinding.googleProvider.setText(R.string.google_label_missing_config);
             setGoogleScopesEnabled(false);
         } else {
-            setGoogleScopesEnabled(mUseGoogleProvider.isChecked());
-            mUseGoogleProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            setGoogleScopesEnabled(mBinding.googleProvider.isChecked());
+            mBinding.googleProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     setGoogleScopesEnabled(checked);
@@ -138,13 +92,13 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         if (ConfigurationUtils.isFacebookMisconfigured(this)) {
-            mUseFacebookProvider.setChecked(false);
-            mUseFacebookProvider.setEnabled(false);
-            mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
+            mBinding.facebookProvider.setChecked(false);
+            mBinding.facebookProvider.setEnabled(false);
+            mBinding.facebookProvider.setText(R.string.facebook_label_missing_config);
             setFacebookPermissionsEnabled(false);
         } else {
-            setFacebookPermissionsEnabled(mUseFacebookProvider.isChecked());
-            mUseFacebookProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            setFacebookPermissionsEnabled(mBinding.facebookProvider.isChecked());
+            mBinding.facebookProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     setFacebookPermissionsEnabled(checked);
@@ -152,52 +106,66 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        mUseEmailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        mBinding.emailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 flipPasswordProviderCheckbox(isChecked);
             }
         });
 
-        mUseEmailProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        mBinding.emailProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 flipEmailLinkProviderCheckbox(isChecked);
             }
         });
 
-        mUseEmailLinkProvider.setChecked(false);
-        mUseEmailProvider.setChecked(true);
+        mBinding.emailLinkProvider.setChecked(false);
+        mBinding.emailProvider.setChecked(true);
 
         // The custom layout in this app only supports Email and Google providers.
-        mCustomLayout.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        mBinding.customLayout.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked) {
-                    mUseGoogleProvider.setChecked(true);
-                    mUseEmailProvider.setChecked(true);
+                    mBinding.googleProvider.setChecked(true);
+                    mBinding.emailProvider.setChecked(true);
 
-                    mUseFacebookProvider.setChecked(false);
-                    mUseTwitterProvider.setChecked(false);
-                    mUseEmailLinkProvider.setChecked(false);
-                    mUsePhoneProvider.setChecked(false);
-                    mUseAnonymousProvider.setChecked(false);
-                    mUseMicrosoftProvider.setChecked(false);
-                    mUseYahooProvider.setChecked(false);
-                    mUseAppleProvider.setChecked(false);
-                    mUseGitHubProvider.setChecked(false);
+                    mBinding.facebookProvider.setChecked(false);
+                    mBinding.twitterProvider.setChecked(false);
+                    mBinding.emailLinkProvider.setChecked(false);
+                    mBinding.phoneProvider.setChecked(false);
+                    mBinding.anonymousProvider.setChecked(false);
+                    mBinding.microsoftProvider.setChecked(false);
+                    mBinding.yahooProvider.setChecked(false);
+                    mBinding.appleProvider.setChecked(false);
+                    mBinding.githubProvider.setChecked(false);
                 }
             }
         });
 
         // useEmulator can't be reversed until the FirebaseApp is cleared, so we make this
         // checkbox "sticky" until the app is restarted
-        mUseEmulator.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        mBinding.useAuthEmulator.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    mUseEmulator.setEnabled(false);
+                    mBinding.useAuthEmulator.setEnabled(false);
                 }
+            }
+        });
+
+        mBinding.signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn();
+            }
+        });
+
+        mBinding.signInSilent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                silentSignIn();
             }
         });
 
@@ -207,10 +175,15 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            mDarkTheme.setChecked(true);
+            mBinding.darkTheme.setChecked(true);
         }
 
         catchEmailLinkSignIn();
+
+        mBinding.defaultTheme.setOnClickListener(toggleDarkThemeListener);
+        mBinding.greenTheme.setOnClickListener(toggleDarkThemeListener);
+        mBinding.purpleTheme.setOnClickListener(toggleDarkThemeListener);
+        mBinding.darkTheme.setOnClickListener(toggleDarkThemeListener);
     }
 
     public void catchEmailLinkSignIn() {
@@ -225,17 +198,16 @@ public class AuthUiActivity extends AppCompatActivity {
 
     public void flipPasswordProviderCheckbox(boolean emailLinkProviderIsChecked) {
         if (emailLinkProviderIsChecked) {
-            mUseEmailProvider.setChecked(false);
+            mBinding.emailProvider.setChecked(false);
         }
     }
 
     public void flipEmailLinkProviderCheckbox(boolean passwordProviderIsChecked) {
         if (passwordProviderIsChecked) {
-            mUseEmailLinkProvider.setChecked(false);
+            mBinding.emailLinkProvider.setChecked(false);
         }
     }
 
-    @OnClick(R.id.sign_in)
     public void signIn() {
         startActivityForResult(buildSignInIntent(/*link=*/null), RC_SIGN_IN);
     }
@@ -247,7 +219,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @NonNull
     public AuthUI getAuthUI() {
         AuthUI authUI = AuthUI.getInstance();
-        if (mUseEmulator.isChecked()) {
+        if (mBinding.useAuthEmulator.isChecked()) {
             authUI.useEmulator("10.0.2.2", 9099);
         }
 
@@ -260,10 +232,10 @@ public class AuthUiActivity extends AppCompatActivity {
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
                 .setAvailableProviders(getSelectedProviders())
-                .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
-                        mEnableHintSelector.isChecked());
+                .setIsSmartLockEnabled(mBinding.credentialSelectorEnabled.isChecked(),
+                        mBinding.hintSelectorEnabled.isChecked());
 
-        if (mCustomLayout.isChecked()) {
+        if (mBinding.customLayout.isChecked()) {
             AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                     .Builder(R.layout.auth_method_picker_custom_layout)
                     .setGoogleButtonId(R.id.custom_google_signin_button)
@@ -294,7 +266,6 @@ public class AuthUiActivity extends AppCompatActivity {
         return builder.build();
     }
 
-    @OnClick(R.id.sign_in_silent)
     public void silentSignIn() {
         getAuthUI().silentSignIn(this, getSelectedProviders())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -367,23 +338,25 @@ public class AuthUiActivity extends AppCompatActivity {
         startActivity(SignedInActivity.createIntent(this, response));
     }
 
-    @OnClick({R.id.default_theme, R.id.purple_theme, R.id.green_theme, R.id.dark_theme})
-    public void toggleDarkTheme() {
-        int mode = mDarkTheme.isChecked() ?
-                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
-        if (Build.VERSION.SDK_INT >= 17) {
-            AppCompatDelegate.setDefaultNightMode(mode);
-            getDelegate().setLocalNightMode(mode);
+    private View.OnClickListener toggleDarkThemeListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int mode = mBinding.darkTheme.isChecked() ?
+                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
+            if (Build.VERSION.SDK_INT >= 17) {
+                AppCompatDelegate.setDefaultNightMode(mode);
+                getDelegate().setLocalNightMode(mode);
+            }
         }
-    }
+    };
 
     @StyleRes
     private int getSelectedTheme() {
-        if (mGreenTheme.isChecked()) {
+        if (mBinding.greenTheme.isChecked()) {
             return R.style.GreenTheme;
         }
 
-        if (mPurpleTheme.isChecked()) {
+        if (mBinding.purpleTheme.isChecked()) {
             return R.style.PurpleTheme;
         }
 
@@ -392,9 +365,9 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @DrawableRes
     private int getSelectedLogo() {
-        if (mFirebaseLogo.isChecked()) {
+        if (mBinding.firebaseLogo.isChecked()) {
             return R.drawable.firebase_auth_120dp;
-        } else if (mGoogleLogo.isChecked()) {
+        } else if (mBinding.googleLogo.isChecked()) {
             return R.drawable.ic_googleg_color_144dp;
         }
         return AuthUI.NO_LOGO;
@@ -403,25 +376,25 @@ public class AuthUiActivity extends AppCompatActivity {
     private List<IdpConfig> getSelectedProviders() {
         List<IdpConfig> selectedProviders = new ArrayList<>();
 
-        if (mUseGoogleProvider.isChecked()) {
+        if (mBinding.googleProvider.isChecked()) {
             selectedProviders.add(
                     new IdpConfig.GoogleBuilder().setScopes(getGoogleScopes()).build());
         }
 
-        if (mUseFacebookProvider.isChecked()) {
+        if (mBinding.facebookProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.FacebookBuilder()
                     .setPermissions(getFacebookPermissions())
                     .build());
         }
 
-        if (mUseEmailProvider.isChecked()) {
+        if (mBinding.emailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.EmailBuilder()
-                    .setRequireName(mRequireName.isChecked())
-                    .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                    .setRequireName(mBinding.requireName.isChecked())
+                    .setAllowNewAccounts(mBinding.allowNewEmailAccounts.isChecked())
                     .build());
         }
 
-        if (mUseEmailLinkProvider.isChecked()) {
+        if (mBinding.emailLinkProvider.isChecked()) {
             ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
                     .setAndroidPackageName("com.firebase.uidemo", true, null)
                     .setHandleCodeInApp(true)
@@ -429,37 +402,37 @@ public class AuthUiActivity extends AppCompatActivity {
                     .build();
 
             selectedProviders.add(new IdpConfig.EmailBuilder()
-                    .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                    .setAllowNewAccounts(mBinding.allowNewEmailAccounts.isChecked())
                     .setActionCodeSettings(actionCodeSettings)
                     .enableEmailLinkSignIn()
                     .build());
         }
 
-        if (mUsePhoneProvider.isChecked()) {
+        if (mBinding.phoneProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.PhoneBuilder().build());
         }
 
-        if (mUseAnonymousProvider.isChecked()) {
+        if (mBinding.anonymousProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.AnonymousBuilder().build());
         }
 
-        if (mUseTwitterProvider.isChecked()) {
+        if (mBinding.twitterProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.TwitterBuilder().build());
         }
 
-        if (mUseMicrosoftProvider.isChecked()) {
+        if (mBinding.microsoftProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.MicrosoftBuilder().build());
         }
 
-        if (mUseYahooProvider.isChecked()) {
+        if (mBinding.yahooProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.YahooBuilder().build());
         }
 
-        if (mUseAppleProvider.isChecked()) {
+        if (mBinding.appleProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.AppleBuilder().build());
         }
 
-        if (mUseGitHubProvider.isChecked()) {
+        if (mBinding.githubProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.GitHubBuilder().build());
         }
 
@@ -468,11 +441,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @Nullable
     private String getSelectedTosUrl() {
-        if (mUseGoogleTosPp.isChecked()) {
+        if (mBinding.googleTosPrivacy.isChecked()) {
             return GOOGLE_TOS_URL;
         }
 
-        if (mUseFirebaseTosPp.isChecked()) {
+        if (mBinding.firebaseTosPrivacy.isChecked()) {
             return FIREBASE_TOS_URL;
         }
 
@@ -481,11 +454,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @Nullable
     private String getSelectedPrivacyPolicyUrl() {
-        if (mUseGoogleTosPp.isChecked()) {
+        if (mBinding.googleTosPrivacy.isChecked()) {
             return GOOGLE_PRIVACY_POLICY_URL;
         }
 
-        if (mUseFirebaseTosPp.isChecked()) {
+        if (mBinding.firebaseTosPrivacy.isChecked()) {
             return FIREBASE_PRIVACY_POLICY_URL;
         }
 
@@ -493,23 +466,23 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     private void setGoogleScopesEnabled(boolean enabled) {
-        mGoogleScopesHeader.setEnabled(enabled);
-        mGoogleScopeDriveFile.setEnabled(enabled);
-        mGoogleScopeYoutubeData.setEnabled(enabled);
+        mBinding.googleScopesHeader.setEnabled(enabled);
+        mBinding.googleScopeDriveFile.setEnabled(enabled);
+        mBinding.googleScopeYoutubeData.setEnabled(enabled);
     }
 
     private void setFacebookPermissionsEnabled(boolean enabled) {
-        mFacebookPermissionsHeader.setEnabled(enabled);
-        mFacebookPermissionFriends.setEnabled(enabled);
-        mFacebookPermissionPhotos.setEnabled(enabled);
+        mBinding.facebookPermissionsHeader.setEnabled(enabled);
+        mBinding.facebookPermissionFriends.setEnabled(enabled);
+        mBinding.facebookPermissionPhotos.setEnabled(enabled);
     }
 
     private List<String> getGoogleScopes() {
         List<String> result = new ArrayList<>();
-        if (mGoogleScopeYoutubeData.isChecked()) {
+        if (mBinding.googleScopeYoutubeData.isChecked()) {
             result.add("https://www.googleapis.com/auth/youtube.readonly");
         }
-        if (mGoogleScopeDriveFile.isChecked()) {
+        if (mBinding.googleScopeDriveFile.isChecked()) {
             result.add(Scopes.DRIVE_FILE);
         }
         return result;
@@ -517,16 +490,16 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private List<String> getFacebookPermissions() {
         List<String> result = new ArrayList<>();
-        if (mFacebookPermissionFriends.isChecked()) {
+        if (mBinding.facebookPermissionFriends.isChecked()) {
             result.add("user_friends");
         }
-        if (mFacebookPermissionPhotos.isChecked()) {
+        if (mBinding.facebookPermissionPhotos.isChecked()) {
             result.add("user_photos");
         }
         return result;
     }
 
     private void showSnackbar(@StringRes int errorMessageRes) {
-        Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mBinding.getRoot(), errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 }

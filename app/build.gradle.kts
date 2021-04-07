@@ -40,7 +40,6 @@ android {
     lintOptions {
         // Common lint options across all modules
         disable(
-            "ObsoleteLintCustomCheck", // ButterKnife will fix this in v9.0
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
@@ -58,8 +57,12 @@ android {
     }
 
     compileOptions {
-        setSourceCompatibility(JavaVersion.VERSION_1_8)
-        setTargetCompatibility(JavaVersion.VERSION_1_8)
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -87,9 +90,7 @@ dependencies {
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     implementation(Config.Libs.Misc.permissions)
-    implementation(Config.Libs.Misc.butterKnife)
     implementation(Config.Libs.Androidx.constraint)
-    annotationProcessor(Config.Libs.Misc.butterKnifeCompiler)
     debugImplementation(Config.Libs.Misc.leakCanary)
     debugImplementation(Config.Libs.Misc.leakCanaryFragments)
     releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
