@@ -60,7 +60,6 @@ object Config {
         object Misc {
             private const val leakCanaryVersion = "1.6.1"
             private const val glideVersion = "4.11.0"
-            private const val butterVersion = "10.1.0"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
             const val leakCanaryFragments =
@@ -70,9 +69,6 @@ object Config {
 
             const val glide = "com.github.bumptech.glide:glide:$glideVersion"
             const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
-
-            const val butterKnife = "com.jakewharton:butterknife:$butterVersion"
-            const val butterKnifeCompiler = "com.jakewharton:butterknife-compiler:$butterVersion"
 
             const val permissions = "pub.devrel:easypermissions:3.0.0"
             const val materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"

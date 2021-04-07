@@ -20,7 +20,6 @@ android {
     lintOptions {
         // Common lint options across all modules
         disable(
-            "ObsoleteLintCustomCheck", // ButterKnife will fix this in v9.0
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
