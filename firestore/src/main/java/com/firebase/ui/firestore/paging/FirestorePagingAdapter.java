@@ -1,7 +1,5 @@
 package com.firebase.ui.firestore.paging;
 
-import android.util.Log;
-
 import com.firebase.ui.firestore.SnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -12,13 +10,9 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
-import androidx.paging.CombinedLoadStates;
-import androidx.paging.LoadState;
 import androidx.paging.PagingData;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 /**
  * Paginated RecyclerView Adapter for a Cloud Firestore query.
@@ -45,7 +39,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     private LiveData<PagingData<DocumentSnapshot>> mSnapshots;
 
     /**
-     * Construct a new FirestorePagingDataAdapter from the given {@link FirestorePagingOptions}.
+     * Construct a new FirestorePagingAdapter from the given {@link FirestorePagingOptions}.
      */
     public FirestorePagingAdapter(@NonNull FirestorePagingOptions<T> options) {
         super(options.getDiffCallback());
@@ -56,7 +50,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     }
 
     /**
-     * Initializes Snapshots and LoadListener
+     * Initializes Snapshots
      */
     private void init() {
         mSnapshots = mOptions.getPagingData();
