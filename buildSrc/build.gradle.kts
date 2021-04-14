@@ -1,4 +1,5 @@
 repositories {
+    mavenCentral()
     jcenter()
 }
 
