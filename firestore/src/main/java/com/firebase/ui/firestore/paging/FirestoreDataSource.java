@@ -14,8 +14,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 import androidx.paging.PageKeyedDataSource;
 
@@ -48,13 +46,8 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         }
     }
 
-    private final MutableLiveData<LoadingState> mLoadingState = new MutableLiveData<>();
-    private final MutableLiveData<Exception> mException = new MutableLiveData<>();
-
     private final Query mBaseQuery;
     private final Source mSource;
-
-    private Runnable mRetryRunnable;
 
     public FirestoreDataSource(@NonNull Query baseQuery, @NonNull Source source) {
         mBaseQuery = baseQuery;
@@ -64,10 +57,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
     @Override
     public void loadInitial(@NonNull final LoadInitialParams<PageKey> params,
                             @NonNull final LoadInitialCallback<PageKey, DocumentSnapshot> callback) {
-
-        // Set initial loading state
-        mLoadingState.postValue(LoadingState.LOADING_INITIAL);
-
         mBaseQuery.limit(params.requestedLoadSize)
                 .get(mSource)
                 .addOnSuccessListener(new OnLoadSuccessListener() {
@@ -78,10 +67,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                     }
                 })
                 .addOnFailureListener(new OnLoadFailureListener() {
-                    @Override
-                    protected Runnable getRetryRunnable() {
-                        return getRetryLoadInitial(params, callback);
-                    }
+
                 });
 
     }
@@ -101,9 +87,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                           @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
         final PageKey key = params.key;
 
-        // Set loading state
-        mLoadingState.postValue(LoadingState.LOADING_MORE);
-
         key.getPageQuery(mBaseQuery, params.requestedLoadSize)
                 .get(mSource)
                 .addOnSuccessListener(new OnLoadSuccessListener() {
@@ -114,10 +97,7 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
                     }
                 })
                 .addOnFailureListener(new OnLoadFailureListener() {
-                    @Override
-                    protected Runnable getRetryRunnable() {
-                        return getRetryLoadAfter(params, callback);
-                    }
+
                 });
 
     }
@@ -130,31 +110,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         return new PageKey(last, null);
     }
 
-    @NonNull
-    public LiveData<LoadingState> getLoadingState() {
-        return mLoadingState;
-    }
-
-    @NonNull
-    public LiveData<Exception> getLastError() {
-        return mException;
-    }
-
-    public void retry() {
-        LoadingState currentState = mLoadingState.getValue();
-        if (currentState != LoadingState.ERROR) {
-            Log.w(TAG, "retry() not valid when in state: " + currentState);
-            return;
-        }
-
-        if (mRetryRunnable == null) {
-            Log.w(TAG, "retry() called with no eligible retry runnable.");
-            return;
-        }
-
-        mRetryRunnable.run();
-    }
-
     @Nullable
     private DocumentSnapshot getLast(@NonNull List<DocumentSnapshot> data) {
         if (data.isEmpty()) {
@@ -162,28 +117,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         } else {
             return data.get(data.size() - 1);
         }
-    }
-
-    @NonNull
-    private Runnable getRetryLoadAfter(@NonNull final LoadParams<PageKey> params,
-                                       @NonNull final LoadCallback<PageKey, DocumentSnapshot> callback) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                loadAfter(params, callback);
-            }
-        };
-    }
-
-    @NonNull
-    private Runnable getRetryLoadInitial(@NonNull final LoadInitialParams<PageKey> params,
-                                         @NonNull final LoadInitialCallback<PageKey, DocumentSnapshot> callback) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                loadInitial(params, callback);
-            }
-        };
     }
 
     /**
@@ -194,15 +127,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         @Override
         public void onSuccess(QuerySnapshot snapshot) {
             setResult(snapshot);
-            mLoadingState.postValue(LoadingState.LOADED);
-
-            // Post the 'FINISHED' state when no more pages will be loaded. The data source
-            // callbacks interpret an empty result list as a signal to cancel any future loads.
-            if (snapshot.getDocuments().isEmpty()) {
-                mLoadingState.postValue(LoadingState.FINISHED);
-            }
-
-            mRetryRunnable = null;
         }
 
         protected abstract void setResult(@NonNull QuerySnapshot snapshot);
@@ -216,18 +140,6 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
         @Override
         public void onFailure(@NonNull Exception e) {
             Log.w(TAG, "load:onFailure", e);
-
-            // On error we do NOT post any value to the PagedList, we just tell
-            // the developer that we are now in the error state.
-            mLoadingState.postValue(LoadingState.ERROR);
-
-            // Set the retry action
-            mRetryRunnable = getRetryRunnable();
-
-            //Set to the MutableLiveData to determine Latest Error
-            mException.postValue(e);
         }
-
-        protected abstract Runnable getRetryRunnable();
     }
 }
