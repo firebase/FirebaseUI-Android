@@ -3,10 +3,11 @@ package com.firebase.ui.database.paging;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,9 +70,9 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
         mLoadingState.postValue(LoadingState.LOADING_INITIAL);
 
         Query mInitQuery = mQuery.limitToFirst(params.requestedLoadSize);
-        mInitQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        mInitQuery.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
                     //Make List of DataSnapshot
@@ -95,11 +96,11 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
                     setDatabaseNotFoundError();
                 }
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onFailure(@NonNull Exception e) {
                 mRetryRunnable = getRetryLoadInitial(params, callback);
-                setError(databaseError);
+                setError(e);
             }
         });
     }
@@ -118,9 +119,9 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
 
         //Load params.requestedLoadSize+1 because, first data item is getting ignored.
         Query mNewQuery = mQuery.startAt(null, params.key).limitToFirst(params.requestedLoadSize + 1);
-        mNewQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        mNewQuery.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
                     //Make List of DataSnapshot
@@ -157,13 +158,12 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
                     mRetryRunnable = getRetryLoadAfter(params, callback);
                     setDatabaseNotFoundError();
                 }
-
             }
-
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onFailure(@NonNull Exception e) {
                 mRetryRunnable = getRetryLoadAfter(params, callback);
-                setError(databaseError);
+                setError(e);
             }
         });
     }
@@ -229,8 +229,8 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
         mLoadingState.postValue(LoadingState.ERROR);
     }
 
-    private void setError(DatabaseError databaseError){
-        mError.postValue(databaseError);
+    private void setError(Exception e){
+        mError.postValue(DatabaseError.fromException(e));
         mLoadingState.postValue(LoadingState.ERROR);
     }
 
