@@ -1066,6 +1066,9 @@ public final class AuthUI {
         public static final class GoogleBuilder extends Builder {
             public GoogleBuilder() {
                 super(GoogleAuthProvider.PROVIDER_ID);
+            }
+
+            private void validateWebClientId() {
                 Preconditions.checkConfigured(getApplicationContext(),
                         "Check your google-services plugin configuration, the" +
                                 " default_web_client_id string wasn't populated.",
@@ -1103,8 +1106,14 @@ public final class AuthUI {
                         ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
 
                 GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
-                builder.requestEmail().requestIdToken(getApplicationContext()
-                        .getString(R.string.default_web_client_id));
+
+                String clientId = options.getServerClientId();
+                if (clientId == null) {
+                    validateWebClientId();
+                    clientId = getApplicationContext().getString(R.string.default_web_client_id);
+                }
+
+                builder.requestEmail().requestIdToken(clientId);
                 getParams().putParcelable(
                         ExtraConstants.GOOGLE_SIGN_IN_OPTIONS, builder.build());
 
@@ -1115,6 +1124,7 @@ public final class AuthUI {
             @Override
             public IdpConfig build() {
                 if (!getParams().containsKey(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS)) {
+                    validateWebClientId();
                     setScopes(Collections.<String>emptyList());
                 }
 
