@@ -242,7 +242,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
             boolean hasProvider = false;
             for (IdpConfig idpConfig : providerConfigs) {
-                if (providerBtnId.equals(idpConfig.getProviderId())) {
+                String providerId = providerOrEmailLinkProvider(idpConfig.getProviderId());
+                if (providerBtnId.equals(providerId)) {
                     hasProvider = true;
                     break;
                 }
