@@ -1,5 +1,5 @@
 object Config {
-    const val version = "7.2.0-SNAPSHOT"
+    const val version = "7.2.0"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.3.72"
@@ -13,7 +13,7 @@ object Config {
     object Plugins {
         const val android = "com.android.tools.build:gradle:4.0.0"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        const val google = "com.google.gms:google-services:4.3.3"
+        const val google = "com.google.gms:google-services:4.3.8"
 
         const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
@@ -44,7 +44,7 @@ object Config {
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:26.5.0"
+            const val bom = "com.google.firebase:firebase-bom:26.8.0"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"
