@@ -169,7 +169,7 @@ public class PhoneActivity extends AppCompatBase {
             }
             errorView.setError(getErrorMessage(error));
         } else if (e != null) {
-            errorView.setError(e.getLocalizedMessage());
+            errorView.setError(getErrorMessage(FirebaseAuthError.ERROR_UNKNOWN));
         } else {
             errorView.setError(null);
         }
