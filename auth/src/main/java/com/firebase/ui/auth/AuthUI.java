@@ -1113,7 +1113,22 @@ public final class AuthUI {
                     clientId = getApplicationContext().getString(R.string.default_web_client_id);
                 }
 
-                builder.requestEmail().requestIdToken(clientId);
+                // Warn the user that they are _probably_ doing the wrong thing if they
+                // have not called requestEmail (see issue #1899 and #1621)
+                boolean hasEmailScope = false;
+                for (Scope s : options.getScopes()) {
+                    if ("email".equals(s.getScopeUri())) {
+                        hasEmailScope = true;
+                        break;
+                    }
+                }
+                if (!hasEmailScope) {
+                    Log.w(TAG, "The GoogleSignInOptions passed to setSignInOptions does not " +
+                            "request the 'email' scope. In most cases this is a mistake! " +
+                            "Call requestEmail() on the GoogleSignInOptions object.");
+                }
+
+                builder.requestIdToken(clientId);
                 getParams().putParcelable(
                         ExtraConstants.GOOGLE_SIGN_IN_OPTIONS, builder.build());
 
