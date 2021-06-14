@@ -35,8 +35,6 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
 
     private static final String TAG = "AccountLink";
 
-    private static final int RC_SIGN_IN = 123;
-
     private ActivityAnonymousUpgradeBinding mBinding;
 
     private AuthCredential mPendingCredential;
@@ -152,33 +150,22 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
                 });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        handleSignInResult(requestCode, resultCode, data);
-    }
-
-    private void handleSignInResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            if (response == null) {
-                // User pressed back button
-                return;
-            }
-            if (resultCode == RESULT_OK) {
-                setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
-                        .getCurrentUser()));
-            } else if (response.getError().getErrorCode() == ErrorCodes
-                    .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
-                setStatus("Merge conflict: user already exists.");
-                mBinding.resolveMerge.setEnabled(true);
-                mPendingCredential = response.getCredentialForLinking();
-            } else {
-                Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
-            }
-
-            updateUI();
+    private void handleSignInResult(int resultCode, @Nullable IdpResponse response) {
+        if (response == null) {
+            // User pressed back button
+            return;
+        }
+        if (resultCode == RESULT_OK) {
+            setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
+                    .getCurrentUser()));
+        } else if (response.getError().getErrorCode() == ErrorCodes
+                .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+            setStatus("Merge conflict: user already exists.");
+            mBinding.resolveMerge.setEnabled(true);
+            mPendingCredential = response.getCredentialForLinking();
+        } else {
+            Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
         }
 
         updateUI();
