@@ -28,6 +28,8 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.AuthUiLayoutBinding;
@@ -43,6 +45,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,7 +55,8 @@ import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class AuthUiActivity extends AppCompatActivity {
+public class AuthUiActivity extends AppCompatActivity
+        implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
     private static final String TAG = "AuthUiActivity";
 
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
@@ -64,6 +69,9 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 100;
 
     private AuthUiLayoutBinding mBinding;
+
+    private final ActivityResultLauncher<Intent> signIn =
+            registerForActivityResult(new FirebaseAuthUIActivityResultContract(), this);
 
     @NonNull
     public static Intent createIntent(@NonNull Context context) {
@@ -209,11 +217,11 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     public void signIn() {
-        startActivityForResult(buildSignInIntent(/*link=*/null), RC_SIGN_IN);
+        signIn.launch(getSignInIntent(/*link=*/null));
     }
 
     public void signInWithEmailLink(@Nullable String link) {
-        startActivityForResult(buildSignInIntent(link), RC_SIGN_IN);
+        signIn.launch(getSignInIntent(link));
     }
 
     @NonNull
@@ -226,8 +234,7 @@ public class AuthUiActivity extends AppCompatActivity {
         return authUI;
     }
 
-    @NonNull
-    public Intent buildSignInIntent(@Nullable String link) {
+    private Intent getSignInIntent(@Nullable String link) {
         AuthUI.SignInIntentBuilder builder = getAuthUI().createSignInIntentBuilder()
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
@@ -262,7 +269,6 @@ public class AuthUiActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null && auth.getCurrentUser().isAnonymous()) {
             builder.enableAnonymousUsersAutoUpgrade();
         }
-
         return builder.build();
     }
 
@@ -281,14 +287,6 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            handleSignInResponse(resultCode, data);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -298,9 +296,7 @@ public class AuthUiActivity extends AppCompatActivity {
         }
     }
 
-    private void handleSignInResponse(int resultCode, @Nullable Intent data) {
-        IdpResponse response = IdpResponse.fromResultIntent(data);
-
+    private void handleSignInResponse(int resultCode, @Nullable IdpResponse response) {
         // Successfully signed in
         if (resultCode == RESULT_OK) {
             startSignedInActivity(response);
@@ -501,5 +497,12 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private void showSnackbar(@StringRes int errorMessageRes) {
         Snackbar.make(mBinding.getRoot(), errorMessageRes, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onActivityResult(@NonNull FirebaseAuthUIAuthenticationResult result) {
+        // Successfully signed in
+        IdpResponse response = result.getIdpResponse();
+        handleSignInResponse(result.getResultCode(), response);
     }
 }

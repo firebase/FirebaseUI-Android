@@ -49,7 +49,7 @@ public class PhoneProviderResponseHandlerTest {
 
     @Mock FirebaseAuth mMockAuth;
     @Mock FirebaseUser mMockUser;
-    @Mock PhoneAuthCredential mCredential;
+    PhoneAuthCredential mCredential;
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
 
     private PhoneProviderResponseHandler mHandler;
@@ -58,6 +58,7 @@ public class PhoneProviderResponseHandlerTest {
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
+        mCredential = PhoneAuthCredential.zzb("sessionInfo", "SmsCode");
 
         mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(

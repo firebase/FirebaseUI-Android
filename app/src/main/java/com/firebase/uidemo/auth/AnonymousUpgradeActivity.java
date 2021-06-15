@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.ActivityAnonymousUpgradeBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
@@ -22,19 +24,23 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AnonymousUpgradeActivity extends AppCompatActivity {
+public class AnonymousUpgradeActivity extends AppCompatActivity
+        implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
 
     private static final String TAG = "AccountLink";
-
-    private static final int RC_SIGN_IN = 123;
 
     private ActivityAnonymousUpgradeBinding mBinding;
 
     private AuthCredential mPendingCredential;
+
+    private final ActivityResultLauncher<Intent> signIn =
+            registerForActivityResult(new FirebaseAuthUIActivityResultContract(), this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,8 +54,7 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         // Occurs after catching an email link
         IdpResponse response = IdpResponse.fromResultIntent(getIntent());
         if (response != null) {
-            handleSignInResult(RC_SIGN_IN, ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
-                    getIntent());
+            handleSignInResult(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response);
         }
 
         mBinding.anonSignIn.setOnClickListener(new View.OnClickListener() {
@@ -100,12 +105,12 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
 
     public void startAuthUI() {
         List<AuthUI.IdpConfig> providers = ConfigurationUtils.getConfiguredProviders(this);
-        Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+        Intent signInIntent = AuthUI.getInstance().createSignInIntentBuilder()
                 .setLogo(R.drawable.firebase_auth_120dp)
                 .setAvailableProviders(providers)
                 .enableAnonymousUsersAutoUpgrade()
                 .build();
-        startActivityForResult(intent, RC_SIGN_IN);
+        signIn.launch(signInIntent);
     }
 
     public void resolveMerge() {
@@ -145,34 +150,25 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        handleSignInResult(requestCode, resultCode, data);
-    }
-
-    private void handleSignInResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            if (response == null) {
-                // User pressed back button
-                return;
-            }
-            if (resultCode == RESULT_OK) {
-                setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
-                        .getCurrentUser()));
-            } else if (response.getError().getErrorCode() == ErrorCodes
-                    .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
-                setStatus("Merge conflict: user already exists.");
-                mBinding.resolveMerge.setEnabled(true);
-                mPendingCredential = response.getCredentialForLinking();
-            } else {
-                Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
-            }
-
-            updateUI();
+    private void handleSignInResult(int resultCode, @Nullable IdpResponse response) {
+        if (response == null) {
+            // User pressed back button
+            return;
         }
+        if (resultCode == RESULT_OK) {
+            setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
+                    .getCurrentUser()));
+        } else if (response.getError().getErrorCode() == ErrorCodes
+                .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+            setStatus("Merge conflict: user already exists.");
+            mBinding.resolveMerge.setEnabled(true);
+            mPendingCredential = response.getCredentialForLinking();
+        } else {
+            Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
+        }
+
+        updateUI();
     }
 
     private void updateUI() {
@@ -219,5 +215,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         } else {
             return "unknown";
         }
+    }
+
+    @Override
+    public void onActivityResult(@NonNull FirebaseAuthUIAuthenticationResult result) {
+        handleSignInResult(result.getResultCode(), result.getIdpResponse());
     }
 }
