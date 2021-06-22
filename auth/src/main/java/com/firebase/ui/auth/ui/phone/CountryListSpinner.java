@@ -17,20 +17,19 @@
  */
 package com.firebase.ui.auth.ui.phone;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ListView;
 
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,29 +40,25 @@ import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatEditText;
 
-public final class CountryListSpinner extends AppCompatEditText implements View.OnClickListener {
+public final class CountryListSpinner extends MaterialAutoCompleteTextView implements View.OnClickListener {
 
     private static final String KEY_SUPER_STATE = "KEY_SUPER_STATE";
     private static final String KEY_COUNTRY_INFO = "KEY_COUNTRY_INFO";
 
-    private final String mTextFormat;
-    private final DialogPopup mDialogPopup;
     private final CountryListAdapter mCountryListAdapter;
     private View.OnClickListener mListener;
-    private String mSelectedCountryName;
     private CountryInfo mSelectedCountryInfo;
 
     private Set<String> mAllowedCountryIsos = new HashSet<>();
     private Set<String> mBlockedCountryIsos = new HashSet<>();
 
     public CountryListSpinner(Context context) {
-        this(context, null, android.R.attr.spinnerStyle);
+        this(context, null);
     }
 
     public CountryListSpinner(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.spinnerStyle);
+        this(context, attrs, R.attr.autoCompleteTextViewStyle);
     }
 
     public CountryListSpinner(Context context, AttributeSet attrs, int defStyle) {
@@ -71,9 +66,6 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
         super.setOnClickListener(this);
 
         mCountryListAdapter = new CountryListAdapter(getContext());
-        mDialogPopup = new DialogPopup(mCountryListAdapter);
-        mTextFormat = "%1$s  +%2$d";
-        mSelectedCountryName = "";
     }
 
     public void init(Bundle params) {
@@ -81,6 +73,7 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
             List<CountryInfo> countries = getCountriesToDisplayInSpinner(params);
             setCountriesToDisplay(countries);
             setDefaultCountryForSpinner(countries);
+            setAdapter(mCountryListAdapter);
         }
     }
 
@@ -211,15 +204,14 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     }
 
     public void setSelectedForCountry(int countryCode, Locale locale) {
-        setText(String.format(mTextFormat, CountryInfo.localeToEmoji(locale), countryCode));
         mSelectedCountryInfo = new CountryInfo(locale, countryCode);
+        setText(mSelectedCountryInfo.toShortString());
     }
 
     public void setSelectedForCountry(final Locale locale, String countryCode) {
         if (isValidIso(locale.getCountry())) {
             final String countryName = locale.getDisplayName();
             if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
-                mSelectedCountryName = countryName;
                 setSelectedForCountry(Integer.parseInt(countryCode), locale);
             }
         }
@@ -230,22 +222,22 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        if (mDialogPopup.isShowing()) {
-            mDialogPopup.dismiss();
-        }
-    }
-
-    @Override
     public void setOnClickListener(OnClickListener l) {
         mListener = l;
     }
 
+
+    @Override
+    protected CharSequence convertSelectionToString(Object selectedItem) {
+        if (selectedItem instanceof CountryInfo) {
+            CountryInfo country = (CountryInfo) selectedItem;
+            return country.toShortString();
+        }
+        return super.convertSelectionToString(selectedItem);
+    }
+
     @Override
     public void onClick(View view) {
-        mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
         hideKeyboard(getContext(), this);
         executeUserClickListener(view);
     }
@@ -253,56 +245,6 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
     private void executeUserClickListener(View view) {
         if (mListener != null) {
             mListener.onClick(view);
-        }
-    }
-
-    public class DialogPopup implements DialogInterface.OnClickListener {
-        //Delay for postDelayed to set selection without showing the scroll animation
-        private static final long DELAY_MILLIS = 10L;
-        private final CountryListAdapter listAdapter;
-        private AlertDialog dialog;
-
-        DialogPopup(CountryListAdapter adapter) {
-            listAdapter = adapter;
-        }
-
-        public void dismiss() {
-            if (dialog != null) {
-                dialog.dismiss();
-                dialog = null;
-            }
-        }
-
-        public boolean isShowing() {
-            return dialog != null && dialog.isShowing();
-        }
-
-        public void show(final int selected) {
-            if (listAdapter == null) {
-                return;
-            }
-
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            dialog = builder.setSingleChoiceItems(listAdapter, 0, this).create();
-            dialog.setCanceledOnTouchOutside(true);
-            final ListView listView = dialog.getListView();
-            listView.setFastScrollEnabled(true);
-            listView.setScrollbarFadingEnabled(false);
-            listView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    listView.setSelection(selected);
-                }
-            }, DELAY_MILLIS);
-            dialog.show();
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            final CountryInfo countryInfo = listAdapter.getItem(which);
-            mSelectedCountryName = countryInfo.getLocale().getDisplayCountry();
-            setSelectedForCountry(countryInfo.getCountryCode(), countryInfo.getLocale());
-            dismiss();
         }
     }
 }

@@ -41,7 +41,7 @@ final class CountryListAdapter extends ArrayAdapter<CountryInfo> implements Sect
     // Map from display name --> position in the list
     private final HashMap<String, Integer> countryPosition = new LinkedHashMap<>();
 
-    private String[] sections;
+    private String[] sections = new String[0];
 
     public CountryListAdapter(Context context) {
         super(context, R.layout.fui_dgts_country_row, android.R.id.text1);
@@ -113,10 +113,5 @@ final class CountryListAdapter extends ArrayAdapter<CountryInfo> implements Sect
         }
 
         return 0;
-    }
-
-    public int getPositionForCountry(String country) {
-        final Integer position = countryPosition.get(country);
-        return position == null ? 0 : position;
     }
 }

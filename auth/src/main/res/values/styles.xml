@@ -136,6 +136,10 @@
         <item name="android:hint">@string/fui_phone_hint</item>
     </style>
 
+    <style name="FirebaseUI.TextInputLayout.CountryField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:hint">@string/fui_country_hint</item>
+    </style>
+
     <style name="FirebaseUI.TextInputLayout.NameField">
         <item name="android:hint">@string/fui_name_hint</item>
     </style>
@@ -165,8 +169,7 @@
         <item name="android:layout_marginBottom">@dimen/fui_body_padding_bottom</item>
     </style>
 
-    <!-- TODO: Figure out what the Material equivalent is -->
-    <style name="FirebaseUI.CountrySpinner" parent="Widget.AppCompat.Spinner.Underlined">
+    <style name="FirebaseUI.CountrySpinner">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>

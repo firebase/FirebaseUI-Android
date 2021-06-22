@@ -105,6 +105,10 @@ public final class CountryInfo implements Comparable<CountryInfo>, Parcelable {
         return localeToEmoji(mLocale) + " " + mLocale.getDisplayCountry() + " +" + mCountryCode;
     }
 
+    public String toShortString() {
+        return localeToEmoji(mLocale) + " +" + mCountryCode;
+    }
+
     @Override
     public int compareTo(CountryInfo info) {
         return mCollator.compare(mLocale.getDisplayCountry(), info.mLocale.getDisplayCountry());

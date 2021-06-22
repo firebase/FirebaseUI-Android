@@ -21,20 +21,33 @@
             style="@style/FirebaseUI.WrapperStyle"
             android:layout_height="wrap_content">
 
-            <com.firebase.ui.auth.ui.phone.CountryListSpinner
-                android:id="@+id/country_list"
-                style="@style/FirebaseUI.CountrySpinner"
+            <!-- See: https://material.io/components/menus/android#exposed-dropdown-menus -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/country_list_layout"
+                style="@style/FirebaseUI.TextInputLayout.CountryField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout"
+                tools:ignore="RtlHardcoded">
+
+                <com.firebase.ui.auth.ui.phone.CountryListSpinner
+                    android:id="@+id/country_list"
+                    android:inputType="none"
+                    style="@style/FirebaseUI.CountrySpinner" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phone_layout"
                 style="@style/FirebaseUI.TextInputLayout.PhoneField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintLeft_toRightOf="@+id/country_list"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintLeft_toRightOf="@+id/country_list_layout"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RtlHardcoded">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/phone_number"

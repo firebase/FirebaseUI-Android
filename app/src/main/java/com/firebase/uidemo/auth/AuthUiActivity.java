@@ -84,6 +84,9 @@ public class AuthUiActivity extends AppCompatActivity
         mBinding = AuthUiLayoutBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 
+        // Workaround for vector drawables on API 19
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)) {
             mBinding.googleProvider.setChecked(false);
             mBinding.googleProvider.setEnabled(false);
