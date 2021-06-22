@@ -18,18 +18,22 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ListAdapter;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public final class CountryListSpinner extends MaterialAutoCompleteTextView implements View.OnClickListener {
 
@@ -225,7 +230,6 @@ public final class CountryListSpinner extends MaterialAutoCompleteTextView imple
     public void setOnClickListener(OnClickListener l) {
         mListener = l;
     }
-
 
     @Override
     protected CharSequence convertSelectionToString(Object selectedItem) {
