@@ -1,6 +1,24 @@
 import com.android.build.gradle.internal.dsl.TestOptions
 
+plugins {
+  id("com.android.library")
+  id("com.vanniktech.maven.publish")
+}
+
 android {
+    compileSdkVersion(Config.SdkVersions.compile)
+
+    defaultConfig {
+        minSdkVersion(Config.SdkVersions.min)
+        targetSdkVersion(Config.SdkVersions.target)
+
+        versionName = Config.version
+        versionCode = 1
+
+        resourcePrefix("fui_")
+        vectorDrawables.useSupportLibrary = true
+    }
+
     buildTypes {
         named("release").configure {
             isMinifyEnabled = false
@@ -9,13 +27,30 @@ android {
     }
 
     lintOptions {
-        disable("UnusedQuantity")
-        disable("UnknownNullness")  // TODO fix in future PR
-        disable("TypographyQuotes") // Straight versus directional quotes
-        disable("DuplicateStrings")
-        disable("LocaleFolder")
-        disable("IconLocation")
-        disable("VectorPath")
+        // Common lint options across all modules
+        disable(
+            "IconExpectedSize",
+            "InvalidPackage", // Firestore uses GRPC which makes lint mad
+            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
+            "SelectableText", "SyntheticAccessor" // We almost never care about this
+        )
+
+        // Module specific
+        disable(
+            "UnusedQuantity",
+            "UnknownNullness",  // TODO fix in future PR
+            "TypographyQuotes", // Straight versus directional quotes
+            "DuplicateStrings",
+            "LocaleFolder",
+            "IconLocation",
+            "VectorPath"
+        )
+
+        isCheckAllWarnings = true
+        isWarningsAsErrors = true
+        isAbortOnError = true
+
+        baselineFile = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
     testOptions {
@@ -27,6 +62,10 @@ android {
 
 dependencies {
     implementation(Config.Libs.Androidx.materialDesign)
+    implementation(Config.Libs.Androidx.activity)
+    // The new activity result APIs force us to include Fragment 1.3.0
+    // See https://issuetracker.google.com/issues/152554847
+    implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
 

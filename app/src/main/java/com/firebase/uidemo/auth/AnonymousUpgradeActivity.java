@@ -4,14 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.databinding.ActivityAnonymousUpgradeBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,41 +24,29 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class AnonymousUpgradeActivity extends AppCompatActivity {
+public class AnonymousUpgradeActivity extends AppCompatActivity
+        implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
 
     private static final String TAG = "AccountLink";
 
-    private static final int RC_SIGN_IN = 123;
-
-    @BindView(R.id.status_text)
-    TextView mStatus;
-
-    @BindView(R.id.anon_sign_in)
-    Button mAnonSignInButton;
-
-    @BindView(R.id.begin_flow)
-    Button mLaunchUIButton;
-
-    @BindView(R.id.resolve_merge)
-    Button mResolveMergeButton;
-
-    @BindView(R.id.sign_out)
-    Button mSignOutButton;
+    private ActivityAnonymousUpgradeBinding mBinding;
 
     private AuthCredential mPendingCredential;
+
+    private final ActivityResultLauncher<Intent> signIn =
+            registerForActivityResult(new FirebaseAuthUIActivityResultContract(), this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_anonymous_upgrade);
-        ButterKnife.bind(this);
+        mBinding = ActivityAnonymousUpgradeBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
 
         updateUI();
 
@@ -64,12 +54,38 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         // Occurs after catching an email link
         IdpResponse response = IdpResponse.fromResultIntent(getIntent());
         if (response != null) {
-            handleSignInResult(RC_SIGN_IN, ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
-                    getIntent());
+            handleSignInResult(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response);
         }
+
+        mBinding.anonSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signInAnonymously();
+            }
+        });
+
+        mBinding.beginFlow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startAuthUI();
+            }
+        });
+
+        mBinding.resolveMerge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resolveMerge();
+            }
+        });
+
+        mBinding.signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signOut();
+            }
+        });
     }
 
-    @OnClick(R.id.anon_sign_in)
     public void signInAnonymously() {
         FirebaseAuth.getInstance().signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -87,18 +103,16 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
                 });
     }
 
-    @OnClick(R.id.begin_flow)
     public void startAuthUI() {
         List<AuthUI.IdpConfig> providers = ConfigurationUtils.getConfiguredProviders(this);
-        Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+        Intent signInIntent = AuthUI.getInstance().createSignInIntentBuilder()
                 .setLogo(R.drawable.firebase_auth_120dp)
                 .setAvailableProviders(providers)
                 .enableAnonymousUsersAutoUpgrade()
                 .build();
-        startActivityForResult(intent, RC_SIGN_IN);
+        signIn.launch(signInIntent);
     }
 
-    @OnClick(R.id.resolve_merge)
     public void resolveMerge() {
         if (mPendingCredential == null) {
             Toast.makeText(this, "Nothing to resolve.", Toast.LENGTH_SHORT).show();
@@ -125,7 +139,6 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
                 });
     }
 
-    @OnClick(R.id.sign_out)
     public void signOut() {
         AuthUI.getInstance().signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -137,34 +150,25 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        handleSignInResult(requestCode, resultCode, data);
-    }
-
-    private void handleSignInResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-            if (response == null) {
-                // User pressed back button
-                return;
-            }
-            if (resultCode == RESULT_OK) {
-                setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
-                        .getCurrentUser()));
-            } else if (response.getError().getErrorCode() == ErrorCodes
-                    .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
-                setStatus("Merge conflict: user already exists.");
-                mResolveMergeButton.setEnabled(true);
-                mPendingCredential = response.getCredentialForLinking();
-            } else {
-                Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
-            }
-
-            updateUI();
+    private void handleSignInResult(int resultCode, @Nullable IdpResponse response) {
+        if (response == null) {
+            // User pressed back button
+            return;
         }
+        if (resultCode == RESULT_OK) {
+            setStatus("Signed in as " + getUserIdentifier(FirebaseAuth.getInstance()
+                    .getCurrentUser()));
+        } else if (response.getError().getErrorCode() == ErrorCodes
+                .ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+            setStatus("Merge conflict: user already exists.");
+            mBinding.resolveMerge.setEnabled(true);
+            mPendingCredential = response.getCredentialForLinking();
+        } else {
+            Toast.makeText(this, "Auth error, see logs", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "Error: " + response.getError().getMessage(), response.getError());
+        }
+
+        updateUI();
     }
 
     private void updateUI() {
@@ -172,33 +176,33 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
 
         if (currentUser == null) {
             // Not signed in
-            mAnonSignInButton.setEnabled(true);
-            mLaunchUIButton.setEnabled(false);
-            mResolveMergeButton.setEnabled(false);
-            mSignOutButton.setEnabled(false);
+            mBinding.anonSignIn.setEnabled(true);
+            mBinding.beginFlow.setEnabled(false);
+            mBinding.resolveMerge.setEnabled(false);
+            mBinding.signOut.setEnabled(false);
         } else if (mPendingCredential == null && currentUser.isAnonymous()) {
             // Anonymous user, waiting for linking
-            mAnonSignInButton.setEnabled(false);
-            mLaunchUIButton.setEnabled(true);
-            mResolveMergeButton.setEnabled(false);
-            mSignOutButton.setEnabled(true);
+            mBinding.anonSignIn.setEnabled(false);
+            mBinding.beginFlow.setEnabled(true);
+            mBinding.resolveMerge.setEnabled(false);
+            mBinding.signOut.setEnabled(true);
         } else if (mPendingCredential == null && !currentUser.isAnonymous()) {
             // Fully signed in
-            mAnonSignInButton.setEnabled(false);
-            mLaunchUIButton.setEnabled(false);
-            mResolveMergeButton.setEnabled(false);
-            mSignOutButton.setEnabled(true);
+            mBinding.anonSignIn.setEnabled(false);
+            mBinding.beginFlow.setEnabled(false);
+            mBinding.resolveMerge.setEnabled(false);
+            mBinding.signOut.setEnabled(true);
         } else if (mPendingCredential != null) {
             // Signed in anonymous, awaiting merge conflict
-            mAnonSignInButton.setEnabled(false);
-            mLaunchUIButton.setEnabled(false);
-            mResolveMergeButton.setEnabled(true);
-            mSignOutButton.setEnabled(true);
+            mBinding.anonSignIn.setEnabled(false);
+            mBinding.beginFlow.setEnabled(false);
+            mBinding.resolveMerge.setEnabled(true);
+            mBinding.signOut.setEnabled(true);
         }
     }
 
     private void setStatus(String message) {
-        mStatus.setText(message);
+        mBinding.statusText.setText(message);
     }
 
     private String getUserIdentifier(FirebaseUser user) {
@@ -211,5 +215,10 @@ public class AnonymousUpgradeActivity extends AppCompatActivity {
         } else {
             return "unknown";
         }
+    }
+
+    @Override
+    public void onActivityResult(@NonNull FirebaseAuthUIAuthenticationResult result) {
+        handleSignInResult(result.getResultCode(), result.getIdpResponse());
     }
 }

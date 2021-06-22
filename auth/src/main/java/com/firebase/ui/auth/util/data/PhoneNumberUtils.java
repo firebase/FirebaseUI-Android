@@ -358,6 +358,7 @@ public final class PhoneNumberUtils {
         map.put(380, singletonList("UA"));
         map.put(381, singletonList("RS"));
         map.put(382, singletonList("ME"));
+        map.put(383, singletonList("XK"));
         map.put(385, singletonList("HR"));
         map.put(386, singletonList("SI"));
         map.put(387, singletonList("BA"));
@@ -471,7 +472,6 @@ public final class PhoneNumberUtils {
         map.remove("TA");
         map.put("HM", 672);
         map.put("GS", 500);
-        map.put("XK", 381);
 
         COUNTRY_TO_ISO_CODES = Collections.unmodifiableMap(map);
     }

@@ -24,7 +24,7 @@
             <com.firebase.ui.auth.ui.phone.CountryListSpinner
                 android:id="@+id/country_list"
                 style="@style/FirebaseUI.CountrySpinner"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -32,8 +32,8 @@
                 style="@style/FirebaseUI.TextInputLayout.PhoneField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/country_list"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/country_list"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText

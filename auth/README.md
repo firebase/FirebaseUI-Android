@@ -66,7 +66,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/blob/master/CHANGELOG.md
@@ -263,7 +263,7 @@ To use email link sign in, you will first need to enable it in the Firebase Cons
 also have to enable Firebase Dynamic Links.
 
 You can enable email link sign in by calling the `enableEmailLinkSignIn` on an `EmailBuilder` instance. You will also need
-to provide a valid `ActionCodeSettings` object with `setHandleCodeInApp` set to true. Additionally, you need to whitelist the
+to provide a valid `ActionCodeSettings` object with `setHandleCodeInApp` set to true. Additionally, you need to allowlist the
 URL you pass to `setUrl`; you can do so in the Firebase Console (Authentication -> Sign in Methods -> Authorized domains).
 
 ```java
@@ -271,7 +271,7 @@ URL you pass to `setUrl`; you can do so in the Firebase Console (Authentication 
 ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
         .setAndroidPackageName(/*yourPackageName*/, /*installIfNotAvailable*/true, /*minimumVersion*/null)
         .setHandleCodeInApp(true)
-        .setUrl("https://google.com") // This URL needs to be whitelisted
+        .setUrl("https://google.com") // This URL needs to be allowlisted
         .build();
 
 startActivityForResult(
@@ -409,37 +409,37 @@ IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
 
 You can limit the countries shown in the country selector list. By default, all countries are shown.
 
-You can provide a list of countries to whitelist or blacklist. You can populate these lists with
+You can provide a list of countries to allowlist or blocklist. You can populate these lists with
 ISO (alpha-2) and E164 formatted country codes.
 
 ```java
-List<String> whitelistedCountries = new ArrayList<String>();
-whitelistedCountries.add("+1");
-whitelistedCountries.add("gr");
+List<String> allowedCountries = new ArrayList<String>();
+allowedCountries.add("+1");
+allowedCountries.add("gr");
 
-IdpConfig phoneConfigWithWhitelistedCountries = new IdpConfig.PhoneBuilder()
-        .setWhitelistedCountries(whitelistedCountries)
+IdpConfig phoneConfigWithAllowedCountries = new IdpConfig.PhoneBuilder()
+        .setWhitelistedCountries(allowedCountries)
         .build();
 ```
 All countries with the country code +1 will be present in the selector as well as Greece ('gr').
 
-You may want to exclude a few countries from the list and avoid creating a whitelist with
-many countries. You can instead provide a list of countries to blacklist. By doing so, all countries
+You may want to exclude a few countries from the list and avoid creating a allowlist with
+many countries. You can instead provide a list of countries to blocklist. By doing so, all countries
 excluding the ones you provide will be in the selector.
 
 ```java
-List<String> blacklistedCountries = new ArrayList<String>();
-blacklistedCountries.add("+1");
-blacklistedCountries.add("gr");
+List<String> blockedCountries = new ArrayList<String>();
+blockedCountries.add("+1");
+blockedCountries.add("gr");
 
-IdpConfig phoneConfigWithBlacklistedCountries = new IdpConfig.PhoneBuilder()
-        .setBlacklistedCountries(blacklistedCountries)
+IdpConfig phoneConfigWithBlockedCountries = new IdpConfig.PhoneBuilder()
+        .setBlacklistedCountries(blockedCountries)
         .build();
 ```
 
 The country code selector will exclude all countries with a country code of +1 and Greece ('gr').
 
-Note: You can't provide both a list of countries to whitelist and blacklist. If you do, a runtime
+Note: You can't provide both a list of countries to allowlist and blocklist. If you do, a runtime
 exception will be thrown.
 
 This change is purely UI based. We do not restrict users from signing in with their phone number.

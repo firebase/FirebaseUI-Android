@@ -48,16 +48,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-database:7.2.0'
 
     // FirebaseUI for Cloud Firestore
-    implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:7.2.0'
 
     // FirebaseUI for Firebase Auth
-    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
 
     // FirebaseUI for Cloud Storage
-    implementation 'com.firebaseui:firebase-ui-storage:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-storage:7.2.0'
 }
 ```
 
@@ -209,7 +209,7 @@ You can download FirebaseUI and install it locally by cloning this
 repository and running:
 
 ```sh
-./gradlew :library:prepareArtifacts :library:publishAllToMavenLocal
+./gradlew :library:prepareArtifacts publishToMavenLocal
 ```
 
 ### Contributor License Agreements

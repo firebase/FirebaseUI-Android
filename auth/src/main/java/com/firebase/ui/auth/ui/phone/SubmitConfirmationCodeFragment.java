@@ -54,7 +54,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     public static final String TAG = "SubmitConfirmationCodeFragment";
 
     private static final int VERIFICATION_CODE_LENGTH = 6;
-    private static final long RESEND_WAIT_MILLIS = 15000;
+    private static final long RESEND_WAIT_MILLIS = 60000;
     private static final long TICK_INTERVAL_MILLIS = 500;
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "millis_until_finished";
 

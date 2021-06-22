@@ -29,6 +29,7 @@ import com.firebase.uidemo.database.firestore.FirestoreChatActivity;
 import com.firebase.uidemo.database.firestore.FirestorePagingActivity;
 import com.firebase.uidemo.database.realtime.FirebaseDbPagingActivity;
 import com.firebase.uidemo.database.realtime.RealtimeDbChatActivity;
+import com.firebase.uidemo.databinding.ActivityChooserBinding;
 import com.firebase.uidemo.storage.ImageActivity;
 
 import androidx.annotation.Nullable;
@@ -36,12 +37,9 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ChooserActivity extends AppCompatActivity {
-    @BindView(R.id.activities)
-    RecyclerView mActivities;
+    private ActivityChooserBinding mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,13 +53,12 @@ public class ChooserActivity extends AppCompatActivity {
             finish();
             return;
         }
+        mBinding = ActivityChooserBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
 
-        setContentView(R.layout.activity_chooser);
-        ButterKnife.bind(this);
-
-        mActivities.setLayoutManager(new LinearLayoutManager(this));
-        mActivities.setAdapter(new ActivityChooserAdapter());
-        mActivities.setHasFixedSize(true);
+        mBinding.activities.setLayoutManager(new LinearLayoutManager(this));
+        mBinding.activities.setAdapter(new ActivityChooserAdapter());
+        mBinding.activities.setHasFixedSize(true);
     }
 
     private static class ActivityChooserAdapter

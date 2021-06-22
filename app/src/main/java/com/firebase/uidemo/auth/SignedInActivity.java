@@ -21,13 +21,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.databinding.SignedInLayoutBinding;
 import com.firebase.uidemo.storage.GlideApp;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -50,23 +50,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 public class SignedInActivity extends AppCompatActivity {
     private static final String TAG = "SignedInActivity";
 
-    @BindView(android.R.id.content) View mRootView;
-
-    @BindView(R.id.user_profile_picture) ImageView mUserProfilePicture;
-    @BindView(R.id.user_email) TextView mUserEmail;
-    @BindView(R.id.user_display_name) TextView mUserDisplayName;
-    @BindView(R.id.user_phone_number) TextView mUserPhoneNumber;
-    @BindView(R.id.user_enabled_providers) TextView mEnabledProviders;
-    @BindView(R.id.user_is_new) TextView mIsNewUser;
+    private SignedInLayoutBinding mBinding;
 
     @NonNull
     public static Intent createIntent(@NonNull Context context, @Nullable IdpResponse response) {
@@ -87,13 +77,26 @@ public class SignedInActivity extends AppCompatActivity {
 
         IdpResponse response = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
 
-        setContentView(R.layout.signed_in_layout);
-        ButterKnife.bind(this);
+        mBinding = SignedInLayoutBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
         populateProfile(response);
         populateIdpToken(response);
+
+        mBinding.deleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAccountClicked();
+            }
+        });
+
+        mBinding.signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signOut();
+            }
+        });
     }
 
-    @OnClick(R.id.sign_out)
     public void signOut() {
         AuthUI.getInstance()
                 .signOut(this)
@@ -111,7 +114,6 @@ public class SignedInActivity extends AppCompatActivity {
                 });
     }
 
-    @OnClick(R.id.delete_account)
     public void deleteAccountClicked() {
         new MaterialAlertDialogBuilder(this)
                 .setMessage("Are you sure you want to delete this account?")
@@ -147,21 +149,21 @@ public class SignedInActivity extends AppCompatActivity {
             GlideApp.with(this)
                     .load(user.getPhotoUrl())
                     .fitCenter()
-                    .into(mUserProfilePicture);
+                    .into(mBinding.userProfilePicture);
         }
 
-        mUserEmail.setText(
+        mBinding.userEmail.setText(
                 TextUtils.isEmpty(user.getEmail()) ? "No email" : user.getEmail());
-        mUserPhoneNumber.setText(
+        mBinding.userPhoneNumber.setText(
                 TextUtils.isEmpty(user.getPhoneNumber()) ? "No phone number" : user.getPhoneNumber());
-        mUserDisplayName.setText(
+        mBinding.userDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
         if (response == null) {
-            mIsNewUser.setVisibility(View.GONE);
+            mBinding.userIsNew.setVisibility(View.GONE);
         } else {
-            mIsNewUser.setVisibility(View.VISIBLE);
-            mIsNewUser.setText(response.isNewUser() ? "New user" : "Existing user");
+            mBinding.userIsNew.setVisibility(View.VISIBLE);
+            mBinding.userIsNew.setText(response.isNewUser() ? "New user" : "Existing user");
         }
 
         List<String> providers = new ArrayList<>();
@@ -197,7 +199,7 @@ public class SignedInActivity extends AppCompatActivity {
             }
         }
 
-        mEnabledProviders.setText(getString(R.string.used_providers, providers));
+        mBinding.userEnabledProviders.setText(getString(R.string.used_providers, providers));
     }
 
     private void populateIdpToken(@Nullable IdpResponse response) {
@@ -226,6 +228,6 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     private void showSnackbar(@StringRes int errorMessageRes) {
-        Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mBinding.getRoot(), errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 }
