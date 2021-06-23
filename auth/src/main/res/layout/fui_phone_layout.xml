@@ -33,6 +33,7 @@
                 <com.firebase.ui.auth.ui.phone.CountryListSpinner
                     android:id="@+id/country_list"
                     style="@style/FirebaseUI.CountrySpinner"
+                    android:minEms="5"
                     android:inputType="none"
                     android:cursorVisible="false" />
 
