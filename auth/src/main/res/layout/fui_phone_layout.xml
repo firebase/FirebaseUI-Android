@@ -21,7 +21,6 @@
             style="@style/FirebaseUI.WrapperStyle"
             android:layout_height="wrap_content">
 
-            <!-- See: https://material.io/components/menus/android#exposed-dropdown-menus -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/country_list_layout"
                 style="@style/FirebaseUI.TextInputLayout.CountryField"
@@ -33,10 +32,19 @@
 
                 <com.firebase.ui.auth.ui.phone.CountryListSpinner
                     android:id="@+id/country_list"
+                    style="@style/FirebaseUI.CountrySpinner"
                     android:inputType="none"
-                    style="@style/FirebaseUI.CountrySpinner" />
+                    android:cursorVisible="false" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/country_list_popup_anchor"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/country_list_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/phone_layout"

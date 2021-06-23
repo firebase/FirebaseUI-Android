@@ -111,7 +111,10 @@ public final class CountryInfo implements Comparable<CountryInfo>, Parcelable {
 
     @Override
     public int compareTo(CountryInfo info) {
-        return mCollator.compare(mLocale.getDisplayCountry(), info.mLocale.getDisplayCountry());
+        Locale defaultLocale = Locale.getDefault();
+        return mCollator.compare(
+                mLocale.getDisplayCountry().toUpperCase(defaultLocale),
+                info.mLocale.getDisplayCountry().toUpperCase(defaultLocale));
     }
 
     @Override

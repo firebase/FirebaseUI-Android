@@ -18,22 +18,24 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ListAdapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,16 +46,18 @@ import java.util.Map;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.ListPopupWindow;
 
-public final class CountryListSpinner extends MaterialAutoCompleteTextView implements View.OnClickListener {
+public final class CountryListSpinner extends TextInputEditText implements View.OnClickListener {
 
     private static final String KEY_SUPER_STATE = "KEY_SUPER_STATE";
     private static final String KEY_COUNTRY_INFO = "KEY_COUNTRY_INFO";
 
-    private final CountryListAdapter mCountryListAdapter;
+    private final ArrayAdapter<CountryInfo> mCountryListAdapter;
     private View.OnClickListener mListener;
     private CountryInfo mSelectedCountryInfo;
+
+    private ListPopupWindow mListPopupWindow;
 
     private Set<String> mAllowedCountryIsos = new HashSet<>();
     private Set<String> mBlockedCountryIsos = new HashSet<>();
@@ -63,22 +67,62 @@ public final class CountryListSpinner extends MaterialAutoCompleteTextView imple
     }
 
     public CountryListSpinner(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.autoCompleteTextViewStyle);
+        this(context, attrs, R.attr.editTextStyle);
     }
 
     public CountryListSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         super.setOnClickListener(this);
 
-        mCountryListAdapter = new CountryListAdapter(getContext());
+        mCountryListAdapter = new ArrayAdapter<>(getContext(),
+                R.layout.fui_dgts_country_row,
+                android.R.id.text1);
+        mListPopupWindow = new ListPopupWindow(context, null, R.attr.listPopupWindowStyle);
+        mListPopupWindow.setModal(true);
+
+        // Prevent the keyboard from showing
+        setInputType(EditorInfo.TYPE_NULL);
+
+        mListPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CountryInfo info = mCountryListAdapter.getItem(position);
+                if (info != null) {
+                    setText(info.toShortString());
+                }
+
+                onUnfocus();
+            }
+        });
     }
 
-    public void init(Bundle params) {
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        if (focused) {
+            onFocus();
+        } else {
+            onUnfocus();
+        }
+    }
+
+    private void onFocus() {
+        hideKeyboard(getContext(), this);
+        mListPopupWindow.show();
+    }
+
+    private void onUnfocus() {
+        mListPopupWindow.dismiss();
+    }
+
+    public void init(Bundle params, View anchorView) {
         if (params != null) {
             List<CountryInfo> countries = getCountriesToDisplayInSpinner(params);
             setCountriesToDisplay(countries);
             setDefaultCountryForSpinner(countries);
-            setAdapter(mCountryListAdapter);
+
+            mListPopupWindow.setAnchorView(anchorView);
+            mListPopupWindow.setAdapter(mCountryListAdapter);
         }
     }
 
@@ -147,7 +191,8 @@ public final class CountryListSpinner extends MaterialAutoCompleteTextView imple
     }
 
     public void setCountriesToDisplay(List<CountryInfo> countries) {
-        mCountryListAdapter.setData(countries);
+        mCountryListAdapter.addAll(countries);
+        mCountryListAdapter.notifyDataSetChanged();
     }
 
     private void setDefaultCountryForSpinner(List<CountryInfo> countries) {
@@ -232,15 +277,6 @@ public final class CountryListSpinner extends MaterialAutoCompleteTextView imple
     }
 
     @Override
-    protected CharSequence convertSelectionToString(Object selectedItem) {
-        if (selectedItem instanceof CountryInfo) {
-            CountryInfo country = (CountryInfo) selectedItem;
-            return country.toShortString();
-        }
-        return super.convertSelectionToString(selectedItem);
-    }
-
-    @Override
     public void onClick(View view) {
         hideKeyboard(getContext(), this);
         executeUserClickListener(view);
@@ -250,5 +286,7 @@ public final class CountryListSpinner extends MaterialAutoCompleteTextView imple
         if (mListener != null) {
             mListener.onClick(view);
         }
+
+        onFocus();
     }
 }

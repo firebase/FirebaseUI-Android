@@ -44,6 +44,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private ProgressBar mProgressBar;
     private Button mSubmitButton;
     private CountryListSpinner mCountryListSpinner;
+    private View mCountryListAnchor;
     private TextInputLayout mPhoneInputLayout;
     private EditText mPhoneEditText;
     private TextView mSmsTermsText;
@@ -80,6 +81,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mProgressBar = view.findViewById(R.id.top_progress_bar);
         mSubmitButton = view.findViewById(R.id.send_code);
         mCountryListSpinner = view.findViewById(R.id.country_list);
+        mCountryListAnchor = view.findViewById(R.id.country_list_popup_anchor);
         mPhoneInputLayout = view.findViewById(R.id.phone_layout);
         mPhoneEditText = view.findViewById(R.id.phone_number);
         mSmsTermsText = view.findViewById(R.id.send_sms_tos);
@@ -204,7 +206,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
     private void setupCountrySpinner() {
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
-        mCountryListSpinner.init(params);
+        mCountryListSpinner.init(params, mCountryListAnchor);
 
         // Clear error when spinner is clicked on
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
