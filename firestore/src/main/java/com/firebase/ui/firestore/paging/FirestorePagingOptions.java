@@ -161,13 +161,11 @@ public final class FirestorePagingOptions<T> {
 
             mParser = parser;
 
-            final FirestoreDataSource.Factory factory =
-                    new FirestoreDataSource.Factory(query, source);
             final Pager<PageKey, DocumentSnapshot> pager = new Pager<>(config,
                     new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
                         @Override
                         public PagingSource<PageKey, DocumentSnapshot> invoke() {
-                            return factory.asPagingSourceFactory().invoke();
+                            return new FirestorePagingSource(query, source);
                         }
                     });
 
@@ -215,7 +213,7 @@ public final class FirestorePagingOptions<T> {
             }
 
             if (mDiffCallback == null) {
-                mDiffCallback = new DefaultSnapshotDiffCallback<T>(mParser);
+                mDiffCallback = new DefaultSnapshotDiffCallback<>(mParser);
             }
 
             return new FirestorePagingOptions<>(mPagingData, mParser, mDiffCallback, mOwner);
