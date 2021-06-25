@@ -38,6 +38,7 @@ object Config {
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
             const val paging = "androidx.paging:paging-runtime:3.0.0"
+            const val pagingRxJava = "androidx.paging:paging-rxjava3:3.0.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
 
             const val design = "com.google.android.material:material:1.2.1"
