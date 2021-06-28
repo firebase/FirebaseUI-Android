@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.firebase.ui.firestore.paging.LoadingState;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.ActivityFirestorePagingBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,10 +26,14 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.paging.PagedList;
+import androidx.paging.CombinedLoadStates;
+import androidx.paging.LoadState;
+import androidx.paging.PagingConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class FirestorePagingActivity extends AppCompatActivity {
 
@@ -56,11 +59,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
     private void setUpAdapter() {
         Query baseQuery = mItemsCollection.orderBy("value", Query.Direction.ASCENDING);
 
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPrefetchDistance(10)
-                .setPageSize(20)
-                .build();
+        PagingConfig config = new PagingConfig(20, 10, false);
 
         FirestorePagingOptions<Item> options = new FirestorePagingOptions.Builder<Item>()
                 .setLifecycleOwner(this)
@@ -84,34 +83,42 @@ public class FirestorePagingActivity extends AppCompatActivity {
                                                     @NonNull Item model) {
                         holder.bind(model);
                     }
-
-                    @Override
-                    protected void onLoadingStateChanged(@NonNull LoadingState state) {
-                        switch (state) {
-                            case LOADING_INITIAL:
-                            case LOADING_MORE:
-                                mBinding.swipeRefreshLayout.setRefreshing(true);
-                                break;
-                            case LOADED:
-                                mBinding.swipeRefreshLayout.setRefreshing(false);
-                                break;
-                            case FINISHED:
-                                mBinding.swipeRefreshLayout.setRefreshing(false);
-                                showToast("Reached end of data set.");
-                                break;
-                            case ERROR:
-                                showToast("An error occurred.");
-                                retry();
-                                break;
-                        }
-                    }
-
-                    @Override
-                    protected void onError(@NonNull Exception e) {
-                        mBinding.swipeRefreshLayout.setRefreshing(false);
-                        Log.e(TAG, e.getMessage(), e);
-                    }
                 };
+        adapter.addLoadStateListener(new Function1<CombinedLoadStates, Unit>() {
+            @Override
+            public Unit invoke(CombinedLoadStates states) {
+                LoadState refresh = states.getRefresh();
+                LoadState append = states.getAppend();
+
+                if (refresh instanceof LoadState.Error || append instanceof LoadState.Error) {
+                    showToast("An error occurred.");
+                    adapter.retry();
+                }
+
+                if (append instanceof LoadState.Loading) {
+                    mBinding.swipeRefreshLayout.setRefreshing(true);
+                }
+
+                if (append instanceof LoadState.NotLoading) {
+                    LoadState.NotLoading notLoading = (LoadState.NotLoading) append;
+                    if (notLoading.getEndOfPaginationReached()) {
+                        // This indicates that the user has scrolled
+                        // until the end of the data set.
+                        mBinding.swipeRefreshLayout.setRefreshing(false);
+                        showToast("Reached end of data set.");
+                        return null;
+                    }
+
+                    if (refresh instanceof LoadState.NotLoading) {
+                        // This indicates the most recent load
+                        // has finished.
+                        mBinding.swipeRefreshLayout.setRefreshing(false);
+                        return null;
+                    }
+                }
+                return null;
+            }
+        });
 
         mBinding.pagingRecycler.setLayoutManager(new LinearLayoutManager(this));
         mBinding.pagingRecycler.setAdapter(adapter);
