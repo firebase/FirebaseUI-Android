@@ -36,6 +36,7 @@ import androidx.lifecycle.Observer;
 import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ public class PhoneProviderResponseHandlerTest {
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
-        mCredential = PhoneAuthCredential.zzb("sessionInfo", "SmsCode");
+        mCredential = PhoneAuthCredential.zzc("sessionInfo", "SmsCode");
 
         mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(

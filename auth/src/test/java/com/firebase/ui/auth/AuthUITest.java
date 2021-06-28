@@ -305,11 +305,11 @@ public class AuthUITest {
                 .setForceSameDevice()
                 .build();
 
-        assertThat(config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS))
-                .isEqualTo(actionCodeSettings);
-        assertThat(config.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE))
-                .isEqualTo(true);
-        assertThat(config.getProviderId()).isEqualTo(AuthUI.EMAIL_LINK_PROVIDER);
+        assertEquals(
+                config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS),
+                actionCodeSettings);
+        assertTrue(config.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE));
+        assertEquals(config.getProviderId(), AuthUI.EMAIL_LINK_PROVIDER);
 
     }
 
