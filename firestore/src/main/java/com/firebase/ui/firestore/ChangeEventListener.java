@@ -7,4 +7,5 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 /**
  * Listener for changes to a {@link FirestoreArray}.
  */
-public interface ChangeEventListener extends BaseChangeEventListener<DocumentSnapshot, FirebaseFirestoreException> {}
+public interface ChangeEventListener extends
+        BaseChangeEventListener<DocumentSnapshot, FirebaseFirestoreException> {}

@@ -152,7 +152,7 @@ public class GenericIdpSignInHandlerTest {
                 .build();
         FirebaseAuthUserCollisionException collisionException
                 = new FirebaseAuthUserCollisionException("foo", "bar");
-        collisionException.zza(EMAIL).zzb(credential);
+        collisionException.zzb(EMAIL).zza(credential);
 
         when(mMockAuth.startActivityForSignInWithProvider(any(Activity.class), any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(collisionException));
@@ -256,7 +256,7 @@ public class GenericIdpSignInHandlerTest {
                 .build();
         FirebaseAuthUserCollisionException collisionException
                 = new FirebaseAuthUserCollisionException("foo", "bar");
-        collisionException.zza(EMAIL).zzb(credential);
+        collisionException.zzb(EMAIL).zza(credential);
         when(mMockAuth.getCurrentUser().startActivityForLinkWithProvider(
                 any(Activity.class), any(OAuthProvider.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(collisionException));
@@ -300,7 +300,7 @@ public class GenericIdpSignInHandlerTest {
                 .build();
         FirebaseAuthUserCollisionException collisionException
                 = new FirebaseAuthUserCollisionException("foo", "bar");
-        collisionException.zza(EMAIL).zzb(credential);
+        collisionException.zzb(EMAIL).zza(credential);
 
         when(mMockAuth.getCurrentUser().startActivityForLinkWithProvider(
                 any(Activity.class), any(OAuthProvider.class)))
