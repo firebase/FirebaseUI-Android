@@ -61,23 +61,15 @@ public class KickoffActivity extends InvisibleActivityBase {
                 : Tasks.forResult((Void) null);
 
         checkPlayServicesTask
-                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        if (savedInstanceState != null) {
-                            return;
-                        }
+                .addOnSuccessListener(this, aVoid -> {
+                    if (savedInstanceState != null) {
+                        return;
+                    }
 
-                        mKickstarter.start();
-                    }
+                    mKickstarter.start();
                 })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
-                                ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED, e)));
-                    }
-                });
+                .addOnFailureListener(this, e -> finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
+                        ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED, e))));
     }
 
     @Override

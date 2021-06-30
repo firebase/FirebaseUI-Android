@@ -41,11 +41,11 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
     }
 
     public void startSignIn() {
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
 
         String link = getArguments().emailLink;
         if (!getAuth().isSignInWithEmailLink(link)) {
-            setResult(Resource.<IdpResponse>forFailure(
+            setResult(Resource.forFailure(
                     new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
             return;
         }
@@ -65,14 +65,14 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         if (isDifferentDeviceFlow(sessionRecord, sessionIdFromLink)) {
             if (TextUtils.isEmpty(sessionIdFromLink)) {
                 // There should always be a valid session ID in the link
-                setResult(Resource.<IdpResponse>forFailure(
+                setResult(Resource.forFailure(
                         new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
                 return;
             }
             if (forceSameDevice || !TextUtils.isEmpty(anonymousUserIdFromLink)) {
                 // In both cases, the link was meant to be completed on the same device.
                 // For anonymous user upgrade, we don't support the cross device flow.
-                setResult(Resource.<IdpResponse>forFailure(
+                setResult(Resource.forFailure(
                         new FirebaseUiException(ErrorCodes.EMAIL_LINK_WRONG_DEVICE_ERROR)));
                 return;
             }
@@ -89,7 +89,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
             if (getAuth().getCurrentUser() == null
                     || (getAuth().getCurrentUser().isAnonymous()
                     && !anonymousUserIdFromLink.equals(getAuth().getCurrentUser().getUid()))) {
-                setResult(Resource.<IdpResponse>forFailure(
+                setResult(Resource.forFailure(
                         new FirebaseUiException(
                                 ErrorCodes.EMAIL_LINK_DIFFERENT_ANONYMOUS_USER_ERROR)));
                 return;
@@ -100,7 +100,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
     }
 
     public void finishSignIn(String email) {
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
         finishSignIn(email, /*response=*/null);
     }
 
@@ -112,7 +112,7 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
 
     private void finishSignIn(@NonNull String email, @Nullable IdpResponse response) {
         if (TextUtils.isEmpty(email)) {
-            setResult(Resource.<IdpResponse>forFailure(
+            setResult(Resource.forFailure(
                     new FirebaseUiException(ErrorCodes.EMAIL_MISMATCH_ERROR)));
             return;
         }
@@ -130,24 +130,21 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
     private void determineDifferentDeviceErrorFlowAndFinish(@NonNull String oobCode,
                                                             @Nullable final String providerId) {
         getAuth().checkActionCode(oobCode).addOnCompleteListener(
-                new OnCompleteListener<ActionCodeResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<ActionCodeResult> task) {
-                        if (task.isSuccessful()) {
-                            if (!TextUtils.isEmpty(providerId)) {
-                                setResult(Resource.<IdpResponse>forFailure(
-                                        new FirebaseUiException(
-                                                ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR)));
-                                return;
-                            }
-                            // The email link is valid, we can ask the user for their email
-                            setResult(Resource.<IdpResponse>forFailure(
-                                            new FirebaseUiException(
-                                                    ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR)));
-                        } else {
-                            setResult(Resource.<IdpResponse>forFailure(
-                                    new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
+                task -> {
+                    if (task.isSuccessful()) {
+                        if (!TextUtils.isEmpty(providerId)) {
+                            setResult(Resource.forFailure(
+                                    new FirebaseUiException(
+                                            ErrorCodes.EMAIL_LINK_CROSS_DEVICE_LINKING_ERROR)));
+                            return;
                         }
+                        // The email link is valid, we can ask the user for their email
+                        setResult(Resource.forFailure(
+                                        new FirebaseUiException(
+                                                ErrorCodes.EMAIL_LINK_PROMPT_FOR_EMAIL_ERROR)));
+                    } else {
+                        setResult(Resource.forFailure(
+                                new FirebaseUiException(ErrorCodes.INVALID_EMAIL_LINK_ERROR)));
                     }
                 });
     }
@@ -164,54 +161,40 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         if (authOperationManager.canUpgradeAnonymous(getAuth(), getArguments())) {
             authOperationManager.safeLink(emailLinkCredential,
                     storedCredentialForLink, getArguments())
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            persistenceManager.clearAllData(getApplication());
-                            if (task.isSuccessful()) {
-                                handleMergeFailure(storedCredentialForLink);
-                            } else {
-                                setResult(Resource.<IdpResponse>forFailure(task.getException()));
-                            }
+                    .addOnCompleteListener(task -> {
+                        persistenceManager.clearAllData(getApplication());
+                        if (task.isSuccessful()) {
+                            handleMergeFailure(storedCredentialForLink);
+                        } else {
+                            setResult(Resource.forFailure(task.getException()));
                         }
                     });
         } else {
             getAuth().signInWithCredential(emailLinkCredential)
-                    .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
-                        @Override
-                        public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
-                            persistenceManager.clearAllData(getApplication());
-                            if (!task.isSuccessful()) {
-                                return task;
-                            }
-                            return task.getResult().getUser()
-                                    .linkWithCredential(storedCredentialForLink)
-                                    .continueWithTask(new ProfileMerger(response))
-                                    .addOnFailureListener(new TaskFailureLogger(TAG,
-                                            "linkWithCredential+merge failed."));
+                    .continueWithTask(task -> {
+                        persistenceManager.clearAllData(getApplication());
+                        if (!task.isSuccessful()) {
+                            return task;
                         }
+                        return task.getResult().getUser()
+                                .linkWithCredential(storedCredentialForLink)
+                                .continueWithTask(new ProfileMerger(response))
+                                .addOnFailureListener(new TaskFailureLogger(TAG,
+                                        "linkWithCredential+merge failed."));
                     })
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            FirebaseUser user = authResult.getUser();
-                            IdpResponse response = new IdpResponse.Builder(
-                                    new User.Builder(EmailAuthProvider
-                                            .EMAIL_LINK_SIGN_IN_METHOD,
-                                            user.getEmail())
-                                            .setName(user.getDisplayName())
-                                            .setPhotoUri(user.getPhotoUrl())
-                                            .build())
-                                    .build();
-                            handleSuccess(response, authResult);
-                        }
+                    .addOnSuccessListener(authResult -> {
+                        FirebaseUser user = authResult.getUser();
+                        IdpResponse response1 = new IdpResponse.Builder(
+                                new User.Builder(EmailAuthProvider
+                                        .EMAIL_LINK_SIGN_IN_METHOD,
+                                        user.getEmail())
+                                        .setName(user.getDisplayName())
+                                        .setPhotoUri(user.getPhotoUrl())
+                                        .build())
+                                .build();
+                        handleSuccess(response1, authResult);
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            setResult(Resource.<IdpResponse>forFailure(e));
-                        }
-                    });
+                    .addOnFailureListener(e -> setResult(Resource.forFailure(e)));
         }
     }
 
@@ -230,31 +213,25 @@ public class EmailLinkSignInHandler extends SignInViewModelBase {
         // Either regular sign in or anonymous user upgrade
         authOperationManager.signInAndLinkWithCredential(getAuth(), getArguments(),
                 emailLinkCredential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        persistenceManager.clearAllData(getApplication());
+                .addOnSuccessListener(authResult -> {
+                    persistenceManager.clearAllData(getApplication());
 
-                        FirebaseUser user = authResult.getUser();
-                        IdpResponse response = new IdpResponse.Builder(
-                                new User.Builder(EMAIL_LINK_PROVIDER,
-                                        user.getEmail())
-                                        .setName(user.getDisplayName())
-                                        .setPhotoUri(user.getPhotoUrl())
-                                        .build())
-                                .build();
-                        handleSuccess(response, authResult);
-                    }
+                    FirebaseUser user = authResult.getUser();
+                    IdpResponse response = new IdpResponse.Builder(
+                            new User.Builder(EMAIL_LINK_PROVIDER,
+                                    user.getEmail())
+                                    .setName(user.getDisplayName())
+                                    .setPhotoUri(user.getPhotoUrl())
+                                    .build())
+                            .build();
+                    handleSuccess(response, authResult);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        persistenceManager.clearAllData(getApplication());
-                        if (e instanceof FirebaseAuthUserCollisionException) {
-                            handleMergeFailure(emailLinkCredentialForLinking);
-                        } else {
-                            setResult(Resource.<IdpResponse>forFailure(e));
-                        }
+                .addOnFailureListener(e -> {
+                    persistenceManager.clearAllData(getApplication());
+                    if (e instanceof FirebaseAuthUserCollisionException) {
+                        handleMergeFailure(emailLinkCredentialForLinking);
+                    } else {
+                        setResult(Resource.forFailure(e));
                     }
                 });
     }

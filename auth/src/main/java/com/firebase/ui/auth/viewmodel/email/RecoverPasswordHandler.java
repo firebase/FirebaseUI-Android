@@ -19,19 +19,16 @@ public class RecoverPasswordHandler extends AuthViewModelBase<String> {
     }
 
     public void startReset(@NonNull final String email, @Nullable ActionCodeSettings actionCodeSettings) {
-        setResult(Resource.<String>forLoading());
+        setResult(Resource.forLoading());
         Task<Void> reset = actionCodeSettings != null
                 ? getAuth().sendPasswordResetEmail(email, actionCodeSettings)
                 : getAuth().sendPasswordResetEmail(email);
 
-        reset.addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Resource<String> resource = task.isSuccessful()
-                                ? Resource.forSuccess(email)
-                                : Resource.<String>forFailure(task.getException());
-                        setResult(resource);
-                    }
-                });
+        reset.addOnCompleteListener(task -> {
+            Resource<String> resource = task.isSuccessful()
+                    ? Resource.forSuccess(email)
+                    : Resource.forFailure(task.getException());
+            setResult(resource);
+        });
     }
 }

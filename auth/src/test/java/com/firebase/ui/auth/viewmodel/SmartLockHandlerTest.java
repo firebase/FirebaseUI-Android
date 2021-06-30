@@ -73,12 +73,12 @@ public class SmartLockHandlerTest {
         mHandler.getOperation().observeForever(mResultObserver);
 
         when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
+                .thenReturn(AutoCompleteTask.forSuccess(null));
 
         mHandler.saveCredentials(TestHelper.getMockFirebaseUser(), TestConstants.PASSWORD, null);
 
-        verify(mResultObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
-        verify(mResultObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
+        verify(mResultObserver).onChanged(argThat(ResourceMatchers.isLoading()));
+        verify(mResultObserver).onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SmartLockHandlerTest {
         // Mock credentials to throw an RAE
         ResolvableApiException mockRae = mock(ResolvableApiException.class);
         when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(mockRae));
+                .thenReturn(AutoCompleteTask.forFailure(mockRae));
 
         // Kick off save
         mHandler.saveCredentials(TestHelper.getMockFirebaseUser(), TestConstants.PASSWORD, null);
@@ -96,7 +96,7 @@ public class SmartLockHandlerTest {
         InOrder inOrder = inOrder(mResultObserver);
 
         inOrder.verify(mResultObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Make sure we get a resolution
         ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
@@ -110,7 +110,7 @@ public class SmartLockHandlerTest {
 
         // Make sure we get success
         inOrder.verify(mResultObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
+                .onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
     @Test
@@ -118,12 +118,12 @@ public class SmartLockHandlerTest {
         mHandler.getOperation().observeForever(mResultObserver);
 
         when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));
+                .thenReturn(AutoCompleteTask.forFailure(new Exception("FAILED")));
 
         mHandler.saveCredentials(TestHelper.getMockFirebaseUser(), TestConstants.PASSWORD, null);
 
-        verify(mResultObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
-        verify(mResultObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
+        verify(mResultObserver).onChanged(argThat(ResourceMatchers.isLoading()));
+        verify(mResultObserver).onChanged(argThat(ResourceMatchers.isFailure()));
     }
 
 }

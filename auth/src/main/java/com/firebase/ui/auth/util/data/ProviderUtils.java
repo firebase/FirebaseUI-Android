@@ -264,19 +264,16 @@ public final class ProviderUtils {
             @NonNull FlowParameters params,
             @NonNull String email) {
         return fetchSortedProviders(auth, params, email)
-                .continueWithTask(new Continuation<List<String>, Task<String>>() {
-                    @Override
-                    public Task<String> then(@NonNull Task<List<String>> task) {
-                        if (!task.isSuccessful()) {
-                            return Tasks.forException(task.getException());
-                        }
-                        List<String> providers = task.getResult();
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        return Tasks.forException(task.getException());
+                    }
+                    List<String> providers = task.getResult();
 
-                        if (providers.isEmpty()) {
-                            return Tasks.forResult(null);
-                        } else {
-                            return Tasks.forResult(providers.get(0));
-                        }
+                    if (providers.isEmpty()) {
+                        return Tasks.forResult(null);
+                    } else {
+                        return Tasks.forResult(providers.get(0));
                     }
                 });
     }

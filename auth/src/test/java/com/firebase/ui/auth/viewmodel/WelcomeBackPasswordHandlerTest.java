@@ -99,13 +99,13 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Mock smartlock save to always succeed
         when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
+                .thenReturn(AutoCompleteTask.forSuccess(null));
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
 
         // Verify that we get a loading event
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Verify that sign in is called with the right arguments
         verify(mMockAuth).signInWithEmailAndPassword(
@@ -115,7 +115,7 @@ public class WelcomeBackPasswordHandlerTest {
         verify(FakeAuthResult.INSTANCE.getUser()).linkWithCredential(credential);
 
         // Verify that we get a success event
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
     @Test
@@ -124,20 +124,20 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Mock sign in to always fail
         when(mMockAuth.signInWithEmailAndPassword(any(String.class), any(String.class)))
-                .thenReturn(AutoContinueTask.<AuthResult>forFailure(new Exception("FAILED")));
+                .thenReturn(AutoContinueTask.forFailure(new Exception("FAILED")));
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
 
         // Verify that we get a loading event
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Verify that sign in is called with the right arguments
         verify(mMockAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL, TestConstants.PASSWORD);
 
         // Verify that we get a failure event
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isFailure()));
     }
 
     @Test
@@ -241,7 +241,7 @@ public class WelcomeBackPasswordHandlerTest {
         InOrder inOrder = inOrder(mResponseObserver);
 
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
                 ArgumentCaptor.forClass(Resource.class);

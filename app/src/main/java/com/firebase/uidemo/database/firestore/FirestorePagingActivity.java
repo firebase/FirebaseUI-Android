@@ -84,51 +84,43 @@ public class FirestorePagingActivity extends AppCompatActivity {
                         holder.bind(model);
                     }
                 };
-        adapter.addLoadStateListener(new Function1<CombinedLoadStates, Unit>() {
-            @Override
-            public Unit invoke(CombinedLoadStates states) {
-                LoadState refresh = states.getRefresh();
-                LoadState append = states.getAppend();
+        adapter.addLoadStateListener(states -> {
+            LoadState refresh = states.getRefresh();
+            LoadState append = states.getAppend();
 
-                if (refresh instanceof LoadState.Error || append instanceof LoadState.Error) {
-                    showToast("An error occurred.");
-                    adapter.retry();
-                }
-
-                if (append instanceof LoadState.Loading) {
-                    mBinding.swipeRefreshLayout.setRefreshing(true);
-                }
-
-                if (append instanceof LoadState.NotLoading) {
-                    LoadState.NotLoading notLoading = (LoadState.NotLoading) append;
-                    if (notLoading.getEndOfPaginationReached()) {
-                        // This indicates that the user has scrolled
-                        // until the end of the data set.
-                        mBinding.swipeRefreshLayout.setRefreshing(false);
-                        showToast("Reached end of data set.");
-                        return null;
-                    }
-
-                    if (refresh instanceof LoadState.NotLoading) {
-                        // This indicates the most recent load
-                        // has finished.
-                        mBinding.swipeRefreshLayout.setRefreshing(false);
-                        return null;
-                    }
-                }
-                return null;
+            if (refresh instanceof LoadState.Error || append instanceof LoadState.Error) {
+                showToast("An error occurred.");
+                adapter.retry();
             }
+
+            if (append instanceof LoadState.Loading) {
+                mBinding.swipeRefreshLayout.setRefreshing(true);
+            }
+
+            if (append instanceof LoadState.NotLoading) {
+                LoadState.NotLoading notLoading = (LoadState.NotLoading) append;
+                if (notLoading.getEndOfPaginationReached()) {
+                    // This indicates that the user has scrolled
+                    // until the end of the data set.
+                    mBinding.swipeRefreshLayout.setRefreshing(false);
+                    showToast("Reached end of data set.");
+                    return null;
+                }
+
+                if (refresh instanceof LoadState.NotLoading) {
+                    // This indicates the most recent load
+                    // has finished.
+                    mBinding.swipeRefreshLayout.setRefreshing(false);
+                    return null;
+                }
+            }
+            return null;
         });
 
         mBinding.pagingRecycler.setLayoutManager(new LinearLayoutManager(this));
         mBinding.pagingRecycler.setAdapter(adapter);
 
-        mBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                adapter.refresh();
-            }
-        });
+        mBinding.swipeRefreshLayout.setOnRefreshListener(() -> adapter.refresh());
     }
 
     @Override
@@ -141,15 +133,12 @@ public class FirestorePagingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_add_data) {
             showToast("Adding data...");
-            createItems().addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        showToast("Data added.");
-                    } else {
-                        Log.w(TAG, "addData", task.getException());
-                        showToast("Error adding data.");
-                    }
+            createItems().addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    showToast("Data added.");
+                } else {
+                    Log.w(TAG, "addData", task.getException());
+                    showToast("Error adding data.");
                 }
             });
 

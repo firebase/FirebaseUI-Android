@@ -60,13 +60,10 @@ public class InvisibleFragmentBase extends FragmentBase {
 
     @Override
     public void hideProgress() {
-        doAfterTimeout(new Runnable() {
-            @Override
-            public void run() {
-                mLastShownTime = 0;
-                mProgressBar.setVisibility(View.GONE);
-                mFrameLayout.setVisibility(View.GONE);
-            }
+        doAfterTimeout(() -> {
+            mLastShownTime = 0;
+            mProgressBar.setVisibility(View.GONE);
+            mFrameLayout.setVisibility(View.GONE);
         });
     }
 

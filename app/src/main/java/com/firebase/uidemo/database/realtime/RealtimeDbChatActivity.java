@@ -58,19 +58,9 @@ public class RealtimeDbChatActivity extends AppCompatActivity
         mBinding.messagesList.setHasFixedSize(true);
         mBinding.messagesList.setLayoutManager(new LinearLayoutManager(this));
 
-        ImeHelper.setImeOnDoneListener(mBinding.messageEdit, new ImeHelper.DonePressedListener() {
-            @Override
-            public void onDonePressed() {
-                onSendClick();
-            }
-        });
+        ImeHelper.setImeOnDoneListener(mBinding.messageEdit, () -> onSendClick());
 
-        mBinding.sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSendClick();
-            }
-        });
+        mBinding.sendButton.setOnClickListener(view -> onSendClick());
     }
 
     @Override
@@ -157,12 +147,9 @@ public class RealtimeDbChatActivity extends AppCompatActivity
     }
 
     protected void onAddMessage(@NonNull Chat chat) {
-        sChatQuery.getRef().push().setValue(chat, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError error, DatabaseReference reference) {
-                if (error != null) {
-                    Log.e(TAG, "Failed to write message", error.toException());
-                }
+        sChatQuery.getRef().push().setValue(chat, (error, reference) -> {
+            if (error != null) {
+                Log.e(TAG, "Failed to write message", error.toException());
             }
         });
     }

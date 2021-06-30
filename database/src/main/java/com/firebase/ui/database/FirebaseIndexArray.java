@@ -68,13 +68,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
                               @NonNull SnapshotParser<T> parser) {
         super(parser);
         mDataRef = dataRef;
-        mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
-            @NonNull
-            @Override
-            public String parseSnapshot(@NonNull DataSnapshot snapshot) {
-                return snapshot.getKey();
-            }
-        });
+        mKeySnapshots = new FirebaseArray<>(keyQuery, snapshot -> snapshot.getKey());
     }
 
     @Override

@@ -70,38 +70,32 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
         mLoadingState.postValue(LoadingState.LOADING_INITIAL);
 
         Query mInitQuery = mQuery.limitToFirst(params.requestedLoadSize);
-        mInitQuery.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
+        mInitQuery.get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
 
-                    //Make List of DataSnapshot
-                    List<DataSnapshot> data = new ArrayList<>();
+                //Make List of DataSnapshot
+                List<DataSnapshot> data = new ArrayList<>();
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                        data.add(snapshot);
-                    }
-
-                    //Get Last Key
-                    String lastKey = getLastPageKey(data);
-
-                    //Update State
-                    mLoadingState.postValue(LoadingState.LOADED);
-                    mRetryRunnable = null;
-
-                    callback.onResult(data, lastKey, lastKey);
-
-                } else {
-                    mRetryRunnable = getRetryLoadInitial(params, callback);
-                    setDatabaseNotFoundError();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    data.add(snapshot);
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+
+                //Get Last Key
+                String lastKey = getLastPageKey(data);
+
+                //Update State
+                mLoadingState.postValue(LoadingState.LOADED);
+                mRetryRunnable = null;
+
+                callback.onResult(data, lastKey, lastKey);
+
+            } else {
                 mRetryRunnable = getRetryLoadInitial(params, callback);
-                setError(e);
+                setDatabaseNotFoundError();
             }
+        }).addOnFailureListener(e -> {
+            mRetryRunnable = getRetryLoadInitial(params, callback);
+            setError(e);
         });
     }
 
@@ -119,75 +113,59 @@ public class FirebaseDataSource extends PageKeyedDataSource<String, DataSnapshot
 
         //Load params.requestedLoadSize+1 because, first data item is getting ignored.
         Query mNewQuery = mQuery.startAt(null, params.key).limitToFirst(params.requestedLoadSize + 1);
-        mNewQuery.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
+        mNewQuery.get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
 
-                    //Make List of DataSnapshot
-                    List<DataSnapshot> data = new ArrayList<>();
-                    String lastKey = null;
+                //Make List of DataSnapshot
+                List<DataSnapshot> data = new ArrayList<>();
+                String lastKey = null;
 
-                    Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
 
-                    //Skip First Item
-                    if (iterator.hasNext()) {
-                        iterator.next();
-                    }
-
-                    while (iterator.hasNext()) {
-                        DataSnapshot snapshot = iterator.next();
-                        data.add(snapshot);
-                    }
-
-                    //Update State
-                    mLoadingState.postValue(LoadingState.LOADED);
-                    mRetryRunnable = null;
-
-                    //Detect End of Data
-                    if (data.isEmpty())
-                        mLoadingState.postValue(LoadingState.FINISHED);
-                    else {
-                        //Get Last Key
-                        lastKey = getLastPageKey(data);
-                    }
-
-                    callback.onResult(data, lastKey);
-
-                } else {
-                    mRetryRunnable = getRetryLoadAfter(params, callback);
-                    setDatabaseNotFoundError();
+                //Skip First Item
+                if (iterator.hasNext()) {
+                    iterator.next();
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+
+                while (iterator.hasNext()) {
+                    DataSnapshot snapshot = iterator.next();
+                    data.add(snapshot);
+                }
+
+                //Update State
+                mLoadingState.postValue(LoadingState.LOADED);
+                mRetryRunnable = null;
+
+                //Detect End of Data
+                if (data.isEmpty())
+                    mLoadingState.postValue(LoadingState.FINISHED);
+                else {
+                    //Get Last Key
+                    lastKey = getLastPageKey(data);
+                }
+
+                callback.onResult(data, lastKey);
+
+            } else {
                 mRetryRunnable = getRetryLoadAfter(params, callback);
-                setError(e);
+                setDatabaseNotFoundError();
             }
+        }).addOnFailureListener(e -> {
+            mRetryRunnable = getRetryLoadAfter(params, callback);
+            setError(e);
         });
     }
 
     @NonNull
     private Runnable getRetryLoadAfter(@NonNull final LoadParams<String> params,
                                        @NonNull final LoadCallback<String, DataSnapshot> callback) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                loadAfter(params, callback);
-            }
-        };
+        return () -> loadAfter(params, callback);
     }
 
     @NonNull
     private Runnable getRetryLoadInitial(@NonNull final LoadInitialParams<String> params,
                                          @NonNull final LoadInitialCallback<String, DataSnapshot> callback) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                loadInitial(params, callback);
-            }
-        };
+        return () -> loadInitial(params, callback);
     }
 
     public void retry() {

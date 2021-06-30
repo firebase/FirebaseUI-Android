@@ -43,7 +43,7 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
 
     public void startSignIn(@NonNull final IdpResponse response) {
         if (!response.isSuccessful()) {
-            setResult(Resource.<IdpResponse>forFailure(response.getError()));
+            setResult(Resource.forFailure(response.getError()));
             return;
         }
         if (isInvalidProvider(response.getProviderType())) {
@@ -51,12 +51,12 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
                     "This handler cannot be used to link email or phone providers.");
         }
         if (mEmail != null && !mEmail.equals(response.getEmail())) {
-            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException
+            setResult(Resource.forFailure(new FirebaseUiException
                     (ErrorCodes.EMAIL_MISMATCH_ERROR)));
             return;
         }
 
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
 
         // The Generic IDP flow does not return a credential - it signs us in right away.
         // If the user was prompted to sign-in via Generic IDP, we can link immediately.
@@ -66,18 +66,8 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
         if (isGenericIdpLinkingFlow(response.getProviderType())) {
             getAuth().getCurrentUser()
                     .linkWithCredential(mRequestedSignInCredential)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            handleSuccess(response, authResult);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Resource.<IdpResponse>forFailure(e);
-                        }
-                    });
+                    .addOnSuccessListener(authResult -> handleSuccess(response, authResult))
+                    .addOnFailureListener(e -> Resource.<IdpResponse>forFailure(e));
             return;
         }
 
@@ -99,53 +89,34 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
                 // These IDPs belong to the same account - they must be linked, but we can't lose
                 // our anonymous user session
                 authOperationManager.safeLink(credential, mRequestedSignInCredential, getArguments())
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult result) {
-                                handleMergeFailure(credential);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                setResult(Resource.<IdpResponse>forFailure(e));
-                            }
-                        });
+                        .addOnSuccessListener(result -> handleMergeFailure(credential))
+                        .addOnFailureListener(e -> setResult(Resource.forFailure(e)));
             }
         } else {
             getAuth().signInWithCredential(credential)
-                    .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
-                        @Override
-                        public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
-                            final AuthResult result = task.getResult();
-                            if (mRequestedSignInCredential == null) {
-                                return Tasks.forResult(result);
-                            } else {
-                                return result.getUser()
-                                        .linkWithCredential(mRequestedSignInCredential)
-                                        .continueWith(new Continuation<AuthResult, AuthResult>() {
-                                            @Override
-                                            public AuthResult then(@NonNull Task<AuthResult> task) {
-                                                if (task.isSuccessful()) {
-                                                    return task.getResult();
-                                                } else {
-                                                    // Since we've already signed in, it's too late
-                                                    // to backtrack so we just ignore any errors.
-                                                    return result;
-                                                }
-                                            }
-                                        });
-                            }
+                    .continueWithTask(task -> {
+                        final AuthResult result = task.getResult();
+                        if (mRequestedSignInCredential == null) {
+                            return Tasks.forResult(result);
+                        } else {
+                            return result.getUser()
+                                    .linkWithCredential(mRequestedSignInCredential)
+                                    .continueWith(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            return task1.getResult();
+                                        } else {
+                                            // Since we've already signed in, it's too late
+                                            // to backtrack so we just ignore any errors.
+                                            return result;
+                                        }
+                                    });
                         }
                     })
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                handleSuccess(response, task.getResult());
-                            } else {
-                                setResult(Resource.<IdpResponse>forFailure(task.getException()));
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            handleSuccess(response, task.getResult());
+                        } else {
+                            setResult(Resource.forFailure(task.getException()));
                         }
                     });
         }
