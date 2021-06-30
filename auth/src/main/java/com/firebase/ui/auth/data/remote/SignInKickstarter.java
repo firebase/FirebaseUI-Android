@@ -56,7 +56,7 @@ public class SignInKickstarter extends SignInViewModelBase {
 
     public void start() {
         if (!TextUtils.isEmpty(getArguments().emailLink)) {
-            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+            setResult(Resource.forFailure(new IntentRequiredException(
                     EmailLinkCatcherActivity.createIntent(getApplication(), getArguments()),
                     RequestCodes.EMAIL_FLOW)));
             return;
@@ -68,25 +68,17 @@ public class SignInKickstarter extends SignInViewModelBase {
         if (pendingResultTask != null) {
             pendingResultTask
                     .addOnSuccessListener(
-                            new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-                                    final IdpResponse response = new IdpResponse.Builder(
-                                            new User.Builder(
-                                                    authResult.getCredential().getProvider(),
-                                                    authResult.getUser().getEmail()).build())
-                                            .build();
-                                    handleSuccess(response, authResult);
+                            authResult -> {
+                                final IdpResponse response = new IdpResponse.Builder(
+                                        new User.Builder(
+                                                authResult.getCredential().getProvider(),
+                                                authResult.getUser().getEmail()).build())
+                                        .build();
+                                handleSuccess(response, authResult);
 
-                                }
                             })
                     .addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    setResult(Resource.<IdpResponse>forFailure(e));
-                                }
-                            });
+                            e -> setResult(Resource.forFailure(e)));
             return;
         }
 
@@ -100,30 +92,27 @@ public class SignInKickstarter extends SignInViewModelBase {
         boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
 
         if (getArguments().enableCredentials && willRequestCredentials) {
-            setResult(Resource.<IdpResponse>forLoading());
+            setResult(Resource.forLoading());
 
             GoogleApiUtils.getCredentialsClient(getApplication())
                     .request(new CredentialRequest.Builder()
                             .setPasswordLoginSupported(supportPasswords)
                             .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
                             .build())
-                    .addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
-                            try {
-                                handleCredential(
-                                        task.getResult(ApiException.class).getCredential());
-                            } catch (ResolvableApiException e) {
-                                if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                                    setResult(Resource.<IdpResponse>forFailure(
-                                            new PendingIntentRequiredException(
-                                                    e.getResolution(), RequestCodes.CRED_HINT)));
-                                } else {
-                                    startAuthMethodChoice();
-                                }
-                            } catch (ApiException e) {
+                    .addOnCompleteListener(task -> {
+                        try {
+                            handleCredential(
+                                    task.getResult(ApiException.class).getCredential());
+                        } catch (ResolvableApiException e) {
+                            if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                                setResult(Resource.forFailure(
+                                        new PendingIntentRequiredException(
+                                                e.getResolution(), RequestCodes.CRED_HINT)));
+                            } else {
                                 startAuthMethodChoice();
                             }
+                        } catch (ApiException e) {
+                            startAuthMethodChoice();
                         }
                     });
         } else {
@@ -138,12 +127,12 @@ public class SignInKickstarter extends SignInViewModelBase {
             switch (firstProvider) {
                 case EMAIL_LINK_PROVIDER:
                 case EmailAuthProvider.PROVIDER_ID:
-                    setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                    setResult(Resource.forFailure(new IntentRequiredException(
                             EmailActivity.createIntent(getApplication(), getArguments()),
                             RequestCodes.EMAIL_FLOW)));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                    setResult(Resource.forFailure(new IntentRequiredException(
                             PhoneActivity.createIntent(
                                     getApplication(), getArguments(), firstIdpConfig.getParams()),
                             RequestCodes.PHONE_FLOW)));
@@ -153,7 +142,7 @@ public class SignInKickstarter extends SignInViewModelBase {
                     break;
             }
         } else {
-            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+            setResult(Resource.forFailure(new IntentRequiredException(
                     AuthMethodPickerActivity.createIntent(getApplication(), getArguments()),
                     RequestCodes.AUTH_PICKER_FLOW)));
         }
@@ -162,14 +151,14 @@ public class SignInKickstarter extends SignInViewModelBase {
     private void redirectSignIn(String provider, String id) {
         switch (provider) {
             case EmailAuthProvider.PROVIDER_ID:
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.forFailure(new IntentRequiredException(
                         EmailActivity.createIntent(getApplication(), getArguments(), id),
                         RequestCodes.EMAIL_FLOW)));
                 break;
             case PhoneAuthProvider.PROVIDER_ID:
                 Bundle args = new Bundle();
                 args.putString(ExtraConstants.PHONE, id);
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.forFailure(new IntentRequiredException(
                         PhoneActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -177,7 +166,7 @@ public class SignInKickstarter extends SignInViewModelBase {
                         RequestCodes.PHONE_FLOW)));
                 break;
             default:
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.forFailure(new IntentRequiredException(
                         SingleSignInActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -216,14 +205,14 @@ public class SignInKickstarter extends SignInViewModelBase {
                 }
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if (response == null) {
-                    setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+                    setResult(Resource.forFailure(new UserCancellationException()));
                 } else if (response.isSuccessful()) {
                     setResult(Resource.forSuccess(response));
                 } else if (response.getError().getErrorCode() ==
                         ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
                     handleMergeFailure(response);
                 } else {
-                    setResult(Resource.<IdpResponse>forFailure(response.getError()));
+                    setResult(Resource.forFailure(response.getError()));
                 }
         }
     }
@@ -243,27 +232,19 @@ public class SignInKickstarter extends SignInViewModelBase {
             final IdpResponse response = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
 
-            setResult(Resource.<IdpResponse>forLoading());
+            setResult(Resource.forLoading());
             getAuth().signInWithEmailAndPassword(id, password)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult result) {
-                            handleSuccess(response, result);
+                    .addOnSuccessListener(result -> handleSuccess(response, result))
+                    .addOnFailureListener(e -> {
+                        if (e instanceof FirebaseAuthInvalidUserException
+                                || e instanceof FirebaseAuthInvalidCredentialsException) {
+                            // In this case the credential saved in SmartLock was not
+                            // a valid credential, we should delete it from SmartLock
+                            // before continuing.
+                            GoogleApiUtils.getCredentialsClient(getApplication())
+                                    .delete(credential);
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            if (e instanceof FirebaseAuthInvalidUserException
-                                    || e instanceof FirebaseAuthInvalidCredentialsException) {
-                                // In this case the credential saved in SmartLock was not
-                                // a valid credential, we should delete it from SmartLock
-                                // before continuing.
-                                GoogleApiUtils.getCredentialsClient(getApplication())
-                                        .delete(credential);
-                            }
-                            startAuthMethodChoice();
-                        }
+                        startAuthMethodChoice();
                     });
         }
     }

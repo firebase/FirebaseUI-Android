@@ -36,7 +36,7 @@ public abstract class SignInViewModelBase extends AuthViewModelBase<IdpResponse>
     }
 
     protected void handleMergeFailure(@NonNull IdpResponse failureResponse) {
-        setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
+        setResult(Resource.forFailure(new FirebaseAuthAnonymousUpgradeException(
                 ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
                 failureResponse)));
     }

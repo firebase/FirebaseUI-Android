@@ -137,7 +137,7 @@ public class GenericIdpAnonymousUpgradeLinkingHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
                 ArgumentCaptor.forClass(Resource.class);

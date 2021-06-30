@@ -23,7 +23,7 @@ public class User implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    in.<Uri>readParcelable(Uri.class.getClassLoader()));
+                    in.readParcelable(Uri.class.getClassLoader()));
         }
 
         @Override

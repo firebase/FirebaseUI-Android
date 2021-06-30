@@ -162,12 +162,7 @@ public final class FirestorePagingOptions<T> {
             mParser = parser;
 
             final Pager<PageKey, DocumentSnapshot> pager = new Pager<>(config,
-                    new Function0<PagingSource<PageKey, DocumentSnapshot>>() {
-                        @Override
-                        public PagingSource<PageKey, DocumentSnapshot> invoke() {
-                            return new FirestorePagingSource(query, source);
-                        }
-                    });
+                    () -> new FirestorePagingSource(query, source));
 
             mPagingData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager),
                     mOwner.getLifecycle());

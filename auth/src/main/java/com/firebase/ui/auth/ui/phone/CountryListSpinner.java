@@ -288,12 +288,7 @@ public final class CountryListSpinner extends AppCompatEditText implements View.
             final ListView listView = dialog.getListView();
             listView.setFastScrollEnabled(true);
             listView.setScrollbarFadingEnabled(false);
-            listView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    listView.setSelection(selected);
-                }
-            }, DELAY_MILLIS);
+            listView.postDelayed(() -> listView.setSelection(selected), DELAY_MILLIS);
             dialog.show();
         }
 

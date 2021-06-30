@@ -42,12 +42,12 @@ public class IdpResponse implements Parcelable {
         @Override
         public IdpResponse createFromParcel(Parcel in) {
             return new IdpResponse(
-                    in.<User>readParcelable(User.class.getClassLoader()),
+                    in.readParcelable(User.class.getClassLoader()),
                     in.readString(),
                     in.readString(),
                     in.readInt() == 1,
                     (FirebaseUiException) in.readSerializable(),
-                    in.<AuthCredential>readParcelable(AuthCredential.class.getClassLoader())
+                    in.readParcelable(AuthCredential.class.getClassLoader())
             );
         }
 

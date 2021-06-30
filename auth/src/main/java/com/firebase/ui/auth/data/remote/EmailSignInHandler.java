@@ -42,7 +42,7 @@ public class EmailSignInHandler extends SingleProviderSignInHandler<Void> {
         } else if (requestCode == RequestCodes.EMAIL_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
-                setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+                setResult(Resource.forFailure(new UserCancellationException()));
             } else {
                 setResult(Resource.forSuccess(response));
             }

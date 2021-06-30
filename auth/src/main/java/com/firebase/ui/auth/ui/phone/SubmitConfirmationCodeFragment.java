@@ -59,12 +59,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "millis_until_finished";
 
     private final Handler mLooper = new Handler();
-    private final Runnable mCountdown = new Runnable() {
-        @Override
-        public void run() {
-            processCountdownTick();
-        }
-    };
+    private final Runnable mCountdown = () -> processCountdownTick();
 
     private PhoneNumberVerificationHandler mHandler;
     private String mPhoneNumber;
@@ -121,7 +116,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         PrivacyDisclosureUtils.setupTermsOfServiceFooter(
                 requireContext(),
                 getFlowParams(),
-                view.<TextView>findViewById(R.id.email_footer_tos_and_pp_text));
+                view.findViewById(R.id.email_footer_tos_and_pp_text));
     }
 
     @Override
@@ -130,12 +125,9 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         new ViewModelProvider(requireActivity())
                 .get(PhoneProviderResponseHandler.class)
                 .getOperation()
-                .observe(getViewLifecycleOwner(), new Observer<Resource<IdpResponse>>() {
-                    @Override
-                    public void onChanged(@Nullable Resource<IdpResponse> resource) {
-                        if (resource.getState() == State.FAILURE) {
-                            mConfirmationCodeEditText.setText("");
-                        }
+                .observe(getViewLifecycleOwner(), resource -> {
+                    if (resource.getState() == State.FAILURE) {
+                        mConfirmationCodeEditText.setText("");
                     }
                 });
     }
@@ -208,27 +200,19 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     private void setupEditPhoneNumberTextView() {
         mPhoneTextView.setText(mPhoneNumber);
-        mPhoneTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }
-        });
+        mPhoneTextView.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
     }
 
     private void setupResendConfirmationCodeTextView() {
-        mResendCodeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHandler.verifyPhoneNumber(requireActivity(), mPhoneNumber, true);
+        mResendCodeTextView.setOnClickListener(v -> {
+            mHandler.verifyPhoneNumber(requireActivity(), mPhoneNumber, true);
 
-                mResendCodeTextView.setVisibility(View.GONE);
-                mCountDownTextView.setVisibility(View.VISIBLE);
-                mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
-                        RESEND_WAIT_MILLIS / 1000));
-                mMillisUntilFinished = RESEND_WAIT_MILLIS;
-                mLooper.postDelayed(mCountdown, TICK_INTERVAL_MILLIS);
-            }
+            mResendCodeTextView.setVisibility(View.GONE);
+            mCountDownTextView.setVisibility(View.VISIBLE);
+            mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
+                    RESEND_WAIT_MILLIS / 1000));
+            mMillisUntilFinished = RESEND_WAIT_MILLIS;
+            mLooper.postDelayed(mCountdown, TICK_INTERVAL_MILLIS);
         });
     }
 

@@ -24,7 +24,7 @@ public class CheckPhoneHandler extends AuthViewModelBase<PhoneNumber> {
     }
 
     public void fetchCredential() {
-        setResult(Resource.<PhoneNumber>forFailure(new PendingIntentRequiredException(
+        setResult(Resource.forFailure(new PendingIntentRequiredException(
                 Credentials.getClient(getApplication()).getHintPickerIntent(
                         new HintRequest.Builder().setPhoneNumberIdentifierSupported(true).build()),
                 RequestCodes.CRED_HINT

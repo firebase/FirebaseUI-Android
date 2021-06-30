@@ -64,79 +64,79 @@ public class RecoverPasswordHandlerTest {
     public void testReset_sendsRecoverEmail() {
         // Send password email succeeds
         when(mMockAuth.sendPasswordResetEmail(TestConstants.EMAIL))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
+                .thenReturn(AutoCompleteTask.forSuccess(null));
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
         mHandler.startReset(TestConstants.EMAIL, null);
 
         // Should get in-progress resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Firebase auth should be called
         verify(mMockAuth).sendPasswordResetEmail(TestConstants.EMAIL);
 
         // Should get the success resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isSuccess()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
     @Test
     public void testReset_propagatesFailure() {
         // Send password email fails
         when(mMockAuth.sendPasswordResetEmail(TestConstants.EMAIL))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));
+                .thenReturn(AutoCompleteTask.forFailure(new Exception("FAILED")));
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
         mHandler.startReset(TestConstants.EMAIL, null);
 
         // Should get in-progress resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Firebase auth should be called
         verify(mMockAuth).sendPasswordResetEmail(TestConstants.EMAIL);
 
         // Should get the success resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isFailure()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isFailure()));
     }
 
     @Test
     public void testReset_sendsCustomRecoverEmail() {
         // Send password email succeeds
         when(mMockAuth.sendPasswordResetEmail(TestConstants.EMAIL, mPasswordResetSettings ))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
+                .thenReturn(AutoCompleteTask.forSuccess(null));
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
         mHandler.startReset(TestConstants.EMAIL, mPasswordResetSettings);
 
         // Should get in-progress resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Firebase auth should be called
         verify(mMockAuth).sendPasswordResetEmail(TestConstants.EMAIL, mPasswordResetSettings);
 
         // Should get the success resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isSuccess()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
     @Test
     public void testCustomReset_propagatesFailure() {
         // Send password email fails
         when(mMockAuth.sendPasswordResetEmail(TestConstants.EMAIL, mPasswordResetSettings))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));
+                .thenReturn(AutoCompleteTask.forFailure(new Exception("FAILED")));
 
         // Begin observation, then send the email
         mHandler.getOperation().observeForever(mObserver);
         mHandler.startReset(TestConstants.EMAIL, mPasswordResetSettings);
 
         // Should get in-progress resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isLoading()));
 
         // Firebase auth should be called
         verify(mMockAuth).sendPasswordResetEmail(TestConstants.EMAIL, mPasswordResetSettings);
 
         // Should get the success resource
-        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isFailure()));
+        verify(mObserver).onChanged(argThat(ResourceMatchers.isFailure()));
     }
 }
