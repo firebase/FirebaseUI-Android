@@ -34,18 +34,13 @@ import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -845,7 +840,7 @@ public final class AuthUI {
              * Sets the country codes available in the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setBlacklistedCountries(List)}.
+             * {@link #setBlockedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -860,7 +855,7 @@ public final class AuthUI {
              * @throws IllegalArgumentException if an empty allowlist is provided.
              * @throws NullPointerException     if a null allowlist is provided.
              */
-            public PhoneBuilder setWhitelistedCountries(
+            public PhoneBuilder setAllowedCountries(
                     @NonNull List<String> countries) {
                 if (getParams().containsKey(ExtraConstants.BLOCKLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
@@ -882,7 +877,7 @@ public final class AuthUI {
              * Sets the countries to be removed from the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setWhitelistedCountries(List)}.
+             * {@link #setAllowedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -897,7 +892,7 @@ public final class AuthUI {
              * @throws IllegalArgumentException if an empty blocklist is provided.
              * @throws NullPointerException     if a null blocklist is provided.
              */
-            public PhoneBuilder setBlacklistedCountries(
+            public PhoneBuilder setBlockedCountries(
                     @NonNull List<String> countries) {
                 if (getParams().containsKey(ExtraConstants.ALLOWLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
@@ -906,7 +901,7 @@ public final class AuthUI {
                 }
 
                 String message = "Invalid argument: Only non-%s blocklists are valid. " +
-                        "To specify no blacklist, do not call this method.";
+                        "To specify no blocklist, do not call this method.";
                 Preconditions.checkNotNull(countries, String.format(message, "null"));
                 Preconditions.checkArgument(!countries.isEmpty(), String.format
                         (message, "empty"));
