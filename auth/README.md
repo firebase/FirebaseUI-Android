@@ -418,7 +418,7 @@ allowedCountries.add("+1");
 allowedCountries.add("gr");
 
 IdpConfig phoneConfigWithAllowedCountries = new IdpConfig.PhoneBuilder()
-        .setWhitelistedCountries(allowedCountries)
+        .setAllowedCountries(allowedCountries)
         .build();
 ```
 All countries with the country code +1 will be present in the selector as well as Greece ('gr').
@@ -433,7 +433,7 @@ blockedCountries.add("+1");
 blockedCountries.add("gr");
 
 IdpConfig phoneConfigWithBlockedCountries = new IdpConfig.PhoneBuilder()
-        .setBlacklistedCountries(blockedCountries)
+        .setBlockedCountries(blockedCountries)
         .build();
 ```
 
