@@ -35,7 +35,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/fui_linkColor"
                 app:layout_constraintTop_toBottomOf="@+id/header"
                 tools:ignore="SelectableText" />
 
@@ -86,7 +85,6 @@
                 android:layout_marginTop="@dimen/fui_field_padding_vert"
                 android:text="@string/fui_resend_code"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/fui_linkColor"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

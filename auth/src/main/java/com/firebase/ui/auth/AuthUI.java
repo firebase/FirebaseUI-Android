@@ -271,7 +271,7 @@ public final class AuthUI {
      */
     @StyleRes
     public static int getDefaultTheme() {
-        return R.style.FirebaseUI;
+        return R.style.FirebaseUI_DefaultMaterialTheme;
     }
 
     /**

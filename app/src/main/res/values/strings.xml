@@ -40,10 +40,9 @@
     <string name="layout_custom">Custom</string>
 
     <string name="theme_header">Theme</string>
-    <string name="theme_default">Default theme</string>
-    <string name="theme_purple">Purple Theme</string>
+    <string name="theme_default">Material Light Theme</string>
+    <string name="theme_app">App Theme</string>
     <string name="theme_green">Green Theme</string>
-    <string name="theme_dark">Dark Theme</string>
 
     <string name="logo_header">Logo</string>
     <string name="logo_firebase">Firebase Auth</string>

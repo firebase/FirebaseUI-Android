@@ -3,20 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryVariant</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <item name="colorSecondary">@color/colorSecondary</item>
-    </style>
-
-    <style name="PurpleTheme">
-        <item name="colorPrimary">@color/material_deep_purple_500</item>
-        <item name="colorPrimaryDark">@color/material_deep_purple_700</item>
-        <item name="colorSecondary">@color/material_lime_a700</item>
-        <item name="android:colorBackground">@color/material_deep_purple_50</item>
     </style>
 
     <style name="GreenTheme">
         <item name="colorPrimary">@color/material_green_500</item>
         <item name="colorPrimaryDark">@color/material_green_700</item>
+        <item name="colorPrimaryVariant">@color/material_green_700</item>
         <item name="colorSecondary">@color/material_purple_a700</item>
         <item name="android:colorBackground">@color/material_green_50</item>
     </style>
@@ -30,6 +25,7 @@
     <style name="CustomTheme" parent="ThemeOverlay.MaterialComponents.Light">
         <item name="colorPrimary">#7c4dff</item>
         <item name="colorPrimaryDark">#4527a0</item>
+        <item name="colorPrimaryVariant">#4527a0</item>
         <item name="colorSecondary">@color/colorSecondary</item>
     </style>
 

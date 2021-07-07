@@ -720,7 +720,10 @@ represented in the following diagram:
 ## UI customization
 
 To use FirebaseUI Auth's sign-in flows, you must provide an `app_name` string and use the
-AppCompat color attributes in your app.
+Material Design color attributes in your app.
+
+For an introduction to Material Design colors, see:
+https://material.io/blog/android-material-theme-color
 
 ### Required setup
 
@@ -733,13 +736,13 @@ First, ensure an `app_name` resource is defined your `strings.xml` file like so:
 </resources>
 ```
 
-Second, ensure the three standard AppCompat color resources are defined with your own values:
+Second, ensure the three standard color resources are defined with your own values:
 
 ```xml
-<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+<style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
     <!-- Required for sign-in flow styling -->
     <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
     <item name="colorAccent">@color/colorAccent</item>
 </style>
 ```
@@ -753,7 +756,7 @@ to override certain or all styling attributes. For example, a green sign-in them
 <style name="GreenTheme" parent="FirebaseUI">
     <!-- Required for sign-in flow styling -->
     <item name="colorPrimary">@color/material_green_500</item>
-    <item name="colorPrimaryDark">@color/material_green_700</item>
+    <item name="colorPrimaryVariant">@color/material_green_700</item>
     <item name="colorAccent">@color/material_purple_a700</item>
 
     <item name="colorControlNormal">@color/material_green_500</item>

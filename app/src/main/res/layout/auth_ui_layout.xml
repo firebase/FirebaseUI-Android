@@ -173,29 +173,23 @@
                 android:orientation="vertical">
 
                 <RadioButton
+                    android:id="@+id/app_theme"
+                    android:checked="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme_app" />
+
+                <RadioButton
                     android:id="@+id/default_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
                     android:text="@string/theme_default" />
-
-                <RadioButton
-                    android:id="@+id/purple_theme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/theme_purple" />
 
                 <RadioButton
                     android:id="@+id/green_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/theme_green" />
-
-                <RadioButton
-                    android:id="@+id/dark_theme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/theme_dark" />
             </RadioGroup>
 
             <TextView

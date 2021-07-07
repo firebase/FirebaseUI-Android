@@ -19,6 +19,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.StringRes;
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
@@ -121,13 +122,15 @@ public class PreambleHandler {
             mUrl = url;
 
             @ColorInt int defaultToolbarColor = ContextCompat.getColor(context,
-                    R.color.colorPrimary);
+                    R.color.design_default_color_primary);
             @ColorInt int toolbarColor = MaterialColors.getColor(context,
                     R.attr.colorSurface,
                     defaultToolbarColor);
 
             mCustomTabsIntent = new CustomTabsIntent.Builder()
-                    .setToolbarColor(toolbarColor)
+                    .setDefaultColorSchemeParams(new CustomTabColorSchemeParams.Builder()
+                            .setToolbarColor(toolbarColor)
+                            .build())
                     .setShowTitle(true)
                     .build();
         }
