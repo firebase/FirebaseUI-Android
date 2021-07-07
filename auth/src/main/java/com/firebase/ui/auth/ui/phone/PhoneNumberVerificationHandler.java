@@ -29,7 +29,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
     }
 
     public void verifyPhoneNumber(@NonNull Activity activity, final String number, boolean force) {
-        setResult(Resource.<PhoneVerification>forLoading());
+        setResult(Resource.forLoading());
         PhoneAuthOptions.Builder optionsBuilder = PhoneAuthOptions.newBuilder(getAuth())
                 .setPhoneNumber(number)
                 .setTimeout(AUTO_RETRIEVAL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -43,7 +43,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
 
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        setResult(Resource.<PhoneVerification>forFailure(e));
+                        setResult(Resource.forFailure(e));
                     }
 
                     @Override
@@ -51,7 +51,7 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
                                            @NonNull PhoneAuthProvider.ForceResendingToken token) {
                         mVerificationId = verificationId;
                         mForceResendingToken = token;
-                        setResult(Resource.<PhoneVerification>forFailure(
+                        setResult(Resource.forFailure(
                                 new PhoneNumberVerificationRequiredException(number)));
                     }
                 });

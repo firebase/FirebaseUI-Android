@@ -57,48 +57,22 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
             handleSignInResult(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, response);
         }
 
-        mBinding.anonSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signInAnonymously();
-            }
-        });
-
-        mBinding.beginFlow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startAuthUI();
-            }
-        });
-
-        mBinding.resolveMerge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resolveMerge();
-            }
-        });
-
-        mBinding.signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
+        mBinding.anonSignIn.setOnClickListener(view -> signInAnonymously());
+        mBinding.beginFlow.setOnClickListener(view -> startAuthUI());
+        mBinding.resolveMerge.setOnClickListener(view -> resolveMerge());
+        mBinding.signOut.setOnClickListener(view -> signOut());
     }
 
     public void signInAnonymously() {
         FirebaseAuth.getInstance().signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        updateUI();
+                .addOnCompleteListener(this, task -> {
+                    updateUI();
 
-                        if (task.isSuccessful()) {
-                            setStatus("Signed in anonymously as user "
-                                    + getUserIdentifier(task.getResult().getUser()));
-                        } else {
-                            setStatus("Anonymous sign in failed.");
-                        }
+                    if (task.isSuccessful()) {
+                        setStatus("Signed in anonymously as user "
+                                + getUserIdentifier(task.getResult().getUser()));
+                    } else {
+                        setStatus("Anonymous sign in failed.");
                     }
                 });
     }
@@ -122,31 +96,25 @@ public class AnonymousUpgradeActivity extends AppCompatActivity
         // TODO: Show how to do good data moving
 
         FirebaseAuth.getInstance().signInWithCredential(mPendingCredential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        mPendingCredential = null;
-                        updateUI();
+                .addOnCompleteListener(this, task -> {
+                    mPendingCredential = null;
+                    updateUI();
 
-                        if (task.isSuccessful()) {
-                            setStatus("Signed in as " + getUserIdentifier(task.getResult()
-                                    .getUser()));
-                        } else {
-                            Log.w(TAG, "Merge failed", task.getException());
-                            setStatus("Failed to resolve merge conflict, see logs.");
-                        }
+                    if (task.isSuccessful()) {
+                        setStatus("Signed in as " + getUserIdentifier(task.getResult()
+                                .getUser()));
+                    } else {
+                        Log.w(TAG, "Merge failed", task.getException());
+                        setStatus("Failed to resolve merge conflict, see logs.");
                     }
                 });
     }
 
     public void signOut() {
         AuthUI.getInstance().signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        setStatus(null);
-                        updateUI();
-                    }
+                .addOnCompleteListener(task -> {
+                    setStatus(null);
+                    updateUI();
                 });
     }
 

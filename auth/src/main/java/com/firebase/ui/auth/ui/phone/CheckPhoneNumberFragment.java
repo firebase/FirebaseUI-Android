@@ -94,12 +94,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         }
         requireActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
 
-        ImeHelper.setImeOnDoneListener(mPhoneEditText, new ImeHelper.DonePressedListener() {
-            @Override
-            public void onDonePressed() {
-                onNext();
-            }
-        });
+        ImeHelper.setImeOnDoneListener(mPhoneEditText, () -> onNext());
         mSubmitButton.setOnClickListener(this);
 
         setupPrivacyDisclosures();
@@ -209,12 +204,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mCountryListSpinner.init(params, mCountryListAnchor);
 
         // Clear error when spinner is clicked on
-        mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPhoneInputLayout.setError(null);
-            }
-        });
+        mCountryListSpinner.setOnClickListener(v -> mPhoneInputLayout.setError(null));
     }
 
     private void setDefaultCountryForSpinner() {

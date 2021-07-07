@@ -52,11 +52,6 @@ public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>>
                         .setPhotoUri(photoUri)
                         .build())
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error updating profile"))
-                .continueWithTask(new Continuation<Void, Task<AuthResult>>() {
-                    @Override
-                    public Task<AuthResult> then(@NonNull Task<Void> task) {
-                        return Tasks.forResult(authResult);
-                    }
-                });
+                .continueWithTask(task1 -> Tasks.forResult(authResult));
     }
 }

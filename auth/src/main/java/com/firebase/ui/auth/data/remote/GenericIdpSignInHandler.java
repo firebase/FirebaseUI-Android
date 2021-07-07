@@ -71,7 +71,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
 
     @Override
     public final void startSignIn(@NonNull HelperActivityBase activity) {
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
         startSignIn(activity.getAuth(), activity, getArguments().getProviderId());
     }
 
@@ -79,7 +79,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
         OAuthProvider provider = buildOAuthProvider(providerId, auth);
@@ -98,45 +98,37 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         final boolean useEmulator = activity.getAuthUI().isUseEmulator();
         auth.startActivityForSignInWithProvider(activity, provider)
                 .addOnSuccessListener(
-                        new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(@NonNull AuthResult authResult) {
-                                handleSuccess(
-                                        useEmulator,
-                                        provider.getProviderId(),
-                                        authResult.getUser(),
-                                        (OAuthCredential) authResult.getCredential(),
-                                        authResult.getAdditionalUserInfo().isNewUser());
-                            }
-                        })
+                        authResult -> handleSuccess(
+                                useEmulator,
+                                provider.getProviderId(),
+                                authResult.getUser(),
+                                (OAuthCredential) authResult.getCredential(),
+                                authResult.getAdditionalUserInfo().isNewUser()))
                 .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                if (e instanceof FirebaseAuthException) {
-                                    FirebaseAuthError error =
-                                            FirebaseAuthError.fromException((FirebaseAuthException) e);
+                        e -> {
+                            if (e instanceof FirebaseAuthException) {
+                                FirebaseAuthError error =
+                                        FirebaseAuthError.fromException((FirebaseAuthException) e);
 
-                                    if (e instanceof FirebaseAuthUserCollisionException) {
-                                        FirebaseAuthUserCollisionException collisionException =
-                                                (FirebaseAuthUserCollisionException) e;
+                                if (e instanceof FirebaseAuthUserCollisionException) {
+                                    FirebaseAuthUserCollisionException collisionException =
+                                            (FirebaseAuthUserCollisionException) e;
 
-                                        setResult(Resource.<IdpResponse>forFailure(
-                                                new FirebaseUiUserCollisionException(
-                                                        ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR,
-                                                        "Recoverable error.",
-                                                        provider.getProviderId(),
-                                                        collisionException.getEmail(),
-                                                        collisionException.getUpdatedCredential())));
-                                    } else if (error == FirebaseAuthError.ERROR_WEB_CONTEXT_CANCELED) {
-                                        setResult(Resource.<IdpResponse>forFailure(
-                                                new UserCancellationException()));
-                                    } else {
-                                        setResult(Resource.<IdpResponse>forFailure(e));
-                                    }
+                                    setResult(Resource.forFailure(
+                                            new FirebaseUiUserCollisionException(
+                                                    ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR,
+                                                    "Recoverable error.",
+                                                    provider.getProviderId(),
+                                                    collisionException.getEmail(),
+                                                    collisionException.getUpdatedCredential())));
+                                } else if (error == FirebaseAuthError.ERROR_WEB_CONTEXT_CANCELED) {
+                                    setResult(Resource.forFailure(
+                                            new UserCancellationException()));
                                 } else {
-                                    setResult(Resource.<IdpResponse>forFailure(e));
+                                    setResult(Resource.forFailure(e));
                                 }
+                            } else {
+                                setResult(Resource.forFailure(e));
                             }
                         });
 
@@ -151,70 +143,59 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         auth.getCurrentUser()
                 .startActivityForLinkWithProvider(activity, provider)
                 .addOnSuccessListener(
-                        new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(@NonNull AuthResult authResult) {
-                                handleSuccess(
-                                        useEmulator,
-                                        provider.getProviderId(),
-                                        authResult.getUser(),
-                                        (OAuthCredential) authResult.getCredential(),
-                                        authResult.getAdditionalUserInfo().isNewUser());
-                            }
-                        })
+                        authResult -> handleSuccess(
+                                useEmulator,
+                                provider.getProviderId(),
+                                authResult.getUser(),
+                                (OAuthCredential) authResult.getCredential(),
+                                authResult.getAdditionalUserInfo().isNewUser()))
                 .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                if (!(e instanceof FirebaseAuthUserCollisionException)) {
-                                    setResult(Resource.<IdpResponse>forFailure(e));
-                                    return;
-                                }
-
-                                FirebaseAuthUserCollisionException collisionException =
-                                        (FirebaseAuthUserCollisionException) e;
-                                final AuthCredential credential =
-                                        collisionException.getUpdatedCredential();
-                                final String email =
-                                        collisionException.getEmail();
-
-                                // Case 1: Anonymous user trying to link with an existing user
-                                // Case 2: Anonymous user trying to link with a provider keyed
-                                // by an email that already belongs to an existing account
-                                // (linking flow)
-                                ProviderUtils.fetchSortedProviders(auth, flowParameters, email)
-                                        .addOnSuccessListener(new OnSuccessListener<List<String>>() {
-                                            @Override
-                                            public void onSuccess(List<String> providers) {
-                                                if (providers.isEmpty()) {
-                                                    String errorMessage =
-                                                            "Unable to complete the linkingflow -" +
-                                                                    " the user is using " +
-                                                                    "unsupported providers.";
-                                                    setResult(Resource.<IdpResponse>forFailure(
-                                                            new FirebaseUiException(
-                                                                    ErrorCodes.DEVELOPER_ERROR,
-                                                                    errorMessage)));
-                                                    return;
-                                                }
-
-                                                if (providers.contains(provider.getProviderId())) {
-                                                    // Case 1
-                                                    handleMergeFailure(credential);
-                                                } else {
-                                                    // Case 2 - linking flow to be handled by
-                                                    // SocialProviderResponseHandler
-                                                    setResult(Resource.<IdpResponse>forFailure(
-                                                            new FirebaseUiUserCollisionException(
-                                                                    ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR,
-                                                                    "Recoverable error.",
-                                                                    provider.getProviderId(),
-                                                                    email,
-                                                                    credential)));
-                                                }
-                                            }
-                                        });
+                        e -> {
+                            if (!(e instanceof FirebaseAuthUserCollisionException)) {
+                                setResult(Resource.forFailure(e));
+                                return;
                             }
+
+                            FirebaseAuthUserCollisionException collisionException =
+                                    (FirebaseAuthUserCollisionException) e;
+                            final AuthCredential credential =
+                                    collisionException.getUpdatedCredential();
+                            final String email =
+                                    collisionException.getEmail();
+
+                            // Case 1: Anonymous user trying to link with an existing user
+                            // Case 2: Anonymous user trying to link with a provider keyed
+                            // by an email that already belongs to an existing account
+                            // (linking flow)
+                            ProviderUtils.fetchSortedProviders(auth, flowParameters, email)
+                                    .addOnSuccessListener(providers -> {
+                                        if (providers.isEmpty()) {
+                                            String errorMessage =
+                                                    "Unable to complete the linkingflow -" +
+                                                            " the user is using " +
+                                                            "unsupported providers.";
+                                            setResult(Resource.forFailure(
+                                                    new FirebaseUiException(
+                                                            ErrorCodes.DEVELOPER_ERROR,
+                                                            errorMessage)));
+                                            return;
+                                        }
+
+                                        if (providers.contains(provider.getProviderId())) {
+                                            // Case 1
+                                            handleMergeFailure(credential);
+                                        } else {
+                                            // Case 2 - linking flow to be handled by
+                                            // SocialProviderResponseHandler
+                                            setResult(Resource.forFailure(
+                                                    new FirebaseUiUserCollisionException(
+                                                            ErrorCodes.ERROR_GENERIC_IDP_RECOVERABLE_ERROR,
+                                                            "Recoverable error.",
+                                                            provider.getProviderId(),
+                                                            email,
+                                                            credential)));
+                                        }
+                                    });
                         });
     }
 
@@ -273,7 +254,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         }
         response.setNewUser(isNewUser);
 
-        setResult(Resource.<IdpResponse>forSuccess(response.build()));
+        setResult(Resource.forSuccess(response.build()));
     }
 
     protected void handleSuccess(boolean isUseEmulator,
@@ -288,7 +269,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
     protected void handleMergeFailure(@NonNull AuthCredential credential) {
         IdpResponse failureResponse = new IdpResponse.Builder()
                 .setPendingCredential(credential).build();
-        setResult(Resource.<IdpResponse>forFailure(new FirebaseAuthAnonymousUpgradeException(
+        setResult(Resource.forFailure(new FirebaseAuthAnonymousUpgradeException(
                 ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT,
                 failureResponse)));
     }
@@ -298,7 +279,7 @@ public class GenericIdpSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig
         if (requestCode == RequestCodes.GENERIC_IDP_SIGN_IN_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
-                setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+                setResult(Resource.forFailure(new UserCancellationException()));
             } else {
                 setResult(Resource.forSuccess(response));
             }

@@ -34,18 +34,13 @@ import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -360,33 +355,25 @@ public final class AuthUI {
                                 ProviderUtils.providerIdToAccountType(GoogleAuthProvider
                                         .PROVIDER_ID))
                         .build())
-                .continueWithTask(new Continuation<CredentialRequestResponse, Task<AuthResult>>() {
-                    @Override
-                    public Task<AuthResult> then(@NonNull Task<CredentialRequestResponse> task) {
-                        Credential credential = task.getResult().getCredential();
-                        String email = credential.getId();
-                        String password = credential.getPassword();
+                .continueWithTask(task -> {
+                    Credential credential = task.getResult().getCredential();
+                    String email1 = credential.getId();
+                    String password = credential.getPassword();
 
-                        if (TextUtils.isEmpty(password)) {
-                            return GoogleSignIn.getClient(appContext,
-                                    new GoogleSignInOptions.Builder(googleOptions)
-                                            .setAccountName(email)
-                                            .build())
-                                    .silentSignIn()
-                                    .continueWithTask(new Continuation<GoogleSignInAccount,
-                                            Task<AuthResult>>() {
-                                        @Override
-                                        public Task<AuthResult> then(
-                                                @NonNull Task<GoogleSignInAccount> task) {
-                                            AuthCredential authCredential = GoogleAuthProvider
-                                                    .getCredential(
-                                                            task.getResult().getIdToken(), null);
-                                            return mAuth.signInWithCredential(authCredential);
-                                        }
-                                    });
-                        } else {
-                            return mAuth.signInWithEmailAndPassword(email, password);
-                        }
+                    if (TextUtils.isEmpty(password)) {
+                        return GoogleSignIn.getClient(appContext,
+                                new GoogleSignInOptions.Builder(googleOptions)
+                                        .setAccountName(email1)
+                                        .build())
+                                .silentSignIn()
+                                .continueWithTask(task1 -> {
+                                    AuthCredential authCredential = GoogleAuthProvider
+                                            .getCredential(
+                                                    task1.getResult().getIdToken(), null);
+                                    return mAuth.signInWithCredential(authCredential);
+                                });
+                    } else {
+                        return mAuth.signInWithEmailAndPassword(email1, password);
                     }
                 });
     }
@@ -411,34 +398,28 @@ public final class AuthUI {
                 : Tasks.forResult((Void) null);
 
         maybeDisableAutoSignIn
-                .continueWith(new Continuation<Void, Void>() {
-                    @Override
-                    public Void then(@NonNull Task<Void> task) {
-                        // We want to ignore a specific exception, since it's not a good reason
-                        // to fail (see Issue 1156).
-                        Exception e = task.getException();
-                        if (e instanceof ApiException
-                                && ((ApiException) e).getStatusCode() == CommonStatusCodes
-                                .CANCELED) {
-                            Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
-                                    "SmartLock accounts available?", e);
-                            return null;
-                        }
-
-                        return task.getResult();
+                .continueWith(task -> {
+                    // We want to ignore a specific exception, since it's not a good reason
+                    // to fail (see Issue 1156).
+                    Exception e = task.getException();
+                    if (e instanceof ApiException
+                            && ((ApiException) e).getStatusCode() == CommonStatusCodes
+                            .CANCELED) {
+                        Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
+                                "SmartLock accounts available?", e);
+                        return null;
                     }
+
+                    return task.getResult();
                 });
 
         return Tasks.whenAll(
                 signOutIdps(context),
                 maybeDisableAutoSignIn
-        ).continueWith(new Continuation<Void, Void>() {
-            @Override
-            public Void then(@NonNull Task<Void> task) {
-                task.getResult(); // Propagate exceptions
-                mAuth.signOut();
-                return null;
-            }
+        ).continueWith(task -> {
+            task.getResult(); // Propagate exceptions
+            mAuth.signOut();
+            return null;
         });
     }
 
@@ -462,47 +443,38 @@ public final class AuthUI {
         final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
 
         // Ensure the order in which tasks are executed properly destructures the user.
-        return signOutIdps(context).continueWithTask(new Continuation<Void, Task<Void>>() {
-            @Override
-            public Task<Void> then(@NonNull Task<Void> task) {
-                task.getResult(); // Propagate exception if there was one
+        return signOutIdps(context).continueWithTask(task -> {
+            task.getResult(); // Propagate exception if there was one
 
-                if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
-                    Log.w(TAG, "Google Play services not available during delete");
-                    return Tasks.forResult((Void) null);
-                }
-
-                final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
-                List<Task<?>> credentialTasks = new ArrayList<>();
-                for (Credential credential : credentials) {
-                    credentialTasks.add(client.delete(credential));
-                }
-                return Tasks.whenAll(credentialTasks)
-                        .continueWith(new Continuation<Void, Void>() {
-                            @Override
-                            public Void then(@NonNull Task<Void> task) {
-                                Exception e = task.getException();
-                                Throwable t = e == null ? null : e.getCause();
-                                if (!(t instanceof ApiException)
-                                        || ((ApiException) t).getStatusCode() !=
-                                        CommonStatusCodes.CANCELED) {
-                                    // Only propagate the exception if it isn't an invalid account
-                                    // one. This can occur if we failed to save the credential or it
-                                    // was deleted elsewhere. However, a lack of stored credential
-                                    // doesn't mean fully deleting the user failed.
-                                    return task.getResult();
-                                }
-
-                                return null;
-                            }
-                        });
+            if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+                Log.w(TAG, "Google Play services not available during delete");
+                return Tasks.forResult((Void) null);
             }
-        }).continueWithTask(new Continuation<Void, Task<Void>>() {
-            @Override
-            public Task<Void> then(@NonNull Task<Void> task) {
-                task.getResult(); // Propagate exception if there was one
-                return currentUser.delete();
+
+            final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
+            List<Task<?>> credentialTasks = new ArrayList<>();
+            for (Credential credential : credentials) {
+                credentialTasks.add(client.delete(credential));
             }
+            return Tasks.whenAll(credentialTasks)
+                    .continueWith(task1 -> {
+                        Exception e = task1.getException();
+                        Throwable t = e == null ? null : e.getCause();
+                        if (!(t instanceof ApiException)
+                                || ((ApiException) t).getStatusCode() !=
+                                CommonStatusCodes.CANCELED) {
+                            // Only propagate the exception if it isn't an invalid account
+                            // one. This can occur if we failed to save the credential or it
+                            // was deleted elsewhere. However, a lack of stored credential
+                            // doesn't mean fully deleting the user failed.
+                            return task1.getResult();
+                        }
+
+                        return null;
+                    });
+        }).continueWithTask(task -> {
+            task.getResult(); // Propagate exception if there was one
+            return currentUser.delete();
         });
     }
 
@@ -868,7 +840,7 @@ public final class AuthUI {
              * Sets the country codes available in the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setBlacklistedCountries(List)}.
+             * {@link #setBlockedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -883,7 +855,7 @@ public final class AuthUI {
              * @throws IllegalArgumentException if an empty allowlist is provided.
              * @throws NullPointerException     if a null allowlist is provided.
              */
-            public PhoneBuilder setWhitelistedCountries(
+            public PhoneBuilder setAllowedCountries(
                     @NonNull List<String> countries) {
                 if (getParams().containsKey(ExtraConstants.BLOCKLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
@@ -905,7 +877,7 @@ public final class AuthUI {
              * Sets the countries to be removed from the country code selector for phone
              * authentication. Takes as input a List of both country isos and codes.
              * This is not to be called with
-             * {@link #setWhitelistedCountries(List)}.
+             * {@link #setAllowedCountries(List)}.
              * If both are called, an exception will be thrown.
              * <p>
              * Inputting an e-164 country code (e.g. '+1') will include all countries with
@@ -920,7 +892,7 @@ public final class AuthUI {
              * @throws IllegalArgumentException if an empty blocklist is provided.
              * @throws NullPointerException     if a null blocklist is provided.
              */
-            public PhoneBuilder setBlacklistedCountries(
+            public PhoneBuilder setBlockedCountries(
                     @NonNull List<String> countries) {
                 if (getParams().containsKey(ExtraConstants.ALLOWLISTED_COUNTRIES)) {
                     throw new IllegalStateException(
@@ -929,7 +901,7 @@ public final class AuthUI {
                 }
 
                 String message = "Invalid argument: Only non-%s blocklists are valid. " +
-                        "To specify no blacklist, do not call this method.";
+                        "To specify no blocklist, do not call this method.";
                 Preconditions.checkNotNull(countries, String.format(message, "null"));
                 Preconditions.checkArgument(!countries.isEmpty(), String.format
                         (message, "empty"));
@@ -1140,7 +1112,7 @@ public final class AuthUI {
             public IdpConfig build() {
                 if (!getParams().containsKey(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS)) {
                     validateWebClientId();
-                    setScopes(Collections.<String>emptyList());
+                    setScopes(Collections.emptyList());
                 }
 
                 return super.build();

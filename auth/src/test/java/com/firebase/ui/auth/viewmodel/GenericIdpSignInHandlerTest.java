@@ -131,7 +131,7 @@ public class GenericIdpSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resourceCaptor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -155,7 +155,7 @@ public class GenericIdpSignInHandlerTest {
         collisionException.zzb(EMAIL).zza(credential);
 
         when(mMockAuth.startActivityForSignInWithProvider(any(Activity.class), any(OAuthProvider.class)))
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(collisionException));
+                .thenReturn(AutoCompleteTask.forFailure(collisionException));
 
         mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
@@ -167,7 +167,7 @@ public class GenericIdpSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resourceCaptor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -187,7 +187,7 @@ public class GenericIdpSignInHandlerTest {
                 = new FirebaseAuthException("foo", "bar");
         when(mMockAuth.startActivityForSignInWithProvider(any(Activity.class),
                 any(OAuthProvider.class)))
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(firebaseAuthException));
+                .thenReturn(AutoCompleteTask.forFailure(firebaseAuthException));
 
         mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
@@ -201,7 +201,7 @@ public class GenericIdpSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resourceCaptor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -232,7 +232,7 @@ public class GenericIdpSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resourceCaptor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -259,11 +259,11 @@ public class GenericIdpSignInHandlerTest {
         collisionException.zzb(EMAIL).zza(credential);
         when(mMockAuth.getCurrentUser().startActivityForLinkWithProvider(
                 any(Activity.class), any(OAuthProvider.class)))
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(collisionException));
+                .thenReturn(AutoCompleteTask.forFailure(collisionException));
 
         // Case 1: Anon user signing in with an existing account
         when(mMockAuth.fetchSignInMethodsForEmail(any(String.class)))
-                .thenReturn(AutoCompleteTask.<SignInMethodQueryResult>forSuccess(
+                .thenReturn(AutoCompleteTask.forSuccess(
                         new FakeSignInMethodQueryResult(Arrays.asList(
                                 MICROSOFT_PROVIDER))));
 
@@ -278,7 +278,7 @@ public class GenericIdpSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -304,12 +304,12 @@ public class GenericIdpSignInHandlerTest {
 
         when(mMockAuth.getCurrentUser().startActivityForLinkWithProvider(
                 any(Activity.class), any(OAuthProvider.class)))
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(collisionException));
+                .thenReturn(AutoCompleteTask.forFailure(collisionException));
 
         // Case 2:  Anonymous user trying to link with a provider keyed by an email that already
         // belongs to an existing account
         when(mMockAuth.fetchSignInMethodsForEmail(any(String.class)))
-                .thenReturn(AutoCompleteTask.<SignInMethodQueryResult>forSuccess(
+                .thenReturn(AutoCompleteTask.forSuccess(
                         new FakeSignInMethodQueryResult(Arrays.asList(
                                 GoogleAuthProvider.PROVIDER_ID))));
 
@@ -324,7 +324,7 @@ public class GenericIdpSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
                 ArgumentCaptor.forClass(Resource.class);

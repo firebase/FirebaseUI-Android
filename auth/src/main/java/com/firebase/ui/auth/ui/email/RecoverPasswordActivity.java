@@ -135,12 +135,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.fui_title_confirm_recover_password)
                 .setMessage(getString(R.string.fui_confirm_recovery_body, email))
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        finish(RESULT_OK, new Intent());
-                    }
-                })
+                .setOnDismissListener(dialog -> finish(RESULT_OK, new Intent()))
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }

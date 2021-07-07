@@ -93,12 +93,7 @@ public class AuthUiActivity extends AppCompatActivity
             setGoogleScopesEnabled(false);
         } else {
             setGoogleScopesEnabled(mBinding.googleProvider.isChecked());
-            mBinding.googleProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    setGoogleScopesEnabled(checked);
-                }
-            });
+            mBinding.googleProvider.setOnCheckedChangeListener((compoundButton, checked) -> setGoogleScopesEnabled(checked));
         }
 
         if (ConfigurationUtils.isFacebookMisconfigured(this)) {
@@ -108,76 +103,45 @@ public class AuthUiActivity extends AppCompatActivity
             setFacebookPermissionsEnabled(false);
         } else {
             setFacebookPermissionsEnabled(mBinding.facebookProvider.isChecked());
-            mBinding.facebookProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    setFacebookPermissionsEnabled(checked);
-                }
-            });
+            mBinding.facebookProvider.setOnCheckedChangeListener((compoundButton, checked) -> setFacebookPermissionsEnabled(checked));
         }
 
-        mBinding.emailLinkProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                flipPasswordProviderCheckbox(isChecked);
-            }
-        });
+        mBinding.emailLinkProvider.setOnCheckedChangeListener((buttonView, isChecked) -> flipPasswordProviderCheckbox(isChecked));
 
-        mBinding.emailProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                flipEmailLinkProviderCheckbox(isChecked);
-            }
-        });
+        mBinding.emailProvider.setOnCheckedChangeListener((buttonView, isChecked) -> flipEmailLinkProviderCheckbox(isChecked));
 
         mBinding.emailLinkProvider.setChecked(false);
         mBinding.emailProvider.setChecked(true);
 
         // The custom layout in this app only supports Email and Google providers.
-        mBinding.customLayout.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked) {
-                    mBinding.googleProvider.setChecked(true);
-                    mBinding.emailProvider.setChecked(true);
+        mBinding.customLayout.setOnCheckedChangeListener((compoundButton, checked) -> {
+            if (checked) {
+                mBinding.googleProvider.setChecked(true);
+                mBinding.emailProvider.setChecked(true);
 
-                    mBinding.facebookProvider.setChecked(false);
-                    mBinding.twitterProvider.setChecked(false);
-                    mBinding.emailLinkProvider.setChecked(false);
-                    mBinding.phoneProvider.setChecked(false);
-                    mBinding.anonymousProvider.setChecked(false);
-                    mBinding.microsoftProvider.setChecked(false);
-                    mBinding.yahooProvider.setChecked(false);
-                    mBinding.appleProvider.setChecked(false);
-                    mBinding.githubProvider.setChecked(false);
-                }
+                mBinding.facebookProvider.setChecked(false);
+                mBinding.twitterProvider.setChecked(false);
+                mBinding.emailLinkProvider.setChecked(false);
+                mBinding.phoneProvider.setChecked(false);
+                mBinding.anonymousProvider.setChecked(false);
+                mBinding.microsoftProvider.setChecked(false);
+                mBinding.yahooProvider.setChecked(false);
+                mBinding.appleProvider.setChecked(false);
+                mBinding.githubProvider.setChecked(false);
             }
         });
 
         // useEmulator can't be reversed until the FirebaseApp is cleared, so we make this
         // checkbox "sticky" until the app is restarted
-        mBinding.useAuthEmulator.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mBinding.useAuthEmulator.setEnabled(false);
-                }
+        mBinding.useAuthEmulator.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mBinding.useAuthEmulator.setEnabled(false);
             }
         });
 
-        mBinding.signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
+        mBinding.signIn.setOnClickListener(view -> signIn());
 
-        mBinding.signInSilent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                silentSignIn();
-            }
-        });
+        mBinding.signInSilent.setOnClickListener(view -> silentSignIn());
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)) {
@@ -267,14 +231,11 @@ public class AuthUiActivity extends AppCompatActivity
 
     public void silentSignIn() {
         getAuthUI().silentSignIn(this, getSelectedProviders())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            startSignedInActivity(null);
-                        } else {
-                            showSnackbar(R.string.sign_in_failed);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        startSignedInActivity(null);
+                    } else {
+                        showSnackbar(R.string.sign_in_failed);
                     }
                 });
     }

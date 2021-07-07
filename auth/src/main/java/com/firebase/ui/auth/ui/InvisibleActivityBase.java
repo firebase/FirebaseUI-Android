@@ -63,24 +63,16 @@ public class InvisibleActivityBase extends HelperActivityBase {
 
     @Override
     public void hideProgress() {
-        doAfterTimeout(new Runnable() {
-            @Override
-            public void run() {
-                mLastShownTime = 0;
-                mProgressBar.setVisibility(View.GONE);
-            }
+        doAfterTimeout(() -> {
+            mLastShownTime = 0;
+            mProgressBar.setVisibility(View.GONE);
         });
     }
 
     @Override
     public void finish(int resultCode, @Nullable Intent intent) {
         setResult(resultCode, intent);
-        doAfterTimeout(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        });
+        doAfterTimeout(() -> finish());
     }
 
     /**

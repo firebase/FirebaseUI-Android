@@ -41,14 +41,14 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
 
     public void startSignIn(@NonNull final IdpResponse response, @NonNull final String password) {
         if (!response.isSuccessful()) {
-            setResult(Resource.<IdpResponse>forFailure(response.getError()));
+            setResult(Resource.forFailure(response.getError()));
             return;
         }
         if (!response.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
             throw new IllegalStateException(
                     "This handler can only be used with the email provider");
         }
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
 
         final AuthOperationManager authOperationManager = AuthOperationManager.getInstance();
         final String email = response.getEmail();
@@ -58,39 +58,27 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                 password)
                 .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult result) {
-                        handleSuccess(response, result);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof FirebaseAuthUserCollisionException) {
-                            if (authOperationManager.canUpgradeAnonymous(getAuth(),
-                                    getArguments())) {
-                                AuthCredential credential = EmailAuthProvider.getCredential(email,
-                                        password);
-                                handleMergeFailure(credential);
-                            } else {
-                                Log.w(TAG, "Got a collision error during a non-upgrade flow", e);
-
-                                // Collision with existing user email without anonymous upgrade
-                                // it should be very hard for the user to even get to this error
-                                // due to CheckEmailFragment.
-                                ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
-                                        .addOnSuccessListener(new StartWelcomeBackFlow(email))
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                setResult(Resource.<IdpResponse>forFailure(e));
-                                            }
-                                        });
-                            }
+                .addOnSuccessListener(result -> handleSuccess(response, result))
+                .addOnFailureListener(e -> {
+                    if (e instanceof FirebaseAuthUserCollisionException) {
+                        if (authOperationManager.canUpgradeAnonymous(getAuth(),
+                                getArguments())) {
+                            AuthCredential credential = EmailAuthProvider.getCredential(email,
+                                    password);
+                            handleMergeFailure(credential);
                         } else {
-                            setResult(Resource.<IdpResponse>forFailure(e));
+                            Log.w(TAG, "Got a collision error during a non-upgrade flow", e);
+
+                            // Collision with existing user email without anonymous upgrade
+                            // it should be very hard for the user to even get to this error
+                            // due to CheckEmailFragment.
+                            ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
+                                    .addOnSuccessListener(new StartWelcomeBackFlow(email))
+                                    .addOnFailureListener(e1 -> setResult(Resource.forFailure(
+                                            e1)));
                         }
+                    } else {
+                        setResult(Resource.forFailure(e));
                     }
                 });
     }
@@ -108,13 +96,13 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                 Log.w(TAG, "No providers known for user ("
                         + mEmail
                         + ") this email address may be reserved.");
-                setResult(Resource.<IdpResponse>forFailure(
+                setResult(Resource.forFailure(
                         new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR)));
                 return;
             }
 
             if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.forFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -124,7 +112,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                         RequestCodes.WELCOME_BACK_EMAIL_FLOW
                 )));
             } else if (EMAIL_LINK_PROVIDER.equalsIgnoreCase(provider)) {
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.forFailure(new IntentRequiredException(
                         WelcomeBackEmailLinkPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -134,7 +122,7 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
                         RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW
                 )));
             } else {
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.forFailure(new IntentRequiredException(
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),

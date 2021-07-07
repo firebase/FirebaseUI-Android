@@ -43,43 +43,29 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
         LiveData created via Transformation do not have a value until an Observer is attached.  
         We attach this empty observer so that our getValue() calls return non-null later.
     */
-    private final Observer<FirebaseDataSource> mDataSourceObserver = new Observer<FirebaseDataSource>() {
-        @Override
-        public void onChanged(@Nullable FirebaseDataSource source) {
+    private final Observer<FirebaseDataSource> mDataSourceObserver = source -> {
 
-        }
     };
 
     //State Observer
-    private final Observer<LoadingState> mStateObserver = new Observer<LoadingState>() {
-        @Override
-        public void onChanged(@Nullable LoadingState state) {
-            if (state == null) {
-                return;
-            }
-
-            onLoadingStateChanged(state);
+    private final Observer<LoadingState> mStateObserver = state -> {
+        if (state == null) {
+            return;
         }
+
+        onLoadingStateChanged(state);
     };
 
     //Data Observer
-    private final Observer<PagedList<DataSnapshot>> mDataObserver = new Observer<PagedList<DataSnapshot>>() {
-        @Override
-        public void onChanged(@Nullable PagedList<DataSnapshot> snapshots) {
-            if (snapshots == null) {
-                return;
-            }
-            submitList(snapshots);
+    private final Observer<PagedList<DataSnapshot>> mDataObserver = snapshots -> {
+        if (snapshots == null) {
+            return;
         }
+        submitList(snapshots);
     };
 
     //DatabaseError Observer
-    private final Observer<DatabaseError> mErrorObserver = new Observer<DatabaseError>() {
-        @Override
-        public void onChanged(@Nullable DatabaseError databaseError) {
-            onError(databaseError);
-        }
-    };
+    private final Observer<DatabaseError> mErrorObserver = databaseError -> onError(databaseError);
 
     /**
      * Construct a new FirestorePagingAdapter from the given {@link DatabasePagingOptions}.
@@ -100,31 +86,20 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
 
         //Init Data Source
         mDataSource = Transformations.map(mPagedList,
-                new Function<PagedList<DataSnapshot>, FirebaseDataSource>() {
-                    @Override
-                    public FirebaseDataSource apply(PagedList<DataSnapshot> input) {
-                        return (FirebaseDataSource) input.getDataSource();
-                    }
-                });
+                input -> (FirebaseDataSource) input.getDataSource());
 
         //Init Loading State
         mLoadingState = Transformations.switchMap(mPagedList,
-                new Function<PagedList<DataSnapshot>, LiveData<LoadingState>>() {
-                    @Override
-                    public LiveData<LoadingState> apply(PagedList<DataSnapshot> input) {
-                        FirebaseDataSource dataSource = (FirebaseDataSource) input.getDataSource();
-                        return dataSource.getLoadingState();
-                    }
+                input -> {
+                    FirebaseDataSource dataSource = (FirebaseDataSource) input.getDataSource();
+                    return dataSource.getLoadingState();
                 });
 
         //Init Database Error
         mDatabaseError = Transformations.switchMap(mPagedList,
-                new Function<PagedList<DataSnapshot>, LiveData<DatabaseError>>() {
-                    @Override
-                    public LiveData<DatabaseError> apply(PagedList<DataSnapshot> input) {
-                        FirebaseDataSource dataSource = (FirebaseDataSource) input.getDataSource();
-                        return dataSource.getLastError();
-                    }
+                input -> {
+                    FirebaseDataSource dataSource = (FirebaseDataSource) input.getDataSource();
+                    return dataSource.getLastError();
                 });
 
         mParser = mOptions.getParser();

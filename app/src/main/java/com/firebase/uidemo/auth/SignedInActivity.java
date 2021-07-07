@@ -82,34 +82,21 @@ public class SignedInActivity extends AppCompatActivity {
         populateProfile(response);
         populateIdpToken(response);
 
-        mBinding.deleteAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteAccountClicked();
-            }
-        });
+        mBinding.deleteAccount.setOnClickListener(view -> deleteAccountClicked());
 
-        mBinding.signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
+        mBinding.signOut.setOnClickListener(view -> signOut());
     }
 
     public void signOut() {
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
-                            finish();
-                        } else {
-                            Log.w(TAG, "signOut:failure", task.getException());
-                            showSnackbar(R.string.sign_out_failed);
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                        finish();
+                    } else {
+                        Log.w(TAG, "signOut:failure", task.getException());
+                        showSnackbar(R.string.sign_out_failed);
                     }
                 });
     }
@@ -117,12 +104,7 @@ public class SignedInActivity extends AppCompatActivity {
     public void deleteAccountClicked() {
         new MaterialAlertDialogBuilder(this)
                 .setMessage("Are you sure you want to delete this account?")
-                .setPositiveButton("Yes, nuke it!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        deleteAccount();
-                    }
-                })
+                .setPositiveButton("Yes, nuke it!", (dialogInterface, i) -> deleteAccount())
                 .setNegativeButton("No", null)
                 .show();
     }
@@ -130,15 +112,12 @@ public class SignedInActivity extends AppCompatActivity {
     private void deleteAccount() {
         AuthUI.getInstance()
                 .delete(this)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
-                            finish();
-                        } else {
-                            showSnackbar(R.string.delete_account_failed);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                        finish();
+                    } else {
+                        showSnackbar(R.string.delete_account_failed);
                     }
                 });
     }
