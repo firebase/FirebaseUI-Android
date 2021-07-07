@@ -4,10 +4,12 @@
     <color name="colorPrimaryVariant">#0288D1</color>
     <color name="colorSecondary">#FFA000</color>
 
+    <!-- Green theme -->
     <color name="material_green_50">#E8F5E9</color>
     <color name="material_green_300">#AED581</color>
     <color name="material_green_500">#4CAF50</color>
     <color name="material_green_700">#388E3C</color>
+    <color name="material_purple_a700">#AA00FF</color>
 
     <color name="material_gray_300">#E0E0E0</color>
     <color name="material_gray_500">#9e9e9e</color>
