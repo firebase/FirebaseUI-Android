@@ -16,7 +16,6 @@ package com.firebase.uidemo.auth;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +26,8 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
@@ -83,6 +82,9 @@ public class AuthUiActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mBinding = AuthUiLayoutBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+
+        // Workaround for vector drawables on API 19
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         if (ConfigurationUtils.isGoogleMisconfigured(this)) {
             mBinding.googleProvider.setChecked(false);
@@ -146,16 +148,7 @@ public class AuthUiActivity extends AppCompatActivity
             showSnackbar(R.string.configuration_required);
         }
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            mBinding.darkTheme.setChecked(true);
-        }
-
         catchEmailLinkSignIn();
-
-        mBinding.defaultTheme.setOnClickListener(toggleDarkThemeListener);
-        mBinding.greenTheme.setOnClickListener(toggleDarkThemeListener);
-        mBinding.purpleTheme.setOnClickListener(toggleDarkThemeListener);
-        mBinding.darkTheme.setOnClickListener(toggleDarkThemeListener);
     }
 
     public void catchEmailLinkSignIn() {
@@ -295,26 +288,14 @@ public class AuthUiActivity extends AppCompatActivity
         startActivity(SignedInActivity.createIntent(this, response));
     }
 
-    private View.OnClickListener toggleDarkThemeListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            int mode = mBinding.darkTheme.isChecked() ?
-                    AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
-            if (Build.VERSION.SDK_INT >= 17) {
-                AppCompatDelegate.setDefaultNightMode(mode);
-                getDelegate().setLocalNightMode(mode);
-            }
-        }
-    };
-
     @StyleRes
     private int getSelectedTheme() {
         if (mBinding.greenTheme.isChecked()) {
             return R.style.GreenTheme;
         }
 
-        if (mBinding.purpleTheme.isChecked()) {
-            return R.style.PurpleTheme;
+        if (mBinding.appTheme.isChecked()) {
+            return R.style.AppTheme;
         }
 
         return AuthUI.getDefaultTheme();

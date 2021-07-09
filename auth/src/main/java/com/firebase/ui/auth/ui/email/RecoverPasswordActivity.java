@@ -33,6 +33,7 @@ import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.RecoverPasswordHandler;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -41,7 +42,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
 /**
@@ -132,7 +132,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         mHandler.startReset(email, passwordResetSettings);
     }
     private void showEmailSentDialog(String email) {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.fui_title_confirm_recover_password)
                 .setMessage(getString(R.string.fui_confirm_recovery_body, email))
                 .setOnDismissListener(dialog -> finish(RESULT_OK, new Intent()))

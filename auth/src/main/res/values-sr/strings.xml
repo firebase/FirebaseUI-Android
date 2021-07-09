@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Лозинка није довољно јака. Употребите бар %1$d знак, уз комбинацију бројева и слова</item> <item quantity="few">Лозинка није довољно јака. Употребите бар %1$d знака, уз комбинацију бројева и слова</item> <item quantity="other">Лозинка није довољно јака. Употребите бар %1$d знакова, уз комбинацију бројева и слова</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Учитава се…</string>
     <string name="fui_sign_in_default">Пријави ме</string>
     <string name="fui_cancel">Откажи</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Даље</string>
     <string name="fui_email_hint">Имејл</string>
     <string name="fui_phone_hint">Број телефона</string>
+    <string name="fui_country_hint">Земља</string>
     <string name="fui_password_hint">Лозинка</string>
     <string name="fui_new_password_hint">Нова лозинка</string>
     <string name="fui_required_field">Ово поље не може да буде празно.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Име и презиме</string>
     <string name="fui_button_text_save">Сачувај</string>
     <string name="fui_progress_dialog_signing_up">Регистрација је у току…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Лозинка није довољно јака. Користите бар %1$d знак, уз комбинацију бројева и слова</item> <item quantity="few">Лозинка није довољно јака. Користите бар %1$d знака, уз комбинацију бројева и слова</item> <item quantity="other">Лозинка није довољно јака. Користите бар %1$d знакова, уз комбинацију бројева и слова</item> </plurals>
     <string name="fui_email_account_creation_error">Регистрација налога преко имејла није успела</string>
     <string name="fui_terms_of_service">Услови коришћења услуге</string>
     <string name="fui_privacy_policy">Политику приватности</string>

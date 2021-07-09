@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="false">
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/top_progress_bar"
         style="@style/FirebaseUI.TopProgressBar"
         app:layout_constraintTop_toTopOf="parent"
@@ -60,12 +60,14 @@
         style="@style/FirebaseUI.Text.BodyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="@dimen/fui_field_padding_vert"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:layout_marginBottom="@dimen/fui_field_padding_vert"
         android:gravity="center"
-        android:textColor="?android:textColorTertiary"
-        android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container"

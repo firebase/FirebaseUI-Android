@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> <item quantity="other">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">درحال بارگیری…</string>
     <string name="fui_sign_in_default">ورود به سیستم</string>
     <string name="fui_cancel">لغو</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">بعدی</string>
     <string name="fui_email_hint">ایمیل </string>
     <string name="fui_phone_hint">شماره تلفن</string>
+    <string name="fui_country_hint">کشور</string>
     <string name="fui_password_hint">گذرواژه</string>
     <string name="fui_new_password_hint">گذرواژه جدید</string>
     <string name="fui_required_field">اینجا نباید خالی باشد.</string>
@@ -37,9 +37,10 @@
     <string name="fui_name_hint">نام و نام خانوادگی</string>
     <string name="fui_button_text_save">ذخیره</string>
     <string name="fui_progress_dialog_signing_up">در حال ثبت‌نام…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> <item quantity="other">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> </plurals>
     <string name="fui_email_account_creation_error">ثبت حساب ایمیل ناموفق بود</string>
     <string name="fui_terms_of_service">شرایط خدمات</string>
-    <string name="fui_privacy_policy">«خط‌مشی حریم خصوصی»</string>
+    <string name="fui_privacy_policy">«خط‌مشی حریم‌خصوصی»</string>
     <string name="fui_welcome_back_idp_header">از قبل حسابی دارید</string>
     <string name="fui_welcome_back_email_header">باز هم خوش آمدید!</string>
     <string name="fui_welcome_back_email_link_header">از قبل حسابی دارید\n</string>

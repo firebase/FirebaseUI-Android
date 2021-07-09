@@ -67,7 +67,7 @@ android {
 }
 
 dependencies {
-    implementation(Config.Libs.Androidx.design)
+    implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.multidex)
 
     implementation(project(":auth"))

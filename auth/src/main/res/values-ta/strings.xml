@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">ஏற்றுகிறது…</string>
     <string name="fui_sign_in_default">உள்நுழைக</string>
     <string name="fui_cancel">ரத்துசெய்</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">அடுத்து</string>
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>
+    <string name="fui_country_hint">நாடு</string>
     <string name="fui_password_hint">கடவுச்சொல்</string>
     <string name="fui_new_password_hint">புதிய கடவுச்சொல்</string>
     <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">பெயரின் முற்பகுதி மற்றும் பிற்பகுதி</string>
     <string name="fui_button_text_save">சேமி</string>
     <string name="fui_progress_dialog_signing_up">பதிவு செய்கிறது…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறியும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> <item quantity="other">கடவுச்சொல் வலுவானதாக இல்லை. குறைந்தது %1$d எழுத்துக்குறிகளும், எழுத்துகளும் எண்களும் கலந்த கலவையும் இருக்க வேண்டும்</item> </plurals>
     <string name="fui_email_account_creation_error">மின்னஞ்சல் கணக்கைப் பதிவு செய்ய முடியவில்லை</string>
     <string name="fui_terms_of_service">சேவை விதிமுறைகள்</string>
     <string name="fui_privacy_policy">தனியுரிமைக் கொள்கை</string>

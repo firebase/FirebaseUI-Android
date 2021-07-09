@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Пароль недостатньо надійний. Введіть принаймні %1$d символ та комбінацію літер і цифр</item> <item quantity="few">Пароль недостатньо надійний. Введіть принаймні %1$d символи та комбінацію літер і цифр</item> <item quantity="many">Пароль недостатньо надійний. Введіть принаймні %1$d символів та комбінацію літер і цифр</item> <item quantity="other">Пароль недостатньо надійний. Введіть принаймні %1$d символу та комбінацію літер і цифр</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Завантаження…</string>
     <string name="fui_sign_in_default">Увійти</string>
     <string name="fui_cancel">Скасувати</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Далі</string>
     <string name="fui_email_hint">Електронна адреса</string>
     <string name="fui_phone_hint">Номер телефону</string>
+    <string name="fui_country_hint">Країна</string>
     <string name="fui_password_hint">Пароль</string>
     <string name="fui_new_password_hint">Новий пароль</string>
     <string name="fui_required_field">Потрібно заповнити це поле.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Ім’я та прізвище</string>
     <string name="fui_button_text_save">Зберегти</string>
     <string name="fui_progress_dialog_signing_up">Реєстрація…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Пароль недостатньо надійний. Введіть принаймні %1$d символ та комбінацію літер і цифр</item> <item quantity="few">Пароль недостатньо надійний. Введіть принаймні %1$d символи та комбінацію літер і цифр</item> <item quantity="many">Пароль недостатньо надійний. Введіть принаймні %1$d символів та комбінацію літер і цифр</item> <item quantity="other">Пароль недостатньо надійний. Введіть принаймні %1$d символу та комбінацію літер і цифр</item> </plurals>
     <string name="fui_email_account_creation_error">Не вдалося зареєструвати обліковий запис електронної пошти</string>
     <string name="fui_terms_of_service">Умови використання</string>
     <string name="fui_privacy_policy">Політику конфіденційності</string>

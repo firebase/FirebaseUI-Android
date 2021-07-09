@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Паролата не е достатъчно надеждна. Използвайте поне %1$d знак и комбинация от букви и цифри</item> <item quantity="other">Паролата не е достатъчно надеждна. Използвайте поне %1$d знака и комбинация от букви и цифри</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Зарежда се…</string>
     <string name="fui_sign_in_default">Вход</string>
     <string name="fui_cancel">Отказ</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Напред</string>
     <string name="fui_email_hint">Имейл</string>
     <string name="fui_phone_hint">Телефонен номер</string>
+    <string name="fui_country_hint">Държава</string>
     <string name="fui_password_hint">Парола</string>
     <string name="fui_new_password_hint">Нова парола</string>
     <string name="fui_required_field">Трябва да се попълни.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Име и фамилия</string>
     <string name="fui_button_text_save">Запазване</string>
     <string name="fui_progress_dialog_signing_up">Създава се регистрация…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Паролата не е достатъчно надеждна. Използвайте поне %1$d знак и комбинация от букви и цифри</item> <item quantity="other">Паролата не е достатъчно надеждна. Използвайте поне %1$d знака и комбинация от букви и цифри</item> </plurals>
     <string name="fui_email_account_creation_error">Регистрацията с имейл адрес не бе успешна</string>
     <string name="fui_terms_of_service">Общите условия</string>
     <string name="fui_privacy_policy">Декларация за поверителност</string>

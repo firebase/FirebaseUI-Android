@@ -12,7 +12,7 @@
     tools:context="com.firebase.uidemo.storage.ImageActivity">
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Medium"
+        style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/upload" />
@@ -24,7 +24,7 @@
         android:text="@string/choose_image" />
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Medium"
+        style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

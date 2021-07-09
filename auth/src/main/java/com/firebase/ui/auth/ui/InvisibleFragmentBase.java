@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.firebase.ui.auth.R;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class InvisibleFragmentBase extends FragmentBase {
@@ -23,7 +23,7 @@ public class InvisibleFragmentBase extends FragmentBase {
     protected FrameLayout mFrameLayout;
     protected View mTopLevelView;
     private Handler mHandler = new Handler();
-    private MaterialProgressBar mProgressBar;
+    private CircularProgressIndicator mProgressBar;
     // Last time that the progress bar was actually shown
     private long mLastShownTime = 0;
 
@@ -31,7 +31,7 @@ public class InvisibleFragmentBase extends FragmentBase {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         // Create an indeterminate, circular progress bar in the app's theme
-        mProgressBar = new MaterialProgressBar(new ContextThemeWrapper(getContext(),
+        mProgressBar = new CircularProgressIndicator(new ContextThemeWrapper(getContext(),
                 getFlowParams().themeId));
         mProgressBar.setIndeterminate(true);
         mProgressBar.setVisibility(View.GONE);

@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item> <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Carregando…</string>
     <string name="fui_sign_in_default">Fazer login</string>
     <string name="fui_cancel">Cancelar</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Próxima</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Número de telefone</string>
+    <string name="fui_country_hint">País</string>
     <string name="fui_password_hint">Senha</string>
     <string name="fui_new_password_hint">Nova senha</string>
     <string name="fui_required_field">Esse campo não pode ficar em branco.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Nome e sobrenome</string>
     <string name="fui_button_text_save">Salvar</string>
     <string name="fui_progress_dialog_signing_up">Concluindo sua inscrição…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item> <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item> </plurals>
     <string name="fui_email_account_creation_error">Falha no registro da conta do e-mail</string>
     <string name="fui_terms_of_service">Termos de Serviço</string>
     <string name="fui_privacy_policy">Política de privacidade</string>

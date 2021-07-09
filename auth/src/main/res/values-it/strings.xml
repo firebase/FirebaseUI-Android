@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">La password non è abbastanza efficace. Utilizza almeno %1$d carattere e una combinazione di lettere e numeri.</item> <item quantity="other">La password non è abbastanza efficace. Utilizza almeno %1$d caratteri e una combinazione di lettere e numeri.</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Caricamento in corso…</string>
     <string name="fui_sign_in_default">Accedi</string>
     <string name="fui_cancel">Annulla</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Avanti</string>
     <string name="fui_email_hint">Indirizzo email</string>
     <string name="fui_phone_hint">Numero di telefono</string>
+    <string name="fui_country_hint">Paese</string>
     <string name="fui_password_hint">Password</string>
     <string name="fui_new_password_hint">Nuova password</string>
     <string name="fui_required_field">Questo campo non può restare vuoto.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Nome e cognome</string>
     <string name="fui_button_text_save">Salva</string>
     <string name="fui_progress_dialog_signing_up">Registrazione in corso…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">La password non è abbastanza efficace. Utilizza almeno %1$d carattere e una combinazione di lettere e numeri.</item> <item quantity="other">La password non è abbastanza efficace. Utilizza almeno %1$d caratteri e una combinazione di lettere e numeri.</item> </plurals>
     <string name="fui_email_account_creation_error">Registrazione account di posta elettronica non riuscita</string>
     <string name="fui_terms_of_service">Termini di servizio</string>
     <string name="fui_privacy_policy">Norme sulla privacy</string>

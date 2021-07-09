@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caráter e uma combinação de letras e números</item> <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">A carregar…</string>
     <string name="fui_sign_in_default">Iniciar sessão</string>
     <string name="fui_cancel">Cancelar</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Seguinte</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Número de telefone</string>
+    <string name="fui_country_hint">País</string>
     <string name="fui_password_hint">Palavra-passe</string>
     <string name="fui_new_password_hint">Nova palavra-passe</string>
     <string name="fui_required_field">Não pode deixar este campo em branco.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Nome próprio e apelido</string>
     <string name="fui_button_text_save">Guardar</string>
     <string name="fui_progress_dialog_signing_up">A realizar a inscrição…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caráter e uma combinação de letras e números</item> <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item> </plurals>
     <string name="fui_email_account_creation_error">O registo da conta de email não foi bem-sucedido</string>
     <string name="fui_terms_of_service">Termos de Utilização</string>
     <string name="fui_privacy_policy">Política de Privacidade</string>

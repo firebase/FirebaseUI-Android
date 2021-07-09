@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Učitavanje…</string>
     <string name="fui_sign_in_default">Prijava</string>
     <string name="fui_cancel">Odustani</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Dalje</string>
     <string name="fui_email_hint">E-adresa</string>
     <string name="fui_phone_hint">Telefonski broj</string>
+    <string name="fui_country_hint">Zemlja</string>
     <string name="fui_password_hint">Zaporka</string>
     <string name="fui_new_password_hint">Nova zaporka</string>
     <string name="fui_required_field">Ne možete to ostaviti prazno.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Ime i prezime</string>
     <string name="fui_button_text_save">Spremi</string>
     <string name="fui_progress_dialog_signing_up">Registriranje….</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
     <string name="fui_email_account_creation_error">Registracija računa putem e-adrese nije uspjela</string>
     <string name="fui_terms_of_service">Uvjeti pružanja usluge</string>
     <string name="fui_privacy_policy">Pravila o privatnosti</string>

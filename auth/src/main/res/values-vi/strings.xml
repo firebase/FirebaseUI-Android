@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Đang tải…</string>
     <string name="fui_sign_in_default">Đăng nhập</string>
     <string name="fui_cancel">Hủy</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Tiếp</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
+    <string name="fui_country_hint">Quốc gia</string>
     <string name="fui_password_hint">Mật khẩu</string>
     <string name="fui_new_password_hint">Mật khẩu mới</string>
     <string name="fui_required_field">Bạn không được để trống trường này.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Họ và tên</string>
     <string name="fui_button_text_save">Lưu</string>
     <string name="fui_progress_dialog_signing_up">Đang đăng ký…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
     <string name="fui_email_account_creation_error">Đăng ký tài khoản email không thành công</string>
     <string name="fui_terms_of_service">Điều khoản dịch vụ</string>
     <string name="fui_privacy_policy">Chính sách quyền riêng tư</string>
@@ -45,7 +46,7 @@
     <string name="fui_welcome_back_email_link_header">Bạn đã có tài khoản\n</string>
     <string name="fui_welcome_back_idp_prompt">Bạn đã sử dụng %1$s. Đăng nhập bằng %2$s để tiếp tục.</string>
     <string name="fui_welcome_back_password_prompt_body">Bạn đã sử dụng %1$s để đăng nhập. Hãy nhập mật khẩu của bạn cho tài khoản đó.</string>
-    <string name="fui_welcome_back_email_link_prompt_body">Bạn đã sử dụng %1$s. Bạn có thể kết nối tài khoản %2$s của mình với %1$s bằng cách đăng nhập vào liên kết email bên dưới.\n\nĐể quy trình kết nối tài khoản %2$s của bạn với email này diễn ra thành công, bạn phải mở liên kết trên cùng một thiết bị hoặc trình duyệt.</string>
+    <string name="fui_welcome_back_email_link_prompt_body">Bạn đã sử dụng %1$s. Bạn có thể kết nối tài khoản %2$s của mình với %1$s bằng cách đăng nhập vào liên kết email bên dưới.\n\nĐể quy trình kết nối tài khoản %2$s của bạn với email này diễn ra thành công, bạn phải mở đường liên kết trên cùng một thiết bị hoặc trình duyệt.</string>
     <string name="fui_progress_dialog_signing_in">Đang đăng nhập…</string>
     <string name="fui_trouble_signing_in">Bạn gặp sự cố khi đăng nhập?</string>
     <string name="fui_title_recover_password_activity">Khôi phục mật khẩu</string>
@@ -62,10 +63,10 @@
     <string name="fui_email_link_email_sent">Email đăng nhập có hướng dẫn bổ sung đã được gửi tới %1$s. Hãy tìm email này trong hộp thư của bạn để hoàn tất đăng nhập.</string>
     <string name="fui_email_link_trouble_getting_email_header">Bạn gặp vấn đề khi nhận email?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Hãy thử các biện pháp khắc phục phổ biến sau:\n\u2022 Kiểm tra xem email có bị đánh dấu là spam hay đã được lọc.\n\u2022 Kiểm tra kết nối Internet của bạn.\n\u2022 Kiểm tra để đảm bảo bạn không viết sai chính tả tên email.\n\u2022 Kiểm tra để đảm bảo hộp thư đến của bạn chưa hết dung lượng và không có vấn đề về cài đặt hộp thư đến.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Nếu các bước trên không hiệu quả, bạn có thể gửi lại email. Vui lòng lưu ý rằng thao tác này sẽ hủy kích hoạt đường dẫn liên kết trong email cũ.</string>
+    <string name="fui_email_link_trouble_getting_email_resend_solution">Nếu các bước trên không hiệu quả, bạn có thể gửi lại email. Vui lòng lưu ý rằng thao tác này sẽ hủy kích hoạt đường liên kết trong email cũ.</string>
     <string name="fui_email_link_resend">Gửi lại</string>
     <string name="fui_email_link_wrong_device_header">Đã phát hiện thiết bị hoặc trình duyệt mới.</string>
-    <string name="fui_email_link_wrong_device_message">Hãy thử mở liên kết bằng cùng một thiết bị hoặc trình duyệt mà bạn dùng để bắt đầu quá trình đăng nhập.</string>
+    <string name="fui_email_link_wrong_device_message">Hãy thử mở đường liên kết bằng cùng một thiết bị hoặc trình duyệt mà bạn dùng để bắt đầu quá trình đăng nhập.</string>
     <string name="fui_email_link_invalid_link_header">Không thể hoàn tất đăng nhập</string>
     <string name="fui_email_link_invalid_link_message">Mã kích hoạt không hợp lệ. Điều này có thể xảy ra nếu mã không đúng định dạng, đã hết hạn hoặc đã sử dụng.</string>
     <string name="fui_email_link_different_anonymous_user_header">Phiên hoạt động đã kết thúc</string>
@@ -73,7 +74,7 @@
     <string name="fui_email_link_confirm_email_header">Xác nhận email</string>
     <string name="fui_email_link_confirm_email_message">Xác nhận email để tiếp tục đăng nhập</string>
     <string name="fui_email_link_dismiss_button">Bỏ qua</string>
-    <string name="fui_email_link_cross_device_linking_text">Ban đầu, bạn có ý định kết nối %1$s với tài khoản email của bạn nhưng đã mở liên kết trên một thiết bị khác mà bạn chưa đăng nhập.\n\nNếu bạn vẫn muốn kết nối với tài khoản %1$s của mình, hãy mở liên kết này trên cùng một thiết bị mà bạn đã đăng nhập từ đầu. Nếu không, hãy nhấn Tiếp tục để đăng nhập trên thiết bị này.</string>
+    <string name="fui_email_link_cross_device_linking_text">Ban đầu, bạn có ý định kết nối %1$s với tài khoản email của bạn nhưng đã mở đường liên kết trên một thiết bị khác mà bạn chưa đăng nhập.\n\nNếu bạn vẫn muốn kết nối với tài khoản %1$s của mình, hãy mở đường liên kết này trên cùng một thiết bị mà bạn đã đăng nhập từ đầu. Nếu không, hãy nhấn Tiếp tục để đăng nhập trên thiết bị này.</string>
     <string name="fui_email_link_cross_device_sign_in_button_text">Đăng nhập bằng %1$s</string>
     <string name="fui_verify_phone_number_title">Nhập số điện thoại của bạn</string>
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>

@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item> <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड करत आहे…</string>
     <string name="fui_sign_in_default">साइन इन करा</string>
     <string name="fui_cancel">रद्द करा</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">पुढील</string>
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फोन नंबर</string>
+    <string name="fui_country_hint">देश</string>
     <string name="fui_password_hint">पासवर्ड</string>
     <string name="fui_new_password_hint">नवीन पासवर्ड</string>
     <string name="fui_required_field">तुम्ही हे रिक्त सोडू शकत नाही.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">नाव आणि आडनाव</string>
     <string name="fui_button_text_save">सेव्ह करा</string>
     <string name="fui_progress_dialog_signing_up">साइन अप करत आहे…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item> <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item> </plurals>
     <string name="fui_email_account_creation_error">ईमेल खात्याची नोंदणी अयशस्वी झाली</string>
     <string name="fui_terms_of_service">सेवा अटी</string>
     <string name="fui_privacy_policy">गोपनीयता धोरण</string>

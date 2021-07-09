@@ -31,6 +31,7 @@ import com.firebase.uidemo.databinding.SignedInLayoutBinding;
 import com.firebase.uidemo.storage.GlideApp;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -48,7 +49,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
@@ -102,7 +102,7 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     public void deleteAccountClicked() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setMessage("Are you sure you want to delete this account?")
                 .setPositiveButton("Yes, nuke it!", (dialogInterface, i) -> deleteAccount())
                 .setNegativeButton("No", null)

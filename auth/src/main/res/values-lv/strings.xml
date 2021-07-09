@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="zero">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> <item quantity="one">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmi un burtu un ciparu kombināciju</item> <item quantity="other">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Notiek ielāde…</string>
     <string name="fui_sign_in_default">Pierakstīties</string>
     <string name="fui_cancel">Atcelt</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">Tālāk</string>
     <string name="fui_email_hint">E-pasts</string>
     <string name="fui_phone_hint">Tālruņa numurs</string>
+    <string name="fui_country_hint">Valsts</string>
     <string name="fui_password_hint">Parole</string>
     <string name="fui_new_password_hint">Jauna parole</string>
     <string name="fui_required_field">Šo laukumu nedrīkst atstāt tukšu.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">Vārds un uzvārds</string>
     <string name="fui_button_text_save">Saglabāt</string>
     <string name="fui_progress_dialog_signing_up">Notiek reģistrācija…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="zero">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> <item quantity="one">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmi un burtu un ciparu kombināciju</item> <item quantity="other">Parole nav pietiekami droša. Izmantojiet vismaz %1$d rakstzīmes un burtu un ciparu kombināciju</item> </plurals>
     <string name="fui_email_account_creation_error">Nesekmīga e-pasta konta reģistrācija</string>
     <string name="fui_terms_of_service">Pakalpojumu sniegšanas noteikumi</string>
     <string name="fui_privacy_policy">Konfidencialitātes politika</string>

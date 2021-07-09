@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך תו אחד (%1$d) לפחות שמכילה אותיות ומספרים</item> <item quantity="two">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="many">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="other">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">טוען…</string>
     <string name="fui_sign_in_default">כניסה</string>
     <string name="fui_cancel">ביטול</string>
@@ -26,6 +25,7 @@
     <string name="fui_next_default">הבא‏</string>
     <string name="fui_email_hint">אימייל</string>
     <string name="fui_phone_hint">מספר טלפון</string>
+    <string name="fui_country_hint">מדינה</string>
     <string name="fui_password_hint">סיסמה</string>
     <string name="fui_new_password_hint">סיסמה חדשה</string>
     <string name="fui_required_field">אי אפשר להשאיר את השדה הזה ריק.</string>
@@ -37,6 +37,7 @@
     <string name="fui_name_hint">שם מלא</string>
     <string name="fui_button_text_save">שמור</string>
     <string name="fui_progress_dialog_signing_up">אנחנו רושמים אותך…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך תו אחד (%1$d) לפחות שמכילה אותיות ומספרים</item> <item quantity="two">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="many">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="other">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> </plurals>
     <string name="fui_email_account_creation_error">לא הצלחנו להשלים את הרישום לחשבון באמצעות כתובת האימייל</string>
     <string name="fui_terms_of_service">תנאים והגבלות</string>
     <string name="fui_privacy_policy">מדיניות הפרטיות</string>
