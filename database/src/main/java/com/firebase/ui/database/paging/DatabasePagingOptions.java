@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
+import androidx.paging.Pager;
+import androidx.paging.PagingConfig;
+import androidx.paging.PagingData;
+import androidx.paging.PagingLiveData;
 import androidx.recyclerview.widget.DiffUtil;
 
 /**
@@ -22,11 +24,11 @@ import androidx.recyclerview.widget.DiffUtil;
 public final class DatabasePagingOptions<T> {
 
     private final SnapshotParser<T> mParser;
-    private final LiveData<PagedList<DataSnapshot>> mData;
+    private final LiveData<PagingData<DataSnapshot>> mData;
     private final DiffUtil.ItemCallback<DataSnapshot> mDiffCallback;
     private final LifecycleOwner mOwner;
 
-    private DatabasePagingOptions(@NonNull LiveData<PagedList<DataSnapshot>> data,
+    private DatabasePagingOptions(@NonNull LiveData<PagingData<DataSnapshot>> data,
                                   @NonNull SnapshotParser<T> parser,
                                   @NonNull DiffUtil.ItemCallback<DataSnapshot> diffCallback,
                                   @Nullable LifecycleOwner owner) {
@@ -37,7 +39,7 @@ public final class DatabasePagingOptions<T> {
     }
 
     @NonNull
-    public LiveData<PagedList<DataSnapshot>> getData() {
+    public LiveData<PagingData<DataSnapshot>> getData() {
         return mData;
     }
 
@@ -61,7 +63,7 @@ public final class DatabasePagingOptions<T> {
      */
     public static final class Builder<T> {
 
-        private LiveData<PagedList<DataSnapshot>> mData;
+        private LiveData<PagingData<DataSnapshot>> mData;
         private SnapshotParser<T> mParser;
         private LifecycleOwner mOwner;
         private DiffUtil.ItemCallback<DataSnapshot> mDiffCallback;
@@ -70,11 +72,11 @@ public final class DatabasePagingOptions<T> {
          * Sets the query using a {@link ClassSnapshotParser} based
          * on the given class.
          *
-         * See {@link #setQuery(Query, PagedList.Config, SnapshotParser)}.
+         * See {@link #setQuery(Query, PagingConfig, SnapshotParser)}.
          */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
-                                   @NonNull PagedList.Config config,
+                                   @NonNull PagingConfig config,
                                    @NonNull Class<T> modelClass) {
             return setQuery(query, config, new ClassSnapshotParser<>(modelClass));
         }
@@ -90,10 +92,12 @@ public final class DatabasePagingOptions<T> {
          */
         @NonNull
         public Builder<T> setQuery(@NonNull Query query,
-                                   @NonNull PagedList.Config config,
+                                   @NonNull PagingConfig config,
                                    @NotNull SnapshotParser<T> parser) {
-            FirebaseDataSource.Factory factory = new FirebaseDataSource.Factory(query);
-            mData = new LivePagedListBuilder<>(factory, config).build();
+            final Pager<String, DataSnapshot> pager = new Pager<>(config,
+                    () -> new DatabasePagingSource(query));
+            mData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager),
+                    mOwner.getLifecycle());
 
             mParser = parser;
             return this;
@@ -135,7 +139,7 @@ public final class DatabasePagingOptions<T> {
             }
 
             if (mDiffCallback == null) {
-                mDiffCallback = new DefaultSnapshotDiffCallback<T>(mParser);
+                mDiffCallback = new DefaultSnapshotDiffCallback<>(mParser);
             }
 
             return new DatabasePagingOptions<>(mData, mParser, mDiffCallback, mOwner);

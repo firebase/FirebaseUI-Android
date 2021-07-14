@@ -1,23 +1,18 @@
 package com.firebase.ui.database.paging;
 
-import android.util.Log;
-
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.Transformations;
-import androidx.paging.PagedList;
-import androidx.paging.PagedListAdapter;
+import androidx.paging.PagingData;
+import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -26,58 +21,21 @@ import androidx.recyclerview.widget.RecyclerView;
  * Configured with {@link DatabasePagingOptions}.
  */
 public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends PagedListAdapter<DataSnapshot, VH>
+        extends PagingDataAdapter<DataSnapshot, VH>
         implements LifecycleObserver {
-
-    private final String TAG = "FirebasePagingAdapter";
 
     private DatabasePagingOptions<T> mOptions;
     private SnapshotParser<T> mParser;
-    private LiveData<PagedList<DataSnapshot>> mPagedList;
-    private LiveData<LoadingState> mLoadingState;
-    private LiveData<DatabaseError> mDatabaseError;
-    private LiveData<FirebaseDataSource> mDataSource;
-
-
-    /*
-        LiveData created via Transformation do not have a value until an Observer is attached.  
-        We attach this empty observer so that our getValue() calls return non-null later.
-    */
-    private final Observer<FirebaseDataSource> mDataSourceObserver = new Observer<FirebaseDataSource>() {
-        @Override
-        public void onChanged(@Nullable FirebaseDataSource source) {
-
-        }
-    };
-
-    //State Observer
-    private final Observer<LoadingState> mStateObserver = new Observer<LoadingState>() {
-        @Override
-        public void onChanged(@Nullable LoadingState state) {
-            if (state == null) {
-                return;
-            }
-
-            onLoadingStateChanged(state);
-        }
-    };
+    private LiveData<PagingData<DataSnapshot>> mPagingData;
 
     //Data Observer
-    private final Observer<PagedList<DataSnapshot>> mDataObserver = new Observer<PagedList<DataSnapshot>>() {
+    private final Observer<PagingData<DataSnapshot>> mDataObserver = new Observer<PagingData<DataSnapshot>>() {
         @Override
-        public void onChanged(@Nullable PagedList<DataSnapshot> snapshots) {
+        public void onChanged(@Nullable PagingData<DataSnapshot> snapshots) {
             if (snapshots == null) {
                 return;
             }
-            submitList(snapshots);
-        }
-    };
-
-    //DatabaseError Observer
-    private final Observer<DatabaseError> mErrorObserver = new Observer<DatabaseError>() {
-        @Override
-        public void onChanged(@Nullable DatabaseError databaseError) {
-            onError(databaseError);
+            submitData(mOptions.getOwner().getLifecycle(), snapshots);
         }
     };
 
@@ -96,68 +54,13 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      * Initializes Snapshots and LiveData
      */
     public void init() {
-        mPagedList = mOptions.getData();
-
-        //Init Data Source
-        mDataSource = Transformations.map(mPagedList,
-                new Function<PagedList<DataSnapshot>, FirebaseDataSource>() {
-                    @Override
-                    public FirebaseDataSource apply(PagedList<DataSnapshot> input) {
-                        return (FirebaseDataSource) input.getDataSource();
-                    }
-                });
-
-        //Init Loading State
-        mLoadingState = Transformations.switchMap(mPagedList,
-                new Function<PagedList<DataSnapshot>, LiveData<LoadingState>>() {
-                    @Override
-                    public LiveData<LoadingState> apply(PagedList<DataSnapshot> input) {
-                        FirebaseDataSource dataSource = (FirebaseDataSource) input.getDataSource();
-                        return dataSource.getLoadingState();
-                    }
-                });
-
-        //Init Database Error
-        mDatabaseError = Transformations.switchMap(mPagedList,
-                new Function<PagedList<DataSnapshot>, LiveData<DatabaseError>>() {
-                    @Override
-                    public LiveData<DatabaseError> apply(PagedList<DataSnapshot> input) {
-                        FirebaseDataSource dataSource = (FirebaseDataSource) input.getDataSource();
-                        return dataSource.getLastError();
-                    }
-                });
+        mPagingData = mOptions.getData();
 
         mParser = mOptions.getParser();
 
         if (mOptions.getOwner() != null) {
             mOptions.getOwner().getLifecycle().addObserver(this);
         }
-    }
-
-    /**
-     * If {@link #onLoadingStateChanged(LoadingState)} indicates error state, call this method
-     * to attempt to retry the most recent failure.
-     */
-    public void retry(){
-        FirebaseDataSource mFirebaseDataSource = mDataSource.getValue();
-        if (mFirebaseDataSource == null) {
-            Log.w(TAG, "Called retry() when FirebaseDataSource is null!");
-            return;
-        }
-
-        mFirebaseDataSource.retry();
-    }
-
-    /**
-     * To attempt to refresh the list. It will reload the list from beginning.
-     */
-    public void refresh(){
-        FirebaseDataSource mFirebaseDataSource = mDataSource.getValue();
-        if (mFirebaseDataSource == null) {
-            Log.w(TAG, "Called refresh() when FirebaseDataSource is null!");
-            return;
-        }
-        mFirebaseDataSource.invalidate();
     }
 
     /**
@@ -168,7 +71,7 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
         mOptions = options;
 
         // Tear down old options
-        boolean hasObservers = mPagedList.hasObservers();
+        boolean hasObservers = mPagingData.hasObservers();
         if (mOptions.getOwner() != null) {
             mOptions.getOwner().getLifecycle().removeObserver(this);
         }
@@ -187,10 +90,7 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
-        mPagedList.observeForever(mDataObserver);
-        mLoadingState.observeForever(mStateObserver);
-        mDatabaseError.observeForever(mErrorObserver);
-        mDataSource.observeForever(mDataSourceObserver);
+        mPagingData.observeForever(mDataObserver);
     }
 
     /**
@@ -199,10 +99,7 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
-        mPagedList.removeObserver(mDataObserver);
-        mLoadingState.removeObserver(mStateObserver);
-        mDatabaseError.removeObserver(mErrorObserver);
-        mDataSource.removeObserver(mDataSourceObserver);
+        mPagingData.removeObserver(mDataObserver);
     }
 
     @Override
@@ -216,22 +113,6 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
      */
     protected abstract void onBindViewHolder(@NonNull VH viewHolder, int position, @NonNull T model);
-
-    /**
-     * Called whenever the loading state of the adapter changes.
-     *
-     * When the state is {@link LoadingState#ERROR} the adapter will stop loading any data
-     */
-    protected abstract void onLoadingStateChanged(@NonNull LoadingState state);
-
-    /**
-     * Called whenever the {@link DatabaseError} is caught.
-     *
-     * When {@link DatabaseError} is caught the adapter will stop loading any data
-     */
-    protected void onError(@NonNull DatabaseError databaseError) {
-        Log.w(TAG, "onError", databaseError.toException());
-    }
 
     @NonNull
     public DatabaseReference getRef(int position){
