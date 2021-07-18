@@ -43,7 +43,9 @@ android {
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor" // We almost never care about this
+            "SelectableText", "SyntheticAccessor", // We almost never care about this
+            "UnusedIds", "MediaCapabilities" // TODO(rosariopfernandes): remove this once we confirm
+            // it builds successfully
         )
 
         // Module-specific
