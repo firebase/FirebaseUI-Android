@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Chargement…</string>
     <string name="fui_sign_in_default">Se connecter</string>
-    <string name="fui_cancel">Annuler</string>
     <string name="fui_continue">Continuer</string>
     <string name="fui_tos_and_pp">En continuant, vous acceptez les %1$s et les %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s   %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">Un e-mail de connexion avec des instructions supplémentaires a été envoyé à %1$s. Consultez cet e-mail pour vous connecter.</string>
     <string name="fui_email_link_trouble_getting_email_header">Vous n\'avez pas reçu l\'e-mail ?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Essayez les solutions courantes suivantes :\n\u2022 Vérifiez que l\'e-mail n\'a ni été marqué comme spam ni été filtré.\n\u2022 Vérifiez votre connexion Internet.\n\u2022 Vérifiez que votre adresse e-mail est correcte.\n\u2022 Vérifiez que votre boîte de réception n\'est pas pleine et que les paramètres sont correctement définis.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Si les étapes décrites plus haut n\'ont pas résolu le problème, vous pouvez renvoyer l\'e-mail. Sachez que le lien du premier e-mail sera alors désactivé.</string>
     <string name="fui_email_link_resend">Renvoyer</string>
     <string name="fui_email_link_wrong_device_header">Nouveau navigateur ou nouvel appareil détecté</string>
     <string name="fui_email_link_wrong_device_message">Essayez d\'ouvrir le lien en utilisant le même appareil ou navigateur que celui sur lequel vous avez commencé le processus de connexion.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Confirmez votre adresse e-mail pour vous connecter</string>
     <string name="fui_email_link_dismiss_button">Ignorer</string>
     <string name="fui_email_link_cross_device_linking_text">Vous aviez décidé d\'associer votre compte %1$s à votre adresse e-mail, mais vous avez ouvert le lien sur un appareil différent de celui avec lequel vous vous êtes connecté.\n\nSi vous souhaitez toujours associer votre compte %1$s, ouvrez le lien sur l\'appareil avec lequel vous avez commencé à vous connecter. Sinon, appuyez sur \"Continuer\" pour vous connecter depuis un autre appareil.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Se connecter avec %1$s</string>
     <string name="fui_verify_phone_number_title">Saisissez votre numéro de téléphone</string>
     <string name="fui_invalid_phone_number">Saisissez un numéro de téléphone valide</string>
     <string name="fui_enter_confirmation_code">Saisissez le code à six chiffres envoyé au</string>

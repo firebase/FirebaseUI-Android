@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Indlæser…</string>
     <string name="fui_sign_in_default">Log ind</string>
-    <string name="fui_cancel">Annuller</string>
     <string name="fui_continue">Fortsæt</string>
     <string name="fui_tos_and_pp">Ved at fortsætte indikerer du, at du accepterer vores %1$s og %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">En loginmail med yderligere vejledning er sendt til %1$s. Tjek din mail for at fuldføre loginprocessen.</string>
     <string name="fui_email_link_trouble_getting_email_header">Har du problemer med at modtage mailen?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Prøv disse almindelige løsninger:\n\u2022 Tjek, om mailen er blevet markeret som spam eller filtreret fra.\n\u2022 Tjek din internetforbindelse.\n\u2022 Tjek, at du ikke har stavet din mailadresse forkert.\n\u2022 Tjek, at din indbakke ikke er løbet tør for plads, og at du ikke har andre problemer med indbakken.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Hvis ovenstående trin ikke løste problemet, kan du prøve at sende mailen igen. Bemærk, at dette vil deaktivere linket i den gamle mail.</string>
     <string name="fui_email_link_resend">Send igen</string>
     <string name="fui_email_link_wrong_device_header">Der er registreret en ny enhed eller browser</string>
     <string name="fui_email_link_wrong_device_message">Prøv at åbne linket med samme enhed eller samme browser, som du brugte til at starte loginprocessen.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Bekræft mailadresse for at fortsætte loginprocessen</string>
     <string name="fui_email_link_dismiss_button">Afvis</string>
     <string name="fui_email_link_cross_device_linking_text">Du ville egentlig knytte %1$s til din mailkonto, men du har åbnet linket på en anden enhed, som du ikke er logget ind på.\n\nHvis du stadig vil tilknytte din %1$s-konto, skal du åbne linket på den enhed, hvor du startede loginprocessen. Ellers kan du klikke på Fortsæt for at fortsætte med at logge ind på denne enhed.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Log ind med %1$s</string>
     <string name="fui_verify_phone_number_title">Angiv dit telefonnummer</string>
     <string name="fui_invalid_phone_number">Angiv et gyldigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Angiv den 6-cifrede kode, vi sendte til</string>

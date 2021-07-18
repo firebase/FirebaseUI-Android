@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Wird geladen…</string>
     <string name="fui_sign_in_default">Anmelden</string>
-    <string name="fui_cancel">Abbrechen</string>
     <string name="fui_continue">Weiter</string>
     <string name="fui_tos_and_pp">Indem Sie fortfahren, stimmen Sie unseren %1$s und unserer %2$s zu.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">Wir haben eine Anmelde-E-Mail mit zusätzlichen Informationen an %1$s gesendet. Bitte öffnen Sie die E-Mail, um die Anmeldung abzuschließen.</string>
     <string name="fui_email_link_trouble_getting_email_header">Probleme beim Empfangen von E-Mails?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Versuchen Sie es mit diesen gängigen Korrekturen:\n\u2022 Prüfen Sie, ob die E-Mail als Spam markiert oder gefiltert wurde.\n\u2022 Prüfen Sie Ihre Internetverbindung.\n\u2022 Prüfen Sie, ob Sie die E-Mail-Adresse korrekt geschrieben haben.\n\u2022 Prüfen Sie, ob Ihr Posteingang über genügend Speicherplatz verfügt oder ob es Probleme mit den Einstellungen gibt.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Sollte das Problem auch nach Ausführung der obigen Schritte weiterhin bestehen, können Sie sich die Anmelde-E-Mail noch einmal zusenden lassen. Hinweis: Der Link in der vorhergehenden E-Mail ist dann nicht mehr gültig.</string>
     <string name="fui_email_link_resend">Erneut senden</string>
     <string name="fui_email_link_wrong_device_header">Neues Gerät oder neuer Browser erkannt.</string>
     <string name="fui_email_link_wrong_device_message">Öffnen Sie den Link mit demselben Gerät oder Browser, mit dem Sie die Anmeldung begonnen haben.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">E-Mail-Adresse bestätigen, um Anmeldung fortzusetzen</string>
     <string name="fui_email_link_dismiss_button">Ablehnen</string>
     <string name="fui_email_link_cross_device_linking_text">Sie haben versucht, %1$s auf einem Gerät, auf dem Sie nicht angemeldet sind, mit Ihrem E-Mail-Konto zu verbinden.\n\nWenn Sie Ihr %1$s-Konto weiterhin verbinden möchten, öffnen Sie den Link bitte auf dem Gerät, auf dem Sie den Anmeldevorgang gestartet haben. Andernfalls tippen Sie auf \"Weiter\", um sich auf diesem Gerät anzumelden.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Mit %1$s anmelden</string>
     <string name="fui_verify_phone_number_title">Telefonnummer eingeben</string>
     <string name="fui_invalid_phone_number">Geben Sie eine gültige Telefonnummer ein</string>
     <string name="fui_enter_confirmation_code">Geben Sie den 6-stelligen Code ein, der gesendet wurde an</string>
