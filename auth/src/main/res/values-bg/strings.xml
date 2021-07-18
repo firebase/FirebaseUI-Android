@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Зарежда се…</string>
     <string name="fui_sign_in_default">Вход</string>
-    <string name="fui_cancel">Отказ</string>
     <string name="fui_continue">Напред</string>
     <string name="fui_tos_and_pp">Продължавайки, приемате нашите %1$s и %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">Изпратихме имейл до %1$s за вход в профила с допълнителни инструкции. Проверете входящата си поща, за да завършите процеса.</string>
     <string name="fui_email_link_trouble_getting_email_header">Имате проблеми с получаването на имейла?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Изпробвайте следните често използвани решения:\n\u2022 Проверете дали имейлът не е обозначен и филтриран като спам.\n\u2022 Проверете връзката си с интернет.\n\u2022 Проверете дали имейлът е изписан правилно.\n\u2022 Проверете дали в пощенската ви кутия има достатъчно пространство, или не е налице друг проблем с настройките й.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Ако стъпките по-горе не проработят, можете да изпратите отново имейла. Имайте предвид, че това ще деактивира връзката в предходното съобщение.</string>
     <string name="fui_email_link_resend">Повторно изпращане</string>
     <string name="fui_email_link_wrong_device_header">Открито е ново устройство или браузър.</string>
     <string name="fui_email_link_wrong_device_message">Опитайте да отворите връзката от същото устройство или браузър, където е започнат процесът на влизане в профила.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Потвърдете имейл адреса, за да продължите с влизането в профила</string>
     <string name="fui_email_link_dismiss_button">Отхвърляне</string>
     <string name="fui_email_link_cross_device_linking_text">Първоначално искахте да свържете %1$s с имейла на профила си, но отворихте връзката на различно устройство без вход в профила.\n\nАко все още искате да свържете профила си в(ъв) %1$s, отворете връзката на същото устройство, на което започнахте влизането в профила. В противен случай докоснете „Напред“, за да влезете на това устройство.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Вход в профила с(ъс) %1$s</string>
     <string name="fui_verify_phone_number_title">Въвеждане на телефонния ви номер</string>
     <string name="fui_invalid_phone_number">Въведете валиден телефонен номер</string>
     <string name="fui_enter_confirmation_code">Въведете 6-цифрения код, който изпратихме до</string>

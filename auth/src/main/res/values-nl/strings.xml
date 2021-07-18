@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Laden…</string>
     <string name="fui_sign_in_default">Inloggen</string>
-    <string name="fui_cancel">Annuleren</string>
     <string name="fui_continue">Doorgaan</string>
     <string name="fui_tos_and_pp">Als u doorgaat, geeft u aan dat u onze %1$s en ons %2$s accepteert.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">Er is een inlogmail met aanvullende instructies verzonden naar %1$s. Controleer uw inbox om het inlogproces te voltooien.</string>
     <string name="fui_email_link_trouble_getting_email_header">E-mail niet ontvangen?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Probeer deze algemene oplossingen:\n\u2022 Controleer of de e-mail als spam is gemarkeerd of is weggefilterd.\n\u2022 Controleer uw internetverbinding.\n\u2022 Controleer of u uw e-mailadres juist heeft gespeld.\n\u2022 Controleer of er voldoende ruimte in uw inbox is en of er geen andere problemen met inboxinstellingen zijn.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Als de bovenstaande stappen geen uitkomst bieden, kunt u de e-mail opnieuw verzenden. Hiermee wordt de link in de eerdere e-mail gedeactiveerd.</string>
     <string name="fui_email_link_resend">Opnieuw verzenden</string>
     <string name="fui_email_link_wrong_device_header">Nieuw apparaat of nieuwe browser gedetecteerd.</string>
     <string name="fui_email_link_wrong_device_message">Probeer de link te openen op het apparaat of in de browser waarmee u het inlogproces bent gestart.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Bevestig uw e-mailadres om door te gaan met inloggen</string>
     <string name="fui_email_link_dismiss_button">Afwijzen</string>
     <string name="fui_email_link_cross_device_linking_text">U wilde aanvankelijk %1$s aan uw e-mailaccount koppelen, maar u heeft de link geopend op een andere apparaat, waarop u niet ingelogd bent.\n\nAls u nog steeds verbinding wilt maken met uw %1$s-account, opent u de link op het apparaat waarop u het inlogproces bent gestart. Tik anders op Doorgaan om in te loggen op dit apparaat.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Inloggen met %1$s</string>
     <string name="fui_verify_phone_number_title">Voer uw telefoonnummer in</string>
     <string name="fui_invalid_phone_number">Voer een geldig telefoonnummer in</string>
     <string name="fui_enter_confirmation_code">Voer de zescijferige code in die we hebben verzonden naar</string>

@@ -4,14 +4,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Config.SdkVersions.compile)
+    compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
-        minSdkVersion(Config.SdkVersions.min)
-        targetSdkVersion(Config.SdkVersions.target)
-
-        versionName = Config.version
-        versionCode = 1
+        minSdk = Config.SdkVersions.min
+        targetSdk = Config.SdkVersions.target
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
@@ -20,7 +17,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    lintOptions {
+    lint {
         // Common lint options across all modules
         disable(
             "IconExpectedSize",

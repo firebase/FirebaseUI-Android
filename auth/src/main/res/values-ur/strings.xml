@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
     <string name="fui_sign_in_default">سائن ان کریں</string>
-    <string name="fui_cancel">منسوخ کریں</string>
     <string name="fui_continue">جاری رکھیں</string>
     <string name="fui_tos_and_pp">جاری رکھ کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %1$s اور %2$s کو قبول کرتے ہیں۔</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">ایک سائن ان ای میل اضافی ہدایات کے ساتھ %1$s کو بھیج دی گئی ہے۔ سائن ان مکمل کرنے کیلئے اپنی ای میل چیک کریں۔</string>
     <string name="fui_email_link_trouble_getting_email_header">ای میل حاصل کرنے میں دشواری پیش آ رہی ہے؟</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">یہ عام اصلاحات آزمائیں:‎\n\u2022 چیک کریں کہ آیا ای میل کو اسپام یا فلٹر شدہ کے بطور نشان زد تو نہیں کیا گیا ہے۔‎\n\u2022 اپنا انٹرنیٹ کنکشن چیک کریں۔‎\n\u2022 چیک کریں کہ آپ نے اپنی ای میل میں ہجے کی کوئی غلطی تو نہیں کی ہے۔‎\n\u2022 چیک کریں کہ آپ کے ان باکس میں جگہ ختم تو نہیں ہو رہی ہے یا ان باکس کی ترتیب سے متعلق کوئی دوسرا مسئلہ تو نہیں ہے۔‎\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">اگر مندرجہ بالا مراحل کام نہ کریں تو آپ ای میل دوبارہ بھیج سکتے ہیں۔ نوٹ کریں کہ اس سے پرانی ای میل میں موجود لنک غیر فعال ہو جائے گا۔</string>
     <string name="fui_email_link_resend">دوبارہ بھیجیں</string>
     <string name="fui_email_link_wrong_device_header">نئے آلہ یا براؤزر کا پتا چلا ہے۔</string>
     <string name="fui_email_link_wrong_device_message">جہاں آپ نے سائن ان کا عمل شروع کیا تھا، اسی آلہ یا براؤزر کا استعمال کر کے لنک کھولنے کی کوشش کریں۔</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">سائن ان جاری رکھنے کے لیے ای میل کی توثیق کریں</string>
     <string name="fui_email_link_dismiss_button">برخاست کریں</string>
     <string name="fui_email_link_cross_device_linking_text">آپ نے اصل میں اپنے ای میل اکاؤنٹ کو %1$s کے ساتھ منسلک کرنا چاہتے تھے لیکن آپ نے لنک کو دوسرے آلہ پر کھولا ہے جہاں آپ سائن ان نہیں ہیں۔‎\n\nاگر آپ ابھی بھی اپنے %1$s اکاؤنٹ سے منسلک ہونا چاہتے ہیں، تو اسی آلہ پر لنک کو کھولیں جہاں سے آپ نے سائن ان شروع کیا تھا۔ بصورت دیگر، اس آلہ پر مسلسل سائن کرنے کے لیے تھپتھپائيں۔</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s کے ساتھ سائن ان کریں</string>
     <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>

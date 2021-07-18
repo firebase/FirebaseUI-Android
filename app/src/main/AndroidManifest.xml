@@ -19,7 +19,8 @@
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".ChooserActivity">
+        <activity android:name=".ChooserActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

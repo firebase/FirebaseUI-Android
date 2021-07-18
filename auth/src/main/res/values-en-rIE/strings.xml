@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Loading…</string>
     <string name="fui_sign_in_default">Sign in</string>
-    <string name="fui_cancel">Cancel</string>
     <string name="fui_continue">Continue</string>
     <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">A sign-in email with additional instructions was sent to %1$s. Check your email to complete sign-in.</string>
     <string name="fui_email_link_trouble_getting_email_header">Trouble getting email?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Try these common fixes:\n\u2022 Check if the email was marked as spam or filtered.\n\u2022 Check your Internet connection.\n\u2022 Check that you did not misspell your email.\n\u2022 Check that your inbox space is not running out or other inbox settings related issues.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">If the steps above didn\'t work, you can resend the email. Note that this will deactivate the link in the older email.</string>
     <string name="fui_email_link_resend">Resend</string>
     <string name="fui_email_link_wrong_device_header">New device or browser detected.</string>
     <string name="fui_email_link_wrong_device_message">Try opening the link using the same device or browser where you started the sign-in process.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
     <string name="fui_email_link_dismiss_button">Dismiss</string>
     <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account, but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device on which you started sign-in. Otherwise, tap \'Continue\' to sign in on this device.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Sign in with %1$s</string>
     <string name="fui_verify_phone_number_title">Enter your phone number</string>
     <string name="fui_invalid_phone_number">Enter a valid phone number</string>
     <string name="fui_enter_confirmation_code">Enter the 6-digit code that we sent to</string>

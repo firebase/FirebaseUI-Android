@@ -1,6 +1,5 @@
 <resources>
     <color name="colorPrimary">#039BE5</color>
-    <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorPrimaryVariant">#0288D1</color>
     <color name="colorSecondary">#FFA000</color>
 
@@ -14,7 +13,6 @@
     <color name="material_gray_300">#E0E0E0</color>
     <color name="material_gray_500">#9e9e9e</color>
 
-    <color name="material_lime_a700">#AEEA00</color>
     <color name="material_red_a200">#FF5252</color>
 
 </resources>

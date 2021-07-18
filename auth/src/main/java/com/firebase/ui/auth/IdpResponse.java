@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -123,7 +124,9 @@ public class IdpResponse implements Parcelable {
         } else if (e instanceof FirebaseUiUserCollisionException) {
             FirebaseUiUserCollisionException collisionException
                     = (FirebaseUiUserCollisionException) e;
-            User user = new User.Builder(
+            // Lint complains about providerId not being
+            // in the pre-defined set of constants
+            @SuppressLint("WrongConstant") User user = new User.Builder(
                     collisionException.getProviderId(),
                     collisionException.getEmail())
                     .build();

@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Yükleniyor…</string>
     <string name="fui_sign_in_default">Oturum aç</string>
-    <string name="fui_cancel">İptal</string>
     <string name="fui_continue">Devam</string>
     <string name="fui_tos_and_pp">Devam ederek %1$s ve %2$s hükümlerimizi kabul ettiğinizi bildirirsiniz.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">Ek talimatlar içeren bir oturum açma e-postası %1$s adresine gönderildi. Oturum açma işlemini tamamlamak için e-postanızı kontrol edin.</string>
     <string name="fui_email_link_trouble_getting_email_header">E-posta almayla ilgili sorun mu yaşıyorsunuz?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Şu sık başvurulan düzeltme yöntemlerini deneyin:\n\u2022 E-postanın spam olarak işaretlenme veya filtrelenme durumunu kontrol edin.\n\u2022 İnternet bağlantınızı kontrol edin.\n\u2022 E-postanızda yazım hatası bulunmadığından emin olun.\n\u2022 Gelen kutunuzdaki boş alanın azalıp azalmadığını ve gelen kutusu ayarlarıyla ilgili başka bir sorun olup olmadığını kontrol edin.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Yukarıdaki adımların işe yaramadığı durumlarda e-postayı yeniden gönderebilirsiniz. Bu işlemin eski e-postadaki bağlantıyı devre dışı bırakacağını unutmayın.</string>
     <string name="fui_email_link_resend">Tekrar gönder</string>
     <string name="fui_email_link_wrong_device_header">Yeni bir cihaz veya tarayıcı algılandı.</string>
     <string name="fui_email_link_wrong_device_message">Bağlantıyı, oturum açma işlemini başlattığınız cihazda veya tarayıcıda açmayı deneyin.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Oturum açma işlemine devam etmek için e-posta adresini onaylayın</string>
     <string name="fui_email_link_dismiss_button">Kapat</string>
     <string name="fui_email_link_cross_device_linking_text">Aslında %1$s adlı sağlayıcıyı e-posta hesabınıza bağlamak istediniz ancak bağlantıyı, oturum açmadığınız farklı bir cihazda açtınız.\n\nHâlâ %1$s hesabınızı bağlamak istiyorsanız bağlantıyı oturum açma işlemini başlattığınız cihazda açın. Aksi takdirde bu cihazda oturum açmak için Devam\'a dokunun.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s ile oturum aç</string>
     <string name="fui_verify_phone_number_title">Telefon numaranızı girin</string>
     <string name="fui_invalid_phone_number">Geçerli bir telefon numarası girin</string>
     <string name="fui_enter_confirmation_code">Şu telefon numarasına gönderdiğimiz 6 haneli kodu girin:</string>
