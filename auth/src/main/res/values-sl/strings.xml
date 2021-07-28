@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Nalaganje…</string>
     <string name="fui_sign_in_default">Prijava</string>
-    <string name="fui_cancel">Prekliči</string>
     <string name="fui_continue">Naprej</string>
     <string name="fui_tos_and_pp">Z nadaljevanjem potrjujete, da se strinjate z dokumentoma %1$s in %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">E-poštno sporočilo za prijavo z dodatnimi navodili je bilo poslano na %1$s. Preverite e-pošto in dokončajte prijavo.</string>
     <string name="fui_email_link_trouble_getting_email_header">Niste prejeli e-poštnega sporočila?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Poskusite te splošne rešitve:\n\u2022 Preverite, ali je bilo e-poštno sporočilo označeno kot vsiljena pošta ali filtrirano.\n\u2022 Preverite internetno povezavo.\n\u2022 Preverite, ali je e-poštni naslov pravilno zapisan.\n\u2022 Zagotovite, da imate v mapi »Prejeto« dovolj prostora oziroma da ni prišlo do drugih težav, povezanih z nastavitvami mape »Prejeto«.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Če z zgornjimi koraki ne odpravite težave, lahko znova pošljete e-poštno sporočilo. Upoštevajte, da boste s tem onemogočili povezavo v prejšnjem e-poštnem sporočilu.</string>
     <string name="fui_email_link_resend">Pošlji znova</string>
     <string name="fui_email_link_wrong_device_header">Zaznana je bila nova naprava ali brskalnik.</string>
     <string name="fui_email_link_wrong_device_message">Povezavo poskusite odpreti v isti napravi ali brskalniku, kjer ste začeli postopek prijave.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Če želite nadaljevati s prijavo, potrdite e-poštni naslov</string>
     <string name="fui_email_link_dismiss_button">Opusti</string>
     <string name="fui_email_link_cross_device_linking_text">Najprej ste želeli račun %1$s povezati z e-poštnim računom, vendar ste povezavo odprli v drugi napravi, kjer niste prijavljeni.\n\nČe želite še vedno povezati račun %1$s, odprite povezavo v napravi, v kateri ste začeli s prijavo. V nasprotnem primeru se dotaknite možnosti »Nadaljuj«, da se prijavite v tej napravi.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Prijava z računom %1$s</string>
     <string name="fui_verify_phone_number_title">Vnesite telefonsko številko</string>
     <string name="fui_invalid_phone_number">Vnesite veljavno telefonsko številko</string>
     <string name="fui_enter_confirmation_code">Vnesite 6-mestno kodo, ki smo jo poslali na številko</string>

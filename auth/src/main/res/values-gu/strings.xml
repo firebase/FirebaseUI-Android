@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">લોડ કરી રહ્યું છે…</string>
     <string name="fui_sign_in_default">સાઇન ઇન કરો</string>
-    <string name="fui_cancel">રદ કરો</string>
     <string name="fui_continue">આગળ વધો</string>
     <string name="fui_tos_and_pp">ચાલુ રાખીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %1$s અને %2$sને સ્વીકારો છો.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">વધારાની સૂચનાઓ ધરાવતો સાઇન-ઇન ઇમેઇલ %1$s પર મોકલ્યો હતો. સાઇન-ઇન પૂર્ણ કરવા માટે તમારું ઇમેઇલ ઍડ્રેસ ચેક કરો.</string>
     <string name="fui_email_link_trouble_getting_email_header">ઇમેઇલ મેળવવામાં મુશ્કેલી આવે છે?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">આ સામાન્ય ઉકેલોને અજમાવી જુઓ:\n\u2022 ચેક કરો કે તે ઇમેઇલને સ્પામ કે ફિલ્ટર કરેલ તરીકે ચિહ્નિત કર્યો હતો કે કેમ.\n\u2022 તમારું ઇન્ટરનેટ કનેક્શન ચેક કરો.\n\u2022 ચેક કરો કે તમારા ઇમેઇલની જોડણી ખોટી તો નથી.\n\u2022 ચેક કરો કે તમારા ઇનબૉક્સમાં જગ્યા ભરાઈ ગઈ છે કે કેમ અથવા ઇનબૉક્સ સેટિંગથી સંબંધિત અન્ય સમસ્યા નથી.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">જો ઉપરોક્ત પગલાં કામ ન કરે, તો તમે ઇમેઇલ ફરીથી મોકલી શકો છો. નોંધ લેશો કે આ જૂના ઇમેઇલમાં રહેલી લિંકને નિષ્ક્રિય કરશે.</string>
     <string name="fui_email_link_resend">ફરીથી મોકલો</string>
     <string name="fui_email_link_wrong_device_header">નવું ડિવાઇસ અથવા બ્રાઉઝર મળ્યું.</string>
     <string name="fui_email_link_wrong_device_message">લિંકને તે જ ડિવાઇસ અથવા બ્રાઉઝરમાંથી ખોલવાનો પ્રયાસ કરો કે જેનાથી તમે સાઇન ઇન પ્રક્રિયા શરૂ કરી હતી.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">સાઇન ઇન ચાલુ રાખવા માટે ઇમેઇલ કન્ફર્મ કરો</string>
     <string name="fui_email_link_dismiss_button">છોડી દો</string>
     <string name="fui_email_link_cross_device_linking_text">તમે ઑરિજિનલ રીતે %1$sને તમારા ઇમેઇલ એકાઉન્ટ જોડે કનેક્ટ કરવા માગતા હતા પણ તમે લિંકને કોઈ અલગ ડિવાઇસ પરથી ખોલી છે, જેમાં તમે સાઇન ઇન થયા નથી.\n\nજો તમે હજી પણ તમારા %1$s એકાઉન્ટને કનેક્ટ કરવા માગતા હો, તો તમે જે ડિવાઇસ પરથી સાઇન-ઇન કરવાની પ્રક્રિયા શરૂ કરી હોય એના પરથી જ લિંક ખોલો. અન્યથા, આ ડિવાઇસ પરથી સાઇન-ઇન કરવા માટે આગળ વધો પર ટૅપ કરો.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s વડે સાઇન ઇન કરો</string>
     <string name="fui_verify_phone_number_title">તમારો ફોન નંબર દાખલ કરો</string>
     <string name="fui_invalid_phone_number">એક માન્ય ફોન નંબર દાખલ કરો</string>
     <string name="fui_enter_confirmation_code">અમે આ ફોન નંબર પર મોકલેલ 6-અંકનો કોડ દાખલ કરો</string>

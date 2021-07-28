@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">กำลังโหลด…</string>
     <string name="fui_sign_in_default">ลงชื่อเข้าใช้</string>
-    <string name="fui_cancel">ยกเลิก</string>
     <string name="fui_continue">ต่อไป</string>
     <string name="fui_tos_and_pp">การดำเนินการต่อแสดงว่าคุณยอมรับ %1$s และ %2$s</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">ระบบได้ส่งอีเมลลงชื่อเข้าใช้พร้อมวิธีการเพิ่มเติมไปยัง %1$s แล้ว โปรดตรวจสอบอีเมลเพื่อลงชื่อเข้าใช้</string>
     <string name="fui_email_link_trouble_getting_email_header">มีปัญหาในการรับอีเมลใช่ไหม</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">ลองใช้วิธีแก้ไขทั่วไปเหล่านี้:\n\u2022 ตรวจสอบว่าอีเมลดังกล่าวมีการทำเครื่องหมายว่าเป็นสแปมหรือผ่านการกรอง\n\u2022 ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต\n\u2022 ตรวจสอบว่าสะกดชื่ออีเมลถูกต้องแล้ว\n\u2022 ตรวจสอบว่ายังมีพื้นที่เหลือในกล่องจดหมายหรือไม่มีปัญหาอื่นๆ ที่เกี่ยวกับการตั้งค่ากล่องจดหมาย\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">คุณอาจส่งอีเมลอีกครั้งได้ หากขั้นตอนข้างต้นไม่ช่วยแก้ไขปัญหา โปรดทราบว่าการกระทำดังกล่าวจะเป็นการปิดใช้งานลิงก์ในอีเมลเก่า</string>
     <string name="fui_email_link_resend">ส่งซ้ำ</string>
     <string name="fui_email_link_wrong_device_header">พบการใช้อุปกรณ์หรือเบราว์เซอร์ใหม่</string>
     <string name="fui_email_link_wrong_device_message">ลองเปิดลิงก์โดยใช้อุปกรณ์หรือเบราว์เซอร์เดียวกันกับที่คุณใช้ในขั้นตอนการลงชื่อเข้าใช้</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">ยืนยันอีเมลเพื่อลงชื่อเข้าใช้ต่อ</string>
     <string name="fui_email_link_dismiss_button">ปิด</string>
     <string name="fui_email_link_cross_device_linking_text">แต่เดิมคุณตั้งใจที่จะเชื่อม %1$s เข้ากับบัญชีอีเมลแต่ได้เปิดลิงก์บนอุปกรณ์อื่นที่ไม่ได้ลงชื่อเข้าใช้\n\nหากยังต้องการเชื่อมบัญชี %1$s ให้เปิดลิงก์บนอุปกรณ์เดียวกันกับที่เริ่มลงชื่อเข้าใช้ หรือแตะ \"ต่อไป\" เพื่อลงชื่อเข้าใช้บนอุปกรณ์นี้</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">ลงชื่อเข้าใช้ด้วย %1$s</string>
     <string name="fui_verify_phone_number_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>

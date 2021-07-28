@@ -24,7 +24,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/sign_in_email_sent_header_text"
                 style="@style/FirebaseUI.Text.Heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

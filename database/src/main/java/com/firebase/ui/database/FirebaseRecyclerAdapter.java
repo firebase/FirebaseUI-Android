@@ -57,7 +57,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
-        notifyDataSetChanged();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

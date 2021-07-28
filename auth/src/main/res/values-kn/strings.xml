@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_sign_in_default">ಸೈನ್ ಇನ್‌</string>
-    <string name="fui_cancel">ರದ್ದುಮಾಡಿ</string>
     <string name="fui_continue">ಮುಂದುವರಿಸಿ</string>
     <string name="fui_tos_and_pp">ಮುಂದುವರಿಸುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %1$s ಮತ್ತು %2$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">%1$s ಇಮೇಲ್‌ಗೆ ಹೆಚ್ಚುವರಿ ಸೂಚನೆಗಳನ್ನು ಹೊಂದಿರುವ ಸೈನ್-ಇನ್ ಇಮೇಲ್ ಅನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ. ಸೈನ್-ಇನ್ ಪೂರ್ಣಗೊಳಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
     <string name="fui_email_link_trouble_getting_email_header">ಇಮೇಲ್ ಪಡೆಯುವಲ್ಲಿ ಸಮಸ್ಯೆ ಉಂಟಾಗುತ್ತಿದೆಯೇ?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">ಈ ಸಾಮಾನ್ಯ ಪರಿಹಾರಗಳನ್ನು ಪ್ರಯತ್ನಿಸಿ:\n\u2022 ಇಮೇಲ್ ಅನ್ನು ಸ್ಪ್ಯಾಮ್ ಎಂದು ಗುರುತು ಮಾಡಲಾಗಿದೆಯೇ ಅಥವಾ ಫಿಲ್ಟರ್ ಮಾಡಲಾಗಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ.\n\u2022 ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.\n\u2022 ನಿಮ್ಮ ಇಮೇಲ್‌ನ ಕಾಗುಣಿತವನ್ನು ಸರಿಯಾಗಿ ನಮೂದಿಸಿರುವಿರಾ ಎಂಬುದನ್ನು ಪರಿಶೀಲಿಸಿ.\n\u2022 ನಿಮ್ಮ ಇನ್‌ಬಾಕ್ಸ್ ಸಂಗ್ರಹಣೆಯು ಭರ್ತಿಯಾಗದಿರುವುದನ್ನು ಅಥವಾ ಇತರ ಇನ್‌ಬಾಕ್ಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ಸಮಸ್ಯೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">ಮೇಲಿನ ಹಂತಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿದ್ದಲ್ಲಿ, ನೀವು ಇಮೇಲ್ ಅನ್ನು ಪುನಃ ಕಳುಹಿಸಬಹುದು. ಇದು ಹಳೆಯ ಇಮೇಲ್‌ನಲ್ಲಿರುವ ಲಿಂಕ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ ಎಂಬುದನ್ನು ಗಮನಿಸಿ.</string>
     <string name="fui_email_link_resend">ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_email_link_wrong_device_header">ಹೊಸ ಸಾಧನ ಅಥವಾ ಬ್ರೌಸರ್ ಪತ್ತೆಯಾಗಿದೆ.</string>
     <string name="fui_email_link_wrong_device_message">ನೀವು ಸೈನ್ ಇನ್ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿದ ಸಾಧನ ಅಥವಾ ಬ್ರೌಸರ್ ಅನ್ನು ಬಳಸಿಕೊಂಡು ಲಿಂಕ್ ತೆರೆಯಲು ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">ಸೈನ್ ಇನ್ ಮುಂದುವರಿಸಲು ಇಮೇಲ್ ದೃಢೀಕರಿಸಿ</string>
     <string name="fui_email_link_dismiss_button">ವಜಾಗೊಳಿಸಿ</string>
     <string name="fui_email_link_cross_device_linking_text">ನೀವು ಮೂಲತಃ %1$s ಅನ್ನು ನಿಮ್ಮ ಇಮೇಲ್ ಜೊತೆಗೆ ಸಂಪರ್ಕಿಸಲು ಬಯಸಿದ್ದೀರಿ ಆದರೆ ನೀವು ಸೈನ್ ಇನ್ ಮಾಡದಿರುವ ಬೇರೆ ಸಾಧನದಲ್ಲಿ ಲಿಂಕ್ ಅನ್ನು ತೆರೆದಿದ್ದೀರಿ.n\nನಿಮ್ಮ %1$s ಖಾತೆಯನ್ನು ಇನ್ನೂ ನೀವು ಸಂಪರ್ಕಿಸಲು ಬಯಸಿದರೆ, ನೀವು ಸೈನ್ ಇನ್ ಮಾಡದೇ ಇರುವ ಅದೇ ಸಾಧನದಲ್ಲಿ ಲಿಂಕ್ ತೆರೆಯಿರಿ. ಇಲ್ಲದಿದ್ದರೆ ಈ ಸಾಧನದಲ್ಲಿ ಸೈನ್ ಇನ್ ಮಾಡಲು ಮುಂದುವರಿಸಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s ಸಹಾಯದೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_verify_phone_number_title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>

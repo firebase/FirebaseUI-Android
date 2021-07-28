@@ -5,7 +5,6 @@
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
-    <string name="fui_cancel" translation_description="Button text to cancel">Cancel</string>
     <string name="fui_continue" translation_description="Button text to continue">Continue</string>
     <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
     <string name="fui_tos_and_pp_footer" translation_description="Global ToS and Privacy policy footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="Footer ToS text">%1$s</xliff:g> \u00A0 \u00A0 <xliff:g example="https://google.com/privacy" id="pp" translation_description="Footer privacy policy text">%2$s</xliff:g></string>
@@ -103,7 +102,6 @@
     <string name="fui_email_link_email_sent" translation_description="Text to tell the user that the email has been sent">A sign-in email with additional instructions was sent to %1$s. Check your email to complete sign-in.</string>
     <string name="fui_email_link_trouble_getting_email_header" translation_description="Header that is displayed on the trouble signing in activity">Trouble getting email?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes" translation_description="A list of possible fixes for receiving the email">Try these common fixes:\n\u2022 Check if the email was marked as spam or filtered.\n\u2022 Check your internet connection.\n\u2022 Check that you did not misspell your email.\n\u2022 Check that your inbox space is not running out or other inbox setting related issues.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution" translation_description="Prompt the user to resend the email if the listed fixes do not work">If the steps above didn\'t work, you can resend the email. Note that this will deactivate the link in the older email. </string>
     <string name="fui_email_link_resend" translation_description="Button text to resend">Resend</string>
     <string name="fui_email_link_wrong_device_header" translation_description="Header shown when the user opens a link that was sent from a different device">New device or browser detected.</string>
     <string name="fui_email_link_wrong_device_message" translation_description="Message shown when the user opens a link that was sent from a different device">Try opening the link using the same device or browser where you started the sign-in process.</string>
@@ -115,7 +113,6 @@
     <string name="fui_email_link_confirm_email_message" translation_description="Message shown when prompting the user to confirm their email to finish the sign in flow">Confirm email to continue sign in</string>
     <string name="fui_email_link_dismiss_button" translation_description="Dismiss button for the wrong device or invalid link dialog">Dismiss</string>
     <string name="fui_email_link_cross_device_linking_text" translation_description="Text shown when the user opens an email link on a different device, but they had originally intended to link a provider to their account.">You originally intended to connect %1$s to your email account but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device where you started sign-in. Otherwise, tap Continue to sign-in on this device.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text" translation_description="Sign in with provider text">Sign in with %1$s</string>
 
 
     <!-- Phone number auth -->

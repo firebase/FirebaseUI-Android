@@ -1,7 +1,6 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">A carregar…</string>
     <string name="fui_sign_in_default">Iniciar sessão</string>
-    <string name="fui_cancel">Cancelar</string>
     <string name="fui_continue">Continuar</string>
     <string name="fui_tos_and_pp">Ao continuar, indica que aceita os %1$s e a %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s     %2$s</string>
@@ -63,7 +62,6 @@
     <string name="fui_email_link_email_sent">Enviámos um email de início de sessão com instruções adicionais para %1$s. Consulte o seu email para concluir o início de sessão.</string>
     <string name="fui_email_link_trouble_getting_email_header">Está com problemas para receber emails?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Experimente estas correções comuns:\n\u2022 Verifique se o email foi assinalado como spam ou filtrado.\n\u2022 Verifique a ligação à Internet.\n\u2022 Certifique-se de que não introduziu o seu email incorretamente.\n\u2022 Certifique-se de que a sua caixa de entrada não está a ficar sem espaço disponível nem está com outros problemas relacionados com as definições da caixa de entrada.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Se os passos acima não resolverem o problema, pode reenviar o email. Tenha em atenção que esta ação desativa o link no email mais antigo.</string>
     <string name="fui_email_link_resend">Reenviar</string>
     <string name="fui_email_link_wrong_device_header">Novo dispositivo ou navegador detetado.</string>
     <string name="fui_email_link_wrong_device_message">Experimente abrir o link através do mesmo dispositivo ou navegador no qual iniciou o processo de início de sessão.</string>
@@ -75,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Confirme o email para iniciar sessão.</string>
     <string name="fui_email_link_dismiss_button">Ignorar</string>
     <string name="fui_email_link_cross_device_linking_text">Originalmente, pretendia associar %1$s à sua conta de email, mas abriu o link num dispositivo diferente no qual não tem sessão iniciada.\n\nSe ainda pretender associar a sua conta do %1$s, abra o link no mesmo dispositivo em que iniciou sessão. Caso contrário, toque em Continuar para iniciar sessão neste dispositivo.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Iniciar sessão com %1$s</string>
     <string name="fui_verify_phone_number_title">Introduza o seu número de telefone</string>
     <string name="fui_invalid_phone_number">Introduza um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Introduza o código de 6 dígitos que enviámos para</string>

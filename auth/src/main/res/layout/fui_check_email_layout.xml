@@ -18,7 +18,6 @@
 
         <LinearLayout
             style="@style/FirebaseUI.WrapperStyle"
-            android:id="@+id/email_top_layout"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
