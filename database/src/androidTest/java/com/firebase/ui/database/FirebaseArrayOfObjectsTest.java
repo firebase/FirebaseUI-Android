@@ -48,19 +48,11 @@ public class FirebaseArrayOfObjectsTest {
                 .child("objects");
         mArray = new FirebaseArray<>(mRef, new ClassSnapshotParser<>(Bean.class));
         mRef.removeValue();
-        mListener = runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 1; i <= INITIAL_SIZE; i++) {
-                    mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
-                }
+        mListener = runAndWaitUntil(mArray, () -> {
+            for (int i = 1; i <= INITIAL_SIZE; i++) {
+                mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
             }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.size() == INITIAL_SIZE;
-            }
-        });
+        }, () -> mArray.size() == INITIAL_SIZE);
     }
 
     @After
@@ -71,64 +63,30 @@ public class FirebaseArrayOfObjectsTest {
 
     @Test
     public void testPushIncreasesSize() throws Exception {
-        runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                mRef.push().setValue(new Bean(4));
-            }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.size() == 4;
-            }
-        });
+        runAndWaitUntil(mArray, () -> mRef.push().setValue(new Bean(4)), () -> mArray.size() == 4);
     }
 
     @Test
     public void testPushAppends() throws Exception {
-        runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                mRef.push().setValue(new Bean(4), 4);
-            }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.get(3).getNumber() == 4;
-            }
-        });
+        runAndWaitUntil(mArray,
+                () -> mRef.push().setValue(new Bean(4), 4),
+                () -> mArray.get(3).getNumber() == 4);
     }
 
     @Test
     public void testAddValueWithPriority() throws Exception {
-        runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                mRef.push().setValue(new Bean(4), 0.5);
-            }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.get(3).getNumber() == 3 && mArray.get(0).getNumber() == 4;
-            }
-        });
+        runAndWaitUntil(mArray,
+                () -> mRef.push().setValue(new Bean(4), 0.5),
+                () -> mArray.get(3).getNumber() == 3 && mArray.get(0).getNumber() == 4);
     }
 
     @Test
     public void testChangePriorities() throws Exception {
-        runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                mArray.getSnapshot(2).getRef().setPriority(0.5);
-            }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.get(0).getNumber() == 3
-                        && mArray.get(1).getNumber() == 1
-                        && mArray.get(2).getNumber() == 2;
-                //return isValuesEqual(mArray, new int[]{3, 1, 2});
-            }
+        runAndWaitUntil(mArray, () -> mArray.getSnapshot(2).getRef().setPriority(0.5), () -> {
+            return mArray.get(0).getNumber() == 3
+                    && mArray.get(1).getNumber() == 1
+                    && mArray.get(2).getNumber() == 2;
+            //return isValuesEqual(mArray, new int[]{3, 1, 2});
         });
     }
 
@@ -137,29 +95,13 @@ public class FirebaseArrayOfObjectsTest {
         final DatabaseReference pushRef = mRef.push();
 
         // Set initial value to "5"
-        runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                pushRef.setValue(new Bean(5), 100);
-            }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.get(3).getNumber() == 5;
-            }
-        });
+        runAndWaitUntil(mArray,
+                () -> pushRef.setValue(new Bean(5), 100),
+                () -> mArray.get(3).getNumber() == 5);
 
         // Change the value to "6" and ensure that the change is propagated
-        runAndWaitUntil(mArray, new Runnable() {
-            @Override
-            public void run() {
-                pushRef.setValue(new Bean(6), 100);
-            }
-        }, new Callable<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mArray.get(3).getNumber() == 6;
-            }
-        });
+        runAndWaitUntil(mArray,
+                () -> pushRef.setValue(new Bean(6), 100),
+                () -> mArray.get(3).getNumber() == 6);
     }
 }

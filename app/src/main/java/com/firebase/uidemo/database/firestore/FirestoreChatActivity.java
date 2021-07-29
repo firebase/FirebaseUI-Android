@@ -65,34 +65,16 @@ public class FirestoreChatActivity extends AppCompatActivity
         mBinding.messagesList.setHasFixedSize(true);
         mBinding.messagesList.setLayoutManager(manager);
 
-        mBinding.messagesList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View view, int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (bottom < oldBottom) {
-                    mBinding.messagesList.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mBinding.messagesList.smoothScrollToPosition(0);
-                        }
-                    }, 100);
-                }
+        mBinding.messagesList.addOnLayoutChangeListener((view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom < oldBottom) {
+                mBinding.messagesList.postDelayed(() -> mBinding.messagesList.smoothScrollToPosition(
+                        0), 100);
             }
         });
 
-        ImeHelper.setImeOnDoneListener(mBinding.messageEdit, new ImeHelper.DonePressedListener() {
-            @Override
-            public void onDonePressed() {
-                onSendClick();
-            }
-        });
+        ImeHelper.setImeOnDoneListener(mBinding.messageEdit, () -> onSendClick());
 
-        mBinding.sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSendClick();
-            }
-        });
+        mBinding.sendButton.setOnClickListener(view -> onSendClick());
     }
 
     @Override
@@ -180,11 +162,7 @@ public class FirestoreChatActivity extends AppCompatActivity
     }
 
     private void onAddMessage(@NonNull Chat chat) {
-        sChatCollection.add(chat).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "Failed to write message", e);
-            }
-        });
+        sChatCollection.add(chat).addOnFailureListener(this,
+                e -> Log.e(TAG, "Failed to write message", e));
     }
 }

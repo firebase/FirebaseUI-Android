@@ -177,12 +177,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 existingUser.getEmail(),
                 providerName));
 
-        mDoneButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mProvider.startSignIn(getAuth(), WelcomeBackIdpPrompt.this, providerId);
-            }
-        });
+        mDoneButton.setOnClickListener(view -> mProvider.startSignIn(getAuth(), WelcomeBackIdpPrompt.this, providerId));
 
         handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override

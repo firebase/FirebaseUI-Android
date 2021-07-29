@@ -99,14 +99,11 @@ public class AuthOperationManager {
                                      final FlowParameters flowParameters) {
         return getScratchAuth(flowParameters)
                 .signInWithCredential(credential)
-                .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
-                    @Override
-                    public Task<AuthResult> then(@NonNull Task<AuthResult> task) throws Exception {
-                        if (task.isSuccessful()) {
-                            return task.getResult().getUser().linkWithCredential(credentialToLink);
-                        }
-                        return task;
+                .continueWithTask(task -> {
+                    if (task.isSuccessful()) {
+                        return task.getResult().getUser().linkWithCredential(credentialToLink);
                     }
+                    return task;
                 });
     }
 

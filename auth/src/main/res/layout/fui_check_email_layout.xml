@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/top_progress_bar"
         style="@style/FirebaseUI.TopProgressBar"
         tools:visibility="visible" />
@@ -18,7 +18,6 @@
 
         <LinearLayout
             style="@style/FirebaseUI.WrapperStyle"
-            android:id="@+id/email_top_layout"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 

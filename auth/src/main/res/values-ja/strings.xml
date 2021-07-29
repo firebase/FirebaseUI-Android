@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> <item quantity="other">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">読み込んでいます…</string>
     <string name="fui_sign_in_default">ログイン</string>
-    <string name="fui_cancel">キャンセル</string>
     <string name="fui_continue">続行</string>
     <string name="fui_tos_and_pp">続行すると、%1$s と %2$s に同意したことになります。</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -26,6 +24,7 @@
     <string name="fui_next_default">次へ</string>
     <string name="fui_email_hint">メールアドレス</string>
     <string name="fui_phone_hint">電話番号</string>
+    <string name="fui_country_hint">国</string>
     <string name="fui_password_hint">パスワード</string>
     <string name="fui_new_password_hint">新しいパスワード</string>
     <string name="fui_required_field">入力必須項目です。</string>
@@ -37,6 +36,7 @@
     <string name="fui_name_hint">あなたの名前</string>
     <string name="fui_button_text_save">保存</string>
     <string name="fui_progress_dialog_signing_up">登録しています…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> <item quantity="other">パスワードが十分に安全ではありません。%1$d 文字以上で、文字と数字を組み合わせたパスワードを使用してください</item> </plurals>
     <string name="fui_email_account_creation_error">メール アカウントの登録に失敗しました</string>
     <string name="fui_terms_of_service">利用規約</string>
     <string name="fui_privacy_policy">プライバシー ポリシー</string>
@@ -62,7 +62,6 @@
     <string name="fui_email_link_email_sent">詳細な説明を記載したログインメールを %1$s に送信しました。メールを確認してログインを完了してください。</string>
     <string name="fui_email_link_trouble_getting_email_header">メールが受信できない場合</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">以下の一般的な解決方法をお試しください。\n\u2022 メールがスパムに分類されたりフィルタされたりしていないか確認する。\n\u2022 インターネットの接続を確認する。\n\u2022 メールアドレスのスペルに誤りがないか確認する。\n\u2022 受信トレイの容量不足や、設定関連のその他の問題がないか確認する。\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">上記の手順で解決しなかった場合はメールを再送信できます。メールを再送信すると、前回のメールに記載されたリンクは無効になります。</string>
     <string name="fui_email_link_resend">再送信</string>
     <string name="fui_email_link_wrong_device_header">新しいデバイスまたはブラウザが検出されました。</string>
     <string name="fui_email_link_wrong_device_message">ログイン プロセスを開始したときと同じデバイスまたはブラウザを使用してリンクを開いてみてください。</string>
@@ -74,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">ログインを続行するにはメールを確認してください</string>
     <string name="fui_email_link_dismiss_button">閉じる</string>
     <string name="fui_email_link_cross_device_linking_text">元々は %1$s をメール アカウントに接続しようとしましたが、ログインしていないデバイスでリンクが開かれました。%1$s アカウントの接続を続行する場合は、ログインを開始したデバイスでリンクを開いてください。接続しない場合は、[続行] をタップしてこのデバイスでログインします。</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s でログイン</string>
     <string name="fui_verify_phone_number_title">電話番号を入力してください</string>
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>
     <string name="fui_enter_confirmation_code">送信された 6 桁のコードを入力してください</string>

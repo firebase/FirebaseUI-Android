@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Config.SdkVersions.compile)
+    compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
-        minSdkVersion(Config.SdkVersions.min)
-        targetSdkVersion(Config.SdkVersions.target)
+        minSdk = Config.SdkVersions.min
+        targetSdk = Config.SdkVersions.target
 
         versionName = Config.version
         versionCode = 1
@@ -37,13 +37,15 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         // Common lint options across all modules
         disable(
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor" // We almost never care about this
+            "SelectableText", "SyntheticAccessor", // We almost never care about this
+            "UnusedIds", "MediaCapabilities" // TODO(rosariopfernandes): remove this once we confirm
+            // it builds successfully
         )
 
         // Module-specific
@@ -67,7 +69,7 @@ android {
 }
 
 dependencies {
-    implementation(Config.Libs.Androidx.design)
+    implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.multidex)
 
     implementation(project(":auth"))

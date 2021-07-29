@@ -11,7 +11,7 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:4.0.0"
+        const val android = "com.android.tools.build:gradle:7.0.0"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.3.8"
 
@@ -25,23 +25,23 @@ object Config {
         }
 
         object Androidx {
-            const val annotations = "androidx.annotation:annotation:1.1.0"
-            const val activity = "androidx.activity:activity:1.2.0"
-            const val customTabs = "androidx.browser:browser:1.0.0"
+            const val annotations = "androidx.annotation:annotation:1.2.0"
+            const val activity = "androidx.activity:activity:1.2.3"
+            const val customTabs = "androidx.browser:browser:1.3.0"
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:2.0.4"
-            const val fragment = "androidx.fragment:fragment:1.3.0"
-            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.2.0"
+            const val fragment = "androidx.fragment:fragment:1.3.5"
+            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.3.1"
             const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:2.2.0"
-            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.2.0"
-            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.3.1"
+            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
             const val paging = "androidx.paging:paging-runtime:3.0.0"
             const val pagingRxJava = "androidx.paging:paging-rxjava3:3.0.0"
-            const val recyclerView = "androidx.recyclerview:recyclerview:1.1.0"
+            const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
 
-            const val design = "com.google.android.material:material:1.2.1"
+            const val materialDesign = "com.google.android.material:material:1.4.0"
         }
 
         object Firebase {
@@ -74,7 +74,6 @@ object Config {
             const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
 
             const val permissions = "pub.devrel:easypermissions:3.0.0"
-            const val materialProgress = "me.zhanghai.android.materialprogressbar:library:1.6.1"
         }
 
         object Test {

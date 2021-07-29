@@ -66,15 +66,15 @@ public class GoogleSignInHandler extends SingleProviderSignInHandler<GoogleSignI
     }
 
     private void start() {
-        setResult(Resource.<IdpResponse>forLoading());
-        setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+        setResult(Resource.forLoading());
+        setResult(Resource.forFailure(new IntentRequiredException(
                 GoogleSignIn.getClient(getApplication(), getSignInOptions()).getSignInIntent(),
                 RequestCodes.GOOGLE_PROVIDER)));
     }
 
     private GoogleSignInOptions getSignInOptions() {
         GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(
-                mConfig.getParams().<GoogleSignInOptions>getParcelable(
+                mConfig.getParams().getParcelable(
                         ExtraConstants.GOOGLE_SIGN_IN_OPTIONS));
 
         if (!TextUtils.isEmpty(mEmail)) {
@@ -103,13 +103,13 @@ public class GoogleSignInHandler extends SingleProviderSignInHandler<GoogleSignI
                 // Google remembers the account so the picker doesn't appear twice for the user.
                 start();
             } else if (e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CANCELLED) {
-                setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+                setResult(Resource.forFailure(new UserCancellationException()));
             } else {
                 if (e.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
                     Log.w(TAG, "Developer error: this application is misconfigured. " +
                             "Check your SHA1 and package name in the Firebase console.");
                 }
-                setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
+                setResult(Resource.forFailure(new FirebaseUiException(
                         ErrorCodes.PROVIDER_ERROR,
                         "Code: " + e.getStatusCode() + ", message: " + e.getMessage())));
             }

@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">লোড হচ্ছে…</string>
     <string name="fui_sign_in_default">সাইন-ইন করুন</string>
-    <string name="fui_cancel">বাতিল করুন</string>
     <string name="fui_continue">চালিয়ে যান</string>
     <string name="fui_tos_and_pp">চালিয়ে যাওয়ার অর্থ, আপনি আমাদের %1$s এবং %2$s-এর সাথে সম্মত।</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -26,6 +24,7 @@
     <string name="fui_next_default">পরবর্তী</string>
     <string name="fui_email_hint">ইমেল</string>
     <string name="fui_phone_hint">ফোন নম্বর</string>
+    <string name="fui_country_hint">দেশ</string>
     <string name="fui_password_hint">পাসওয়ার্ড</string>
     <string name="fui_new_password_hint">নতুন পাসওয়ার্ড</string>
     <string name="fui_required_field">আপনি এটি খালি ছাড়তে পারেন না।</string>
@@ -37,6 +36,7 @@
     <string name="fui_name_hint">নাম ও পদবি</string>
     <string name="fui_button_text_save">সেভ করুন</string>
     <string name="fui_progress_dialog_signing_up">সাইন-আপ করা হচ্ছে…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> </plurals>
     <string name="fui_email_account_creation_error">ইমেল অ্যাকাউন্টটি রেজিস্টার করা যায়নি</string>
     <string name="fui_terms_of_service">পরিষেবার শর্তাবলি</string>
     <string name="fui_privacy_policy">গোপনীয়তা নীতি</string>
@@ -62,7 +62,6 @@
     <string name="fui_email_link_email_sent">অতিরিক্ত নির্দেশাবলী সহ সাইন-ইন করার একটি ইমেল %1$s-এ পাঠানো হয়েছে। সাইন-ইন করার জন্য আপনার ইমেল দেখুন।</string>
     <string name="fui_email_link_trouble_getting_email_header">ইমেল পেতে সমস্যা হচ্ছে?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">সাধারণ সমাধানগুলি ব্যবহার করে দেখুন:\n\u2022 ইমেলটি স্প্যাম হিসেবে চিহ্নিত করে স্প্যাম ফোল্ডারে পাঠানো হয়েছে কিনা তা দেখুন।\n\u2022 আপনার ইন্টারনেট কানেকশন যাচাই করুন।\n\u2022 আপনার ইমেল আইডিতে কোনও ভুল বানান লিখেছেন কিনা দেখে নিন।\n\u2022 আপনার ইনবক্সের স্পেস শেষ হয়ে গেছে কিনা এবং ইনবক্স সংক্রান্ত অন্যান্য সমস্যাগুলি একবার দেখে নিন।\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">তারপরেও ইমেলটি না পেলে, আপনি তা আবার পাঠাতে পারেন। তবে, প্রথমে যে ইমেলটি পাঠানো হয়েছিল তাতে থাকা লিঙ্কটি আর কাজ করবে না।</string>
     <string name="fui_email_link_resend">আবার পাঠান</string>
     <string name="fui_email_link_wrong_device_header">এই ডিভাইস বা ব্রাউজারটি আলাদা।</string>
     <string name="fui_email_link_wrong_device_message">যে ডিভাইস অথবা ব্রাউজারে আপনি সাইন-ইন প্রসেস শুরু করেছেন সেই একই ডিভাইস অথবা ব্রাউজার ব্যবহার করে লিঙ্কটি খোলার চেষ্টা করুন।</string>
@@ -74,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">সাইন-ইন করতে ইমেল আইডি কনফার্ম করুন</string>
     <string name="fui_email_link_dismiss_button">খারিজ করুন</string>
     <string name="fui_email_link_cross_device_linking_text">আপনি %1$s অ্যাকাউন্ট ইমেল অ্যাকাউন্টের সাথে কানেক্ট করতে চেয়েছিলেন কিন্তু এমন একটি ডিভাইসে লিঙ্কটি খুলেছেন যেখানে সাইন-ইন করেননি।\n\nআপনি যদি এখনও %1$s অ্যাকাউন্টটি কানেক্ট করতে চান, যে ডিভাইসে সাইন-ইন করেছিলেন সেখানেই লিঙ্কটি খুলুন। নাহলে, ডিভাইসের সাইন-ইন বিকল্পে ট্যাপ করুন।</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">%1$s দিয়ে সাইন-ইন করুন</string>
     <string name="fui_verify_phone_number_title">আপনার ফোন নম্বর লিখুন</string>
     <string name="fui_invalid_phone_number">একটি সঠিক ফোন নম্বর লিখুন</string>
     <string name="fui_enter_confirmation_code">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>

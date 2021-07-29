@@ -124,12 +124,7 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
             @Override
             protected void onSuccess(@NonNull String email) {
                 Log.w(TAG, "Email for email link sign in sent successfully.");
-                doAfterTimeout(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTopLevelView.setVisibility(View.VISIBLE);
-                    }
-                });
+                doAfterTimeout(() -> mTopLevelView.setVisibility(View.VISIBLE));
                 mEmailSent = true;
             }
 
@@ -150,12 +145,7 @@ public class EmailLinkFragment extends InvisibleFragmentBase {
     }
 
     private void setOnClickListeners(View view, final String email) {
-        view.findViewById(R.id.trouble_signing_in).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onTroubleSigningIn(email);
-            }
-        });
+        view.findViewById(R.id.trouble_signing_in).setOnClickListener(v -> mListener.onTroubleSigningIn(email));
     }
 
     private void setPrivacyFooter(View view) {

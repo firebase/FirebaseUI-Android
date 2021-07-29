@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">正在加载…</string>
     <string name="fui_sign_in_default">登录</string>
-    <string name="fui_cancel">取消</string>
     <string name="fui_continue">继续</string>
     <string name="fui_tos_and_pp">继续即表示您接受我们的%1$s和%2$s。</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -26,6 +24,7 @@
     <string name="fui_next_default">继续</string>
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>
+    <string name="fui_country_hint">国家/地区</string>
     <string name="fui_password_hint">密码</string>
     <string name="fui_new_password_hint">新密码</string>
     <string name="fui_required_field">此处不能留空。</string>
@@ -37,6 +36,7 @@
     <string name="fui_name_hint">姓名</string>
     <string name="fui_button_text_save">保存</string>
     <string name="fui_progress_dialog_signing_up">正在注册…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> </plurals>
     <string name="fui_email_account_creation_error">未能使用电子邮件地址注册帐号</string>
     <string name="fui_terms_of_service">服务条款</string>
     <string name="fui_privacy_policy">隐私权政策</string>
@@ -62,7 +62,6 @@
     <string name="fui_email_link_email_sent">系统已将含附加说明的登录电子邮件发送至 %1$s。请查收电子邮件以完成登录。</string>
     <string name="fui_email_link_trouble_getting_email_header">无法收到电子邮件？</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">尝试以下常见解决方法：\n\u2022 检查电子邮件是否被标记为垃圾邮件或被过滤。\n\u2022 检查您的互联网连接。\n\u2022 确保没有写错电子邮件地址。\n\u2022 确保收件箱空间充足，且不存在其他与收件箱设置有关的问题。\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">如果上述步骤未能帮助您解决问题，您可以重新发送电子邮件。请注意，重新发送后上一封电子邮件中的链接将失效。</string>
     <string name="fui_email_link_resend">重新发送</string>
     <string name="fui_email_link_wrong_device_header">检测到新设备或新浏览器。</string>
     <string name="fui_email_link_wrong_device_message">请尝试使用您最初进入登录流程时所用的设备或浏览器打开链接。</string>
@@ -74,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">确认电子邮件地址以继续登录</string>
     <string name="fui_email_link_dismiss_button">关闭</string>
     <string name="fui_email_link_cross_device_linking_text">您最初是想将%1$s与您的电子邮件帐号关联起来，但是您换用其他未登录的设备打开了此链接。\n\n如果您仍希望关联您的%1$s帐号，请在您最初开始登录时所用的设备上打开此链接。否则，请点按“继续”以在当前设备上登录。</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">使用%1$s登录</string>
     <string name="fui_verify_phone_number_title">输入您的电话号码</string>
     <string name="fui_invalid_phone_number">请输入有效的电话号码</string>
     <string name="fui_enter_confirmation_code">输入我们发送至以下电话号码的 6 位数验证码</string>

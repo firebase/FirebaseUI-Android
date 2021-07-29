@@ -30,7 +30,7 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
         if (getAuth() == null) {
             return;
         }
-        setResult(Resource.<String>forLoading());
+        setResult(Resource.forLoading());
 
         final String anonymousUserId =
                 AuthOperationManager.getInstance().canUpgradeAnonymous(getAuth(), getArguments())
@@ -42,17 +42,14 @@ public class EmailLinkSendEmailHandler extends AuthViewModelBase<String> {
                 sessionId, anonymousUserId, idpResponseForLinking, forceSameDevice);
 
         getAuth().sendSignInLinkToEmail(email, mutatedSettings)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            EmailLinkPersistenceManager.getInstance().saveEmail(getApplication(),
-                                    email, sessionId, anonymousUserId);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        EmailLinkPersistenceManager.getInstance().saveEmail(getApplication(),
+                                email, sessionId, anonymousUserId);
 
-                            setResult(Resource.forSuccess(email));
-                        } else {
-                            setResult(Resource.<String>forFailure(task.getException()));
-                        }
+                        setResult(Resource.forSuccess(email));
+                    } else {
+                        setResult(Resource.forFailure(task.getException()));
                     }
                 });
     }

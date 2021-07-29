@@ -206,12 +206,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     private void safeRequestFocus(final View v) {
-        v.post(new Runnable() {
-            @Override
-            public void run() {
-                v.requestFocus();
-            }
-        });
+        v.post(() -> v.requestFocus());
     }
 
     @Override

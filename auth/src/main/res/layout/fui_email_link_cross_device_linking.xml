@@ -6,7 +6,7 @@
               android:orientation="vertical"
               tools:ignore="MissingDefaultResource">
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/top_progress_bar"
         style="@style/FirebaseUI.TopProgressBar"
         tools:visibility="visible" />

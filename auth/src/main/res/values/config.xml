@@ -19,7 +19,7 @@
      See:
      https://developers.facebook.com/docs/facebook-login/android#chrome_custom_tabs
     -->
-    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb_your_app_id</string>
 
     <!--
     The Google web client ID associated with this Android application. The

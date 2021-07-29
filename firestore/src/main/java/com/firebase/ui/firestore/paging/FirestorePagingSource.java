@@ -38,27 +38,19 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
             task = params.getKey().getPageQuery(mQuery, params.getLoadSize()).get(mSource);
         }
 
-        return Single.fromCallable(new Callable<LoadResult<PageKey, DocumentSnapshot>>() {
-            @Override
-            public LoadResult<PageKey, DocumentSnapshot> call() throws Exception {
-                Tasks.await(task);
-                if (task.isSuccessful()) {
-                    QuerySnapshot snapshot = task.getResult();
-                    PageKey nextPage = getNextPageKey(snapshot);
-                    if (snapshot.getDocuments().isEmpty()) {
-                        return toLoadResult(snapshot.getDocuments(), null);
-                    }
-                    return toLoadResult(snapshot.getDocuments(), nextPage);
+        return Single.fromCallable(() -> {
+            Tasks.await(task);
+            if (task.isSuccessful()) {
+                QuerySnapshot snapshot = task.getResult();
+                PageKey nextPage = getNextPageKey(snapshot);
+                if (snapshot.getDocuments().isEmpty()) {
+                    return toLoadResult(snapshot.getDocuments(), null);
                 }
-                throw task.getException();
+                return toLoadResult(snapshot.getDocuments(), nextPage);
             }
+            throw task.getException();
         }).subscribeOn(Schedulers.io())
-                .onErrorReturn(new Function<Throwable, LoadResult<PageKey, DocumentSnapshot>>() {
-                    @Override
-                    public LoadResult<PageKey, DocumentSnapshot> apply(Throwable throwable) {
-                        return new LoadResult.Error<>(throwable);
-                    }
-                });
+                .onErrorReturn(throwable -> new LoadResult.Error<>(throwable));
     }
 
     private LoadResult<PageKey, DocumentSnapshot> toLoadResult(

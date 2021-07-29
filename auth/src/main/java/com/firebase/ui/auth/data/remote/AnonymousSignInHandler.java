@@ -41,24 +41,14 @@ public class AnonymousSignInHandler extends SingleProviderSignInHandler<FlowPara
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
 
         // Calling signInAnonymously() will always return the same anonymous user if already
         // available. This is enforced by the client SDK.
         mAuth.signInAnonymously()
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult result) {
-                        setResult(Resource.<IdpResponse>forSuccess(initResponse(
-                                result.getAdditionalUserInfo().isNewUser())));
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        setResult(Resource.<IdpResponse>forFailure(e));
-                    }
-                });
+                .addOnSuccessListener(result -> setResult(Resource.forSuccess(initResponse(
+                        result.getAdditionalUserInfo().isNewUser()))))
+                .addOnFailureListener(e -> setResult(Resource.forFailure(e)));
 
     }
 

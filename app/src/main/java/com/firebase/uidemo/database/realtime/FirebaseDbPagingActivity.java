@@ -123,12 +123,9 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
         mBinding.pagingRecycler.setAdapter(mAdapter);
 
         // Reload data on swipe
-        mBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //Reload Data
-                mAdapter.refresh();
-            }
+        mBinding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            //Reload Data
+            mAdapter.refresh();
         });
     }
 

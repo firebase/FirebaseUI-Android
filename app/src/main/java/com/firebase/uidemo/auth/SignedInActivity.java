@@ -31,6 +31,7 @@ import com.firebase.uidemo.databinding.SignedInLayoutBinding;
 import com.firebase.uidemo.storage.GlideApp;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -48,7 +49,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
@@ -82,47 +82,29 @@ public class SignedInActivity extends AppCompatActivity {
         populateProfile(response);
         populateIdpToken(response);
 
-        mBinding.deleteAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteAccountClicked();
-            }
-        });
+        mBinding.deleteAccount.setOnClickListener(view -> deleteAccountClicked());
 
-        mBinding.signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
+        mBinding.signOut.setOnClickListener(view -> signOut());
     }
 
     public void signOut() {
         AuthUI.getInstance()
                 .signOut(this)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
-                            finish();
-                        } else {
-                            Log.w(TAG, "signOut:failure", task.getException());
-                            showSnackbar(R.string.sign_out_failed);
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                        finish();
+                    } else {
+                        Log.w(TAG, "signOut:failure", task.getException());
+                        showSnackbar(R.string.sign_out_failed);
                     }
                 });
     }
 
     public void deleteAccountClicked() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setMessage("Are you sure you want to delete this account?")
-                .setPositiveButton("Yes, nuke it!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        deleteAccount();
-                    }
-                })
+                .setPositiveButton("Yes, nuke it!", (dialogInterface, i) -> deleteAccount())
                 .setNegativeButton("No", null)
                 .show();
     }
@@ -130,15 +112,12 @@ public class SignedInActivity extends AppCompatActivity {
     private void deleteAccount() {
         AuthUI.getInstance()
                 .delete(this)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
-                            finish();
-                        } else {
-                            showSnackbar(R.string.delete_account_failed);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        startActivity(AuthUiActivity.createIntent(SignedInActivity.this));
+                        finish();
+                    } else {
+                        showSnackbar(R.string.delete_account_failed);
                     }
                 });
     }

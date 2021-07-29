@@ -130,19 +130,11 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
                              @NonNull final DataCallback<? super InputStream> callback) {
             mStreamTask = mRef.getStream();
             mStreamTask
-                    .addOnSuccessListener(new OnSuccessListener<StreamDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(StreamDownloadTask.TaskSnapshot snapshot) {
-                            mInputStream = snapshot.getStream();
-                            callback.onDataReady(mInputStream);
-                        }
+                    .addOnSuccessListener(snapshot -> {
+                        mInputStream = snapshot.getStream();
+                        callback.onDataReady(mInputStream);
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            callback.onLoadFailed(e);
-                        }
-                    });
+                    .addOnFailureListener(e -> callback.onLoadFailed(e));
         }
 
         @Override

@@ -29,7 +29,7 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
     public void startSignIn(@NonNull FirebaseAuth auth,
                             @NonNull HelperActivityBase activity,
                             @NonNull String providerId) {
-        setResult(Resource.<IdpResponse>forLoading());
+        setResult(Resource.forLoading());
 
         FlowParameters flowParameters = activity.getFlowParams();
         OAuthProvider provider = buildOAuthProvider(providerId, auth);
@@ -47,24 +47,16 @@ public class GenericIdpAnonymousUpgradeLinkingHandler extends GenericIdpSignInHa
                                                    final FlowParameters flowParameters) {
         final boolean useEmulator = activity.getAuthUI().isUseEmulator();
         AuthOperationManager.getInstance().safeGenericIdpSignIn(activity, provider, flowParameters)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // Pass the credential so we can sign-in on the after the merge
-                        // conflict is resolved.
-                        handleSuccess(
-                                useEmulator,
-                                provider.getProviderId(),
-                                authResult.getUser(), (OAuthCredential) authResult.getCredential(),
-                                /* setPendingCredential= */true);
-                    }
+                .addOnSuccessListener(authResult -> {
+                    // Pass the credential so we can sign-in on the after the merge
+                    // conflict is resolved.
+                    handleSuccess(
+                            useEmulator,
+                            provider.getProviderId(),
+                            authResult.getUser(), (OAuthCredential) authResult.getCredential(),
+                            /* setPendingCredential= */true);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        setResult(Resource.<IdpResponse>forFailure(e));
-                    }
-                });
+                .addOnFailureListener(e -> setResult(Resource.forFailure(e)));
 
     }
 }

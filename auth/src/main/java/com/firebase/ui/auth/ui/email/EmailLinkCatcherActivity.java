@@ -118,11 +118,7 @@ public class EmailLinkCatcherActivity extends InvisibleActivityBase {
         return alertDialog.setTitle(titleText)
                 .setMessage(messageText)
                 .setPositiveButton(R.string.fui_email_link_dismiss_button,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                finish(errorCode, null);
-                            }
-                        })
+                        (dialog, id) -> finish(errorCode, null))
                 .create();
     }
 

@@ -58,7 +58,6 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
-        notifyDataSetChanged();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
