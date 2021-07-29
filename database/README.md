@@ -121,7 +121,7 @@ FirebaseUI offers two types of RecyclerView adapters for the Realtime Database:
   * `FirebaseRecyclerAdapter` — binds a `Query` to a `RecyclerView` and responds to all real-time
     events included items being added, removed, moved, or changed. Best used with small result sets
     since all results are loaded at once.
-  * `FirebasePagingRecyclerAdapter` — binds a `Query` to a `RecyclerView` by loading data in pages. Best
+  * `FirebaseRecyclerPagingAdapter` — binds a `Query` to a `RecyclerView` by loading data in pages. Best
     used with large, static data sets. Real-time events are not respected by this adapter, so it
     will not detect new/removed items or changes to items already loaded.
 
@@ -245,13 +245,13 @@ FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
 
 The `FirebaseRecyclerPagingAdapter` binds a `Query` to a `RecyclerView` by loading documents in pages.
 This results in a time and memory efficient binding, however it gives up the real-time events
-afforded by the `FirestoreRecyclerAdapter`.
+afforded by the `FirebaseRecyclerAdapter`.
 
-The `FirebaseRecyclerPagingAdapter` is built on top of the [Android Paging Support Library][paging-support].
-Before using the adapter in your application, you must add a dependency on the support library:
+The `FirebaseRecyclerPagingAdapter` is built on top of the [Android Paging 3 Library][paging-support].
+Before using the adapter in your application, you must add a dependency on that library:
 
 ```groovy
-implementation 'androidx.paging:paging-runtime:2.x.x'
+implementation 'androidx.paging:paging-runtime:3.x.x'
 ```
 
 First, configure the adapter by building `DatabasePagingOptions`. Since the paging adapter
@@ -263,13 +263,10 @@ an adapter that loads a generic `Item`:
 // to form smaller queries for each page.
 Query baseQuery = mDatabase.getReference().child("items");
 
-// This configuration comes from the Paging Support Library
-// https://developer.android.com/reference/androidx/paging/PagedList.Config
-PagedList.Config config = new PagedList.Config.Builder()
-        .setEnablePlaceholders(false)
-        .setPrefetchDistance(10)
-        .setPageSize(20)
-        .build();
+// This configuration comes from the Paging 3 Library
+// https://developer.android.com/reference/kotlin/androidx/paging/PagingConfig
+PagingConfig config = new PagingConfig(/* page size */ 20, /* prefetchDistance */ 10,
+    /* enablePlaceHolders */ false);
 
 // The options for the adapter combine the paging configuration with query information
 // and application-specific options for lifecycle, etc.
@@ -360,34 +357,98 @@ start and stop listening in `onStart()` and `onStop()`.
 #### Paging events
 
 When using the `FirebaseRecyclerPagingAdapter`, you may want to perform some action every time data
-changes or when there is an error. To do this, override the `onLoadingStateChanged()`
-method of the adapter:
+changes or when there is an error. To do this:
+
+##### In Java
+
+Use the `addLoadStateListener` method from the adapter:
 
 ```java
-FirebaseRecyclerPagingAdapter<Item, ItemViewHolder> adapter =
-        new FirebaseRecyclerPagingAdapter<Item, ItemViewHolder>(options) {
-
-            // ...
-
+adapter.addLoadStateListener(new Function1<CombinedLoadStates, Unit>() {
             @Override
-            protected void onLoadingStateChanged(@NonNull LoadingState state) {
-                switch (state) {
-                    case LOADING_INITIAL:
-                        // The initial load has begun
+            public Unit invoke(CombinedLoadStates states) {
+                LoadState refresh = states.getRefresh();
+                LoadState append = states.getAppend();
+
+                if (refresh instanceof LoadState.Error || append instanceof LoadState.Error) {
+                    // The previous load (either initial or additional) failed. Call
+                    // the retry() method in order to retry the load operation.
+                    // ...
+                }
+
+                if (refresh instanceof LoadState.Loading) {
+                    // The initial Load has begun
+                    // ...
+                }
+
+                if (append instanceof LoadState.Loading) {
+                    // The adapter has started to load an additional page
+                    // ...
+                }
+
+                if (append instanceof LoadState.NotLoading) {
+                    LoadState.NotLoading notLoading = (LoadState.NotLoading) append;
+                    if (notLoading.getEndOfPaginationReached()) {
+                        // The adapter has finished loading all of the data set
                         // ...
-                    case LOADING_MORE:
-                        // The adapter has started to load an additional page
-                        // ...
-                    case LOADED:
+                        return null;
+                    }
+
+                    if (refresh instanceof LoadState.NotLoading) {
                         // The previous load (either initial or additional) completed
                         // ...
-                    case ERROR:
-                        // The previous load (either initial or additional) failed. Call
-                        // the retry() method in order to retry the load operation.
-                        // ...
+                        return null;
+                    }
+                }
+                return null;
+            }
+        });
+```
+
+#### In Kotlin
+
+Use the `loadStateFlow` exposed by the adapter, in a Coroutine Scope:
+
+```kotlin
+// Activities can use lifecycleScope directly, but Fragments should instead use
+// viewLifecycleOwner.lifecycleScope.
+lifecycleScope.launch {
+    pagingAdapter.loadStateFlow.collectLatest { loadStates ->
+        when (loadStates.refresh) {
+            is LoadState.Error -> {
+                // The initial load failed. Call the retry() method
+                // in order to retry the load operation.
+                // ...
+            }
+            is LoadState.Loading -> {
+                // The initial Load has begun
+                // ...
+            }
+        }
+
+        when (loadStates.append) {
+            is LoadState.Error -> {
+                // The additional load failed. Call the retry() method
+                // in order to retry the load operation.
+                // ...
+            }
+            is LoadState.Loading -> {
+                // The adapter has started to load an additional page
+                // ...
+            }
+            is LoadState.NotLoading -> {
+                if (loadStates.append.endOfPaginationReached) {
+                    // The adapter has finished loading all of the data set
+                    // ...
+                }
+                if (loadStates.refresh is LoadState.NotLoading) {
+                    // The previous load (either initial or additional) completed
+                    // ...
                 }
             }
-        };
+        }
+  }
+}
 ```
 
 
@@ -458,4 +519,4 @@ The order in which you receive your data depends on the order from `keyRef`, not
 [indexed-data]: https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure
 [recyclerview]: https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView
 [arch-components]: https://developer.android.com/topic/libraries/architecture/index.html
-[paging-support]: https://developer.android.com/topic/libraries/architecture/paging
+[paging-support]: https://developer.android.com/topic/libraries/architecture/paging/v3-overview
