@@ -13,17 +13,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagingState;
 import androidx.paging.rxjava3.RxPagingSource;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
-    private Query mQuery;
+    private final Query mQuery;
 
     private static final String STATUS_DATABASE_NOT_FOUND = "DATA_NOT_FOUND";
     private static final String MESSAGE_DATABASE_NOT_FOUND = "Data not found at given child path!";
@@ -57,8 +55,22 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
                     List<DataSnapshot> data = new ArrayList<>();
                     String lastKey = null;
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        data.add(snapshot);
+                    if (params.getKey() == null) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            data.add(snapshot);
+                        }
+                    } else {
+                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+
+                        //Skip First Item
+                        if (iterator.hasNext()) {
+                            iterator.next();
+                        }
+
+                        while (iterator.hasNext()) {
+                            DataSnapshot snapshot = iterator.next();
+                            data.add(snapshot);
+                        }
                     }
 
                     //Detect End of Data
@@ -91,7 +103,7 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
                 LoadResult.Page.COUNT_UNDEFINED);
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     private String getLastPageKey(@NonNull List<DataSnapshot> data) {
         if (data.isEmpty()) {
             return null;
