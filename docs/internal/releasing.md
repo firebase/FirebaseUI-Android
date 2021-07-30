@@ -109,10 +109,6 @@ Follow [the instructions here](https://central.sonatype.org/pages/releasing-the-
   1. Click **Close** ... wait a few minutes (you can check status with **Refresh**)
   1. Click **Release**
 
-[gh-actions]: https://github.com/firebase/geofire-android/actions
-[gh-actions-badge]: https://github.com/firebase/geofire-android/workflows/Android%20CI/badge.svg
-
-
 ## 3 - Update issues, milestones, and release notes
 
 First, go to the milestone for the released version and for each open issue:
