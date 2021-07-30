@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Učitavanje…</string>
     <string name="fui_sign_in_default">Prijava</string>
-    <string name="fui_cancel">Odustani</string>
     <string name="fui_continue">Nastavi</string>
     <string name="fui_tos_and_pp">Ako nastavite, potvrđujete da prihvaćate odredbe koje sadrže %1$s i %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -26,6 +24,7 @@
     <string name="fui_next_default">Dalje</string>
     <string name="fui_email_hint">E-adresa</string>
     <string name="fui_phone_hint">Telefonski broj</string>
+    <string name="fui_country_hint">Zemlja</string>
     <string name="fui_password_hint">Zaporka</string>
     <string name="fui_new_password_hint">Nova zaporka</string>
     <string name="fui_required_field">Ne možete to ostaviti prazno.</string>
@@ -37,6 +36,7 @@
     <string name="fui_name_hint">Ime i prezime</string>
     <string name="fui_button_text_save">Spremi</string>
     <string name="fui_progress_dialog_signing_up">Registriranje….</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
     <string name="fui_email_account_creation_error">Registracija računa putem e-adrese nije uspjela</string>
     <string name="fui_terms_of_service">Uvjeti pružanja usluge</string>
     <string name="fui_privacy_policy">Pravila o privatnosti</string>
@@ -62,7 +62,6 @@
     <string name="fui_email_link_email_sent">E-poruka za prijavu s dodatnim uputama poslana je na adresu %1$s. Provjerite e-poštu da biste dovršili prijavu.</string>
     <string name="fui_email_link_trouble_getting_email_header">Imate poteškoće s primanjem e-poruke?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Isprobajte ova uobičajena rješenja:\n\u2022 Provjerite je li e-poruka filtrirana ili označena kao neželjena pošta.\n\u2022 Provjerite internetsku vezu.\n\u2022 Provjerite jeste li točno napisali e-adresu.\n\u2022 Provjerite ima li dovoljno prostora u vašem pretincu pristigle pošte ili je došlo do drugih problema povezanih s postavkama pretinca pristigle pošte.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Ako se problem ne riješi pomoću koraka iznad, možete ponovo poslati e-poruku. Time će se deaktivirati veza u ranijoj e-poruci.</string>
     <string name="fui_email_link_resend">Pošalji ponovo</string>
     <string name="fui_email_link_wrong_device_header">Pronađen je novi uređaj ili preglednik.</string>
     <string name="fui_email_link_wrong_device_message">Pokušajte otvoriti vezu s onog uređaja ili preglednika u kojem ste započeli postupak prijave.</string>
@@ -74,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Za nastavak prijave potvrdite e-adresu</string>
     <string name="fui_email_link_dismiss_button">Odbaci</string>
     <string name="fui_email_link_cross_device_linking_text">Izvorno ste namjeravali povezati %1$s račun sa svojim računom e-pošte, no otvorili ste vezu na drugom uređaju na kojem niste prijavljeni.\n\nAko i dalje želite povezati svoj %1$s račun, otvorite vezu na uređaju na kojem ste pokrenuli postupak prijave. U suprotnom dodirnite Nastavi da biste se prijavili na ovom uređaju.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Prijava putem adrese %1$s</string>
     <string name="fui_verify_phone_number_title">Unesite telefonski broj</string>
     <string name="fui_invalid_phone_number">Unesite važeći telefonski broj</string>
     <string name="fui_enter_confirmation_code">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>

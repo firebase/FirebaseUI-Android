@@ -36,6 +36,7 @@ import androidx.lifecycle.Observer;
 import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ public class PhoneProviderResponseHandlerTest {
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
-        mCredential = PhoneAuthCredential.zzb("sessionInfo", "SmsCode");
+        mCredential = PhoneAuthCredential.zzc("sessionInfo", "SmsCode");
 
         mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
@@ -79,7 +80,7 @@ public class PhoneProviderResponseHandlerTest {
 
         mHandler.startSignIn(mCredential, response);
         verify(mMockAuth).signInWithCredential(mCredential);
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
     @Test
@@ -97,7 +98,7 @@ public class PhoneProviderResponseHandlerTest {
         mHandler.startSignIn(mCredential, response);
 
         verify(mMockAuth.getCurrentUser()).linkWithCredential(mCredential);
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isSuccess()));
     }
 
 
@@ -112,7 +113,7 @@ public class PhoneProviderResponseHandlerTest {
                 AuthCredential.class, mCredential);
 
         when(mMockAuth.getCurrentUser().linkWithCredential(mCredential))
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(ex));
+                .thenReturn(AutoCompleteTask.forFailure(ex));
 
         IdpResponse response = new IdpResponse.Builder(new User.Builder(
                 PhoneAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build())
@@ -124,7 +125,7 @@ public class PhoneProviderResponseHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> resolveCaptor =
                 ArgumentCaptor.forClass(Resource.class);

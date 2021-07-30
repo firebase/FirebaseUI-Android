@@ -19,7 +19,8 @@
         "docs/upgrade-to-4.0.md": "Upgrade to v4.0",
         "docs/upgrade-to-5.0.md": "Upgrade to v5.0",
         "docs/upgrade-to-6.0.md": "Upgrade to v6.0",
-        "docs/upgrade-to-7.0.md": "Upgrade to v7.0"
+        "docs/upgrade-to-7.0.md": "Upgrade to v7.0",
+        "docs/upgrade-to-8.0.md": "Upgrade to v8.0"
     },
   
     "related": [

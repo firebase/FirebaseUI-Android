@@ -12,8 +12,8 @@
     android:orientation="vertical"
     tools:context=".auth.AuthUiActivity">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/Base.TextAppearance.AppCompat.Headline"
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/TextAppearance.MaterialComponents.Headline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -31,7 +31,7 @@
 
     <Button
         android:id="@+id/anon_sign_in"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -39,7 +39,7 @@
 
     <Button
         android:id="@+id/begin_flow"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -48,7 +48,7 @@
 
     <Button
         android:id="@+id/resolve_merge"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -57,7 +57,7 @@
 
     <Button
         android:id="@+id/sign_out"
-        style="@style/Widget.AppCompat.Button.Colored"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

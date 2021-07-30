@@ -12,10 +12,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.paging.DatabasePagingOptions;
 import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
-import com.firebase.ui.database.paging.LoadingState;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.ActivityDatabasePagingBinding;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -24,7 +22,8 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.paging.PagedList;
+import androidx.paging.LoadState;
+import androidx.paging.PagingConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -53,11 +52,7 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
     private void setUpAdapter() {
 
         //Initialize Paging Configurations
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPrefetchDistance(5)
-                .setPageSize(30)
-                .build();
+        PagingConfig config = new PagingConfig(30, 5, false);
 
         //Initialize Firebase Paging Options
         DatabasePagingOptions<Item> options = new DatabasePagingOptions.Builder<Item>()
@@ -83,44 +78,54 @@ public class FirebaseDbPagingActivity extends AppCompatActivity {
                                                     @NonNull Item model) {
                         holder.bind(model);
                     }
-
-                    @Override
-                    protected void onLoadingStateChanged(@NonNull LoadingState state) {
-                        switch (state) {
-                            case LOADING_INITIAL:
-                            case LOADING_MORE:
-                                mBinding.swipeRefreshLayout.setRefreshing(true);
-                                break;
-                            case LOADED:
-                                mBinding.swipeRefreshLayout.setRefreshing(false);
-                                break;
-                            case FINISHED:
-                                mBinding.swipeRefreshLayout.setRefreshing(false);
-                                showToast(getString(R.string.paging_finished_message));
-                                break;
-                            case ERROR:
-                                showToast(getString(R.string.unknown_error));
-                                break;
-                        }
-                    }
-
-                    @Override
-                    protected void onError(DatabaseError databaseError) {
-                        mBinding.swipeRefreshLayout.setRefreshing(false);
-                        Log.e(TAG, databaseError.getDetails(), databaseError.toException());
-                    }
                 };
+
+        mAdapter.addLoadStateListener(states -> {
+            LoadState refresh = states.getRefresh();
+            LoadState append = states.getAppend();
+
+            if (refresh instanceof LoadState.Error) {
+                LoadState.Error loadStateError = (LoadState.Error) refresh;
+                mBinding.swipeRefreshLayout.setRefreshing(false);
+                Log.e(TAG, loadStateError.getError().getLocalizedMessage());
+            }
+            if (append instanceof LoadState.Error) {
+                LoadState.Error loadStateError = (LoadState.Error) append;
+                mBinding.swipeRefreshLayout.setRefreshing(false);
+                Log.e(TAG, loadStateError.getError().getLocalizedMessage());
+            }
+
+            if (append instanceof LoadState.Loading) {
+                mBinding.swipeRefreshLayout.setRefreshing(true);
+            }
+
+            if (append instanceof LoadState.NotLoading) {
+                LoadState.NotLoading notLoading = (LoadState.NotLoading) append;
+                if (notLoading.getEndOfPaginationReached()) {
+                    // This indicates that the user has scrolled
+                    // until the end of the data set.
+                    mBinding.swipeRefreshLayout.setRefreshing(false);
+                    showToast("Reached end of data set.");
+                    return null;
+                }
+
+                if (refresh instanceof LoadState.NotLoading) {
+                    // This indicates the most recent load
+                    // has finished.
+                    mBinding.swipeRefreshLayout.setRefreshing(false);
+                    return null;
+                }
+            }
+            return null;
+        });
 
         mBinding.pagingRecycler.setLayoutManager(new LinearLayoutManager(this));
         mBinding.pagingRecycler.setAdapter(mAdapter);
 
         // Reload data on swipe
-        mBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //Reload Data
-                mAdapter.refresh();
-            }
+        mBinding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            //Reload Data
+            mAdapter.refresh();
         });
     }
 

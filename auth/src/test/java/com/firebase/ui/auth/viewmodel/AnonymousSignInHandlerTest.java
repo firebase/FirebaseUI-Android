@@ -77,7 +77,7 @@ public class AnonymousSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         ArgumentCaptor<Resource<IdpResponse>> captor = ArgumentCaptor.forClass(Resource.class);
         inOrder.verify(mResponseObserver).onChanged(captor.capture());
@@ -92,7 +92,7 @@ public class AnonymousSignInHandlerTest {
         mHandler.getOperation().observeForever(mResponseObserver);
 
         when(mMockAuth.signInAnonymously())
-                .thenReturn(AutoCompleteTask.<AuthResult>forFailure(new Exception("FAILED")));
+                .thenReturn(AutoCompleteTask.forFailure(new Exception("FAILED")));
 
         mHandler.startSignIn(mMockActivity);
 
@@ -100,9 +100,9 @@ public class AnonymousSignInHandlerTest {
 
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
+                .onChanged(argThat(ResourceMatchers.isFailure()));
 
     }
 }

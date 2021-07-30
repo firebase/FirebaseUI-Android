@@ -6,14 +6,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Config.SdkVersions.compile)
+    compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
-        minSdkVersion(Config.SdkVersions.min)
-        targetSdkVersion(Config.SdkVersions.target)
+        minSdk = Config.SdkVersions.min
+        targetSdk =Config.SdkVersions.target
 
-        versionName = Config.version
-        versionCode = 1
+        buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
@@ -25,8 +24,13 @@ android {
             consumerProguardFiles("auth-proguard.pro")
         }
     }
+        
+    compileOptions {    
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 
-    lintOptions {
+    lint {
         // Common lint options across all modules
         disable(
             "IconExpectedSize",
@@ -54,21 +58,20 @@ android {
     }
 
     testOptions {
-        unitTests(closureOf<TestOptions.UnitTestOptions> {
+        unitTests {
             isIncludeAndroidResources = true
-        })
+        }
     }
 }
 
 dependencies {
+    implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
     // The new activity result APIs force us to include Fragment 1.3.0
     // See https://issuetracker.google.com/issues/152554847
     implementation(Config.Libs.Androidx.fragment)
-    implementation(Config.Libs.Androidx.design)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
-    implementation(Config.Libs.Misc.materialProgress)
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)

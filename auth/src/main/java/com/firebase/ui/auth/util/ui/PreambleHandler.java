@@ -5,14 +5,13 @@ import android.net.Uri;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.google.android.material.color.MaterialColors;
 
 import java.lang.ref.WeakReference;
 
@@ -20,6 +19,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.StringRes;
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
@@ -33,7 +33,6 @@ public class PreambleHandler {
     private final Context mContext;
     private final FlowParameters mFlowParameters;
     private final int mButtonText;
-    private final ForegroundColorSpan mLinkSpan;
 
     private SpannableStringBuilder mBuilder;
 
@@ -41,8 +40,6 @@ public class PreambleHandler {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext,
-                R.color.fui_linkColor));
     }
 
     public static void setup(Context context,
@@ -95,7 +92,6 @@ public class PreambleHandler {
             mBuilder.replace(targetIndex, targetIndex + target.length(), replacement);
 
             int end = targetIndex + replacement.length();
-            mBuilder.setSpan(mLinkSpan, targetIndex, end, 0);
             mBuilder.setSpan(new CustomTabsSpan(mContext, url), targetIndex, end, 0);
         }
     }
@@ -125,13 +121,16 @@ public class PreambleHandler {
             mContext = new WeakReference<>(context);
             mUrl = url;
 
-            // Getting default color
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-            @ColorInt int color = typedValue.data;
+            @ColorInt int defaultToolbarColor = ContextCompat.getColor(context,
+                    R.color.design_default_color_primary);
+            @ColorInt int toolbarColor = MaterialColors.getColor(context,
+                    R.attr.colorSurface,
+                    defaultToolbarColor);
 
             mCustomTabsIntent = new CustomTabsIntent.Builder()
-                    .setToolbarColor(color)
+                    .setDefaultColorSchemeParams(new CustomTabColorSchemeParams.Builder()
+                            .setToolbarColor(toolbarColor)
+                            .build())
                     .setShowTitle(true)
                     .build();
         }

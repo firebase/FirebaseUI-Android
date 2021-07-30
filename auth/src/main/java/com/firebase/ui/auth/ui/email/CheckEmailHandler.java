@@ -25,7 +25,7 @@ public class CheckEmailHandler extends AuthViewModelBase<User> {
     }
 
     public void fetchCredential() {
-        setResult(Resource.<User>forFailure(new PendingIntentRequiredException(
+        setResult(Resource.forFailure(new PendingIntentRequiredException(
                 Credentials.getClient(getApplication()).getHintPickerIntent(
                         new HintRequest.Builder().setEmailAddressIdentifierSupported(true).build()),
                 RequestCodes.CRED_HINT
@@ -33,17 +33,14 @@ public class CheckEmailHandler extends AuthViewModelBase<User> {
     }
 
     public void fetchProvider(final String email) {
-        setResult(Resource.<User>forLoading());
+        setResult(Resource.forLoading());
         ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (task.isSuccessful()) {
-                            setResult(Resource.forSuccess(
-                                    new User.Builder(task.getResult(), email).build()));
-                        } else {
-                            setResult(Resource.<User>forFailure(task.getException()));
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        setResult(Resource.forSuccess(
+                                new User.Builder(task.getResult(), email).build()));
+                    } else {
+                        setResult(Resource.forFailure(task.getException()));
                     }
                 });
     }
@@ -51,21 +48,18 @@ public class CheckEmailHandler extends AuthViewModelBase<User> {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
 
-        setResult(Resource.<User>forLoading());
+        setResult(Resource.forLoading());
         final Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
         final String email = credential.getId();
         ProviderUtils.fetchTopProvider(getAuth(), getArguments(), email)
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (task.isSuccessful()) {
-                            setResult(Resource.forSuccess(new User.Builder(task.getResult(), email)
-                                    .setName(credential.getName())
-                                    .setPhotoUri(credential.getProfilePictureUri())
-                                    .build()));
-                        } else {
-                            setResult(Resource.<User>forFailure(task.getException()));
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        setResult(Resource.forSuccess(new User.Builder(task.getResult(), email)
+                                .setName(credential.getName())
+                                .setPhotoUri(credential.getProfilePictureUri())
+                                .build()));
+                    } else {
+                        setResult(Resource.forFailure(task.getException()));
                     }
                 });
     }

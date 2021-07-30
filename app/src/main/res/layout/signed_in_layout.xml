@@ -18,8 +18,8 @@
         android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Base.TextAppearance.AppCompat.Headline"
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -34,7 +34,7 @@
 
             <Button
                 android:id="@+id/sign_out"
-                style="@style/Widget.AppCompat.Button.Colored"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -54,7 +54,7 @@
         </LinearLayout>
 
         <TextView
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/user_profile_header" />
@@ -120,7 +120,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/idp_token" />
@@ -140,7 +140,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/idp_secret" />

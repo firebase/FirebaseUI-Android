@@ -74,7 +74,7 @@ public class EmailLinkSendEmailHandlerTest {
 
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
         when(mMockAuth.sendSignInLinkToEmail(any(String.class), any(ActionCodeSettings.class)))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
+                .thenReturn(AutoCompleteTask.forSuccess(null));
 
         mHandler.sendSignInLinkToEmail(TestConstants.EMAIL, actionCodeSettings, null,
                 forceSameDevice);
@@ -95,7 +95,7 @@ public class EmailLinkSendEmailHandlerTest {
         ArgumentCaptor<Resource<String>> captor = ArgumentCaptor.forClass(Resource.class);
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<String>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
 
         inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
@@ -111,7 +111,7 @@ public class EmailLinkSendEmailHandlerTest {
 
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
         when(mMockAuth.sendSignInLinkToEmail(any(String.class), any(ActionCodeSettings.class)))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception()));
+                .thenReturn(AutoCompleteTask.forFailure(new Exception()));
 
         mHandler.sendSignInLinkToEmail(TestConstants.EMAIL, actionCodeSettings, null,
                 forceSameDevice);
@@ -127,7 +127,7 @@ public class EmailLinkSendEmailHandlerTest {
         ArgumentCaptor<Resource<String>> captor = ArgumentCaptor.forClass(Resource.class);
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<String>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
         inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         assertThat(captor.getValue().getState()).isEqualTo(State.FAILURE);
@@ -141,7 +141,7 @@ public class EmailLinkSendEmailHandlerTest {
 
         ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder().setUrl(URL).build();
         when(mMockAuth.sendSignInLinkToEmail(any(String.class), any(ActionCodeSettings.class)))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception()));
+                .thenReturn(AutoCompleteTask.forFailure(new Exception()));
 
         IdpResponse idpResponseForLinking = buildFacebookIdpResponseForLinking();
         mHandler.sendSignInLinkToEmail(TestConstants.EMAIL, actionCodeSettings,
@@ -158,7 +158,7 @@ public class EmailLinkSendEmailHandlerTest {
         ArgumentCaptor<Resource<String>> captor = ArgumentCaptor.forClass(Resource.class);
         InOrder inOrder = inOrder(mResponseObserver);
         inOrder.verify(mResponseObserver)
-                .onChanged(argThat(ResourceMatchers.<String>isLoading()));
+                .onChanged(argThat(ResourceMatchers.isLoading()));
         inOrder.verify(mResponseObserver).onChanged(captor.capture());
 
         assertThat(captor.getValue().getState()).isEqualTo(State.FAILURE);

@@ -40,13 +40,19 @@ android {
         }
     }
 
+    compileOptions {    
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
     lintOptions {
         // Common lint options across all modules
         disable(
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor" // We almost never care about this
+            "SelectableText", "SyntheticAccessor", // We almost never care about this
+            "MediaCapabilities"
         )
 
         isCheckAllWarnings = true

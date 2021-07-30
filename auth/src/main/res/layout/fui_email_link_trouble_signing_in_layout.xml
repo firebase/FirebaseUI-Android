@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/top_progress_bar"
         style="@style/FirebaseUI.TopProgressBar"
         tools:visibility="visible" />
@@ -30,7 +30,6 @@
                 android:text="@string/fui_email_link_trouble_getting_email_header" />
 
             <TextView
-                android:id="@+id/trouble_signing_in_possible_fixes"
                 style="@style/FirebaseUI.Text.BodyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

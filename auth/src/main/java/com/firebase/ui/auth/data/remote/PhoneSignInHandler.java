@@ -39,7 +39,7 @@ public class PhoneSignInHandler extends SingleProviderSignInHandler<AuthUI.IdpCo
         if (requestCode == RequestCodes.PHONE_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
-                setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+                setResult(Resource.forFailure(new UserCancellationException()));
             } else {
                 setResult(Resource.forSuccess(response));
             }

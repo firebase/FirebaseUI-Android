@@ -155,42 +155,42 @@ public class AuthUITest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPhoneBuilder_withBlacklistedDefaultNumberCode_expectIllegalArgumentException() {
+    public void testPhoneBuilder_withBlockedDefaultNumberCode_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("+1123456789")
-                .setBlacklistedCountries(Arrays.asList("+1"))
+                .setBlockedCountries(Arrays.asList("+1"))
                 .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPhoneBuilder_withBlacklistedDefaultIso_expectIllegalArgumentException() {
+    public void testPhoneBuilder_withBlockedDefaultIso_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("us", "123456789")
-                .setBlacklistedCountries(Arrays.asList("us"))
+                .setBlockedCountries(Arrays.asList("us"))
                 .build();
     }
 
     @Test
-    public void testPhoneBuilder_withWhitelistedDefaultIso_expectSuccess() {
+    public void testPhoneBuilder_withAllowedDefaultIso_expectSuccess() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("us", "123456789")
-                .setWhitelistedCountries(Arrays.asList("us"))
+                .setAllowedCountries(Arrays.asList("us"))
                 .build();
     }
 
     @Test
-    public void testPhoneBuilder_withWhitelistedDefaultNumberCode_expectSuccess() {
+    public void testPhoneBuilder_withAllowedDefaultNumberCode_expectSuccess() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("+1123456789")
-                .setWhitelistedCountries(Arrays.asList("+1"))
+                .setAllowedCountries(Arrays.asList("+1"))
                 .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testPhoneBuilder_whiteInvalidDefaultNumberCode_expectIllegalArgumentException() {
+    public void testPhoneBuilder_withInvalidDefaultNumberCode_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("+1123456789")
-                .setWhitelistedCountries(Arrays.asList("gr"))
+                .setAllowedCountries(Arrays.asList("gr"))
                 .build();
     }
 
@@ -198,15 +198,15 @@ public class AuthUITest {
     public void testPhoneBuilder_withValidDefaultNumberCode_expectSuccess() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("+1123456789")
-                .setWhitelistedCountries(Arrays.asList("ca"))
+                .setAllowedCountries(Arrays.asList("ca"))
                 .build();
     }
 
     @Test
-    public void testPhoneBuilder_withBlacklistedCountryWithSameCountryCode_expectSuccess() {
+    public void testPhoneBuilder_withBlockedCountryWithSameCountryCode_expectSuccess() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("+1123456789")
-                .setBlacklistedCountries(Arrays.asList("ca"))
+                .setBlockedCountries(Arrays.asList("ca"))
                 .build();
     }
 
@@ -214,7 +214,7 @@ public class AuthUITest {
     public void testPhoneBuilder_withInvalidDefaultIso_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("us", "123456789")
-                .setWhitelistedCountries(Arrays.asList("ca"))
+                .setAllowedCountries(Arrays.asList("ca"))
                 .build();
     }
 
@@ -222,48 +222,48 @@ public class AuthUITest {
     public void testPhoneBuilder_withValidDefaultIso_expectSucess() {
         new IdpConfig.PhoneBuilder()
                 .setDefaultNumber("us", "123456789")
-                .setBlacklistedCountries(Arrays.asList("ca"))
+                .setBlockedCountries(Arrays.asList("ca"))
                 .build();
     }
 
     @Test(expected = IllegalStateException.class)
     public void
-    testPhoneBuilder_setBothBlacklistedAndWhitelistedCountries_expectIllegalStateException() {
+    testPhoneBuilder_setBothBlockedAndAllowedCountries_expectIllegalStateException() {
         List<String> countries = Arrays.asList("ca");
         new IdpConfig.PhoneBuilder()
-                .setBlacklistedCountries(countries)
-                .setWhitelistedCountries(countries)
+                .setBlockedCountries(countries)
+                .setAllowedCountries(countries)
                 .build();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void
-    testPhoneBuilder_passEmptyListForWhitelistedCountries_expectIllegalArgumentException() {
+    testPhoneBuilder_passEmptyListForAllowedCountries_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
-                .setWhitelistedCountries(new ArrayList<String>())
+                .setAllowedCountries(new ArrayList<String>())
                 .build();
     }
 
     @Test(expected = NullPointerException.class)
-    public void testPhoneBuilder_passNullForWhitelistedCountries_expectNullPointerException() {
+    public void testPhoneBuilder_passNullForAllowedCountries_expectNullPointerException() {
         new IdpConfig.PhoneBuilder()
-                .setWhitelistedCountries(null)
+                .setAllowedCountries(null)
                 .build();
     }
 
 
     @Test(expected = IllegalArgumentException.class)
     public void
-    testPhoneBuilder_passEmptyListForBlacklistedCountries_expectIllegalArgumentException() {
+    testPhoneBuilder_passEmptyListForBlockedCountries_expectIllegalArgumentException() {
         new IdpConfig.PhoneBuilder()
-                .setBlacklistedCountries(new ArrayList<String>())
+                .setBlockedCountries(new ArrayList<String>())
                 .build();
     }
 
     @Test(expected = NullPointerException.class)
-    public void testPhoneBuilder_passNullForBlacklistedCountries_expectNullPointerException() {
+    public void testPhoneBuilder_passNullForBlockedCountries_expectNullPointerException() {
         new IdpConfig.PhoneBuilder()
-                .setBlacklistedCountries(null)
+                .setBlockedCountries(null)
                 .build();
     }
 
@@ -305,11 +305,11 @@ public class AuthUITest {
                 .setForceSameDevice()
                 .build();
 
-        assertThat(config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS))
-                .isEqualTo(actionCodeSettings);
-        assertThat(config.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE))
-                .isEqualTo(true);
-        assertThat(config.getProviderId()).isEqualTo(AuthUI.EMAIL_LINK_PROVIDER);
+        assertEquals(
+                config.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS),
+                actionCodeSettings);
+        assertTrue(config.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE));
+        assertEquals(config.getProviderId(), AuthUI.EMAIL_LINK_PROVIDER);
 
     }
 

@@ -49,25 +49,17 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
         mBinding = ActivityImageBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 
-        mBinding.buttonDownloadDirect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Download directly from StorageReference using Glide
-                // (See MyAppGlideModule for Loader registration)
-                GlideApp.with(ImageActivity.this)
-                        .load(mImageRef)
-                        .centerCrop()
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .into(mBinding.firstImage);
-            }
+        mBinding.buttonDownloadDirect.setOnClickListener(view -> {
+            // Download directly from StorageReference using Glide
+            // (See MyAppGlideModule for Loader registration)
+            GlideApp.with(ImageActivity.this)
+                    .load(mImageRef)
+                    .centerCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(mBinding.firstImage);
         });
 
-        mBinding.buttonChoosePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                choosePhoto();
-            }
-        });
+        mBinding.buttonChoosePhoto.setOnClickListener(view -> choosePhoto());
 
         // By default, Cloud Storage files require authentication to read or write.
         // For this sample to function correctly, enable Anonymous Auth in the Firebase console:
@@ -115,26 +107,20 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
         String uuid = UUID.randomUUID().toString();
         mImageRef = FirebaseStorage.getInstance().getReference(uuid);
         mImageRef.putFile(uri)
-                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        if (BuildConfig.DEBUG) {
-                            Log.d(TAG, "uploadPhoto:onSuccess:" +
-                                    taskSnapshot.getMetadata().getReference().getPath());
-                        }
-                        Toast.makeText(ImageActivity.this, "Image uploaded",
-                                       Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener(this, taskSnapshot -> {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "uploadPhoto:onSuccess:" +
+                                taskSnapshot.getMetadata().getReference().getPath());
+                    }
+                    Toast.makeText(ImageActivity.this, "Image uploaded",
+                                   Toast.LENGTH_SHORT).show();
 
-                        showDownloadUI();
-                    }
+                    showDownloadUI();
                 })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "uploadPhoto:onError", e);
-                        Toast.makeText(ImageActivity.this, "Upload failed",
-                                       Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(this, e -> {
+                    Log.w(TAG, "uploadPhoto:onError", e);
+                    Toast.makeText(ImageActivity.this, "Upload failed",
+                                   Toast.LENGTH_SHORT).show();
                 });
     }
 

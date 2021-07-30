@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Betöltés…</string>
     <string name="fui_sign_in_default">Bejelentkezés</string>
-    <string name="fui_cancel">Mégse</string>
     <string name="fui_continue">Tovább</string>
     <string name="fui_tos_and_pp">A folytatással elfogadja a következő dokumentumokat: %1$s és %2$s.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -26,6 +24,7 @@
     <string name="fui_next_default">Következő</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>
+    <string name="fui_country_hint">Ország</string>
     <string name="fui_password_hint">Jelszó</string>
     <string name="fui_new_password_hint">Az új jelszó</string>
     <string name="fui_required_field">Ezt nem hagyhatja üresen.</string>
@@ -37,6 +36,7 @@
     <string name="fui_name_hint">Utónév és vezetéknév</string>
     <string name="fui_button_text_save">Mentés</string>
     <string name="fui_progress_dialog_signing_up">Regisztráció…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item> </plurals>
     <string name="fui_email_account_creation_error">Az e-mail-fiók regisztrációja sikertelen volt.</string>
     <string name="fui_terms_of_service">Általános Szerződési Feltételek</string>
     <string name="fui_privacy_policy">Adatvédelmi irányelvek</string>
@@ -62,7 +62,6 @@
     <string name="fui_email_link_email_sent">A további utasításokat tartalmazó bejelentkezési e-mailt elküldtük ide: %1$s. A bejelentkezés befejezéséhez keresse meg az e-mailjei között.</string>
     <string name="fui_email_link_trouble_getting_email_header">Az e-mail-fogadással kapcsolatos problémát észlel?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Próbálja ki ezeket az általános problémamegoldó lépéseket:\n\u2022 Ellenőrizze, hogy az e-mail nem lett-e spamként megjelölve, vagy kiszűrve.\n\u2022 Ellenőrizze az internetkapcsolatát.\n\u2022 Ellenőrizze, hogy nem tévesen írta-e le az e-mail-címét.\n\u2022 Ellenőrizze, hogy a beérkező levelek számára van-e tárhely, illetve nincs-e gond a beérkező levelek beállításaival.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Ha a fenti lépések végrehajtása nem járt eredménnyel, küldje el újra az e-mailt. Ne feledje, hogy ezzel deaktiválja az előző e-mailben szereplő linket.</string>
     <string name="fui_email_link_resend">Újraküldés</string>
     <string name="fui_email_link_wrong_device_header">A rendszer új eszközt vagy böngészőt észlelt.</string>
     <string name="fui_email_link_wrong_device_message">Ugyanazzal az eszközzel vagy böngészővel nyissa meg a linket, amellyel elkezdte a bejelentkezési műveletet.</string>
@@ -74,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">A bejelentkezés folytatásához erősítse meg az e-mail-címet</string>
     <string name="fui_email_link_dismiss_button">Elvetés</string>
     <string name="fui_email_link_cross_device_linking_text">Eredetileg össze szerette volna kapcsolni %1$s-fiókját az e-mail-fiókjával, a linket azonban olyan eszközön nyitotta meg, amelyen nem jelentkezett be.\n\nHa továbbra is össze kívánja kapcsolni %1$s-fiókját, akkor azon az eszközön nyissa meg a linket, amelyen megkezdte a bejelentkezést. Ha ezen az eszközön kíván bejelentkezni, akkor koppintson a Tovább gombra.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Bejelentkezés a következővel: %1$s</string>
     <string name="fui_verify_phone_number_title">Adja meg telefonszámát</string>
     <string name="fui_invalid_phone_number">Érvényes telefonszámot adjon meg.</string>
     <string name="fui_enter_confirmation_code">Adja meg a telefonszámra elküldött 6 számjegyű kódot</string>

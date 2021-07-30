@@ -1,4 +1,4 @@
-<com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
+<com.google.android.material.button.MaterialButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
     android:text="@string/fui_sign_in_with_google" />

@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" tools:ignore="ExtraTranslation">
-    <plurals name="fui_error_weak_password"> <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> </plurals>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuatkan…</string>
     <string name="fui_sign_in_default">Log masuk</string>
-    <string name="fui_cancel">Batal</string>
     <string name="fui_continue">Teruskan</string>
     <string name="fui_tos_and_pp">Dengan meneruskan, anda menyatakan bahawa anda menerima %1$s dan %2$s kami.</string>
     <string name="fui_tos_and_pp_footer">%1$s \u00A0 \u00A0 %2$s</string>
@@ -26,6 +24,7 @@
     <string name="fui_next_default">Seterusnya</string>
     <string name="fui_email_hint">E-mel</string>
     <string name="fui_phone_hint">Nombor Telefon</string>
+    <string name="fui_country_hint">Negara</string>
     <string name="fui_password_hint">Kata Laluan</string>
     <string name="fui_new_password_hint">Kata laluan baharu</string>
     <string name="fui_required_field">Anda tidak boleh membiarkan ruang ini kosong.</string>
@@ -37,6 +36,7 @@
     <string name="fui_name_hint">Nama pertama &amp; keluarga</string>
     <string name="fui_button_text_save">Simpan</string>
     <string name="fui_progress_dialog_signing_up">Mendaftar…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> </plurals>
     <string name="fui_email_account_creation_error">Pendaftaran akaun e-mel tidak berjaya</string>
     <string name="fui_terms_of_service">Syarat Perkhidmatan</string>
     <string name="fui_privacy_policy">Dasar Privasi</string>
@@ -62,7 +62,6 @@
     <string name="fui_email_link_email_sent">E-mel log masuk dengan arahan tambahan telah dihantar ke %1$s. Semak e-mel anda untuk melengkapkan log masuk.</string>
     <string name="fui_email_link_trouble_getting_email_header">Tidak menerima e-mel?</string>
     <string name="fui_email_link_trouble_getting_possible_fixes">Cuba pembetulan lazim berikut:\n\u2022 Pastikan e-mel tidak ditandakan sebagai spam atau ditapis.\n\u2022 Semak sambungan Internet anda.\n\u2022 Pastikan e-mel anda dieja dengan betul.\n\u2022 Pastikan peti masuk anda tidak kehabisan ruang atau tiada isu berkaitan tetapan peti masuk yang lain.\n</string>
-    <string name="fui_email_link_trouble_getting_email_resend_solution">Jika langkah di atas tidak boleh digunakan, anda boleh menghantar semula e-mel. Sila ambil perhatian bahawa tindakan ini akan menyahaktifkan pautan dalam e-mel sebelumnya.</string>
     <string name="fui_email_link_resend">Hantar semula</string>
     <string name="fui_email_link_wrong_device_header">Peranti atau penyemak imbas baharu telah dikesan.</string>
     <string name="fui_email_link_wrong_device_message">Cuba buka pautan menggunakan peranti atau penyemak imbas sama yang anda gunakan untuk memulakan proses log masuk.</string>
@@ -74,7 +73,6 @@
     <string name="fui_email_link_confirm_email_message">Sahkan e-mel untuk meneruskan log masuk</string>
     <string name="fui_email_link_dismiss_button">Ketepikan</string>
     <string name="fui_email_link_cross_device_linking_text">Pada asalnya, anda mahu menyambungkan %1$s kepada akaun e-mel anda tetapi telah membuka pautan pada peranti berbeza yang tidak dilog masuk.\n\nJika anda masih mahu memautkan akaun %1$s anda, buka pautan pada peranti yang anda gunakan untuk log masuk. Jika tidak, ketik Teruskan untuk log masuk pada peranti ini.</string>
-    <string name="fui_email_link_cross_device_sign_in_button_text">Log masuk dengan %1$s</string>
     <string name="fui_verify_phone_number_title">Masukkan nombor telefon anda</string>
     <string name="fui_invalid_phone_number">Masukkan nombor telefon yang sah</string>
     <string name="fui_enter_confirmation_code">Masukkan kod 6 digit yang kami hantar ke</string>
