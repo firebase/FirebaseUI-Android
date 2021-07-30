@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagingState;
@@ -46,8 +47,8 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
         }
 
         return Single.fromCallable(() -> {
-            Tasks.await(task);
-            if (task.isSuccessful()) {
+            try {
+                Tasks.await(task);
                 DataSnapshot dataSnapshot = task.getResult();
                 if (dataSnapshot.exists()) {
 
@@ -86,8 +87,9 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
                             MESSAGE_DATABASE_NOT_FOUND,
                             details).toException();
                 }
+            } catch (ExecutionException e) {
+                throw new Exception(e.getCause());
             }
-            throw task.getException();
         }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
     }
 
