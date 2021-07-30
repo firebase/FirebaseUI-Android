@@ -71,6 +71,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
+* [Upgrade from 7.2.0 to 8.x.x](./docs/upgrade-to-8.0.md)
 * [Upgrade from 6.4.0 to 7.x.x](./docs/upgrade-to-7.0.md)
 * [Upgrade from 5.1.0 to 6.x.x](./docs/upgrade-to-6.0.md)
 * [Upgrade from 4.3.2 to 5.x.x](./docs/upgrade-to-5.0.md)
