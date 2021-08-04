@@ -39,6 +39,19 @@ public class PageKey {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PageKey key = (PageKey) o;
+        if (mStartAfter == null && key.mStartAfter == null)
+            return true;
+        if (mEndBefore == null && key.mEndBefore == null)
+            return true;
+        return mStartAfter.getId() == key.mStartAfter.getId() &&
+                mEndBefore.getId() == key.mEndBefore.getId();
+    }
+
+    @Override
     @NonNull
     public String toString() {
         String startAfter = mStartAfter == null ? null : mStartAfter.getId();
