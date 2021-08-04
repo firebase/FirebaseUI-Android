@@ -8,14 +8,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.paging.PagingState;
 import androidx.paging.rxjava3.RxPagingSource;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnapshot> {
@@ -39,18 +38,24 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
         }
 
         return Single.fromCallable(() -> {
-            Tasks.await(task);
-            if (task.isSuccessful()) {
+            try {
+                Tasks.await(task);
                 QuerySnapshot snapshot = task.getResult();
                 PageKey nextPage = getNextPageKey(snapshot);
                 if (snapshot.getDocuments().isEmpty()) {
                     return toLoadResult(snapshot.getDocuments(), null);
                 }
                 return toLoadResult(snapshot.getDocuments(), nextPage);
+            } catch (ExecutionException e) {
+                if (e.getCause() instanceof Exception) {
+                    // throw the original Exception
+                    throw (Exception) e.getCause();
+                }
+                // Only throw a new Exception when the original
+                // Throwable cannot be cast to Exception
+                throw new Exception(e);
             }
-            throw task.getException();
-        }).subscribeOn(Schedulers.io())
-                .onErrorReturn(throwable -> new LoadResult.Error<>(throwable));
+        }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
     }
 
     private LoadResult<PageKey, DocumentSnapshot> toLoadResult(
