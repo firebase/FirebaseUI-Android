@@ -306,7 +306,7 @@ can be started as follows:
 
 ```java
 // Get an instance of AuthUI based on the default app
-Intent signinIntent =
+Intent signInIntent =
     AuthUI.getInstance().createSignInIntentBuilder().build();
 
 signInLauncher.launch(signInIntent);
