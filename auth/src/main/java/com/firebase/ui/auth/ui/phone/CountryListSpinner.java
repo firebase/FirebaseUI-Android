@@ -86,8 +86,7 @@ public final class CountryListSpinner extends TextInputEditText implements View.
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CountryInfo info = mCountryListAdapter.getItem(position);
                 if (info != null) {
-                    mSelectedCountryInfo = info;
-                    setText(info.toShortString());
+                    setSelectedForCountry(info.getCountryCode(), info.getLocale());
                 }
 
                 onUnfocus();
