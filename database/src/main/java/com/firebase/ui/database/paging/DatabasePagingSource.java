@@ -88,7 +88,13 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
                             details).toException();
                 }
             } catch (ExecutionException e) {
-                throw new Exception(e.getCause());
+                if (e.getCause() instanceof Exception) {
+                    // throw the original Exception
+                    throw (Exception) e.getCause();
+                }
+                // Only throw a new Exception when the original
+                // Throwable cannot be cast to Exception
+                throw new Exception(e);
             }
         }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
     }
