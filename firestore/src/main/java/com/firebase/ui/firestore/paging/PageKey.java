@@ -43,12 +43,11 @@ public class PageKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PageKey key = (PageKey) o;
-        if (mStartAfter == null && key.mStartAfter == null)
+        if (mStartAfter == null && key.mStartAfter == null &&
+                mEndBefore == null && key.mEndBefore == null)
             return true;
-        if (mEndBefore == null && key.mEndBefore == null)
-            return true;
-        return mStartAfter.getId() == key.mStartAfter.getId() &&
-                mEndBefore.getId() == key.mEndBefore.getId();
+        return mStartAfter.getId().equals(key.mStartAfter.getId()) &&
+                mEndBefore.getId().equals(key.mEndBefore.getId());
     }
 
     @Override
