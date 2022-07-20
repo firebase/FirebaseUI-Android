@@ -66,6 +66,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    configurations {
+        all {
+            exclude(group = "androidx.lifecycle", module = "lifecycle-viewmodel-ktx")
+        }
+    }
 }
 
 dependencies {
