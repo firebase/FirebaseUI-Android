@@ -92,6 +92,7 @@
         <activity
             android:name="com.facebook.FacebookActivity"
             android:label="@string/app_name"
+            android:exported="false"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             tools:ignore="MissingRegistered" />
 

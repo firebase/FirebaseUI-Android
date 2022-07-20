@@ -41,6 +41,12 @@ android {
             consumerProguardFiles("proguard-rules.pro")
         }
     }
+
+    configurations {
+        all {
+            exclude(group = "androidx.lifecycle", module = "lifecycle-viewmodel-ktx")
+        }
+    }
 }
 
 dependencies {

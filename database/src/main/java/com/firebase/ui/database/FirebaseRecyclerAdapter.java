@@ -8,9 +8,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ComponentActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -26,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
  *             is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
+        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T>, DefaultLifecycleObserver {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     private FirebaseRecyclerOptions<T> mOptions;
@@ -45,8 +47,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         }
     }
 
+
     @Override
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onStart(@NonNull LifecycleOwner owner) {
+        startListening();
+    }
+
+    @Override
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
@@ -54,12 +61,24 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onStop(@NonNull LifecycleOwner owner) {
+        if (owner instanceof ComponentActivity) {
+            Log.e("Adapter", "Yes, this is an activity");
+        }
+        stopListening();
+    }
+
+    @Override
     public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    @Override
+    public void onDestroy(@NonNull LifecycleOwner source) {
+        Log.e("Adapter", "Destroyed");
+        cleanup(source);
+    }
+
     void cleanup(LifecycleOwner source) {
         source.getLifecycle().removeObserver(this);
     }

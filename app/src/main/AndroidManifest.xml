@@ -11,7 +11,6 @@
         android:name=".FirebaseUIDemo"
         android:label="@string/app_name"
         android:allowBackup="true"
-        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -20,7 +19,7 @@
         android:usesCleartextTraffic="true">
 
         <activity android:name=".ChooserActivity"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,41 +34,50 @@
         <!-- Auth UI demo -->
         <activity
             android:name=".auth.AuthUiActivity"
+            android:exported="false"
             android:label="@string/title_auth_activity" />
         <activity
             android:name=".auth.SignedInActivity"
+            android:exported="false"
             android:label="@string/title_auth_activity" />
         <activity
             android:name=".auth.AnonymousUpgradeActivity"
+            android:exported="false"
             android:label="@string/title_anonymous_upgrade"/>
 
         <!-- Firestore demo -->
         <activity
             android:name=".database.firestore.FirestoreChatActivity"
+            android:exported="false"
             android:label="@string/title_firestore_activity" />
 
         <!-- Firestore paging demo -->
         <activity
             android:name=".database.firestore.FirestorePagingActivity"
+            android:exported="false"
             android:label="@string/title_firestore_paging_activity" />
 
         <!-- Realtime database demo -->
         <activity
             android:name=".database.realtime.RealtimeDbChatActivity"
+            android:exported="false"
             android:label="@string/title_realtime_database_activity" />
 
         <!-- Realtime database paging demo -->
         <activity
             android:name=".database.realtime.FirebaseDbPagingActivity"
+            android:exported="false"
             android:label="@string/title_realtime_database_paging_activity" />
 
         <activity
             android:name=".database.realtime.RealtimeDbChatIndexActivity"
+            android:exported="false"
             android:label="@string/title_realtime_database_activity" />
 
         <!-- Storage UI demo -->
         <activity
             android:name=".storage.ImageActivity"
+            android:exported="false"
             android:label="@string/title_storage_activity" />
 
     </application>
