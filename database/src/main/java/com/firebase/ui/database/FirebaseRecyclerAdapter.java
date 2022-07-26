@@ -8,10 +8,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ComponentActivity;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
  *             is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T>, DefaultLifecycleObserver {
+        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     private FirebaseRecyclerOptions<T> mOptions;
@@ -62,9 +58,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public void onStop(@NonNull LifecycleOwner owner) {
-        if (owner instanceof ComponentActivity) {
-            Log.e("Adapter", "Yes, this is an activity");
-        }
         stopListening();
     }
 

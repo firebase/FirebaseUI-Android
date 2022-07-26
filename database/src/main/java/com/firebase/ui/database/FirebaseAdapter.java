@@ -4,10 +4,10 @@ import com.google.firebase.database.DatabaseReference;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.DefaultLifecycleObserver;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-interface FirebaseAdapter<T> extends ChangeEventListener, LifecycleObserver {
+interface FirebaseAdapter<T> extends ChangeEventListener, DefaultLifecycleObserver {
     /**
      * Start listening for database changes and populate the adapter.
      */
