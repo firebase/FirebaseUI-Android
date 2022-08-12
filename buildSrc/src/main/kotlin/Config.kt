@@ -2,7 +2,7 @@ object Config {
     const val version = "8.0.2-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.3.72"
+    private const val kotlinVersion = "1.7.10"
 
     object SdkVersions {
         const val compile = 29
@@ -11,7 +11,7 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:7.0.0"
+        const val android = "com.android.tools.build:gradle:7.2.2"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.3.8"
 

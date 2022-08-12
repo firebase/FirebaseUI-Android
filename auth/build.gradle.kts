@@ -32,7 +32,7 @@ android {
 
     lint {
         // Common lint options across all modules
-        disable(
+        disable += mutableSetOf(
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
@@ -40,7 +40,7 @@ android {
         )
 
         // Module specific
-        disable(
+        disable += mutableSetOf(
             "UnusedQuantity",
             "UnknownNullness",  // TODO fix in future PR
             "TypographyQuotes", // Straight versus directional quotes
@@ -50,11 +50,11 @@ android {
             "VectorPath"
         )
 
-        isCheckAllWarnings = true
-        isWarningsAsErrors = true
-        isAbortOnError = true
+        checkAllWarnings = true
+        warningsAsErrors = true
+        abortOnError = true
 
-        baselineFile = file("$rootDir/library/quality/lint-baseline.xml")
+        baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
     testOptions {

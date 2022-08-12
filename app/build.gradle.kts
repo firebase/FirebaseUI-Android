@@ -39,7 +39,8 @@ android {
 
     lint {
         // Common lint options across all modules
-        disable(
+
+        disable += mutableSetOf(
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
@@ -49,13 +50,13 @@ android {
         )
 
         // Module-specific
-        disable("ResourceName", "MissingTranslation", "DuplicateStrings")
+        disable += mutableSetOf("ResourceName", "MissingTranslation", "DuplicateStrings")
 
-        isCheckAllWarnings = true
-        isWarningsAsErrors = true
-        isAbortOnError = true
+        checkAllWarnings = true
+        warningsAsErrors = true
+        abortOnError = true
 
-        baselineFile = file("$rootDir/library/quality/lint-baseline.xml")
+        baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
     compileOptions {
