@@ -6,11 +6,11 @@ plugins {
 val inCiBuild = System.getenv("CI") == "true"
 
 android {
-    compileSdkVersion(Config.SdkVersions.compile)
+    compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
-        minSdkVersion(Config.SdkVersions.min)
-        targetSdkVersion(Config.SdkVersions.target)
+        minSdk = Config.SdkVersions.min
+        targetSdk = Config.SdkVersions.target
 
         versionName = Config.version
         versionCode = 1
@@ -45,9 +45,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
+    lint {
         // Common lint options across all modules
-        disable(
+        disable += mutableSetOf(
             "IconExpectedSize",
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
@@ -55,11 +55,11 @@ android {
             "MediaCapabilities"
         )
 
-        isCheckAllWarnings = true
-        isWarningsAsErrors = true
-        isAbortOnError = true
+        checkAllWarnings = true
+        warningsAsErrors = true
+        abortOnError = true
 
-        baselineFile = file("$rootDir/library/quality/lint-baseline.xml")
+        baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
     variantFilter {
