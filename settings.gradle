@@ -13,8 +13,9 @@ gradleEnterprise {
 rootProject.buildFileName = 'build.gradle.kts'
 
 include(
-        ":app", 
+        ":app",
 
+        ':bom',
         ":library",
         ":auth",
         ":common", 
