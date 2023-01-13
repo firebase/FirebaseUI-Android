@@ -6,6 +6,7 @@ plugins {
 dependencies {
     constraints {
         api(project(":auth"))
+        api(project(":common"))
         api(project(":database"))
         api(project(":firestore"))
         api(project(":storage"))
