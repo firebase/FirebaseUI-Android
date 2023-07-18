@@ -2,8 +2,10 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -58,7 +60,11 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
         if (force) {
             optionsBuilder.setForceResendingToken(mForceResendingToken);
         }
-        PhoneAuthProvider.verifyPhoneNumber(optionsBuilder.build());
+        if (isBrowserAvailable(activity)) {
+            PhoneAuthProvider.verifyPhoneNumber(optionsBuilder.build());
+        } else {
+            setResult(Resource.forFailure(new ActivityNotFoundException("No browser was found in this device")));
+        }
     }
 
     public void submitVerificationCode(String number, String code) {
@@ -76,5 +82,10 @@ public class PhoneNumberVerificationHandler extends AuthViewModelBase<PhoneVerif
         if (mVerificationId == null && savedInstanceState != null) {
             mVerificationId = savedInstanceState.getString(VERIFICATION_ID_KEY);
         }
+    }
+
+    private boolean isBrowserAvailable(Activity activity) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://"));
+        return browserIntent.resolveActivity(activity.getPackageManager()) != null;
     }
 }
