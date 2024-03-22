@@ -234,8 +234,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                     "",
                     countryIso,
                     String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
-        } else if (getFlowParams().enableHints) {
-            mCheckPhoneHandler.fetchCredential();
         }
     }
 

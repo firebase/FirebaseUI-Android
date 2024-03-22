@@ -62,7 +62,7 @@ public class EmailLinkSendEmailHandlerTest {
         mHandler = new EmailLinkSendEmailHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(new ArrayList<String>());
 
-        mHandler.initializeForTesting(testParams, mMockAuth, null);
+        mHandler.initializeForTesting(testParams, mMockAuth);
         mPersistenceManager = EmailLinkPersistenceManager.getInstance();
     }
 

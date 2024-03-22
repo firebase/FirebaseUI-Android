@@ -68,7 +68,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID));
-        mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials);
+        mHandler.initializeForTesting(testParams, mMockAuth);
     }
 
     @Test
@@ -230,7 +230,7 @@ public class WelcomeBackPasswordHandlerTest {
         // enableAnonymousUpgrade must be set to true
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID), /* enableAnonymousUpgrade */ true);
-        mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials);
+        mHandler.initializeForTesting(testParams, mMockAuth);
 
         // Mock isAnonymous() to return true so canUpgradeAnonymous will return true
         when(mUser.isAnonymous()).thenReturn(true);

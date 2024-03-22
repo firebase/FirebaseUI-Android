@@ -22,7 +22,7 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
+//import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -109,11 +109,11 @@ public final class ProviderUtils {
             @AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
-                return IdentityProviders.GOOGLE;
+                return "IdentityProviders.GOOGLE";
             case FacebookAuthProvider.PROVIDER_ID:
-                return IdentityProviders.FACEBOOK;
+                return "IdentityProviders.FACEBOOK";
             case TwitterAuthProvider.PROVIDER_ID:
-                return IdentityProviders.TWITTER;
+                return "IdentityProviders.TWITTER";
             case GithubAuthProvider.PROVIDER_ID:
                 return GITHUB_IDENTITY;
             case PhoneAuthProvider.PROVIDER_ID:
@@ -128,11 +128,11 @@ public final class ProviderUtils {
     @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
-            case IdentityProviders.GOOGLE:
+            case "IdentityProviders.GOOGLE":
                 return GoogleAuthProvider.PROVIDER_ID;
-            case IdentityProviders.FACEBOOK:
+            case "IdentityProviders.FACEBOOK":
                 return FacebookAuthProvider.PROVIDER_ID;
-            case IdentityProviders.TWITTER:
+            case "IdentityProviders.TWITTER":
                 return TwitterAuthProvider.PROVIDER_ID;
             case GITHUB_IDENTITY:
                 return GithubAuthProvider.PROVIDER_ID;

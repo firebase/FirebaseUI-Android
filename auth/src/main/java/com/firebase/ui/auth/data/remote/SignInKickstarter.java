@@ -24,9 +24,6 @@ import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -94,27 +91,28 @@ public class SignInKickstarter extends SignInViewModelBase {
         if (getArguments().enableCredentials && willRequestCredentials) {
             setResult(Resource.forLoading());
 
-            GoogleApiUtils.getCredentialsClient(getApplication())
-                    .request(new CredentialRequest.Builder()
-                            .setPasswordLoginSupported(supportPasswords)
-                            .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
-                            .build())
-                    .addOnCompleteListener(task -> {
-                        try {
-                            handleCredential(
-                                    task.getResult(ApiException.class).getCredential());
-                        } catch (ResolvableApiException e) {
-                            if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                                setResult(Resource.forFailure(
-                                        new PendingIntentRequiredException(
-                                                e.getResolution(), RequestCodes.CRED_HINT)));
-                            } else {
-                                startAuthMethodChoice();
-                            }
-                        } catch (ApiException e) {
-                            startAuthMethodChoice();
-                        }
-                    });
+//            TODO
+//            GoogleApiUtils.getCredentialsClient(getApplication())
+//                    .request(new CredentialRequest.Builder()
+//                            .setPasswordLoginSupported(supportPasswords)
+//                            .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
+//                            .build())
+//                    .addOnCompleteListener(task -> {
+//                        try {
+//                            handleCredential(
+//                                    task.getResult(ApiException.class).getCredential());
+//                        } catch (ResolvableApiException e) {
+//                            if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+//                                setResult(Resource.forFailure(
+//                                        new PendingIntentRequiredException(
+//                                                e.getResolution(), RequestCodes.CRED_HINT)));
+//                            } else {
+//                                startAuthMethodChoice();
+//                            }
+//                        } catch (ApiException e) {
+//                            startAuthMethodChoice();
+//                        }
+//                    });
         } else {
             startAuthMethodChoice();
         }
@@ -190,7 +188,8 @@ public class SignInKickstarter extends SignInViewModelBase {
         switch (requestCode) {
             case RequestCodes.CRED_HINT:
                 if (resultCode == Activity.RESULT_OK) {
-                    handleCredential((Credential) data.getParcelableExtra(Credential.EXTRA_KEY));
+//                    TODO: Handle credential
+//                    handleCredential((Credential) data.getParcelableExtra(Credential.EXTRA_KEY));
                 } else {
                     startAuthMethodChoice();
                 }
@@ -217,35 +216,36 @@ public class SignInKickstarter extends SignInViewModelBase {
         }
     }
 
-    private void handleCredential(final Credential credential) {
-        String id = credential.getId();
-        String password = credential.getPassword();
-        if (TextUtils.isEmpty(password)) {
-            String identity = credential.getAccountType();
-            if (identity == null) {
-                startAuthMethodChoice();
-            } else {
-                redirectSignIn(
-                        ProviderUtils.accountTypeToProviderId(credential.getAccountType()), id);
-            }
-        } else {
-            final IdpResponse response = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
-
-            setResult(Resource.forLoading());
-            getAuth().signInWithEmailAndPassword(id, password)
-                    .addOnSuccessListener(result -> handleSuccess(response, result))
-                    .addOnFailureListener(e -> {
-                        if (e instanceof FirebaseAuthInvalidUserException
-                                || e instanceof FirebaseAuthInvalidCredentialsException) {
-                            // In this case the credential saved in SmartLock was not
-                            // a valid credential, we should delete it from SmartLock
-                            // before continuing.
-                            GoogleApiUtils.getCredentialsClient(getApplication())
-                                    .delete(credential);
-                        }
-                        startAuthMethodChoice();
-                    });
-        }
-    }
+//    private void handleCredential(final Credential credential) {
+//        String id = credential.getId();
+//        String password = credential.getPassword();
+//        if (TextUtils.isEmpty(password)) {
+//            String identity = credential.getAccountType();
+//            if (identity == null) {
+//                startAuthMethodChoice();
+//            } else {
+//                redirectSignIn(
+//                        ProviderUtils.accountTypeToProviderId(credential.getAccountType()), id);
+//            }
+//        } else {
+//            final IdpResponse response = new IdpResponse.Builder(
+//                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
+//
+//            setResult(Resource.forLoading());
+//            getAuth().signInWithEmailAndPassword(id, password)
+//                    .addOnSuccessListener(result -> handleSuccess(response, result))
+//                    .addOnFailureListener(e -> {
+//                        if (e instanceof FirebaseAuthInvalidUserException
+//                                || e instanceof FirebaseAuthInvalidCredentialsException) {
+//                            // In this case the credential saved in SmartLock was not
+//                            // a valid credential, we should delete it from SmartLock
+//                            // before continuing.
+//                            // TODO: delete this credential
+//                            GoogleApiUtils.getCredentialsClient(getApplication())
+//                                    .delete(credential);
+//                        }
+//                        startAuthMethodChoice();
+//                    });
+//        }
+//    }
 }

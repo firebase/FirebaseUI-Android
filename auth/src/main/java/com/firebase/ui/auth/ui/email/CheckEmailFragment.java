@@ -170,9 +170,9 @@ public class CheckEmailFragment extends FragmentBase implements
         if (!TextUtils.isEmpty(email)) {
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (getFlowParams().enableHints) {
-            mHandler.fetchCredential();
         }
+        // TODO(rosariopf): Look into isCredential as replacement for hints
+        // https://developer.android.com/training/sign-in/passkeys#indicate_credential_fields
     }
 
     @Override

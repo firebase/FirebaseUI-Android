@@ -25,16 +25,12 @@ import android.util.Log;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -51,13 +47,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.google.firebase.auth.UserInfo;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -269,33 +263,35 @@ public final class AuthUI {
         return R.style.FirebaseUI_DefaultMaterialTheme;
     }
 
-    /**
-     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
-     * for saving since we don't have access to the password.
-     */
-    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
-        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
-            return Collections.emptyList();
-        }
-
-        List<Credential> credentials = new ArrayList<>();
-        for (UserInfo userInfo : user.getProviderData()) {
-            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
-                continue;
-            }
-
-            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
-            if (type == null) {
-                // Since the account type is null, we've got an email credential. Adding a fake
-                // password is the only way to tell Smart Lock that this is an email credential.
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
-            } else {
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
-            }
-        }
-
-        return credentials;
-    }
+//    /**
+//     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
+//     * for saving since we don't have access to the password.
+//     */
+//    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
+//        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
+//            return Collections.emptyList();
+//        }
+//
+//
+//
+//        List<Credential> credentials = new ArrayList<>();
+//        for (UserInfo userInfo : user.getProviderData()) {
+//            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
+//                continue;
+//            }
+//
+//            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
+//            if (type == null) {
+//                // Since the account type is null, we've got an email credential. Adding a fake
+//                // password is the only way to tell Smart Lock that this is an email credential.
+//                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
+//            } else {
+//                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
+//            }
+//        }
+//
+//        return credentials;
+//    }
 
     /**
      * Signs the user in without any UI if possible. If this operation fails, you can safely start a
@@ -344,38 +340,53 @@ public final class AuthUI {
                     new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED));
         }
 
-        return GoogleApiUtils.getCredentialsClient(context)
-                .request(new CredentialRequest.Builder()
-                        // We can support both email and Google at the same time here because they
-                        // are mutually exclusive. If a user signs in with Google, their email
-                        // account will automatically be upgraded (a.k.a. replaced) with the Google
-                        // one, meaning Smart Lock won't have to show the picker UI.
-                        .setPasswordLoginSupported(email != null)
-                        .setAccountTypes(google == null ? null :
-                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider
-                                        .PROVIDER_ID))
-                        .build())
-                .continueWithTask(task -> {
-                    Credential credential = task.getResult().getCredential();
-                    String email1 = credential.getId();
-                    String password = credential.getPassword();
-
-                    if (TextUtils.isEmpty(password)) {
-                        return GoogleSignIn.getClient(appContext,
-                                new GoogleSignInOptions.Builder(googleOptions)
-                                        .setAccountName(email1)
-                                        .build())
-                                .silentSignIn()
-                                .continueWithTask(task1 -> {
-                                    AuthCredential authCredential = GoogleAuthProvider
-                                            .getCredential(
-                                                    task1.getResult().getIdToken(), null);
-                                    return mAuth.signInWithCredential(authCredential);
-                                });
-                    } else {
-                        return mAuth.signInWithEmailAndPassword(email1, password);
-                    }
-                });
+        return null;
+        //TODO(rosariopf): figure out how to do silent sign in for email/password
+//        return GoogleSignIn.getClient(appContext,
+//                        new GoogleSignInOptions.Builder(googleOptions)
+//                                .setAccountName(email)
+//                                .build())
+//                .silentSignIn()
+//                .continueWithTask(task1 -> {
+//                    AuthCredential authCredential = GoogleAuthProvider
+//                            .getCredential(
+//                                    task1.getResult().getIdToken(), null);
+//                    return mAuth.signInWithCredential(authCredential);
+//                });
+//
+//        return GoogleApiUtils.getCredentialsClient(context)
+//                .request(new CredentialRequest.Builder()
+//                        // We can support both email and Google at the same time here because they
+//                        // are mutually exclusive. If a user signs in with Google, their email
+//                        // account will automatically be upgraded (a.k.a. replaced) with the Google
+//                        // one, meaning Smart Lock won't have to show the picker UI.
+//                        .setPasswordLoginSupported(email != null)
+//                        .setAccountTypes(google == null ? null :
+//                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider
+//                                        .PROVIDER_ID))
+//                        .build()
+//                )
+//                .continueWithTask(task -> {
+//                    Credential credential = task.getResult().getCredential();
+//                    String email1 = credential.getId();
+//                    String password = credential.getPassword();
+//
+//                    if (TextUtils.isEmpty(password)) {
+//                        return GoogleSignIn.getClient(appContext,
+//                                new GoogleSignInOptions.Builder(googleOptions)
+//                                        .setAccountName(email1)
+//                                        .build())
+//                                .silentSignIn()
+//                                .continueWithTask(task1 -> {
+//                                    AuthCredential authCredential = GoogleAuthProvider
+//                                            .getCredential(
+//                                                    task1.getResult().getIdToken(), null);
+//                                    return mAuth.signInWithCredential(authCredential);
+//                                });
+//                    } else {
+//                        return mAuth.signInWithEmailAndPassword(email1, password);
+//                    }
+//                });
     }
 
     /**
@@ -393,9 +404,10 @@ public final class AuthUI {
             Log.w(TAG, "Google Play services not available during signOut");
         }
 
-        Task<Void> maybeDisableAutoSignIn = playServicesAvailable
-                ? GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn()
-                : Tasks.forResult((Void) null);
+        // TODO: Uncomment this
+        Task<Void> maybeDisableAutoSignIn =
+//               playServicesAvailable ? GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn() :
+                 Tasks.forResult((Void) null);
 
         maybeDisableAutoSignIn
                 .continueWith(task -> {
@@ -440,7 +452,8 @@ public final class AuthUI {
                     "No currently signed in user."));
         }
 
-        final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
+        // TODO(rosariopf): Find a way to delete credentials
+//        final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
 
         // Ensure the order in which tasks are executed properly destructures the user.
         return signOutIdps(context).continueWithTask(task -> {
@@ -451,11 +464,11 @@ public final class AuthUI {
                 return Tasks.forResult((Void) null);
             }
 
-            final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
+//            final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
             List<Task<?>> credentialTasks = new ArrayList<>();
-            for (Credential credential : credentials) {
-                credentialTasks.add(client.delete(credential));
-            }
+//            for (Credential credential : credentials) {
+//                credentialTasks.add(client.delete(credential));
+//            }
             return Tasks.whenAll(credentialTasks)
                     .continueWith(task1 -> {
                         Exception e = task1.getException();

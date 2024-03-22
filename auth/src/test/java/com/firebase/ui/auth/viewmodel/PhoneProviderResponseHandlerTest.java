@@ -64,7 +64,7 @@ public class PhoneProviderResponseHandlerTest {
         mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 PhoneAuthProvider.PROVIDER_ID));
-        mHandler.initializeForTesting(testParams, mMockAuth, null);
+        mHandler.initializeForTesting(testParams, mMockAuth);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class PhoneProviderResponseHandlerTest {
     private void setupAnonymousUpgrade() {
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 PhoneAuthProvider.PROVIDER_ID), true);
-        mHandler.initializeForTesting(testParams, mMockAuth, null);
+        mHandler.initializeForTesting(testParams, mMockAuth);
         when(mMockAuth.getCurrentUser()).thenReturn(mMockUser);
         when(mMockUser.isAnonymous()).thenReturn(true);
     }

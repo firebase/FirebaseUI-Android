@@ -72,6 +72,9 @@ dependencies {
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
+    // TODO(rosariopf): Move this to config
+    implementation("androidx.credentials:credentials:1.2.1")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.1")
 
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 

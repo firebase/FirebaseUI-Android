@@ -8,6 +8,8 @@ android {
     compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
+        applicationId = "com.firebase.uidemo"
+        namespace = "com.firebase.uidemo"
         minSdk = Config.SdkVersions.min
         targetSdk = Config.SdkVersions.target
 
@@ -94,9 +96,9 @@ dependencies {
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     implementation(Config.Libs.Misc.permissions)
     implementation(Config.Libs.Androidx.constraint)
-    debugImplementation(Config.Libs.Misc.leakCanary)
-    debugImplementation(Config.Libs.Misc.leakCanaryFragments)
-    releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
+//    debugImplementation(Config.Libs.Misc.leakCanary)
+//    debugImplementation(Config.Libs.Misc.leakCanaryFragments)
+//    releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
     testImplementation(Config.Libs.Misc.leakCanaryNoop)
 }
 
