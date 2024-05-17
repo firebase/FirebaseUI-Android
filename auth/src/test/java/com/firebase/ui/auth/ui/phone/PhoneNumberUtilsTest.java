@@ -84,7 +84,7 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    @Config(sdk = 16)
+    @Config(sdk = 19)
     public void testFormatNumberToE164_belowApi21() {
         String validPhoneNumber = "+919994947354";
         CountryInfo indiaCountryInfo = new CountryInfo(new Locale("", "IN"), 91);

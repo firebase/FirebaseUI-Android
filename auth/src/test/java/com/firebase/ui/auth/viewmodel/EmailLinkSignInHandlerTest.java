@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.os.Looper;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -55,6 +56,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link EmailLinkSignInHandler}.
@@ -388,7 +390,6 @@ public class EmailLinkSignInHandlerTest {
         mPersistenceManager.saveIdpResponseForLinking(ApplicationProvider.getApplicationContext(),
                 buildFacebookIdpResponse());
 
-
         when(mMockAuth.signInWithCredential(any(AuthCredential.class))).thenReturn
                 (AutoCompleteTask.forSuccess(mMockAuthResult));
 
@@ -401,6 +402,7 @@ public class EmailLinkSignInHandlerTest {
                         null));
 
         mHandler.startSignIn();
+        shadowOf(Looper.getMainLooper()).idle();
 
         // Validate regular sign in
         ArgumentCaptor<EmailAuthCredential> credentialCaptor
@@ -466,6 +468,7 @@ public class EmailLinkSignInHandlerTest {
                         new FirebaseAuthUserCollisionException("foo", "bar")));
 
         mHandler.startSignIn();
+        shadowOf(Looper.getMainLooper()).idle();
 
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);

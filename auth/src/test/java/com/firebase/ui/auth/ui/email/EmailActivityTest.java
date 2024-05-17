@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
+import android.os.Looper;
 import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
@@ -44,6 +45,7 @@ import androidx.test.core.app.ApplicationProvider;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 public class EmailActivityTest {
@@ -109,6 +111,8 @@ public class EmailActivityTest {
 
         emailActivity.onClickResendEmail(EMAIL);
 
+        shadowOf(Looper.getMainLooper()).idle();
+
         EmailLinkFragment fragment = (EmailLinkFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(EmailLinkFragment.TAG);
         assertThat(fragment).isNotNull();
@@ -123,6 +127,8 @@ public class EmailActivityTest {
         // Trigger RegisterEmailFragment (bypass check email)
         emailActivity.onNewUser(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
+
+        shadowOf(Looper.getMainLooper()).idle();
 
         Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
@@ -164,7 +170,7 @@ public class EmailActivityTest {
         emailActivity.onExistingEmailUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
 
         ShadowActivity.IntentForResult nextIntent =
-                Shadows.shadowOf(emailActivity).getNextStartedActivityForResult();
+                shadowOf(emailActivity).getNextStartedActivityForResult();
         assertEquals(WelcomeBackPasswordPrompt.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
 
@@ -175,6 +181,8 @@ public class EmailActivityTest {
         EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
 
         emailActivity.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
+
+        shadowOf(Looper.getMainLooper()).idle();
 
         RegisterEmailFragment registerEmailFragment = (RegisterEmailFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(RegisterEmailFragment.TAG);

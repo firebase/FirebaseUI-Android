@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.os.Looper;
 
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
@@ -44,6 +45,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link LinkingSocialProviderResponseHandler}.
@@ -94,6 +96,7 @@ public class LinkingSocialProviderResponseHandlerTest {
                 .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth).signInWithCredential(any(GoogleAuthCredential.class));
 
@@ -173,6 +176,7 @@ public class LinkingSocialProviderResponseHandlerTest {
                         null));
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth).signInWithCredential(any(GoogleAuthCredential.class));
         verify(FakeAuthResult.INSTANCE.getUser()).linkWithCredential(facebookAuthCredential);
