@@ -73,7 +73,6 @@ dependencies {
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
 
-    implementation(Config.Libs.Androidx.lifecycleExtensions)
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     implementation(platform(Config.Libs.Firebase.bom))

@@ -1,13 +1,13 @@
 object Config {
-    const val version = "8.0.2"
+    const val version = "9.0.0"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "1.7.10"
 
     object SdkVersions {
-        const val compile = 29
-        const val target = 29
-        const val min = 16
+        const val compile = 34
+        const val target = 34
+        const val min = 19
     }
 
     object Plugins {
@@ -31,21 +31,20 @@ object Config {
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:2.0.4"
             const val fragment = "androidx.fragment:fragment:1.3.5"
-            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.3.1"
-            const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:2.2.0"
-            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.3.1"
-            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
+            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.5.1"
+            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.5.1"
+            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
-            const val paging = "androidx.paging:paging-runtime:3.0.0"
-            const val pagingRxJava = "androidx.paging:paging-rxjava3:3.0.0"
+            const val paging = "androidx.paging:paging-runtime:3.2.0"
+            const val pagingRxJava = "androidx.paging:paging-rxjava3:3.2.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
 
             const val materialDesign = "com.google.android.material:material:1.4.0"
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:28.2.0"
+            const val bom = "com.google.firebase:firebase-bom:32.7.4"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"
@@ -61,7 +60,7 @@ object Config {
         }
 
         object Misc {
-            private const val leakCanaryVersion = "1.6.1"
+            private const val leakCanaryVersion = "2.14"
             private const val glideVersion = "4.11.0"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
