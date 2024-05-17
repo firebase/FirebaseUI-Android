@@ -78,10 +78,10 @@ object Config {
             const val mockito = "org.mockito:mockito-android:2.21.0"
             const val robolectric = "org.robolectric:robolectric:4.12.1"
 
-            const val core = "androidx.test:core:1.3.0"
-            const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
-            const val runner = "androidx.test:runner:1.3.0"
-            const val rules = "androidx.test:rules:1.3.0"
+            const val core = "androidx.test:core:1.5.0"
+            const val archCoreTesting = "androidx.arch.core:core-testing:2.2.0"
+            const val runner = "androidx.test:runner:1.5.2"
+            const val rules = "androidx.test:rules:1.5.0"
         }
 
         object Lint {
