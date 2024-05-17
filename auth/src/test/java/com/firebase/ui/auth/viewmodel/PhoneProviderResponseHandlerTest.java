@@ -14,7 +14,6 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.viewmodel.phone.PhoneProviderResponseHandler;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,7 +58,7 @@ public class PhoneProviderResponseHandlerTest {
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
-        mCredential = PhoneAuthCredential.zzc("sessionInfo", "SmsCode");
+        mCredential = PhoneAuthCredential.zza("sessionInfo", "SmsCode");
 
         mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
