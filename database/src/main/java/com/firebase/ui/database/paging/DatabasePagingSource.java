@@ -1,12 +1,14 @@
 package com.firebase.ui.database.paging;
 
 import android.annotation.SuppressLint;
+import android.util.Pair;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.snapshot.Index;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +23,7 @@ import androidx.paging.rxjava3.RxPagingSource;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
+public class DatabasePagingSource extends RxPagingSource<Object, DataSnapshot> {
     private final Query mQuery;
 
     private static final String STATUS_DATABASE_NOT_FOUND = "DATA_NOT_FOUND";
@@ -32,18 +34,45 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
         this.mQuery = query;
     }
 
+    public Query startAt_childvalue(Object startvalue, String keyvalue) {
+        if (startvalue instanceof String)
+            return mQuery.startAt((String) startvalue, keyvalue);
+        else if (startvalue instanceof Boolean)
+            return mQuery.startAt((Boolean) startvalue, keyvalue);
+        else if (startvalue instanceof Double)
+            return mQuery.startAt((Double) startvalue, keyvalue);
+        else if (startvalue instanceof Long)
+            return mQuery.startAt(((Long) startvalue).doubleValue(), keyvalue);
+        else
+            return mQuery;
+    }
+
     /**
      * DatabaseError.fromStatus() is not meant to be public.
      */
     @SuppressLint("RestrictedApi")
     @NonNull
     @Override
-    public Single<LoadResult<String, DataSnapshot>> loadSingle(@NonNull LoadParams<String> params) {
+    public Single<LoadResult<Object, DataSnapshot>> loadSingle(@NonNull LoadParams<Object> params) {
         Task<DataSnapshot> task;
+
+        Index queryChildPathIndex = mQuery.getSpec().getIndex();
+        Pair<Object, String> pKey = (Pair<Object, String>) params.getKey();
+
         if (params.getKey() == null) {
             task = mQuery.limitToFirst(params.getLoadSize()).get();
         } else {
-            task = mQuery.startAt(null, params.getKey()).limitToFirst(params.getLoadSize() + 1).get();
+            //change mQuery.startAt at value  if child index
+            //if not null then what we have here is orderByChild query
+            if (queryChildPathIndex != null) {//orderByChild query mode
+                task = startAt_childvalue(pKey.first, pKey.second)
+                        .limitToFirst(params.getLoadSize() + 1)
+                        .get();
+            } else {
+                task = mQuery.startAt(null, pKey.second)
+                        .limitToFirst(params.getLoadSize() + 1)
+                        .get();
+            }
         }
 
         return Single.fromCallable(() -> {
@@ -54,7 +83,7 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
 
                     //Make List of DataSnapshot
                     List<DataSnapshot> data = new ArrayList<>();
-                    String lastKey = null;
+                    Pair<Object, String> lastKey = null;
 
                     if (params.getKey() == null) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -77,7 +106,14 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
                     //Detect End of Data
                     if (!data.isEmpty()) {
                         //Get Last Key
-                        lastKey = getLastPageKey(data);
+                        Object lastkey_c = getLastPageChildKey(data, queryChildPathIndex);
+                        String lastkey_k = getLastPageKey(data);
+                        lastKey = (lastkey_c == null && lastkey_k == null)
+                                ? null
+                                : (lastkey_k == null) ? new Pair<>(lastkey_c, "") : new Pair<>(
+                                lastkey_c,
+                                lastkey_k);
+
                     }
                     return toLoadResult(data, lastKey);
                 } else {
@@ -99,9 +135,9 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
         }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
     }
 
-    private LoadResult<String, DataSnapshot> toLoadResult(
+    private LoadResult<Object, DataSnapshot> toLoadResult(
             @NonNull List<DataSnapshot> snapshots,
-            String nextPage
+            Pair<Object, String> nextPage
     ) {
         return new LoadResult.Page<>(
                 snapshots,
@@ -109,6 +145,24 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
                 nextPage,
                 LoadResult.Page.COUNT_UNDEFINED,
                 LoadResult.Page.COUNT_UNDEFINED);
+    }
+
+    @SuppressLint("RestrictedApi")
+    private Object getLastPageChildKey(@NonNull List<DataSnapshot> data, Index index) {
+        if (index == null) return null;
+        if (data.isEmpty()) {
+            return null;
+        } else {
+            return getChildValue(data.get(data.size() - 1), index);
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
+    private Object getChildValue(DataSnapshot snapshot, Index index) {
+        String keypath = index.getQueryDefinition();
+        DataSnapshot data = snapshot.child(keypath);
+        if (!data.exists()) return null;
+        return data.getValue();
     }
 
     @Nullable
@@ -122,7 +176,7 @@ public class DatabasePagingSource extends RxPagingSource<String, DataSnapshot> {
 
     @Nullable
     @Override
-    public String getRefreshKey(@NonNull PagingState<String, DataSnapshot> state) {
+    public String getRefreshKey(@NonNull PagingState<Object, DataSnapshot> state) {
         return null;
     }
 }
