@@ -94,7 +94,7 @@ public final class DatabasePagingOptions<T> {
         public Builder<T> setQuery(@NonNull Query query,
                                    @NonNull PagingConfig config,
                                    @NotNull SnapshotParser<T> parser) {
-            final Pager<String, DataSnapshot> pager = new Pager<>(config,
+            final Pager<Object, DataSnapshot> pager = new Pager<>(config,
                     () -> new DatabasePagingSource(query));
             mData = PagingLiveData.cachedIn(PagingLiveData.getLiveData(pager),
                     mOwner.getLifecycle());
