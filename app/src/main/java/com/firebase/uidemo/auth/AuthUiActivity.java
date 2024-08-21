@@ -141,8 +141,6 @@ public class AuthUiActivity extends AppCompatActivity
 
         mBinding.signIn.setOnClickListener(view -> signIn());
 
-        mBinding.signInSilent.setOnClickListener(view -> silentSignIn());
-
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
@@ -195,9 +193,8 @@ public class AuthUiActivity extends AppCompatActivity
         AuthUI.SignInIntentBuilder builder = getAuthUI().createSignInIntentBuilder()
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
-                .setAvailableProviders(getSelectedProviders())
-                .setIsSmartLockEnabled(mBinding.credentialSelectorEnabled.isChecked(),
-                        mBinding.hintSelectorEnabled.isChecked());
+                .setAvailableProviders(getSelectedProviders());
+                //.setIsCredentialsManagerEnabled(mBinding.credentialsManagerEnabled.isChecked());
 
         if (mBinding.customLayout.isChecked()) {
             AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
@@ -227,17 +224,6 @@ public class AuthUiActivity extends AppCompatActivity
             builder.enableAnonymousUsersAutoUpgrade();
         }
         return builder.build();
-    }
-
-    public void silentSignIn() {
-        getAuthUI().silentSignIn(this, getSelectedProviders())
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        startSignedInActivity(null);
-                    } else {
-                        showSnackbar(R.string.sign_in_failed);
-                    }
-                });
     }
 
     @Override

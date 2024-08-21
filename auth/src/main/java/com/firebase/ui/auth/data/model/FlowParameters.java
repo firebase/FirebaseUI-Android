@@ -52,8 +52,7 @@ public class FlowParameters implements Parcelable {
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
             String privacyPolicyUrl = in.readString();
-            boolean enableCredentials = in.readInt() != 0;
-            boolean enableHints = in.readInt() != 0;
+            boolean enableCredentialsManager = in.readInt() != 0;
             boolean enableAnonymousUpgrade = in.readInt() != 0;
             boolean alwaysShowProviderChoice = in.readInt() != 0;
             boolean lockOrientation = in.readInt() != 0;
@@ -69,8 +68,7 @@ public class FlowParameters implements Parcelable {
                     logoId,
                     termsOfServiceUrl,
                     privacyPolicyUrl,
-                    enableCredentials,
-                    enableHints,
+                    enableCredentialsManager,
                     enableAnonymousUpgrade,
                     alwaysShowProviderChoice,
                     lockOrientation,
@@ -112,8 +110,7 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public final ActionCodeSettings passwordResetSettings;
 
-    public final boolean enableCredentials;
-    public final boolean enableHints;
+    public final boolean enableCredentialsManager;
     public final boolean enableAnonymousUpgrade;
     public final boolean alwaysShowProviderChoice;
     public final boolean lockOrientation;
@@ -130,7 +127,6 @@ public class FlowParameters implements Parcelable {
             @Nullable String termsOfServiceUrl,
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
-            boolean enableHints,
             boolean enableAnonymousUpgrade,
             boolean alwaysShowProviderChoice,
             boolean lockOrientation,
@@ -145,8 +141,7 @@ public class FlowParameters implements Parcelable {
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.privacyPolicyUrl = privacyPolicyUrl;
-        this.enableCredentials = enableCredentials;
-        this.enableHints = enableHints;
+        this.enableCredentialsManager = enableCredentials;
         this.enableAnonymousUpgrade = enableAnonymousUpgrade;
         this.alwaysShowProviderChoice = alwaysShowProviderChoice;
         this.lockOrientation = lockOrientation;
@@ -171,8 +166,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeString(privacyPolicyUrl);
-        dest.writeInt(enableCredentials ? 1 : 0);
-        dest.writeInt(enableHints ? 1 : 0);
+        dest.writeInt(enableCredentialsManager ? 1 : 0);
         dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
         dest.writeInt(alwaysShowProviderChoice ? 1 : 0);
         dest.writeInt(lockOrientation ? 1 : 0);
@@ -205,8 +199,7 @@ public class FlowParameters implements Parcelable {
     public boolean isPlayServicesRequired() {
         // Play services only required for Google Sign In and the Credentials API
         return isProviderEnabled(GoogleAuthProvider.PROVIDER_ID)
-                || enableHints
-                || enableCredentials;
+                || enableCredentialsManager;
     }
 
     public boolean isProviderEnabled(@AuthUI.SupportedProvider String provider) {

@@ -171,7 +171,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         // Only show the name field if required
         nameInput.setVisibility(requireName ? View.VISIBLE : View.GONE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableCredentials) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableCredentialsManager) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 

@@ -38,15 +38,6 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/sign_in_start" />
 
-            <Button
-                android:id="@+id/sign_in_silent"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:text="@string/sign_in_silent" />
-
             <TextView
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
@@ -314,18 +305,13 @@
                 android:text="@string/options_header" />
 
             <CheckBox
-                android:id="@+id/credential_selector_enabled"
+                android:id="@+id/credentials_manager_enabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/options_enable_credential_selector" />
-
-            <CheckBox
-                android:id="@+id/hint_selector_enabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/options_enable_hint_selector" />
+                android:text="@string/options_enable_credentials_manager"
+                android:visibility="gone"/>
+            <!-- TODO (hackathon) change visibility when we support CredMan -->
 
             <CheckBox
                 android:id="@+id/allow_new_email_accounts"

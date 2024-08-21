@@ -90,9 +90,10 @@ public class CheckEmailFragment extends FragmentBase implements
 
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
-            mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-        }
+        // TODO(hackathon): figure out if we want to have autofill or not.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
+//            mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+//        }
 
         mNextButton.setOnClickListener(this);
 
@@ -170,7 +171,7 @@ public class CheckEmailFragment extends FragmentBase implements
         if (!TextUtils.isEmpty(email)) {
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (getFlowParams().enableHints) {
+        } else if (getFlowParams().enableCredentialsManager) {
             // TODO(hackathon): Fetch credential
 //            mHandler.fetchCredential();
         }

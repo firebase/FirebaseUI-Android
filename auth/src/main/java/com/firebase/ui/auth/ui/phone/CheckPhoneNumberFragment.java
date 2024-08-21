@@ -89,9 +89,10 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
         mSmsTermsText.setText(getString(R.string.fui_sms_terms_of_service,
                 getString(R.string.fui_verify_phone_number)));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
-            mPhoneEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
-        }
+        // TODO(hackathon): figure out if we want to have autofill or not.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
+//            mPhoneEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+//        }
         requireActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
 
         ImeHelper.setImeOnDoneListener(mPhoneEditText, () -> onNext());
@@ -234,7 +235,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                     "",
                     countryIso,
                     String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
-        } else if (getFlowParams().enableHints) {
+        } else if (getFlowParams().enableCredentialsManager) {
             // TODO(hackathon): fetch user credential
 //            mCheckPhoneHandler.fetchCredential();
         }

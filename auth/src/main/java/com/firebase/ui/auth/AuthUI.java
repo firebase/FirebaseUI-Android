@@ -1264,8 +1264,7 @@ public final class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mAlwaysShowProviderChoice = false;
         boolean mLockOrientation = false;
-        boolean mEnableCredentials = true;
-        boolean mEnableHints = true;
+        boolean mEnableCredentialsManager = true;
         AuthMethodPickerLayout mAuthMethodPickerLayout = null;
         ActionCodeSettings mPasswordSettings = null;
 
@@ -1390,32 +1389,15 @@ public final class AuthUI {
         }
 
         /**
-         * Enables or disables the use of Smart Lock for Passwords in the sign in flow. To
-         * (en)disable hint selector and credential selector independently use {@link
-         * #setIsSmartLockEnabled(boolean, boolean)}
+         * Enables or disables the use of Credentials Manager.
          * <p>
-         * <p>SmartLock is enabled by default.
+         * <p>Credentials Manager is enabled by default.
          *
-         * @param enabled enables smartlock's credential selector and hint selector
+         * @param enableCredentialsManager enables credential manager
          */
         @NonNull
-        public T setIsSmartLockEnabled(boolean enabled) {
-            return setIsSmartLockEnabled(enabled, enabled);
-        }
-
-        /**
-         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
-         * selector.
-         * <p>
-         * <p>Both selectors are enabled by default.
-         *
-         * @param enableCredentials enables credential selector before signup
-         * @param enableHints       enable hint selector in respective signup screens
-         */
-        @NonNull
-        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
-            mEnableCredentials = enableCredentials;
-            mEnableHints = enableHints;
+        public T setIsCredentialsManagerEnabled(boolean enableCredentialsManager) {
+            mEnableCredentialsManager = enableCredentialsManager;
             return (T) this;
         }
 
@@ -1547,8 +1529,7 @@ public final class AuthUI {
                     mLogo,
                     mTosUrl,
                     mPrivacyPolicyUrl,
-                    mEnableCredentials,
-                    mEnableHints,
+                    mEnableCredentialsManager,
                     mEnableAnonymousUpgrade,
                     mAlwaysShowProviderChoice,
                     mLockOrientation,
