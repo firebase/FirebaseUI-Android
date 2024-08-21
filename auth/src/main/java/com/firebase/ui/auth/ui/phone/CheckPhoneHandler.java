@@ -4,15 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 
-import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.HintRequest;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -23,22 +18,16 @@ public class CheckPhoneHandler extends AuthViewModelBase<PhoneNumber> {
         super(application);
     }
 
-    public void fetchCredential() {
-        setResult(Resource.forFailure(new PendingIntentRequiredException(
-                Credentials.getClient(getApplication()).getHintPickerIntent(
-                        new HintRequest.Builder().setPhoneNumberIdentifierSupported(true).build()),
-                RequestCodes.CRED_HINT
-        )));
-    }
-
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
+        if (resultCode != Activity.RESULT_OK) { return; }
+        // TODO(hackathon): re-enable this flow together with CheckEmailHandler
+        setResult(Resource.forFailure(new IllegalStateException("Disabled for Hackathon")));
 
-        Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-        String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
-                credential.getId(), getApplication());
-        if (formattedPhone != null) {
-            setResult(Resource.forSuccess(PhoneNumberUtils.getPhoneNumber(formattedPhone)));
-        }
+//        Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+//        String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
+//                credential.getId(), getApplication());
+//        if (formattedPhone != null) {
+//            setResult(Resource.forSuccess(PhoneNumberUtils.getPhoneNumber(formattedPhone)));
+//        }
     }
 }

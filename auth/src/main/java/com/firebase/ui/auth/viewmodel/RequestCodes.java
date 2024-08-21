@@ -4,11 +4,6 @@ import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class RequestCodes {
-    /** Request code for saving a credential. */
-    public static final int CRED_SAVE = 100;
-
-    /** Request code for retrieving a credential. */
-    public static final int CRED_HINT = 101;
 
     /** Request code for starting a credential save flow. */
     public static final int CRED_SAVE_FLOW = 102;

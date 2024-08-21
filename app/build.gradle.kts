@@ -83,6 +83,16 @@ dependencies {
     implementation(Config.Libs.Androidx.cardView)
     implementation(Config.Libs.Androidx.customTabs)
 
+    // Found this on StackOverflow: https://stackoverflow.com/a/75298544/5861618
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
     implementation(Config.Libs.Misc.glide)
     annotationProcessor(Config.Libs.Misc.glideCompiler)
 

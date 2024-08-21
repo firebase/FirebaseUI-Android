@@ -100,10 +100,11 @@ public class RegisterEmailFragment extends FragmentBase implements
                 this, R.string.fui_progress_dialog_signing_up) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                startSaveCredentials(
-                        mHandler.getCurrentUser(),
-                        response,
-                        mPasswordEditText.getText().toString());
+                // TODO(hackathon): Save this user's credentials
+//                startSaveCredentials(
+//                        mHandler.getCurrentUser(),
+//                        response,
+//                        mPasswordEditText.getText().toString());
             }
 
             @Override

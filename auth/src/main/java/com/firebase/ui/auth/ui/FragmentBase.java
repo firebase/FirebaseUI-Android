@@ -28,11 +28,4 @@ public abstract class FragmentBase extends Fragment implements ProgressView {
     public FlowParameters getFlowParams() {
         return mActivity.getFlowParams();
     }
-
-    public void startSaveCredentials(
-            FirebaseUser firebaseUser,
-            IdpResponse response,
-            @Nullable String password) {
-        mActivity.startSaveCredentials(firebaseUser, response, password);
-    }
 }

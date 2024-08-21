@@ -2,7 +2,7 @@ object Config {
     const val version = "8.1.0-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.7.10"
+    private const val kotlinVersion = "1.8.21"
 
     object SdkVersions {
         const val compile = 33
@@ -31,14 +31,13 @@ object Config {
             const val cardView = "androidx.cardview:cardview:1.0.0"
             const val constraint = "androidx.constraintlayout:constraintlayout:2.0.4"
             const val fragment = "androidx.fragment:fragment:1.3.5"
-            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.3.1"
-            const val lifecycleExtensions = "androidx.lifecycle:lifecycle-extensions:2.2.0"
-            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.3.1"
-            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
+            const val lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:2.5.1"
+            const val lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:2.5.1"
+            const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
             const val legacySupportv4 = "androidx.legacy:legacy-support-v4:1.0.0"
             const val multidex = "androidx.multidex:multidex:2.0.1"
-            const val paging = "androidx.paging:paging-runtime:3.0.0"
-            const val pagingRxJava = "androidx.paging:paging-rxjava3:3.0.0"
+            const val paging = "androidx.paging:paging-runtime:3.2.0"
+            const val pagingRxJava = "androidx.paging:paging-rxjava3:3.2.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
 
             const val materialDesign = "com.google.android.material:material:1.4.0"
@@ -53,7 +52,7 @@ object Config {
         }
 
         object PlayServices {
-            const val auth = "com.google.android.gms:play-services-auth:20.3.0"
+            const val auth = "com.google.android.gms:play-services-auth:21.2.0"
         }
 
         object Provider {

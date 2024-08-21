@@ -20,7 +20,6 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
-import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -55,7 +54,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link SmartLockHandler}.
+ * Unit tests for {@link SocialProviderResponseHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
 public class SocialProviderResponseHandlerTest {
@@ -73,7 +72,7 @@ public class SocialProviderResponseHandlerTest {
         mHandler = new SocialProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
 
-        mHandler.initializeForTesting(testParams, mMockAuth, null);
+        mHandler.initializeForTesting(testParams, mMockAuth);
     }
 
     @Test
@@ -334,7 +333,7 @@ public class SocialProviderResponseHandlerTest {
         // enableAnonymousUpgrade must be set to true
         FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS,
                 /* enableAnonymousUpgrade */ true);
-        mHandler.initializeForTesting(testParams, mMockAuth, null);
+        mHandler.initializeForTesting(testParams, mMockAuth);
 
         when(mUser.isAnonymous()).thenReturn(true);
         when(mMockAuth.getCurrentUser()).thenReturn(mUser);

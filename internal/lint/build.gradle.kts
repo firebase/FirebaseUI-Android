@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     compileOnly(Config.Libs.Lint.api)
-    compileOnly(Config.Libs.Kotlin.jvm)
+//    compileOnly(Config.Libs.Kotlin.jvm)
 
     testImplementation(Config.Libs.Lint.api)
     testImplementation(Config.Libs.Lint.tests)

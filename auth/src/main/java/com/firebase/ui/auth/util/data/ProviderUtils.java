@@ -22,7 +22,6 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -103,17 +102,17 @@ public final class ProviderUtils {
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
-     * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
+     * Credentials API account type (such as "https://accounts.google.com").
      */
     public static String providerIdToAccountType(
             @AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
-                return IdentityProviders.GOOGLE;
+                return "https://accounts.google.com";
             case FacebookAuthProvider.PROVIDER_ID:
-                return IdentityProviders.FACEBOOK;
+                return "https://www.facebook.com";
             case TwitterAuthProvider.PROVIDER_ID:
-                return IdentityProviders.TWITTER;
+                return "https://twitter.com";
             case GithubAuthProvider.PROVIDER_ID:
                 return GITHUB_IDENTITY;
             case PhoneAuthProvider.PROVIDER_ID:
@@ -128,11 +127,11 @@ public final class ProviderUtils {
     @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
-            case IdentityProviders.GOOGLE:
+            case "https://accounts.google.com":
                 return GoogleAuthProvider.PROVIDER_ID;
-            case IdentityProviders.FACEBOOK:
+            case "https://www.facebook.com":
                 return FacebookAuthProvider.PROVIDER_ID;
-            case IdentityProviders.TWITTER:
+            case "https://twitter.com":
                 return TwitterAuthProvider.PROVIDER_ID;
             case GITHUB_IDENTITY:
                 return GithubAuthProvider.PROVIDER_ID;

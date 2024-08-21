@@ -75,7 +75,6 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":storage"))
 
-    implementation(Config.Libs.Androidx.lifecycleExtensions)
 }
 
 apply(plugin = "com.google.gms.google-services")

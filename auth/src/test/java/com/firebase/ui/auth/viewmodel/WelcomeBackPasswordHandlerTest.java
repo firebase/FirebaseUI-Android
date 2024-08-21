@@ -15,8 +15,6 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthCredential;
@@ -54,7 +52,6 @@ public class WelcomeBackPasswordHandlerTest {
     @Mock FirebaseAuth mMockAuth;
     @Mock FirebaseAuth mScratchMockAuth;
     @Mock FirebaseUser mUser;
-    @Mock CredentialsClient mMockCredentials;
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
 
     private WelcomeBackPasswordHandler mHandler;
@@ -68,7 +65,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID));
-        mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials);
+        mHandler.initializeForTesting(testParams, mMockAuth);
     }
 
     @Test
@@ -96,10 +93,6 @@ public class WelcomeBackPasswordHandlerTest {
                         FakeAuthResult.INSTANCE,
                         true,
                         null));
-
-        // Mock smartlock save to always succeed
-        when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.forSuccess(null));
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
@@ -230,7 +223,7 @@ public class WelcomeBackPasswordHandlerTest {
         // enableAnonymousUpgrade must be set to true
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID), /* enableAnonymousUpgrade */ true);
-        mHandler.initializeForTesting(testParams, mMockAuth, mMockCredentials);
+        mHandler.initializeForTesting(testParams, mMockAuth);
 
         // Mock isAnonymous() to return true so canUpgradeAnonymous will return true
         when(mUser.isAnonymous()).thenReturn(true);

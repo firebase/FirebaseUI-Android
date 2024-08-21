@@ -40,12 +40,6 @@
             android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
-            android:name=".ui.credentials.CredentialSaveActivity"
-            android:label=""
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent" />
-
-        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/fui_title_recover_password_activity"
             android:exported="false"

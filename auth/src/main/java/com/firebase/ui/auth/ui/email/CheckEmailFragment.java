@@ -171,7 +171,8 @@ public class CheckEmailFragment extends FragmentBase implements
             mEmailEditText.setText(email);
             validateAndProceed();
         } else if (getFlowParams().enableHints) {
-            mHandler.fetchCredential();
+            // TODO(hackathon): Fetch credential
+//            mHandler.fetchCredential();
         }
     }
 

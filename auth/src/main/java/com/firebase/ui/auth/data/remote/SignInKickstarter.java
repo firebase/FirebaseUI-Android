@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.data.remote;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
-import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
@@ -20,24 +18,12 @@ import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -83,41 +69,42 @@ public class SignInKickstarter extends SignInViewModelBase {
         }
 
 
+        // // TODO(hackathon): re-enable this Flow
         // Only support password credentials if email auth is enabled
-        boolean supportPasswords = ProviderUtils.getConfigFromIdps(
-                getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;
-        List<String> accountTypes = getCredentialAccountTypes();
-
+//        boolean supportPasswords = ProviderUtils.getConfigFromIdps(
+//                getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;
+//        List<String> accountTypes = getCredentialAccountTypes();
         // If the request will be empty, avoid the step entirely
-        boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
-
-        if (getArguments().enableCredentials && willRequestCredentials) {
-            setResult(Resource.forLoading());
-
-            GoogleApiUtils.getCredentialsClient(getApplication())
-                    .request(new CredentialRequest.Builder()
-                            .setPasswordLoginSupported(supportPasswords)
-                            .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
-                            .build())
-                    .addOnCompleteListener(task -> {
-                        try {
-                            handleCredential(
-                                    task.getResult(ApiException.class).getCredential());
-                        } catch (ResolvableApiException e) {
-                            if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                                setResult(Resource.forFailure(
-                                        new PendingIntentRequiredException(
-                                                e.getResolution(), RequestCodes.CRED_HINT)));
-                            } else {
-                                startAuthMethodChoice();
-                            }
-                        } catch (ApiException e) {
-                            startAuthMethodChoice();
-                        }
-                    });
-        } else {
-            startAuthMethodChoice();
-        }
+//        boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
+//
+//        if (getArguments().enableCredentials && willRequestCredentials) {
+//            setResult(Resource.forLoading());
+//
+//            GoogleApiUtils.getCredentialsClient(getApplication())
+//                    .request(new CredentialRequest.Builder()
+//                            .setPasswordLoginSupported(supportPasswords)
+//                            .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
+//                            .build())
+//                    .addOnCompleteListener(task -> {
+//                        try {
+//                            handleCredential(
+//                                    task.getResult(ApiException.class).getCredential());
+//                        } catch (ResolvableApiException e) {
+//                            if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+//                                setResult(Resource.forFailure(
+//                                        new PendingIntentRequiredException(
+//                                                e.getResolution(), RequestCodes.CRED_HINT)));
+//                            } else {
+//                                startAuthMethodChoice();
+//                            }
+//                        } catch (ApiException e) {
+//                            startAuthMethodChoice();
+//                        }
+//                    });
+//        } else {
+//            startAuthMethodChoice();
+//        }
+        startAuthMethodChoice();
     }
 
     private void startAuthMethodChoice() {
@@ -188,13 +175,6 @@ public class SignInKickstarter extends SignInViewModelBase {
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
-            case RequestCodes.CRED_HINT:
-                if (resultCode == Activity.RESULT_OK) {
-                    handleCredential((Credential) data.getParcelableExtra(Credential.EXTRA_KEY));
-                } else {
-                    startAuthMethodChoice();
-                }
-                break;
             case RequestCodes.EMAIL_FLOW:
             case RequestCodes.AUTH_PICKER_FLOW:
             case RequestCodes.PHONE_FLOW:
@@ -214,38 +194,6 @@ public class SignInKickstarter extends SignInViewModelBase {
                 } else {
                     setResult(Resource.forFailure(response.getError()));
                 }
-        }
-    }
-
-    private void handleCredential(final Credential credential) {
-        String id = credential.getId();
-        String password = credential.getPassword();
-        if (TextUtils.isEmpty(password)) {
-            String identity = credential.getAccountType();
-            if (identity == null) {
-                startAuthMethodChoice();
-            } else {
-                redirectSignIn(
-                        ProviderUtils.accountTypeToProviderId(credential.getAccountType()), id);
-            }
-        } else {
-            final IdpResponse response = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
-
-            setResult(Resource.forLoading());
-            getAuth().signInWithEmailAndPassword(id, password)
-                    .addOnSuccessListener(result -> handleSuccess(response, result))
-                    .addOnFailureListener(e -> {
-                        if (e instanceof FirebaseAuthInvalidUserException
-                                || e instanceof FirebaseAuthInvalidCredentialsException) {
-                            // In this case the credential saved in SmartLock was not
-                            // a valid credential, we should delete it from SmartLock
-                            // before continuing.
-                            GoogleApiUtils.getCredentialsClient(getApplication())
-                                    .delete(credential);
-                        }
-                        startAuthMethodChoice();
-                    });
         }
     }
 }
