@@ -68,7 +68,7 @@ public class PhoneActivity extends AppCompatBase {
                 this, R.string.fui_progress_dialog_signing_in) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                 startSaveCredentials(handler.getCurrentUser(), response, null);
+                startSaveCredentials(handler.getCurrentUser(), response, null);
             }
 
             @Override

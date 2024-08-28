@@ -118,7 +118,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                 startSaveCredentials(mHandler.getCurrentUser(), response, null);
+                startSaveCredentials(mHandler.getCurrentUser(), response, null);
             }
 
             @Override
