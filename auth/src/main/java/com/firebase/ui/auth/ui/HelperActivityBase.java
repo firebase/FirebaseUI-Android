@@ -4,18 +4,29 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.os.CancellationSignal;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.credentials.CreateCredentialResponse;
+import androidx.credentials.CreatePasswordRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.CreateCredentialException;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
@@ -65,6 +76,44 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
     public void finish(int resultCode, @Nullable Intent intent) {
         setResult(resultCode, intent);
         finish();
+    }
+
+    public void startSaveCredentials(
+            FirebaseUser firebaseUser,
+            IdpResponse response,
+            @Nullable String password) {
+        if (firebaseUser == null) {
+            setResult(RESULT_CANCELED);
+            finish();
+        }
+        String email = firebaseUser.getEmail();
+        String phone = firebaseUser.getPhoneNumber();
+
+        String username = TextUtils.isEmpty(email) ? phone : email;
+
+        CreatePasswordRequest request = new CreatePasswordRequest(username, password);
+        CredentialManager credMan = CredentialManager.create(this);
+        credMan.createCredentialAsync(
+                this,
+                request,
+                new CancellationSignal(),
+                Executors.newSingleThreadExecutor(),
+                new CredentialManagerCallback<CreateCredentialResponse, CreateCredentialException>() {
+                    @Override
+                    public void onResult(CreateCredentialResponse response) {
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(@NonNull CreateCredentialException e) {
+                        // TODO: return this exception before finish()
+                        e.printStackTrace();
+                        setResult(RESULT_CANCELED);
+                        finish();
+                    }
+                }
+        );
     }
 
     /**

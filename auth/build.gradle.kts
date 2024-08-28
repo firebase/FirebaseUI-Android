@@ -73,6 +73,12 @@ dependencies {
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
 
+    // TODO(thatfiredev): replace with Config.Libs
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     implementation(platform(Config.Libs.Firebase.bom))

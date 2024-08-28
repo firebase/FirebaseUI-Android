@@ -1,7 +1,9 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,10 +34,18 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
+import androidx.credentials.CreateCredentialResponse;
+import androidx.credentials.CreatePasswordRequest;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.CreateCredentialException;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -100,11 +110,10 @@ public class RegisterEmailFragment extends FragmentBase implements
                 this, R.string.fui_progress_dialog_signing_up) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                // TODO(hackathon): Save this user's credentials
-//                startSaveCredentials(
-//                        mHandler.getCurrentUser(),
-//                        response,
-//                        mPasswordEditText.getText().toString());
+                startSaveCredentials(
+                        mHandler.getCurrentUser(),
+                        response,
+                        mPasswordEditText.getText().toString());
             }
 
             @Override
