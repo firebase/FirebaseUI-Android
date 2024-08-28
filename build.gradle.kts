@@ -12,7 +12,7 @@ buildscript {
         classpath(Config.Plugins.kotlin)
         classpath(Config.Plugins.google)
         classpath(Config.Plugins.mavenPublish)
-//        classpath(Config.Plugins.buildInfo)
+        classpath(Config.Plugins.buildInfo)
     }
 }
 

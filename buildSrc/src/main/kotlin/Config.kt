@@ -16,7 +16,7 @@ object Config {
         const val google = "com.google.gms:google-services:4.3.8"
 
         const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
-        const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
+        const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.33.21"
     }
 
     object Libs {
