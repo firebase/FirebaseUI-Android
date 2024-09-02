@@ -5,8 +5,8 @@ object Config {
     private const val kotlinVersion = "1.7.10"
 
     object SdkVersions {
-        const val compile = 34
-        const val target = 34
+        const val compile = 33
+        const val target = 33
         const val min = 19
     }
 
