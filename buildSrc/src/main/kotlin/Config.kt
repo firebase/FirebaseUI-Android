@@ -61,14 +61,10 @@ object Config {
         }
 
         object Misc {
-            private const val leakCanaryVersion = "1.6.1"
+            private const val leakCanaryVersion = "2.14"
             private const val glideVersion = "4.11.0"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-            const val leakCanaryFragments =
-                    "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
-            const val leakCanaryNoop =
-                    "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 
             const val glide = "com.github.bumptech.glide:glide:$glideVersion"
             const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
