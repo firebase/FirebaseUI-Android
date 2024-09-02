@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.os.Looper;
 
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
@@ -33,6 +34,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.Collections;
 
@@ -44,11 +46,13 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link WelcomeBackPasswordHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.PAUSED)
 public class WelcomeBackPasswordHandlerTest {
 
     @Mock FirebaseAuth mMockAuth;
@@ -103,6 +107,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
+        shadowOf(Looper.getMainLooper()).idle();
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isLoading()));
@@ -128,6 +133,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
+        shadowOf(Looper.getMainLooper()).idle();
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.isLoading()));
