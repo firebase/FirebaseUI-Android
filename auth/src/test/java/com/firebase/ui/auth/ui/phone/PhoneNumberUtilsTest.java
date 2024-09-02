@@ -84,38 +84,6 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    @Config(sdk = 16)
-    public void testFormatNumberToE164_belowApi21() {
-        String validPhoneNumber = "+919994947354";
-        CountryInfo indiaCountryInfo = new CountryInfo(new Locale("", "IN"), 91);
-        // no leading plus
-        assertEquals(validPhoneNumber, format("9994947354", indiaCountryInfo));
-        // fully formatted
-        assertEquals(validPhoneNumber, format("+919994947354", indiaCountryInfo));
-        // parantheses and hyphens
-        assertEquals(validPhoneNumber, format("(99949) 47-354", indiaCountryInfo));
-
-        // The following cases would fail for lower api versions.
-        // Leaving tests in place to formally identify cases
-
-        // no leading +
-        // assertEquals(validPhoneNumber, format("919994947354", indiaCountryInfo));
-
-        // with hyphens
-        // assertEquals(validPhoneNumber, format("+91-(999)-(49)-(47354)",
-        // indiaCountryInfo));
-
-        // with spaces leading plus
-        // assertEquals(validPhoneNumber, format("+91 99949 47354", indiaCountryInfo));
-
-        // space formatting
-        // assertEquals(validPhoneNumber, format("91 99949 47354", indiaCountryInfo));
-
-        // invalid phone number
-        // assertNull(format("999474735", indiaCountryInfo));
-    }
-
-    @Test
     public void testGetCurrentCountryInfo_fromSim() {
         Context context = mock(Context.class);
         TelephonyManager telephonyManager = mock(TelephonyManager.class);
