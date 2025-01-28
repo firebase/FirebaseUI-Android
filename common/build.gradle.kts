@@ -5,6 +5,7 @@ plugins {
 
 android {
     compileSdk = Config.SdkVersions.compile
+    namespace = "com.firebase.ui.common"
 
     defaultConfig {
         minSdk = Config.SdkVersions.min

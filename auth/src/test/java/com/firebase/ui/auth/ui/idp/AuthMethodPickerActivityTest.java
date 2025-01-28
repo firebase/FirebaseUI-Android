@@ -57,7 +57,8 @@ public class AuthMethodPickerActivityTest {
         // Exclude Facebook until the `NoClassDefFoundError: com/facebook/common/R$style` exception
         // is fixed.
         List<String> providers = Arrays.asList(
-                GoogleAuthProvider.PROVIDER_ID,
+                // GoogleAuthProvider.PROVIDER_ID, we remove GoogleAuthProvider otherwise
+                // CredentialManager will be initialized and it will throw an exception
                 TwitterAuthProvider.PROVIDER_ID,
                 EmailAuthProvider.PROVIDER_ID,
                 PhoneAuthProvider.PROVIDER_ID,

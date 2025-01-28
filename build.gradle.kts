@@ -5,6 +5,7 @@ buildscript {
         google()
         mavenCentral()
         mavenLocal()
+        maven("https://oss.jfrog.org/artifactory/oss-release-local")
     }
 
     dependencies {

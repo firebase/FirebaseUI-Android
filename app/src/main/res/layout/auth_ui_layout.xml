@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
@@ -27,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/launch_title"
-                app:drawableTopCompat="@drawable/firebase_auth_120dp"/>
+                app:drawableTopCompat="@drawable/firebase_auth_120dp" />
 
             <Button
                 android:id="@+id/sign_in"
@@ -37,15 +38,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:text="@string/sign_in_start" />
-
-            <Button
-                android:id="@+id/sign_in_silent"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:text="@string/sign_in_silent" />
 
             <TextView
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
