@@ -4,6 +4,7 @@ plugins {
 
 android {
     compileSdk = Config.SdkVersions.compile
+    namespace = "com.firebaseui.lint"
 
     defaultConfig {
         minSdk = Config.SdkVersions.min

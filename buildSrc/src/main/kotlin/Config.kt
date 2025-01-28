@@ -2,20 +2,20 @@ object Config {
     const val version = "8.0.2"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.7.10"
+    private const val kotlinVersion = "1.8.0"
 
     object SdkVersions {
-        const val compile = 29
-        const val target = 29
-        const val min = 16
+        const val compile = 34
+        const val target = 34
+        const val min = 23
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:7.2.2"
+        const val android = "com.android.tools.build:gradle:8.8.0"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.3.8"
 
-        const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
+        const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.30.0"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
     }
 
@@ -61,14 +61,10 @@ object Config {
         }
 
         object Misc {
-            private const val leakCanaryVersion = "1.6.1"
+            private const val leakCanaryVersion = "2.14"
             private const val glideVersion = "4.11.0"
 
             const val leakCanary = "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-            const val leakCanaryFragments =
-                    "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
-            const val leakCanaryNoop =
-                    "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 
             const val glide = "com.github.bumptech.glide:glide:$glideVersion"
             const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
@@ -78,19 +74,19 @@ object Config {
 
         object Test {
             const val junit = "junit:junit:4.12"
-            const val junitExt = "androidx.test.ext:junit:1.1.2"
+            const val junitExt = "androidx.test.ext:junit:1.1.5"
             const val truth = "com.google.truth:truth:0.42"
             const val mockito = "org.mockito:mockito-android:2.21.0"
-            const val robolectric = "org.robolectric:robolectric:4.3.1"
+            const val robolectric = "org.robolectric:robolectric:4.13"
 
-            const val core = "androidx.test:core:1.3.0"
+            const val core = "androidx.test:core:1.5.0"
             const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
-            const val runner = "androidx.test:runner:1.3.0"
-            const val rules = "androidx.test:rules:1.3.0"
+            const val runner = "androidx.test:runner:1.5.0"
+            const val rules = "androidx.test:rules:1.5.0"
         }
 
         object Lint {
-            private const val version = "26.5.0"
+            private const val version = "30.0.0"
 
             const val api = "com.android.tools.lint:lint-api:$version"
             const val tests = "com.android.tools.lint:lint-tests:$version"

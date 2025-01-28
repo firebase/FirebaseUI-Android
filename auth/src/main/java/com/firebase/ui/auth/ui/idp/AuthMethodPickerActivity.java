@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,8 +33,11 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.KickoffActivity;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.AnonymousSignInHandler;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
@@ -44,12 +48,20 @@ import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -57,6 +69,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -179,7 +195,139 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
             }
         });
+
+        attemptCredentialSignIn();
     }
+
+    /**
+     * This method attempts to automatically sign in via the credentials API.
+     * It is called after the layout is inflated so that any progress indicators or UI
+     * (such as the popup background) are already visible.
+     */
+    private void attemptCredentialSignIn() {
+        FlowParameters args = getFlowParams();
+        boolean supportPasswords =
+                ProviderUtils.getConfigFromIdps(args.providers, EmailAuthProvider.PROVIDER_ID) != null;
+        List<String> accountTypes = getCredentialAccountTypes();
+        boolean willRequestCredentials = supportPasswords || !accountTypes.isEmpty();
+
+        if (args.enableCredentials && willRequestCredentials) {
+            SignInClient signInClient = Identity.getSignInClient(getApplication());
+            BeginSignInRequest.Builder requestBuilder = BeginSignInRequest.builder();
+            if (supportPasswords) {
+                requestBuilder.setPasswordRequestOptions(
+                        BeginSignInRequest.PasswordRequestOptions.builder()
+                                .setSupported(true)
+                                .build());
+            }
+            if (!accountTypes.isEmpty()) {
+                requestBuilder.setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                .setSupported(true)
+                                .setServerClientId(getString(R.string.default_web_client_id))
+                                .build());
+            }
+            BeginSignInRequest signInRequest = requestBuilder.build();
+            signInClient.beginSignIn(signInRequest)
+                    .addOnSuccessListener(result -> {
+                        PendingIntent pendingIntent = result.getPendingIntent();
+                        try {
+                            // Wrap the PendingIntent in an IntentSenderRequest for the new API.
+                            IntentSenderRequest intentSenderRequest =
+                                    new IntentSenderRequest.Builder(pendingIntent.getIntentSender()).build();
+                            // Launch the intent via the ActivityResultLauncher.
+                            credHintLauncher.launch(intentSenderRequest);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            // If launching the pending intent fails, fall back to your manual sign-in UI.
+                            showAuthMethodPicker();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Hide any progress indicator and fall back to showing the provider list.
+                        hideProgress();
+                        showAuthMethodPicker();
+                    });
+        } else {
+            // Credentials not enabled or not applicable – just show the provider list.
+            showAuthMethodPicker();
+        }
+    }
+
+    // Register for the new Activity Result API to launch an IntentSender.
+    private final ActivityResultLauncher<IntentSenderRequest> credHintLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartIntentSenderForResult(),
+            (ActivityResult result) -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    try {
+                        SignInClient signInClient = Identity.getSignInClient(this);
+                        // Extract the SignInCredential from the returned intent.
+                        SignInCredential credential = signInClient.getSignInCredentialFromIntent(result.getData());
+                        handleCredential(credential);
+                    } catch (ApiException e) {
+                        // Optionally log the error and fall back.
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
+
+    private void handleCredential(final SignInCredential credential) {
+        String id = credential.getId();
+        String password = credential.getPassword();
+        if (TextUtils.isEmpty(password)) {
+            // Instead of checking accountType, check for a Google ID token.
+            String googleIdToken = credential.getGoogleIdToken();
+            if (!TextUtils.isEmpty(googleIdToken)) {
+                final IdpResponse response = new IdpResponse.Builder(
+                        new User.Builder(GoogleAuthProvider.PROVIDER_ID, id).build()).build();
+                KickoffActivity.mKickstarter.setResult(Resource.forLoading());
+                getAuth().signInWithCredential(GoogleAuthProvider.getCredential(googleIdToken, null))
+                        .addOnSuccessListener(authResult -> KickoffActivity.mKickstarter.handleSuccess(response, authResult));
+            }
+        } else {
+            final IdpResponse response = new IdpResponse.Builder(
+                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
+            KickoffActivity.mKickstarter.setResult(Resource.forLoading());
+            getAuth().signInWithEmailAndPassword(id, password)
+                    .addOnSuccessListener(authResult -> {
+                        KickoffActivity.mKickstarter.handleSuccess(response, authResult);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        if (e instanceof FirebaseAuthInvalidUserException ||
+                                e instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Minimal change: sign out using the new API (delete isn’t available).
+                            Identity.getSignInClient(getApplication()).signOut();
+                        }
+                    });
+        }
+    }
+
+
+    /**
+     * Returns the account types to be passed to the credential manager.
+     * (You can use your existing logic for this.)
+     */
+    private List<String> getCredentialAccountTypes() {
+        List<String> accounts = new ArrayList<>();
+        for (IdpConfig idpConfig : getFlowParams().providers) {
+            String providerId = idpConfig.getProviderId();
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                accounts.add(ProviderUtils.providerIdToAccountType(providerId));
+            }
+        }
+        return accounts;
+    }
+
+    /**
+     * Fallback: show the auth method picker UI.
+     * This is called if the credentials attempt fails or isn’t applicable.
+     */
+    private void showAuthMethodPicker() {
+        hideProgress();
+    }
+
 
     private void populateIdpList(List<IdpConfig> providerConfigs) {
 

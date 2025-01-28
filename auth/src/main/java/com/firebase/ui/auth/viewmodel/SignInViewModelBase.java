@@ -19,11 +19,11 @@ public abstract class SignInViewModelBase extends AuthViewModelBase<IdpResponse>
     }
 
     @Override
-    protected void setResult(Resource<IdpResponse> output) {
+    public void setResult(Resource<IdpResponse> output) {
         super.setResult(output);
     }
 
-    protected void handleSuccess(@NonNull IdpResponse response, @NonNull AuthResult result) {
+    public void handleSuccess(@NonNull IdpResponse response, @NonNull AuthResult result) {
         setResult(Resource.forSuccess(response.withResult(result)));
     }
 
