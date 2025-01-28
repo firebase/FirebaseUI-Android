@@ -5,9 +5,9 @@ object Config {
     private const val kotlinVersion = "1.7.10"
 
     object SdkVersions {
-        const val compile = 29
-        const val target = 29
-        const val min = 16
+        const val compile = 34
+        const val target = 34
+        const val min = 21
     }
 
     object Plugins {
@@ -78,15 +78,15 @@ object Config {
 
         object Test {
             const val junit = "junit:junit:4.12"
-            const val junitExt = "androidx.test.ext:junit:1.1.2"
+            const val junitExt = "androidx.test.ext:junit:1.1.5"
             const val truth = "com.google.truth:truth:0.42"
             const val mockito = "org.mockito:mockito-android:2.21.0"
-            const val robolectric = "org.robolectric:robolectric:4.3.1"
+            const val robolectric = "org.robolectric:robolectric:4.9"
 
-            const val core = "androidx.test:core:1.3.0"
+            const val core = "androidx.test:core:1.5.0"
             const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
-            const val runner = "androidx.test:runner:1.3.0"
-            const val rules = "androidx.test:rules:1.3.0"
+            const val runner = "androidx.test:runner:1.5.0"
+            const val rules = "androidx.test:rules:1.5.0"
         }
 
         object Lint {

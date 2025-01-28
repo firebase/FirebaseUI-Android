@@ -20,9 +20,8 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
-import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
+import com.firebase.ui.auth.viewmodel.credentialmanager.CredentialManagerHandler;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +29,6 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.SignInMethodQueryResult;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +53,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link SmartLockHandler}.
+ * Unit tests for {@link CredentialManagerHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
 public class SocialProviderResponseHandlerTest {
