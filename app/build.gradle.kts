@@ -60,8 +60,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -95,9 +95,6 @@ dependencies {
     implementation(Config.Libs.Misc.permissions)
     implementation(Config.Libs.Androidx.constraint)
     debugImplementation(Config.Libs.Misc.leakCanary)
-    debugImplementation(Config.Libs.Misc.leakCanaryFragments)
-    releaseImplementation(Config.Libs.Misc.leakCanaryNoop)
-    testImplementation(Config.Libs.Misc.leakCanaryNoop)
 }
 
 apply(plugin = "com.google.gms.google-services")
