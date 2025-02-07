@@ -17,22 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class CredentialSaveActivity : InvisibleActivityBase() {
 
-    companion object {
-        private const val TAG = "CredentialSaveActivity"
-
-        @JvmStatic
-        fun createIntent(
-            context: Context,
-            flowParams: FlowParameters,
-            credential: Credential,
-            response: IdpResponse
-        ): Intent {
-            return createBaseIntent(context, CredentialSaveActivity::class.java, flowParams).apply {
-                putExtra(ExtraConstants.CREDENTIAL, credential)
-                putExtra(ExtraConstants.IDP_RESPONSE, response)
-            }
-        }
-    }
+    
 
     private lateinit var credentialManagerHandler: CredentialManagerHandler
 
@@ -84,6 +69,23 @@ class CredentialSaveActivity : InvisibleActivityBase() {
             credentialManagerHandler.saveCredentials(this, firebaseUser, password)
         } else {
             Log.d(TAG, "Save operation in progress, doing nothing.")
+        }
+    }
+
+    companion object {
+        private const val TAG = "CredentialSaveActivity"
+
+        @JvmStatic
+        fun createIntent(
+            context: Context,
+            flowParams: FlowParameters,
+            credential: Credential,
+            response: IdpResponse
+        ): Intent {
+            return createBaseIntent(context, CredentialSaveActivity::class.java, flowParams).apply {
+                putExtra(ExtraConstants.CREDENTIAL, credential)
+                putExtra(ExtraConstants.IDP_RESPONSE, response)
+            }
         }
     }
 }
