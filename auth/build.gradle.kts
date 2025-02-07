@@ -77,7 +77,6 @@ dependencies {
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
     implementation("androidx.credentials:credentials:1.3.0")
-    implementation("androidx.core:core-ktx:1.10.1")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
     implementation("androidx.core:core-ktx:1.13.1")
