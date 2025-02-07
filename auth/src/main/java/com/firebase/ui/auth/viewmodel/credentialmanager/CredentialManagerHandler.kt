@@ -1,10 +1,11 @@
 package com.firebase.ui.auth.viewmodel.credentialmanager
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
+import android.content.Context
 import androidx.lifecycle.viewModelScope
 import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.CredentialManager
+import androidx.credentials.CreateCredentialResponse
 import androidx.credentials.exceptions.CreateCredentialException
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.FirebaseUiException
@@ -29,7 +30,7 @@ class CredentialManagerHandler(application: Application) :
      * Uses a password-based credential for demonstration; adapt to passkeys or other flows as needed.
      */
     fun saveCredentials(
-        activity: androidx.activity.ComponentActivity,
+        context: Context,
         firebaseUser: FirebaseUser?,
         password: String?
     ) {
@@ -59,8 +60,23 @@ class CredentialManagerHandler(application: Application) :
 
         viewModelScope.launch {
             try {
-                credentialManager.createCredential(activity, request)
-                setResult(Resource.forSuccess(response!!))
+                // Use the createCredential function and store the response
+                val createResponse: CreateCredentialResponse =
+                    credentialManager.createCredential(context, request)
+
+                // If the response is successful, set the success result
+                if (createResponse != null) {
+                    setResult(Resource.forSuccess(response!!))
+                } else {
+                    setResult(
+                        Resource.forFailure(
+                            FirebaseUiException(
+                                ErrorCodes.UNKNOWN_ERROR,
+                                "Received null response from Credential Manager."
+                            )
+                        )
+                    )
+                }
             } catch (e: CreateCredentialException) {
                 setResult(
                     Resource.forFailure(
