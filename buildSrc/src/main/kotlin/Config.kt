@@ -7,7 +7,7 @@ object Config {
     object SdkVersions {
         const val compile = 34
         const val target = 34
-        const val min = 21
+        const val min = 23
     }
 
     object Plugins {
