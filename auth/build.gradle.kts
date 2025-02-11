@@ -8,6 +8,7 @@ plugins {
 
 android {
     compileSdk = Config.SdkVersions.compile
+    namespace = "com.firebase.ui.auth"
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
