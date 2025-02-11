@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Looper;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -38,6 +39,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,11 +53,13 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link CredentialManagerHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.PAUSED)
 public class SocialProviderResponseHandlerTest {
     @Mock FirebaseAuth mMockAuth;
     @Mock FirebaseUser mUser;
@@ -87,6 +91,7 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth).signInWithCredential(any(AuthCredential.class));
 
@@ -132,6 +137,7 @@ public class SocialProviderResponseHandlerTest {
                 .setToken(TestConstants.TOKEN)
                 .build();
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mResultObserver).onChanged(
                 argThat(ResourceMatchers.isFailureWithCode(ErrorCodes.ERROR_USER_DISABLED)));
@@ -155,6 +161,7 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth).signInWithCredential(any(AuthCredential.class));
         verify(mMockAuth).fetchSignInMethodsForEmail(any(String.class));
@@ -192,6 +199,7 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth.getCurrentUser()).linkWithCredential(any(AuthCredential.class));
 
@@ -225,6 +233,7 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth.getCurrentUser()).linkWithCredential(any(AuthCredential.class));
 
@@ -264,6 +273,7 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth.getCurrentUser()).linkWithCredential(any(AuthCredential.class));
 
@@ -308,6 +318,7 @@ public class SocialProviderResponseHandlerTest {
                 .build();
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth.getCurrentUser()).linkWithCredential(any(AuthCredential.class));
 
