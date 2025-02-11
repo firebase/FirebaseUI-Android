@@ -62,9 +62,12 @@ android {
         baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
-    variantFilter {
-        if (inCiBuild && name == "debug") {
-            ignore = true
+    androidComponents {
+        // Callback before variants are built.
+        beforeVariants(selector().all()) { variant ->
+            if (inCiBuild && variant.name == "debug") {
+                variant.enable = false
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ object Config {
     const val version = "8.0.2"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.7.10"
+    private const val kotlinVersion = "1.8.0"
 
     object SdkVersions {
         const val compile = 34
@@ -11,11 +11,11 @@ object Config {
     }
 
     object Plugins {
-        const val android = "com.android.tools.build:gradle:7.2.2"
+        const val android = "com.android.tools.build:gradle:8.8.0"
         const val kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         const val google = "com.google.gms:google-services:4.3.8"
 
-        const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.14.2"
+        const val mavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.30.0"
         const val buildInfo = "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
     }
 
