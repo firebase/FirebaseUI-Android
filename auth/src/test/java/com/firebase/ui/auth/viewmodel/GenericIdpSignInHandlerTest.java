@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Looper;
 
 import androidx.lifecycle.Observer;
 import androidx.test.core.app.ApplicationProvider;
@@ -40,6 +41,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,11 +59,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link EmailLinkSignInHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.PAUSED)
 public class GenericIdpSignInHandlerTest {
 
     private static final String MICROSOFT_PROVIDER = "microsoft.com";
@@ -269,6 +273,7 @@ public class GenericIdpSignInHandlerTest {
 
         mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
+        shadowOf(Looper.getMainLooper()).idle();
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
         verify(mMockAuth.getCurrentUser())
@@ -315,6 +320,7 @@ public class GenericIdpSignInHandlerTest {
 
         mockOAuthProvider(MICROSOFT_PROVIDER);
         mHandler.startSignIn(mMockAuth, mMockActivity, MICROSOFT_PROVIDER);
+        shadowOf(Looper.getMainLooper()).idle();
 
         ArgumentCaptor<OAuthProvider> providerCaptor = ArgumentCaptor.forClass(OAuthProvider.class);
         verify(mMockAuth.getCurrentUser())

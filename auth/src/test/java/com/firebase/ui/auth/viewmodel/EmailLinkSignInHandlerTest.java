@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.os.Looper;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -41,6 +42,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,11 +57,13 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link EmailLinkSignInHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.PAUSED)
 public class EmailLinkSignInHandlerTest {
 
     private static final String EMAIL_LINK =
@@ -421,6 +425,7 @@ public class EmailLinkSignInHandlerTest {
         assertThat(mPersistenceManager.retrieveSessionRecord(ApplicationProvider.getApplicationContext()))
                 .isNull();
 
+        shadowOf(Looper.getMainLooper()).idle();
         // Validate IdpResponse
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
@@ -466,6 +471,8 @@ public class EmailLinkSignInHandlerTest {
                         new FirebaseAuthUserCollisionException("foo", "bar")));
 
         mHandler.startSignIn();
+
+        shadowOf(Looper.getMainLooper()).idle();
 
         ArgumentCaptor<Resource<IdpResponse>> captor =
                 ArgumentCaptor.forClass(Resource.class);
