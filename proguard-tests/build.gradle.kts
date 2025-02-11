@@ -7,6 +7,7 @@ val inCiBuild = System.getenv("CI") == "true"
 
 android {
     compileSdk = Config.SdkVersions.compile
+    namespace = "com.firebase.uidemo"
 
     defaultConfig {
         minSdk = Config.SdkVersions.min

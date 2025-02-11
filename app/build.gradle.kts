@@ -7,6 +7,8 @@ plugins {
 android {
     compileSdk = Config.SdkVersions.compile
 
+    namespace = "com.firebase.uidemo"
+
     defaultConfig {
         minSdk = Config.SdkVersions.min
         targetSdk = Config.SdkVersions.target
