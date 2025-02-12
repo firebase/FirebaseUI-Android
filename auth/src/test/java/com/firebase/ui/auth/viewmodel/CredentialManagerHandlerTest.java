@@ -77,20 +77,11 @@ public class CredentialManagerHandlerTest {
         ActivityController<TestActivity> controller = Robolectric.buildActivity(TestActivity.class).setup();
         TestActivity testActivity = controller.get();
 
-        // In a real test, you might inject a mock or fake CredentialManager
-        // that returns success. For simplicity, we rely on valid user/password
-        // so the Handler will produce a SUCCESS Resource if no exceptions occur.
-
-        // Mock a valid FirebaseUser
-        // E.g., if your code checks user.email != null, ensure it's non-null
-        // (We won't rely on mMockAuth in this example, but you could if needed.)
         com.google.firebase.auth.FirebaseUser mockUser = TestHelper.getMockFirebaseUser();
-        // Make sure .getEmail() is non-null
         org.mockito.Mockito.when(mockUser.getEmail()).thenReturn(TestConstants.EMAIL);
 
-        // Save with a non-null user and password => should produce LOADING -> SUCCESS
         mHandler.saveCredentials(
-                testActivity,  // A mocked Activity or real, as needed
+                testActivity,
                 mockUser,
                 "test-password"
         );
@@ -104,8 +95,6 @@ public class CredentialManagerHandlerTest {
         ActivityController<TestActivity> controller = Robolectric.buildActivity(TestActivity.class).setup();
         TestActivity testActivity = controller.get();
 
-        // If we pass a null user or missing password,
-        // the Handler should produce LOADING -> FAILURE
         mHandler.saveCredentials(
                 testActivity,
                 null, // invalid user
