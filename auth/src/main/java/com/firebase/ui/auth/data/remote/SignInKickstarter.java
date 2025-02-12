@@ -35,8 +35,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-
-// Minimal changes: import new API classes
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
@@ -90,7 +88,6 @@ public class SignInKickstarter extends SignInViewModelBase {
         if (getArguments().enableCredentials && willRequestCredentials) {
             setResult(Resource.forLoading());
 
-            // Minimal change: use new SignInClient with BeginSignInRequest.
             SignInClient signInClient = Identity.getSignInClient(getApplication());
             BeginSignInRequest.Builder requestBuilder = BeginSignInRequest.builder();
             if (supportPasswords) {
