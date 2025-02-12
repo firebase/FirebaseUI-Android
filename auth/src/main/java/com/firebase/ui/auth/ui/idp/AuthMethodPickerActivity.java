@@ -36,6 +36,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.KickoffActivity;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
@@ -218,8 +219,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         boolean willRequestCredentials = supportPasswords || !accountTypes.isEmpty();
 
         if (args.enableCredentials && willRequestCredentials) {
-            // Show a progress indicator on the popup.
-            showProgress(R.string.fui_progress_dialog_signing_in);
             SignInClient signInClient = Identity.getSignInClient(getApplication());
             BeginSignInRequest.Builder requestBuilder = BeginSignInRequest.builder();
             if (supportPasswords) {
@@ -280,9 +279,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     );
 
     private void handleCredential(final SignInCredential credential) {
-        SignInKickstarter viewModel = new ViewModelProvider(this)
-                .get(SignInKickstarter.class);
-
         String id = credential.getId();
         String password = credential.getPassword();
         if (TextUtils.isEmpty(password)) {
@@ -291,16 +287,19 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             if (!TextUtils.isEmpty(googleIdToken)) {
                 final IdpResponse response = new IdpResponse.Builder(
                         new User.Builder(GoogleAuthProvider.PROVIDER_ID, id).build()).build();
-                viewModel.setResult(Resource.forLoading());
+                KickoffActivity.mKickstarter.setResult(Resource.forLoading());
                 getAuth().signInWithCredential(GoogleAuthProvider.getCredential(googleIdToken, null))
-                        .addOnSuccessListener(authResult -> viewModel.handleSuccess(response, authResult));
+                        .addOnSuccessListener(authResult -> KickoffActivity.mKickstarter.handleSuccess(response, authResult));
             }
         } else {
             final IdpResponse response = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
-            viewModel.setResult(Resource.forLoading());
+            KickoffActivity.mKickstarter.setResult(Resource.forLoading());
             getAuth().signInWithEmailAndPassword(id, password)
-                    .addOnSuccessListener(authResult -> viewModel.handleSuccess(response, authResult))
+                    .addOnSuccessListener(authResult -> {
+                        KickoffActivity.mKickstarter.handleSuccess(response, authResult);
+                        finish();
+                    })
                     .addOnFailureListener(e -> {
                         if (e instanceof FirebaseAuthInvalidUserException ||
                                 e instanceof FirebaseAuthInvalidCredentialsException) {
@@ -332,9 +331,6 @@ public class AuthMethodPickerActivity extends AppCompatBase {
      * This is called if the credentials attempt fails or isn’t applicable.
      */
     private void showAuthMethodPicker() {
-        // Ensure that the provider list is visible.
-        // (If you already inflated it, you might not need to do anything here.)
-        // Optionally hide any progress indicators.
         hideProgress();
     }
 

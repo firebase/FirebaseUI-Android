@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends InvisibleActivityBase {
-    private SignInKickstarter mKickstarter;
+    public static SignInKickstarter mKickstarter;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createBaseIntent(context, KickoffActivity.class, flowParams);
