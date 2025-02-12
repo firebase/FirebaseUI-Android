@@ -32,9 +32,6 @@ import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -270,115 +267,6 @@ public final class AuthUI {
     }
 
     /**
-     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
-     * for saving since we don't have access to the password.
-     */
-    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
-        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
-            return Collections.emptyList();
-        }
-
-        List<Credential> credentials = new ArrayList<>();
-        for (UserInfo userInfo : user.getProviderData()) {
-            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
-                continue;
-            }
-
-            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
-            if (type == null) {
-                // Since the account type is null, we've got an email credential. Adding a fake
-                // password is the only way to tell Smart Lock that this is an email credential.
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
-            } else {
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
-            }
-        }
-
-        return credentials;
-    }
-
-    /**
-     * Signs the user in without any UI if possible. If this operation fails, you can safely start a
-     * UI-based sign-in flow knowing it is required.
-     *
-     * @param context requesting the user be signed in
-     * @param configs to use for silent sign in. Only Google and email are currently supported, the
-     *                rest will be ignored.
-     * @return a task which indicates whether or not the user was successfully signed in.
-     */
-    @NonNull
-    public Task<AuthResult> silentSignIn(@NonNull Context context,
-                                         @NonNull List<IdpConfig> configs) {
-        if (mAuth.getCurrentUser() != null) {
-            throw new IllegalArgumentException("User already signed in!");
-        }
-
-        final Context appContext = context.getApplicationContext();
-        final IdpConfig google =
-                ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
-        final IdpConfig email =
-                ProviderUtils.getConfigFromIdps(configs, EmailAuthProvider.PROVIDER_ID);
-
-        if (google == null && email == null) {
-            throw new IllegalArgumentException("No supported providers were supplied. " +
-                    "Add either Google or email support.");
-        }
-
-        final GoogleSignInOptions googleOptions;
-        if (google == null) {
-            googleOptions = null;
-        } else {
-            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(appContext);
-            if (last != null && last.getIdToken() != null) {
-                return mAuth.signInWithCredential(GoogleAuthProvider.getCredential(
-                        last.getIdToken(), null));
-            }
-
-            googleOptions = google.getParams()
-                    .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
-        }
-
-        // If Play services are not available we can't attempt to use the credentials client.
-        if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
-            return Tasks.forException(
-                    new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED));
-        }
-
-        return GoogleApiUtils.getCredentialsClient(context)
-                .request(new CredentialRequest.Builder()
-                        // We can support both email and Google at the same time here because they
-                        // are mutually exclusive. If a user signs in with Google, their email
-                        // account will automatically be upgraded (a.k.a. replaced) with the Google
-                        // one, meaning Smart Lock won't have to show the picker UI.
-                        .setPasswordLoginSupported(email != null)
-                        .setAccountTypes(google == null ? null :
-                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider
-                                        .PROVIDER_ID))
-                        .build())
-                .continueWithTask(task -> {
-                    Credential credential = task.getResult().getCredential();
-                    String email1 = credential.getId();
-                    String password = credential.getPassword();
-
-                    if (TextUtils.isEmpty(password)) {
-                        return GoogleSignIn.getClient(appContext,
-                                new GoogleSignInOptions.Builder(googleOptions)
-                                        .setAccountName(email1)
-                                        .build())
-                                .silentSignIn()
-                                .continueWithTask(task1 -> {
-                                    AuthCredential authCredential = GoogleAuthProvider
-                                            .getCredential(
-                                                    task1.getResult().getIdToken(), null);
-                                    return mAuth.signInWithCredential(authCredential);
-                                });
-                    } else {
-                        return mAuth.signInWithEmailAndPassword(email1, password);
-                    }
-                });
-    }
-
-    /**
      * Signs the current user out, if one is signed in.
      *
      * @param context the context requesting the user be signed out
@@ -393,41 +281,22 @@ public final class AuthUI {
             Log.w(TAG, "Google Play services not available during signOut");
         }
 
-        Task<Void> maybeDisableAutoSignIn = playServicesAvailable
-                ? GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn()
-                : Tasks.forResult((Void) null);
-
-        maybeDisableAutoSignIn
-                .continueWith(task -> {
-                    // We want to ignore a specific exception, since it's not a good reason
-                    // to fail (see Issue 1156).
-                    Exception e = task.getException();
-                    if (e instanceof ApiException
-                            && ((ApiException) e).getStatusCode() == CommonStatusCodes
-                            .CANCELED) {
-                        Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
-                                "SmartLock accounts available?", e);
-                        return null;
-                    }
-
-                    return task.getResult();
-                });
+        Task<Void> maybeDisableAutoSignIn = Tasks.forResult((Void) null);
 
         return Tasks.whenAll(
                 signOutIdps(context),
                 maybeDisableAutoSignIn
         ).continueWith(task -> {
-            task.getResult(); // Propagate exceptions
+            task.getResult(); // Propagate exceptions if any.
             mAuth.signOut();
             return null;
         });
     }
 
     /**
-     * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
-     * API. Returns a {@link Task} that succeeds if the Firebase Auth user deletion succeeds and
-     * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
-     * silently.
+     * Delete the user from FirebaseAuth.
+     *
+     * <p>Any associated saved credentials are not explicitly deleted with the new APIs.
      *
      * @param context the calling {@link Context}.
      */
@@ -440,40 +309,8 @@ public final class AuthUI {
                     "No currently signed in user."));
         }
 
-        final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
-
-        // Ensure the order in which tasks are executed properly destructures the user.
         return signOutIdps(context).continueWithTask(task -> {
-            task.getResult(); // Propagate exception if there was one
-
-            if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
-                Log.w(TAG, "Google Play services not available during delete");
-                return Tasks.forResult((Void) null);
-            }
-
-            final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
-            List<Task<?>> credentialTasks = new ArrayList<>();
-            for (Credential credential : credentials) {
-                credentialTasks.add(client.delete(credential));
-            }
-            return Tasks.whenAll(credentialTasks)
-                    .continueWith(task1 -> {
-                        Exception e = task1.getException();
-                        Throwable t = e == null ? null : e.getCause();
-                        if (!(t instanceof ApiException)
-                                || ((ApiException) t).getStatusCode() !=
-                                CommonStatusCodes.CANCELED) {
-                            // Only propagate the exception if it isn't an invalid account
-                            // one. This can occur if we failed to save the credential or it
-                            // was deleted elsewhere. However, a lack of stored credential
-                            // doesn't mean fully deleting the user failed.
-                            return task1.getResult();
-                        }
-
-                        return null;
-                    });
-        }).continueWithTask(task -> {
-            task.getResult(); // Propagate exception if there was one
+            task.getResult(); // Propagate exception if there was one.
             return currentUser.delete();
         });
     }

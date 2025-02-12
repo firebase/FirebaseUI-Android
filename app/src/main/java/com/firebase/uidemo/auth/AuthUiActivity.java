@@ -140,9 +140,7 @@ public class AuthUiActivity extends AppCompatActivity
         });
 
         mBinding.signIn.setOnClickListener(view -> signIn());
-
-        mBinding.signInSilent.setOnClickListener(view -> silentSignIn());
-
+        
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
@@ -227,17 +225,6 @@ public class AuthUiActivity extends AppCompatActivity
             builder.enableAnonymousUsersAutoUpgrade();
         }
         return builder.build();
-    }
-
-    public void silentSignIn() {
-        getAuthUI().silentSignIn(this, getSelectedProviders())
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        startSignedInActivity(null);
-                    } else {
-                        showSnackbar(R.string.sign_in_failed);
-                    }
-                });
     }
 
     @Override
