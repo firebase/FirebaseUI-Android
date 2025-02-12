@@ -56,69 +56,7 @@ public class SignInKickstarter extends SignInViewModelBase {
     }
 
     public void start() {
-        if (!TextUtils.isEmpty(getArguments().emailLink)) {
-            setResult(Resource.forFailure(new IntentRequiredException(
-                    EmailLinkCatcherActivity.createIntent(getApplication(), getArguments()),
-                    RequestCodes.EMAIL_FLOW)));
-            return;
-        }
-
-        // Signing in with Generic IDP puts the app in the background -
-        // it can be reclaimed by the OS during the sign in flow.
-        Task<AuthResult> pendingResultTask = getAuth().getPendingAuthResult();
-        if (pendingResultTask != null) {
-            pendingResultTask
-                    .addOnSuccessListener(authResult -> {
-                        final IdpResponse response = new IdpResponse.Builder(
-                                new User.Builder(
-                                        authResult.getCredential().getProvider(),
-                                        authResult.getUser().getEmail()).build())
-                                .build();
-                        handleSuccess(response, authResult);
-                    })
-                    .addOnFailureListener(e -> setResult(Resource.forFailure(e)));
-            return;
-        }
-
-        boolean supportPasswords = ProviderUtils.getConfigFromIdps(
-                getArguments().providers, EmailAuthProvider.PROVIDER_ID) != null;
-        List<String> accountTypes = getCredentialAccountTypes();
-        boolean willRequestCredentials = supportPasswords || !accountTypes.isEmpty();
-
-        if (getArguments().enableCredentials && willRequestCredentials) {
-            setResult(Resource.forLoading());
-
-            SignInClient signInClient = Identity.getSignInClient(getApplication());
-            BeginSignInRequest.Builder requestBuilder = BeginSignInRequest.builder();
-            if (supportPasswords) {
-                requestBuilder.setPasswordRequestOptions(
-                        BeginSignInRequest.PasswordRequestOptions.builder()
-                                .setSupported(true)
-                                .build());
-            }
-            if (!accountTypes.isEmpty()) {
-                // For Google Sign-In, set the ID token request options.
-                requestBuilder.setGoogleIdTokenRequestOptions(
-                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                                .setSupported(true)
-                                .build());
-            }
-            BeginSignInRequest signInRequest = requestBuilder.build();
-
-            signInClient.beginSignIn(signInRequest)
-                    .addOnSuccessListener(result -> {
-                        // The new API returns a PendingIntent to launch the sign-in UI.
-                        setResult(Resource.forFailure(
-                                new PendingIntentRequiredException(result.getPendingIntent(), RequestCodes.CRED_HINT)));
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "beginSignIn failed: " + e);
-                        // Regardless of the error (including error code 16), fallback to the auth method choice.
-                        startAuthMethodChoice();
-                    });
-        } else {
-            startAuthMethodChoice();
-        }
+        startAuthMethodChoice();
     }
 
     private void startAuthMethodChoice() {
