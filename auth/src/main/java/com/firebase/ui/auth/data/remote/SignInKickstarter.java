@@ -62,7 +62,7 @@ public class SignInKickstarter extends SignInViewModelBase {
                     RequestCodes.EMAIL_FLOW)));
             return;
         }
-        
+
         startAuthMethodChoice();
     }
 
