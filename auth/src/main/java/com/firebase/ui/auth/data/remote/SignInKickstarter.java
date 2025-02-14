@@ -56,6 +56,13 @@ public class SignInKickstarter extends SignInViewModelBase {
     }
 
     public void start() {
+        if (!TextUtils.isEmpty(getArguments().emailLink)) {
+            setResult(Resource.forFailure(new IntentRequiredException(
+                    EmailLinkCatcherActivity.createIntent(getApplication(), getArguments()),
+                    RequestCodes.EMAIL_FLOW)));
+            return;
+        }
+        
         startAuthMethodChoice();
     }
 
