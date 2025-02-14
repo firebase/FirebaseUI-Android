@@ -140,7 +140,7 @@ public class AuthUiActivity extends AppCompatActivity
         });
 
         mBinding.signIn.setOnClickListener(view -> signIn());
-        
+
         if (ConfigurationUtils.isGoogleMisconfigured(this)
                 || ConfigurationUtils.isFacebookMisconfigured(this)) {
             showSnackbar(R.string.configuration_required);
@@ -224,6 +224,8 @@ public class AuthUiActivity extends AppCompatActivity
         if (auth.getCurrentUser() != null && auth.getCurrentUser().isAnonymous()) {
             builder.enableAnonymousUsersAutoUpgrade();
         }
+
+        builder.setAlwaysShowSignInMethodScreen(true);
         return builder.build();
     }
 
