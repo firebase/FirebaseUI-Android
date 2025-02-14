@@ -281,12 +281,7 @@ public final class AuthUI {
             Log.w(TAG, "Google Play services not available during signOut");
         }
 
-        Task<Void> maybeDisableAutoSignIn = Tasks.forResult((Void) null);
-
-        return Tasks.whenAll(
-                signOutIdps(context),
-                maybeDisableAutoSignIn
-        ).continueWith(task -> {
+        return signOutIdps(context).continueWith(task -> {
             task.getResult(); // Propagate exceptions if any.
             mAuth.signOut();
             return null;
