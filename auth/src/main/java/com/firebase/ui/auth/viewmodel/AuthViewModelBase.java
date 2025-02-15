@@ -5,7 +5,7 @@ import android.app.Application;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.GoogleApiUtils;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -16,7 +16,7 @@ import androidx.annotation.VisibleForTesting;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParameters, Resource<T>> {
-    private CredentialsClient mCredentialsClient;
+    private SignInClient mSignInClient;
     private FirebaseAuth mAuth;
 
     protected AuthViewModelBase(Application application) {
@@ -27,7 +27,7 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
     protected void onCreate() {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         mAuth = FirebaseAuth.getInstance(app);
-        mCredentialsClient = GoogleApiUtils.getCredentialsClient(getApplication());
+        mSignInClient = GoogleApiUtils.getSignInClient(getApplication());
     }
 
     @Nullable
@@ -39,16 +39,16 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
         return mAuth;
     }
 
-    protected CredentialsClient getCredentialsClient() {
-        return mCredentialsClient;
+    protected SignInClient getSignInClient() {
+        return mSignInClient;
     }
 
     @VisibleForTesting
     public void initializeForTesting(FlowParameters parameters,
                                      FirebaseAuth auth,
-                                     CredentialsClient client) {
+                                     SignInClient client) {
         setArguments(parameters);
         mAuth = auth;
-        mCredentialsClient = client;
+        mSignInClient = client;
     }
 }

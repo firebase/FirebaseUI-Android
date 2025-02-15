@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.os.Looper;
 
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException;
 import com.firebase.ui.auth.IdpResponse;
@@ -32,6 +33,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
 
 import java.util.Collections;
 
@@ -44,6 +46,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * Unit tests for {@link LinkingSocialProviderResponseHandler}.
@@ -55,6 +58,7 @@ import static org.mockito.Mockito.when;
  * is anonymous, a triple linking case occurs.
  */
 @RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.PAUSED)
 public class LinkingSocialProviderResponseHandlerTest {
 
     private static final String MICROSOFT_PROVIDER = "microsoft.com";
@@ -94,6 +98,7 @@ public class LinkingSocialProviderResponseHandlerTest {
                 .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth).signInWithCredential(any(GoogleAuthCredential.class));
 
@@ -173,6 +178,7 @@ public class LinkingSocialProviderResponseHandlerTest {
                         null));
 
         mHandler.startSignIn(response);
+        shadowOf(Looper.getMainLooper()).idle();
 
         verify(mMockAuth).signInWithCredential(any(GoogleAuthCredential.class));
         verify(FakeAuthResult.INSTANCE.getUser()).linkWithCredential(facebookAuthCredential);

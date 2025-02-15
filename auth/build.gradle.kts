@@ -1,12 +1,14 @@
 import com.android.build.gradle.internal.dsl.TestOptions
 
 plugins {
-  id("com.android.library")
-  id("com.vanniktech.maven.publish")
+    id("com.android.library")
+    id("com.vanniktech.maven.publish")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
     compileSdk = Config.SdkVersions.compile
+    namespace = "com.firebase.ui.auth"
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
@@ -26,8 +28,8 @@ android {
     }
         
     compileOptions {    
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     lint {
@@ -62,6 +64,9 @@ android {
             isIncludeAndroidResources = true
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
@@ -72,8 +77,11 @@ dependencies {
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
+    implementation("androidx.credentials:credentials:1.3.0")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     implementation(platform(Config.Libs.Firebase.bom))
