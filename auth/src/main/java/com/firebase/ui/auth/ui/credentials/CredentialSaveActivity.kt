@@ -73,7 +73,7 @@ class CredentialSaveActivity : InvisibleActivityBase() {
             context: Context,
             flowParams: FlowParameters,
             email: String,
-            password: String,
+            password: String?,
             response: IdpResponse
         ): Intent {
             return createBaseIntent(context, CredentialSaveActivity::class.java, flowParams).apply {
