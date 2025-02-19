@@ -78,10 +78,14 @@ dependencies {
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
     implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     implementation(platform(Config.Libs.Firebase.bom))
