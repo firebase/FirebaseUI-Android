@@ -32,6 +32,7 @@ public class EmailLinkPromptEmailFragment extends FragmentBase implements
     public static final String TAG = "EmailLinkPromptEmailFragment";
 
     private Button mNextButton;
+    private Button mSignUpButton;
     private ProgressBar mProgressBar;
 
     private EditText mEmailEditText;

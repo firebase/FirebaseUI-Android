@@ -2,7 +2,7 @@ object Config {
     const val version = "8.0.2"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.8.0"
+    private const val kotlinVersion = "2.1.0"
 
     object SdkVersions {
         const val compile = 34
@@ -45,7 +45,7 @@ object Config {
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:28.2.0"
+            const val bom = "com.google.firebase:firebase-bom:33.9.0"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"

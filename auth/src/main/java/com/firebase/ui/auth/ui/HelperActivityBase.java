@@ -10,12 +10,8 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
-import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -46,7 +42,7 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Forward the results of Smart Lock saving
+        // Forward the results of CredentialManager saving
         if (requestCode == RequestCodes.CRED_SAVE_FLOW
                 || resultCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
             finish(resultCode, data);
@@ -73,18 +69,29 @@ public abstract class HelperActivityBase extends AppCompatActivity implements Pr
         finish();
     }
 
+    /**
+     * Starts the CredentialManager save flow.
+     *
+     * <p>Instead of building a SmartLock {@link com.google.android.gms.auth.api.credentials.Credential},
+     * we now extract the user's email (or phone number as a fallback) and pass it along with the
+     * password and response.</p>
+     *
+     * @param firebaseUser the currently signed-in user.
+     * @param response the IdP response.
+     * @param password the password used during sign-in (may be {@code null}).
+     */
     public void startSaveCredentials(
             FirebaseUser firebaseUser,
             IdpResponse response,
             @Nullable String password) {
-        // Build credential
-        String accountType = ProviderUtils.idpResponseToAccountType(response);
-        Credential credential = CredentialUtils.buildCredential(
-                firebaseUser, password, accountType);
-
-        // Start the dedicated SmartLock Activity
+        // Extract email; if null, fallback to the phone number.
+        String email = firebaseUser.getEmail();
+        if (email == null) {
+            email = firebaseUser.getPhoneNumber();
+        }
+        // Start the dedicated CredentialManager Activity.
         Intent intent = CredentialSaveActivity.createIntent(
-                this, getFlowParams(), credential, response);
+                this, getFlowParams(), email, password, response);
         startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
     }
 
