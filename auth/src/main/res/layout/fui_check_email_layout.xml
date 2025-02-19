@@ -48,11 +48,22 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end">
+                <Button
+                    android:id="@+id/button_sign_up"
+                    style="@style/FirebaseUI.Button"
+                    android:text="@string/fui_title_register_email"
+                    android:layout_marginEnd="16dp"/>
 
-            <Button
-                android:id="@+id/button_next"
-                style="@style/FirebaseUI.Button"
-                android:text="@string/fui_next_default" />
+                <Button
+                    android:id="@+id/button_sign_in"
+                    style="@style/FirebaseUI.Button"
+                    android:text="@string/fui_sign_in_default" />
+
+            </LinearLayout>
 
             <!-- Terms of service and Privacy Policy message that is displayed to the user if -->
             <!-- email is the only provider -->
