@@ -237,9 +237,9 @@ public final class ProviderUtils {
                     }
 
                     private void reorderPriorities(List<String> providers) {
-                        // Prioritize Google over everything else,
-                        // then email-password sign in,
-                        // and de-prioritize email link sign in.
+                        // Prioritize Google over everything else
+                        // Prioritize email-password sign in second
+                        // De-prioritize email link sign in                        
                         changePriority(providers, EmailAuthProvider.PROVIDER_ID, true);
                         changePriority(providers, GoogleAuthProvider.PROVIDER_ID, true);
                         changePriority(providers, EMAIL_LINK_PROVIDER, false);
