@@ -29,65 +29,79 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.launch
+import androidx.lifecycle.viewModelScope
+
+import androidx.credentials.Credential
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetPasswordOption
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+
+
+private const val TAG = "SignInKickstarter"
 
 class SignInKickstarter(application: Application?) : SignInViewModelBase(application) {
+
     private val app: Application = checkNotNull(application)
 
+    /**
+     * Entry point. If an email link is detected, immediately launch the email catcher.
+     * Otherwise, launch startAuthMethodChoice.
+     */
     fun start() {
         if (!TextUtils.isEmpty(arguments.emailLink)) {
             setResult(
                 Resource.forFailure<IdpResponse>(
                     IntentRequiredException(
-                        EmailLinkCatcherActivity.createIntent(
-                            app,
-                            arguments
-                        ),
+                        EmailLinkCatcherActivity.createIntent(app, arguments),
                         RequestCodes.EMAIL_FLOW
                     )
                 )
             )
             return
         }
-
         startAuthMethodChoice()
     }
 
+
+    /**
+     * Fallback: if no credential was obtained (or after a failed Credential Manager attempt)
+     * choose the proper sign‑in flow.
+     */
     private fun startAuthMethodChoice() {
         if (!arguments.shouldShowProviderChoice()) {
             val firstIdpConfig = arguments.defaultOrFirstProvider
             val firstProvider = firstIdpConfig.providerId
             when (firstProvider) {
-                AuthUI.EMAIL_LINK_PROVIDER, EmailAuthProvider.PROVIDER_ID -> setResult(
-                    Resource.forFailure<IdpResponse>(
-                        IntentRequiredException(
-                            EmailActivity.createIntent(app, arguments),
-                            RequestCodes.EMAIL_FLOW
+                AuthUI.EMAIL_LINK_PROVIDER, EmailAuthProvider.PROVIDER_ID ->
+                    setResult(
+                        Resource.forFailure<IdpResponse>(
+                            IntentRequiredException(
+                                EmailActivity.createIntent(app, arguments),
+                                RequestCodes.EMAIL_FLOW
+                            )
                         )
                     )
-                )
-
-                PhoneAuthProvider.PROVIDER_ID -> setResult(
-                    Resource.forFailure<IdpResponse>(
-                        IntentRequiredException(
-                            PhoneActivity.createIntent(
-                                app,
-                                arguments, firstIdpConfig.params
-                            ),
-                            RequestCodes.PHONE_FLOW
+                PhoneAuthProvider.PROVIDER_ID ->
+                    setResult(
+                        Resource.forFailure<IdpResponse>(
+                            IntentRequiredException(
+                                PhoneActivity.createIntent(app, arguments, firstIdpConfig.params),
+                                RequestCodes.PHONE_FLOW
+                            )
                         )
                     )
-                )
-
                 else -> redirectSignIn(firstProvider, null)
             }
         } else {
             setResult(
                 Resource.forFailure<IdpResponse>(
                     IntentRequiredException(
-                        AuthMethodPickerActivity.createIntent(
-                            app,
-                            arguments
-                        ),
+                        AuthMethodPickerActivity.createIntent(app, arguments),
                         RequestCodes.AUTH_PICKER_FLOW
                     )
                 )
@@ -95,63 +109,54 @@ class SignInKickstarter(application: Application?) : SignInViewModelBase(applica
         }
     }
 
+    /**
+     * Helper to route to the proper sign‑in activity for a given provider.
+     */
     private fun redirectSignIn(provider: String, id: String?) {
         when (provider) {
-            EmailAuthProvider.PROVIDER_ID -> setResult(
-                Resource.forFailure<IdpResponse>(
-                    IntentRequiredException(
-                        EmailActivity.createIntent(app, arguments, id),
-                        RequestCodes.EMAIL_FLOW
-                    )
-                )
-            )
-
-            PhoneAuthProvider.PROVIDER_ID -> {
-                val args = Bundle()
-                args.putString(ExtraConstants.PHONE, id)
+            EmailAuthProvider.PROVIDER_ID ->
                 setResult(
                     Resource.forFailure<IdpResponse>(
                         IntentRequiredException(
-                            PhoneActivity.createIntent(
-                                app,
-                                arguments, args
-                            ),
+                            EmailActivity.createIntent(app, arguments, id),
+                            RequestCodes.EMAIL_FLOW
+                        )
+                    )
+                )
+            PhoneAuthProvider.PROVIDER_ID -> {
+                val args = Bundle().apply { putString(ExtraConstants.PHONE, id) }
+                setResult(
+                    Resource.forFailure<IdpResponse>(
+                        IntentRequiredException(
+                            PhoneActivity.createIntent(app, arguments, args),
                             RequestCodes.PHONE_FLOW
                         )
                     )
                 )
             }
-
-            else -> setResult(
-                Resource.forFailure<IdpResponse>(
-                    IntentRequiredException(
-                        SingleSignInActivity.createIntent(
-                            app, arguments,
-                            User.Builder(provider, id).build()
-                        ),
-                        RequestCodes.PROVIDER_FLOW
+            else ->
+                setResult(
+                    Resource.forFailure<IdpResponse>(
+                        IntentRequiredException(
+                            SingleSignInActivity.createIntent(
+                                app, arguments, User.Builder(provider, id).build()
+                            ),
+                            RequestCodes.PROVIDER_FLOW
+                        )
                     )
                 )
-            )
         }
     }
 
+    /**
+     * Legacy onActivityResult handler for other flows.
+     */
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            RequestCodes.CRED_HINT -> if (resultCode == Activity.RESULT_OK && data != null) {
-                try {
-                    val signInClient = Identity.getSignInClient(app)
-                    val credential = signInClient.getSignInCredentialFromIntent(data)
-                    handleCredential(credential)
-                } catch (e: ApiException) {
-                    // Optionally log the error
-                    startAuthMethodChoice()
-                }
-            } else {
-                startAuthMethodChoice()
-            }
-
-            RequestCodes.EMAIL_FLOW, RequestCodes.AUTH_PICKER_FLOW, RequestCodes.PHONE_FLOW, RequestCodes.PROVIDER_FLOW -> {
+            RequestCodes.EMAIL_FLOW,
+            RequestCodes.AUTH_PICKER_FLOW,
+            RequestCodes.PHONE_FLOW,
+            RequestCodes.PROVIDER_FLOW -> {
                 if (resultCode == RequestCodes.EMAIL_LINK_WRONG_DEVICE_FLOW ||
                     resultCode == RequestCodes.EMAIL_LINK_INVALID_LINK_FLOW
                 ) {
@@ -163,74 +168,79 @@ class SignInKickstarter(application: Application?) : SignInViewModelBase(applica
                     setResult(Resource.forFailure(UserCancellationException()))
                 } else if (response.isSuccessful) {
                     setResult(Resource.forSuccess(response))
-                } else if (response.error!!.errorCode ==
-                    ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT
-                ) {
+                } else if (response.error!!.errorCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
                     handleMergeFailure(response)
                 } else {
-                    setResult(
-                        Resource.forFailure(
-                            response.error!!
-                        )
-                    )
+                    setResult(Resource.forFailure(response.error!!))
                 }
             }
+            else -> startAuthMethodChoice()
         }
     }
 
     /**
-     * Minimal change: Adapted to work with the new SignInCredential.
+     * Handle a successfully returned Credential from the Credential Manager.
      */
-    private fun handleCredential(credential: SignInCredential) {
-        val id = credential.id
-        val password = credential.password
-        if (TextUtils.isEmpty(password)) {
-            // Instead of checking accountType, check for a Google ID token.
-            val googleIdToken = credential.googleIdToken
-            if (!TextUtils.isEmpty(googleIdToken)) {
+    private fun handleCredentialManagerResult(credential: Credential) {
+        when (credential) {
+            is PasswordCredential -> {
+                val username = credential.id
+                val password = credential.password
                 val response = IdpResponse.Builder(
-                    User.Builder(GoogleAuthProvider.PROVIDER_ID, id).build()
+                    User.Builder(EmailAuthProvider.PROVIDER_ID, username).build()
                 ).build()
                 setResult(Resource.forLoading())
-                auth.signInWithCredential(GoogleAuthProvider.getCredential(googleIdToken, null))
-                    .addOnSuccessListener { authResult: AuthResult? ->
-                        handleSuccess(
-                            response,
-                            authResult!!
-                        )
+                auth.signInWithEmailAndPassword(username, password)
+                    .addOnSuccessListener { authResult: AuthResult ->
+                        handleSuccess(response, authResult)
+                        // (Optionally finish the hosting activity here.)
                     }
-                    .addOnFailureListener { e: Exception? -> startAuthMethodChoice() }
-            } else {
-                startAuthMethodChoice()
+                    .addOnFailureListener { e ->
+                        if (e is FirebaseAuthInvalidUserException ||
+                            e is FirebaseAuthInvalidCredentialsException
+                        ) {
+                            // Sign out using the new API.
+                            Identity.getSignInClient(app).signOut()
+                        }
+                        startAuthMethodChoice()
+                    }
             }
-        } else {
-            val response = IdpResponse.Builder(
-                User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()
-            ).build()
-            setResult(Resource.forLoading())
-            auth.signInWithEmailAndPassword(id, password!!)
-                .addOnSuccessListener { authResult: AuthResult? ->
-                    handleSuccess(
-                        response,
-                        authResult!!
-                    )
-                }
-                .addOnFailureListener { e: Exception? ->
-                    if (e is FirebaseAuthInvalidUserException ||
-                        e is FirebaseAuthInvalidCredentialsException
-                    ) {
-                        // Minimal change: sign out using the new API (delete isn’t available).
-                        Identity.getSignInClient(
-                            app
+            is CustomCredential -> {
+                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    try {
+                        val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                        auth.signInWithCredential(
+                            GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
                         )
-                            .signOut()
+                            .addOnSuccessListener { authResult: AuthResult ->
+                                val response = IdpResponse.Builder(
+                                    User.Builder(
+                                        GoogleAuthProvider.PROVIDER_ID,
+                                        // Assume the credential data contains the email.
+                                        googleIdTokenCredential.data.getString("email")
+                                    ).build()
+                                )
+                                    .setToken(googleIdTokenCredential.idToken)
+                                    .build()
+                                handleSuccess(response, authResult)
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e(TAG, "Failed to sign in with Google ID token", e)
+                                startAuthMethodChoice()
+                            }
+                    } catch (e: GoogleIdTokenParsingException) {
+                        Log.e(TAG, "Received an invalid google id token response", e)
+                        startAuthMethodChoice()
                     }
+                } else {
+                    Log.e(TAG, "Unexpected type of credential")
                     startAuthMethodChoice()
                 }
+            }
+            else -> {
+                Log.e(TAG, "Unexpected type of credential")
+                startAuthMethodChoice()
+            }
         }
-    }
-
-    companion object {
-        private const val TAG = "SignInKickstarter"
     }
 }

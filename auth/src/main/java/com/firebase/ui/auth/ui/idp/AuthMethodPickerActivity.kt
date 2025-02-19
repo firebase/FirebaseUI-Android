@@ -107,7 +107,7 @@ class AuthMethodPickerActivity : AppCompatBase() {
         // Replace with your actual CredentialManager instance creation.
         CredentialManager.create(this)
     }
-    
+
     companion object {
         private const val TAG = "AuthMethodPickerActivity"
 
@@ -267,8 +267,8 @@ class AuthMethodPickerActivity : AppCompatBase() {
                         auth.signInWithCredential(GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null))
                             .addOnSuccessListener { authResult ->
                                 val response = IdpResponse.Builder(
-                                    User.Builder(GoogleAuthProvider.PROVIDER_ID, googleIdTokenCredential.id).build()
-                                ).build()
+                                    User.Builder(GoogleAuthProvider.PROVIDER_ID, googleIdTokenCredential.data.getString("email")).build(),
+                                ).setToken(googleIdTokenCredential.idToken).build()
                                 KickoffActivity.mKickstarter.handleSuccess(response, authResult)
                                 finish()
                             }
