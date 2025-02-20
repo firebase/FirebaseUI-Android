@@ -18,7 +18,8 @@
     </queries>
 
     <application
-        android:theme="@style/Theme.AppCompat">
+        android:theme="@style/Theme.AppCompat"
+        tools:replace="android:theme">
 
         <meta-data
             android:name="com.google.android.gms.version"
