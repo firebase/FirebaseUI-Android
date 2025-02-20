@@ -17,7 +17,8 @@
         </intent>
     </queries>
 
-    <application>
+    <application
+        android:theme="@style/Theme.AppCompat">
 
         <meta-data
             android:name="com.google.android.gms.version"
