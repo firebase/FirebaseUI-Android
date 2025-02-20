@@ -2,7 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    >
+>
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:theme">
 
         <activity android:name=".ChooserActivity"
             android:exported="true">
@@ -41,7 +42,7 @@
             android:label="@string/title_auth_activity" />
         <activity
             android:name=".auth.AnonymousUpgradeActivity"
-            android:label="@string/title_anonymous_upgrade"/>
+            android:label="@string/title_anonymous_upgrade" />
 
         <!-- Firestore demo -->
         <activity
