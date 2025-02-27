@@ -17,8 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
-        android:usesCleartextTraffic="true"
-        tools:replace="android:theme">
+        android:usesCleartextTraffic="true">
 
         <activity android:name=".ChooserActivity"
             android:exported="true">
