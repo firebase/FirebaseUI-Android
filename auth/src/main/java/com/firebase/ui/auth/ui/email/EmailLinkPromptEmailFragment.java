@@ -32,6 +32,7 @@ public class EmailLinkPromptEmailFragment extends FragmentBase implements
     public static final String TAG = "EmailLinkPromptEmailFragment";
 
     private Button mNextButton;
+    private Button mSignUpButton;
     private ProgressBar mProgressBar;
 
     private EditText mEmailEditText;
@@ -55,7 +56,8 @@ public class EmailLinkPromptEmailFragment extends FragmentBase implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mNextButton = view.findViewById(R.id.button_next);
+        mNextButton = view.findViewById(R.id.button_sign_in);
+        mSignUpButton = view.findViewById(R.id.button_sign_up);
         mProgressBar = view.findViewById(R.id.top_progress_bar);
 
         mNextButton.setOnClickListener(this);
@@ -117,7 +119,7 @@ public class EmailLinkPromptEmailFragment extends FragmentBase implements
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.button_next) {
+        if (id == R.id.button_sign_in) {
             validateEmailAndFinishSignIn();
         } else if (id == R.id.email_layout || id == R.id.email) {
             mEmailLayout.setError(null);

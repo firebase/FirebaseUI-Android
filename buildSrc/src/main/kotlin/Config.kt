@@ -2,7 +2,7 @@ object Config {
     const val version = "8.0.2"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "1.8.0"
+    private const val kotlinVersion = "2.1.0"
 
     object SdkVersions {
         const val compile = 34
@@ -45,7 +45,7 @@ object Config {
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:28.2.0"
+            const val bom = "com.google.firebase:firebase-bom:33.9.0"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"
@@ -73,11 +73,11 @@ object Config {
         }
 
         object Test {
-            const val junit = "junit:junit:4.12"
+            const val junit = "junit:junit:4.13.2"
             const val junitExt = "androidx.test.ext:junit:1.1.5"
             const val truth = "com.google.truth:truth:0.42"
             const val mockito = "org.mockito:mockito-android:2.21.0"
-            const val robolectric = "org.robolectric:robolectric:4.13"
+            const val robolectric = "org.robolectric:robolectric:4.14"
 
             const val core = "androidx.test:core:1.5.0"
             const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"

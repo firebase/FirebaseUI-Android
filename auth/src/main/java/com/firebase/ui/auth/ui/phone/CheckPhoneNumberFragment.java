@@ -30,9 +30,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.lifecycle.ViewModelProvider;
 
-/**
- * Displays country selector and phone number input form for users
- */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CheckPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
@@ -49,7 +46,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private EditText mPhoneEditText;
     private TextView mSmsTermsText;
     private TextView mFooterText;
-
 
     public static CheckPhoneNumberFragment newInstance(Bundle params) {
         CheckPhoneNumberFragment fragment = new CheckPhoneNumberFragment();
@@ -94,7 +90,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         }
         requireActivity().setTitle(getString(R.string.fui_verify_phone_number_title));
 
-        ImeHelper.setImeOnDoneListener(mPhoneEditText, () -> onNext());
+        ImeHelper.setImeOnDoneListener(mPhoneEditText, this::onNext);
         mSubmitButton.setOnClickListener(this);
 
         setupPrivacyDisclosures();
@@ -112,24 +108,24 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                // Just let the user enter their data
+                // Let the user enter their data if hint retrieval fails
             }
         });
 
         if (savedInstanceState != null || mCalled) {
             return;
         }
-        // Fragment back stacks are the stuff of nightmares (what's new?): the fragment isn't
-        // destroyed so its state isn't saved and we have to rely on an instance field. Sigh.
+        // Fragment back stacks can cause state retention so we rely on an instance field.
         mCalled = true;
 
-        // DON'T REMOVE
+        // Set default country or prompt for phone number using the Phone Number Hint flow.
         setDefaultCountryForSpinner();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        mCheckPhoneHandler.onActivityResult(requestCode, resultCode, data);
+        // Pass the activity instance to the handler
+        mCheckPhoneHandler.onActivityResult(requireActivity(), requestCode, resultCode, data);
     }
 
     @Override
@@ -165,18 +161,15 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Nullable
     private String getPseudoValidPhoneNumber() {
         String everythingElse = mPhoneEditText.getText().toString();
-
         if (TextUtils.isEmpty(everythingElse)) {
             return null;
         }
-
         return PhoneNumberUtils.format(
                 everythingElse, mCountryListSpinner.getSelectedCountryInfo());
     }
 
     private void setupPrivacyDisclosures() {
         FlowParameters params = getFlowParams();
-
         boolean termsAndPrivacyUrlsProvided = params.isTermsOfServiceUrlProvided()
                 && params.isPrivacyPolicyUrlProvided();
 
@@ -188,7 +181,6 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             PrivacyDisclosureUtils.setupTermsOfServiceFooter(requireContext(),
                     params,
                     mFooterText);
-
             String verifyText = getString(R.string.fui_verify_phone_number);
             mSmsTermsText.setText(getString(R.string.fui_sms_terms_of_service, verifyText));
         }
@@ -202,15 +194,12 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     private void setupCountrySpinner() {
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         mCountryListSpinner.init(params, mCountryListAnchor);
-
-        // Clear error when spinner is clicked on
+        // Clear error when spinner is clicked
         mCountryListSpinner.setOnClickListener(v -> mPhoneInputLayout.setError(null));
     }
 
     private void setDefaultCountryForSpinner() {
-        // Check for phone
-        // It is assumed that the phone number that are being wired in via Credential Selector
-        // are e164 since we store it.
+        // Check for phone number defaults
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         String phone = null;
         String countryIso = null;
@@ -221,10 +210,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
         }
 
-        // We can receive the phone number in one of two formats: split between the ISO or fully
-        // processed. If it's complete, we use it directly. Otherwise, we parse the ISO and national
-        // number combination or we just set the default ISO if there's no default number. If there
-        // are no defaults at all, we prompt the user for a phone number through Smart Lock.
+        // If phone is provided in full, use it. Otherwise, parse ISO and national number or prompt for a phone hint.
         if (!TextUtils.isEmpty(phone)) {
             start(PhoneNumberUtils.getPhoneNumber(phone));
         } else if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
@@ -235,7 +221,8 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                     countryIso,
                     String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
         } else if (getFlowParams().enableHints) {
-            mCheckPhoneHandler.fetchCredential();
+            // Launch phone number hint flow using the new API
+            mCheckPhoneHandler.fetchCredential(requireActivity());
         }
     }
 

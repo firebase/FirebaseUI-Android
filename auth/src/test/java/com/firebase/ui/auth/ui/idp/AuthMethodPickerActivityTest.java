@@ -25,7 +25,6 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -34,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowActivity;
 
@@ -43,7 +43,6 @@ import java.util.List;
 import androidx.test.core.app.ApplicationProvider;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
 public class AuthMethodPickerActivityTest {
@@ -57,8 +56,8 @@ public class AuthMethodPickerActivityTest {
         // Exclude Facebook until the `NoClassDefFoundError: com/facebook/common/R$style` exception
         // is fixed.
         List<String> providers = Arrays.asList(
-                // GoogleAuthProvider.PROVIDER_ID, we remove GoogleAuthProvider otherwise
-                // CredentialManager will be initialized and it will throw an exception
+                // GoogleAuthProvider.PROVIDER_ID is removed to avoid initializing CredentialManager,
+                // which can throw an exception.
                 TwitterAuthProvider.PROVIDER_ID,
                 EmailAuthProvider.PROVIDER_ID,
                 PhoneAuthProvider.PROVIDER_ID,
@@ -117,7 +116,7 @@ public class AuthMethodPickerActivityTest {
         Button emailButton = authMethodPickerActivity.findViewById(R.id.email_button);
         emailButton.performClick();
 
-        //Expected result -> Directing users to EmailActivity
+        // Expected result: Directing users to EmailActivity
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
         assertEquals(
@@ -139,7 +138,7 @@ public class AuthMethodPickerActivityTest {
         Button emailButton = authMethodPickerActivity.findViewById(R.id.email_button);
         emailButton.performClick();
 
-        //Expected result -> Directing users to EmailActivity
+        // Expected result: Directing users to EmailActivity
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
         assertEquals(
@@ -160,7 +159,7 @@ public class AuthMethodPickerActivityTest {
         Button emailButton = authMethodPickerActivity.findViewById(R.id.email_button);
         emailButton.performClick();
 
-        //Expected result -> Directing users to EmailActivity
+        // Expected result: Directing users to EmailActivity
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
         assertEquals(
@@ -175,11 +174,11 @@ public class AuthMethodPickerActivityTest {
                 ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(providers, false, layout, hasDefaultEmail));
 
-        return Robolectric
-                .buildActivity(AuthMethodPickerActivity.class, startIntent)
-                .create()
-                .visible()
-                .get();
+        ActivityController<AuthMethodPickerActivity> controller =
+                Robolectric.buildActivity(AuthMethodPickerActivity.class, startIntent);
+        AuthMethodPickerActivity activity = controller.get();
+        activity.setTheme(R.style.Theme_AppCompat);
+        return controller.create().visible().get();
     }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {
@@ -187,10 +186,10 @@ public class AuthMethodPickerActivityTest {
                 ApplicationProvider.getApplicationContext(),
                 TestHelper.getFlowParameters(providers));
 
-        return Robolectric
-                .buildActivity(AuthMethodPickerActivity.class, startIntent)
-                .create()
-                .visible()
-                .get();
+        ActivityController<AuthMethodPickerActivity> controller =
+                Robolectric.buildActivity(AuthMethodPickerActivity.class, startIntent);
+        AuthMethodPickerActivity activity = controller.get();
+        activity.setTheme(R.style.Theme_AppCompat); 
+        return controller.create().visible().get();
     }
 }

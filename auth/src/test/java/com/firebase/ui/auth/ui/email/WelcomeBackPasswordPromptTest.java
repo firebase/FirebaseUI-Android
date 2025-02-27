@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.widget.Button;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
@@ -42,6 +44,7 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
 public class WelcomeBackPasswordPromptTest {
+
     @Before
     public void setUp() {
         TestHelper.initialize();
@@ -54,11 +57,12 @@ public class WelcomeBackPasswordPromptTest {
                 new IdpResponse.Builder(new User.Builder(
                         EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL
                 ).build()).build());
-        return Robolectric
-                .buildActivity(WelcomeBackPasswordPrompt.class, startIntent)
-                .create()
-                .visible()
-                .get();
+
+        ActivityController<WelcomeBackPasswordPrompt> controller =
+                Robolectric.buildActivity(WelcomeBackPasswordPrompt.class, startIntent);
+        WelcomeBackPasswordPrompt activity = controller.get();
+        activity.setTheme(R.style.Theme_AppCompat); 
+        return controller.create().visible().get();
     }
 
     @Test
@@ -66,9 +70,8 @@ public class WelcomeBackPasswordPromptTest {
         WelcomeBackPasswordPrompt welcomeBack = createActivity();
         Button signIn = welcomeBack.findViewById(R.id.button_done);
         signIn.performClick();
-        TextInputLayout passwordLayout =
-                welcomeBack.findViewById(R.id.password_layout);
 
+        TextInputLayout passwordLayout = welcomeBack.findViewById(R.id.password_layout);
         assertEquals(
                 welcomeBack.getString(R.string.fui_error_invalid_password),
                 passwordLayout.getError().toString());

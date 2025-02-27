@@ -36,7 +36,7 @@ public class KickoffActivity extends InvisibleActivityBase {
         super.onCreate(savedInstanceState);
         mKickstarter = new ViewModelProvider(this).get(SignInKickstarter.class);
         mKickstarter.init(getFlowParams());
-        mKickstarter.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
+        mKickstarter.getOperation().observe(this, new ResourceObserver<>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 finish(RESULT_OK, response.toIntent());

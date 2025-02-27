@@ -4,8 +4,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
@@ -13,10 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 /**
- * Utility class for working with {@link Credential} objects.
+ * Utility class for extracting credential data from a {@link FirebaseUser} for the new CredentialManager.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CredentialUtils {
+public final class CredentialUtils {
 
     private static final String TAG = "CredentialUtils";
 
@@ -25,54 +23,85 @@ public class CredentialUtils {
     }
 
     /**
-     * Build a credential for the specified {@link FirebaseUser} with optional password and {@link
-     * IdpResponse}.
+     * Extracts the necessary data from the specified {@link FirebaseUser} along with the user's password.
      * <p>
-     * If the credential cannot be built (for example, empty email) then will return {@code null}.
+     * If both the email and phone number are missing or the password is empty, this method returns {@code null}.
+     *
+     * @param user     the FirebaseUser from which to extract data.
+     * @param password the password the user signed in with.
+     * @return a {@link CredentialData} instance containing the user’s sign-in information, or {@code null} if insufficient data.
      */
     @Nullable
-    public static Credential buildCredential(@NonNull FirebaseUser user,
-                                             @Nullable String password,
-                                             @Nullable String accountType) {
+    public static CredentialData buildCredentialData(@NonNull FirebaseUser user,
+                                                     @Nullable String password) {
         String email = user.getEmail();
         String phone = user.getPhoneNumber();
-        Uri profilePictureUri =
-                user.getPhotoUrl() == null ? null : Uri.parse(user.getPhotoUrl().toString());
+        Uri profilePictureUri = (user.getPhotoUrl() != null)
+                ? Uri.parse(user.getPhotoUrl().toString())
+                : null;
 
         if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)) {
-            Log.w(TAG, "User (accountType=" + accountType + ") has no email or phone number, cannot build credential.");
+            Log.w(TAG, "User has no email or phone number; cannot build credential data.");
             return null;
         }
-        if (password == null && accountType == null) {
-            Log.w(TAG, "User has no accountType or password, cannot build credential.");
-            return null;
-        }
-
-        Credential.Builder builder =
-                new Credential.Builder(TextUtils.isEmpty(email) ? phone : email)
-                        .setName(user.getDisplayName())
-                        .setProfilePictureUri(profilePictureUri);
-
         if (TextUtils.isEmpty(password)) {
-            builder.setAccountType(accountType);
-        } else {
-            builder.setPassword(password);
+            Log.w(TAG, "Password is required to build credential data.");
+            return null;
         }
 
-        return builder.build();
+        // Prefer email if available; otherwise fall back to phone.
+        String identifier = !TextUtils.isEmpty(email) ? email : phone;
+        return new CredentialData(identifier, user.getDisplayName(), password, profilePictureUri);
     }
 
     /**
-     * @see #buildCredential(FirebaseUser, String, String)
+     * Same as {@link #buildCredentialData(FirebaseUser, String)} but throws an exception if data cannot be built.
+     *
+     * @param user     the FirebaseUser.
+     * @param password the password the user signed in with.
+     * @return a non-null {@link CredentialData} instance.
+     * @throws IllegalStateException if credential data cannot be constructed.
      */
     @NonNull
-    public static Credential buildCredentialOrThrow(@NonNull FirebaseUser user,
-                                                    @Nullable String password,
-                                                    @Nullable String accountType) {
-        Credential credential = buildCredential(user, password, accountType);
-        if (credential == null) {
-            throw new IllegalStateException("Unable to build credential");
+    public static CredentialData buildCredentialDataOrThrow(@NonNull FirebaseUser user,
+                                                            @Nullable String password) {
+        CredentialData credentialData = buildCredentialData(user, password);
+        if (credentialData == null) {
+            throw new IllegalStateException("Unable to build credential data");
         }
-        return credential;
+        return credentialData;
+    }
+
+    /**
+     * A simple data class representing the information required by the new CredentialManager.
+     */
+    public static final class CredentialData {
+        private final String identifier;
+        private final String displayName;
+        private final String password;
+        private final Uri profilePictureUri;
+
+        public CredentialData(String identifier, String displayName, String password, Uri profilePictureUri) {
+            this.identifier = identifier;
+            this.displayName = displayName;
+            this.password = password;
+            this.profilePictureUri = profilePictureUri;
+        }
+
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public Uri getProfilePictureUri() {
+            return profilePictureUri;
+        }
     }
 }

@@ -59,7 +59,7 @@ public class PhoneProviderResponseHandlerTest {
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
-        mCredential = PhoneAuthCredential.zzc("sessionInfo", "SmsCode");
+        mCredential = PhoneAuthCredential.zza("sessionInfo", "SmsCode");
 
         mHandler = new PhoneProviderResponseHandler((Application) ApplicationProvider.getApplicationContext());
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(

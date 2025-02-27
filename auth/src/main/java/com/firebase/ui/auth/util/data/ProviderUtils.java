@@ -22,7 +22,6 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -47,6 +46,9 @@ import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ProviderUtils {
+    private static final String GOOGLE_ACCOUNT_TYPE = "https://accounts.google.com";
+    private static final String FACEBOOK_ACCOUNT_TYPE = "https://www.facebook.com";
+    private static final String TWITTER_ACCOUNT_TYPE = "https://twitter.com";
     private static final String GITHUB_IDENTITY = "https://github.com";
     private static final String PHONE_IDENTITY = "https://phone.firebase";
 
@@ -74,7 +76,6 @@ public final class ProviderUtils {
         if (response == null) {
             return null;
         }
-
         return providerIdToAccountType(response.getProviderType());
     }
 
@@ -103,22 +104,22 @@ public final class ProviderUtils {
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
-     * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
+     * Credentials API account type.
      */
     public static String providerIdToAccountType(
             @AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
-                return IdentityProviders.GOOGLE;
+                return GOOGLE_ACCOUNT_TYPE;
             case FacebookAuthProvider.PROVIDER_ID:
-                return IdentityProviders.FACEBOOK;
+                return FACEBOOK_ACCOUNT_TYPE;
             case TwitterAuthProvider.PROVIDER_ID:
-                return IdentityProviders.TWITTER;
+                return TWITTER_ACCOUNT_TYPE;
             case GithubAuthProvider.PROVIDER_ID:
                 return GITHUB_IDENTITY;
             case PhoneAuthProvider.PROVIDER_ID:
                 return PHONE_IDENTITY;
-            // The account type for email/password creds is null
+            // The account type for email/password creds is null.
             case EmailAuthProvider.PROVIDER_ID:
             default:
                 return null;
@@ -128,11 +129,11 @@ public final class ProviderUtils {
     @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
-            case IdentityProviders.GOOGLE:
+            case GOOGLE_ACCOUNT_TYPE:
                 return GoogleAuthProvider.PROVIDER_ID;
-            case IdentityProviders.FACEBOOK:
+            case FACEBOOK_ACCOUNT_TYPE:
                 return FacebookAuthProvider.PROVIDER_ID;
-            case IdentityProviders.TWITTER:
+            case TWITTER_ACCOUNT_TYPE:
                 return TwitterAuthProvider.PROVIDER_ID;
             case GITHUB_IDENTITY:
                 return GithubAuthProvider.PROVIDER_ID;
@@ -215,7 +216,7 @@ public final class ProviderUtils {
                         // In this case the developer has configured EMAIL_LINK sign in but the
                         // user is a password user. The valid use case here is that the developer
                         // is using admin-created accounts and combining email-link sign in with
-                        // setAllowNewAccounts(false). So we manually enable EMAIL_LINK.  See:
+                        // setAllowNewAccounts(false). So we manually enable EMAIL_LINK. See:
                         // https://github.com/firebase/FirebaseUI-Android/issues/1762#issuecomment-661115293
                         if (allowedProviders.contains(EMAIL_LINK_PROVIDER)
                                 && methods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)
@@ -226,8 +227,7 @@ public final class ProviderUtils {
                         if (task.isSuccessful() && lastSignedInProviders.isEmpty()
                                 && !methods.isEmpty()) {
                             // There is an existing user who only has unsupported sign in methods
-                            return Tasks.forException(new FirebaseUiException(ErrorCodes
-                                    .DEVELOPER_ERROR));
+                            return Tasks.forException(new FirebaseUiException(ErrorCodes.DEVELOPER_ERROR));
                         }
                         // Reorder providers from most to least usable. Usability is determined by
                         // how many steps a user needs to perform to log in.
@@ -239,7 +239,7 @@ public final class ProviderUtils {
                     private void reorderPriorities(List<String> providers) {
                         // Prioritize Google over everything else
                         // Prioritize email-password sign in second
-                        // De-prioritize email link sign in
+                        // De-prioritize email link sign in                        
                         changePriority(providers, EmailAuthProvider.PROVIDER_ID, true);
                         changePriority(providers, GoogleAuthProvider.PROVIDER_ID, true);
                         changePriority(providers, EMAIL_LINK_PROVIDER, false);
