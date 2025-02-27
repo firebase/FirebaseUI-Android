@@ -28,10 +28,16 @@ class CredentialManagerHandler(application: Application) :
     /**
      * Saves credentials via Credential Manager if enabled in [getArguments().enableCredentials].
      * Uses a password-based credential for demonstration; adapt to passkeys or other flows as needed.
+     *
+     * @param context the Context to use.
+     * @param firebaseUser the current FirebaseUser.
+     * @param email the email to use as the identifier.
+     * @param password the password used for sign-in.
      */
     fun saveCredentials(
         context: Context,
         firebaseUser: FirebaseUser?,
+        email: String?,
         password: String?
     ) {
         if (!arguments.enableCredentials) {
@@ -40,31 +46,31 @@ class CredentialManagerHandler(application: Application) :
         }
         setResult(Resource.forLoading())
 
-        if (firebaseUser == null || firebaseUser.email.isNullOrEmpty() || password.isNullOrEmpty()) {
+        if (firebaseUser == null || email.isNullOrEmpty() || password.isNullOrEmpty()) {
             setResult(
                 Resource.forFailure(
                     FirebaseUiException(
                         ErrorCodes.UNKNOWN_ERROR,
-                        "Invalid FirebaseUser or missing password."
+                        "Invalid FirebaseUser or missing email/password."
                     )
                 )
             )
             return
         }
 
-        // Example: Password credential with the user's email as the identifier
+        // Create a password-based credential using the provided email as the identifier.
         val request = CreatePasswordRequest(
-            id = firebaseUser.email!!,
+            id = email,
             password = password
         )
 
         viewModelScope.launch {
             try {
-                // Use the createCredential function and store the response
+                // Use the CredentialManager to create (i.e., save) the credential.
                 val createResponse: CreateCredentialResponse =
                     credentialManager.createCredential(context, request)
 
-                // If the response is successful, set the success result
+                // If successful, report success.
                 if (createResponse != null) {
                     setResult(Resource.forSuccess(response!!))
                 } else {

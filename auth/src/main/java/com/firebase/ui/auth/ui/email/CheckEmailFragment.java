@@ -12,8 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.FirebaseUiException;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
@@ -22,10 +21,8 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import androidx.annotation.NonNull;
@@ -48,7 +45,8 @@ public class CheckEmailFragment extends FragmentBase implements
 
     public static final String TAG = "CheckEmailFragment";
     private CheckEmailHandler mHandler;
-    private Button mNextButton;
+    private Button mSignInButton;
+    private Button mSignUpButton;
     private ProgressBar mProgressBar;
     private EditText mEmailEditText;
     private TextInputLayout mEmailLayout;
@@ -72,17 +70,16 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mNextButton = view.findViewById(R.id.button_next);
+        mSignInButton = view.findViewById(R.id.button_sign_in);
+        mSignUpButton = view.findViewById(R.id.button_sign_up);
         mProgressBar = view.findViewById(R.id.top_progress_bar);
 
-        // Email field and validator
         mEmailLayout = view.findViewById(R.id.email_layout);
         mEmailEditText = view.findViewById(R.id.email);
         mEmailFieldValidator = new EmailFieldValidator(mEmailLayout);
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
 
-        // Hide header
         TextView headerText = view.findViewById(R.id.header_text);
         if (headerText != null) {
             headerText.setVisibility(View.GONE);
@@ -94,7 +91,9 @@ public class CheckEmailFragment extends FragmentBase implements
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
-        mNextButton.setOnClickListener(this);
+        // Set listeners for our new sign‑in and sign‑up buttons.
+        mSignInButton.setOnClickListener(this);
+        mSignUpButton.setOnClickListener(this);
 
         TextView termsText = view.findViewById(R.id.email_tos_and_pp_text);
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
@@ -124,54 +123,16 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) activity;
 
-        mHandler.getOperation().observe(getViewLifecycleOwner(), new ResourceObserver<User>(
-                this, R.string.fui_progress_dialog_checking_accounts) {
-            @Override
-            protected void onSuccess(@NonNull User user) {
-                String email = user.getEmail();
-                String provider = user.getProviderId();
+        // Removed the observer on mHandler.getOperation() since we no longer rely on provider info.
 
+        if (savedInstanceState == null) {
+            String email = getArguments().getString(ExtraConstants.EMAIL);
+            if (!TextUtils.isEmpty(email)) {
                 mEmailEditText.setText(email);
-                //noinspection ConstantConditions new user
-                if (provider == null) {
-                    mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
-                            .setName(user.getName())
-                            .setPhotoUri(user.getPhotoUri())
-                            .build());
-                } else if (provider.equals(EmailAuthProvider.PROVIDER_ID)
-                        || provider.equals(EMAIL_LINK_PROVIDER)) {
-                    mListener.onExistingEmailUser(user);
-                } else {
-                    mListener.onExistingIdpUser(user);
-                }
+                // Previously auto-triggering the check is now removed.
+            } else if (getFlowParams().enableHints) {
+                mHandler.fetchCredential();
             }
-
-            @Override
-            protected void onFailure(@NonNull Exception e) {
-                if (e instanceof FirebaseUiException
-                        && ((FirebaseUiException) e).getErrorCode() == ErrorCodes.DEVELOPER_ERROR) {
-                    mListener.onDeveloperFailure(e);
-                }
-
-                if (e instanceof FirebaseNetworkException) {
-                    Snackbar.make(getView(), getString(R.string.fui_no_internet), Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Otherwise just let the user enter their data
-            }
-        });
-
-        if (savedInstanceState != null) {
-            return;
-        }
-
-        // Check for email
-        String email = getArguments().getString(ExtraConstants.EMAIL);
-        if (!TextUtils.isEmpty(email)) {
-            mEmailEditText.setText(email);
-            validateAndProceed();
-        } else if (getFlowParams().enableHints) {
-            mHandler.fetchCredential();
         }
     }
 
@@ -184,8 +145,10 @@ public class CheckEmailFragment extends FragmentBase implements
     public void onClick(View view) {
         int id = view.getId();
 
-        if (id == R.id.button_next) {
-            validateAndProceed();
+        if (id == R.id.button_sign_in) {
+            signIn();
+        } else if (id == R.id.button_sign_up) {
+            signUp();
         } else if (id == R.id.email_layout || id == R.id.email) {
             mEmailLayout.setError(null);
         }
@@ -193,25 +156,52 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Override
     public void onDonePressed() {
-        validateAndProceed();
+        // When the user hits “done” on the keyboard, default to sign‑in.
+        signIn();
     }
 
-    private void validateAndProceed() {
+    private String getEmailProvider() {
+        // Iterate through all IdpConfig entries
+        for (AuthUI.IdpConfig config : getFlowParams().providers) {
+            // Assuming there is a getter for the provider ID
+            if (EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD.equals(config.getProviderId())) {
+                return EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD;
+            }
+        }
+        // Default to standard email/password
+        return EmailAuthProvider.PROVIDER_ID;
+    }
+
+    private void signIn() {
         String email = mEmailEditText.getText().toString();
         if (mEmailFieldValidator.validate(email)) {
-            mHandler.fetchProvider(email);
+            String provider = getEmailProvider();
+            User user = new User.Builder(provider, email).build();
+            mListener.onExistingEmailUser(user);
+        }
+    }
+
+    private void signUp() {
+        String email = mEmailEditText.getText().toString();
+        if (mEmailFieldValidator.validate(email)) {
+            String provider = getEmailProvider();
+            User user = new User.Builder(provider, email).build();
+            mListener.onNewUser(user);
         }
     }
 
     @Override
     public void showProgress(int message) {
-        mNextButton.setEnabled(false);
+        // Disable both buttons while progress is showing.
+        mSignInButton.setEnabled(false);
+        mSignUpButton.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        mNextButton.setEnabled(true);
+        mSignInButton.setEnabled(true);
+        mSignUpButton.setEnabled(true);
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
@@ -221,7 +211,7 @@ public class CheckEmailFragment extends FragmentBase implements
     interface CheckEmailListener {
 
         /**
-         * Email entered belongs to an existing email user.
+         * Email entered belongs to an existing email user (sign‑in flow).
          */
         void onExistingEmailUser(User user);
 
@@ -231,7 +221,7 @@ public class CheckEmailFragment extends FragmentBase implements
         void onExistingIdpUser(User user);
 
         /**
-         * Email entered does not belong to an existing user.
+         * Email entered does not belong to an existing user (sign‑up flow).
          */
         void onNewUser(User user);
 

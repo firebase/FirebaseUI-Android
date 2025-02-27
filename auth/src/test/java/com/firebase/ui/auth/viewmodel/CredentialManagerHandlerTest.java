@@ -83,6 +83,7 @@ public class CredentialManagerHandlerTest {
         mHandler.saveCredentials(
                 testActivity,
                 mockUser,
+                "test@mail.com",
                 "test-password"
         );
 
@@ -98,6 +99,7 @@ public class CredentialManagerHandlerTest {
         mHandler.saveCredentials(
                 testActivity,
                 null, // invalid user
+                null,
                 "some-password"
         );
 

@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowActivity;
@@ -77,7 +78,8 @@ public class EmailActivityTest {
     public void testOnCreate_emailLinkLinkingFlow_expectSendEmailLinkFlowStarted() {
         // This is normally done by EmailLinkSendEmailHandler, saving the IdpResponse is done
         // in EmailActivity but it will not be saved if we haven't previously set the email
-        EmailLinkPersistenceManager.getInstance().saveEmail(ApplicationProvider.getApplicationContext(),
+        EmailLinkPersistenceManager.getInstance().saveEmail(
+                ApplicationProvider.getApplicationContext(),
                 EMAIL, TestConstants.SESSION_ID, TestConstants.UID);
 
         EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER, true, false);
@@ -99,9 +101,7 @@ public class EmailActivityTest {
     // @Test TODO(lsirac): uncomment after figuring out why this no longer works
     public void testOnTroubleSigningIn_expectTroubleSigningInFragment() {
         EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER);
-
         emailActivity.onTroubleSigningIn(EMAIL);
-
         TroubleSigningInFragment fragment = (TroubleSigningInFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(TroubleSigningInFragment.TAG);
         assertThat(fragment).isNotNull();
@@ -110,32 +110,24 @@ public class EmailActivityTest {
     @Test
     public void testOnClickResendEmail_expectSendEmailLinkFlowStarted() {
         EmailActivity emailActivity = createActivity(AuthUI.EMAIL_LINK_PROVIDER);
-
         emailActivity.onClickResendEmail(EMAIL);
-
         shadowOf(Looper.getMainLooper()).idle();
-
         EmailLinkFragment fragment = (EmailLinkFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(EmailLinkFragment.TAG);
         assertThat(fragment).isNotNull();
     }
 
-
     @Test
     public void testSignUpButton_validatesFields() {
         EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID);
-
         // Trigger RegisterEmailFragment (bypass check email)
         emailActivity.onNewUser(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
-
         shadowOf(Looper.getMainLooper()).idle();
         Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
-
         TextInputLayout nameLayout = emailActivity.findViewById(R.id.name_layout);
         TextInputLayout passwordLayout = emailActivity.findViewById(R.id.password_layout);
-
         assertEquals(
                 emailActivity.getString(R.string.fui_missing_first_and_last_name),
                 nameLayout.getError().toString());
@@ -153,41 +145,32 @@ public class EmailActivityTest {
     @Test
     public void testSetDefaultEmail_validField() {
         EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
-
         CheckEmailFragment fragment = (CheckEmailFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(CheckEmailFragment.TAG);
         assertThat(fragment).isNotNull();
-
-      TextInputEditText email = emailActivity.findViewById(R.id.email);
-      assertEquals(TestConstants.EMAIL, email.getText().toString());
-
+        TextInputEditText email = emailActivity.findViewById(R.id.email);
+        assertEquals(TestConstants.EMAIL, email.getText().toString());
     }
 
     @Test
     public void testSetDefaultEmail_expectWelcomeBackPasswordPrompt() {
         EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
-
         emailActivity.onExistingEmailUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
-
         ShadowActivity.IntentForResult nextIntent =
-                shadowOf(emailActivity).getNextStartedActivityForResult();
+                Shadows.shadowOf(emailActivity).getNextStartedActivityForResult();
         assertEquals(WelcomeBackPasswordPrompt.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
-
     }
 
     @Test
     public void testSetDefaultEmail_expectRegisterEmailFragment() {
         EmailActivity emailActivity = createActivity(EmailAuthProvider.PROVIDER_ID, false, true);
-
         emailActivity.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
-
         shadowOf(Looper.getMainLooper()).idle();
         RegisterEmailFragment registerEmailFragment = (RegisterEmailFragment) emailActivity
                 .getSupportFragmentManager().findFragmentByTag(RegisterEmailFragment.TAG);
         assertThat(registerEmailFragment).isNotNull();
     }
-
 
     private EmailActivity createActivity(String providerId) {
         return createActivity(providerId, false, false);
@@ -199,7 +182,7 @@ public class EmailActivityTest {
                 TestHelper.getFlowParameters(Collections.singletonList(providerId)));
 
         if (hasDefaultEmail) {
-             startIntent = EmailActivity.createIntent(
+            startIntent = EmailActivity.createIntent(
                     ApplicationProvider.getApplicationContext(),
                     TestHelper.getFlowParameters(Collections.singletonList(providerId), false, null, true));
         }
@@ -209,11 +192,11 @@ public class EmailActivityTest {
             startIntent.putExtra(ExtraConstants.IDP_RESPONSE, buildGoogleIdpResponse());
         }
 
-        return Robolectric.buildActivity(EmailActivity.class, startIntent)
-                .create()
-                .start()
-                .visible()
-                .get();
+        ActivityController<EmailActivity> controller =
+                Robolectric.buildActivity(EmailActivity.class, startIntent);
+        EmailActivity activity = controller.get();
+        activity.setTheme(R.style.Theme_AppCompat);
+        return controller.create().start().visible().get();
     }
 
     private IdpResponse buildGoogleIdpResponse() {
