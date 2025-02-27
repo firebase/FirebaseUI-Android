@@ -111,6 +111,7 @@ class AuthMethodPickerActivity : AppCompatBase() {
     companion object {
         private const val TAG = "AuthMethodPickerActivity"
 
+        @JvmStatic
         fun createIntent(context: Context, flowParams: FlowParameters): Intent {
             return createBaseIntent(context, AuthMethodPickerActivity::class.java, flowParams)
         }
