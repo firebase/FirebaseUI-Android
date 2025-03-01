@@ -32,15 +32,7 @@ import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.Scope;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -78,7 +70,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.StringDef;
+import androidx.credentials.Credential;
+import androidx.credentials.PasswordCredential;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.exceptions.NoCredentialsException;
+import androidx.credentials.exceptions.CredentialException;
+import androidx.credentials.exceptions.GetCredentialException;
+import androidx.credentials.exceptions.CreateCredentialException;
+import androidx.credentials.exceptions.BeginCreateCredentialException;
+import androidx.credentials.exceptions.CreateCredentialCustomizationException;
+import android.widget.Toast;
 import androidx.annotation.StyleRes;
+
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -269,33 +272,7 @@ public final class AuthUI {
         return R.style.FirebaseUI_DefaultMaterialTheme;
     }
 
-    /**
-     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
-     * for saving since we don't have access to the password.
-     */
-    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
-        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
-            return Collections.emptyList();
-        }
 
-        List<Credential> credentials = new ArrayList<>();
-        for (UserInfo userInfo : user.getProviderData()) {
-            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
-                continue;
-            }
-
-            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
-            if (type == null) {
-                // Since the account type is null, we've got an email credential. Adding a fake
-                // password is the only way to tell Smart Lock that this is an email credential.
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, "pass", null));
-            } else {
-                credentials.add(CredentialUtils.buildCredentialOrThrow(user, null, type));
-            }
-        }
-
-        return credentials;
-    }
 
     /**
      * Signs the user in without any UI if possible. If this operation fails, you can safely start a
@@ -344,38 +321,12 @@ public final class AuthUI {
                     new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED));
         }
 
-        return GoogleApiUtils.getCredentialsClient(context)
-                .request(new CredentialRequest.Builder()
-                        // We can support both email and Google at the same time here because they
-                        // are mutually exclusive. If a user signs in with Google, their email
-                        // account will automatically be upgraded (a.k.a. replaced) with the Google
-                        // one, meaning Smart Lock won't have to show the picker UI.
-                        .setPasswordLoginSupported(email != null)
-                        .setAccountTypes(google == null ? null :
-                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider
-                                        .PROVIDER_ID))
-                        .build())
-                .continueWithTask(task -> {
-                    Credential credential = task.getResult().getCredential();
-                    String email1 = credential.getId();
-                    String password = credential.getPassword();
-
-                    if (TextUtils.isEmpty(password)) {
-                        return GoogleSignIn.getClient(appContext,
-                                new GoogleSignInOptions.Builder(googleOptions)
-                                        .setAccountName(email1)
-                                        .build())
-                                .silentSignIn()
-                                .continueWithTask(task1 -> {
-                                    AuthCredential authCredential = GoogleAuthProvider
-                                            .getCredential(
-                                                    task1.getResult().getIdToken(), null);
-                                    return mAuth.signInWithCredential(authCredential);
-                                });
-                    } else {
-                        return mAuth.signInWithEmailAndPassword(email1, password);
-                    }
-                });
+         // If Play services are not available we can't attempt to use the credentials client.
+        if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+            return Tasks.forException(
+                    new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED));
+        }
+        return Tasks.forException(new Exception("Not implemented yet"));
     }
 
     /**
@@ -393,29 +344,13 @@ public final class AuthUI {
             Log.w(TAG, "Google Play services not available during signOut");
         }
 
-        Task<Void> maybeDisableAutoSignIn = playServicesAvailable
-                ? GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn()
-                : Tasks.forResult((Void) null);
-
-        maybeDisableAutoSignIn
-                .continueWith(task -> {
-                    // We want to ignore a specific exception, since it's not a good reason
-                    // to fail (see Issue 1156).
-                    Exception e = task.getException();
-                    if (e instanceof ApiException
-                            && ((ApiException) e).getStatusCode() == CommonStatusCodes
-                            .CANCELED) {
-                        Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
-                                "SmartLock accounts available?", e);
-                        return null;
-                    }
-
-                    return task.getResult();
-                });
+        boolean playServicesAvailable = GoogleApiUtils.isPlayServicesAvailable(context);
+        if (!playServicesAvailable) {
+            Log.w(TAG, "Google Play services not available during signOut");
+        }
 
         return Tasks.whenAll(
-                signOutIdps(context),
-                maybeDisableAutoSignIn
+                signOutIdps(context)
         ).continueWith(task -> {
             task.getResult(); // Propagate exceptions
             mAuth.signOut();
@@ -423,7 +358,38 @@ public final class AuthUI {
         });
     }
 
+
     /**
+     * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
+     * API. Returns a {@link Task} that succeeds if the Firebase Auth user deletion succeeds and
+     * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
+     * silently.
+     *
+     * @param context the calling {@link Context}.
+     */
+    @NonNull
+    public Task<Void> delete(@NonNull final Context context) {
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            return Tasks.forException(new FirebaseAuthInvalidUserException(
+                    String.valueOf(CommonStatusCodes.SIGN_IN_REQUIRED),
+                    "No currently signed in user."));
+        }
+
+         // Ensure the order in which tasks are executed properly destructures the user.
+        return signOutIdps(context).continueWithTask(task -> {
+            task.getResult(); // Propagate exception if there was one
+
+            if (!GoogleApiUtils.isPlayServicesAvailable(context)) {
+                Log.w(TAG, "Google Play services not available during delete");
+                return Tasks.forResult((Void) null);
+            }
+        }).continueWithTask(task -> {
+            task.getResult(); // Propagate exception if there was one
+            return currentUser.delete();
+        });
+    }
+        /**
      * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
      * API. Returns a {@link Task} that succeeds if the Firebase Auth user deletion succeeds and
      * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
@@ -1293,8 +1259,6 @@ public final class AuthUI {
         String mPrivacyPolicyUrl;
         boolean mAlwaysShowProviderChoice = false;
         boolean mLockOrientation = false;
-        boolean mEnableCredentials = true;
-        boolean mEnableHints = true;
         AuthMethodPickerLayout mAuthMethodPickerLayout = null;
         ActionCodeSettings mPasswordSettings = null;
 
@@ -1441,12 +1405,7 @@ public final class AuthUI {
          * @param enableCredentials enables credential selector before signup
          * @param enableHints       enable hint selector in respective signup screens
          */
-        @NonNull
-        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
-            mEnableCredentials = enableCredentials;
-            mEnableHints = enableHints;
-            return (T) this;
-        }
+        
 
         /**
          * Set a custom layout for the AuthMethodPickerActivity screen.
@@ -1576,9 +1535,6 @@ public final class AuthUI {
                     mLogo,
                     mTosUrl,
                     mPrivacyPolicyUrl,
-                    mEnableCredentials,
-                    mEnableHints,
-                    mEnableAnonymousUpgrade,
                     mAlwaysShowProviderChoice,
                     mLockOrientation,
                     mEmailLink,

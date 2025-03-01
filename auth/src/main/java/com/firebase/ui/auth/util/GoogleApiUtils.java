@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
+
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
