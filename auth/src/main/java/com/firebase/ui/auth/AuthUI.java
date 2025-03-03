@@ -1250,10 +1250,9 @@ public final class AuthUI {
         }
 
         /**
-         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
-         * selector.
+         * Enables or disables the use of Credential Manager for Passwords credential selector
          * <p>
-         * <p>Both selectors are enabled by default.
+         * <p>Is enabled by default.
          *
          * @param enableCredentials enables credential selector before signup
          */
