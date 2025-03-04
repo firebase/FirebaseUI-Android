@@ -1126,7 +1126,6 @@ public final class AuthUI {
         boolean mAlwaysShowProviderChoice = false;
         boolean mLockOrientation = false;
         boolean mEnableCredentials = true;
-        boolean mEnableHints = true;
         AuthMethodPickerLayout mAuthMethodPickerLayout = null;
         ActionCodeSettings mPasswordSettings = null;
 
@@ -1251,32 +1250,15 @@ public final class AuthUI {
         }
 
         /**
-         * Enables or disables the use of Smart Lock for Passwords in the sign in flow. To
-         * (en)disable hint selector and credential selector independently use {@link
-         * #setIsSmartLockEnabled(boolean, boolean)}
+         * Enables or disables the use of Credential Manager for Passwords credential selector
          * <p>
-         * <p>SmartLock is enabled by default.
-         *
-         * @param enabled enables smartlock's credential selector and hint selector
-         */
-        @NonNull
-        public T setIsSmartLockEnabled(boolean enabled) {
-            return setIsSmartLockEnabled(enabled, enabled);
-        }
-
-        /**
-         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
-         * selector.
-         * <p>
-         * <p>Both selectors are enabled by default.
+         * <p>Is enabled by default.
          *
          * @param enableCredentials enables credential selector before signup
-         * @param enableHints       enable hint selector in respective signup screens
          */
         @NonNull
-        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
+        public T setCredentialManagerEnabled(boolean enableCredentials) {
             mEnableCredentials = enableCredentials;
-            mEnableHints = enableHints;
             return (T) this;
         }
 
@@ -1409,7 +1391,6 @@ public final class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
-                    mEnableHints,
                     mEnableAnonymousUpgrade,
                     mAlwaysShowProviderChoice,
                     mLockOrientation,
