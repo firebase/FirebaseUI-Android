@@ -63,8 +63,7 @@
     <string name="facebook_permission_photos">Photos</string>
 
     <string name="options_header">Other Options</string>
-    <string name="options_enable_credential_selector">Enable Smart Lock\'s credential selector</string>
-    <string name="options_enable_hint_selector">Enable Smart Lock\'s hint selector</string>
+    <string name="options_enable_credential_selector">Enable Credential Manager\'s credential selector</string>
     <string name="options_allow_new_email_acccount">Allow new account creation</string>
     <string name="options_require_name">Require first/last name with email accounts.</string>
     <string name="options_use_auth_emulator">Connect to auth emulator (localhost:9099).</string>
