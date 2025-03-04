@@ -194,8 +194,7 @@ public class AuthUiActivity extends AppCompatActivity
                 .setTheme(getSelectedTheme())
                 .setLogo(getSelectedLogo())
                 .setAvailableProviders(getSelectedProviders())
-                .setIsSmartLockEnabled(mBinding.credentialSelectorEnabled.isChecked(),
-                        mBinding.hintSelectorEnabled.isChecked());
+                .setCredentialManagerEnabled(mBinding.credentialSelectorEnabled.isChecked());
 
         if (mBinding.customLayout.isChecked()) {
             AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout

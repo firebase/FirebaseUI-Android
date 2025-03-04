@@ -184,7 +184,6 @@ public final class TestHelper {
                 null,
                 null,
                 true,
-                true,
                 enableAnonymousUpgrade,
                 false,
                 true,
