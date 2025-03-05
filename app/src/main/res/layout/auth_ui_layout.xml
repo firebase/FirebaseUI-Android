@@ -316,13 +316,6 @@
                 android:text="@string/options_enable_credential_selector" />
 
             <CheckBox
-                android:id="@+id/hint_selector_enabled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/options_enable_hint_selector" />
-
-            <CheckBox
                 android:id="@+id/allow_new_email_accounts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
