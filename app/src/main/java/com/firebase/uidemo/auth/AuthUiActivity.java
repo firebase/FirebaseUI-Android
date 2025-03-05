@@ -325,8 +325,7 @@ public class AuthUiActivity extends BaseActivity
             ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
                     .setAndroidPackageName("com.firebase.uidemo", true, null)
                     .setHandleCodeInApp(true)
-                    .setUrl("https://firebasetesttooluiandroid.page.link")
-                    .setLinkDomain("firebasetesttooluiandroid.page.link")
+                    .setUrl("https://google.com")
                     .build();
 
             selectedProviders.add(new IdpConfig.EmailBuilder()
