@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.BuildConfig;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.ActivityImageBinding;
@@ -27,12 +28,11 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class ImageActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+public class ImageActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final String TAG = "ImageDemo";
     private static final int RC_CHOOSE_PHOTO = 101;

@@ -20,6 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -38,7 +43,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ChooserActivity extends AppCompatActivity {
+public class ChooserActivity extends BaseActivity {
     private ActivityChooserBinding mBinding;
 
     @Override
@@ -55,6 +60,22 @@ public class ChooserActivity extends AppCompatActivity {
         }
         mBinding = ActivityChooserBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+
+        // Set up toolbar
+        setSupportActionBar(mBinding.toolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
+
+        // Handle the navigation bar padding
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.activities, (view, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            view.setPadding(
+                view.getPaddingLeft(),
+                view.getPaddingTop(),
+                view.getPaddingRight(),
+                insets.bottom
+            );
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         mBinding.activities.setLayoutManager(new LinearLayoutManager(this));
         mBinding.activities.setAdapter(new ActivityChooserAdapter());

@@ -31,6 +31,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.databinding.AuthUiLayoutBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
 import com.google.android.gms.common.Scopes;
@@ -54,7 +55,7 @@ import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class AuthUiActivity extends AppCompatActivity
+public class AuthUiActivity extends BaseActivity
         implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
     private static final String TAG = "AuthUiActivity";
 
@@ -325,7 +326,8 @@ public class AuthUiActivity extends AppCompatActivity
             ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
                     .setAndroidPackageName("com.firebase.uidemo", true, null)
                     .setHandleCodeInApp(true)
-                    .setUrl("https://google.com")
+                    .setUrl("https://firebasetesttooluiandroid.page.link")
+                    .setLinkDomain("firebasetesttooluiandroid.page.link")
                     .build();
 
             selectedProviders.add(new IdpConfig.EmailBuilder()
