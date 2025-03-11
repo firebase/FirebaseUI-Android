@@ -198,9 +198,11 @@ public class AuthMethodPickerLayout implements Parcelable {
             }
 
             for (String key : providersMapping.keySet()) {
-                if (!AuthUI.SUPPORTED_PROVIDERS.contains(key)
-                        && !AuthUI.SUPPORTED_OAUTH_PROVIDERS.contains(key)) {
-                    throw new IllegalArgumentException("Unknown provider: " + key);
+                if (key == null) continue;
+                if (!AuthUI.isSupportedProvider(key)
+                        && !AuthUI.isSupportedOAuthProvider(key)) {
+                    throw new IllegalStateException(
+                            "Unknown provider: " + key);
                 }
             }
 

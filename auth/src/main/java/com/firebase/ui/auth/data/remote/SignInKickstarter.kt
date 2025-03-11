@@ -91,7 +91,7 @@ class SignInKickstarter(application: Application?) : SignInViewModelBase(applica
                     setResult(
                         Resource.forFailure<IdpResponse>(
                             IntentRequiredException(
-                                PhoneActivity.createIntent(app, arguments, firstIdpConfig.params),
+                                PhoneActivity.createIntent(app, arguments, firstIdpConfig.getParams()),
                                 RequestCodes.PHONE_FLOW
                             )
                         )

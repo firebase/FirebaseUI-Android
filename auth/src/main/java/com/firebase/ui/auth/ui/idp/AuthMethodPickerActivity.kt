@@ -83,13 +83,13 @@ import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
 
-import com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER
-import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID
-import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.firebase.auth.GoogleAuthCredential
+import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID
+import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID
+import com.firebase.ui.auth.AuthUI.Companion.EMAIL_LINK_PROVIDER
 
 @androidx.annotation.RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP)
 class AuthMethodPickerActivity : AppCompatBase() {
@@ -335,8 +335,8 @@ class AuthMethodPickerActivity : AppCompatBase() {
                 PhoneAuthProvider.PROVIDER_ID -> R.layout.fui_provider_button_phone
                 AuthUI.ANONYMOUS_PROVIDER -> R.layout.fui_provider_button_anonymous
                 else -> {
-                    if (!TextUtils.isEmpty(idpConfig.params.getString(GENERIC_OAUTH_PROVIDER_ID))) {
-                        idpConfig.params.getInt(GENERIC_OAUTH_BUTTON_ID)
+                    if (!TextUtils.isEmpty(idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
+                        idpConfig.getParams().getInt(GENERIC_OAUTH_BUTTON_ID)
                     } else {
                         throw IllegalStateException("Unknown provider: ${idpConfig.providerId}")
                     }
@@ -391,7 +391,7 @@ class AuthMethodPickerActivity : AppCompatBase() {
             AuthUI.ANONYMOUS_PROVIDER ->
                 viewModelProvider.get(AnonymousSignInHandler::class.java).initWith(flowParams)
             GoogleAuthProvider.PROVIDER_ID ->
-                if (authUI.isUseEmulator) {
+                if (authUI.isUseEmulator()) {
                     viewModelProvider.get(GenericIdpSignInHandler::class.java)
                         .initWith(GenericIdpSignInHandler.getGenericGoogleConfig())
                 } else {
@@ -399,14 +399,14 @@ class AuthMethodPickerActivity : AppCompatBase() {
                         .initWith(GoogleSignInHandler.Params(idpConfig))
                 }
             FacebookAuthProvider.PROVIDER_ID ->
-                if (authUI.isUseEmulator) {
+                if (authUI.isUseEmulator()) {
                     viewModelProvider.get(GenericIdpSignInHandler::class.java)
                         .initWith(GenericIdpSignInHandler.getGenericFacebookConfig())
                 } else {
                     viewModelProvider.get(FacebookSignInHandler::class.java).initWith(idpConfig)
                 }
             else -> {
-                if (!TextUtils.isEmpty(idpConfig.params.getString(GENERIC_OAUTH_PROVIDER_ID))) {
+                if (!TextUtils.isEmpty(idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
                     viewModelProvider.get(GenericIdpSignInHandler::class.java).initWith(idpConfig)
                 } else {
                     throw IllegalStateException("Unknown provider: $providerId")
@@ -434,7 +434,7 @@ class AuthMethodPickerActivity : AppCompatBase() {
 
             private fun handleResponse(response: IdpResponse) {
                 // For social providers (unless using an emulator) use the social response handler.
-                val isSocialResponse = AuthUI.SOCIAL_PROVIDERS.contains(providerId) && !authUI.isUseEmulator
+                val isSocialResponse = AuthUI.isSocialProvider(providerId) && !authUI.isUseEmulator()
                 if (!response.isSuccessful) {
                     mHandler.startSignIn(response)
                 } else if (isSocialResponse) {

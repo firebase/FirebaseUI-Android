@@ -385,7 +385,7 @@ public class IdpResponse implements Parcelable {
 
             String providerId = mUser.getProviderId();
 
-            if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
+            if (AuthUI.isSocialProvider(providerId) && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
