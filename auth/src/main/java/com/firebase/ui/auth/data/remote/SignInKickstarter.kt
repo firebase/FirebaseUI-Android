@@ -75,7 +75,7 @@ class SignInKickstarter(application: Application?) : SignInViewModelBase(applica
      */
     private fun startAuthMethodChoice() {
         if (!arguments.shouldShowProviderChoice()) {
-            val firstIdpConfig = arguments.defaultOrFirstProvider
+            val firstIdpConfig = arguments.getDefaultOrFirstProvider()
             val firstProvider = firstIdpConfig.providerId
             when (firstProvider) {
                 AuthUI.EMAIL_LINK_PROVIDER, EmailAuthProvider.PROVIDER_ID ->
