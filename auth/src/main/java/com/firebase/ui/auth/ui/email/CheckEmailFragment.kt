@@ -27,29 +27,28 @@ import androidx.lifecycle.ViewModelProvider
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class CheckEmailFragment : FragmentBase(), View.OnClickListener, ImeHelper.DonePressedListener {
 
-    companion object {
-        const val TAG = "CheckEmailFragment"
-        @JvmStatic
-        fun newInstance(email: String?): CheckEmailFragment {
-            val fragment = CheckEmailFragment()
-            val args = Bundle()
-            args.putString(ExtraConstants.EMAIL, email)
-            fragment.arguments = args
-            return fragment
-        }
-    }
-
     private lateinit var mHandler: CheckEmailHandler
+    private lateinit var mListener: CheckEmailListener
+    private lateinit var mEmailEditText: EditText
+    private lateinit var mEmailLayout: TextInputLayout
     private lateinit var mSignInButton: Button
     private lateinit var mSignUpButton: Button
     private lateinit var mProgressBar: ProgressBar
-    private lateinit var mEmailEditText: EditText
-    private lateinit var mEmailLayout: TextInputLayout
     private lateinit var mEmailFieldValidator: EmailFieldValidator
-    private lateinit var mListener: CheckEmailListener
+
+    companion object {
+        const val TAG = "CheckEmailFragment"
+
+        @JvmStatic
+        fun newInstance(): CheckEmailFragment {
+            return CheckEmailFragment()
+        }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fui_check_email_layout, container, false)
     }

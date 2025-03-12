@@ -130,7 +130,15 @@ class EmailActivity : AppCompatBase(),
                     showRegisterEmailLinkFragment(emailConfig, email)
                 } else {
                     if (user == null) {
-                        finishOnDeveloperError(IllegalStateException("User cannot be null for email/password sign in."))
+                        // Show CheckEmailFragment when no user is provided
+                        val fragment = CheckEmailFragment.newInstance()
+                        ft.replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
+                        emailLayout?.let {
+                            val emailFieldName = getString(R.string.fui_email_field_name)
+                            ViewCompat.setTransitionName(it, emailFieldName)
+                            ft.addSharedElement(it, emailFieldName)
+                        }
+                        ft.disallowAddToBackStack().commit()
                         return
                     }
                     val fragment = RegisterEmailFragment.newInstance(user)
