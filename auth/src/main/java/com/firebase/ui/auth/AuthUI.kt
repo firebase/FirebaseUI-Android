@@ -781,7 +781,7 @@ class AuthUI private constructor(private val mApp: FirebaseApp) {
 
         const val NO_LOGO = -1
 
-        val SUPPORTED_PROVIDERS: Set<String> = setOf(
+        public val SUPPORTED_PROVIDERS: Set<String> = setOf(
             GoogleAuthProvider.PROVIDER_ID,
             FacebookAuthProvider.PROVIDER_ID,
             TwitterAuthProvider.PROVIDER_ID,
