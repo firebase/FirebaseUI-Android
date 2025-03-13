@@ -153,7 +153,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 boolean isGenericIdp = getAuthUI().isUseEmulator()
-                        || !AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType());
+                        || !AuthUI.isSocialProvider(response.getProviderType());
 
                 if (isGenericIdp
                         && !response.hasCredentialForLinking()

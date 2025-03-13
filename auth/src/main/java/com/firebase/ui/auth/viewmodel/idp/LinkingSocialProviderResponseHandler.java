@@ -128,7 +128,7 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
 
     private boolean isGenericIdpLinkingFlow(@NonNull String providerId) {
         // TODO(lsirac): Remove use of SUPPORTED_OAUTH_PROVIDERS when we decide to support all IDPs
-        return AuthUI.SUPPORTED_OAUTH_PROVIDERS.contains(providerId)
+        return AuthUI.isSupportedOAuthProvider(providerId)
                 && mRequestedSignInCredential != null
                 && getAuth().getCurrentUser() != null
                 && !getAuth().getCurrentUser().isAnonymous();

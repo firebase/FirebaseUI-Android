@@ -93,7 +93,7 @@ public class SingleSignInActivity extends InvisibleActivityBase {
         mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(this) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                boolean useSocialHandler = AuthUI.SOCIAL_PROVIDERS.contains(provider)
+                boolean useSocialHandler = AuthUI.isSocialProvider(provider)
                         && !getAuthUI().isUseEmulator();
 
                 if (useSocialHandler || !response.isSuccessful()) {

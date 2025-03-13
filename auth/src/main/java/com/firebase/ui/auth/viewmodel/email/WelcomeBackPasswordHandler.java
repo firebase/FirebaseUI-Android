@@ -72,7 +72,7 @@ public class WelcomeBackPasswordHandler extends SignInViewModelBase {
             final AuthCredential credToValidate = EmailAuthProvider.getCredential(email, password);
 
             // Check to see if we need to link (for social providers with the same email)
-            if (AuthUI.SOCIAL_PROVIDERS.contains(inputResponse.getProviderType())) {
+            if (AuthUI.isSocialProvider(inputResponse.getProviderType())) {
                 // Add the provider to the same account before triggering a merge failure.
                 authOperationManager.safeLink(credToValidate, credential, getArguments())
                         .addOnSuccessListener(result -> handleMergeFailure(credToValidate))
