@@ -130,8 +130,12 @@ class EmailActivity : AppCompatBase(),
                     showRegisterEmailLinkFragment(emailConfig, email)
                 } else {
                     if (user == null) {
-                        // Show CheckEmailFragment when no user is provided
-                        val fragment = CheckEmailFragment.newInstance()
+                        // Use default email from configuration if none was provided via the intent.
+                        if (email == null) {
+                            email = emailConfig.getParams().getString(ExtraConstants.DEFAULT_EMAIL)
+                        }
+                        // Pass the email (which may be null if no default is configured) to the fragment.
+                        val fragment = CheckEmailFragment.newInstance(email)
                         ft.replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
                         emailLayout?.let {
                             val emailFieldName = getString(R.string.fui_email_field_name)

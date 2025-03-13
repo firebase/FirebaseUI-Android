@@ -40,8 +40,12 @@ class CheckEmailFragment : FragmentBase(), View.OnClickListener, ImeHelper.DoneP
         const val TAG = "CheckEmailFragment"
 
         @JvmStatic
-        fun newInstance(): CheckEmailFragment {
-            return CheckEmailFragment()
+        fun newInstance(email: String?): CheckEmailFragment {
+            return CheckEmailFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ExtraConstants.EMAIL, email)
+                }
+            }
         }
     }
 
@@ -137,13 +141,11 @@ class CheckEmailFragment : FragmentBase(), View.OnClickListener, ImeHelper.DoneP
     }
 
     private fun getEmailProvider(): String {
-        // Iterate through all IdpConfig entries
         for (config in getFlowParams().providers) {
             if (EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD == config.providerId) {
                 return EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
             }
         }
-        // Default to standard email/password
         return EmailAuthProvider.PROVIDER_ID
     }
 
