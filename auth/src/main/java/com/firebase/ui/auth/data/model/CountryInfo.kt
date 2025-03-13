@@ -7,7 +7,7 @@ import java.util.Locale
 import androidx.annotation.RestrictTo
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-class CountryInfo(val locale: Locale, val countryCode: Int) : Comparable<CountryInfo>, Parcelable {
+class CountryInfo(val locale: Locale?, val countryCode: Int) : Comparable<CountryInfo>, Parcelable {
 
     // Use a collator initialized to the default locale.
     private val collator: Collator = Collator.getInstance(Locale.getDefault()).apply {
@@ -21,7 +21,8 @@ class CountryInfo(val locale: Locale, val countryCode: Int) : Comparable<Country
             override fun newArray(size: Int): Array<CountryInfo?> = arrayOfNulls(size)
         }
 
-        fun localeToEmoji(locale: Locale): String {
+        fun localeToEmoji(locale: Locale?): String {
+            if (locale == null) return ""
             val countryCode = locale.country
             // 0x41 is Letter A, 0x1F1E6 is Regional Indicator Symbol Letter A.
             // For example, for "US": 'U' => (0x55 - 0x41) + 0x1F1E6, 'S' => (0x53 - 0x41) + 0x1F1E6.
@@ -33,7 +34,7 @@ class CountryInfo(val locale: Locale, val countryCode: Int) : Comparable<Country
 
     // Secondary constructor to recreate from a Parcel.
     constructor(parcel: Parcel) : this(
-        parcel.readSerializable() as Locale,
+        parcel.readSerializable() as? Locale,
         parcel.readInt()
     )
 
@@ -44,13 +45,14 @@ class CountryInfo(val locale: Locale, val countryCode: Int) : Comparable<Country
     }
 
     override fun hashCode(): Int {
+        if (locale == null) return 1
         var result = locale.hashCode()
         result = 31 * result + countryCode
         return result
     }
 
     override fun toString(): String {
-        return "${localeToEmoji(locale)} ${locale.displayCountry} +$countryCode"
+        return "${localeToEmoji(locale)} ${locale?.displayCountry ?: ""} +$countryCode"
     }
 
     fun toShortString(): String {
@@ -60,8 +62,8 @@ class CountryInfo(val locale: Locale, val countryCode: Int) : Comparable<Country
     override fun compareTo(other: CountryInfo): Int {
         val defaultLocale = Locale.getDefault()
         return collator.compare(
-            locale.displayCountry.uppercase(defaultLocale),
-            other.locale.displayCountry.uppercase(defaultLocale)
+            locale?.displayCountry?.uppercase(defaultLocale) ?: "",
+            other.locale?.displayCountry?.uppercase(defaultLocale) ?: ""
         )
     }
 
