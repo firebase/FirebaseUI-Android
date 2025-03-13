@@ -2,9 +2,9 @@ package com.firebase.ui.auth.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.RestrictTo
 import java.text.Collator
 import java.util.Locale
-import androidx.annotation.RestrictTo
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class CountryInfo(val locale: Locale?, val countryCode: Int) : Comparable<CountryInfo>, Parcelable {
@@ -45,8 +45,7 @@ class CountryInfo(val locale: Locale?, val countryCode: Int) : Comparable<Countr
     }
 
     override fun hashCode(): Int {
-        if (locale == null) return 1
-        var result = locale.hashCode()
+        var result = locale?.hashCode() ?: 0
         result = 31 * result + countryCode
         return result
     }
