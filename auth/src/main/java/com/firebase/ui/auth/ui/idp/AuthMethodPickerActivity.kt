@@ -86,6 +86,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER
 import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID
 import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID
+import com.firebase.ui.auth.util.GoogleApiUtils
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
@@ -105,7 +106,7 @@ class AuthMethodPickerActivity : AppCompatBase() {
     // For demonstration, assume that CredentialManager provides a create() method.
     private val credentialManager by lazy {
         // Replace with your actual CredentialManager instance creation.
-        CredentialManager.create(this)
+        GoogleApiUtils.getCredentialManager(this)
     }
 
     companion object {
