@@ -19,7 +19,19 @@ Release Notes for other BoM versions with breaking changes:
 
 ## Auth - Remove Smart Lock
 
-TODO
+[Smart Lock for Passwords](https://developers.google.com/identity/smartlock-passwords/android/overview)
+, which was deprecated in 2022, is now removed from the Google Play Services Auth SDK
+(`com.google.android.gms:play-services-auth`).
+FirebaseUI Android has been updated to use [Credential Manager](https://developer.android.com/training/sign-in/passkeys)
+instead.
+
+Due to this change, some APIs have changed:
+
+- The `AuthUI#setIsSmartLockEnabled(boolean enableCredentials)` method has been replaced with the new
+ `setCredentialManagerEnabled(Boolean)` method.
+- The `AuthUI#setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints)` method has been
+ removed with no replacement (for now).
+- The `AuthUI#silentSignIn()` method has been removed with no replacement.
 
 ## Auth - (behavior change) new Email authentication flow
 
