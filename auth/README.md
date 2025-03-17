@@ -13,7 +13,7 @@ providers such as Google Sign-In, and Facebook Login. It is built on top of
 
 The best practices embodied in FirebaseUI aim to maximize sign-in
 and sign-up conversion for your app. It integrates with
-[Smart Lock for Passwords](https://developers.google.com/identity/smartlock-passwords/android/)
+[Credential Manager](https://developer.android.com/identity/sign-in/credential-manager)
 to store and retrieve credentials, enabling automatic and single-tap sign-in to
 your app for returning users. It also handles tricky use cases like
 account recovery and account linking that are security sensitive and
@@ -38,7 +38,6 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 1. [Usage instructions](#using-firebaseui-for-authentication)
    1. [AuthUI sign-in](#authui-sign-in)
    1. [Handling responses](#handling-the-sign-in-response)
-   1. [Silent sign-in](#silent-sign-in)
    1. [Sign out](#sign-out)
    1. [Account deletion](#deleting-accounts)
    1. [Upgrading Anonymous Users](#upgrading-anonymous-users)
@@ -65,7 +64,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+    implementation 'com.firebaseui:firebase-ui-auth:9.0.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://github.com/facebook/facebook-android-sdk/blob/master/CHANGELOG.md
@@ -406,45 +405,19 @@ Intent signInIntent =
         .build();
 ```
 
-##### Smart Lock
+##### Credential Manager
 
-By default, FirebaseUI uses [Smart Lock for Passwords](https://developers.google.com/identity/smartlock-passwords/android/)
+By default, FirebaseUI uses [Credential Manager](https://developer.android.com/identity/sign-in/credential-manager)
 to store the user's credentials and automatically sign users into your app on subsequent attempts.
-Using Smart Lock is recommended to provide the best user experience, but in some cases you may want
-to disable Smart Lock for testing or development. To disable Smart Lock, you can use the
-`setIsSmartLockEnabled` method when building your sign-in Intent:
+Using Credential Manager is recommended to provide the best user experience, but in some cases you may want
+to disable Credential Manager for testing or development. To disable Credential Manager, you can use the
+`setCredentialManagerEnabled` method when building your sign-in Intent:
 
 ```java
 Intent signInIntent =
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(false)
-        .build();
-```
-
-###### Smart Lock hints
-
-If you'd like to keep Smart Lock's "hints" but disable the saving/retrieving of credentials, then
-you can use the two-argument version of `setIsSmartLockEnabled`:
-
-```java
-Intent signInIntent =
-    AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(false, true)
-        .build();
-```
-
-###### Smart Lock in dev builds
-
-It is often desirable to disable Smart Lock in development but enable it in production. To achieve
-this, you can use the `BuildConfig.DEBUG` flag to control Smart Lock:
-
-```java
-Intent signInIntent =
-    AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(!BuildConfig.DEBUG /* credentials */, true /* hints */)
+        .setCredentialManagerEnabled(false)
         .build();
 ```
 
@@ -603,48 +576,13 @@ if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
 }
 ```
 
-### Silent sign-in
-
-If a user is not currently signed in, then a silent sign-in process can be started first before
-displaying any UI to provide a seamless experience. Silent sign-in uses saved Smart Lock credentials
-and returns a successful `Task` only if the user has been fully signed in with Firebase.
-
-Here's an example of how you could use silent sign-in paired with Firebase anonymous sign-in to get
-your users up and running as fast as possible:
-
-```java
-List<IdpConfig> providers = getSelectedProviders();
-AuthUI.getInstance().silentSignIn(this, providers)
-        .continueWithTask(this, new Continuation<AuthResult, Task<AuthResult>>() {
-    @Override
-    public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
-        if (task.isSuccessful()) {
-            return task;
-        } else {
-            // Ignore any exceptions since we don't care about credential fetch errors.
-            return FirebaseAuth.getInstance().signInAnonymously();
-        }
-    }
-}).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-    @Override
-    public void onComplete(@NonNull Task<AuthResult> task) {
-        if (task.isSuccessful()) {
-            // Signed in! Start loading data
-        } else {
-            // Uh oh, show error message
-        }
-    }
-});
-```
-
 ### Sign out
 
 With the integrations provided by AuthUI, signing out a user is a multi-stage process:
 
 1. The user must be signed out of the FirebaseAuth instance.
-1. Smart Lock for Passwords must be instructed to disable automatic sign-in, in
-   order to prevent an automatic sign-in loop that prevents the user from
-   switching accounts.
+1. Credential Manager must be instructed to clear the current user credential state from
+   all credential providers.
 1. If the current user signed in using either Google or Facebook, the user must
    also be signed out using the associated API for that authentication method.
    This typically ensures that the user will not be automatically signed-in
@@ -677,7 +615,7 @@ if (v.getId() == R.id.sign_out) {
 With the integrations provided by FirebaseUI Auth, deleting a user is a multi-stage process:
 
 1. The user must be deleted from Firebase Auth.
-1. Smart Lock for Passwords must be told to delete any existing Credentials for the user, so
+1. Credential Manager must be told to delete any existing Credentials for the user, so
    that they are not automatically prompted to sign in with a saved credential in the future.
 
 This process is encapsulated by the `AuthUI.delete()` method, which returns a `Task` representing
