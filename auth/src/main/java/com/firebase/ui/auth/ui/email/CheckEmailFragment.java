@@ -95,6 +95,11 @@ public class CheckEmailFragment extends FragmentBase implements
         mSignInButton.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
 
+        // Hide sign up button for email link authentication
+        if (getEmailProvider().equals(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)) {
+            mSignUpButton.setVisibility(View.GONE);
+        }
+
         TextView termsText = view.findViewById(R.id.email_tos_and_pp_text);
         TextView footerText = view.findViewById(R.id.email_footer_tos_and_pp_text);
         FlowParameters flowParameters = getFlowParams();
