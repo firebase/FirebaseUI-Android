@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.SignedInLayoutBinding;
 import com.firebase.uidemo.storage.GlideApp;
@@ -49,11 +50,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
-public class SignedInActivity extends AppCompatActivity {
+public class SignedInActivity extends BaseActivity {
     private static final String TAG = "SignedInActivity";
 
     private SignedInLayoutBinding mBinding;

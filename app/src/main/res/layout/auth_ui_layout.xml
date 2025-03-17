@@ -6,20 +6,23 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".auth.AuthUiActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="16dp"
             android:layout_marginRight="24dp"
             android:layout_marginBottom="16dp"
             android:orientation="vertical"
+            android:paddingTop="16dp"
             android:paddingBottom="32dp">
 
             <com.google.android.material.textview.MaterialTextView

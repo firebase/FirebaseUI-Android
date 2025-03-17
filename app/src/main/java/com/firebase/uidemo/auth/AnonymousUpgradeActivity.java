@@ -12,6 +12,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.ActivityAnonymousUpgradeBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
@@ -28,9 +29,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class AnonymousUpgradeActivity extends AppCompatActivity
+public class AnonymousUpgradeActivity extends BaseActivity
         implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
 
     private static final String TAG = "AccountLink";

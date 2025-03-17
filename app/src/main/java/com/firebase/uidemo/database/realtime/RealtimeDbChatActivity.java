@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.databinding.ActivityChatBinding;
@@ -23,7 +24,6 @@ import com.google.firebase.database.Query;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * Lists</a>.
  */
 @SuppressLint("RestrictedApi")
-public class RealtimeDbChatActivity extends AppCompatActivity
+public class RealtimeDbChatActivity extends BaseActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RealtimeDatabaseDemo";
 
