@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import androidx.credentials.CreatePasswordRequest
-import androidx.credentials.CredentialManager
 import androidx.credentials.CreateCredentialResponse
 import androidx.credentials.exceptions.CreateCredentialException
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.FirebaseUiException
 import com.firebase.ui.auth.IdpResponse
 import com.firebase.ui.auth.data.model.Resource
+import com.firebase.ui.auth.util.GoogleApiUtils
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class CredentialManagerHandler(application: Application) :
     AuthViewModelBase<IdpResponse>(application) {
 
-    private val credentialManager = CredentialManager.create(application)
+    private val credentialManager = GoogleApiUtils.getCredentialManager(application)
     private var response: IdpResponse? = null
 
     fun setResponse(newResponse: IdpResponse) {
