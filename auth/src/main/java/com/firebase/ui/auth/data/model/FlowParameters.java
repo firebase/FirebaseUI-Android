@@ -70,7 +70,6 @@ public class FlowParameters implements Parcelable {
                     termsOfServiceUrl,
                     privacyPolicyUrl,
                     enableCredentials,
-                    enableHints,
                     enableAnonymousUpgrade,
                     alwaysShowProviderChoice,
                     lockOrientation,
@@ -113,7 +112,6 @@ public class FlowParameters implements Parcelable {
     public final ActionCodeSettings passwordResetSettings;
 
     public final boolean enableCredentials;
-    public final boolean enableHints;
     public final boolean enableAnonymousUpgrade;
     public final boolean alwaysShowProviderChoice;
     public final boolean lockOrientation;
@@ -130,7 +128,6 @@ public class FlowParameters implements Parcelable {
             @Nullable String termsOfServiceUrl,
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
-            boolean enableHints,
             boolean enableAnonymousUpgrade,
             boolean alwaysShowProviderChoice,
             boolean lockOrientation,
@@ -146,7 +143,6 @@ public class FlowParameters implements Parcelable {
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.privacyPolicyUrl = privacyPolicyUrl;
         this.enableCredentials = enableCredentials;
-        this.enableHints = enableHints;
         this.enableAnonymousUpgrade = enableAnonymousUpgrade;
         this.alwaysShowProviderChoice = alwaysShowProviderChoice;
         this.lockOrientation = lockOrientation;
@@ -172,7 +168,6 @@ public class FlowParameters implements Parcelable {
         dest.writeString(termsOfServiceUrl);
         dest.writeString(privacyPolicyUrl);
         dest.writeInt(enableCredentials ? 1 : 0);
-        dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
         dest.writeInt(alwaysShowProviderChoice ? 1 : 0);
         dest.writeInt(lockOrientation ? 1 : 0);
@@ -205,7 +200,6 @@ public class FlowParameters implements Parcelable {
     public boolean isPlayServicesRequired() {
         // Play services only required for Google Sign In and the Credentials API
         return isProviderEnabled(GoogleAuthProvider.PROVIDER_ID)
-                || enableHints
                 || enableCredentials;
     }
 
