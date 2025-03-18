@@ -7,7 +7,9 @@ object Config {
     object SdkVersions {
         const val compile = 34
         const val target = 34
-        const val min = 23
+        // Note that auth uses a different minSdk than this and
+        // should be changed in auth/build.gradle.kts
+        const val min = 21
     }
 
     object Plugins {
