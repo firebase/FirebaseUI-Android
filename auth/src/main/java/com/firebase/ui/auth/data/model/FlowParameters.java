@@ -53,7 +53,6 @@ public class FlowParameters implements Parcelable {
             String termsOfServiceUrl = in.readString();
             String privacyPolicyUrl = in.readString();
             boolean enableCredentials = in.readInt() != 0;
-            boolean enableHints = in.readInt() != 0;
             boolean enableAnonymousUpgrade = in.readInt() != 0;
             boolean alwaysShowProviderChoice = in.readInt() != 0;
             boolean lockOrientation = in.readInt() != 0;
