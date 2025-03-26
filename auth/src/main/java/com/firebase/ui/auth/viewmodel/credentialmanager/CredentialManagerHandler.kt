@@ -11,6 +11,7 @@ import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.FirebaseUiException
 import com.firebase.ui.auth.IdpResponse
 import com.firebase.ui.auth.data.model.Resource
+import com.firebase.ui.auth.util.GoogleApiUtils
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch

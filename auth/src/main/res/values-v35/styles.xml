@@ -3,7 +3,6 @@
 
     <!-- Override the base FirebaseUI theme for edge-to-edge support -->
     <style name="FirebaseUI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
 </resources>
