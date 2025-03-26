@@ -17,15 +17,14 @@ package com.firebase.ui.auth;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
@@ -35,26 +34,22 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.ActionCodeSettings;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.google.firebase.auth.UserInfo;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -68,6 +63,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.DrawableRes;
@@ -76,6 +73,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.annotation.StringDef;
 import androidx.annotation.StyleRes;
+import androidx.credentials.ClearCredentialStateRequest;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.exceptions.ClearCredentialException;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -280,8 +280,9 @@ public final class AuthUI {
         if (!playServicesAvailable) {
             Log.w(TAG, "Google Play services not available during signOut");
         }
-
-        return signOutIdps(context).continueWith(task -> {
+        signOutIdps(context);
+        Executor singleThreadExecutor = Executors.newSingleThreadExecutor();
+        return clearCredentialState(context, singleThreadExecutor).continueWith(task -> {
             task.getResult(); // Propagate exceptions if any.
             mAuth.signOut();
             return null;
@@ -303,9 +304,10 @@ public final class AuthUI {
                     String.valueOf(CommonStatusCodes.SIGN_IN_REQUIRED),
                     "No currently signed in user."));
         }
-
-        return signOutIdps(context).continueWithTask(task -> {
-            task.getResult(); // Propagate exception if there was one.
+        signOutIdps(context);
+        Executor singleThreadExecutor = Executors.newSingleThreadExecutor();
+        return clearCredentialState(context, singleThreadExecutor).continueWithTask(task -> {
+            task.getResult(); // Propagate exceptions if any.
             return currentUser.delete();
         });
     }
@@ -338,15 +340,43 @@ public final class AuthUI {
         return mEmulatorPort;
     }
 
-    private Task<Void> signOutIdps(@NonNull Context context) {
+    private void signOutIdps(@NonNull Context context) {
         if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
             LoginManager.getInstance().logOut();
         }
-        if (GoogleApiUtils.isPlayServicesAvailable(context)) {
-            return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
-        } else {
-            return Tasks.forResult((Void) null);
-        }
+    }
+
+    /**
+     * A Task to clear the credential state in Credential Manager.
+     * @param context
+     * @param executor
+     * @return
+     */
+    private Task<Void> clearCredentialState(
+            @NonNull Context context,
+            @NonNull Executor executor
+    ) {
+        TaskCompletionSource<Void> completionSource = new TaskCompletionSource<>();
+
+        ClearCredentialStateRequest clearRequest = new ClearCredentialStateRequest();
+        GoogleApiUtils.getCredentialManager(context)
+                .clearCredentialStateAsync(
+                        clearRequest,
+                        new CancellationSignal(),
+                        executor,
+                        new CredentialManagerCallback<>() {
+                            @Override
+                            public void onResult(Void unused) {
+                                completionSource.setResult(unused);
+                            }
+
+                            @Override
+                            public void onError(@NonNull ClearCredentialException e) {
+                                completionSource.setException(e);
+                            }
+                        }
+                );
+        return completionSource.getTask();
     }
 
     /**

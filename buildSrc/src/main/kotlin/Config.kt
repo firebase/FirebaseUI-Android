@@ -1,5 +1,5 @@
 object Config {
-    const val version = "8.0.2"
+    const val version = "9.1.0-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     private const val kotlinVersion = "2.1.0"
@@ -53,7 +53,7 @@ object Config {
         }
 
         object PlayServices {
-            const val auth = "com.google.android.gms:play-services-auth:20.3.0"
+            const val auth = "com.google.android.gms:play-services-auth:21.3.0"
         }
 
         object Provider {

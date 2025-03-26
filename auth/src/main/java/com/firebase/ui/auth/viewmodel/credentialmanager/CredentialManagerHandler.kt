@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class CredentialManagerHandler(application: Application) :
     AuthViewModelBase<IdpResponse>(application) {
 
-    private val credentialManager = CredentialManager.create(application)
+    private val credentialManager = GoogleApiUtils.getCredentialManager(application)
     private var response: IdpResponse? = null
 
     fun setResponse(newResponse: IdpResponse) {

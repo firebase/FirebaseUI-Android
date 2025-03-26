@@ -11,8 +11,9 @@ android {
     namespace = "com.firebase.ui.auth"
 
     defaultConfig {
-        minSdk = Config.SdkVersions.min
-        targetSdk =Config.SdkVersions.target
+        // Auth requires a higher minSdk than the current Config.SdkVersions.min
+        minSdk = 23
+        targetSdk = Config.SdkVersions.target
 
         buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
 

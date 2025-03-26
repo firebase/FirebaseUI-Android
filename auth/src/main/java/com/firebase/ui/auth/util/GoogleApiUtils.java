@@ -9,6 +9,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
+import androidx.credentials.CredentialManager;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class GoogleApiUtils {
@@ -24,5 +25,10 @@ public final class GoogleApiUtils {
     @NonNull
     public static SignInClient getSignInClient(@NonNull Context context) {
         return Identity.getSignInClient(context);
+    }
+
+    @NonNull
+    public static CredentialManager getCredentialManager(@NonNull Context context) {
+        return CredentialManager.create(context);
     }
 }
