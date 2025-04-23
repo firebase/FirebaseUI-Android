@@ -6,18 +6,18 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.compose")
     id("com.google.gms.google-services")
-    id("kotlin-kapt")                     // ← kapt drives annotation processors
+    id("kotlin-kapt")
 }
 
 android {
-    namespace  = "com.firebase.uidemo"
+    namespace = "com.firebase.uidemo"
     compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
-        minSdk       = Config.SdkVersions.min
-        targetSdk    = Config.SdkVersions.target
-        versionName  = Config.version
-        versionCode  = 1
+        minSdk = Config.SdkVersions.min
+        targetSdk = Config.SdkVersions.target
+        versionName = Config.version
+        versionCode = 1
         multiDexEnabled = true
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
@@ -29,10 +29,10 @@ android {
             // using the debug key
             signingConfig = signingConfigs["debug"]
             postprocessing {
-                isRemoveUnusedCode      = true
+                isRemoveUnusedCode = true
                 isRemoveUnusedResources = true
-                isObfuscate             = true
-                isOptimizeCode          = true
+                isObfuscate = true
+                isOptimizeCode = true
             }
         }
     }
@@ -44,10 +44,10 @@ android {
 
     buildFeatures {
         viewBinding = true
-        compose     = true
+        compose = true
     }
 
-    lint { 
+    lint {
         // Common lint options across all modules
 
         disable += mutableSetOf(
@@ -67,7 +67,7 @@ android {
         abortOnError = true
 
         baseline = file("$rootDir/library/quality/lint-baseline.xml")
-     }
+    }
 }
 
 dependencies {
@@ -80,11 +80,11 @@ dependencies {
     implementation(project(":storage"))
 
     implementation(Config.Libs.Misc.glide)
-    kapt(Config.Libs.Misc.glideCompiler)          
+    kapt(Config.Libs.Misc.glideCompiler)
 
     implementation(Config.Libs.Provider.facebook)
     // Needed to override Facebook
-    implementation(Config.Libs.Androidx.cardView)    
+    implementation(Config.Libs.Androidx.cardView)
     implementation(Config.Libs.Androidx.customTabs)
     // Used for FirestorePagingActivity
     implementation(Config.Libs.Androidx.paging)
@@ -108,4 +108,4 @@ dependencies {
     releaseImplementation("androidx.compose.ui:ui-tooling-preview")
 }
 
-kapt { correctErrorTypes = true }          // optional but avoids some kapt warnings
+kapt { correctErrorTypes = true } // optional but avoids some kapt warnings
