@@ -42,6 +42,10 @@
         <activity
             android:name=".auth.AnonymousUpgradeActivity"
             android:label="@string/title_anonymous_upgrade" />
+        <activity
+            android:name=".auth.compose.AuthComposeActivity"
+            android:label="@string/auth_compose_title"
+            android:exported="false" />
 
         <!-- Firestore demo -->
         <activity

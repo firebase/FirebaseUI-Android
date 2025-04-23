@@ -1,45 +1,53 @@
 // NOTE: this project uses Gradle Kotlin DSL. More common build.gradle instructions can be found in
 // the main README.
 plugins {
-  id("com.android.application")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.compose")
+    id("com.google.gms.google-services")
+    id("kotlin-kapt")                     // ← kapt drives annotation processors
 }
 
 android {
+    namespace  = "com.firebase.uidemo"
     compileSdk = Config.SdkVersions.compile
 
-    namespace = "com.firebase.uidemo"
-
     defaultConfig {
-        minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
-
-        versionName = Config.version
-        versionCode = 1
-
+        minSdk       = Config.SdkVersions.min
+        targetSdk    = Config.SdkVersions.target
+        versionName  = Config.version
+        versionCode  = 1
+        multiDexEnabled = true
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
     }
 
-    defaultConfig {
-        multiDexEnabled = true
-    }
-
     buildTypes {
-        named("release").configure {
+        release {
             // For the purposes of the sample, allow testing of a proguarded release build
             // using the debug key
             signingConfig = signingConfigs["debug"]
-
             postprocessing {
-                isRemoveUnusedCode = true
+                isRemoveUnusedCode      = true
                 isRemoveUnusedResources = true
-                isObfuscate = true
-                isOptimizeCode = true
+                isObfuscate             = true
+                isOptimizeCode          = true
             }
         }
     }
 
-    lint {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        viewBinding = true
+        compose     = true
+    }
+
+    lint { 
         // Common lint options across all modules
 
         disable += mutableSetOf(
@@ -59,16 +67,7 @@ android {
         abortOnError = true
 
         baseline = file("$rootDir/library/quality/lint-baseline.xml")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildFeatures {
-        viewBinding = true
-    }
+     }
 }
 
 dependencies {
@@ -80,23 +79,33 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":storage"))
 
+    implementation(Config.Libs.Misc.glide)
+    kapt(Config.Libs.Misc.glideCompiler)          
+
     implementation(Config.Libs.Provider.facebook)
     // Needed to override Facebook
-    implementation(Config.Libs.Androidx.cardView)
+    implementation(Config.Libs.Androidx.cardView)    
     implementation(Config.Libs.Androidx.customTabs)
-
-    implementation(Config.Libs.Misc.glide)
-    annotationProcessor(Config.Libs.Misc.glideCompiler)
-
     // Used for FirestorePagingActivity
     implementation(Config.Libs.Androidx.paging)
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
+
     implementation(Config.Libs.Misc.permissions)
     implementation(Config.Libs.Androidx.constraint)
     debugImplementation(Config.Libs.Misc.leakCanary)
+
+    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.10.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    releaseImplementation("androidx.compose.ui:ui-tooling-preview")
 }
 
-apply(plugin = "com.google.gms.google-services")
+kapt { correctErrorTypes = true }          // optional but avoids some kapt warnings

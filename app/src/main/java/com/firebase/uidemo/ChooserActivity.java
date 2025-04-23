@@ -25,6 +25,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.auth.AnonymousUpgradeActivity;
 import com.firebase.uidemo.auth.AuthUiActivity;
+import com.firebase.uidemo.auth.compose.AuthComposeActivity;
 import com.firebase.uidemo.database.firestore.FirestoreChatActivity;
 import com.firebase.uidemo.database.firestore.FirestorePagingActivity;
 import com.firebase.uidemo.database.realtime.FirebaseDbPagingActivity;
@@ -65,6 +66,7 @@ public class ChooserActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<ActivityStarterHolder> {
         private static final Class[] CLASSES = new Class[]{
                 AuthUiActivity.class,
+                AuthComposeActivity.class,
                 AnonymousUpgradeActivity.class,
                 FirestoreChatActivity.class,
                 FirestorePagingActivity.class,
@@ -75,6 +77,7 @@ public class ChooserActivity extends AppCompatActivity {
 
         private static final int[] DESCRIPTION_NAMES = new int[]{
                 R.string.title_auth_activity,
+                R.string.auth_compose_title,
                 R.string.title_anonymous_upgrade,
                 R.string.title_firestore_activity,
                 R.string.title_firestore_paging_activity,
@@ -84,6 +87,7 @@ public class ChooserActivity extends AppCompatActivity {
         };
 
         private static final int[] DESCRIPTION_IDS = new int[]{
+                R.string.desc_auth,
                 R.string.desc_auth,
                 R.string.desc_anonymous_upgrade,
                 R.string.desc_firestore,

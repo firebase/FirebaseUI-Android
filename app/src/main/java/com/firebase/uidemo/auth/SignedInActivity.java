@@ -29,8 +29,6 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.SignedInLayoutBinding;
 import com.firebase.uidemo.storage.GlideApp;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.EmailAuthProvider;
