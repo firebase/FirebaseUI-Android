@@ -1,15 +1,17 @@
 package com.firebase.ui.auth.compose
 
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 /**
  * A composable function that provides Firebase Auth UI functionality.
@@ -37,6 +39,7 @@ fun FirebaseAuthUI(
     val context = LocalContext.current
     val auth = remember { FirebaseAuth.getInstance() }
     val authUI = remember { AuthUI.getInstance() }
+    val scope = rememberCoroutineScope()
     
     val signInLauncher = rememberLauncherForActivityResult(
         contract = FirebaseAuthUIActivityResultContract(),
@@ -58,9 +61,12 @@ fun FirebaseAuthUI(
                 }
             }
             .build()
+            .apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
     }
 
-    LaunchedEffect(Unit) {
+    scope.launch {
         signInLauncher.launch(signInIntent)
     }
 } 
