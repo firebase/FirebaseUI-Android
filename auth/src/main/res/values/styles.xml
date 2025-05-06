@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
 
-    <style name="FirebaseUI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="FirebaseUI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
         <item name="android:textColorLink">?attr/colorPrimary</item>
     </style>
@@ -132,7 +132,8 @@
         <item name="android:inputType">textPassword</item>
     </style>
 
-    <style name="FirebaseUI.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+    <style name="FirebaseUI.TextInputLayout"
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
     <style name="FirebaseUI.TextInputLayout.EmailField">
         <item name="android:hint">@string/fui_email_hint</item>
@@ -142,7 +143,8 @@
         <item name="android:hint">@string/fui_phone_hint</item>
     </style>
 
-    <style name="FirebaseUI.TextInputLayout.CountryField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="FirebaseUI.TextInputLayout.CountryField"
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:hint">@string/fui_country_hint</item>
     </style>
 
@@ -223,67 +225,78 @@
         <item name="android:insetRight">@dimen/fui_button_inset_right</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.GoogleButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.GoogleButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_googleg_color_24dp</item>
         <item name="backgroundTint">@color/fui_bgGoogle</item>
         <item name="android:textColor">#757575</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.FacebookButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.FacebookButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_facebook_white_22dp</item>
         <item name="backgroundTint">@color/fui_bgFacebook</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.TwitterButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.TwitterButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_twitter_bird_white_24dp</item>
         <item name="backgroundTint">@color/fui_bgTwitter</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.GitHubButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.GitHubButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_github_white_24dp</item>
         <item name="backgroundTint">@color/fui_bgGitHub</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.EmailButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.EmailButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_mail_white_24dp</item>
         <item name="backgroundTint">@color/fui_bgEmail</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.PhoneButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.PhoneButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_phone_white_24dp</item>
         <item name="backgroundTint">@color/fui_bgPhone</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.AnonymousButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.AnonymousButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_anonymous_white_24dp</item>
         <item name="backgroundTint">@color/fui_bgAnonymous</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.MicrosoftButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.MicrosoftButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_microsoft_24dp</item>
         <item name="backgroundTint">@color/fui_bgMicrosoft</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.YahooButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.YahooButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_yahoo_24dp</item>
         <item name="backgroundTint">@color/fui_bgYahoo</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.Button.AccountChooser.AppleButton" parent="FirebaseUI.Button.AccountChooser.BaseButton">
+    <style name="FirebaseUI.Button.AccountChooser.AppleButton"
+        parent="FirebaseUI.Button.AccountChooser.BaseButton">
         <item name="icon">@drawable/fui_ic_apple_white_24dp</item>
         <item name="backgroundTint">@color/fui_bgApple</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
-    <style name="FirebaseUI.TopProgressBar" parent="Widget.MaterialComponents.LinearProgressIndicator">
+    <style name="FirebaseUI.TopProgressBar"
+        parent="Widget.MaterialComponents.LinearProgressIndicator">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">4dp</item>
         <item name="android:indeterminate">true</item>

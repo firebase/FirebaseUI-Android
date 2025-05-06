@@ -45,6 +45,7 @@ class AuthComposeActivity : ComponentActivity() {
                 val response = result.idpResponse
                 if (response == null) {
                     // User pressed back button
+                    finish()
                     return
                 }
                 // Handle other error cases
