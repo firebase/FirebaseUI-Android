@@ -54,6 +54,9 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 // Only throw a new Exception when the original
                 // Throwable cannot be cast to Exception
                 throw new Exception(e);
+            } catch (InterruptedException e) {
+                // Handle interruption gracefully, e.g.:
+                return LoadResult.Error(e);
             }
         }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
     }
