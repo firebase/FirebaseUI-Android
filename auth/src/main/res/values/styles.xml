@@ -4,6 +4,12 @@
     <style name="FirebaseUI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
         <item name="android:textColorLink">?attr/colorPrimary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:enforceStatusBarContrast">false</item>
     </style>
 
     <style name="FirebaseUI.DefaultMaterialTheme" parent="FirebaseUI">

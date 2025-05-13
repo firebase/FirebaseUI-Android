@@ -1,45 +1,35 @@
-/*
- * Copyright 2016 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.firebase.ui.auth.ui.idp
 
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.isVisible
+import androidx.activity.compose.setContent
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.ErrorCodes
-import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
-import com.firebase.ui.auth.FirebaseUiException
 import com.firebase.ui.auth.IdpResponse
 import com.firebase.ui.auth.KickoffActivity
 import com.firebase.ui.auth.R
@@ -47,445 +37,456 @@ import com.firebase.ui.auth.data.model.FlowParameters
 import com.firebase.ui.auth.data.model.Resource
 import com.firebase.ui.auth.data.model.User
 import com.firebase.ui.auth.data.model.UserCancellationException
-import com.firebase.ui.auth.data.remote.AnonymousSignInHandler
-import com.firebase.ui.auth.data.remote.EmailSignInHandler
-import com.firebase.ui.auth.data.remote.FacebookSignInHandler
-import com.firebase.ui.auth.data.remote.GenericIdpSignInHandler
-import com.firebase.ui.auth.data.remote.GoogleSignInHandler
-import com.firebase.ui.auth.data.remote.PhoneSignInHandler
+import com.firebase.ui.auth.data.remote.*
 import com.firebase.ui.auth.ui.AppCompatBase
 import com.firebase.ui.auth.util.ExtraConstants
-import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils
 import com.firebase.ui.auth.util.data.ProviderUtils
 import com.firebase.ui.auth.viewmodel.ProviderSignInBase
 import com.firebase.ui.auth.viewmodel.ResourceObserver
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInCredential
-import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.PhoneAuthProvider
-import kotlinx.coroutines.launch
-
-// Imports for the new Credential Manager types (adjust these to match your library)
+import com.google.firebase.auth.*
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
-import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetPasswordOption
+import androidx.credentials.CustomCredential
 import androidx.credentials.PasswordCredential
-import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
-
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.firebase.auth.GoogleAuthCredential
-import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_BUTTON_ID
-import com.firebase.ui.auth.util.ExtraConstants.GENERIC_OAUTH_PROVIDER_ID
-import com.firebase.ui.auth.AuthUI.Companion.EMAIL_LINK_PROVIDER
+import kotlinx.coroutines.launch
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
+import com.firebase.ui.auth.FirebaseUiException
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.style.TextAlign
 
 @androidx.annotation.RestrictTo(androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP)
 class AuthMethodPickerActivity : AppCompatBase() {
 
-    private lateinit var mHandler: SocialProviderResponseHandler
-    private val mProviders: MutableList<ProviderSignInBase<*>> = mutableListOf()
-
-    private var mProgressBar: ProgressBar? = null
-    private var mProviderHolder: ViewGroup? = null
-
-    private var customLayout: AuthMethodPickerLayout? = null
-
-    // For demonstration, assume that CredentialManager provides a create() method.
-    private val credentialManager by lazy {
-        // Replace with your actual CredentialManager instance creation.
-        CredentialManager.create(this)
-    }
+    private lateinit var handler: SocialProviderResponseHandler
+    private val providers = mutableListOf<ProviderSignInBase<*>>()
+    private var showProgress by mutableStateOf(false)
+    private val credentialManager by lazy { CredentialManager.create(this) }
 
     companion object {
         private const val TAG = "AuthMethodPickerActivity"
-
-        @JvmStatic
-        fun createIntent(context: Context, flowParams: FlowParameters): Intent {
-            return createBaseIntent(context, AuthMethodPickerActivity::class.java, flowParams)
-        }
+        @JvmStatic fun createIntent(ctx: Context, params: FlowParameters) =
+            createBaseIntent(ctx, AuthMethodPickerActivity::class.java, params)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val params = flowParams
-        customLayout = params.authMethodPickerLayout
-
-        mHandler = ViewModelProvider(this).get(SocialProviderResponseHandler::class.java)
-        mHandler.init(params)
-
-        if (customLayout != null) {
-            setContentView(customLayout!!.mainLayout)
-            populateIdpListCustomLayout(params.providers)
-        } else {
-            setContentView(R.layout.fui_auth_method_picker_layout)
-            mProgressBar = findViewById(R.id.top_progress_bar)
-            mProviderHolder = findViewById(R.id.btn_holder)
-            populateIdpList(params.providers)
-
-            val logoId = params.logoId
-            if (logoId == AuthUI.NO_LOGO) {
-                findViewById<View>(R.id.logo).visibility = View.GONE
-
-                val layout = findViewById<ConstraintLayout>(R.id.root)
-                val constraints = ConstraintSet()
-                constraints.clone(layout)
-                constraints.setHorizontalBias(R.id.container, 0.5f)
-                constraints.setVerticalBias(R.id.container, 0.5f)
-                constraints.applyTo(layout)
-            } else {
-                val logo = findViewById<ImageView>(R.id.logo)
-                logo.setImageResource(logoId)
-            }
+        handler = ViewModelProvider(this)[SocialProviderResponseHandler::class.java].apply {
+            init(params)
         }
+        observeSocialHandler()
 
-        val tosAndPpConfigured = flowParams.isPrivacyPolicyUrlProvided() &&
-                flowParams.isTermsOfServiceUrlProvided()
+        setContent {
+            Surface(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxSize()) {
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .systemBarsPadding()
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(120.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (flowParams.logoId != AuthUI.NO_LOGO) {
+                                Image(
+                                    painter = painterResource(flowParams.logoId),
+                                    contentDescription = stringResource(R.string.fui_accessibility_logo),
+                                    modifier = Modifier.size(100.dp)
+                                )
+                            }
+                        }
 
-        val termsTextId = if (customLayout == null) {
-            R.id.main_tos_and_pp
-        } else {
-            customLayout!!.tosPpView
-        }
+                        Spacer(Modifier.weight(1f))
 
-        if (termsTextId >= 0) {
-            val termsText = findViewById<TextView>(termsTextId)
-            if (!tosAndPpConfigured) {
-                termsText.visibility = View.GONE
-            } else {
-                PrivacyDisclosureUtils.setupTermsOfServiceAndPrivacyPolicyText(this, flowParams, termsText)
-            }
-        }
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            flowParams.providers.forEach { cfg ->
+                                ProviderButton(cfg) { launchProviderFlow(cfg) }
+                                Spacer(Modifier.height(12.dp))
+                            }
+                        }
 
-        // Observe the social provider response handler.
-        mHandler.operation.observe(this, object : ResourceObserver<IdpResponse>(this, R.string.fui_progress_dialog_signing_in) {
-            override fun onSuccess(response: IdpResponse) {
-                startSaveCredentials(mHandler.currentUser, response, null)
-            }
-
-            override fun onFailure(e: Exception) {
-                when (e) {
-                    is UserCancellationException -> {
-                        // User pressed back – no error.
+                        if (flowParams.isPrivacyPolicyUrlProvided() &&
+                            flowParams.isTermsOfServiceUrlProvided()
+                        ) {
+                            TermsAndPrivacyText(
+                                tosUrl   = flowParams.termsOfServiceUrl!!,
+                                ppUrl    = flowParams.privacyPolicyUrl!!,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            )
+                        }
                     }
-                    is FirebaseAuthAnonymousUpgradeException -> {
-                        finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, e.response.toIntent())
-                    }
-                    is FirebaseUiException -> {
-                        finish(RESULT_CANCELED, IdpResponse.from(e).toIntent())
-                    }
-                    else -> {
-                        val text = getString(R.string.fui_error_unknown)
-                        Toast.makeText(this@AuthMethodPickerActivity, text, Toast.LENGTH_SHORT).show()
+
+                    if (showProgress) {
+                        LinearProgressIndicator(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(4.dp)
+                                .align(Alignment.TopCenter)
+                        )
                     }
                 }
             }
-        })
+        }
 
-        // Attempt sign in using the new Credential Manager API.
         attemptCredentialSignIn()
     }
 
-    /**
-     * Attempts to sign in automatically using the Credential Manager API.
-     */
-    private fun attemptCredentialSignIn() {
-        val args = flowParams
-        val supportPasswords = ProviderUtils.getConfigFromIdps(args.providers, EmailAuthProvider.PROVIDER_ID) != null
-        val accountTypes = getCredentialAccountTypes()
-        val willRequestCredentials = supportPasswords || accountTypes.isNotEmpty()
+    override fun showProgress(message: Int) { showProgress = true }
+    override fun hideProgress()          { showProgress = false }
 
-        if (args.enableCredentials && willRequestCredentials) {
-            // Build the new Credential Manager request.
-            val getPasswordOption = GetPasswordOption()
-            val googleIdOption = GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(true)
-                .setServerClientId(getString(R.string.default_web_client_id))
-                .build()
-            val request = GetCredentialRequest(listOf(getPasswordOption, googleIdOption))
+    private fun observeSocialHandler() {
+        handler.operation.observe(
+            this,
+            object : ResourceObserver<IdpResponse>(this, R.string.fui_progress_dialog_signing_in) {
+                override fun onSuccess(response: IdpResponse) =
+                    startSaveCredentials(handler.currentUser, response, null)
 
-            lifecycleScope.launch {
-                try {
-                    val result = credentialManager.getCredential(
-                        context = this@AuthMethodPickerActivity,
-                        request = request
-                    )
-                    // Handle the returned credential.
-                    handleCredentialManagerResult(result.credential)
-                } catch (e: GetCredentialException) {
-                    handleCredentialManagerFailure(e)
-                    // Fallback: show the auth method picker.
-                    showAuthMethodPicker()
-                }
-            }
-        } else {
-            showAuthMethodPicker()
-        }
-    }
+                override fun onFailure(e: Exception) {
+                    hideProgress()
 
-    /**
-     * Handles the credential returned from the Credential Manager.
-     */
-    private fun handleCredentialManagerResult(credential: Credential) {
-        when (credential) {
-            is PasswordCredential -> {
-                val username = credential.id
-                val password = credential.password
-                val response = IdpResponse.Builder(
-                    User.Builder(EmailAuthProvider.PROVIDER_ID, username).build()
-                ).build()
-                KickoffActivity.mKickstarter.setResult(Resource.forLoading())
-                auth.signInWithEmailAndPassword(username, password)
-                    .addOnSuccessListener { authResult ->
-                        KickoffActivity.mKickstarter.handleSuccess(response, authResult)
-                        finish()
+                    when (e) {
+                        is FirebaseAuthAnonymousUpgradeException ->
+                            finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, e.response.toIntent())
+                        is FirebaseUiException ->
+                            finish(RESULT_CANCELED, IdpResponse.from(e).toIntent())
+                        is UserCancellationException ->
+                            Unit 
+                        else ->
+                            Toast.makeText(
+                                this@AuthMethodPickerActivity,
+                                getString(R.string.fui_error_unknown),
+                                Toast.LENGTH_SHORT
+                            ).show()
                     }
-                    .addOnFailureListener { e ->
-                        if (e is FirebaseAuthInvalidUserException ||
-                            e is FirebaseAuthInvalidCredentialsException) {
-                            // Sign out via the new API.
-                            Identity.getSignInClient(application).signOut()
-                        }
-                    }
-            }
-            is CustomCredential -> {
-                if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                    try {
-                        val googleIdTokenCredential = GoogleIdTokenCredential
-                            .createFrom(credential.data)
-                        auth.signInWithCredential(GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null))
-                            .addOnSuccessListener { authResult ->
-                                val response = IdpResponse.Builder(
-                                    User.Builder(GoogleAuthProvider.PROVIDER_ID, googleIdTokenCredential.data.getString("email")).build(),
-                                ).setToken(googleIdTokenCredential.idToken).build()
-                                KickoffActivity.mKickstarter.handleSuccess(response, authResult)
-                                finish()
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e(TAG, "Failed to sign in with Google ID token", e)
-                            }
-                    } catch (e: GoogleIdTokenParsingException) {
-                        Log.e(TAG, "Received an invalid google id token response", e)
-                    }
-                } else {
-                    // Catch any unrecognized custom credential type here.
-                    Log.e(TAG, "Unexpected type of credential")
-                }
-            }
-            else -> {
-                Log.e(TAG, "Unexpected type of credential")
-            }
+                }            }
+        )
+    }
+
+    private fun launchProviderFlow(cfg: IdpConfig) {
+        if (isOffline()) {
+            Toast.makeText(this, getString(R.string.fui_no_internet), Toast.LENGTH_SHORT).show()
+            return
         }
+        getProviderForConfig(cfg).also { providers += it }
+            .startSignIn(auth, this, cfg.providerId)
+        showProgress = true
     }
 
-    /**
-     * Example helper to extract a Google ID token from a PublicKeyCredential.
-     * In your implementation you may need to parse the JSON response accordingly.
-     */
-    private fun extractGoogleIdToken(credential: PublicKeyCredential): String? {
-        // TODO: Extract and return the Google ID token from credential.authenticationResponseJson.
-        // For demonstration, we assume that authenticationResponseJson is the token.
-        return credential.authenticationResponseJson
-    }
-
-    private fun handleCredentialManagerFailure(e: GetCredentialException) {
-        Log.e(TAG, "Credential Manager sign in failed", e)
-    }
-
-    /**
-     * Returns the account types to pass to the credential manager.
-     */
-    private fun getCredentialAccountTypes(): List<String> {
-        val accounts = mutableListOf<String>()
-        for (idpConfig in flowParams.providers) {
-            if (idpConfig.providerId == GoogleAuthProvider.PROVIDER_ID) {
-                accounts.add(ProviderUtils.providerIdToAccountType(idpConfig.providerId))
-            }
-        }
-        return accounts
-    }
-
-    /**
-     * Fallback – show the auth method picker UI.
-     */
-    private fun showAuthMethodPicker() {
-        hideProgress()
-    }
-
-    private fun populateIdpList(providerConfigs: List<IdpConfig>) {
-        // Clear any previous providers.
-        mProviders.clear()
-        for (idpConfig in providerConfigs) {
-            val buttonLayout = when (idpConfig.providerId) {
-                GoogleAuthProvider.PROVIDER_ID -> R.layout.fui_idp_button_google
-                FacebookAuthProvider.PROVIDER_ID -> R.layout.fui_idp_button_facebook
-                EMAIL_LINK_PROVIDER, EmailAuthProvider.PROVIDER_ID -> R.layout.fui_provider_button_email
-                PhoneAuthProvider.PROVIDER_ID -> R.layout.fui_provider_button_phone
-                AuthUI.ANONYMOUS_PROVIDER -> R.layout.fui_provider_button_anonymous
-                else -> {
-                    if (!TextUtils.isEmpty(idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
-                        idpConfig.getParams().getInt(GENERIC_OAUTH_BUTTON_ID)
-                    } else {
-                        throw IllegalStateException("Unknown provider: ${idpConfig.providerId}")
-                    }
-                }
-            }
-            val loginButton = layoutInflater.inflate(buttonLayout, mProviderHolder, false)
-            handleSignInOperation(idpConfig, loginButton)
-            mProviderHolder?.addView(loginButton)
-        }
-    }
-
-    private fun populateIdpListCustomLayout(providerConfigs: List<IdpConfig>) {
-        val providerButtonIds = customLayout?.providersButton ?: return
-        for (idpConfig in providerConfigs) {
-            val providerId = providerOrEmailLinkProvider(idpConfig.providerId)
-            val buttonResId = providerButtonIds[providerId]
-                ?: throw IllegalStateException("No button found for auth provider: ${idpConfig.providerId}")
-            val loginButton = findViewById<View>(buttonResId)
-            handleSignInOperation(idpConfig, loginButton)
-        }
-        // Hide custom layout buttons that don't have an associated provider.
-        for ((providerBtnId, resId) in providerButtonIds) {
-            if (providerBtnId == null) continue
-            var hasProvider = false
-            for (idpConfig in providerConfigs) {
-                if (providerOrEmailLinkProvider(idpConfig.providerId) == providerBtnId) {
-                    hasProvider = true
-                    break
-                }
-            }
-            if (!hasProvider) {
-                findViewById<View>(resId)?.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun providerOrEmailLinkProvider(providerId: String): String {
-        return if (providerId == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) {
-            EmailAuthProvider.PROVIDER_ID
-        } else providerId
-    }
-
-    private fun handleSignInOperation(idpConfig: IdpConfig, view: View) {
-        val providerId = idpConfig.providerId
+    private fun getProviderForConfig(idp: IdpConfig): ProviderSignInBase<*> {
         val authUI = getAuthUI()
-        val viewModelProvider = ViewModelProvider(this)
-        val provider: ProviderSignInBase<*> = when (providerId) {
-            EMAIL_LINK_PROVIDER, EmailAuthProvider.PROVIDER_ID ->
-                viewModelProvider.get(EmailSignInHandler::class.java).initWith(null)
-            PhoneAuthProvider.PROVIDER_ID ->
-                viewModelProvider.get(PhoneSignInHandler::class.java).initWith(idpConfig)
-            AuthUI.ANONYMOUS_PROVIDER ->
-                viewModelProvider.get(AnonymousSignInHandler::class.java).initWith(flowParams)
-            GoogleAuthProvider.PROVIDER_ID ->
-                if (authUI.isUseEmulator()) {
-                    viewModelProvider.get(GenericIdpSignInHandler::class.java)
-                        .initWith(GenericIdpSignInHandler.getGenericGoogleConfig())
-                } else {
-                    viewModelProvider.get(GoogleSignInHandler::class.java)
-                        .initWith(GoogleSignInHandler.Params(idpConfig))
-                }
-            FacebookAuthProvider.PROVIDER_ID ->
-                if (authUI.isUseEmulator()) {
-                    viewModelProvider.get(GenericIdpSignInHandler::class.java)
-                        .initWith(GenericIdpSignInHandler.getGenericFacebookConfig())
-                } else {
-                    viewModelProvider.get(FacebookSignInHandler::class.java).initWith(idpConfig)
-                }
-            else -> {
-                if (!TextUtils.isEmpty(idpConfig.getParams().getString(GENERIC_OAUTH_PROVIDER_ID))) {
-                    viewModelProvider.get(GenericIdpSignInHandler::class.java).initWith(idpConfig)
-                } else {
-                    throw IllegalStateException("Unknown provider: $providerId")
-                }
-            }
-        }
+        val vm     = ViewModelProvider(this)
+        val pid    = idp.providerId
 
-        mProviders.add(provider)
+        val provider = when (pid) {
+            AuthUI.EMAIL_LINK_PROVIDER,
+            EmailAuthProvider.PROVIDER_ID ->
+                vm.get(EmailSignInHandler::class.java).initWith(null)
+            PhoneAuthProvider.PROVIDER_ID ->
+                vm.get(PhoneSignInHandler::class.java).initWith(idp)
+            AuthUI.ANONYMOUS_PROVIDER ->
+                vm.get(AnonymousSignInHandler::class.java).initWith(flowParams)
+            GoogleAuthProvider.PROVIDER_ID ->
+                if (authUI.isUseEmulator()) vm.get(GenericIdpSignInHandler::class.java)
+                    .initWith(GenericIdpSignInHandler.getGenericGoogleConfig())
+                else vm.get(GoogleSignInHandler::class.java).initWith(GoogleSignInHandler.Params(idp))
+            FacebookAuthProvider.PROVIDER_ID ->
+                if (authUI.isUseEmulator()) vm.get(GenericIdpSignInHandler::class.java)
+                    .initWith(GenericIdpSignInHandler.getGenericFacebookConfig())
+                else vm.get(FacebookSignInHandler::class.java).initWith(idp)
+            else ->
+                if (!TextUtils.isEmpty(idp.getParams().getString(ExtraConstants.GENERIC_OAUTH_PROVIDER_ID)))
+                    vm.get(GenericIdpSignInHandler::class.java).initWith(idp)
+                else throw IllegalStateException("Unknown provider $pid")
+        }
 
         provider.operation.observe(this, object : ResourceObserver<IdpResponse>(this) {
-            override fun onSuccess(response: IdpResponse) {
-                handleResponse(response)
-            }
-
+            override fun onSuccess(r: IdpResponse) = handleResult(r, pid)
             override fun onFailure(e: Exception) {
                 if (e is FirebaseAuthAnonymousUpgradeException) {
-                    finish(
-                        RESULT_CANCELED,
-                        Intent().putExtra(ExtraConstants.IDP_RESPONSE, IdpResponse.from(e))
-                    )
-                    return
-                }
-                handleResponse(IdpResponse.from(e))
+                    finish(RESULT_CANCELED,
+                        Intent().putExtra(ExtraConstants.IDP_RESPONSE, IdpResponse.from(e)))
+                } else handleResult(IdpResponse.from(e), pid)
             }
-
-            private fun handleResponse(response: IdpResponse) {
-                // For social providers (unless using an emulator) use the social response handler.
-                val isSocialResponse = AuthUI.isSocialProvider(providerId) && !authUI.isUseEmulator()
-                if (!response.isSuccessful) {
-                    mHandler.startSignIn(response)
-                } else if (isSocialResponse) {
-                    mHandler.startSignIn(response)
-                } else {
-                    finish(if (response.isSuccessful) RESULT_OK else RESULT_CANCELED, response.toIntent())
-                }
+            private fun handleResult(r: IdpResponse, providerId: String) {
+                showProgress = false
+                val social = AuthUI.isSocialProvider(providerId) &&
+                        !getAuthUI().isUseEmulator()
+                if (!r.isSuccessful || social) handler.startSignIn(r)
+                else finish(RESULT_OK, r.toIntent())
             }
         })
+        return provider
+    }
 
-        view.setOnClickListener {
-            if (isOffline()) {
-                Snackbar.make(findViewById(android.R.id.content), getString(R.string.fui_no_internet), Snackbar.LENGTH_SHORT)
-                    .show()
-                return@setOnClickListener
+    private fun attemptCredentialSignIn() {
+        val args       = flowParams
+        val supportsPw = ProviderUtils
+            .getConfigFromIdps(args.providers, EmailAuthProvider.PROVIDER_ID) != null
+
+        if (!(args.enableCredentials && (supportsPw || args.providers.any {
+                it.providerId == GoogleAuthProvider.PROVIDER_ID
+            }))) return
+
+        val request = GetCredentialRequest(
+            listOf(
+                GetPasswordOption(),
+                com.google.android.libraries.identity.googleid
+                    .GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(true)
+                    .setServerClientId(getString(R.string.default_web_client_id))
+                    .build()
+            )
+        )
+
+        lifecycleScope.launch {
+            try {
+                val result = credentialManager.getCredential(this@AuthMethodPickerActivity, request)
+                handleCredentialManagerResult(result.credential)
+            } catch (e: GetCredentialException) {
+                Log.w(TAG, "CredentialManager sign-in failed", e)
             }
-            provider.startSignIn(getAuth(), this@AuthMethodPickerActivity, idpConfig.providerId)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        mHandler.onActivityResult(requestCode, resultCode, data)
-        for (provider in mProviders) {
-            provider.onActivityResult(requestCode, resultCode, data)
+        hideProgress()
+    }
+
+    private fun handleCredentialManagerResult(cred: Credential) {
+        when (cred) {
+            is PasswordCredential -> {
+                val email = cred.id; val pw = cred.password
+                KickoffActivity.mKickstarter.setResult(Resource.forLoading())
+                auth.signInWithEmailAndPassword(email, pw)
+                    .addOnSuccessListener { res ->
+                        KickoffActivity.mKickstarter.handleSuccess(
+                            IdpResponse.Builder(User.Builder(
+                                EmailAuthProvider.PROVIDER_ID, email
+                            ).build()).build(),
+                            res
+                        )
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        if (it is FirebaseAuthInvalidUserException ||
+                            it is FirebaseAuthInvalidCredentialsException
+                        ) Identity.getSignInClient(application).signOut()
+                    }
+            }
+            is CustomCredential -> {
+                if (cred.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    try {
+                        val g = GoogleIdTokenCredential.createFrom(cred.data)
+                        auth.signInWithCredential(
+                            GoogleAuthProvider.getCredential(g.idToken, null)
+                        ).addOnSuccessListener { res ->
+                            KickoffActivity.mKickstarter.handleSuccess(
+                                IdpResponse.Builder(User.Builder(
+                                    GoogleAuthProvider.PROVIDER_ID,
+                                    g.data.getString("email")
+                                ).build()).setToken(g.idToken).build(),
+                                res
+                            )
+                            finish()
+                        }.addOnFailureListener {
+                            Log.e(TAG, "Google token sign-in failed", it)
+                        }
+                    } catch (e: GoogleIdTokenParsingException) {
+                        Log.e(TAG, "Bad GoogleIdTokenCredential", e)
+                    }
+                }
+            }
+            else -> Log.e(TAG, "Unhandled credential ${cred::class.java.simpleName}")
         }
     }
 
-    override fun showProgress(message: Int) {
-        if (customLayout == null) {
-            mProgressBar?.visibility = View.VISIBLE
-            mProviderHolder?.let { holder ->
-                for (i in 0 until holder.childCount) {
-                    val child = holder.getChildAt(i)
-                    child.isEnabled = false
-                    child.alpha = 0.75f
-                }
-            }
+    @Composable
+    private fun ProviderButton(cfg: IdpConfig, onClick: () -> Unit) {
+        val (iconRes, bgColor, textColor) = when (cfg.providerId) {
+            GoogleAuthProvider.PROVIDER_ID -> Triple(
+                R.drawable.fui_ic_googleg_color_24dp,
+                colorResource(R.color.fui_bgGoogle),
+                Color(0xFF757575)
+            )
+            FacebookAuthProvider.PROVIDER_ID -> Triple(
+                R.drawable.fui_ic_facebook_white_22dp,
+                colorResource(R.color.fui_bgFacebook),
+                Color.White
+            )
+            TwitterAuthProvider.PROVIDER_ID /* "twitter.com" */ -> Triple(
+                R.drawable.fui_ic_twitter_bird_white_24dp,
+                colorResource(R.color.fui_bgTwitter),
+                Color.White
+            )
+            GithubAuthProvider.PROVIDER_ID /* "github.com" */ -> Triple(
+                R.drawable.fui_ic_github_white_24dp,
+                colorResource(R.color.fui_bgGitHub),
+                Color.White
+            )
+            EmailAuthProvider.PROVIDER_ID,
+            AuthUI.EMAIL_LINK_PROVIDER -> Triple(
+                R.drawable.fui_ic_mail_white_24dp,
+                colorResource(R.color.fui_bgEmail),
+                Color.White
+            )
+            PhoneAuthProvider.PROVIDER_ID -> Triple(
+                R.drawable.fui_ic_phone_white_24dp,
+                colorResource(R.color.fui_bgPhone),
+                Color.White
+            )
+            AuthUI.ANONYMOUS_PROVIDER -> Triple(
+                R.drawable.fui_ic_anonymous_white_24dp,
+                colorResource(R.color.fui_bgAnonymous),
+                Color.White
+            )
+            AuthUI.MICROSOFT_PROVIDER /* "microsoft.com" */ -> Triple(
+                R.drawable.fui_ic_microsoft_24dp,
+                colorResource(R.color.fui_bgMicrosoft),
+                Color.White
+            )
+            AuthUI.YAHOO_PROVIDER /* "yahoo.com" */ -> Triple(
+                R.drawable.fui_ic_yahoo_24dp,
+                colorResource(R.color.fui_bgYahoo),
+                Color.White
+            )
+            AuthUI.APPLE_PROVIDER /* "apple.com" */ -> Triple(
+                R.drawable.fui_ic_apple_white_24dp,
+                colorResource(R.color.fui_bgApple),
+                Color.White
+            )
+            else -> Triple(
+                R.drawable.fui_ic_mail_white_24dp,
+                colorResource(R.color.fui_bgEmail),
+                Color.White
+            )
+        }
+
+        val label = when (cfg.providerId) {
+            GoogleAuthProvider.PROVIDER_ID ->
+                stringResource(R.string.fui_sign_in_with_google)
+            FacebookAuthProvider.PROVIDER_ID ->
+                stringResource(R.string.fui_sign_in_with_facebook)
+            TwitterAuthProvider.PROVIDER_ID ->
+                stringResource(R.string.fui_sign_in_with_twitter)
+            GithubAuthProvider.PROVIDER_ID ->
+                stringResource(R.string.fui_sign_in_with_github)
+            EmailAuthProvider.PROVIDER_ID,
+            AuthUI.EMAIL_LINK_PROVIDER ->
+                stringResource(R.string.fui_sign_in_with_email)
+            PhoneAuthProvider.PROVIDER_ID ->
+                stringResource(R.string.fui_sign_in_with_phone)
+            AuthUI.ANONYMOUS_PROVIDER ->
+                stringResource(R.string.fui_sign_in_anonymously)
+            AuthUI.MICROSOFT_PROVIDER ->
+                stringResource(R.string.fui_sign_in_with_microsoft)
+            AuthUI.YAHOO_PROVIDER ->
+                stringResource(R.string.fui_sign_in_with_yahoo)
+            AuthUI.APPLE_PROVIDER ->
+                stringResource(R.string.fui_sign_in_with_apple)
+            else -> cfg.providerId
+        }
+
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = bgColor,
+                contentColor   = textColor
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+        ) {
+            Icon(
+                painter           = painterResource(iconRes),
+                contentDescription = null
+            )
+            Spacer(Modifier.width(24.dp))
+            Text(text = label)
         }
     }
 
-    override fun hideProgress() {
-        if (customLayout == null) {
-            mProgressBar?.visibility = View.INVISIBLE
-            mProviderHolder?.let { holder ->
-                for (i in 0 until holder.childCount) {
-                    val child = holder.getChildAt(i)
-                    child.isEnabled = true
-                    child.alpha = 1.0f
-                }
-            }
+    @Composable
+    private fun TermsAndPrivacyText(
+        tosUrl: String,
+        ppUrl: String,
+        modifier: Modifier = Modifier
+    ) {
+        val tosLabel = stringResource(R.string.fui_terms_of_service)
+        val ppLabel  = stringResource(R.string.fui_privacy_policy)
+
+        val fullText = stringResource(
+            R.string.fui_tos_and_pp,
+            tosLabel,
+            ppLabel
+        )
+
+        val tosStart = fullText.indexOf(tosLabel).coerceAtLeast(0)
+        val tosEnd   = tosStart + tosLabel.length
+        val ppStart  = fullText.indexOf(ppLabel).coerceAtLeast(0)
+        val ppEnd    = ppStart + ppLabel.length
+
+        val annotated = buildAnnotatedString {
+            append(fullText)
+
+            addStyle(
+                style = SpanStyle(fontWeight = FontWeight.Bold),
+                start = tosStart,
+                end   = tosEnd
+            )
+            addStringAnnotation(
+                tag    = "URL",
+                annotation = tosUrl,
+                start  = tosStart,
+                end    = tosEnd
+            )
+
+            addStyle(
+                style = SpanStyle(fontWeight = FontWeight.Bold),
+                start = ppStart,
+                end   = ppEnd
+            )
+            addStringAnnotation(
+                tag    = "URL",
+                annotation = ppUrl,
+                start  = ppStart,
+                end    = ppEnd
+            )
         }
+
+        val uriHandler = LocalUriHandler.current
+        ClickableText(
+            text = annotated,
+            style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
+            modifier = modifier,
+            onClick = { offset ->
+                annotated
+                    .getStringAnnotations(tag = "URL", start = offset, end = offset)
+                    .firstOrNull()
+                    ?.let { uriHandler.openUri(it.item) }
+            }
+        )
     }
 }

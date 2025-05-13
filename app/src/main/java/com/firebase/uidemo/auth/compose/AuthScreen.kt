@@ -20,7 +20,7 @@ fun AuthScreen(
 ) {
     val providers = listOf(
         IdpConfig.GoogleBuilder().build(),
-        IdpConfig.EmailBuilder().build()
+        IdpConfig.EmailBuilder().build(),
     )
 
     Box(
