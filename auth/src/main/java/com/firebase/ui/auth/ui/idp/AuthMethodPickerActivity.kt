@@ -427,66 +427,66 @@ class AuthMethodPickerActivity : AppCompatBase() {
             Text(text = label)
         }
     }
+}
 
-    @Composable
-    private fun TermsAndPrivacyText(
-        tosUrl: String,
-        ppUrl: String,
-        modifier: Modifier = Modifier
-    ) {
-        val tosLabel = stringResource(R.string.fui_terms_of_service)
-        val ppLabel  = stringResource(R.string.fui_privacy_policy)
+@Composable
+public fun TermsAndPrivacyText(
+    tosUrl: String,
+    ppUrl: String,
+    modifier: Modifier = Modifier
+) {
+    val tosLabel = stringResource(R.string.fui_terms_of_service)
+    val ppLabel  = stringResource(R.string.fui_privacy_policy)
 
-        val fullText = stringResource(
-            R.string.fui_tos_and_pp,
-            tosLabel,
-            ppLabel
+    val fullText = stringResource(
+        R.string.fui_tos_and_pp,
+        tosLabel,
+        ppLabel
+    )
+
+    val tosStart = fullText.indexOf(tosLabel).coerceAtLeast(0)
+    val tosEnd   = tosStart + tosLabel.length
+    val ppStart  = fullText.indexOf(ppLabel).coerceAtLeast(0)
+    val ppEnd    = ppStart + ppLabel.length
+
+    val annotated = buildAnnotatedString {
+        append(fullText)
+
+        addStyle(
+            style = SpanStyle(fontWeight = FontWeight.Bold),
+            start = tosStart,
+            end   = tosEnd
+        )
+        addStringAnnotation(
+            tag    = "URL",
+            annotation = tosUrl,
+            start  = tosStart,
+            end    = tosEnd
         )
 
-        val tosStart = fullText.indexOf(tosLabel).coerceAtLeast(0)
-        val tosEnd   = tosStart + tosLabel.length
-        val ppStart  = fullText.indexOf(ppLabel).coerceAtLeast(0)
-        val ppEnd    = ppStart + ppLabel.length
-
-        val annotated = buildAnnotatedString {
-            append(fullText)
-
-            addStyle(
-                style = SpanStyle(fontWeight = FontWeight.Bold),
-                start = tosStart,
-                end   = tosEnd
-            )
-            addStringAnnotation(
-                tag    = "URL",
-                annotation = tosUrl,
-                start  = tosStart,
-                end    = tosEnd
-            )
-
-            addStyle(
-                style = SpanStyle(fontWeight = FontWeight.Bold),
-                start = ppStart,
-                end   = ppEnd
-            )
-            addStringAnnotation(
-                tag    = "URL",
-                annotation = ppUrl,
-                start  = ppStart,
-                end    = ppEnd
-            )
-        }
-
-        val uriHandler = LocalUriHandler.current
-        ClickableText(
-            text = annotated,
-            style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
-            modifier = modifier,
-            onClick = { offset ->
-                annotated
-                    .getStringAnnotations(tag = "URL", start = offset, end = offset)
-                    .firstOrNull()
-                    ?.let { uriHandler.openUri(it.item) }
-            }
+        addStyle(
+            style = SpanStyle(fontWeight = FontWeight.Bold),
+            start = ppStart,
+            end   = ppEnd
+        )
+        addStringAnnotation(
+            tag    = "URL",
+            annotation = ppUrl,
+            start  = ppStart,
+            end    = ppEnd
         )
     }
+
+    val uriHandler = LocalUriHandler.current
+    ClickableText(
+        text = annotated,
+        style = MaterialTheme.typography.bodySmall.copy(textAlign = TextAlign.Center),
+        modifier = modifier,
+        onClick = { offset ->
+            annotated
+                .getStringAnnotations(tag = "URL", start = offset, end = offset)
+                .firstOrNull()
+                ?.let { uriHandler.openUri(it.item) }
+        }
+    )
 }
