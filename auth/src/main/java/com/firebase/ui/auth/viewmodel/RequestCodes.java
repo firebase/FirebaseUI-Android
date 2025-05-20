@@ -58,6 +58,9 @@ public final class RequestCodes {
     /** Request code for starter a generic IDP sign-in flow */
     public static final int GENERIC_IDP_SIGN_IN_FLOW = 117;
 
+    /** Request code for recover password */
+    public static final int RECOVER_PASSWORD = 118;
+
     private RequestCodes() {
         throw new AssertionError("No instance for you!");
     }

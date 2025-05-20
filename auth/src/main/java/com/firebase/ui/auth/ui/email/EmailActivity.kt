@@ -41,6 +41,7 @@ import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.data.ProviderUtils
 import com.firebase.ui.auth.viewmodel.RequestCodes
 import com.firebase.ui.auth.viewmodel.email.EmailProviderResponseHandler
+import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordViewModel
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
@@ -66,6 +67,7 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
 
     private var emailLayout: TextInputLayout? = null
     private lateinit var mHandler: EmailProviderResponseHandler
+    private lateinit var mPasswordHandler: WelcomeBackPasswordViewModel
 
     companion object {
         @JvmStatic
@@ -97,6 +99,8 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
         emailLayout = findViewById(R.id.email_layout)
         mHandler = ViewModelProvider(this).get(EmailProviderResponseHandler::class.java)
         mHandler.init(getFlowParams())
+        mPasswordHandler = ViewModelProvider(this).get(WelcomeBackPasswordViewModel::class.java)
+        mPasswordHandler.init(getFlowParams())
 
         if (savedInstanceState != null) {
             return
@@ -168,37 +172,13 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
                             flowParameters = getFlowParams(),
                             user = user,
                             onRegisterSuccess = { newUser, password ->
-                                val response = IdpResponse.Builder(newUser).build()
-                                startSaveCredentials(
-                                    mHandler.getCurrentUser(),
-                                    response,
+                                mHandler.startSignIn(
+                                    IdpResponse.Builder(newUser).build(),
                                     password
                                 )
+                                finish()
                             },
                             onRegisterError = { e ->
-                                when (e) {
-                                    is FirebaseAuthWeakPasswordException -> {
-                                        // Handle weak password error
-                                        val minLength = resources.getInteger(R.integer.fui_min_password_length)
-                                        emailLayout?.error = resources.getQuantityString(
-                                            R.plurals.fui_error_weak_password,
-                                            minLength,
-                                            minLength
-                                        )
-                                    }
-                                    is FirebaseAuthInvalidCredentialsException -> {
-                                        // Handle invalid credentials error
-                                        emailLayout?.error = getString(R.string.fui_invalid_email_address)
-                                    }
-                                    is FirebaseAuthAnonymousUpgradeException -> {
-                                        // Handle anonymous upgrade error
-                                        onMergeFailure(e.response)
-                                    }
-                                    else -> {
-                                        // Handle general error
-                                        emailLayout?.error = getString(R.string.fui_email_account_creation_error)
-                                    }
-                                }
                             }
                         )
                     }
@@ -241,11 +221,37 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
             }
             showRegisterEmailLinkFragment(emailConfig, email)
         } else {
-            startActivityForResult(
-                WelcomeBackPasswordPrompt.createIntent(this, getFlowParams(), IdpResponse.Builder(user).build()),
-                RequestCodes.WELCOME_BACK_EMAIL_FLOW
-            )
-            setSlideAnimation()
+            setContent {
+                WelcomeBackPasswordPrompt(
+                    flowParameters = getFlowParams(),
+                    email = user.email ?: "",
+                    idpResponse = IdpResponse.Builder(user).build(),
+                    onSignInSuccess = {
+                        finish(RESULT_OK, IdpResponse.Builder(user).build().toIntent())
+                    },
+                    onSignInError = { exception ->
+                        when (exception) {
+                            is FirebaseAuthAnonymousUpgradeException -> {
+                                finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, exception.response.toIntent())
+                            }
+                            is FirebaseAuthInvalidCredentialsException -> {
+                                // Error is already handled in the UI
+                            }
+                            else -> {
+                                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(exception))
+                            }
+                        }
+                    },
+                    onForgotPassword = {
+                        startActivityForResult(
+                            RecoverPasswordActivity.createIntent(this, getFlowParams(), user.email),
+                            RequestCodes.RECOVER_PASSWORD
+                        )
+                        setSlideAnimation()
+                    },
+                    viewModel = mPasswordHandler
+                )
+            }
         }
     }
 
@@ -280,24 +286,14 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
                         flowParameters = getFlowParams(),
                         user = user,
                         onRegisterSuccess = { newUser, password ->
-                            val response = IdpResponse.Builder(newUser).build()
-                            startSaveCredentials(
-                                mHandler.getCurrentUser(),
-                                response,
+                            mHandler.startSignIn(
+                                IdpResponse.Builder(newUser).build(),
                                 password
                             )
+                            finish()
                         },
                         onRegisterError = { e ->
-                            if (e is FirebaseAuthWeakPasswordException) {
-                                // Handle weak password error
-                            } else if (e is FirebaseAuthInvalidCredentialsException) {
-                                // Handle invalid credentials error
-                            } else if (e is FirebaseAuthAnonymousUpgradeException) {
-                                val response = e.response
-                                onMergeFailure(response)
-                            } else {
-                                // Handle general error
-                            }
+
                         }
                     )
                 }
