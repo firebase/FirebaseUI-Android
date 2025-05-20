@@ -16,16 +16,9 @@ package com.firebase.ui.auth.ui.email
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.Nullable
 import androidx.annotation.RestrictTo
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.core.view.ViewCompat
-import androidx.fragment.app.FragmentTransaction
-import androidx.compose.ui.platform.LocalContext
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
@@ -46,16 +39,9 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import androidx.lifecycle.ViewModelProvider
 
-import com.firebase.ui.auth.ui.email.CheckEmailFragment
-import com.firebase.ui.auth.ui.email.RegisterEmailFragment
-import com.firebase.ui.auth.ui.email.EmailLinkFragment
-import com.firebase.ui.auth.ui.email.TroubleSigningInFragment
-import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt
-import com.firebase.ui.auth.ui.email.CheckEmailScreen
-import com.firebase.ui.auth.ui.email.RegisterEmailScreen
+import com.firebase.ui.auth.viewmodel.email.RecoverPasswordHandler
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -243,11 +229,19 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
                         }
                     },
                     onForgotPassword = {
-                        startActivityForResult(
-                            RecoverPasswordActivity.createIntent(this, getFlowParams(), user.email),
-                            RequestCodes.RECOVER_PASSWORD
-                        )
-                        setSlideAnimation()
+                        setContent {
+                            RecoverPasswordScreen(
+                                flowParameters = getFlowParams(),
+                                initialEmail = user.email,
+                                onSuccess = {
+                                    finish(RESULT_OK, Intent())
+                                },
+                                onError = { exception ->
+                                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(exception))
+                                },
+                                viewModel = ViewModelProvider(this@EmailActivity)[RecoverPasswordHandler::class.java]
+                            )
+                        }
                     },
                     viewModel = mPasswordHandler
                 )

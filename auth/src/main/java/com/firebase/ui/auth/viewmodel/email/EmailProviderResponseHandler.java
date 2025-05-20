@@ -11,17 +11,15 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackEmailLinkPrompt;
-import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.ui.email.WelcomeBackPasswordActivity;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
@@ -103,32 +101,27 @@ public class EmailProviderResponseHandler extends SignInViewModelBase {
 
             if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
                 setResult(Resource.forFailure(new IntentRequiredException(
-                        WelcomeBackPasswordPrompt.createIntent(
+                        WelcomeBackPasswordActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
                                 new IdpResponse.Builder(new User.Builder(
-                                        EmailAuthProvider.PROVIDER_ID, mEmail).build()
-                                ).build()),
-                        RequestCodes.WELCOME_BACK_EMAIL_FLOW
-                )));
+                                        EmailAuthProvider.PROVIDER_ID, mEmail).build()).build()),
+                        RequestCodes.WELCOME_BACK_EMAIL_FLOW)));
             } else if (EMAIL_LINK_PROVIDER.equalsIgnoreCase(provider)) {
                 setResult(Resource.forFailure(new IntentRequiredException(
                         WelcomeBackEmailLinkPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
                                 new IdpResponse.Builder(new User.Builder(
-                                        EMAIL_LINK_PROVIDER, mEmail).build()
-                                ).build()),
-                        RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW
-                )));
+                                        EMAIL_LINK_PROVIDER, mEmail).build()).build()),
+                        RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW)));
             } else {
                 setResult(Resource.forFailure(new IntentRequiredException(
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
                                 new User.Builder(provider, mEmail).build()),
-                        RequestCodes.WELCOME_BACK_IDP_FLOW
-                )));
+                        RequestCodes.WELCOME_BACK_IDP_FLOW)));
             }
         }
     }

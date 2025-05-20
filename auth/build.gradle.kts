@@ -75,6 +75,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-android:1.8.1")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.compose.material3:material3-android:1.3.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.1")
 
     val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
