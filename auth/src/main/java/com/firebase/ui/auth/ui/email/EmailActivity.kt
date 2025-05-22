@@ -162,7 +162,8 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
                                     IdpResponse.Builder(newUser).build(),
                                     password
                                 )
-                                finish()
+                                val result = IdpResponse.Builder(newUser).build().toIntent()
+                                setResult(RESULT_OK, result)
                             },
                             onRegisterError = { e ->
                             }
@@ -284,7 +285,8 @@ class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeLis
                                 IdpResponse.Builder(newUser).build(),
                                 password
                             )
-                            finish()
+                            val result = IdpResponse.Builder(newUser).build().toIntent()
+                            setResult(RESULT_OK, result)
                         },
                         onRegisterError = { e ->
 

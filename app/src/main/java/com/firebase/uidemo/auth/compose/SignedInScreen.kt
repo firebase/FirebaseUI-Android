@@ -95,7 +95,6 @@ fun SignedInScreen(
     }
 }
 
-/* ---------------- profile details ---------------- */
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

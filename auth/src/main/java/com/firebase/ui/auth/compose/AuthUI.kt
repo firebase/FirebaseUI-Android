@@ -1,11 +1,12 @@
 package com.firebase.ui.auth.compose
 
-import android.content.Intent
+import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.AuthUI
@@ -13,7 +14,6 @@ import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 /**
  * Composable that handles Firebase Auth UI sign-in and automatically swaps to [signedInContent]
@@ -39,35 +39,22 @@ fun FirebaseAuthUI(
         tosUrl: String? = null,
         privacyPolicyUrl: String? = null,
         enableCredentials: Boolean = true,
-        enableAnonymousUpgrade: Boolean = false
+        enableAnonymousUpgrade: Boolean = false,
 ) {
     val auth = remember { FirebaseAuth.getInstance() }
     val authUI = remember { AuthUI.getInstance() }
-    val scope = rememberCoroutineScope()
 
-    /* ------------- 1) Observe auth state ------------- */
     val firebaseUser by
             produceState(initialValue = auth.currentUser, auth) {
-                val listener =
-                        FirebaseAuth.AuthStateListener { firebaseAuth ->
-                            value = firebaseAuth.currentUser
-                        }
+                val listener = FirebaseAuth.AuthStateListener { value = it.currentUser }
                 auth.addAuthStateListener(listener)
                 awaitDispose { auth.removeAuthStateListener(listener) }
             }
 
-    /* ------------- 2) If signed in, show caller-provided screen ------------- */
     if (firebaseUser != null) {
         signedInContent()
         return
     }
-
-    /* ------------- 3) Otherwise prepare & launch Firebase UI sign-in ------------- */
-    val signInLauncher =
-            rememberLauncherForActivityResult(
-                    contract = FirebaseAuthUIActivityResultContract(),
-                    onResult = onSignInResult
-            )
 
     val signInIntent =
             remember(
@@ -93,21 +80,23 @@ fun FirebaseAuthUI(
                             }
                         }
                         .build()
-                        .apply {
-                            addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                            )
-                        }
             }
 
-    /* ­------------- 4) Launch once per composable lifetime ------------- */
-    LaunchedEffect(signInIntent) {
-        // Launch from a coroutine so we’re safe even inside composition
-        scope.launch { signInLauncher.launch(signInIntent) }
+    var signInAttempted by rememberSaveable { mutableStateOf(false) }
+
+    val launcher =
+            rememberLauncherForActivityResult(FirebaseAuthUIActivityResultContract()) { result ->
+                onSignInResult(result)
+
+                signInAttempted = result.resultCode != Activity.RESULT_OK
+            }
+
+    LaunchedEffect(Unit) {
+        if (!signInAttempted) {
+            signInAttempted = true
+            launcher.launch(signInIntent)
+        }
     }
 
-    /* Optional: lightweight in-place progress indicator while Firebase UI Activity starts */
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
-    }
+    Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
 }

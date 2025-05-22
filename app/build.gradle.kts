@@ -95,7 +95,6 @@ dependencies {
 
     implementation(Config.Libs.Misc.permissions)
     implementation(Config.Libs.Androidx.constraint)
-    debugImplementation(Config.Libs.Misc.leakCanary)
 
     val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)

@@ -273,6 +273,12 @@ class AuthMethodPickerActivity : AppCompatBase() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         hideProgress()
+
+        // forward the outcome upstream and close
+        if (resultCode != RESULT_CANCELED) {
+            setResult(resultCode, data)
+            finish()
+        }
     }
 
     private fun handleCredentialManagerResult(cred: Credential) {
