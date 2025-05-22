@@ -11,8 +11,6 @@ import com.firebase.ui.auth.AuthUI.IdpConfig
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.uidemo.R
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun AuthScreen(
@@ -23,19 +21,18 @@ fun AuthScreen(
         IdpConfig.EmailBuilder().build(),
     )
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        FirebaseAuthUI(
-            providers = providers,
-            onSignInResult = onSignInResult,
-            theme = R.style.AppTheme,
-            logo = R.drawable.firebase_auth_120dp,
-            tosUrl = "https://www.google.com/policies/terms/",
-            privacyPolicyUrl = "https://www.google.com/policies/privacy/",
-            enableCredentials = true,
-            enableAnonymousUpgrade = false
-        )
-    }
+    FirebaseAuthUI(
+        providers = providers,
+        onSignInResult = { result -> /* optional logging */ },
+
+        signedInContent = {
+            SignedInScreen(idpResponse = null) {
+            }
+        },
+
+        theme = R.style.AppTheme,
+        logo = R.drawable.firebase_auth_120dp,
+        tosUrl = "https://www.google.com/policies/terms/",
+        privacyPolicyUrl = "https://www.google.com/policies/privacy/"
+    )
 } 

@@ -104,6 +104,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.activity:activity-compose:1.10.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
     debugImplementation("androidx.compose.ui:ui-tooling")
     releaseImplementation("androidx.compose.ui:ui-tooling-preview")
 }
