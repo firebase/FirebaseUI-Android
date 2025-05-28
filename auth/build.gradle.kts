@@ -1,36 +1,40 @@
-import com.android.build.gradle.internal.dsl.TestOptions
-
 plugins {
     id("com.android.library")
+    id("org.jetbrains.kotlin.android")     
+    id("org.jetbrains.kotlin.plugin.compose")    
+    id("org.jetbrains.compose")
+    id("kotlin-kapt")
     id("com.vanniktech.maven.publish")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
-    compileSdk = Config.SdkVersions.compile
     namespace = "com.firebase.ui.auth"
+    compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk =Config.SdkVersions.target
+        @Suppress("DEPRECATION")
+        targetSdk = Config.SdkVersions.target
 
         buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
-
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
     }
 
+    buildFeatures { compose = true }
+
     buildTypes {
-        named("release").configure {
+        release {
             isMinifyEnabled = false
             consumerProguardFiles("auth-proguard.pro")
         }
     }
-        
-    compileOptions {    
+
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    kotlinOptions { jvmTarget = "17" }
 
     lint {
         // Common lint options across all modules
@@ -59,42 +63,48 @@ android {
         baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    testOptions { unitTests.isIncludeAndroidResources = true }
 }
 
 dependencies {
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
-    // The new activity result APIs force us to include Fragment 1.3.0
-    // See https://issuetracker.google.com/issues/152554847
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
-    implementation("androidx.credentials:credentials:1.3.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("androidx.compose.foundation:foundation-android:1.8.1")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3-android:1.3.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.1")
+
+    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    releaseImplementation("androidx.compose.ui:ui-tooling-preview")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
+    kapt(Config.Libs.Androidx.lifecycleCompiler)      // ← annotation processor → kapt
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     implementation(platform(Config.Libs.Firebase.bom))
     api(Config.Libs.Firebase.auth)
     api(Config.Libs.PlayServices.auth)
 
     compileOnly(Config.Libs.Provider.facebook)
-    implementation(Config.Libs.Androidx.legacySupportv4) // Needed to override deps
-    implementation(Config.Libs.Androidx.cardView) // Needed to override Facebook
+    implementation(Config.Libs.Androidx.legacySupportv4)
+    implementation(Config.Libs.Androidx.cardView)
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
@@ -102,6 +112,9 @@ dependencies {
     testImplementation(Config.Libs.Test.core)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Provider.facebook)
+    testImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 
     debugImplementation(project(":internal:lintchecks"))
 }

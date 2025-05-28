@@ -19,6 +19,9 @@ buildscript {
 
 plugins {
     id("com.github.ben-manes.versions") version "0.20.0"
+    id("com.android.application") version "8.2.0" apply false
+    id("com.android.library") version "8.2.0" apply false
+    id("org.jetbrains.compose") version "1.7.3" apply false
 }
 
 allprojects {

@@ -52,12 +52,11 @@ import static org.mockito.Mockito.when;
 public final class TestHelper {
 
     private static final String TAG = "TestHelper";
-    private static final String DEFAULT_APP_NAME = "[DEFAULT]";
+    private static final String DEFAULT_APP_NAME = "test-app";
     private static final String MICROSOFT_PROVIDER = "microsoft.com";
 
     public static final FirebaseApp MOCK_APP;
     private static Context CONTEXT = ApplicationProvider.getApplicationContext();
-
 
     static {
         FirebaseApp app = mock(FirebaseApp.class);
@@ -90,7 +89,7 @@ public final class TestHelper {
         FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
                 .setApiKey("fake")
                 .setApplicationId("fake")
-                .build());
+                .build(), DEFAULT_APP_NAME);
     }
 
     private static void initializeProviders() {
@@ -125,14 +124,14 @@ public final class TestHelper {
     }
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds,
-                                                   boolean enableAnonymousUpgrade) {
+            boolean enableAnonymousUpgrade) {
         return getFlowParameters(providerIds, enableAnonymousUpgrade, null, false);
     }
 
     public static FlowParameters getFlowParameters(Collection<String> providerIds,
-                                                   boolean enableAnonymousUpgrade,
-                                                   AuthMethodPickerLayout customLayout,
-                                                   boolean hasDefaultEmail) {
+            boolean enableAnonymousUpgrade,
+            AuthMethodPickerLayout customLayout,
+            boolean hasDefaultEmail) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -151,14 +150,15 @@ public final class TestHelper {
                 case EMAIL_LINK_PROVIDER:
                     idpConfigs.add(new IdpConfig.EmailBuilder().enableEmailLinkSignIn()
                             .setActionCodeSettings(ActionCodeSettings.newBuilder().setUrl("URL")
-                                    .setHandleCodeInApp(true).build()).build());
+                                    .setHandleCodeInApp(true).build())
+                            .build());
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    if (hasDefaultEmail) { idpConfigs.add(new IdpConfig.EmailBuilder()
+                    if (hasDefaultEmail) {
+                        idpConfigs.add(new IdpConfig.EmailBuilder()
                                 .setDefaultEmail(TestConstants.EMAIL)
                                 .build());
-                    } else
-                    {
+                    } else {
                         idpConfigs.add(new IdpConfig.EmailBuilder().build());
                     }
                     break;

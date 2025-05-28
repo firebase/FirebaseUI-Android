@@ -13,24 +13,19 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackEmailLinkPrompt;
-import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.ui.email.WelcomeBackPasswordActivity;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.data.AuthOperationManager;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SignInViewModelBase;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthProvider;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,7 +52,8 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
 
         setResult(Resource.forLoading());
 
-        // Recoverable error flows (linking) for Generic OAuth providers are handled here.
+        // Recoverable error flows (linking) for Generic OAuth providers are handled
+        // here.
         // For Generic OAuth providers, the credential is set on the IdpResponse, as
         // a credential made from the id token/access token cannot be used to sign-in.
         if (response.hasCredentialForLinking()) {
@@ -80,14 +76,13 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                         FirebaseAuthException authEx = (FirebaseAuthException) e;
                         FirebaseAuthError fae = FirebaseAuthError.fromException(authEx);
                         if (fae == FirebaseAuthError.ERROR_USER_DISABLED) {
-                           isDisabledUser = true;
+                            isDisabledUser = true;
                         }
                     }
 
                     if (isDisabledUser) {
                         setResult(Resource.forFailure(
-                                new FirebaseUiException(ErrorCodes.ERROR_USER_DISABLED)
-                        ));
+                                new FirebaseUiException(ErrorCodes.ERROR_USER_DISABLED)));
                     } else if (e instanceof FirebaseAuthUserCollisionException) {
                         final String email = response.getEmail();
                         if (email == null) {
@@ -135,12 +130,12 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
         if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
             // Start email welcome back flow
             setResult(Resource.forFailure(new IntentRequiredException(
-                    WelcomeBackPasswordPrompt.createIntent(
+                    WelcomeBackPasswordActivity.createIntent(
                             getApplication(),
                             getArguments(),
-                            response),
-                    RequestCodes.ACCOUNT_LINK_FLOW
-            )));
+                            new IdpResponse.Builder(new User.Builder(
+                                    EmailAuthProvider.PROVIDER_ID, response.getEmail()).build()).build()),
+                    RequestCodes.ACCOUNT_LINK_FLOW)));
         } else if (provider.equals(EMAIL_LINK_PROVIDER)) {
             // Start email link welcome back flow
             setResult(Resource.forFailure(new IntentRequiredException(
@@ -148,8 +143,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                             getApplication(),
                             getArguments(),
                             response),
-                    RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW
-            )));
+                    RequestCodes.WELCOME_BACK_EMAIL_LINK_FLOW)));
         } else {
             // Start Idp welcome back flow
             setResult(Resource.forFailure(new IntentRequiredException(
@@ -158,8 +152,7 @@ public class SocialProviderResponseHandler extends SignInViewModelBase {
                             getArguments(),
                             new User.Builder(provider, response.getEmail()).build(),
                             response),
-                    RequestCodes.ACCOUNT_LINK_FLOW
-            )));
+                    RequestCodes.ACCOUNT_LINK_FLOW)));
         }
     }
 

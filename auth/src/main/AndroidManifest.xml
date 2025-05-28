@@ -70,7 +70,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.email.WelcomeBackPasswordPrompt"
+            android:name=".ui.email.WelcomeBackPasswordActivity"
             android:label="@string/fui_title_welcome_back_password_prompt"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

@@ -16,13 +16,12 @@ package com.firebase.ui.auth.ui.email
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.Nullable
+import androidx.activity.compose.setContent
 import androidx.annotation.RestrictTo
-import androidx.annotation.StringRes
-import androidx.core.view.ViewCompat
-import androidx.fragment.app.FragmentTransaction
+import androidx.compose.runtime.Composable
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.ErrorCodes
+import com.firebase.ui.auth.FirebaseAuthAnonymousUpgradeException
 import com.firebase.ui.auth.FirebaseUiException
 import com.firebase.ui.auth.IdpResponse
 import com.firebase.ui.auth.R
@@ -34,15 +33,15 @@ import com.firebase.ui.auth.util.ExtraConstants
 import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.data.ProviderUtils
 import com.firebase.ui.auth.viewmodel.RequestCodes
+import com.firebase.ui.auth.viewmodel.email.EmailProviderResponseHandler
+import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordViewModel
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import androidx.lifecycle.ViewModelProvider
 
-import com.firebase.ui.auth.ui.email.CheckEmailFragment
-import com.firebase.ui.auth.ui.email.RegisterEmailFragment
-import com.firebase.ui.auth.ui.email.EmailLinkFragment
-import com.firebase.ui.auth.ui.email.TroubleSigningInFragment
-import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt
+import com.firebase.ui.auth.viewmodel.email.RecoverPasswordHandler
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -50,13 +49,11 @@ import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-class EmailActivity : AppCompatBase(),
-    CheckEmailFragment.CheckEmailListener,
-    RegisterEmailFragment.AnonymousUpgradeListener,
-    EmailLinkFragment.TroubleSigningInListener,
-    TroubleSigningInFragment.ResendEmailListener {
+class EmailActivity : AppCompatBase(), RegisterEmailFragment.AnonymousUpgradeListener {
 
     private var emailLayout: TextInputLayout? = null
+    private lateinit var mHandler: EmailProviderResponseHandler
+    private lateinit var mPasswordHandler: WelcomeBackPasswordViewModel
 
     companion object {
         @JvmStatic
@@ -86,6 +83,10 @@ class EmailActivity : AppCompatBase(),
         setContentView(R.layout.fui_activity_register_email)
 
         emailLayout = findViewById(R.id.email_layout)
+        mHandler = ViewModelProvider(this).get(EmailProviderResponseHandler::class.java)
+        mHandler.init(getFlowParams())
+        mPasswordHandler = ViewModelProvider(this).get(WelcomeBackPasswordViewModel::class.java)
+        mPasswordHandler.init(getFlowParams())
 
         if (savedInstanceState != null) {
             return
@@ -95,81 +96,106 @@ class EmailActivity : AppCompatBase(),
         var email: String? = intent.extras?.getString(ExtraConstants.EMAIL)
         val responseForLinking: IdpResponse? = intent.extras?.getParcelable(ExtraConstants.IDP_RESPONSE)
         val user: User? = intent.extras?.getParcelable(ExtraConstants.USER)
+
         if (email != null && responseForLinking != null) {
-            // Got here from WelcomeBackEmailLinkPrompt.
-            val emailConfig: AuthUI.IdpConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-                getFlowParams().providers,
-                AuthUI.EMAIL_LINK_PROVIDER
-            )
-            val actionCodeSettings: ActionCodeSettings? =
-                emailConfig.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS)
-            if (actionCodeSettings == null) {
-                finishOnDeveloperError(IllegalStateException("ActionCodeSettings cannot be null for email link sign in."))
-                return
-            }
-            EmailLinkPersistenceManager.getInstance().saveIdpResponseForLinking(application, responseForLinking)
-            val forceSameDevice: Boolean = emailConfig.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE)
-            val fragment = EmailLinkFragment.newInstance(email, actionCodeSettings, responseForLinking, forceSameDevice)
-            switchFragment(fragment, R.id.fragment_register_email, EmailLinkFragment.TAG)
+            handleEmailLinkLinking(email, responseForLinking)
         } else {
-            var emailConfig: AuthUI.IdpConfig? = ProviderUtils.getConfigFromIdps(getFlowParams().providers, EmailAuthProvider.PROVIDER_ID)
-            if (emailConfig == null) {
-                emailConfig = ProviderUtils.getConfigFromIdps(getFlowParams().providers, AuthUI.EMAIL_LINK_PROVIDER)
-            }
-            if (emailConfig == null) {
-                finishOnDeveloperError(IllegalStateException("No email provider configured."))
-                return
-            }
-            if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
-                val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-                if (emailConfig.providerId == AuthUI.EMAIL_LINK_PROVIDER) {
-                    if (email == null) {
-                        finishOnDeveloperError(IllegalStateException("Email cannot be null for email link sign in."))
-                        return
-                    }
-                    showRegisterEmailLinkFragment(emailConfig, email)
-                } else {
-                    if (user == null) {
-                        // Use default email from configuration if none was provided via the intent.
-                        if (email == null) {
-                            email = emailConfig.getParams().getString(ExtraConstants.DEFAULT_EMAIL)
-                        }
-                        // Pass the email (which may be null if no default is configured) to the fragment.
-                        val fragment = CheckEmailFragment.newInstance(email)
-                        ft.replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
-                        emailLayout?.let {
-                            val emailFieldName = getString(R.string.fui_email_field_name)
-                            ViewCompat.setTransitionName(it, emailFieldName)
-                            ft.addSharedElement(it, emailFieldName)
-                        }
-                        ft.disallowAddToBackStack().commit()
-                        return
-                    }
-                    val fragment = RegisterEmailFragment.newInstance(user)
-                    ft.replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG)
-                    emailLayout?.let {
-                        val emailFieldName = getString(R.string.fui_email_field_name)
-                        ViewCompat.setTransitionName(it, emailFieldName)
-                        ft.addSharedElement(it, emailFieldName)
-                    }
-                    ft.disallowAddToBackStack().commit()
+            handleNormalEmailFlow(email, user)
+        }
+    }
+
+    private fun handleEmailLinkLinking(email: String, responseForLinking: IdpResponse) {
+        val emailConfig: AuthUI.IdpConfig = ProviderUtils.getConfigFromIdpsOrThrow(
+            getFlowParams().providers,
+            AuthUI.EMAIL_LINK_PROVIDER
+        )
+        val actionCodeSettings: ActionCodeSettings? =
+            emailConfig.getParams().getParcelable(ExtraConstants.ACTION_CODE_SETTINGS)
+        if (actionCodeSettings == null) {
+            finishOnDeveloperError(IllegalStateException("ActionCodeSettings cannot be null for email link sign in."))
+            return
+        }
+        EmailLinkPersistenceManager.getInstance().saveIdpResponseForLinking(application, responseForLinking)
+        val forceSameDevice: Boolean = emailConfig.getParams().getBoolean(ExtraConstants.FORCE_SAME_DEVICE)
+        val fragment = EmailLinkFragment.newInstance(email, actionCodeSettings, responseForLinking, forceSameDevice)
+        switchFragment(fragment, R.id.fragment_register_email, EmailLinkFragment.TAG)
+    }
+
+    private fun handleNormalEmailFlow(email: String?, user: User?) {
+        var emailConfig: AuthUI.IdpConfig? = ProviderUtils.getConfigFromIdps(getFlowParams().providers, EmailAuthProvider.PROVIDER_ID)
+        if (emailConfig == null) {
+            emailConfig = ProviderUtils.getConfigFromIdps(getFlowParams().providers, AuthUI.EMAIL_LINK_PROVIDER)
+        }
+        if (emailConfig == null) {
+            finishOnDeveloperError(IllegalStateException("No email provider configured."))
+            return
+        }
+
+        if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
+            if (emailConfig.providerId == AuthUI.EMAIL_LINK_PROVIDER) {
+                if (email == null) {
+                    finishOnDeveloperError(IllegalStateException("Email cannot be null for email link sign in."))
+                    return
                 }
+                showRegisterEmailLinkFragment(emailConfig, email)
             } else {
-                emailLayout?.error = getString(R.string.fui_error_email_does_not_exist)
+                if (user == null) {
+                    // Use default email from configuration if none was provided via the intent.
+                    val finalEmail = email ?: emailConfig.getParams().getString(ExtraConstants.DEFAULT_EMAIL)
+                    setContent {
+                        CheckEmailScreenContent(
+                            flowParameters = getFlowParams(),
+                            initialEmail = finalEmail,
+                            onExistingEmailUser = { user -> handleExistingEmailUser(user) },
+                            onExistingIdpUser = { user -> handleExistingIdpUser(user) },
+                            onNewUser = { user -> handleNewUser(user) },
+                            onDeveloperFailure = { e -> handleDeveloperFailure(e) }
+                        )
+                    }
+                } else {
+                    setContent {
+                        RegisterEmailScreen(
+                            flowParameters = getFlowParams(),
+                            user = user,
+                            onRegisterSuccess = { newUser, password ->
+                                mHandler.startSignIn(
+                                    IdpResponse.Builder(newUser).build(),
+                                    password
+                                )
+                                val result = IdpResponse.Builder(newUser).build().toIntent()
+                                setResult(RESULT_OK, result)
+                            },
+                            onRegisterError = { e ->
+                            }
+                        )
+                    }
+                }
             }
+        } else {
+            emailLayout?.error = getString(R.string.fui_error_email_does_not_exist)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RequestCodes.WELCOME_BACK_EMAIL_FLOW ||
-            requestCode == RequestCodes.WELCOME_BACK_IDP_FLOW
-        ) {
-            finish(resultCode, data)
-        }
+    @Composable
+    private fun CheckEmailScreenContent(
+        flowParameters: FlowParameters,
+        initialEmail: String?,
+        onExistingEmailUser: (User) -> Unit,
+        onExistingIdpUser: (User) -> Unit,
+        onNewUser: (User) -> Unit,
+        onDeveloperFailure: (Exception) -> Unit
+    ) {
+        CheckEmailScreen(
+            flowParameters = flowParameters,
+            initialEmail = initialEmail,
+            onExistingEmailUser = onExistingEmailUser,
+            onExistingIdpUser = onExistingIdpUser,
+            onNewUser = onNewUser,
+            onDeveloperFailure = onDeveloperFailure
+        )
     }
 
-    override fun onExistingEmailUser(user: User) {
+    private fun handleExistingEmailUser(user: User) {
         if (user.providerId == AuthUI.EMAIL_LINK_PROVIDER) {
             val emailConfig: AuthUI.IdpConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providers,
@@ -182,16 +208,49 @@ class EmailActivity : AppCompatBase(),
             }
             showRegisterEmailLinkFragment(emailConfig, email)
         } else {
-            startActivityForResult(
-                WelcomeBackPasswordPrompt.createIntent(this, getFlowParams(), IdpResponse.Builder(user).build()),
-                RequestCodes.WELCOME_BACK_EMAIL_FLOW
-            )
-            setSlideAnimation()
+            setContent {
+                WelcomeBackPasswordPrompt(
+                    flowParameters = getFlowParams(),
+                    email = user.email ?: "",
+                    idpResponse = IdpResponse.Builder(user).build(),
+                    onSignInSuccess = {
+                        finish(RESULT_OK, IdpResponse.Builder(user).build().toIntent())
+                    },
+                    onSignInError = { exception ->
+                        when (exception) {
+                            is FirebaseAuthAnonymousUpgradeException -> {
+                                finish(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT, exception.response.toIntent())
+                            }
+                            is FirebaseAuthInvalidCredentialsException -> {
+                                // Error is already handled in the UI
+                            }
+                            else -> {
+                                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(exception))
+                            }
+                        }
+                    },
+                    onForgotPassword = {
+                        setContent {
+                            RecoverPasswordScreen(
+                                flowParameters = getFlowParams(),
+                                initialEmail = user.email,
+                                onSuccess = {
+                                    finish(RESULT_OK, Intent())
+                                },
+                                onError = { exception ->
+                                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(exception))
+                                },
+                                viewModel = ViewModelProvider(this@EmailActivity)[RecoverPasswordHandler::class.java]
+                            )
+                        }
+                    },
+                    viewModel = mPasswordHandler
+                )
+            }
         }
     }
 
-    override fun onExistingIdpUser(user: User) {
-        // Existing social user: direct them to sign in using their chosen provider.
+    private fun handleExistingIdpUser(user: User) {
         startActivityForResult(
             WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
             RequestCodes.WELCOME_BACK_IDP_FLOW
@@ -199,8 +258,7 @@ class EmailActivity : AppCompatBase(),
         setSlideAnimation()
     }
 
-    override fun onNewUser(user: User) {
-        // New user: direct them to create an account with email/password if account creation is enabled.
+    private fun handleNewUser(user: User) {
         var emailConfig: AuthUI.IdpConfig? = ProviderUtils.getConfigFromIdps(getFlowParams().providers, EmailAuthProvider.PROVIDER_ID)
         if (emailConfig == null) {
             emailConfig = ProviderUtils.getConfigFromIdps(getFlowParams().providers, AuthUI.EMAIL_LINK_PROVIDER)
@@ -210,7 +268,6 @@ class EmailActivity : AppCompatBase(),
             return
         }
         if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
-            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
             if (emailConfig.providerId == AuthUI.EMAIL_LINK_PROVIDER) {
                 val email = user.email
                 if (email == null) {
@@ -219,45 +276,40 @@ class EmailActivity : AppCompatBase(),
                 }
                 showRegisterEmailLinkFragment(emailConfig, email)
             } else {
-                val fragment = RegisterEmailFragment.newInstance(user)
-                ft.replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG)
-                emailLayout?.let {
-                    val emailFieldName = getString(R.string.fui_email_field_name)
-                    ViewCompat.setTransitionName(it, emailFieldName)
-                    ft.addSharedElement(it, emailFieldName)
+                setContent {
+                    RegisterEmailScreen(
+                        flowParameters = getFlowParams(),
+                        user = user,
+                        onRegisterSuccess = { newUser, password ->
+                            mHandler.startSignIn(
+                                IdpResponse.Builder(newUser).build(),
+                                password
+                            )
+                            val result = IdpResponse.Builder(newUser).build().toIntent()
+                            setResult(RESULT_OK, result)
+                        },
+                        onRegisterError = { e ->
+
+                        }
+                    )
                 }
-                ft.disallowAddToBackStack().commit()
             }
         } else {
             emailLayout?.error = getString(R.string.fui_error_email_does_not_exist)
         }
     }
 
-    override fun onTroubleSigningIn(email: String) {
-        val troubleSigningInFragment = TroubleSigningInFragment.newInstance(email)
-        switchFragment(troubleSigningInFragment, R.id.fragment_register_email, TroubleSigningInFragment.TAG, true, true)
+    private fun handleDeveloperFailure(e: Exception) {
+        finishOnDeveloperError(e)
     }
 
-    override fun onClickResendEmail(email: String) {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            // We assume that to get to TroubleSigningInFragment we went through EmailLinkFragment,
-            // which was added to the fragment back stack. To avoid needing to pop the back stack twice,
-            // we preemptively pop off the last EmailLinkFragment.
-            supportFragmentManager.popBackStack()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RequestCodes.WELCOME_BACK_EMAIL_FLOW ||
+            requestCode == RequestCodes.WELCOME_BACK_IDP_FLOW
+        ) {
+            finish(resultCode, data)
         }
-        val emailConfig: AuthUI.IdpConfig = ProviderUtils.getConfigFromIdpsOrThrow(
-            getFlowParams().providers,
-            EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
-        )
-        showRegisterEmailLinkFragment(emailConfig, email)
-    }
-
-    override fun onSendEmailFailure(e: Exception) {
-        finishOnDeveloperError(e)
-    }
-
-    override fun onDeveloperFailure(e: Exception) {
-        finishOnDeveloperError(e)
     }
 
     private fun finishOnDeveloperError(e: Exception) {
@@ -268,7 +320,6 @@ class EmailActivity : AppCompatBase(),
     }
 
     private fun setSlideAnimation() {
-        // Make the next activity slide in.
         overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left)
     }
 
@@ -282,7 +333,7 @@ class EmailActivity : AppCompatBase(),
         switchFragment(fragment, R.id.fragment_register_email, EmailLinkFragment.TAG)
     }
 
-    override fun showProgress(@StringRes message: Int) {
+    override fun showProgress(message: Int) {
         throw UnsupportedOperationException("Email fragments must handle progress updates.")
     }
 

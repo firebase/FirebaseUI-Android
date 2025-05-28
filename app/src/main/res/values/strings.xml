@@ -10,11 +10,16 @@
     <string name="title_storage_activity">Storage Image Demo</string>
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
-    <string name="desc_anonymous_upgrade">Demonstrates upgrading an anonymous account using FirebaseUI.</string>
-    <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
-    <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to load/infinite scroll paged data from Cloud Firestore.</string>
-    <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
-    <string name="desc_realtime_database_paging">Demonstrates using a FirebaseRecyclerPagingAdapter to load/infinite scroll paged data from Firebase Realtime Database.</string>
+    <string name="desc_anonymous_upgrade">Demonstrates upgrading an anonymous account using
+        FirebaseUI.</string>
+    <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from
+        Cloud Firestore into a RecyclerView for a basic chat app.</string>
+    <string name="desc_firestore_paging">Demonstrates using a FirestorePagingAdapter to
+        load/infinite scroll paged data from Cloud Firestore.</string>
+    <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data
+        from Firebase Database into a RecyclerView for a basic chat app.</string>
+    <string name="desc_realtime_database_paging">Demonstrates using a FirebaseRecyclerPagingAdapter
+        to load/infinite scroll paged data from Firebase Realtime Database.</string>
     <string name="desc_storage">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
     <!-- Auth UI -->
@@ -63,7 +68,8 @@
     <string name="facebook_permission_photos">Photos</string>
 
     <string name="options_header">Other Options</string>
-    <string name="options_enable_credential_selector">Enable Credential Manager\'s credential selector</string>
+    <string name="options_enable_credential_selector">Enable Credential Manager\'s credential
+        selector</string>
     <string name="options_allow_new_email_acccount">Allow new account creation</string>
     <string name="options_require_name">Require first/last name with email accounts.</string>
     <string name="options_use_auth_emulator">Connect to auth emulator (localhost:9099).</string>
@@ -111,7 +117,8 @@
     <string name="send">Send</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
 
-    <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
+    <string name="rational_image_perm">This sample will read an image from local storage to upload
+        to Cloud Storage.</string>
 
     <!-- Database -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
@@ -119,11 +126,14 @@
     <string name="signed_in">Signed In</string>
     <string name="anonymous_auth_failed_msg">
         Anonymous authentication failed, various components of the demo will not work.
-        Make sure your device is online and that Anonymous Auth is configured in your Firebase project
+        Make sure your device is online and that Anonymous Auth is configured in your Firebase
+        project
         (https://console.firebase.google.com/project/_/authentication/providers)
     </string>
 
     <string name="menu_add_data">Add Data</string>
     <string name="hint_message">Say something…</string>
     <string name="paging_finished_message">Reached End of List</string>
+
+    <string name="auth_compose_title">Auth UI (Compose)</string>
 </resources>

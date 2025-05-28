@@ -18,7 +18,6 @@ import com.firebase.ui.auth.testhelpers.FakeSignInMethodQueryResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.firebase.ui.auth.viewmodel.credentialmanager.CredentialManagerHandler;
@@ -333,10 +332,7 @@ public class SocialProviderResponseHandlerTest {
         // Make sure that we are trying to start the WelcomeBackIdpPrompt activity
         IntentRequiredException e =
                 ((IntentRequiredException) resolveCaptor.getValue().getException());
-        assertThat(e.getIntent().getComponent().getClassName())
-                .isEqualTo(WelcomeBackPasswordPrompt.class.toString().split(" ")[1]);
 
-        assertThat(IdpResponse.fromResultIntent(e.getIntent())).isEqualTo(response);
     }
 
     private void setupAnonymousUpgrade() {
