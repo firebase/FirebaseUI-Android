@@ -113,8 +113,6 @@ class ChooserActivity : ComponentActivity() {
     )
 
     private val activityItems = listOf(
-        ActivityEntry(AuthUiActivity::class.java,
-            R.string.title_auth_activity, R.string.desc_auth),
         ActivityEntry(AuthComposeActivity::class.java,
             R.string.auth_compose_title, R.string.desc_auth),
         ActivityEntry(AnonymousUpgradeActivity::class.java,

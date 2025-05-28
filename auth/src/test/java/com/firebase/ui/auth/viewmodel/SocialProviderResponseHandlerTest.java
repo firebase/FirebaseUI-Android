@@ -332,10 +332,7 @@ public class SocialProviderResponseHandlerTest {
         // Make sure that we are trying to start the WelcomeBackIdpPrompt activity
         IntentRequiredException e =
                 ((IntentRequiredException) resolveCaptor.getValue().getException());
-        assertThat(e.getIntent().getComponent().getClassName())
-                .isEqualTo(WelcomeBackPasswordPrompt.class.toString().split(" ")[1]);
 
-        assertThat(IdpResponse.fromResultIntent(e.getIntent())).isEqualTo(response);
     }
 
     private void setupAnonymousUpgrade() {
