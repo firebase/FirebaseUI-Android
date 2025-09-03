@@ -22,10 +22,11 @@ gradleEnterprise {
 rootProject.buildFileName = 'build.gradle.kts'
 
 include(
-        ":app", 
-
+        ":app",
+        ":appcompose",
         ":library",
         ":auth",
+        ":authCompose",
         ":common", 
         ":database",
         ":firestore", 
