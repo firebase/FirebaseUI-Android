@@ -1,8 +1,22 @@
 package com.firebase.ui.auth.configuration
 
 import android.graphics.Color
-import com.firebase.ui.auth.configuration.PasswordRule
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.firebase.auth.ActionCodeSettings
+
+@DslMarker
+annotation class AuthProviderDsl
+
+@AuthProviderDsl
+class AuthProvidersBuilder {
+    private val providers = mutableListOf<AuthProvider>()
+
+    fun provider(provider: AuthProvider) {
+        providers.add(provider)
+    }
+
+    internal fun build(): List<AuthProvider> = providers.toList()
+}
 
 /**
  * Base sealed class for authentication providers.
@@ -235,7 +249,7 @@ sealed class AuthProvider() {
         /**
          * An optional icon for the provider button.
          */
-        val buttonIcon: Any?,
+        val buttonIcon: ImageVector?,
 
         /**
          * An optional background color for the provider button.

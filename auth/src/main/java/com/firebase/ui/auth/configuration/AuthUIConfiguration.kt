@@ -1,16 +1,73 @@
 package com.firebase.ui.auth.configuration
 
-import com.google.firebase.auth.ActionCodeSettings
 import java.util.Locale
+import com.google.firebase.auth.ActionCodeSettings
+import androidx.compose.ui.graphics.vector.ImageVector
+
+fun actionCodeSettings(
+    block: ActionCodeSettings.Builder.() -> Unit
+) = ActionCodeSettings.newBuilder().apply(block).build()
+
+fun authUIConfiguration(block: AuthUIConfigurationBuilder.() -> Unit): AuthUIConfiguration {
+    val builder = AuthUIConfigurationBuilder()
+    builder.block()
+    return builder.build()
+}
+
+@DslMarker
+annotation class AuthUIConfigurationDsl
+
+@AuthUIConfigurationDsl
+class AuthUIConfigurationBuilder {
+    private val providers = mutableListOf<AuthProvider>()
+    var theme: AuthUITheme = AuthUITheme.Default
+    var stringProvider: AuthUIStringProvider? = null
+    var locale: Locale? = null
+    var enableCredentialManager: Boolean = true
+    var enableMfa: Boolean = true
+    var enableAnonymousUpgrade: Boolean = false
+    var tosUrl: String? = null
+    var privacyPolicyUrl: String? = null
+    var logo: ImageVector? = null
+    var actionCodeSettings: ActionCodeSettings? = null
+    var allowNewEmailAccounts: Boolean = true
+    var requireDisplayName: Boolean = true
+    var alwaysShowProviderChoice: Boolean = false
+
+    fun providers(block: AuthProvidersBuilder.() -> Unit) {
+        val builder = AuthProvidersBuilder()
+        builder.block()
+        providers.addAll(builder.build())
+    }
+
+    internal fun build(): AuthUIConfiguration {
+        return AuthUIConfiguration(
+            providers = providers.toList(),
+            theme = theme,
+            stringProvider = stringProvider,
+            locale = locale,
+            enableCredentialManager = enableCredentialManager,
+            enableMfa = enableMfa,
+            enableAnonymousUpgrade = enableAnonymousUpgrade,
+            tosUrl = tosUrl,
+            privacyPolicyUrl = privacyPolicyUrl,
+            logo = logo,
+            actionCodeSettings = actionCodeSettings,
+            allowNewEmailAccounts = allowNewEmailAccounts,
+            requireDisplayName = requireDisplayName,
+            alwaysShowProviderChoice = alwaysShowProviderChoice
+        )
+    }
+}
 
 /**
  * Configuration object for the authentication flow.
  */
-class AuthUIConfiguration(
+data class AuthUIConfiguration(
     /**
      * The list of enabled authentication providers.
      */
-    val providers: List<AuthProvider> = listOf(),
+    val providers: List<AuthProvider> = emptyList(),
 
     /**
      * The theming configuration for the UI. Default to [AuthUITheme.Default].
@@ -35,7 +92,7 @@ class AuthUIConfiguration(
     /**
      * Enables Multi-Factor Authentication support. Defaults to true.
      */
-    val enableMfa: Boolean = false,
+    val enableMfa: Boolean = true,
 
     /**
      * Allows upgrading an anonymous user to a new credential.
@@ -55,7 +112,7 @@ class AuthUIConfiguration(
     /**
      * The logo to display on the authentication screens.
      */
-    val logo: Any? = null,
+    val logo: ImageVector? = null,
 
     /**
      * Configuration for email link sign-in.

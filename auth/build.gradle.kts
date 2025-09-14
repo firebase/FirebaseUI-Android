@@ -4,6 +4,7 @@ plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -67,9 +68,20 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
+    implementation(platform(Config.Libs.Androidx.Compose.bom))
+    implementation(Config.Libs.Androidx.Compose.ui)
+    implementation(Config.Libs.Androidx.Compose.uiGraphics)
+    implementation(Config.Libs.Androidx.Compose.material3)
+    implementation(Config.Libs.Androidx.Compose.foundation)
+    implementation(Config.Libs.Androidx.Compose.tooling)
+    implementation(Config.Libs.Androidx.Compose.toolingPreview)
+    implementation(Config.Libs.Androidx.Compose.activityCompose)
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
     // The new activity result APIs force us to include Fragment 1.3.0
