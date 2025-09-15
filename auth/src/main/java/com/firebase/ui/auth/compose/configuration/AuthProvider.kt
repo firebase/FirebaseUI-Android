@@ -1,8 +1,33 @@
-package com.firebase.ui.auth.configuration
+/*
+ * Copyright 2025 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.firebase.ui.auth.compose.configuration
 
 import android.graphics.Color
-import com.firebase.ui.auth.configuration.PasswordRule
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.firebase.auth.ActionCodeSettings
+
+@AuthUIConfigurationDsl
+class AuthProvidersBuilder {
+    private val providers = mutableListOf<AuthProvider>()
+
+    fun provider(provider: AuthProvider) {
+        providers.add(provider)
+    }
+
+    internal fun build(): List<AuthProvider> = providers.toList()
+}
 
 /**
  * Base sealed class for authentication providers.
@@ -11,7 +36,7 @@ sealed class AuthProvider() {
     /**
      * Email/Password authentication provider configuration.
      */
-    data class EmailAuthProvider(
+    data class Email(
         /**
          * Requires the user to provide a display name. Defaults to true.
          */
@@ -46,7 +71,7 @@ sealed class AuthProvider() {
     /**
      * Phone number authentication provider configuration.
      */
-    data class PhoneAuthProvider(
+    data class Phone(
         /**
          * The default country code to pre-select.
          */
@@ -81,7 +106,7 @@ sealed class AuthProvider() {
     /**
      * Google Sign-In provider configuration.
      */
-    data class GoogleAuthProvider(
+    data class Google(
         /**
          * The list of scopes to request.
          */
@@ -111,7 +136,7 @@ sealed class AuthProvider() {
     /**
      * Facebook Login provider configuration.
      */
-    data class FacebookAuthProvider(
+    data class Facebook(
         /**
          * The list of scopes (permissions) to request. Defaults to email and public_profile.
          */
@@ -126,7 +151,7 @@ sealed class AuthProvider() {
     /**
      * Twitter/X authentication provider configuration.
      */
-    data class TwitterAuthProvider(
+    data class Twitter(
         /**
          * A map of custom OAuth parameters.
          */
@@ -136,7 +161,7 @@ sealed class AuthProvider() {
     /**
      * Github authentication provider configuration.
      */
-    data class GithubAuthProvider(
+    data class Github(
         /**
          * The list of scopes to request. Defaults to user:email.
          */
@@ -151,7 +176,7 @@ sealed class AuthProvider() {
     /**
      * Microsoft authentication provider configuration.
      */
-    data class MicrosoftAuthProvider(
+    data class Microsoft(
         /**
          * The list of scopes to request. Defaults to openid, profile, email.
          */
@@ -171,7 +196,7 @@ sealed class AuthProvider() {
     /**
      * Yahoo authentication provider configuration.
      */
-    data class YahooAuthProvider(
+    data class Yahoo(
         /**
          * The list of scopes to request. Defaults to openid, profile, email.
          */
@@ -186,7 +211,7 @@ sealed class AuthProvider() {
     /**
      * Apple Sign-In provider configuration.
      */
-    data class AppleAuthProvider(
+    data class Apple(
         /**
          * The list of scopes to request. Defaults to name and email.
          */
@@ -206,12 +231,12 @@ sealed class AuthProvider() {
     /**
      * Anonymous authentication provider. It has no configurable properties.
      */
-    object AnonymousAuthProvider : AuthProvider()
+    object Anonymous : AuthProvider()
 
     /**
      * A generic OAuth provider for any unsupported provider.
      */
-    data class GenericOAuthProvider(
+    data class GenericOAuth(
         /**
          * The provider ID as configured in the Firebase console.
          */
@@ -235,7 +260,7 @@ sealed class AuthProvider() {
         /**
          * An optional icon for the provider button.
          */
-        val buttonIcon: Any?,
+        val buttonIcon: ImageVector?,
 
         /**
          * An optional background color for the provider button.

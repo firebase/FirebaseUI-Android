@@ -5,8 +5,8 @@ object Config {
     private const val kotlinVersion = "2.1.0"
 
     object SdkVersions {
-        const val compile = 34
-        const val target = 34
+        const val compile = 35
+        const val target = 35
         const val min = 23
     }
 
@@ -40,8 +40,18 @@ object Config {
             const val paging = "androidx.paging:paging-runtime:3.0.0"
             const val pagingRxJava = "androidx.paging:paging-rxjava3:3.0.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
-
             const val materialDesign = "com.google.android.material:material:1.4.0"
+
+            object Compose {
+                const val bom = "androidx.compose:compose-bom:2025.08.00"
+                const val ui = "androidx.compose.ui:ui"
+                const val uiGraphics = "androidx.compose.ui:ui-graphics"
+                const val toolingPreview = "androidx.compose.ui:ui-tooling-preview"
+                const val tooling = "androidx.compose.ui:ui-tooling"
+                const val foundation = "androidx.compose.foundation:foundation"
+                const val material3 = "androidx.compose.material3:material3"
+                const val activityCompose = "androidx.activity:activity-compose"
+            }
         }
 
         object Firebase {
@@ -83,6 +93,8 @@ object Config {
             const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
             const val runner = "androidx.test:runner:1.5.0"
             const val rules = "androidx.test:rules:1.5.0"
+
+            const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
         }
 
         object Lint {
