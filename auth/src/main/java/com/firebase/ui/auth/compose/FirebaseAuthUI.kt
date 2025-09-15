@@ -61,7 +61,7 @@ class FirebaseAuthUI private constructor(
         private val instanceCache = ConcurrentHashMap<String, FirebaseAuthUI>()
 
         /** Special key for the default app instance to distinguish from named instances. */
-        private const val DEFAULT_APP_KEY = "[DEFAULT]"
+        private const val DEFAULT_APP_KEY = "__FIREBASE_UI_DEFAULT__"
 
         /**
          * Returns a cached singleton instance for the default Firebase app.

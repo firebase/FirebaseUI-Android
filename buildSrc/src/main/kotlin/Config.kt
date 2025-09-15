@@ -5,8 +5,8 @@ object Config {
     private const val kotlinVersion = "2.1.0"
 
     object SdkVersions {
-        const val compile = 34
-        const val target = 34
+        const val compile = 35
+        const val target = 35
         const val min = 23
     }
 
@@ -93,6 +93,8 @@ object Config {
             const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
             const val runner = "androidx.test:runner:1.5.0"
             const val rules = "androidx.test:rules:1.5.0"
+
+            const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
         }
 
         object Lint {

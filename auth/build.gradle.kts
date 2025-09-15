@@ -113,6 +113,7 @@ dependencies {
     testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.core)
     testImplementation(Config.Libs.Test.robolectric)
+    testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
 
     debugImplementation(project(":internal:lintchecks"))
