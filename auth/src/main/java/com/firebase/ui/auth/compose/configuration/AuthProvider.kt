@@ -17,6 +17,12 @@ package com.firebase.ui.auth.compose.configuration
 import android.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.GithubAuthProvider
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.TwitterAuthProvider
 
 @AuthUIConfigurationDsl
 class AuthProvidersBuilder {
@@ -27,6 +33,22 @@ class AuthProvidersBuilder {
     }
 
     internal fun build(): List<AuthProvider> = providers.toList()
+}
+
+/**
+ * Enum class to represent all possible providers.
+ */
+internal enum class Provider(val id: String) {
+    GOOGLE(GoogleAuthProvider.PROVIDER_ID),
+    FACEBOOK(FacebookAuthProvider.PROVIDER_ID),
+    TWITTER(TwitterAuthProvider.PROVIDER_ID),
+    GITHUB(GithubAuthProvider.PROVIDER_ID),
+    EMAIL(EmailAuthProvider.PROVIDER_ID),
+    PHONE(PhoneAuthProvider.PROVIDER_ID),
+    ANONYMOUS("anonymous"),
+    MICROSOFT("microsoft.com"),
+    YAHOO("yahoo.com"),
+    APPLE("apple.com"),
 }
 
 /**
@@ -75,7 +97,7 @@ sealed class AuthProvider(open val providerId: String) {
          * A list of custom password validation rules.
          */
         val passwordValidationRules: List<PasswordRule>
-    ) : AuthProvider(providerId = if (enableEmailLinkSignIn) "emailLink" else "password")
+    ) : AuthProvider(providerId = Provider.EMAIL.id)
 
     /**
      * Phone number authentication provider configuration.
@@ -110,7 +132,7 @@ sealed class AuthProvider(open val providerId: String) {
          * Enables automatic retrieval of the SMS code. Defaults to true.
          */
         val enableAutoRetrieval: Boolean = true
-    ) : AuthProvider(providerId = "phone")
+    ) : AuthProvider(providerId = Provider.PHONE.id)
 
     /**
      * Google Sign-In provider configuration.
@@ -146,7 +168,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String> = emptyMap()
     ) : OAuthProvider(
-        providerId = "google.com",
+        providerId = Provider.GOOGLE.id,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -170,7 +192,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String> = emptyMap()
     ) : OAuthProvider(
-        providerId = "facebook.com",
+        providerId = Provider.FACEBOOK.id,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -184,7 +206,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String>
     ) : OAuthProvider(
-        providerId = "twitter.com",
+        providerId = Provider.TWITTER.id,
         customParameters = customParameters
     )
 
@@ -202,7 +224,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String>
     ) : OAuthProvider(
-        providerId = "github.com",
+        providerId = Provider.GITHUB.id,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -226,7 +248,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String>
     ) : OAuthProvider(
-        providerId = "microsoft.com",
+        providerId = Provider.MICROSOFT.id,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -245,7 +267,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String>
     ) : OAuthProvider(
-        providerId = "yahoo.com",
+        providerId = Provider.YAHOO.id,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -269,7 +291,7 @@ sealed class AuthProvider(open val providerId: String) {
          */
         override val customParameters: Map<String, String>
     ) : OAuthProvider(
-        providerId = "apple.com",
+        providerId = Provider.APPLE.id,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -277,7 +299,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Anonymous authentication provider. It has no configurable properties.
      */
-    object Anonymous : AuthProvider(providerId = "anonymous")
+    object Anonymous : AuthProvider(providerId = Provider.ANONYMOUS.id)
 
     /**
      * A generic OAuth provider for any unsupported provider.
