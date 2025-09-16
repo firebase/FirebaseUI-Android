@@ -96,13 +96,7 @@ data class AuthUITheme(
             colorScheme = lightColorScheme(),
             typography = Typography(),
             shapes = Shapes(),
-            // TODO(demolaf): do we provide default styles for each provider?
-            providerStyles = mapOf<String, ProviderStyle>(
-                "google.com" to ProviderStyle(
-                    backgroundColor = Color.White,
-                    contentColor = Color.Black
-                )
-            )
+            providerStyles = defaultProviderStyles
         )
 
         /**
@@ -120,6 +114,83 @@ data class AuthUITheme(
                 providerStyles = providerStyles
             )
         }
+
+        internal val defaultProviderStyles
+            get(): Map<String, ProviderStyle> {
+                return Provider.entries.associate { provider ->
+                    when (provider) {
+                        Provider.GOOGLE -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color.White,
+                                contentColor = Color(0xFF757575)
+                            )
+                        }
+
+                        Provider.FACEBOOK -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFF3B5998),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.TWITTER -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFF5BAAF4),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.GITHUB -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFF24292E),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.EMAIL -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFFD0021B),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.PHONE -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFF43C5A5),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.ANONYMOUS -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFFF4B400),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.MICROSOFT -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFF2F2F2F),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.YAHOO -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color(0xFF720E9E),
+                                contentColor = Color.White
+                            )
+                        }
+
+                        Provider.APPLE -> {
+                            provider.id to ProviderStyle(
+                                backgroundColor = Color.Black,
+                                contentColor = Color.White
+                            )
+                        }
+                    }
+                }
+            }
     }
 }
 
