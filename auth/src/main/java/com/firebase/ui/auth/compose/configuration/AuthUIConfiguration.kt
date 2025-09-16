@@ -75,8 +75,43 @@ class AuthUIConfigurationBuilder {
     }
 
     private fun validate() {
+        // At least one provider
         if (providers.isEmpty()) {
             throw IllegalArgumentException("At least one provider must be configured")
+        }
+
+        // No unsupported providers
+        val supportedProviderIds = Provider.entries.map { it.id }.toSet()
+        val unknownProviders = providers.filter { it.providerId !in supportedProviderIds }
+        require(unknownProviders.isEmpty()) {
+            "Unknown providers: ${unknownProviders.joinToString { it.providerId }}"
+        }
+
+        // Cannot have only anonymous provider
+        if (providers.size == 1 && providers.first() is AuthProvider.Anonymous) {
+            throw IllegalStateException(
+                "Sign in as guest cannot be the only sign in method. " +
+                        "In this case, sign the user in anonymously your self; no UI is needed."
+            )
+        }
+
+        // Check for duplicate providers
+        val providerIds = providers.map { it.providerId }
+        val duplicates = providerIds.groupingBy { it }.eachCount().filter { it.value > 1 }
+
+        require(duplicates.isEmpty()) {
+            val message = duplicates.keys.joinToString(", ")
+            throw IllegalArgumentException(
+                "Each provider can only be set once. Duplicates: $message"
+            )
+        }
+
+        // Provider specific validations
+        providers.forEach { provider ->
+            when (provider) {
+                is AuthProvider.Email -> provider.validate()
+                else -> null
+            }
         }
     }
 }

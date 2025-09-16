@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose.configuration
 
 import android.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.firebase.ui.auth.util.data.ProviderAvailability
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
@@ -52,18 +53,18 @@ internal enum class Provider(val id: String) {
 }
 
 /**
+ * Base class for OAuth authentication providers with common properties.
+ */
+abstract class OAuthProvider(
+    override val providerId: String,
+    open val scopes: List<String> = emptyList(),
+    open val customParameters: Map<String, String> = emptyMap()
+) : AuthProvider(providerId)
+
+/**
  * Base sealed class for authentication providers.
  */
 sealed class AuthProvider(open val providerId: String) {
-    /**
-     * Base class for OAuth authentication providers with common properties.
-     */
-    abstract class OAuthProvider(
-        override val providerId: String,
-        open val scopes: List<String> = emptyList(),
-        open val customParameters: Map<String, String> = emptyMap()
-    ) : AuthProvider(providerId)
-
     /**
      * Email/Password authentication provider configuration.
      */
@@ -97,7 +98,22 @@ sealed class AuthProvider(open val providerId: String) {
          * A list of custom password validation rules.
          */
         val passwordValidationRules: List<PasswordRule>
-    ) : AuthProvider(providerId = Provider.EMAIL.id)
+    ) : AuthProvider(providerId = Provider.EMAIL.id) {
+        fun validate() {
+            if (enableEmailLinkSignIn) {
+                val actionCodeSettings = actionCodeSettings
+                    ?: requireNotNull(actionCodeSettings) {
+                        "ActionCodeSettings cannot be null when using " +
+                                "email link sign in."
+                    }
+
+                check(actionCodeSettings.canHandleCodeInApp()) {
+                    "You must set canHandleCodeInApp in your " +
+                            "ActionCodeSettings to true for Email-Link Sign-in."
+                }
+            }
+        }
+    }
 
     /**
      * Phone number authentication provider configuration.

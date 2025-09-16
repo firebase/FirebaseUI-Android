@@ -2,7 +2,7 @@ object Config {
     const val version = "10.0.0-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "2.1.0"
+    private const val kotlinVersion = "2.2.0"
 
     object SdkVersions {
         const val compile = 35

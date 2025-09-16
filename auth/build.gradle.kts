@@ -4,7 +4,7 @@ plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    alias(libs.plugins.compose.compiler)
 }
 
 android {

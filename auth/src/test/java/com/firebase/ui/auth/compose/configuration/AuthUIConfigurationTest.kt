@@ -125,19 +125,88 @@ class AuthUIConfigurationTest {
     }
 
     @Test
-    fun `authUIConfiguration succeeds with single provider`() {
+    fun `validation accepts all supported providers`() {
         val config = authUIConfiguration {
             providers {
-                provider(
-                    AuthProvider.Google(
-                        scopes = listOf(),
-                        serverClientId = ""
-                    )
-                )
+                provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
+                provider(AuthProvider.Facebook())
+                provider(AuthProvider.Twitter(customParameters = mapOf()))
+                provider(AuthProvider.Github(customParameters = mapOf()))
+                provider(AuthProvider.Microsoft(customParameters = mapOf(), tenant = null))
+                provider(AuthProvider.Yahoo(customParameters = mapOf()))
+                provider(AuthProvider.Apple(customParameters = mapOf(), locale = null))
+                provider(AuthProvider.Phone(defaultCountryCode = null, allowedCountries = null))
+                provider(AuthProvider.Email(actionCodeSettings = null, passwordValidationRules = listOf()))
             }
         }
+        assertThat(config.providers).hasSize(9)
+    }
 
-        assertThat(config.providers).hasSize(1)
+    @Test(expected = IllegalArgumentException::class)
+    fun `validation throws for unsupported provider`() {
+        val mockProvider = AuthProvider.GenericOAuth(
+            providerId = "unsupported.provider",
+            scopes = listOf(),
+            customParameters = mapOf(),
+            buttonLabel = "Test",
+            buttonIcon = null,
+            buttonColor = null
+        )
+
+        authUIConfiguration {
+            providers {
+                provider(mockProvider)
+            }
+        }
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `validate throws when only anonymous provider is configured`() {
+        authUIConfiguration {
+            providers {
+                provider(AuthProvider.Anonymous)
+            }
+        }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `validate throws for duplicate providers`() {
+        authUIConfiguration {
+            providers {
+                provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
+                provider(AuthProvider.Google(scopes = listOf("email"), serverClientId = "different"))
+            }
+        }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `validate throws for enableEmailLinkSignIn true when actionCodeSettings is null`() {
+        authUIConfiguration {
+            providers {
+                provider(AuthProvider.Email(
+                    enableEmailLinkSignIn = true,
+                    actionCodeSettings = null,
+                    passwordValidationRules = listOf()
+                ))
+            }
+        }
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `validate throws for enableEmailLinkSignIn true when actionCodeSettings canHandleCodeInApp false`() {
+        val customActionCodeSettings = actionCodeSettings {
+            url = "https://example.com"
+            handleCodeInApp = false
+        }
+        authUIConfiguration {
+            providers {
+                provider(AuthProvider.Email(
+                    enableEmailLinkSignIn = true,
+                    actionCodeSettings = customActionCodeSettings,
+                    passwordValidationRules = listOf()
+                ))
+            }
+        }
     }
 
     // ===========================================================================================
