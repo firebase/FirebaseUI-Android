@@ -281,16 +281,16 @@ class AuthUIConfigurationTest {
             "theme",
             "stringProvider",
             "locale",
-            "enableCredentialManager",
-            "enableMfa",
-            "enableAnonymousUpgrade",
+            "isCredentialManagerEnabled",
+            "isMfaEnabled",
+            "isAnonymousUpgradeEnabled",
             "tosUrl",
             "privacyPolicyUrl",
             "logo",
             "actionCodeSettings",
-            "allowNewEmailAccounts",
-            "requireDisplayName",
-            "alwaysShowProviderChoice"
+            "isNewEmailAccountsAllowed",
+            "isDisplayNameRequired",
+            "isProviderChoiceAlwaysShown"
         )
 
         val actualProperties = allProperties.map { it.name }.toSet()
