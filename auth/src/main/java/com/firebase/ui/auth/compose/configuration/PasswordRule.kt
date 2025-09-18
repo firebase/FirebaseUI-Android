@@ -15,14 +15,14 @@
 package com.firebase.ui.auth.compose.configuration
 
 /**
- * A sealed class representing a set of validation rules that can be applied to a password field,
+ * An abstract class representing a set of validation rules that can be applied to a password field,
  * typically within the [AuthProvider.Email] configuration.
  */
-sealed class PasswordRule {
+abstract class PasswordRule {
     /**
      * Requires the password to have at least a certain number of characters.
      */
-    data class MinimumLength(val value: Int) : PasswordRule()
+    class MinimumLength(val value: Int) : PasswordRule()
 
     /**
      * Requires the password to contain at least one uppercase letter (A-Z).
@@ -48,5 +48,5 @@ sealed class PasswordRule {
      * Defines a custom validation rule using a regular expression and provides a specific error
      * message on failure.
      */
-    data class Custom(val regex: Regex, val errorMessage: String)
+    class Custom(val regex: Regex, val errorMessage: String)
 }

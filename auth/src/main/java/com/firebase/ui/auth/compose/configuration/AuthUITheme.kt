@@ -33,7 +33,7 @@ private val LocalAuthUITheme = staticCompositionLocalOf { AuthUITheme.Default }
 /**
  * Theming configuration for the entire Auth UI.
  */
-data class AuthUITheme(
+class AuthUITheme(
     /**
      * The color scheme to use.
      */
@@ -56,10 +56,10 @@ data class AuthUITheme(
 ) {
 
     /**
-     * A data class nested within AuthUITheme that defines the visual appearance of a specific
+     * A class nested within AuthUITheme that defines the visual appearance of a specific
      * provider button, allowing for per-provider branding and customization.
      */
-    data class ProviderStyle(
+    class ProviderStyle(
         /**
          * The background color of the button.
          */

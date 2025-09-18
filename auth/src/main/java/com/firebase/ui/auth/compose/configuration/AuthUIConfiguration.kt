@@ -37,16 +37,16 @@ class AuthUIConfigurationBuilder {
     var theme: AuthUITheme = AuthUITheme.Default
     var stringProvider: AuthUIStringProvider? = null
     var locale: Locale? = null
-    var enableCredentialManager: Boolean = true
-    var enableMfa: Boolean = true
-    var enableAnonymousUpgrade: Boolean = false
+    var isCredentialManagerEnabled: Boolean = true
+    var isMfaEnabled: Boolean = true
+    var isAnonymousUpgradeEnabled: Boolean = false
     var tosUrl: String? = null
     var privacyPolicyUrl: String? = null
     var logo: ImageVector? = null
     var actionCodeSettings: ActionCodeSettings? = null
-    var allowNewEmailAccounts: Boolean = true
-    var requireDisplayName: Boolean = true
-    var alwaysShowProviderChoice: Boolean = false
+    var isNewEmailAccountsAllowed: Boolean = true
+    var isDisplayNameRequired: Boolean = true
+    var isProviderChoiceAlwaysShown: Boolean = false
 
     fun providers(block: AuthProvidersBuilder.() -> Unit) {
         val builder = AuthProvidersBuilder()
@@ -61,16 +61,16 @@ class AuthUIConfigurationBuilder {
             theme = theme,
             stringProvider = stringProvider,
             locale = locale,
-            enableCredentialManager = enableCredentialManager,
-            enableMfa = enableMfa,
-            enableAnonymousUpgrade = enableAnonymousUpgrade,
+            isCredentialManagerEnabled = isCredentialManagerEnabled,
+            isMfaEnabled = isMfaEnabled,
+            isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled,
             tosUrl = tosUrl,
             privacyPolicyUrl = privacyPolicyUrl,
             logo = logo,
             actionCodeSettings = actionCodeSettings,
-            allowNewEmailAccounts = allowNewEmailAccounts,
-            requireDisplayName = requireDisplayName,
-            alwaysShowProviderChoice = alwaysShowProviderChoice
+            isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
+            isDisplayNameRequired = isDisplayNameRequired,
+            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown
         )
     }
 
@@ -119,7 +119,7 @@ class AuthUIConfigurationBuilder {
 /**
  * Configuration object for the authentication flow.
  */
-data class AuthUIConfiguration(
+class AuthUIConfiguration(
     /**
      * The list of enabled authentication providers.
      */
@@ -143,17 +143,17 @@ data class AuthUIConfiguration(
     /**
      * Enables integration with Android's Credential Manager API. Defaults to true.
      */
-    val enableCredentialManager: Boolean = true,
+    val isCredentialManagerEnabled: Boolean = true,
 
     /**
      * Enables Multi-Factor Authentication support. Defaults to true.
      */
-    val enableMfa: Boolean = true,
+    val isMfaEnabled: Boolean = true,
 
     /**
      * Allows upgrading an anonymous user to a new credential.
      */
-    val enableAnonymousUpgrade: Boolean = false,
+    val isAnonymousUpgradeEnabled: Boolean = false,
 
     /**
      * The URL for the terms of service.
@@ -178,15 +178,15 @@ data class AuthUIConfiguration(
     /**
      * Allows new email accounts to be created. Defaults to true.
      */
-    val allowNewEmailAccounts: Boolean = true,
+    val isNewEmailAccountsAllowed: Boolean = true,
 
     /**
      * Requires the user to provide a display name on sign-up. Defaults to true.
      */
-    val requireDisplayName: Boolean = true,
+    val isDisplayNameRequired: Boolean = true,
 
     /**
      * Always shows the provider selection screen, even if only one is enabled.
      */
-    val alwaysShowProviderChoice: Boolean = false,
+    val isProviderChoiceAlwaysShown: Boolean = false,
 )

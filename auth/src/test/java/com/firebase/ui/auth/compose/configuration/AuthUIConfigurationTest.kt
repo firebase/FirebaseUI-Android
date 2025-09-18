@@ -43,16 +43,16 @@ class AuthUIConfigurationTest {
         assertThat(config.theme).isEqualTo(AuthUITheme.Default)
         assertThat(config.stringProvider).isNull()
         assertThat(config.locale).isNull()
-        assertThat(config.enableCredentialManager).isTrue()
-        assertThat(config.enableMfa).isTrue()
-        assertThat(config.enableAnonymousUpgrade).isFalse()
+        assertThat(config.isCredentialManagerEnabled).isTrue()
+        assertThat(config.isMfaEnabled).isTrue()
+        assertThat(config.isAnonymousUpgradeEnabled).isFalse()
         assertThat(config.tosUrl).isNull()
         assertThat(config.privacyPolicyUrl).isNull()
         assertThat(config.logo).isNull()
         assertThat(config.actionCodeSettings).isNull()
-        assertThat(config.allowNewEmailAccounts).isTrue()
-        assertThat(config.requireDisplayName).isTrue()
-        assertThat(config.alwaysShowProviderChoice).isFalse()
+        assertThat(config.isNewEmailAccountsAllowed).isTrue()
+        assertThat(config.isDisplayNameRequired).isTrue()
+        assertThat(config.isProviderChoiceAlwaysShown).isFalse()
     }
 
     @Test
@@ -87,32 +87,32 @@ class AuthUIConfigurationTest {
             theme = customTheme
             stringProvider = customStringProvider
             locale = customLocale
-            enableCredentialManager = false
-            enableMfa = false
-            enableAnonymousUpgrade = true
+            isCredentialManagerEnabled = false
+            isMfaEnabled = false
+            isAnonymousUpgradeEnabled = true
             tosUrl = "https://example.com/tos"
             privacyPolicyUrl = "https://example.com/privacy"
             logo = Icons.Default.AccountCircle
             actionCodeSettings = customActionCodeSettings
-            allowNewEmailAccounts = false
-            requireDisplayName = false
-            alwaysShowProviderChoice = true
+            isNewEmailAccountsAllowed = false
+            isDisplayNameRequired = false
+            isProviderChoiceAlwaysShown = true
         }
 
         assertThat(config.providers).hasSize(2)
         assertThat(config.theme).isEqualTo(customTheme)
         assertThat(config.stringProvider).isEqualTo(customStringProvider)
         assertThat(config.locale).isEqualTo(customLocale)
-        assertThat(config.enableCredentialManager).isFalse()
-        assertThat(config.enableMfa).isFalse()
-        assertThat(config.enableAnonymousUpgrade).isTrue()
+        assertThat(config.isCredentialManagerEnabled).isFalse()
+        assertThat(config.isMfaEnabled).isFalse()
+        assertThat(config.isAnonymousUpgradeEnabled).isTrue()
         assertThat(config.tosUrl).isEqualTo("https://example.com/tos")
         assertThat(config.privacyPolicyUrl).isEqualTo("https://example.com/privacy")
         assertThat(config.logo).isEqualTo(Icons.Default.AccountCircle)
         assertThat(config.actionCodeSettings).isEqualTo(customActionCodeSettings)
-        assertThat(config.allowNewEmailAccounts).isFalse()
-        assertThat(config.requireDisplayName).isFalse()
-        assertThat(config.alwaysShowProviderChoice).isTrue()
+        assertThat(config.isNewEmailAccountsAllowed).isFalse()
+        assertThat(config.isDisplayNameRequired).isFalse()
+        assertThat(config.isProviderChoiceAlwaysShown).isTrue()
     }
 
     // ===========================================================================================
@@ -184,7 +184,7 @@ class AuthUIConfigurationTest {
         authUIConfiguration {
             providers {
                 provider(AuthProvider.Email(
-                    enableEmailLinkSignIn = true,
+                    isEmailLinkSignInEnabled = true,
                     actionCodeSettings = null,
                     passwordValidationRules = listOf()
                 ))
@@ -201,7 +201,7 @@ class AuthUIConfigurationTest {
         authUIConfiguration {
             providers {
                 provider(AuthProvider.Email(
-                    enableEmailLinkSignIn = true,
+                    isEmailLinkSignInEnabled = true,
                     actionCodeSettings = customActionCodeSettings,
                     passwordValidationRules = listOf()
                 ))
@@ -232,9 +232,7 @@ class AuthUIConfigurationTest {
                     )
                 )
             }
-
-            enableCredentialManager = true
-            enableCredentialManager = false
+            isCredentialManagerEnabled = true
         }
 
         assertThat(config.providers).hasSize(2)

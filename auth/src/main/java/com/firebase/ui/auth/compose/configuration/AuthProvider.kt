@@ -16,7 +16,6 @@ package com.firebase.ui.auth.compose.configuration
 
 import android.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.firebase.ui.auth.util.data.ProviderAvailability
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
@@ -53,7 +52,7 @@ internal enum class Provider(val id: String) {
 }
 
 /**
- * Base class for OAuth authentication providers with common properties.
+ * Base abstract class for OAuth authentication providers with common properties.
  */
 abstract class OAuthProvider(
     override val providerId: String,
@@ -62,22 +61,22 @@ abstract class OAuthProvider(
 ) : AuthProvider(providerId)
 
 /**
- * Base sealed class for authentication providers.
+ * Base abstract class for authentication providers.
  */
-sealed class AuthProvider(open val providerId: String) {
+abstract class AuthProvider(open val providerId: String) {
     /**
      * Email/Password authentication provider configuration.
      */
-    data class Email(
+    class Email(
         /**
          * Requires the user to provide a display name. Defaults to true.
          */
-        val requireDisplayName: Boolean = true,
+        val isDisplayNameRequired: Boolean = true,
 
         /**
          * Enables email link sign-in, Defaults to false.
          */
-        val enableEmailLinkSignIn: Boolean = false,
+        val isEmailLinkSignInEnabled: Boolean = false,
 
         /**
          * Settings for email link actions.
@@ -87,7 +86,7 @@ sealed class AuthProvider(open val providerId: String) {
         /**
          * Allows new accounts to be created. Defaults to true.
          */
-        val allowNewAccounts: Boolean = true,
+        val isNewAccountsAllowed: Boolean = true,
 
         /**
          * The minimum length for a password. Defaults to 6.
@@ -100,7 +99,7 @@ sealed class AuthProvider(open val providerId: String) {
         val passwordValidationRules: List<PasswordRule>
     ) : AuthProvider(providerId = Provider.EMAIL.id) {
         fun validate() {
-            if (enableEmailLinkSignIn) {
+            if (isEmailLinkSignInEnabled) {
                 val actionCodeSettings = actionCodeSettings
                     ?: requireNotNull(actionCodeSettings) {
                         "ActionCodeSettings cannot be null when using " +
@@ -118,7 +117,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Phone number authentication provider configuration.
      */
-    data class Phone(
+    class Phone(
         /**
          * The default country code to pre-select.
          */
@@ -142,18 +141,18 @@ sealed class AuthProvider(open val providerId: String) {
         /**
          * Enables instant verification of the phone number. Defaults to true.
          */
-        val enableInstantVerification: Boolean = true,
+        val isInstantVerificationEnabled: Boolean = true,
 
         /**
          * Enables automatic retrieval of the SMS code. Defaults to true.
          */
-        val enableAutoRetrieval: Boolean = true
+        val isAutoRetrievalEnabled: Boolean = true
     ) : AuthProvider(providerId = Provider.PHONE.id)
 
     /**
      * Google Sign-In provider configuration.
      */
-    data class Google(
+    class Google(
         /**
          * The list of scopes to request.
          */
@@ -192,7 +191,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Facebook Login provider configuration.
      */
-    data class Facebook(
+    class Facebook(
         /**
          * The list of scopes (permissions) to request. Defaults to email and public_profile.
          */
@@ -216,7 +215,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Twitter/X authentication provider configuration.
      */
-    data class Twitter(
+    class Twitter(
         /**
          * A map of custom OAuth parameters.
          */
@@ -229,7 +228,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Github authentication provider configuration.
      */
-    data class Github(
+    class Github(
         /**
          * The list of scopes to request. Defaults to user:email.
          */
@@ -248,7 +247,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Microsoft authentication provider configuration.
      */
-    data class Microsoft(
+    class Microsoft(
         /**
          * The list of scopes to request. Defaults to openid, profile, email.
          */
@@ -272,7 +271,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Yahoo authentication provider configuration.
      */
-    data class Yahoo(
+    class Yahoo(
         /**
          * The list of scopes to request. Defaults to openid, profile, email.
          */
@@ -291,7 +290,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * Apple Sign-In provider configuration.
      */
-    data class Apple(
+    class Apple(
         /**
          * The list of scopes to request. Defaults to name and email.
          */
@@ -320,7 +319,7 @@ sealed class AuthProvider(open val providerId: String) {
     /**
      * A generic OAuth provider for any unsupported provider.
      */
-    data class GenericOAuth(
+    class GenericOAuth(
         /**
          * The provider ID as configured in the Firebase console.
          */
