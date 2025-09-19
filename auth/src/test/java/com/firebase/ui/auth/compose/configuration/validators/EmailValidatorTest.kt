@@ -37,7 +37,6 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class EmailValidatorTest {
 
-    @Mock
     private lateinit var stringProvider: DefaultAuthUIStringProvider
 
     private lateinit var emailValidator: EmailValidator
