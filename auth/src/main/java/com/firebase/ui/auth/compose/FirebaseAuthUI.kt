@@ -17,8 +17,14 @@ package com.firebase.ui.auth.compose
 import androidx.annotation.RestrictTo
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -56,6 +62,154 @@ class FirebaseAuthUI private constructor(
     val app: FirebaseApp,
     val auth: FirebaseAuth
 ) {
+
+    private val _authStateFlow = MutableStateFlow<AuthState>(AuthState.Idle)
+
+    /**
+     * Checks whether a user is currently signed in.
+     *
+     * This method directly mirrors the state of [FirebaseAuth] and returns true if there is
+     * a currently signed-in user, false otherwise.
+     *
+     * **Example:**
+     * ```kotlin
+     * val authUI = FirebaseAuthUI.getInstance()
+     * if (authUI.isSignedIn()) {
+     *     // User is signed in
+     *     navigateToHome()
+     * } else {
+     *     // User is not signed in
+     *     navigateToLogin()
+     * }
+     * ```
+     *
+     * @return `true` if a user is signed in, `false` otherwise
+     */
+    fun isSignedIn(): Boolean = auth.currentUser != null
+
+    /**
+     * Returns the currently signed-in user, or null if no user is signed in.
+     *
+     * This method returns the same value as [FirebaseAuth.currentUser] and provides
+     * direct access to the current user object.
+     *
+     * **Example:**
+     * ```kotlin
+     * val authUI = FirebaseAuthUI.getInstance()
+     * val user = authUI.getCurrentUser()
+     * user?.let {
+     *     println("User email: ${it.email}")
+     *     println("User ID: ${it.uid}")
+     * }
+     * ```
+     *
+     * @return The currently signed-in [FirebaseUser], or `null` if no user is signed in
+     */
+    fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
+    /**
+     * Returns a [Flow] that emits [AuthState] changes.
+     *
+     * This flow observes changes to the authentication state and emits appropriate
+     * [AuthState] objects. The flow will emit:
+     * - [AuthState.Idle] when there's no active authentication operation
+     * - [AuthState.Loading] during authentication operations
+     * - [AuthState.Success] when a user successfully signs in
+     * - [AuthState.Error] when an authentication error occurs
+     * - [AuthState.Cancelled] when authentication is cancelled
+     * - [AuthState.RequiresMfa] when multi-factor authentication is needed
+     * - [AuthState.RequiresEmailVerification] when email verification is needed
+     *
+     * The flow automatically emits [AuthState.Success] or [AuthState.Idle] based on
+     * the current authentication state when collection starts.
+     *
+     * **Example:**
+     * ```kotlin
+     * val authUI = FirebaseAuthUI.getInstance()
+     *
+     * lifecycleScope.launch {
+     *     authUI.authStateFlow().collect { state ->
+     *         when (state) {
+     *             is AuthState.Success -> {
+     *                 // User is signed in
+     *                 updateUI(state.user)
+     *             }
+     *             is AuthState.Error -> {
+     *                 // Handle error
+     *                 showError(state.exception.message)
+     *             }
+     *             is AuthState.Loading -> {
+     *                 // Show loading indicator
+     *                 showProgressBar()
+     *             }
+     *             // ... handle other states
+     *         }
+     *     }
+     * }
+     * ```
+     *
+     * @return A [Flow] of [AuthState] that emits authentication state changes
+     */
+    fun authStateFlow(): Flow<AuthState> = callbackFlow {
+        // Set initial state based on current auth state
+        val initialState = auth.currentUser?.let { user ->
+            AuthState.Success(result = null, user = user, isNewUser = false)
+        } ?: AuthState.Idle
+
+        trySend(initialState)
+
+        // Create auth state listener
+        val authStateListener = AuthStateListener { firebaseAuth ->
+            val currentUser = firebaseAuth.currentUser
+            val state = if (currentUser != null) {
+                // Check if email verification is required
+                if (!currentUser.isEmailVerified &&
+                    currentUser.email != null &&
+                    currentUser.providerData.any { it.providerId == "password" }) {
+                    AuthState.RequiresEmailVerification(
+                        user = currentUser,
+                        email = currentUser.email!!
+                    )
+                } else {
+                    AuthState.Success(
+                        result = null,
+                        user = currentUser,
+                        isNewUser = false
+                    )
+                }
+            } else {
+                AuthState.Idle
+            }
+            trySend(state)
+        }
+
+        // Add listener
+        auth.addAuthStateListener(authStateListener)
+
+        // Also observe internal state changes
+        _authStateFlow.value.let { currentState ->
+            if (currentState !is AuthState.Idle && currentState !is AuthState.Success) {
+                trySend(currentState)
+            }
+        }
+
+        // Remove listener when flow collection is cancelled
+        awaitClose {
+            auth.removeAuthStateListener(authStateListener)
+        }
+    }
+
+    /**
+     * Updates the internal authentication state.
+     * This method is intended for internal use by authentication operations.
+     *
+     * @param state The new [AuthState] to emit
+     * @suppress This is an internal API
+     */
+    internal fun updateAuthState(state: AuthState) {
+        _authStateFlow.value = state
+    }
+
     companion object {
         /** Cache for singleton instances per FirebaseApp. Thread-safe via ConcurrentHashMap. */
         private val instanceCache = ConcurrentHashMap<String, FirebaseAuthUI>()
