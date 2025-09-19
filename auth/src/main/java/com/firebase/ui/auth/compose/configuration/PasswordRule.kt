@@ -14,39 +14,114 @@
 
 package com.firebase.ui.auth.compose.configuration
 
+import android.content.Context
+import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.validators.ValidationStatus
+
 /**
- * An abstract class representing a set of validation rules that can be applied to a password field,
- * typically within the [AuthProvider.Email] configuration.
+ * A sealed class representing password validation rules with embedded validation logic.
  */
-abstract class PasswordRule {
+sealed class PasswordRule {
     /**
      * Requires the password to have at least a certain number of characters.
      */
-    class MinimumLength(val value: Int) : PasswordRule()
+    data class MinimumLength(val value: Int) : PasswordRule() {
+        override fun validate(context: Context, password: String): ValidationStatus {
+            return if (password.length >= value) {
+                ValidationStatus(hasError = false)
+            } else {
+                ValidationStatus(
+                    hasError = true,
+                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                )
+            }
+        }
+    }
 
     /**
      * Requires the password to contain at least one uppercase letter (A-Z).
      */
-    object RequireUppercase : PasswordRule()
+    object RequireUppercase : PasswordRule() {
+        override fun validate(context: Context, password: String): ValidationStatus {
+            return if (password.any { it.isUpperCase() }) {
+                ValidationStatus(hasError = false)
+            } else {
+                ValidationStatus(
+                    hasError = true,
+                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                )
+            }
+        }
+    }
 
     /**
      * Requires the password to contain at least one lowercase letter (a-z).
      */
-    object RequireLowercase: PasswordRule()
+    object RequireLowercase : PasswordRule() {
+        override fun validate(context: Context, password: String): ValidationStatus {
+            return if (password.any { it.isLowerCase() }) {
+                ValidationStatus(hasError = false)
+            } else {
+                ValidationStatus(
+                    hasError = true,
+                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                )
+            }
+        }
+    }
 
     /**
      * Requires the password to contain at least one numeric digit (0-9).
      */
-    object RequireDigit: PasswordRule()
+    object RequireDigit : PasswordRule() {
+        override fun validate(context: Context, password: String): ValidationStatus {
+            return if (password.any { it.isDigit() }) {
+                ValidationStatus(hasError = false)
+            } else {
+                ValidationStatus(
+                    hasError = true,
+                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                )
+            }
+        }
+    }
 
     /**
      * Requires the password to contain at least one special character (e.g., !@#$%^&*).
      */
-    object RequireSpecialCharacter: PasswordRule()
+    object RequireSpecialCharacter : PasswordRule() {
+        private val specialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?".toSet()
+
+        override fun validate(context: Context, password: String): ValidationStatus {
+            return if (password.any { it in specialCharacters }) {
+                ValidationStatus(hasError = false)
+            } else {
+                ValidationStatus(
+                    hasError = true,
+                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                )
+            }
+        }
+    }
 
     /**
-     * Defines a custom validation rule using a regular expression and provides a specific error
-     * message on failure.
+     * Defines a custom validation rule using a regular expression.
      */
-    class Custom(val regex: Regex, val errorMessage: String)
+    data class Custom(
+        val regex: Regex,
+        val errorMessage: String
+    ) : PasswordRule() {
+        override fun validate(context: Context, password: String): ValidationStatus {
+            return if (regex.matches(password)) {
+                ValidationStatus(hasError = false)
+            } else {
+                ValidationStatus(
+                    hasError = true,
+                    errorMessage = errorMessage
+                )
+            }
+        }
+    }
+
+    abstract fun validate(context: Context, password: String): ValidationStatus
 }
