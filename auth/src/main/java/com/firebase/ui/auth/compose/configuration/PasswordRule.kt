@@ -14,28 +14,20 @@
 
 package com.firebase.ui.auth.compose.configuration
 
-import com.firebase.ui.auth.compose.configuration.validators.ValidationStatus
-
 /**
- * A sealed class representing password validation rules with embedded validation logic.
+ * A abstract class representing password validation rules with embedded validation logic.
  */
-sealed class PasswordRule {
+abstract class PasswordRule {
     /**
      * Requires the password to have at least a certain number of characters.
      */
     class MinimumLength(val value: Int) : PasswordRule() {
-        override fun validate(
-            stringProvider: AuthUIStringProvider,
-            password: String
-        ): ValidationStatus {
-            return if (password.length >= this@MinimumLength.value) {
-                ValidationStatus(hasError = false)
-            } else {
-                ValidationStatus(
-                    hasError = true,
-                    errorMessage = stringProvider.passwordTooShort.format(this@MinimumLength.value)
-                )
-            }
+        override fun isValid(password: String): Boolean {
+            return password.length >= this@MinimumLength.value
+        }
+
+        override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
+            return stringProvider.passwordTooShort.format(value)
         }
     }
 
@@ -43,18 +35,12 @@ sealed class PasswordRule {
      * Requires the password to contain at least one uppercase letter (A-Z).
      */
     object RequireUppercase : PasswordRule() {
-        override fun validate(
-            stringProvider: AuthUIStringProvider,
-            password: String
-        ): ValidationStatus {
-            return if (password.any { it.isUpperCase() }) {
-                ValidationStatus(hasError = false)
-            } else {
-                ValidationStatus(
-                    hasError = true,
-                    errorMessage = stringProvider.passwordMissingUppercase
-                )
-            }
+        override fun isValid(password: String): Boolean {
+            return password.any { it.isUpperCase() }
+        }
+
+        override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
+            return stringProvider.passwordMissingUppercase
         }
     }
 
@@ -62,18 +48,12 @@ sealed class PasswordRule {
      * Requires the password to contain at least one lowercase letter (a-z).
      */
     object RequireLowercase : PasswordRule() {
-        override fun validate(
-            stringProvider: AuthUIStringProvider,
-            password: String
-        ): ValidationStatus {
-            return if (password.any { it.isLowerCase() }) {
-                ValidationStatus(hasError = false)
-            } else {
-                ValidationStatus(
-                    hasError = true,
-                    errorMessage = stringProvider.passwordMissingLowercase
-                )
-            }
+        override fun isValid(password: String): Boolean {
+            return password.any { it.isLowerCase() }
+        }
+
+        override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
+            return stringProvider.passwordMissingLowercase
         }
     }
 
@@ -81,18 +61,12 @@ sealed class PasswordRule {
      * Requires the password to contain at least one numeric digit (0-9).
      */
     object RequireDigit : PasswordRule() {
-        override fun validate(
-            stringProvider: AuthUIStringProvider,
-            password: String
-        ): ValidationStatus {
-            return if (password.any { it.isDigit() }) {
-                ValidationStatus(hasError = false)
-            } else {
-                ValidationStatus(
-                    hasError = true,
-                    errorMessage = stringProvider.passwordMissingDigit
-                )
-            }
+        override fun isValid(password: String): Boolean {
+            return password.any { it.isDigit() }
+        }
+
+        override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
+            return stringProvider.passwordMissingDigit
         }
     }
 
@@ -102,18 +76,12 @@ sealed class PasswordRule {
     object RequireSpecialCharacter : PasswordRule() {
         private val specialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?".toSet()
 
-        override fun validate(
-            stringProvider: AuthUIStringProvider,
-            password: String
-        ): ValidationStatus {
-            return if (password.any { it in specialCharacters }) {
-                ValidationStatus(hasError = false)
-            } else {
-                ValidationStatus(
-                    hasError = true,
-                    errorMessage = stringProvider.passwordMissingSpecialCharacter
-                )
-            }
+        override fun isValid(password: String): Boolean {
+            return password.any { it in specialCharacters }
+        }
+
+        override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
+            return stringProvider.passwordMissingSpecialCharacter
         }
     }
 
@@ -124,23 +92,28 @@ sealed class PasswordRule {
         val regex: Regex,
         val errorMessage: String
     ) : PasswordRule() {
-        override fun validate(
-            stringProvider: AuthUIStringProvider,
-            password: String
-        ): ValidationStatus {
-            return if (regex.matches(password)) {
-                ValidationStatus(hasError = false)
-            } else {
-                ValidationStatus(
-                    hasError = true,
-                    errorMessage = errorMessage
-                )
-            }
+        override fun isValid(password: String): Boolean {
+            return regex.matches(password)
+        }
+
+        override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
+            return errorMessage
         }
     }
 
-    internal abstract fun validate(
-        stringProvider: AuthUIStringProvider,
-        password: String
-    ): ValidationStatus
+    /**
+     * Validates whether the given password meets this rule's requirements.
+     *
+     * @param password The password to validate
+     * @return true if the password meets this rule's requirements, false otherwise
+     */
+    internal abstract fun isValid(password: String): Boolean
+
+    /**
+     * Returns the appropriate error message for this rule when validation fails.
+     *
+     * @param stringProvider The string provider for localized error messages
+     * @return The localized error message for this rule
+     */
+    internal abstract fun getErrorMessage(stringProvider: AuthUIStringProvider): String
 }

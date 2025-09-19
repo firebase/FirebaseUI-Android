@@ -19,11 +19,21 @@ import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
 /**
  * An interface for validating input fields.
  */
-internal interface FieldValidator {
+interface FieldValidator {
     val stringProvider: AuthUIStringProvider
-    val validationStatus: ValidationStatus
+
+    /**
+     * Returns true if the last validation failed.
+     */
+    val hasError: Boolean
+
+    /**
+     * The error message for the current state.
+     */
+    val errorMessage: String
+
     /**
      * Runs validation on a value and returns true if valid.
      */
-    fun validate(value: String): ValidationStatus
+    fun validate(value: String): Boolean
 }

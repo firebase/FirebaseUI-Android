@@ -20,11 +20,22 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.Assert.assertThrows
 import org.junit.Test
+import org.mockito.Mockito.mock
 import java.util.Locale
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
 
+/**
+ * Unit tests for [AuthUIConfiguration] covering configuration builder behavior,
+ * validation rules, provider setup, and immutability guarantees.
+ *
+ * @suppress Internal test class
+ */
 class AuthUIConfigurationTest {
+
+    // =============================================================================================
+    // Basic Configuration Tests
+    // =============================================================================================
 
     @Test
     fun `authUIConfiguration with minimal setup uses correct defaults`() {
@@ -58,12 +69,7 @@ class AuthUIConfigurationTest {
     @Test
     fun `authUIConfiguration with all fields overridden uses custom values`() {
         val customTheme = AuthUITheme.Default
-        val customStringProvider = object : AuthUIStringProvider {
-            override fun initializing(): String = ""
-            override fun signInWithGoogle(): String = ""
-            override fun invalidEmail(): String = ""
-            override fun passwordsDoNotMatch(): String = ""
-        }
+        val customStringProvider = mock(AuthUIStringProvider::class.java)
         val customLocale = Locale.US
         val customActionCodeSettings = actionCodeSettings {
             url = "https://example.com/verify"
@@ -115,9 +121,9 @@ class AuthUIConfigurationTest {
         assertThat(config.isProviderChoiceAlwaysShown).isTrue()
     }
 
-    // ===========================================================================================
+    // =============================================================================================
     // Validation Tests
-    // ===========================================================================================
+    // =============================================================================================
 
     @Test(expected = IllegalArgumentException::class)
     fun `authUIConfiguration throws when no providers configured`() {
@@ -136,7 +142,12 @@ class AuthUIConfigurationTest {
                 provider(AuthProvider.Yahoo(customParameters = mapOf()))
                 provider(AuthProvider.Apple(customParameters = mapOf(), locale = null))
                 provider(AuthProvider.Phone(defaultCountryCode = null, allowedCountries = null))
-                provider(AuthProvider.Email(actionCodeSettings = null, passwordValidationRules = listOf()))
+                provider(
+                    AuthProvider.Email(
+                        actionCodeSettings = null,
+                        passwordValidationRules = listOf()
+                    )
+                )
             }
         }
         assertThat(config.providers).hasSize(9)
@@ -174,7 +185,12 @@ class AuthUIConfigurationTest {
         authUIConfiguration {
             providers {
                 provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
-                provider(AuthProvider.Google(scopes = listOf("email"), serverClientId = "different"))
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf("email"),
+                        serverClientId = "different"
+                    )
+                )
             }
         }
     }
@@ -183,11 +199,13 @@ class AuthUIConfigurationTest {
     fun `validate throws for enableEmailLinkSignIn true when actionCodeSettings is null`() {
         authUIConfiguration {
             providers {
-                provider(AuthProvider.Email(
-                    isEmailLinkSignInEnabled = true,
-                    actionCodeSettings = null,
-                    passwordValidationRules = listOf()
-                ))
+                provider(
+                    AuthProvider.Email(
+                        isEmailLinkSignInEnabled = true,
+                        actionCodeSettings = null,
+                        passwordValidationRules = listOf()
+                    )
+                )
             }
         }
     }
@@ -200,18 +218,20 @@ class AuthUIConfigurationTest {
         }
         authUIConfiguration {
             providers {
-                provider(AuthProvider.Email(
-                    isEmailLinkSignInEnabled = true,
-                    actionCodeSettings = customActionCodeSettings,
-                    passwordValidationRules = listOf()
-                ))
+                provider(
+                    AuthProvider.Email(
+                        isEmailLinkSignInEnabled = true,
+                        actionCodeSettings = customActionCodeSettings,
+                        passwordValidationRules = listOf()
+                    )
+                )
             }
         }
     }
 
-    // ===========================================================================================
+    // =============================================================================================
     // Provider Configuration Tests
-    // ===========================================================================================
+    // =============================================================================================
 
     @Test
     fun `providers block can be called multiple times and accumulates providers`() {
@@ -238,9 +258,9 @@ class AuthUIConfigurationTest {
         assertThat(config.providers).hasSize(2)
     }
 
-    // ===========================================================================================
+    // =============================================================================================
     // Builder Immutability Tests
-    // ===========================================================================================
+    // =============================================================================================
 
     @Test
     fun `authUIConfiguration providers list is immutable`() {
