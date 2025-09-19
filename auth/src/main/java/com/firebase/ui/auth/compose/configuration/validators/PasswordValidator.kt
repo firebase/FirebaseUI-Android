@@ -21,17 +21,17 @@ internal class PasswordValidator(
     override val stringProvider: AuthUIStringProvider,
     private val rules: List<PasswordRule>
 ) : FieldValidator {
-    private var validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
+    private var _validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
 
     override val hasError: Boolean
-        get() = validationStatus.hasError
+        get() = _validationStatus.hasError
 
     override val errorMessage: String
-        get() = validationStatus.errorMessage ?: ""
+        get() = _validationStatus.errorMessage ?: ""
 
     override fun validate(value: String): Boolean {
         if (value.isEmpty()) {
-            validationStatus = FieldValidationStatus(
+            _validationStatus = FieldValidationStatus(
                 hasError = true,
                 errorMessage = stringProvider.invalidPassword
             )
@@ -40,7 +40,7 @@ internal class PasswordValidator(
 
         for (rule in rules) {
             if (!rule.isValid(value)) {
-                validationStatus = FieldValidationStatus(
+                _validationStatus = FieldValidationStatus(
                     hasError = true,
                     errorMessage = rule.getErrorMessage(stringProvider)
                 )
@@ -48,7 +48,7 @@ internal class PasswordValidator(
             }
         }
 
-        validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
+        _validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
         return true
     }
 }

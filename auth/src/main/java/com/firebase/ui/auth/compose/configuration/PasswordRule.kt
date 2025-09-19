@@ -87,7 +87,8 @@ abstract class PasswordRule {
     }
 
     /**
-     * Defines a custom validation rule using a regular expression.
+     * Defines a custom validation rule using a regular expression and provides a specific error
+     * message on failure.
      */
     class Custom(
         val regex: Regex,

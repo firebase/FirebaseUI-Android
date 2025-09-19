@@ -17,17 +17,17 @@ package com.firebase.ui.auth.compose.configuration.validators
 import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
 
 internal class EmailValidator(override val stringProvider: AuthUIStringProvider) : FieldValidator {
-    private var validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
+    private var _validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
 
     override val hasError: Boolean
-        get() = validationStatus.hasError
+        get() = _validationStatus.hasError
 
     override val errorMessage: String
-        get() = validationStatus.errorMessage ?: ""
+        get() = _validationStatus.errorMessage ?: ""
 
     override fun validate(value: String): Boolean {
         if (value.isEmpty()) {
-            validationStatus = FieldValidationStatus(
+            _validationStatus = FieldValidationStatus(
                 hasError = true,
                 errorMessage = stringProvider.missingEmailAddress
             )
@@ -35,14 +35,14 @@ internal class EmailValidator(override val stringProvider: AuthUIStringProvider)
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches()) {
-            validationStatus = FieldValidationStatus(
+            _validationStatus = FieldValidationStatus(
                 hasError = true,
                 errorMessage = stringProvider.invalidEmailAddress
             )
             return false
         }
 
-        validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
+        _validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)
         return true
     }
 }

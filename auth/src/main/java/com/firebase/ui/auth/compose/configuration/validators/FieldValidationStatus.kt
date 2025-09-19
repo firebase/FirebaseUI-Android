@@ -14,14 +14,11 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
+/**
+ * Class for encapsulating [hasError] and [errorMessage] properties in
+ * internal FieldValidator subclasses.
+ */
 internal class FieldValidationStatus(
-    /**
-     * Returns true if the last validation failed.
-     */
     val hasError: Boolean,
-
-    /**
-     * The error message for the current state.
-     */
     val errorMessage: String? = null,
 )
