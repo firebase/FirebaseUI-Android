@@ -14,8 +14,6 @@
 
 package com.firebase.ui.auth.compose.configuration
 
-import android.content.Context
-import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.validators.ValidationStatus
 
 /**
@@ -25,14 +23,17 @@ sealed class PasswordRule {
     /**
      * Requires the password to have at least a certain number of characters.
      */
-    data class MinimumLength(val value: Int) : PasswordRule() {
-        override fun validate(context: Context, password: String): ValidationStatus {
-            return if (password.length >= value) {
+    class MinimumLength(val value: Int) : PasswordRule() {
+        override fun validate(
+            stringProvider: AuthUIStringProvider,
+            password: String
+        ): ValidationStatus {
+            return if (password.length >= this@MinimumLength.value) {
                 ValidationStatus(hasError = false)
             } else {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                    errorMessage = stringProvider.passwordTooShort.format(this@MinimumLength.value)
                 )
             }
         }
@@ -42,13 +43,16 @@ sealed class PasswordRule {
      * Requires the password to contain at least one uppercase letter (A-Z).
      */
     object RequireUppercase : PasswordRule() {
-        override fun validate(context: Context, password: String): ValidationStatus {
+        override fun validate(
+            stringProvider: AuthUIStringProvider,
+            password: String
+        ): ValidationStatus {
             return if (password.any { it.isUpperCase() }) {
                 ValidationStatus(hasError = false)
             } else {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                    errorMessage = stringProvider.passwordMissingUppercase
                 )
             }
         }
@@ -58,13 +62,16 @@ sealed class PasswordRule {
      * Requires the password to contain at least one lowercase letter (a-z).
      */
     object RequireLowercase : PasswordRule() {
-        override fun validate(context: Context, password: String): ValidationStatus {
+        override fun validate(
+            stringProvider: AuthUIStringProvider,
+            password: String
+        ): ValidationStatus {
             return if (password.any { it.isLowerCase() }) {
                 ValidationStatus(hasError = false)
             } else {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                    errorMessage = stringProvider.passwordMissingLowercase
                 )
             }
         }
@@ -74,13 +81,16 @@ sealed class PasswordRule {
      * Requires the password to contain at least one numeric digit (0-9).
      */
     object RequireDigit : PasswordRule() {
-        override fun validate(context: Context, password: String): ValidationStatus {
+        override fun validate(
+            stringProvider: AuthUIStringProvider,
+            password: String
+        ): ValidationStatus {
             return if (password.any { it.isDigit() }) {
                 ValidationStatus(hasError = false)
             } else {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                    errorMessage = stringProvider.passwordMissingDigit
                 )
             }
         }
@@ -92,13 +102,16 @@ sealed class PasswordRule {
     object RequireSpecialCharacter : PasswordRule() {
         private val specialCharacters = "!@#$%^&*()_+-=[]{}|;:,.<>?".toSet()
 
-        override fun validate(context: Context, password: String): ValidationStatus {
+        override fun validate(
+            stringProvider: AuthUIStringProvider,
+            password: String
+        ): ValidationStatus {
             return if (password.any { it in specialCharacters }) {
                 ValidationStatus(hasError = false)
             } else {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                    errorMessage = stringProvider.passwordMissingSpecialCharacter
                 )
             }
         }
@@ -107,11 +120,14 @@ sealed class PasswordRule {
     /**
      * Defines a custom validation rule using a regular expression.
      */
-    data class Custom(
+    class Custom(
         val regex: Regex,
         val errorMessage: String
     ) : PasswordRule() {
-        override fun validate(context: Context, password: String): ValidationStatus {
+        override fun validate(
+            stringProvider: AuthUIStringProvider,
+            password: String
+        ): ValidationStatus {
             return if (regex.matches(password)) {
                 ValidationStatus(hasError = false)
             } else {
@@ -123,5 +139,8 @@ sealed class PasswordRule {
         }
     }
 
-    abstract fun validate(context: Context, password: String): ValidationStatus
+    internal abstract fun validate(
+        stringProvider: AuthUIStringProvider,
+        password: String
+    ): ValidationStatus
 }

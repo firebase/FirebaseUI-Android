@@ -14,13 +14,16 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-import android.content.Context
+import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
 
 /**
  * An interface for validating input fields.
  */
-interface FieldValidator {
-    val context: Context
+internal interface FieldValidator {
+    val stringProvider: AuthUIStringProvider
     val validationStatus: ValidationStatus
+    /**
+     * Runs validation on a value and returns true if valid.
+     */
     fun validate(value: String): ValidationStatus
 }

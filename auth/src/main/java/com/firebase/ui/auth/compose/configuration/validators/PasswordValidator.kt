@@ -14,12 +14,11 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-import android.content.Context
-import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 
-class PasswordValidator(
-    override val context: Context,
+internal class PasswordValidator(
+    override val stringProvider: AuthUIStringProvider,
     private val rules: List<PasswordRule>
 ) : FieldValidator {
     override var validationStatus: ValidationStatus = ValidationStatus(hasError = false)
@@ -30,13 +29,13 @@ class PasswordValidator(
             value.isEmpty() -> {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_error_invalid_password)
+                    errorMessage = stringProvider.invalidPassword
                 )
             }
 
             else -> {
                 for (rule in rules) {
-                    val result = rule.validate(context, value)
+                    val result = rule.validate(stringProvider, value)
                     if (result.hasError) {
                         return result
                     }

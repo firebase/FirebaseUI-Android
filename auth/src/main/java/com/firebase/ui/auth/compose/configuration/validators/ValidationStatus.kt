@@ -14,7 +14,21 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-data class ValidationStatus(
+/**
+ * Represents the result of a validation operation, containing both the validation state
+ * and any associated error message.
+ *
+ * This class is used throughout the authentication validation system to communicate
+ * validation results between validators and UI components.
+ */
+internal class ValidationStatus(
+    /**
+     * Returns true if the last validation failed.
+     */
     val hasError: Boolean,
+
+    /**
+     * The error message for the current state.
+     */
     val errorMessage: String? = null,
 )

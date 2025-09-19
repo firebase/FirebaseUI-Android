@@ -14,10 +14,9 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-import android.content.Context
-import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
 
-class EmailValidator(override val context: Context) : FieldValidator {
+internal class EmailValidator(override val stringProvider: AuthUIStringProvider) : FieldValidator {
     override var validationStatus: ValidationStatus = ValidationStatus(hasError = false)
         private set
 
@@ -26,14 +25,14 @@ class EmailValidator(override val context: Context) : FieldValidator {
             value.isEmpty() -> {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_missing_email_address)
+                    errorMessage = stringProvider.missingEmailAddress
                 )
             }
 
             !android.util.Patterns.EMAIL_ADDRESS.matcher(value).matches() -> {
                 ValidationStatus(
                     hasError = true,
-                    errorMessage = context.getString(R.string.fui_invalid_email_address)
+                    errorMessage = stringProvider.invalidEmailAddress
                 )
             }
 
