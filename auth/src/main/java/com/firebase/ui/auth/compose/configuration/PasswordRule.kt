@@ -15,7 +15,8 @@
 package com.firebase.ui.auth.compose.configuration
 
 /**
- * A abstract class representing password validation rules with embedded validation logic.
+ * An abstract class representing a set of validation rules that can be applied to a password field,
+ * typically within the [AuthProvider.Email] configuration.
  */
 abstract class PasswordRule {
     /**
