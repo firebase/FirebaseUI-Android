@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
 
 internal class EmailValidator(override val stringProvider: AuthUIStringProvider) : FieldValidator {
     private var _validationStatus = FieldValidationStatus(hasError = false, errorMessage = null)

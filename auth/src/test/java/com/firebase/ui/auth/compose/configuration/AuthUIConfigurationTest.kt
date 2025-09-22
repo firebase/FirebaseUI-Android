@@ -15,9 +15,13 @@
 package com.firebase.ui.auth.compose.configuration
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.Assert.assertThrows
@@ -138,6 +142,113 @@ class AuthUIConfigurationTest {
         assertThat(config.isNewEmailAccountsAllowed).isFalse()
         assertThat(config.isDisplayNameRequired).isFalse()
         assertThat(config.isProviderChoiceAlwaysShown).isTrue()
+    }
+
+    @Test
+    fun `providers block can be called multiple times and accumulates providers`() {
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf(),
+                        serverClientId = ""
+                    )
+                )
+            }
+
+            providers {
+                provider(
+                    AuthProvider.Github(
+                        customParameters = mapOf()
+                    )
+                )
+            }
+            isCredentialManagerEnabled = true
+        }
+
+        assertThat(config.providers).hasSize(2)
+    }
+
+    @Test
+    fun `authUIConfiguration uses custom string provider`() {
+        val spanishAuthUIStringProvider =
+            object : AuthUIStringProvider by DefaultAuthUIStringProvider(applicationContext) {
+                // Email Validation
+                override val missingEmailAddress: String =
+                    "Ingrese su dirección de correo para continuar"
+                override val invalidEmailAddress: String = "Esa dirección de correo no es correcta"
+
+                // Password Validation
+                override val invalidPassword: String = "Contraseña incorrecta"
+                override val passwordsDoNotMatch: String = "Las contraseñas no coinciden"
+            }
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf(),
+                        serverClientId = ""
+                    )
+                )
+            }
+            stringProvider = spanishAuthUIStringProvider
+        }
+
+        assertThat(config.stringProvider.missingEmailAddress)
+            .isEqualTo(spanishAuthUIStringProvider.missingEmailAddress)
+    }
+
+    @Test
+    fun `locale set to FR in authUIConfiguration reflects in DefaultAuthUIStringProvider`() {
+        val localizedContext = applicationContext.createConfigurationContext(
+            Configuration(applicationContext.resources.configuration).apply {
+                setLocale(Locale.FRANCE)
+            }
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf(),
+                        serverClientId = ""
+                    )
+                )
+            }
+            locale = Locale.FRANCE
+        }
+
+        assertThat(config.stringProvider.continueText)
+            .isEqualTo(localizedContext.getString(R.string.fui_continue))
+    }
+
+    @Test
+    fun `unsupported locale set in authUIConfiguration uses default localized strings`() {
+        val unsupportedLocale = Locale("zz", "ZZ")
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf(), serverClientId
+                        = ""
+                    )
+                )
+            }
+            locale = unsupportedLocale
+        }
+
+        assertThat(config.stringProvider.signInWithGoogle).isNotEmpty()
+        assertThat(config.stringProvider.continueText).isNotEmpty()
+        assertThat(config.stringProvider.signInWithGoogle)
+            .isEqualTo(applicationContext.getString(R.string.fui_sign_in_with_google))
+        assertThat(config.stringProvider.continueText)
+            .isEqualTo(applicationContext.getString(R.string.fui_continue))
     }
 
     // =============================================================================================
@@ -272,36 +383,6 @@ class AuthUIConfigurationTest {
                 )
             }
         }
-    }
-
-    // =============================================================================================
-    // Provider Configuration Tests
-    // =============================================================================================
-
-    @Test
-    fun `providers block can be called multiple times and accumulates providers`() {
-        val config = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Google(
-                        scopes = listOf(),
-                        serverClientId = ""
-                    )
-                )
-            }
-
-            providers {
-                provider(
-                    AuthProvider.Github(
-                        customParameters = mapOf()
-                    )
-                )
-            }
-            isCredentialManagerEnabled = true
-        }
-
-        assertThat(config.providers).hasSize(2)
     }
 
     // =============================================================================================

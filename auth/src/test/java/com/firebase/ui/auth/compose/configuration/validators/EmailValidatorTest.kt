@@ -17,13 +17,12 @@ package com.firebase.ui.auth.compose.configuration.validators
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 

@@ -18,6 +18,8 @@ import android.content.Context
 import java.util.Locale
 import com.google.firebase.auth.ActionCodeSettings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
 
 fun actionCodeSettings(block: ActionCodeSettings.Builder.() -> Unit) =
     ActionCodeSettings.newBuilder().apply(block).build()
