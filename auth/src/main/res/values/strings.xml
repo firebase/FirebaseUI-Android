@@ -93,6 +93,13 @@
     <string name="fui_error_unknown" translation_description="General error messages for an unknown failure.">An unknown error occurred.</string>
     <string name="fui_error_invalid_password" translation_description="Error message for when the user enters an invalid or wrong password.">Incorrect password.</string>
 
+    <!-- Password validation messages -->
+    <string name="fui_error_password_too_short" translation_description="Error message when password is too short">Password must be at least %1$d characters long</string>
+    <string name="fui_error_password_missing_uppercase" translation_description="Error message when password is missing uppercase letter">Password must contain at least one uppercase letter</string>
+    <string name="fui_error_password_missing_lowercase" translation_description="Error message when password is missing lowercase letter">Password must contain at least one lowercase letter</string>
+    <string name="fui_error_password_missing_digit" translation_description="Error message when password is missing digit">Password must contain at least one number</string>
+    <string name="fui_error_password_missing_special_character" translation_description="Error message when password is missing special character">Password must contain at least one special character</string>
+
     <!-- Accessibility -->
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">App logo</string>
 
