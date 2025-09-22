@@ -94,6 +94,7 @@
     <string name="fui_error_invalid_password" translation_description="Error message for when the user enters an invalid or wrong password.">Incorrect password.</string>
 
     <!-- Password validation messages -->
+    <string name="fui_passwords_do_not_match" translation_description="Error message when password don't match">Passwords do not match</string>
     <string name="fui_error_password_too_short" translation_description="Error message when password is too short">Password must be at least %1$d characters long</string>
     <string name="fui_error_password_missing_uppercase" translation_description="Error message when password is missing uppercase letter">Password must contain at least one uppercase letter</string>
     <string name="fui_error_password_missing_lowercase" translation_description="Error message when password is missing lowercase letter">Password must contain at least one lowercase letter</string>

@@ -34,7 +34,7 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class PasswordRuleTest {
 
-    private lateinit var stringProvider: DefaultAuthUIStringProvider
+    private lateinit var stringProvider: AuthUIStringProvider
 
     @Before
     fun setUp() {

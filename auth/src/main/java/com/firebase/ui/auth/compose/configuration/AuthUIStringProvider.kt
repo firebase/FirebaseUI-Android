@@ -15,7 +15,9 @@
 package com.firebase.ui.auth.compose.configuration
 
 import android.content.Context
+import android.content.res.Configuration
 import com.firebase.ui.auth.R
+import java.util.Locale
 
 /**
  * An interface for providing localized string resources. This interface defines methods for all
@@ -28,6 +30,33 @@ interface AuthUIStringProvider {
 
     /** Button text for Google sign-in option */
     val signInWithGoogle: String
+
+    /** Button text for Facebook sign-in option */
+    val signInWithFacebook: String
+
+    /** Button text for Twitter sign-in option */
+    val signInWithTwitter: String
+
+    /** Button text for Github sign-in option */
+    val signInWithGithub: String
+
+    /** Button text for Email sign-in option */
+    val signInWithEmail: String
+
+    /** Button text for Phone sign-in option */
+    val signInWithPhone: String
+
+    /** Button text for Anonymous sign-in option */
+    val signInAnonymously: String
+
+    /** Button text for Apple sign-in option */
+    val signInWithApple: String
+
+    /** Button text for Microsoft sign-in option */
+    val signInWithMicrosoft: String
+
+    /** Button text for Yahoo sign-in option */
+    val signInWithYahoo: String
 
     /** Error message when email address field is empty */
     val missingEmailAddress: String
@@ -57,25 +86,72 @@ interface AuthUIStringProvider {
     val passwordMissingSpecialCharacter: String
 }
 
-internal class DefaultAuthUIStringProvider(private val context: Context) : AuthUIStringProvider {
-    override val initializing: String get() = ""
+internal class DefaultAuthUIStringProvider(
+    private val context: Context,
+    private val locale: Locale? = null,
+) : AuthUIStringProvider {
+
+    private val localizedContext = locale?.let { locale ->
+        context.createConfigurationContext(
+            Configuration(context.resources.configuration).apply {
+                setLocale(locale)
+            }
+        )
+    } ?: context
+
+    /**
+     * General Strings
+     */
+    override val initializing: String
+        get() = ""
+
+    /**
+     * Auth Provider Button Strings
+     */
     override val signInWithGoogle: String
-        get() = context.getString(R.string.fui_sign_in_with_google)
+        get() = localizedContext.getString(R.string.fui_sign_in_with_google)
+    override val signInWithFacebook: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_facebook)
+    override val signInWithTwitter: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_twitter)
+    override val signInWithGithub: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_github)
+    override val signInWithEmail: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_email)
+    override val signInWithPhone: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_phone)
+    override val signInAnonymously: String
+        get() = localizedContext.getString(R.string.fui_sign_in_anonymously)
+    override val signInWithApple: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_apple)
+    override val signInWithMicrosoft: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_microsoft)
+    override val signInWithYahoo: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_yahoo)
+
+    /**
+     * Email Validator Strings
+     */
     override val missingEmailAddress: String
-        get() = context.getString(R.string.fui_missing_email_address)
+        get() = localizedContext.getString(R.string.fui_missing_email_address)
     override val invalidEmailAddress: String
-        get() = context.getString(R.string.fui_invalid_email_address)
+        get() = localizedContext.getString(R.string.fui_invalid_email_address)
+
+    /**
+     * Password Validator Strings
+     */
     override val invalidPassword: String
-        get() = context.getString(R.string.fui_error_invalid_password)
-    override val passwordsDoNotMatch: String get() = ""
+        get() = localizedContext.getString(R.string.fui_error_invalid_password)
+    override val passwordsDoNotMatch: String
+        get() = localizedContext.getString(R.string.fui_passwords_do_not_match)
     override val passwordTooShort: String
-        get() = context.getString(R.string.fui_error_password_too_short)
+        get() = localizedContext.getString(R.string.fui_error_password_too_short)
     override val passwordMissingUppercase: String
-        get() = context.getString(R.string.fui_error_password_missing_uppercase)
+        get() = localizedContext.getString(R.string.fui_error_password_missing_uppercase)
     override val passwordMissingLowercase: String
-        get() = context.getString(R.string.fui_error_password_missing_lowercase)
+        get() = localizedContext.getString(R.string.fui_error_password_missing_lowercase)
     override val passwordMissingDigit: String
-        get() = context.getString(R.string.fui_error_password_missing_digit)
+        get() = localizedContext.getString(R.string.fui_error_password_missing_digit)
     override val passwordMissingSpecialCharacter: String
-        get() = context.getString(R.string.fui_error_password_missing_special_character)
+        get() = localizedContext.getString(R.string.fui_error_password_missing_special_character)
 }
