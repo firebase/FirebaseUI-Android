@@ -14,8 +14,15 @@
 
 package com.firebase.ui.auth.compose.configuration
 
+import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.R
+import com.firebase.ui.auth.util.Preconditions
+import com.firebase.ui.auth.util.data.PhoneNumberUtils
+import com.firebase.ui.auth.util.data.ProviderAvailability
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
@@ -79,6 +86,15 @@ abstract class AuthProvider(open val providerId: String) {
         val isEmailLinkSignInEnabled: Boolean = false,
 
         /**
+         * Forces email link sign-in to complete on the same device that initiated it.
+         *
+         * When enabled, prevents email links from being opened on different devices,
+         * which is required for security when upgrading anonymous users. Defaults to true.
+         */
+
+        val isEmailLinkForceSameDeviceEnabled: Boolean = true,
+
+        /**
          * Settings for email link actions.
          */
         val actionCodeSettings: ActionCodeSettings?,
@@ -119,6 +135,11 @@ abstract class AuthProvider(open val providerId: String) {
      */
     class Phone(
         /**
+         * The phone number in international format.
+         */
+        val defaultNumber: String?,
+
+        /**
          * The default country code to pre-select.
          */
         val defaultCountryCode: String?,
@@ -147,7 +168,29 @@ abstract class AuthProvider(open val providerId: String) {
          * Enables automatic retrieval of the SMS code. Defaults to true.
          */
         val isAutoRetrievalEnabled: Boolean = true
-    ) : AuthProvider(providerId = Provider.PHONE.id)
+    ) : AuthProvider(providerId = Provider.PHONE.id) {
+        fun validate() {
+            defaultNumber?.let {
+                check(PhoneNumberUtils.isValid(it)) {
+                    "Invalid phone number: $it"
+                }
+            }
+
+            check(PhoneNumberUtils.isValidIso(defaultCountryCode)) {
+                "Invalid country iso: $defaultCountryCode"
+            }
+
+            allowedCountries?.forEach { code ->
+                check(
+                    PhoneNumberUtils.isValidIso(code) ||
+                            PhoneNumberUtils.isValid(code)
+                ) {
+                    "Invalid input: You must provide a valid country iso (alpha-2) " +
+                            "or code (e-164). e.g. 'us' or '+1'. Invalid code: $code"
+                }
+            }
+        }
+    }
 
     /**
      * Google Sign-In provider configuration.
@@ -186,7 +229,30 @@ abstract class AuthProvider(open val providerId: String) {
         providerId = Provider.GOOGLE.id,
         scopes = scopes,
         customParameters = customParameters
-    )
+    ) {
+        fun validate(context: Context) {
+            // TODO(demolaf): do we need this? since we are requesting this in AuthProvider.Google?
+            //  if serverClientId is nullable do we still need to throw an IllegalStateException?
+            Preconditions.checkConfigured(
+                context,
+                "Check your google-services plugin configuration, the" +
+                        " default_web_client_id string wasn't populated.",
+                R.string.default_web_client_id
+            )
+
+            for (scope in scopes) {
+                if ("email" == scope) {
+                    Log.w(
+                        "AuthProvider.Google",
+                        "The GoogleSignInOptions passed to setSignInOptions does not " +
+                                "request the 'email' scope. In most cases this is a mistake! " +
+                                "Call requestEmail() on the GoogleSignInOptions object."
+                    )
+                    break
+                }
+            }
+        }
+    }
 
     /**
      * Facebook Login provider configuration.
@@ -210,7 +276,26 @@ abstract class AuthProvider(open val providerId: String) {
         providerId = Provider.FACEBOOK.id,
         scopes = scopes,
         customParameters = customParameters
-    )
+    ) {
+        fun validate(context: Context) {
+            if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
+                throw RuntimeException(
+                    "Facebook provider cannot be configured " +
+                            "without dependency. Did you forget to add " +
+                            "'com.facebook.android:facebook-login:VERSION' dependency?"
+                )
+            }
+
+            // TODO(demolaf): is this required? or should we add appId to AuthProvider.Facebook
+            //  parameters above?
+            Preconditions.checkConfigured(
+                context,
+                "Facebook provider unconfigured. Make sure to " +
+                        "add a `facebook_application_id` string.",
+                R.string.facebook_application_id
+            )
+        }
+    }
 
     /**
      * Twitter/X authentication provider configuration.
@@ -314,7 +399,16 @@ abstract class AuthProvider(open val providerId: String) {
     /**
      * Anonymous authentication provider. It has no configurable properties.
      */
-    object Anonymous : AuthProvider(providerId = Provider.ANONYMOUS.id)
+    object Anonymous : AuthProvider(providerId = Provider.ANONYMOUS.id) {
+        fun validate(providers: List<AuthProvider>) {
+            if (providers.size == 1 && providers.first() is Anonymous) {
+                throw IllegalStateException(
+                    "Sign in as guest cannot be the only sign in method. " +
+                            "In this case, sign the user in anonymously your self; no UI is needed."
+                )
+            }
+        }
+    }
 
     /**
      * A generic OAuth provider for any unsupported provider.
