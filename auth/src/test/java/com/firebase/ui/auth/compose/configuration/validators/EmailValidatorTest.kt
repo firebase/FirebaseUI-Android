@@ -17,12 +17,12 @@ package com.firebase.ui.auth.compose.configuration.validators
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -37,7 +37,7 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class EmailValidatorTest {
 
-    private lateinit var stringProvider: DefaultAuthUIStringProvider
+    private lateinit var stringProvider: AuthUIStringProvider
 
     private lateinit var emailValidator: EmailValidator
 

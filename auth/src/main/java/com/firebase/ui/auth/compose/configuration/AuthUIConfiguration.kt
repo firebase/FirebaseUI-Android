@@ -14,29 +14,29 @@
 
 package com.firebase.ui.auth.compose.configuration
 
+import android.content.Context
 import java.util.Locale
 import com.google.firebase.auth.ActionCodeSettings
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
 
-fun actionCodeSettings(
-    block: ActionCodeSettings.Builder.() -> Unit
-) = ActionCodeSettings.newBuilder().apply(block).build()
+fun actionCodeSettings(block: ActionCodeSettings.Builder.() -> Unit) =
+    ActionCodeSettings.newBuilder().apply(block).build()
 
-fun authUIConfiguration(block: AuthUIConfigurationBuilder.() -> Unit): AuthUIConfiguration {
-    val builder = AuthUIConfigurationBuilder()
-    builder.block()
-    return builder.build()
-}
+fun authUIConfiguration(block: AuthUIConfigurationBuilder.() -> Unit) =
+    AuthUIConfigurationBuilder().apply(block).build()
 
 @DslMarker
 annotation class AuthUIConfigurationDsl
 
 @AuthUIConfigurationDsl
 class AuthUIConfigurationBuilder {
+    var context: Context? = null
     private val providers = mutableListOf<AuthProvider>()
     var theme: AuthUITheme = AuthUITheme.Default
-    var stringProvider: AuthUIStringProvider? = null
     var locale: Locale? = null
+    var stringProvider: AuthUIStringProvider? = null
     var isCredentialManagerEnabled: Boolean = true
     var isMfaEnabled: Boolean = true
     var isAnonymousUpgradeEnabled: Boolean = false
@@ -48,36 +48,16 @@ class AuthUIConfigurationBuilder {
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
 
-    fun providers(block: AuthProvidersBuilder.() -> Unit) {
-        val builder = AuthProvidersBuilder()
-        builder.block()
-        providers.addAll(builder.build())
-    }
+    fun providers(block: AuthProvidersBuilder.() -> Unit) =
+        providers.addAll(AuthProvidersBuilder().apply(block).build())
 
     internal fun build(): AuthUIConfiguration {
-        validate()
-        return AuthUIConfiguration(
-            providers = providers.toList(),
-            theme = theme,
-            stringProvider = stringProvider,
-            locale = locale,
-            isCredentialManagerEnabled = isCredentialManagerEnabled,
-            isMfaEnabled = isMfaEnabled,
-            isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled,
-            tosUrl = tosUrl,
-            privacyPolicyUrl = privacyPolicyUrl,
-            logo = logo,
-            actionCodeSettings = actionCodeSettings,
-            isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
-            isDisplayNameRequired = isDisplayNameRequired,
-            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown
-        )
-    }
+        val context = requireNotNull(context) {
+            "Application context is required"
+        }
 
-    private fun validate() {
-        // At least one provider
-        if (providers.isEmpty()) {
-            throw IllegalArgumentException("At least one provider must be configured")
+        require(providers.isNotEmpty()) {
+            "At least one provider must be configured"
         }
 
         // No unsupported providers
@@ -113,6 +93,24 @@ class AuthUIConfigurationBuilder {
                 else -> null
             }
         }
+
+        return AuthUIConfiguration(
+            context = context,
+            providers = providers.toList(),
+            theme = theme,
+            locale = locale,
+            stringProvider = stringProvider ?: DefaultAuthUIStringProvider(context, locale),
+            isCredentialManagerEnabled = isCredentialManagerEnabled,
+            isMfaEnabled = isMfaEnabled,
+            isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled,
+            tosUrl = tosUrl,
+            privacyPolicyUrl = privacyPolicyUrl,
+            logo = logo,
+            actionCodeSettings = actionCodeSettings,
+            isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
+            isDisplayNameRequired = isDisplayNameRequired,
+            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown
+        )
     }
 }
 
@@ -120,6 +118,11 @@ class AuthUIConfigurationBuilder {
  * Configuration object for the authentication flow.
  */
 class AuthUIConfiguration(
+    /**
+     * Application context
+     */
+    val context: Context,
+
     /**
      * The list of enabled authentication providers.
      */
@@ -131,14 +134,14 @@ class AuthUIConfiguration(
     val theme: AuthUITheme = AuthUITheme.Default,
 
     /**
-     * A custom provider for localized strings.
-     */
-    val stringProvider: AuthUIStringProvider? = null,
-
-    /**
      * The locale for internationalization.
      */
     val locale: Locale? = null,
+
+    /**
+     * A custom provider for localized strings.
+     */
+    val stringProvider: AuthUIStringProvider = DefaultAuthUIStringProvider(context, locale),
 
     /**
      * Enables integration with Android's Credential Manager API. Defaults to true.

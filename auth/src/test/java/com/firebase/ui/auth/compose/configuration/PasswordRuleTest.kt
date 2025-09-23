@@ -17,6 +17,8 @@ package com.firebase.ui.auth.compose.configuration
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -34,7 +36,7 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class PasswordRuleTest {
 
-    private lateinit var stringProvider: DefaultAuthUIStringProvider
+    private lateinit var stringProvider: AuthUIStringProvider
 
     @Before
     fun setUp() {
