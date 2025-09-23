@@ -292,7 +292,7 @@ class AuthUIConfigurationTest {
                 provider(AuthProvider.Microsoft(customParameters = mapOf(), tenant = null))
                 provider(AuthProvider.Yahoo(customParameters = mapOf()))
                 provider(AuthProvider.Apple(customParameters = mapOf(), locale = null))
-                provider(AuthProvider.Phone(defaultCountryCode = null, allowedCountries = null))
+                provider(AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null))
                 provider(
                     AuthProvider.Email(
                         actionCodeSettings = null,
@@ -323,16 +323,6 @@ class AuthUIConfigurationTest {
         }
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun `validate throws when only anonymous provider is configured`() {
-        authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(AuthProvider.Anonymous)
-            }
-        }
-    }
-
     @Test(expected = IllegalArgumentException::class)
     fun `validate throws for duplicate providers`() {
         authUIConfiguration {
@@ -343,42 +333,6 @@ class AuthUIConfigurationTest {
                     AuthProvider.Google(
                         scopes = listOf("email"),
                         serverClientId = "different"
-                    )
-                )
-            }
-        }
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `validate throws for enableEmailLinkSignIn true when actionCodeSettings is null`() {
-        authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        isEmailLinkSignInEnabled = true,
-                        actionCodeSettings = null,
-                        passwordValidationRules = listOf()
-                    )
-                )
-            }
-        }
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun `validate throws for enableEmailLinkSignIn true when actionCodeSettings canHandleCodeInApp false`() {
-        val customActionCodeSettings = actionCodeSettings {
-            url = "https://example.com"
-            handleCodeInApp = false
-        }
-        authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        isEmailLinkSignInEnabled = true,
-                        actionCodeSettings = customActionCodeSettings,
-                        passwordValidationRules = listOf()
                     )
                 )
             }

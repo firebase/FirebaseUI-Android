@@ -116,11 +116,10 @@ abstract class AuthProvider(open val providerId: String) {
     ) : AuthProvider(providerId = Provider.EMAIL.id) {
         fun validate() {
             if (isEmailLinkSignInEnabled) {
-                val actionCodeSettings = actionCodeSettings
-                    ?: requireNotNull(actionCodeSettings) {
-                        "ActionCodeSettings cannot be null when using " +
-                                "email link sign in."
-                    }
+                val actionCodeSettings = requireNotNull(actionCodeSettings) {
+                    "ActionCodeSettings cannot be null when using " +
+                            "email link sign in."
+                }
 
                 check(actionCodeSettings.canHandleCodeInApp()) {
                     "You must set canHandleCodeInApp in your " +
@@ -176,8 +175,10 @@ abstract class AuthProvider(open val providerId: String) {
                 }
             }
 
-            check(PhoneNumberUtils.isValidIso(defaultCountryCode)) {
-                "Invalid country iso: $defaultCountryCode"
+            defaultCountryCode?.let {
+                check(PhoneNumberUtils.isValidIso(it)) {
+                    "Invalid country iso: $it"
+                }
             }
 
             allowedCountries?.forEach { code ->
@@ -233,23 +234,25 @@ abstract class AuthProvider(open val providerId: String) {
         fun validate(context: Context) {
             // TODO(demolaf): do we need this? since we are requesting this in AuthProvider.Google?
             //  if serverClientId is nullable do we still need to throw an IllegalStateException?
-            Preconditions.checkConfigured(
-                context,
-                "Check your google-services plugin configuration, the" +
-                        " default_web_client_id string wasn't populated.",
-                R.string.default_web_client_id
-            )
+            // if (serverClientId == null) {
+            //     Preconditions.checkConfigured(
+            //         context,
+            //         "Check your google-services plugin configuration, the" +
+            //                 " default_web_client_id string wasn't populated.",
+            //         R.string.default_web_client_id
+            //     )
+            // } else {
+            //     require(serverClientId.isNotBlank()) {
+            //         "Server client ID cannot be blank."
+            //     }
+            // }
 
-            for (scope in scopes) {
-                if ("email" == scope) {
-                    Log.w(
-                        "AuthProvider.Google",
-                        "The GoogleSignInOptions passed to setSignInOptions does not " +
-                                "request the 'email' scope. In most cases this is a mistake! " +
-                                "Call requestEmail() on the GoogleSignInOptions object."
-                    )
-                    break
-                }
+            val hasEmailScope = scopes.contains("email")
+            if (!hasEmailScope) {
+                Log.w(
+                    "AuthProvider.Google",
+                    "The scopes do not include 'email'. In most cases this is a mistake!"
+                )
             }
         }
     }
@@ -258,6 +261,11 @@ abstract class AuthProvider(open val providerId: String) {
      * Facebook Login provider configuration.
      */
     class Facebook(
+        /**
+         * The Facebook application ID.
+         */
+        val applicationId: String? = null,
+
         /**
          * The list of scopes (permissions) to request. Defaults to email and public_profile.
          */
@@ -278,7 +286,7 @@ abstract class AuthProvider(open val providerId: String) {
         customParameters = customParameters
     ) {
         fun validate(context: Context) {
-            if (ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
+            if (!ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
                 throw RuntimeException(
                     "Facebook provider cannot be configured " +
                             "without dependency. Did you forget to add " +
@@ -286,14 +294,19 @@ abstract class AuthProvider(open val providerId: String) {
                 )
             }
 
-            // TODO(demolaf): is this required? or should we add appId to AuthProvider.Facebook
-            //  parameters above?
-            Preconditions.checkConfigured(
-                context,
-                "Facebook provider unconfigured. Make sure to " +
-                        "add a `facebook_application_id` string.",
-                R.string.facebook_application_id
-            )
+            // Check application ID - either from parameter or string resources
+            // if (applicationId == null) {
+            //     Preconditions.checkConfigured(
+            //         context,
+            //         "Facebook provider unconfigured. Make sure to " +
+            //                 "add a `facebook_application_id` string or provide applicationId parameter.",
+            //         R.string.facebook_application_id
+            //     )
+            // } else {
+            //     require(applicationId.isNotBlank()) {
+            //         "Facebook application ID cannot be blank"
+            //     }
+            // }
         }
     }
 
@@ -447,5 +460,15 @@ abstract class AuthProvider(open val providerId: String) {
         providerId = providerId,
         scopes = scopes,
         customParameters = customParameters
-    )
+    ) {
+        fun validate() {
+            require(providerId.isNotBlank()) {
+                "Provider ID cannot be null or empty"
+            }
+
+            require(buttonLabel.isNotBlank()) {
+                "Button label cannot be null or empty"
+            }
+        }
+    }
 }

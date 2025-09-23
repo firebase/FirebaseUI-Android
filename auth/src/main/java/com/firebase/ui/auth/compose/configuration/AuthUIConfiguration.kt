@@ -98,6 +98,7 @@ class AuthUIConfigurationBuilder {
                 is AuthProvider.Phone -> provider.validate()
                 is AuthProvider.Google -> provider.validate(context)
                 is AuthProvider.Facebook -> provider.validate(context)
+                is AuthProvider.GenericOAuth -> provider.validate()
                 else -> null
             }
         }
