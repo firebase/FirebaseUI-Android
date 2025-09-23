@@ -52,12 +52,10 @@ class AuthUIConfigurationBuilder {
         providers.addAll(AuthProvidersBuilder().apply(block).build())
 
     internal fun build(): AuthUIConfiguration {
-        // Context is not null
         val context = requireNotNull(context) {
             "Application context is required"
         }
 
-        // At least one provider
         require(providers.isNotEmpty()) {
             "At least one provider must be configured"
         }
