@@ -68,12 +68,7 @@ class AuthUIConfigurationBuilder {
         }
 
         // Cannot have only anonymous provider
-        if (providers.size == 1 && providers.first() is AuthProvider.Anonymous) {
-            throw IllegalStateException(
-                "Sign in as guest cannot be the only sign in method. " +
-                        "In this case, sign the user in anonymously your self; no UI is needed."
-            )
-        }
+        AuthProvider.Anonymous.validate(providers)
 
         // Check for duplicate providers
         val providerIds = providers.map { it.providerId }
@@ -89,7 +84,21 @@ class AuthUIConfigurationBuilder {
         // Provider specific validations
         providers.forEach { provider ->
             when (provider) {
-                is AuthProvider.Email -> provider.validate()
+                is AuthProvider.Email -> {
+                    provider.validate()
+
+                    if (isAnonymousUpgradeEnabled && provider.isEmailLinkSignInEnabled) {
+                        check(provider.isEmailLinkForceSameDeviceEnabled) {
+                            "You must force the same device flow when using email link sign in " +
+                                    "with anonymous user upgrade"
+                        }
+                    }
+                }
+
+                is AuthProvider.Phone -> provider.validate()
+                is AuthProvider.Google -> provider.validate(context)
+                is AuthProvider.Facebook -> provider.validate(context)
+                is AuthProvider.GenericOAuth -> provider.validate()
                 else -> null
             }
         }
