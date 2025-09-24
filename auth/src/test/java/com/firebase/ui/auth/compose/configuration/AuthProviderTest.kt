@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose.configuration
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.Before
 import org.junit.Test
@@ -70,7 +71,7 @@ class AuthProviderTest {
         provider.validate()
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `email provider with email link enabled but null action code settings should throw`() {
         val provider = AuthProvider.Email(
             isEmailLinkSignInEnabled = true,
@@ -78,10 +79,18 @@ class AuthProviderTest {
             passwordValidationRules = listOf()
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo(
+                "ActionCodeSettings cannot be null when using " +
+                        "email link sign in."
+            )
+        }
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `email provider with email link enabled but canHandleCodeInApp false should throw`() {
         val actionCodeSettings = actionCodeSettings {
             url = "https://example.com/verify"
@@ -94,7 +103,15 @@ class AuthProviderTest {
             passwordValidationRules = listOf()
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo(
+                "You must set canHandleCodeInApp in your " +
+                        "ActionCodeSettings to true for Email-Link Sign-in."
+            )
+        }
     }
 
     // =============================================================================================
@@ -123,7 +140,7 @@ class AuthProviderTest {
         provider.validate()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `phone provider with invalid default number should throw`() {
         val provider = AuthProvider.Phone(
             defaultNumber = "invalid_number",
@@ -131,7 +148,12 @@ class AuthProviderTest {
             allowedCountries = null
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo("Invalid phone number: invalid_number")
+        }
     }
 
     @Test
@@ -145,7 +167,7 @@ class AuthProviderTest {
         provider.validate()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `phone provider with invalid default country code should throw`() {
         val provider = AuthProvider.Phone(
             defaultNumber = null,
@@ -153,7 +175,12 @@ class AuthProviderTest {
             allowedCountries = null
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo("Invalid country iso: invalid")
+        }
     }
 
     @Test
@@ -167,7 +194,7 @@ class AuthProviderTest {
         provider.validate()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `phone provider with invalid country in allowed list should throw`() {
         val provider = AuthProvider.Phone(
             defaultNumber = null,
@@ -175,7 +202,15 @@ class AuthProviderTest {
             allowedCountries = listOf("US", "invalid_country")
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo(
+                "Invalid input: You must provide a valid country iso (alpha-2) " +
+                        "or code (e-164). e.g. 'us' or '+1'. Invalid code: invalid_country"
+            )
+        }
     }
 
     @Test
@@ -203,6 +238,39 @@ class AuthProviderTest {
         provider.validate(applicationContext)
     }
 
+    @Test
+    fun `google provider with empty serverClientId string throws`() {
+        val provider = AuthProvider.Google(
+            scopes = listOf("email"),
+            serverClientId = ""
+        )
+
+        try {
+            provider.validate(applicationContext)
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo("Server client ID cannot be blank.")
+        }
+    }
+
+    @Test
+    fun `google provider validates default_web_client_id when serverClientId is null`() {
+        val provider = AuthProvider.Google(
+            scopes = listOf("email"),
+            serverClientId = null
+        )
+
+        try {
+            provider.validate(applicationContext)
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo(
+                "Check your google-services plugin " +
+                        "configuration, the default_web_client_id string wasn't populated."
+            )
+        }
+    }
+
     // =============================================================================================
     // Facebook Provider Tests
     // =============================================================================================
@@ -214,15 +282,50 @@ class AuthProviderTest {
         provider.validate(applicationContext)
     }
 
+    @Test
+    fun `facebook provider with empty application id throws`() {
+        val provider = AuthProvider.Facebook(applicationId = "")
+
+        try {
+            provider.validate(applicationContext)
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo("Facebook application ID cannot be blank")
+        }
+    }
+
+    @Test
+    fun `facebook provider validates facebook_application_id when applicationId is null`() {
+        val provider = AuthProvider.Facebook()
+
+        try {
+            provider.validate(applicationContext)
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo(
+                "Facebook provider unconfigured. Make sure to " +
+                        "add a `facebook_application_id` string or provide applicationId parameter."
+            )
+        }
+    }
+
     // =============================================================================================
     // Anonymous Provider Tests
     // =============================================================================================
 
-    @Test(expected = IllegalStateException::class)
+    @Test
     fun `anonymous provider as only provider should throw`() {
         val providers = listOf(AuthProvider.Anonymous)
 
-        AuthProvider.Anonymous.validate(providers)
+        try {
+            AuthProvider.Anonymous.validate(providers)
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalStateException::class.java)
+            assertThat(e.message).isEqualTo(
+                "Sign in as guest cannot be the only sign in method. " +
+                        "In this case, sign the user in anonymously your self; no UI is needed."
+            )
+        }
     }
 
     @Test
@@ -256,7 +359,7 @@ class AuthProviderTest {
         provider.validate()
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `generic oauth provider with blank provider id should throw`() {
         val provider = AuthProvider.GenericOAuth(
             providerId = "",
@@ -267,10 +370,15 @@ class AuthProviderTest {
             buttonColor = null
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo("Provider ID cannot be null or empty")
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `generic oauth provider with blank button label should throw`() {
         val provider = AuthProvider.GenericOAuth(
             providerId = "custom.provider",
@@ -281,6 +389,11 @@ class AuthProviderTest {
             buttonColor = null
         )
 
-        provider.validate()
+        try {
+            provider.validate()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo("Button label cannot be null or empty")
+        }
     }
 }

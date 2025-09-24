@@ -64,7 +64,7 @@ class AuthUIConfigurationTest {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf(),
-                        serverClientId = ""
+                        serverClientId = "test_client_id"
                     )
                 )
             }
@@ -103,7 +103,7 @@ class AuthUIConfigurationTest {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf(),
-                        serverClientId = ""
+                        serverClientId = "test_client_id"
                     )
                 )
                 provider(
@@ -152,7 +152,7 @@ class AuthUIConfigurationTest {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf(),
-                        serverClientId = ""
+                        serverClientId = "test_client_id"
                     )
                 )
             }
@@ -190,7 +190,7 @@ class AuthUIConfigurationTest {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf(),
-                        serverClientId = ""
+                        serverClientId = "test_client_id"
                     )
                 )
             }
@@ -215,7 +215,7 @@ class AuthUIConfigurationTest {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf(),
-                        serverClientId = ""
+                        serverClientId = "test_client_id"
                     )
                 )
             }
@@ -235,8 +235,8 @@ class AuthUIConfigurationTest {
             providers {
                 provider(
                     AuthProvider.Google(
-                        scopes = listOf(), serverClientId
-                        = ""
+                        scopes = listOf(),
+                        serverClientId = "test_client_id"
                     )
                 )
             }
@@ -261,7 +261,7 @@ class AuthUIConfigurationTest {
             authUIConfiguration {
                 context = applicationContext
                 providers {
-                    provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
+                    provider(AuthProvider.Google(scopes = listOf(), serverClientId = "test_client_id"))
                 }
             }
         } catch (e: Exception) {
@@ -285,8 +285,8 @@ class AuthUIConfigurationTest {
         val config = authUIConfiguration {
             context = applicationContext
             providers {
-                provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
-                provider(AuthProvider.Facebook())
+                provider(AuthProvider.Google(scopes = listOf(), serverClientId = "test_client_id"))
+                provider(AuthProvider.Facebook(applicationId = "test_app_id"))
                 provider(AuthProvider.Twitter(customParameters = mapOf()))
                 provider(AuthProvider.Github(customParameters = mapOf()))
                 provider(AuthProvider.Microsoft(customParameters = mapOf(), tenant = null))
@@ -304,7 +304,7 @@ class AuthUIConfigurationTest {
         assertThat(config.providers).hasSize(9)
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `validation throws for unsupported provider`() {
         val mockProvider = AuthProvider.GenericOAuth(
             providerId = "unsupported.provider",
@@ -315,27 +315,39 @@ class AuthUIConfigurationTest {
             buttonColor = null
         )
 
-        authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(mockProvider)
+        try {
+            authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(mockProvider)
+                }
             }
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo("Unknown providers: unsupported.provider")
         }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun `validate throws for duplicate providers`() {
-        authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
-                provider(
-                    AuthProvider.Google(
-                        scopes = listOf("email"),
-                        serverClientId = "different"
+        try {
+            authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(AuthProvider.Google(scopes = listOf(), serverClientId = ""))
+                    provider(
+                        AuthProvider.Google(
+                            scopes = listOf("email"),
+                            serverClientId = "different"
+                        )
                     )
-                )
+                }
             }
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(e.message).isEqualTo(
+                "Each provider can only be set once. Duplicates: google.com"
+            )
         }
     }
 
@@ -351,7 +363,7 @@ class AuthUIConfigurationTest {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf(),
-                        serverClientId = ""
+                        serverClientId = "test_client_id"
                     )
                 )
             }

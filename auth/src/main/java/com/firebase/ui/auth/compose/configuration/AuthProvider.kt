@@ -91,7 +91,6 @@ abstract class AuthProvider(open val providerId: String) {
          * When enabled, prevents email links from being opened on different devices,
          * which is required for security when upgrading anonymous users. Defaults to true.
          */
-
         val isEmailLinkForceSameDeviceEnabled: Boolean = true,
 
         /**
@@ -232,20 +231,18 @@ abstract class AuthProvider(open val providerId: String) {
         customParameters = customParameters
     ) {
         fun validate(context: Context) {
-            // TODO(demolaf): do we need this? since we are requesting this in AuthProvider.Google?
-            //  if serverClientId is nullable do we still need to throw an IllegalStateException?
-            // if (serverClientId == null) {
-            //     Preconditions.checkConfigured(
-            //         context,
-            //         "Check your google-services plugin configuration, the" +
-            //                 " default_web_client_id string wasn't populated.",
-            //         R.string.default_web_client_id
-            //     )
-            // } else {
-            //     require(serverClientId.isNotBlank()) {
-            //         "Server client ID cannot be blank."
-            //     }
-            // }
+            if (serverClientId == null) {
+                Preconditions.checkConfigured(
+                    context,
+                    "Check your google-services plugin configuration, the" +
+                            " default_web_client_id string wasn't populated.",
+                    R.string.default_web_client_id
+                )
+            } else {
+                require(serverClientId.isNotBlank()) {
+                    "Server client ID cannot be blank."
+                }
+            }
 
             val hasEmailScope = scopes.contains("email")
             if (!hasEmailScope) {
@@ -294,19 +291,18 @@ abstract class AuthProvider(open val providerId: String) {
                 )
             }
 
-            // Check application ID - either from parameter or string resources
-            // if (applicationId == null) {
-            //     Preconditions.checkConfigured(
-            //         context,
-            //         "Facebook provider unconfigured. Make sure to " +
-            //                 "add a `facebook_application_id` string or provide applicationId parameter.",
-            //         R.string.facebook_application_id
-            //     )
-            // } else {
-            //     require(applicationId.isNotBlank()) {
-            //         "Facebook application ID cannot be blank"
-            //     }
-            // }
+            if (applicationId == null) {
+                Preconditions.checkConfigured(
+                    context,
+                    "Facebook provider unconfigured. Make sure to " +
+                            "add a `facebook_application_id` string or provide applicationId parameter.",
+                    R.string.facebook_application_id
+                )
+            } else {
+                require(applicationId.isNotBlank()) {
+                    "Facebook application ID cannot be blank"
+                }
+            }
         }
     }
 
