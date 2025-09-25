@@ -88,5 +88,10 @@
     <string name="fui_resend_code">Renvoyer le code</string>
     <string name="fui_verify_phone_number">Valider le numéro de téléphone</string>
     <string name="fui_sms_terms_of_service">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En appuyant sur “%1$s”, vous acceptez les %2$s et les %3$s. Vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En appuyant sur "%1$s", vous acceptez les %2$s et les %3$s. Vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Erreur d\'authentification</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Réessayer</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vérification supplémentaire requise. Veuillez compléter l\'authentification à plusieurs facteurs.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Le compte doit être lié. Veuillez essayer une méthode de connexion différente.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">L\'authentification a été annulée. Veuillez réessayer quand vous serez prêt.</string>
 </resources>

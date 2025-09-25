@@ -88,5 +88,10 @@
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
     <string name="fui_sms_terms_of_service">Als u op “%1$s” tikt, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op “%1$s” tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op "%1$s" tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authenticatiefout</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Opnieuw proberen</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Aanvullende verificatie vereist. Voltooi de multi-factor authenticatie.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account moet worden gekoppeld. Probeer een andere inlogmethode.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authenticatie is geannuleerd. Probeer opnieuw wanneer u klaar bent.</string>
 </resources>

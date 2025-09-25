@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">電話番号を確認</string>
     <string name="fui_sms_terms_of_service">[%1$s] をタップすると、SMS が送信されます。データ通信料がかかることがあります。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">[%1$s] をタップすると、%2$s と %3$s に同意したことになり、SMS が送信されます。データ通信料がかかることがあります。</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">認証エラー</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">再試行</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">追加の認証が必要です。多要素認証を完了してください。</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">アカウントをリンクする必要があります。別のサインイン方法をお試しください。</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">認証がキャンセルされました。準備ができたら再度お試しください。</string>
 </resources>

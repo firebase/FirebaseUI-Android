@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">Verifiera telefonnummer</string>
     <string name="fui_sms_terms_of_service">Genom att trycka på %1$s skickas ett sms. Meddelande- och dataavgifter kan tillkomma.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Genom att trycka på %1$s godkänner du våra %2$s och vår %3$s. Ett sms kan skickas. Meddelande- och dataavgifter kan tillkomma.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentiseringsfel</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Försök igen</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligare verifiering krävs. Vänligen slutför multifaktorautentisering.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontot måste länkas. Försök med en annan inloggningsmetod.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentisering avbröts. Försök igen när du är redo.</string>
 </resources>

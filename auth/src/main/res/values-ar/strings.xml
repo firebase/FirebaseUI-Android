@@ -88,5 +88,10 @@
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على “%1$s” إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على "%1$s" إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">خطأ في المصادقة</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">أعد المحاولة</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">مطلوب تحقق إضافي. يرجى إكمال المصادقة متعددة العوامل.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">يجب ربط الحساب. جرب طريقة تسجيل دخول مختلفة.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">تم إلغاء المصادقة. أعد المحاولة عندما تكون جاهزاً.</string>
 </resources>

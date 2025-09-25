@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">Overiť telefónne číslo</string>
     <string name="fui_sms_terms_of_service">Klepnutím na tlačidlo %1$s možno odoslať SMS. Môžu sa účtovať poplatky za správy a dáta.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačidlo %1$s vyjadrujete súhlas s dokumentmi %2$s a %3$s. Môže byť odoslaná SMS a môžu sa účtovať poplatky za správy a dáta.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba overenia</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Skúsiť znova</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžaduje sa dodatočné overenie. Dokončite prosím viacfaktorové overenie.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Účet je potrebné prepojiť. Skúste iný spôsob prihlásenia.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Overenie bolo zrušené. Skúste znova keď budete pripravení.</string>
 </resources>

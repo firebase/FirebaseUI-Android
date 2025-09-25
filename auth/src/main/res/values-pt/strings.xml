@@ -88,5 +88,10 @@
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Confirmar número de telefone</string>
     <string name="fui_sms_terms_of_service">Se você tocar em “%1$s”, um SMS poderá ser enviado e tarifas de mensagens e de dados serão cobradas.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em “%1$s”, você concorda com nossos %2$s e a %3$s. Um SMS poderá ser enviado e tarifas de mensagens e de dados poderão ser cobradas.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em "%1$s", você concorda com nossos %2$s e a %3$s. Um SMS poderá ser enviado e tarifas de mensagens e de dados poderão ser cobradas.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Erro de autenticação</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Tentar novamente</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Verificação adicional necessária. Conclua a autenticação de vários fatores.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A conta precisa ser vinculada. Tente um método de login diferente.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A autenticação foi cancelada. Tente novamente quando estiver pronto.</string>
 </resources>

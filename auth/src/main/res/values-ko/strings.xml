@@ -88,5 +88,9 @@
     <string name="fui_resend_code">코드 재전송</string>
     <string name="fui_verify_phone_number">전화번호 인증</string>
     <string name="fui_sms_terms_of_service">“%1$s” 버튼을 탭하면 SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">‘%1$s’ 버튼을 탭하면 %2$s 및 %3$s에 동의하는 것으로 간주됩니다. SMS가 발송될 수 있으며, 메시지 및 데이터 요금이 부과될 수 있습니다.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">인증 오류</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">다시 시도</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">추가 인증이 필요합니다. 다단계 인증을 완료해 주세요.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">계정을 연결해야 합니다. 다른 로그인 방법을 시도해 주세요.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">인증이 취소되었습니다. 준비가 되면 다시 시도해 주세요.</string>
 </resources>

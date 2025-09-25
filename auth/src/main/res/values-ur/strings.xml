@@ -89,4 +89,10 @@
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
     <string name="fui_sms_terms_of_service">%1$s پر تھپتھپانے سے، ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا کی شرحوں کا اطلاق ہو سکتا ہے۔</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s اور %3$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
 </resources>

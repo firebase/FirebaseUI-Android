@@ -88,5 +88,10 @@
     <string name="fui_resend_code">重新发送验证码</string>
     <string name="fui_verify_phone_number">验证电话号码</string>
     <string name="fui_sms_terms_of_service">您点按“%1$s”后，系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">点按“%1$s”即表示您接受我们的%2$s和%3$s。系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">点按"%1$s"即表示您接受我们的%2$s和%3$s。系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">身份验证错误</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">重试</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">需要额外的验证。请完成多重身份验证。</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">需要关联账户。请尝试其他登录方式。</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">身份验证已取消。准备好后请重试。</string>
 </resources>
