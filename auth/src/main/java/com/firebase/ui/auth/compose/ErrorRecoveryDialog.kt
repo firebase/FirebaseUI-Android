@@ -54,8 +54,8 @@ import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringPro
  * @param stringProvider The [AuthUIStringProvider] for localized strings
  * @param onRetry Callback invoked when the user taps the retry action
  * @param onDismiss Callback invoked when the user dismisses the dialog
- * @param onRecover Optional callback for custom recovery actions based on the exception type
  * @param modifier Optional [Modifier] for the dialog
+ * @param onRecover Optional callback for custom recovery actions based on the exception type
  * @param properties Optional [DialogProperties] for dialog configuration
  *
  * @since 10.0.0
@@ -66,8 +66,8 @@ fun ErrorRecoveryDialog(
     stringProvider: AuthUIStringProvider,
     onRetry: () -> Unit,
     onDismiss: () -> Unit,
-    onRecover: ((AuthException) -> Unit)? = null,
     modifier: Modifier = Modifier,
+    onRecover: ((AuthException) -> Unit)? = null,
     properties: DialogProperties = DialogProperties()
 ) {
     AlertDialog(
