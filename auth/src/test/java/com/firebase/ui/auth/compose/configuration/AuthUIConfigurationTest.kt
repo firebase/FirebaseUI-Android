@@ -22,6 +22,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.Assert.assertThrows
