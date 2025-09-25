@@ -2,6 +2,8 @@
 kotlin = "2.2.0"
 
 [libraries]
+# Testing
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
