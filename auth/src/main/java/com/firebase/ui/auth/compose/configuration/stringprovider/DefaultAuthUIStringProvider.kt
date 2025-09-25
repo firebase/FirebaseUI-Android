@@ -179,4 +179,34 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_progress_dialog_loading)
     override val noInternet: String
         get() = localizedContext.getString(R.string.fui_no_internet)
+
+    /**
+     * Error Recovery Dialog Strings
+     */
+    override val errorDialogTitle: String
+        get() = localizedContext.getString(R.string.fui_error_dialog_title)
+    override val retryAction: String
+        get() = localizedContext.getString(R.string.fui_error_retry_action)
+    override val dismissAction: String
+        get() = localizedContext.getString(R.string.fui_email_link_dismiss_button)
+    override val networkErrorRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_no_internet)
+    override val invalidCredentialsRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_invalid_password)
+    override val userNotFoundRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_email_does_not_exist)
+    override val weakPasswordRecoveryMessage: String
+        get() = localizedContext.resources.getQuantityString(R.plurals.fui_error_weak_password, 6, 6)
+    override val emailAlreadyInUseRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_email_account_creation_error)
+    override val tooManyRequestsRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_too_many_attempts)
+    override val mfaRequiredRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_mfa_required_message)
+    override val accountLinkingRequiredRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_account_linking_required_message)
+    override val authCancelledRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_auth_cancelled_message)
+    override val unknownErrorRecoveryMessage: String
+        get() = localizedContext.getString(R.string.fui_error_unknown)
 }

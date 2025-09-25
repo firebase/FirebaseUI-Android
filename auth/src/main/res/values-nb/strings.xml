@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">Bekreft telefonnummeret</string>
     <string name="fui_sms_terms_of_service">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ved å trykke på «%1$s» godtar du %2$s og %3$s våre. Du kan bli tilsendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Godkjenningsfeil</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Prøv igjen</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligere verifisering kreves. Vennligst fullfør multifaktorgodkjenning.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontoen må kobles. Prøv en annen påloggingsmetode.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Godkjenning ble avbrutt. Prøv igjen når du er klar.</string>
 </resources>

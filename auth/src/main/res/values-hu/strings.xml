@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
     <string name="fui_sms_terms_of_service">Ha a(z) „%1$s” gombra koppint, a rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">A(z) „%1$s” gombra való koppintással elfogadja a következő dokumentumokat: %2$s és %3$s. A rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Hitelesítési hiba</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Próbáld újra</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">További ellenőrzés szükséges. Kérjük, fejezze be a többtényezős hitelesítést.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A fiókot össze kell kapcsolni. Próbáljon meg egy másik bejelentkezési módot.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A hitelesítés megszakadt. Próbálja újra, amikor készen áll.</string>
 </resources>

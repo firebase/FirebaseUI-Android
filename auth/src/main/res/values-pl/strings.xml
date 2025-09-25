@@ -88,5 +88,10 @@
     <string name="fui_resend_code">Wyślij kod ponownie</string>
     <string name="fui_verify_phone_number">Zweryfikuj numer telefonu</string>
     <string name="fui_sms_terms_of_service">Gdy klikniesz „%1$s”, może zostać wysłany SMS. Może to skutkować pobraniem opłaty za przesłanie wiadomości i danych.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klikając „%1$s”, potwierdzasz, że akceptujesz te dokumenty: %2$s i %3$s. Może zostać wysłany SMS. Może to skutkować pobraniem opłat za przesłanie wiadomości i danych.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klikając „%1$s", potwierdzasz, że akceptujesz te dokumenty: %2$s i %3$s. Może zostać wysłany SMS. Może to skutkować pobraniem opłat za przesłanie wiadomości i danych.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Błąd uwierzytelniania</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Spróbuj ponownie</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Wymagana dodatkowa weryfikacja. Proszę ukończyć uwierzytelnianie wieloskładnikowe.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konto musi zostać połączone. Spróbuj innej metody logowania.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Uwierzytelnianie zostało anulowane. Spróbuj ponownie gdy będziesz gotowy.</string>
 </resources>

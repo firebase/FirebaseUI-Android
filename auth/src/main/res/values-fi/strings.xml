@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">Vahvista puhelinnumero</string>
     <string name="fui_sms_terms_of_service">Kun napautat %1$s, tekstiviesti voidaan lähettää. Datan ja viestien käyttö voi olla maksullista.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Napauttamalla %1$s vahvistat hyväksyväsi seuraavat: %2$s ja %3$s. Tekstiviesti voidaan lähettää, ja datan ja viestien käyttö voi olla maksullista.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Todennusvirhe</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Yritä uudelleen</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Lisävarmistus vaaditaan. Suorita monitekijätodennus loppuun.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Tili täytyy linkittää. Kokeile eri kirjautumistapaa.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Todennus peruutettiin. Yritä uudelleen kun olet valmis.</string>
 </resources>

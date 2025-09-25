@@ -88,5 +88,10 @@
     <string name="fui_resend_code">Send koden igen</string>
     <string name="fui_verify_phone_number">Bekræft telefonnummer</string>
     <string name="fui_sms_terms_of_service">Når du trykker på “%1$s”, sendes der måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Når du trykker på “%1$s”, indikerer du, at du accepterer vores %2$s og %3$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Når du trykker på "%1$s", indikerer du, at du accepterer vores %2$s og %3$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Godkendelsesfejl</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Prøv igen</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Yderligere bekræftelse påkrævet. Fuldfør venligst multifaktorgodkendelse.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontoen skal tilknyttes. Prøv en anden login-metode.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Godkendelsen blev annulleret. Prøv igen når du er klar.</string>
 </resources>

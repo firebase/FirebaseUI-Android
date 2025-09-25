@@ -88,5 +88,10 @@
     <string name="fui_resend_code">Retrimiteți codul</string>
     <string name="fui_verify_phone_number">Confirmați numărul de telefon</string>
     <string name="fui_sms_terms_of_service">Dacă atingeți „%1$s”, poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dacă atingeți „%1$s”, sunteți de acord cu %2$s și cu %3$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dacă atingeți „%1$s", sunteți de acord cu %2$s și cu %3$s. Poate fi trimis un SMS. Se pot aplica tarife pentru mesaje și date.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Eroare de autentificare</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Încearcă din nou</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Este necesară verificarea suplimentară. Vă rugăm să completați autentificarea cu mai mulți factori.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Contul trebuie conectat. Încercați o metodă de conectare diferită.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentificarea a fost anulată. Încercați din nou când sunteți gata.</string>
 </resources>

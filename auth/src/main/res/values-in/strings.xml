@@ -89,4 +89,10 @@
     <string name="fui_verify_phone_number">Verifikasi Nomor Telepon</string>
     <string name="fui_sms_terms_of_service">Dengan mengetuk “%1$s\", SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan mengetuk “%1$s”, Anda menyatakan bahwa Anda menyetujui %2$s dan %3$s kami. SMS mungkin akan dikirim. Mungkin dikenakan biaya pesan &amp; data.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
 </resources>

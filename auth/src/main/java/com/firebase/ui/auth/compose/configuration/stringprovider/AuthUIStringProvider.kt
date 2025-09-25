@@ -184,4 +184,44 @@ interface AuthUIStringProvider {
 
     /** TOTP Code prompt */
     val enterTOTPCode: String
+
+    // Error Recovery Dialog Strings
+    /** Error dialog title */
+    val errorDialogTitle: String
+
+    /** Retry action button text */
+    val retryAction: String
+
+    /** Dismiss action button text */
+    val dismissAction: String
+
+    /** Network error recovery message */
+    val networkErrorRecoveryMessage: String
+
+    /** Invalid credentials recovery message */
+    val invalidCredentialsRecoveryMessage: String
+
+    /** User not found recovery message */
+    val userNotFoundRecoveryMessage: String
+
+    /** Weak password recovery message */
+    val weakPasswordRecoveryMessage: String
+
+    /** Email already in use recovery message */
+    val emailAlreadyInUseRecoveryMessage: String
+
+    /** Too many requests recovery message */
+    val tooManyRequestsRecoveryMessage: String
+
+    /** MFA required recovery message */
+    val mfaRequiredRecoveryMessage: String
+
+    /** Account linking required recovery message */
+    val accountLinkingRequiredRecoveryMessage: String
+
+    /** Auth cancelled recovery message */
+    val authCancelledRecoveryMessage: String
+
+    /** Unknown error recovery message */
+    val unknownErrorRecoveryMessage: String
 }

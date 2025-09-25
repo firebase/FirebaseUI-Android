@@ -89,4 +89,9 @@
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
     <string name="fui_sms_terms_of_service">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Sa pag-tap sa “%1$s”, ipinababatid mo na tinatanggap mo ang aming %2$s at %3$s. Maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error sa Pagpapatotoo</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Subukan Muli</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Kailangan ang karagdagang pagpapatotoo. Mangyaring kumpletuhin ang multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kailangang i-link ang account. Mangyaring subukan ang ibang paraan ng pag-sign in.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Ang pagpapatotoo ay nakansela. Mangyaring subukan muli kapag handa ka na.</string>
 </resources>
