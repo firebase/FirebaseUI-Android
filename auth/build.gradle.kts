@@ -115,6 +115,7 @@ dependencies {
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
+    testImplementation(libs.androidx.ui.test.junit4)
 
     debugImplementation(project(":internal:lintchecks"))
 }
