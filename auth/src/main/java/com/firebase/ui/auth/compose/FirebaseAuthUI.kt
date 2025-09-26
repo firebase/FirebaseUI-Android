@@ -21,10 +21,13 @@ import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import android.content.Context
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -208,6 +211,136 @@ class FirebaseAuthUI private constructor(
      */
     internal fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
+    }
+
+    /**
+     * Signs out the current user and clears authentication state.
+     *
+     * This method signs out the user from Firebase Auth and updates the auth state flow
+     * to reflect the change. The operation is performed asynchronously and will emit
+     * appropriate states during the process.
+     *
+     * **Example:**
+     * ```kotlin
+     * val authUI = FirebaseAuthUI.getInstance()
+     *
+     * try {
+     *     authUI.signOut(context)
+     *     // User is now signed out
+     * } catch (e: AuthException) {
+     *     // Handle sign-out error
+     *     when (e) {
+     *         is AuthException.AuthCancelledException -> {
+     *             // User cancelled sign-out
+     *         }
+     *         else -> {
+     *             // Other error occurred
+     *         }
+     *     }
+     * }
+     * ```
+     *
+     * @param context The Android [Context] for any required UI operations
+     * @throws AuthException.AuthCancelledException if the operation is cancelled
+     * @throws AuthException.NetworkException if a network error occurs
+     * @throws AuthException.UnknownException for other errors
+     * @since 10.0.0
+     */
+    suspend fun signOut(context: Context) {
+        try {
+            // Update state to loading
+            updateAuthState(AuthState.Loading("Signing out..."))
+
+            // Sign out from Firebase Auth
+            auth.signOut()
+
+            // Update state to idle (user signed out)
+            updateAuthState(AuthState.Idle)
+
+        } catch (e: CancellationException) {
+            // Handle coroutine cancellation
+            val cancelledException = AuthException.AuthCancelledException(
+                message = "Sign-out was cancelled",
+                cause = e
+            )
+            updateAuthState(AuthState.Error(cancelledException))
+            throw cancelledException
+        } catch (e: AuthException) {
+            // Already mapped AuthException, just update state and re-throw
+            updateAuthState(AuthState.Error(e))
+            throw e
+        } catch (e: Exception) {
+            // Map to appropriate AuthException
+            val authException = AuthException.from(e)
+            updateAuthState(AuthState.Error(authException))
+            throw authException
+        }
+    }
+
+    /**
+     * Deletes the current user account and clears authentication state.
+     *
+     * This method deletes the current user's account from Firebase Auth. If the user
+     * hasn't signed in recently, it will throw an exception requiring reauthentication.
+     * The operation is performed asynchronously and will emit appropriate states during
+     * the process.
+     *
+     * **Example:**
+     * ```kotlin
+     * val authUI = FirebaseAuthUI.getInstance()
+     *
+     * try {
+     *     authUI.delete(context)
+     *     // User account is now deleted
+     * } catch (e: AuthException.InvalidCredentialsException) {
+     *     // Recent login required - show reauthentication UI
+     *     handleReauthentication()
+     * } catch (e: AuthException) {
+     *     // Handle other errors
+     * }
+     * ```
+     *
+     * @param context The Android [Context] for any required UI operations
+     * @throws AuthException.InvalidCredentialsException if reauthentication is required
+     * @throws AuthException.AuthCancelledException if the operation is cancelled
+     * @throws AuthException.NetworkException if a network error occurs
+     * @throws AuthException.UnknownException for other errors
+     * @since 10.0.0
+     */
+    suspend fun delete(context: Context) {
+        try {
+            val currentUser = auth.currentUser
+                ?: throw AuthException.UserNotFoundException(
+                    message = "No user is currently signed in"
+                )
+
+            // Update state to loading
+            updateAuthState(AuthState.Loading("Deleting account..."))
+
+            // Delete the user account
+            currentUser.delete().await()
+
+            // Update state to idle (user deleted and signed out)
+            updateAuthState(AuthState.Idle)
+
+        } catch (e: CancellationException) {
+            // Handle coroutine cancellation
+            val cancelledException = AuthException.AuthCancelledException(
+                message = "Account deletion was cancelled",
+                cause = e
+            )
+            updateAuthState(AuthState.Error(cancelledException))
+            throw cancelledException
+        } catch (e: AuthException) {
+            // Already mapped AuthException, just update state and re-throw
+            updateAuthState(AuthState.Error(e))
+            throw e
+        } catch (e: Exception) {
+            // Map to appropriate AuthException
+            val authException = AuthException.from(e)
+            updateAuthState(AuthState.Error(authException))
+            throw authException
+        }
     }
 
     companion object {
