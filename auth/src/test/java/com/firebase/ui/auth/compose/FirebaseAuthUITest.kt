@@ -17,8 +17,15 @@ package com.firebase.ui.auth.compose
 import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
+import com.google.firebase.auth.FirebaseUser
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -26,6 +33,9 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doThrow
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -322,5 +332,194 @@ class FirebaseAuthUITest {
 
         // Only one instance should be cached
         assertThat(FirebaseAuthUI.getCacheSize()).isEqualTo(1)
+    }
+
+    // =============================================================================================
+    // Sign Out Tests
+    // =============================================================================================
+
+    @Test
+    fun `signOut() successfully signs out user and updates state`() = runTest {
+        // Setup mock auth
+        val mockAuth = mock(FirebaseAuth::class.java)
+        doNothing().`when`(mockAuth).signOut()
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform sign out
+        instance.signOut(context)
+
+        // Verify signOut was called on Firebase Auth
+        verify(mockAuth).signOut()
+    }
+
+    @Test
+    fun `signOut() handles Firebase exception and maps to AuthException`() = runTest {
+        // Setup mock auth that throws exception
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val runtimeException = RuntimeException("Network error")
+        doThrow(runtimeException).`when`(mockAuth).signOut()
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform sign out and expect exception
+        try {
+            instance.signOut(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException) {
+            assertThat(e).isInstanceOf(AuthException.UnknownException::class.java)
+            assertThat(e.cause).isEqualTo(runtimeException)
+        }
+    }
+
+    @Test
+    fun `signOut() handles cancellation and maps to AuthCancelledException`() = runTest {
+        // Setup mock auth
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val cancellationException = CancellationException("Operation cancelled")
+        doThrow(cancellationException).`when`(mockAuth).signOut()
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform sign out and expect cancellation exception
+        try {
+            instance.signOut(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.AuthCancelledException) {
+            assertThat(e.message).contains("cancelled")
+            assertThat(e.cause).isInstanceOf(CancellationException::class.java)
+        }
+    }
+
+    // =============================================================================================
+    // Delete Account Tests
+    // =============================================================================================
+
+    @Test
+    fun `delete() successfully deletes user account and updates state`() = runTest {
+        // Setup mock user and auth
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        taskCompletionSource.setResult(null) // Simulate successful deletion
+
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete()).thenReturn(taskCompletionSource.task)
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform delete
+        instance.delete(context)
+
+        // Verify delete was called on user
+        verify(mockUser).delete()
+    }
+
+    @Test
+    fun `delete() throws UserNotFoundException when no user is signed in`() = runTest {
+        // Setup mock auth with no current user
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(null)
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform delete and expect exception
+        try {
+            instance.delete(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.UserNotFoundException) {
+            assertThat(e.message).contains("No user is currently signed in")
+        }
+    }
+
+    @Test
+    fun `delete() handles recent login required exception`() = runTest {
+        // Setup mock user and auth
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        val recentLoginException = FirebaseAuthRecentLoginRequiredException(
+            "ERROR_REQUIRES_RECENT_LOGIN",
+            "Recent login required"
+        )
+        taskCompletionSource.setException(recentLoginException)
+
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete()).thenReturn(taskCompletionSource.task)
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform delete and expect mapped exception
+        try {
+            instance.delete(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.InvalidCredentialsException) {
+            assertThat(e.message).contains("Recent login required")
+            assertThat(e.cause).isEqualTo(recentLoginException)
+        }
+    }
+
+    @Test
+    fun `delete() handles cancellation and maps to AuthCancelledException`() = runTest {
+        // Setup mock user and auth
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        val cancellationException = CancellationException("Operation cancelled")
+        taskCompletionSource.setException(cancellationException)
+
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete()).thenReturn(taskCompletionSource.task)
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform delete and expect cancellation exception
+        try {
+            instance.delete(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.AuthCancelledException) {
+            assertThat(e.message).contains("cancelled")
+            assertThat(e.cause).isInstanceOf(CancellationException::class.java)
+        }
+    }
+
+    @Test
+    fun `delete() handles Firebase network exception`() = runTest {
+        // Setup mock user and auth
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        val networkException = FirebaseException("Network error")
+        taskCompletionSource.setException(networkException)
+
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete()).thenReturn(taskCompletionSource.task)
+
+        // Create instance with mock auth
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        // Perform delete and expect mapped exception
+        try {
+            instance.delete(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.NetworkException) {
+            assertThat(e.message).contains("Network error")
+            assertThat(e.cause).isEqualTo(networkException)
+        }
     }
 }
