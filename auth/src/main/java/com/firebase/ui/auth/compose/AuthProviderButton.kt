@@ -75,11 +75,13 @@ fun AuthProviderButton(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = providerStyle.icon.painter,
-                contentDescription = providerText
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+            if (providerStyle.icon != null) {
+                Image(
+                    painter = providerStyle.icon.painter,
+                    contentDescription = providerText
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
             Text(
                 text = providerText
             )
@@ -87,15 +89,14 @@ fun AuthProviderButton(
     }
 }
 
-private fun resolveProviderStyle(
+internal fun resolveProviderStyle(
     provider: AuthProvider,
     style: AuthUITheme.ProviderStyle?,
 ): AuthUITheme.ProviderStyle {
     if (style != null) return style
 
-    val defaultStyle = requireNotNull(
-        AuthUITheme.Default.providerStyles[provider.providerId]
-    ) { "No default style found for provider: ${provider.providerId}" }
+    val defaultStyle =
+        AuthUITheme.Default.providerStyles[provider.providerId] ?: AuthUITheme.ProviderStyle.Empty
 
     return if (provider is AuthProvider.GenericOAuth) {
         AuthUITheme.ProviderStyle(
@@ -108,7 +109,7 @@ private fun resolveProviderStyle(
     }
 }
 
-private fun resolveProviderLabel(
+internal fun resolveProviderLabel(
     provider: AuthProvider,
     stringProvider: AuthUIStringProvider
 ): String = when (provider) {
@@ -124,7 +125,7 @@ private fun resolveProviderLabel(
         Provider.MICROSOFT -> stringProvider.signInWithMicrosoft
         Provider.YAHOO -> stringProvider.signInWithYahoo
         Provider.APPLE -> stringProvider.signInWithApple
-        null -> error("Unknown provider: ${provider.providerId}")
+        null -> "Unknown Provider"
     }
 }
 
@@ -230,6 +231,19 @@ private fun PreviewAuthProviderButton() {
             ),
             onClick = {},
             style = AuthUITheme.Default.providerStyles[Provider.MICROSOFT.id],
+            stringProvider = DefaultAuthUIStringProvider(context)
+        )
+        AuthProviderButton(
+            provider = AuthProvider.GenericOAuth(
+                providerId = "unknown_provider",
+                scopes = emptyList(),
+                customParameters = emptyMap(),
+                buttonLabel = "Sign in with Lego",
+                buttonIcon = null,
+                buttonColor = null,
+                contentColor = null,
+            ),
+            onClick = {},
             stringProvider = DefaultAuthUIStringProvider(context)
         )
     }

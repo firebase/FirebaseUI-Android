@@ -59,7 +59,7 @@ class AuthUITheme(
         /**
          * The provider's icon.
          */
-        val icon: AuthUIAsset,
+        val icon: AuthUIAsset?,
 
         /**
          * The background color of the button.
@@ -86,7 +86,19 @@ class AuthUITheme(
          * The shadow elevation for the button. Defaults to 2.dp.
          */
         val elevation: Dp = 2.dp
-    )
+    ) {
+        internal companion object {
+            /**
+             * A fallback style for unknown providers with no icon, white background,
+             * and black text.
+             */
+            val Empty = ProviderStyle(
+                icon = null,
+                backgroundColor = Color.White,
+                contentColor = Color.Black,
+            )
+        }
+    }
 
     companion object {
         /**
