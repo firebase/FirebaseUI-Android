@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.compose
 
 import androidx.compose.foundation.Image
+import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -69,17 +70,31 @@ fun AuthProviderButton(
             containerColor = providerStyle.backgroundColor,
             contentColor = providerStyle.contentColor,
         ),
+        shape = providerStyle.shape,
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = providerStyle.elevation
+        ),
         onClick = onClick,
         enabled = enabled,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (providerStyle.icon != null) {
-                Image(
-                    painter = providerStyle.icon.painter,
-                    contentDescription = providerText
-                )
+            val providerIcon = providerStyle.icon
+            if (providerIcon != null) {
+                val iconTint = providerStyle.iconTint
+                if (iconTint != null) {
+                    Icon(
+                        painter = providerIcon.painter,
+                        contentDescription = providerText,
+                        tint = iconTint
+                    )
+                } else {
+                    Image(
+                        painter = providerIcon.painter,
+                        contentDescription = providerText
+                    )
+                }
                 Spacer(modifier = Modifier.width(8.dp))
             }
             Text(
