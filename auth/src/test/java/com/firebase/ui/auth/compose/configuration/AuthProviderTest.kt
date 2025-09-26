@@ -353,7 +353,8 @@ class AuthProviderTest {
             customParameters = mapOf(),
             buttonLabel = "Sign in with Custom",
             buttonIcon = null,
-            buttonColor = null
+            buttonColor = null,
+            contentColor = null,
         )
 
         provider.validate()
@@ -367,7 +368,8 @@ class AuthProviderTest {
             customParameters = mapOf(),
             buttonLabel = "Sign in with Custom",
             buttonIcon = null,
-            buttonColor = null
+            buttonColor = null,
+            contentColor = null,
         )
 
         try {
@@ -386,7 +388,8 @@ class AuthProviderTest {
             customParameters = mapOf(),
             buttonLabel = "",
             buttonIcon = null,
-            buttonColor = null
+            buttonColor = null,
+            contentColor = null,
         )
 
         try {

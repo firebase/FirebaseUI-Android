@@ -57,6 +57,11 @@ class AuthUITheme(
      */
     class ProviderStyle(
         /**
+         * The provider's icon.
+         */
+        val icon: AuthUIAsset,
+
+        /**
          * The background color of the button.
          */
         val backgroundColor: Color,
@@ -112,7 +117,6 @@ class AuthUITheme(
                 providerStyles = providerStyles
             )
         }
-
     }
 }
 
