@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -231,7 +232,7 @@ private fun PreviewAuthProviderButton() {
                 providerId = "google.com",
                 scopes = emptyList(),
                 customParameters = emptyMap(),
-                buttonLabel = "Sign in with Generic",
+                buttonLabel = "Generic Provider",
                 buttonIcon = AuthUIAsset.Vector(Icons.Default.Star),
                 buttonColor = Color.Gray,
                 contentColor = Color.White
@@ -240,12 +241,24 @@ private fun PreviewAuthProviderButton() {
             stringProvider = DefaultAuthUIStringProvider(context)
         )
         AuthProviderButton(
-            provider = AuthProvider.Google(
+            provider = AuthProvider.GenericOAuth(
+                providerId = "google.com",
                 scopes = emptyList(),
-                serverClientId = null
+                customParameters = emptyMap(),
+                buttonLabel = "Custom Style",
+                buttonIcon = AuthUIAsset.Vector(Icons.Default.Star),
+                buttonColor = Color.Gray,
+                contentColor = Color.White
             ),
             onClick = {},
-            style = AuthUITheme.Default.providerStyles[Provider.MICROSOFT.id],
+            style = AuthUITheme.ProviderStyle(
+                icon = AuthUITheme.Default.providerStyles[Provider.MICROSOFT.id]?.icon,
+                backgroundColor = AuthUITheme.Default.providerStyles[Provider.MICROSOFT.id]!!.backgroundColor,
+                contentColor = AuthUITheme.Default.providerStyles[Provider.MICROSOFT.id]!!.contentColor,
+                iconTint = Color.Red,
+                shape = RoundedCornerShape(24.dp),
+                elevation = 6.dp
+            ),
             stringProvider = DefaultAuthUIStringProvider(context)
         )
         AuthProviderButton(
@@ -253,7 +266,7 @@ private fun PreviewAuthProviderButton() {
                 providerId = "unknown_provider",
                 scopes = emptyList(),
                 customParameters = emptyMap(),
-                buttonLabel = "Sign in with Lego",
+                buttonLabel = "Unsupported Provider",
                 buttonIcon = null,
                 buttonColor = null,
                 contentColor = null,
