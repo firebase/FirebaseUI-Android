@@ -53,7 +53,8 @@ android {
             "InvalidPackage", // Firestore uses GRPC which makes lint mad
             "NewerVersionAvailable", "GradleDependency", // For reproducible builds
             "SelectableText", "SyntheticAccessor", // We almost never care about this
-            "MediaCapabilities"
+            "MediaCapabilities",
+            "MissingApplicationIcon"
         )
 
         checkAllWarnings = true
@@ -79,6 +80,7 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":storage"))
 
+    implementation(platform(Config.Libs.Firebase.bom))
     implementation(Config.Libs.Androidx.lifecycleExtensions)
 }
 
