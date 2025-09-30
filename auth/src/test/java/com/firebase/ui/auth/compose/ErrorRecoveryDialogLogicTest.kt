@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth.compose
 
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +24,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [ErrorRecoveryDialog] logic functions.
+ * Unit tests for [com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog] logic functions.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)

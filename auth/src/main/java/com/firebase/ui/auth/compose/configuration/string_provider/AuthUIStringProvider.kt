@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.stringprovider
+package com.firebase.ui.auth.compose.configuration.string_provider
 
 /**
  * An interface for providing localized string resources. This interface defines methods for all

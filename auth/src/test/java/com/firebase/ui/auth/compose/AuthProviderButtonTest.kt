@@ -29,8 +29,8 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.compose.configuration.AuthProvider
 import com.firebase.ui.auth.compose.configuration.Provider
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.common.truth.Truth.assertThat
@@ -41,6 +41,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.ui.components.AuthProviderButton
+import com.firebase.ui.auth.compose.ui.components.resolveProviderStyle
 
 /**
  * Unit tests for [AuthProviderButton] covering UI interactions, styling,

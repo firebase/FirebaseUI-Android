@@ -17,8 +17,8 @@ package com.firebase.ui.auth.compose.configuration.validators
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
