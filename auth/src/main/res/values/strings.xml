@@ -19,6 +19,7 @@
     <string name="fui_idp_name_email">Email</string>
 
     <!-- Auth method picker -->
+    <string name="fui_auth_method_picker_logo" translatable="false">"Auth method picker logo"</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Sign in with Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Sign in with Twitter</string>
