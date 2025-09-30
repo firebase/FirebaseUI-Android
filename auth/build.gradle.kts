@@ -74,16 +74,17 @@ android {
 }
 
 dependencies {
-    implementation(platform(Config.Libs.Androidx.Compose.bom))
-    implementation(Config.Libs.Androidx.Compose.ui)
-    implementation(Config.Libs.Androidx.Compose.uiGraphics)
-    implementation(Config.Libs.Androidx.Compose.material3)
-    implementation(Config.Libs.Androidx.Compose.foundation)
-    implementation(Config.Libs.Androidx.Compose.tooling)
-    implementation(Config.Libs.Androidx.Compose.toolingPreview)
-    implementation(Config.Libs.Androidx.Compose.activityCompose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
+    implementation(libs.androidx.compose.material.icons.extended)
     // The new activity result APIs force us to include Fragment 1.3.0
     // See https://issuetracker.google.com/issues/152554847
     implementation(Config.Libs.Androidx.fragment)

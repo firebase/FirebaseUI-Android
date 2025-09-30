@@ -41,17 +41,6 @@ object Config {
             const val pagingRxJava = "androidx.paging:paging-rxjava3:3.0.0"
             const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
             const val materialDesign = "com.google.android.material:material:1.4.0"
-
-            object Compose {
-                const val bom = "androidx.compose:compose-bom:2025.08.00"
-                const val ui = "androidx.compose.ui:ui"
-                const val uiGraphics = "androidx.compose.ui:ui-graphics"
-                const val toolingPreview = "androidx.compose.ui:ui-tooling-preview"
-                const val tooling = "androidx.compose.ui:ui-tooling"
-                const val foundation = "androidx.compose.foundation:foundation"
-                const val material3 = "androidx.compose.material3:material3"
-                const val activityCompose = "androidx.activity:activity-compose"
-            }
         }
 
         object Firebase {
