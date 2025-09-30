@@ -262,7 +262,12 @@ class AuthUIConfigurationTest {
             authUIConfiguration {
                 context = applicationContext
                 providers {
-                    provider(AuthProvider.Google(scopes = listOf(), serverClientId = "test_client_id"))
+                    provider(
+                        AuthProvider.Google(
+                            scopes = listOf(),
+                            serverClientId = "test_client_id"
+                        )
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -293,7 +298,13 @@ class AuthUIConfigurationTest {
                 provider(AuthProvider.Microsoft(customParameters = mapOf(), tenant = null))
                 provider(AuthProvider.Yahoo(customParameters = mapOf()))
                 provider(AuthProvider.Apple(customParameters = mapOf(), locale = null))
-                provider(AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null))
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = null,
+                        allowedCountries = null
+                    )
+                )
                 provider(
                     AuthProvider.Email(
                         actionCodeSettings = null,
@@ -313,7 +324,8 @@ class AuthUIConfigurationTest {
             customParameters = mapOf(),
             buttonLabel = "Test",
             buttonIcon = null,
-            buttonColor = null
+            buttonColor = null,
+            contentColor = null,
         )
 
         try {

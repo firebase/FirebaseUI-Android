@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.compose.configuration.theme
 
 import androidx.compose.ui.graphics.Color
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.Provider
 
 /**
@@ -33,6 +34,7 @@ internal object ProviderStyleDefaults {
             when (provider) {
                 Provider.GOOGLE -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_googleg_color_24dp),
                         backgroundColor = Color.White,
                         contentColor = Color(0xFF757575)
                     )
@@ -40,6 +42,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.FACEBOOK -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_facebook_white_22dp),
                         backgroundColor = Color(0xFF3B5998),
                         contentColor = Color.White
                     )
@@ -47,6 +50,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.TWITTER -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_twitter_bird_white_24dp),
                         backgroundColor = Color(0xFF5BAAF4),
                         contentColor = Color.White
                     )
@@ -54,6 +58,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.GITHUB -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_github_white_24dp),
                         backgroundColor = Color(0xFF24292E),
                         contentColor = Color.White
                     )
@@ -61,6 +66,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.EMAIL -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_mail_white_24dp),
                         backgroundColor = Color(0xFFD0021B),
                         contentColor = Color.White
                     )
@@ -68,6 +74,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.PHONE -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_phone_white_24dp),
                         backgroundColor = Color(0xFF43C5A5),
                         contentColor = Color.White
                     )
@@ -75,6 +82,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.ANONYMOUS -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_anonymous_white_24dp),
                         backgroundColor = Color(0xFFF4B400),
                         contentColor = Color.White
                     )
@@ -82,6 +90,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.MICROSOFT -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_microsoft_24dp),
                         backgroundColor = Color(0xFF2F2F2F),
                         contentColor = Color.White
                     )
@@ -89,6 +98,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.YAHOO -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_yahoo_24dp),
                         backgroundColor = Color(0xFF720E9E),
                         contentColor = Color.White
                     )
@@ -96,6 +106,7 @@ internal object ProviderStyleDefaults {
 
                 Provider.APPLE -> {
                     provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_apple_white_24dp),
                         backgroundColor = Color.Black,
                         contentColor = Color.White
                     )

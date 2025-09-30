@@ -15,11 +15,10 @@
 package com.firebase.ui.auth.compose.configuration
 
 import android.content.Context
-import android.graphics.Color
+import androidx.compose.ui.graphics.Color
 import android.util.Log
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.util.Preconditions
 import com.firebase.ui.auth.util.data.PhoneNumberUtils
 import com.firebase.ui.auth.util.data.ProviderAvailability
@@ -55,7 +54,13 @@ internal enum class Provider(val id: String) {
     ANONYMOUS("anonymous"),
     MICROSOFT("microsoft.com"),
     YAHOO("yahoo.com"),
-    APPLE("apple.com"),
+    APPLE("apple.com");
+
+    companion object {
+        fun fromId(id: String): Provider? {
+            return entries.find { it.id == id }
+        }
+    }
 }
 
 /**
@@ -446,12 +451,17 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * An optional icon for the provider button.
          */
-        val buttonIcon: ImageVector?,
+        val buttonIcon: AuthUIAsset?,
 
         /**
          * An optional background color for the provider button.
          */
-        val buttonColor: Color?
+        val buttonColor: Color?,
+
+        /**
+         * An optional content color for the provider button.
+         */
+        val contentColor: Color?
     ) : OAuthProvider(
         providerId = providerId,
         scopes = scopes,
