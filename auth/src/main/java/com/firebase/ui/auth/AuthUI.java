@@ -534,6 +534,17 @@ public final class AuthUI {
             }
 
             /**
+             * Hide the email sign-up button in the authentication flow.
+             * <p>
+             * Email sign-in is enabled by default.
+             */
+            @NonNull
+            public EmailBuilder hideEmailSignUp() {
+                getParams().putBoolean(ExtraConstants.HIDE_EMAIL_SIGN_UP, true);
+                return this;
+            }
+
+            /**
              * Configures the requirement for the user to enter first and last name in the email
              * sign up flow.
              * <p>

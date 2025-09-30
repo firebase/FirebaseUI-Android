@@ -30,6 +30,7 @@ public final class ExtraConstants {
     public static final String PASSWORD = "extra_password";
     public static final String DEFAULT_EMAIL = "extra_default_email";
     public static final String ALLOW_NEW_EMAILS = "extra_allow_new_emails";
+    public static final String HIDE_EMAIL_SIGN_UP = "extra_hide_email_sign_up";
     public static final String REQUIRE_NAME = "extra_require_name";
     public static final String GOOGLE_SIGN_IN_OPTIONS = "extra_google_sign_in_options";
     public static final String FACEBOOK_PERMISSIONS = "extra_facebook_permissions";
