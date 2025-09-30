@@ -1,49 +1,35 @@
-/*
- * Copyright 2025 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.firebase.ui.auth.compose.ui.components
 
-package com.firebase.ui.auth.compose
-
+import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog] logic functions.
+ * Unit tests for [ErrorRecoveryDialog] logic functions.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class ErrorRecoveryDialogLogicTest {
 
-    private val mockStringProvider = mock(AuthUIStringProvider::class.java).apply {
-        `when`(retryAction).thenReturn("Try again")
-        `when`(continueText).thenReturn("Continue")
-        `when`(signInDefault).thenReturn("Sign in")
-        `when`(networkErrorRecoveryMessage).thenReturn("Network error, check your internet connection.")
-        `when`(invalidCredentialsRecoveryMessage).thenReturn("Incorrect password.")
-        `when`(userNotFoundRecoveryMessage).thenReturn("That email address doesn't match an existing account")
-        `when`(weakPasswordRecoveryMessage).thenReturn("Password not strong enough. Use at least 6 characters and a mix of letters and numbers")
-        `when`(emailAlreadyInUseRecoveryMessage).thenReturn("Email account registration unsuccessful")
-        `when`(tooManyRequestsRecoveryMessage).thenReturn("This phone number has been used too many times")
-        `when`(mfaRequiredRecoveryMessage).thenReturn("Additional verification required. Please complete multi-factor authentication.")
-        `when`(accountLinkingRequiredRecoveryMessage).thenReturn("Account needs to be linked. Please try a different sign-in method.")
-        `when`(authCancelledRecoveryMessage).thenReturn("Authentication was cancelled. Please try again when ready.")
-        `when`(unknownErrorRecoveryMessage).thenReturn("An unknown error occurred.")
+    private val mockStringProvider = Mockito.mock(AuthUIStringProvider::class.java).apply {
+        Mockito.`when`(retryAction).thenReturn("Try again")
+        Mockito.`when`(continueText).thenReturn("Continue")
+        Mockito.`when`(signInDefault).thenReturn("Sign in")
+        Mockito.`when`(networkErrorRecoveryMessage).thenReturn("Network error, check your internet connection.")
+        Mockito.`when`(invalidCredentialsRecoveryMessage).thenReturn("Incorrect password.")
+        Mockito.`when`(userNotFoundRecoveryMessage).thenReturn("That email address doesn't match an existing account")
+        Mockito.`when`(weakPasswordRecoveryMessage).thenReturn("Password not strong enough. Use at least 6 characters and a mix of letters and numbers")
+        Mockito.`when`(emailAlreadyInUseRecoveryMessage).thenReturn("Email account registration unsuccessful")
+        Mockito.`when`(tooManyRequestsRecoveryMessage).thenReturn("This phone number has been used too many times")
+        Mockito.`when`(mfaRequiredRecoveryMessage).thenReturn("Additional verification required. Please complete multi-factor authentication.")
+        Mockito.`when`(accountLinkingRequiredRecoveryMessage).thenReturn("Account needs to be linked. Please try a different sign-in method.")
+        Mockito.`when`(authCancelledRecoveryMessage).thenReturn("Authentication was cancelled. Please try again when ready.")
+        Mockito.`when`(unknownErrorRecoveryMessage).thenReturn("An unknown error occurred.")
     }
 
     // =============================================================================================
@@ -59,7 +45,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("Network error, check your internet connection.")
+        Truth.assertThat(message).isEqualTo("Network error, check your internet connection.")
     }
 
     @Test
@@ -71,7 +57,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("Incorrect password.")
+        Truth.assertThat(message).isEqualTo("Incorrect password.")
     }
 
     @Test
@@ -83,7 +69,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("That email address doesn't match an existing account")
+        Truth.assertThat(message).isEqualTo("That email address doesn't match an existing account")
     }
 
     @Test
@@ -99,7 +85,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers\n\nReason: Password should be at least 8 characters")
+        Truth.assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers\n\nReason: Password should be at least 8 characters")
     }
 
     @Test
@@ -111,7 +97,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers")
+        Truth.assertThat(message).isEqualTo("Password not strong enough. Use at least 6 characters and a mix of letters and numbers")
     }
 
     @Test
@@ -127,7 +113,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("Email account registration unsuccessful (test@example.com)")
+        Truth.assertThat(message).isEqualTo("Email account registration unsuccessful (test@example.com)")
     }
 
     @Test
@@ -139,7 +125,7 @@ class ErrorRecoveryDialogLogicTest {
         val message = getRecoveryMessage(error, mockStringProvider)
 
         // Assert
-        assertThat(message).isEqualTo("Email account registration unsuccessful")
+        Truth.assertThat(message).isEqualTo("Email account registration unsuccessful")
     }
 
     // =============================================================================================
@@ -155,7 +141,7 @@ class ErrorRecoveryDialogLogicTest {
         val actionText = getRecoveryActionText(error, mockStringProvider)
 
         // Assert
-        assertThat(actionText).isEqualTo("Try again")
+        Truth.assertThat(actionText).isEqualTo("Try again")
     }
 
     @Test
@@ -167,7 +153,7 @@ class ErrorRecoveryDialogLogicTest {
         val actionText = getRecoveryActionText(error, mockStringProvider)
 
         // Assert
-        assertThat(actionText).isEqualTo("Continue")
+        Truth.assertThat(actionText).isEqualTo("Continue")
     }
 
     @Test
@@ -179,7 +165,7 @@ class ErrorRecoveryDialogLogicTest {
         val actionText = getRecoveryActionText(error, mockStringProvider)
 
         // Assert
-        assertThat(actionText).isEqualTo("Sign in")
+        Truth.assertThat(actionText).isEqualTo("Sign in")
     }
 
     @Test
@@ -191,7 +177,7 @@ class ErrorRecoveryDialogLogicTest {
         val actionText = getRecoveryActionText(error, mockStringProvider)
 
         // Assert
-        assertThat(actionText).isEqualTo("Continue")
+        Truth.assertThat(actionText).isEqualTo("Continue")
     }
 
     @Test
@@ -203,7 +189,7 @@ class ErrorRecoveryDialogLogicTest {
         val actionText = getRecoveryActionText(error, mockStringProvider)
 
         // Assert
-        assertThat(actionText).isEqualTo("Continue")
+        Truth.assertThat(actionText).isEqualTo("Continue")
     }
 
     // =============================================================================================
@@ -216,7 +202,7 @@ class ErrorRecoveryDialogLogicTest {
         val error = AuthException.NetworkException("Network error")
 
         // Act & Assert
-        assertThat(isRecoverable(error)).isTrue()
+        Truth.assertThat(isRecoverable(error)).isTrue()
     }
 
     @Test
@@ -225,7 +211,7 @@ class ErrorRecoveryDialogLogicTest {
         val error = AuthException.InvalidCredentialsException("Invalid credentials")
 
         // Act & Assert
-        assertThat(isRecoverable(error)).isTrue()
+        Truth.assertThat(isRecoverable(error)).isTrue()
     }
 
     @Test
@@ -234,7 +220,7 @@ class ErrorRecoveryDialogLogicTest {
         val error = AuthException.TooManyRequestsException("Too many requests")
 
         // Act & Assert
-        assertThat(isRecoverable(error)).isFalse()
+        Truth.assertThat(isRecoverable(error)).isFalse()
     }
 
     @Test
@@ -243,7 +229,7 @@ class ErrorRecoveryDialogLogicTest {
         val error = AuthException.MfaRequiredException("MFA required")
 
         // Act & Assert
-        assertThat(isRecoverable(error)).isTrue()
+        Truth.assertThat(isRecoverable(error)).isTrue()
     }
 
     @Test
@@ -252,7 +238,7 @@ class ErrorRecoveryDialogLogicTest {
         val error = AuthException.UnknownException("Unknown error")
 
         // Act & Assert
-        assertThat(isRecoverable(error)).isTrue()
+        Truth.assertThat(isRecoverable(error)).isTrue()
     }
 
     // Helper functions to test the private functions - we need to make them internal for testing
