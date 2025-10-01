@@ -29,8 +29,8 @@ import com.firebase.ui.auth.compose.ui.components.AuthProviderButton
  * ```kotlin
  * AuthMethodPicker(
  *     providers = listOf(
- *      AuthProvider.Google(),
- *      AuthProvider.Email(),
+ *         AuthProvider.Google(),
+ *         AuthProvider.Email(),
  *     ),
  *     onProviderSelected = { provider -> /* ... */ }
  * )

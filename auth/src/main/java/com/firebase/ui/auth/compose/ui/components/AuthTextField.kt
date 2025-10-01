@@ -39,11 +39,19 @@ import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
  *
  * **Example usage:**
  * ```kotlin
+ * val emailTextValue = remember { mutableStateOf("") }
+ *
+ * val emailValidator = remember {
+ *     EmailValidator(stringProvider = DefaultAuthUIStringProvider(context))
+ * }
+ *
  * AuthTextField(
- *     value = email,
- *     onValueChange = { email = it },
- *     label = "Email",
- *     validator = EmailValidator()
+ *     value = emailTextValue,
+ *     onValueChange = { emailTextValue.value = it },
+ *     label = {
+ *         Text("Email")
+ *     },
+ *     validator = emailValidator
  * )
  * ```
  *
