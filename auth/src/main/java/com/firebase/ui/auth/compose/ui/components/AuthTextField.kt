@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth.compose.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -127,7 +127,7 @@ internal fun PreviewAuthTextField() {
     val emailTextValue = remember { mutableStateOf("") }
     val passwordTextValue = remember { mutableStateOf("") }
     val emailValidator = remember {
-        EmailValidator(stringProvider = DefaultAuthUIStringProvider(context),)
+        EmailValidator(stringProvider = DefaultAuthUIStringProvider(context))
     }
     val passwordValidator = remember {
         PasswordValidator(
