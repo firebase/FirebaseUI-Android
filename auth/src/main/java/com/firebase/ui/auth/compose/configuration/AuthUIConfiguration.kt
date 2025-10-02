@@ -22,9 +22,6 @@ import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringPr
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 
-fun actionCodeSettings(block: ActionCodeSettings.Builder.() -> Unit) =
-    ActionCodeSettings.newBuilder().apply(block).build()
-
 fun authUIConfiguration(block: AuthUIConfigurationBuilder.() -> Unit) =
     AuthUIConfigurationBuilder().apply(block).build()
 

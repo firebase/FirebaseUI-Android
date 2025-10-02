@@ -15,20 +15,26 @@
 package com.firebase.ui.auth.compose.configuration
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
+import android.text.TextUtils
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.util.Preconditions
+import com.firebase.ui.auth.util.data.ContinueUrlBuilder
+import com.firebase.ui.auth.util.data.EmailLinkPersistenceManager.SessionRecord
 import com.firebase.ui.auth.util.data.PhoneNumberUtils
 import com.firebase.ui.auth.util.data.ProviderAvailability
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
+import com.google.firebase.auth.actionCodeSettings
 
 @AuthUIConfigurationDsl
 class AuthProvidersBuilder {
@@ -118,6 +124,15 @@ abstract class AuthProvider(open val providerId: String) {
          */
         val passwordValidationRules: List<PasswordRule>
     ) : AuthProvider(providerId = Provider.EMAIL.id) {
+        companion object {
+            val SESSION_ID_LENGTH = 10
+            val KEY_EMAIL = stringPreferencesKey("com.firebase.ui.auth.data.client.email")
+            val KEY_PROVIDER = stringPreferencesKey("com.firebase.ui.auth.data.client.provider")
+            val KEY_ANONYMOUS_USER_ID =
+                stringPreferencesKey("com.firebase.ui.auth.data.client.auid")
+            val KEY_SESSION_ID = stringPreferencesKey("com.firebase.ui.auth.data.client.sid")
+        }
+
         fun validate() {
             if (isEmailLinkSignInEnabled) {
                 val actionCodeSettings = requireNotNull(actionCodeSettings) {
@@ -131,6 +146,52 @@ abstract class AuthProvider(open val providerId: String) {
                 }
             }
         }
+
+        fun canUpgradeAnonymous(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
+            val currentUser = auth.currentUser
+            return config.isAnonymousUpgradeEnabled
+                    && currentUser != null
+                    && currentUser.isAnonymous
+        }
+
+        fun addSessionInfoToActionCodeSettings(
+            sessionId: String,
+            anonymousUserId: String,
+        ): ActionCodeSettings {
+            requireNotNull(actionCodeSettings) {
+                "ActionCodeSettings is required for email link sign in"
+            }
+
+            val continueUrl = continueUrl(actionCodeSettings.url) {
+                appendSessionId(sessionId)
+                appendAnonymousUserId(anonymousUserId)
+                appendForceSameDeviceBit(isEmailLinkForceSameDeviceEnabled)
+                appendProviderId(providerId)
+            }
+
+            return actionCodeSettings {
+                url = continueUrl
+                handleCodeInApp = actionCodeSettings.canHandleCodeInApp()
+                iosBundleId = actionCodeSettings.iosBundle
+                setAndroidPackageName(
+                    actionCodeSettings.androidPackageName ?: "",
+                    actionCodeSettings.androidInstallApp,
+                    actionCodeSettings.androidMinimumVersion
+                )
+            }
+        }
+
+        fun isDifferentDevice(
+            sessionIdFromLocal: String?,
+            sessionIdFromLink: String
+        ): Boolean {
+            return sessionIdFromLocal == null || sessionIdFromLocal.isEmpty()
+                    || sessionIdFromLink.isEmpty()
+                    || (sessionIdFromLink != sessionIdFromLocal)
+        }
+
+        private fun continueUrl(continueUrl: String, block: ContinueUrlBuilder.() -> Unit) =
+            ContinueUrlBuilder(continueUrl).apply(block).build()
     }
 
     /**

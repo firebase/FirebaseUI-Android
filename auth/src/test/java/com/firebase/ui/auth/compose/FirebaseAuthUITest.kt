@@ -14,7 +14,10 @@
 
 package com.firebase.ui.auth.compose
 
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.compose.configuration.AuthProvider
+import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
@@ -24,7 +27,10 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -522,4 +528,49 @@ class FirebaseAuthUITest {
             assertThat(e.cause).isEqualTo(networkException)
         }
     }
+
+    // =============================================================================================
+    // Email Provider Tests
+    // =============================================================================================
+
+    @Test
+    fun `Create or link user with email and password without anonymous upgrade should succeed`() =
+        runTest {
+            val applicationContext = ApplicationProvider.getApplicationContext<Context>()
+            val mockUser = mock(FirebaseUser::class.java)
+            `when`(mockUser.email).thenReturn("test@example.com")
+            `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+            val taskCompletionSource = TaskCompletionSource<AuthResult>()
+            taskCompletionSource.setResult(null)
+            `when`(mockFirebaseAuth.createUserWithEmailAndPassword("test@example.com", "Pass@123"))
+                .thenReturn(taskCompletionSource.task)
+
+            val instance = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
+            val emailProvider = AuthProvider.Email(
+                actionCodeSettings = null,
+                passwordValidationRules = emptyList()
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(emailProvider)
+                }
+            }
+
+            instance.createOrLinkUserWithEmailAndPassword(
+                config = config,
+                provider = emailProvider,
+                email = "test@example.com",
+                password = "Pass@123"
+            )
+
+            verify(mockFirebaseAuth)
+                .createUserWithEmailAndPassword("test@example.com", "Pass@123")
+
+            val authState = instance.authStateFlow().first()
+            assertThat(authState)
+                .isEqualTo(AuthState.Success(result = null, user = mockUser))
+            val successState = authState as AuthState.Success
+            assertThat(successState.user.email).isEqualTo("test@example.com")
+        }
 }

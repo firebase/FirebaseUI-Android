@@ -1,4 +1,5 @@
 [versions]
+datastorePreferences = "1.1.1"
 kotlin = "2.2.0"
 androidxComposeBom = "2025.08.00"
 androidxActivityCompose = "1.9.0"
@@ -14,6 +15,9 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+
+# Storage
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 # Testing
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }

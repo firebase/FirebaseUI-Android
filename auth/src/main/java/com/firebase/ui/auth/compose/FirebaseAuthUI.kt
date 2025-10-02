@@ -22,13 +22,28 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import com.firebase.ui.auth.compose.configuration.AuthProvider
+import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.util.data.EmailLinkParser
+import com.firebase.ui.auth.util.data.SessionUtils
+import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "com.firebase.ui.auth.util.data.EmailLinkPersistenceManager")
 
 /**
  * The central class that coordinates all authentication operations for Firebase Auth UI Compose.
@@ -168,7 +183,8 @@ class FirebaseAuthUI private constructor(
                 // Check if email verification is required
                 if (!currentUser.isEmailVerified &&
                     currentUser.email != null &&
-                    currentUser.providerData.any { it.providerId == "password" }) {
+                    currentUser.providerData.any { it.providerId == "password" }
+                ) {
                     AuthState.RequiresEmailVerification(
                         user = currentUser,
                         email = currentUser.email!!
@@ -211,6 +227,249 @@ class FirebaseAuthUI private constructor(
      */
     internal fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
+    }
+
+    internal suspend fun createOrLinkUserWithEmailAndPassword(
+        config: AuthUIConfiguration,
+        provider: AuthProvider.Email,
+        email: String,
+        password: String
+    ) {
+        try {
+            updateAuthState(AuthState.Loading("Creating user..."))
+            if (provider.canUpgradeAnonymous(config, auth)) {
+                val credential = EmailAuthProvider.getCredential(email, password)
+                auth.currentUser?.linkWithCredential(credential)?.await()
+            } else {
+                auth.createUserWithEmailAndPassword(email, password).await()
+            }
+            updateAuthState(AuthState.Idle)
+        } catch (e: CancellationException) {
+            val cancelledException = AuthException.AuthCancelledException(
+                message = "Create or link user with email and password was cancelled",
+                cause = e
+            )
+            updateAuthState(AuthState.Error(cancelledException))
+            throw cancelledException
+        } catch (e: AuthException) {
+            updateAuthState(AuthState.Error(e))
+            throw e
+        } catch (e: Exception) {
+            val authException = AuthException.from(e)
+            updateAuthState(AuthState.Error(authException))
+            throw authException
+        }
+    }
+
+    internal suspend fun signInAndLinkWithCredential(
+        config: AuthUIConfiguration,
+        provider: AuthProvider.Email,
+        credential: AuthCredential
+    ) {
+        try {
+            updateAuthState(AuthState.Loading("Signing in user..."))
+            if (provider.canUpgradeAnonymous(config, auth)) {
+                auth.currentUser?.linkWithCredential(credential)?.await()
+            } else {
+                auth.signInWithCredential(credential).await()
+            }
+            updateAuthState(AuthState.Idle)
+        } catch (e: CancellationException) {
+            val cancelledException = AuthException.AuthCancelledException(
+                message = "Sign in and link with credential was cancelled",
+                cause = e
+            )
+            updateAuthState(AuthState.Error(cancelledException))
+            throw cancelledException
+        } catch (e: AuthException) {
+            updateAuthState(AuthState.Error(e))
+            throw e
+        } catch (e: Exception) {
+            val authException = AuthException.from(e)
+            updateAuthState(AuthState.Error(authException))
+            throw authException
+        }
+    }
+
+    internal suspend fun sendSignInLinkToEmail(
+        context: Context,
+        config: AuthUIConfiguration,
+        provider: AuthProvider.Email,
+        email: String,
+    ) {
+        try {
+            updateAuthState(AuthState.Loading("Sending sign in email link..."))
+
+            // Get anonymousUserId if can upgrade anonymously else default to empty string.
+            // NOTE: check for empty string instead of null to validate anonymous user ID matches
+            // when sign in from email link
+            val anonymousUserId =
+                if (provider.canUpgradeAnonymous(config, auth)) (auth.currentUser?.uid
+                    ?: "") else ""
+
+            // Generate sessionId
+            val sessionId =
+                SessionUtils.generateRandomAlphaNumericString(AuthProvider.Email.SESSION_ID_LENGTH)
+
+            // Modify actionCodeSettings Url to include sessionId, anonymousUserId, force same
+            // device flag
+            val updatedActionCodeSettings =
+                provider.addSessionInfoToActionCodeSettings(sessionId, anonymousUserId)
+
+            auth.sendSignInLinkToEmail(email, updatedActionCodeSettings).await()
+
+            // Save Email to dataStore for use in signInWithEmailLink
+            context.dataStore.edit { prefs ->
+                prefs[AuthProvider.Email.KEY_EMAIL] = email
+                prefs[AuthProvider.Email.KEY_ANONYMOUS_USER_ID] = anonymousUserId
+                prefs[AuthProvider.Email.KEY_SESSION_ID] = sessionId
+            }
+            updateAuthState(AuthState.Idle)
+        } catch (e: CancellationException) {
+            val cancelledException = AuthException.AuthCancelledException(
+                message = "Send sign in link to email was cancelled",
+                cause = e
+            )
+            updateAuthState(AuthState.Error(cancelledException))
+            throw cancelledException
+        } catch (e: AuthException) {
+            updateAuthState(AuthState.Error(e))
+            throw e
+        } catch (e: Exception) {
+            val authException = AuthException.from(e)
+            updateAuthState(AuthState.Error(authException))
+            throw authException
+        }
+    }
+
+    /**
+     * Signs in a user using an email link (passwordless authentication).
+     *
+     * This method completes the email link sign-in flow after the user clicks the magic link
+     * sent to their email. It validates the link, extracts session information, and either
+     * signs in the user normally or upgrades an anonymous account based on configuration.
+     *
+     * **Flow:**
+     * 1. User receives email with magic link
+     * 2. User clicks link, app opens via deep link
+     * 3. Activity extracts emailLink from Intent.data
+     * 4. This method validates and completes sign-in
+     *
+     * @param config The [AuthUIConfiguration] containing authentication settings
+     * @param provider The [AuthProvider.Email] configuration with email-link settings
+     * @param email The email address of the user (retrieved from DataStore or user input)
+     * @param emailLink The complete deep link URL received from the Intent.
+     *
+     * This URL contains:
+     * - Firebase action code (oobCode) for authentication
+     * - Session ID (ui_sid) for same-device validation
+     * - Anonymous user ID (ui_auid) if upgrading anonymous account
+     * - Force same-device flag (ui_sd) for security enforcement
+     *
+     * Example:
+     * `https://yourapp.page.link/emailSignIn?oobCode=ABC123&continueUrl=...`
+     *
+     * @throws AuthException.InvalidCredentialsException if the email link is invalid or expired
+     * @throws AuthException.AuthCancelledException if the operation is cancelled
+     * @throws AuthException.NetworkException if a network error occurs
+     * @throws AuthException.UnknownException for other errors
+     *
+     * @see sendSignInLinkToEmail for sending the initial email link
+     */
+    internal suspend fun signInWithEmailLink(
+        context: Context,
+        config: AuthUIConfiguration,
+        provider: AuthProvider.Email,
+        email: String,
+        emailLink: String,
+    ) {
+        try {
+            updateAuthState(AuthState.Loading("Signing in with email link..."))
+
+            // Validate link format
+            if (!auth.isSignInWithEmailLink(emailLink)) {
+                throw AuthException.InvalidCredentialsException("Invalid email link")
+            }
+
+            // Parses email link for session data and returns sessionId, anonymousUserId,
+            // force same device flag etc.
+            val parser = EmailLinkParser(emailLink)
+            val sessionIdFromLink = parser.sessionId
+            val anonymousUserIdFromLink = parser.anonymousUserId
+
+            // Retrieve stored session id from DataStore
+            val storedSessionId = context.dataStore.data.first()[AuthProvider.Email.KEY_SESSION_ID]
+
+            // Validate same-device
+            if (provider.isDifferentDevice(
+                    sessionIdFromLocal = storedSessionId,
+                    sessionIdFromLink = sessionIdFromLink
+                )
+            ) {
+                if (provider.isEmailLinkForceSameDeviceEnabled
+                    || !anonymousUserIdFromLink.isNullOrEmpty()
+                ) {
+                    throw AuthException.InvalidCredentialsException(
+                        "Email link must be" +
+                                "opened on the same device"
+                    )
+                }
+
+                // TODO(demolaf): handle different device flow -
+                //  would need to prompt user for email and start flow on new device
+                //  Different device flow - prompt for email
+                //  This is a FUTURE ticket - not part of P2 core implementation
+                //  The UI layer needs to handle this by:
+                //  1. Detecting that email is null/missing from DataStore
+                //  2. Showing an EmailPromptScreen composable
+                //  3. User enters email
+                //  4. Retrying signInWithEmailLink() with user-provided email
+
+                // For now, throw an exception since we don't have the UI
+                throw AuthException.InvalidCredentialsException(
+                    "Email not found. Please enter your email to complete sign-in."
+                )
+            }
+
+            // Validate anonymous user ID matches
+            if (!anonymousUserIdFromLink.isNullOrEmpty()) {
+                val currentUser = auth.currentUser
+                if (currentUser == null
+                    || !currentUser.isAnonymous
+                    || currentUser.uid != anonymousUserIdFromLink
+                ) {
+                    throw AuthException.InvalidCredentialsException(
+                        "Anonymous " +
+                                "user mismatch"
+                    )
+                }
+            }
+
+            // Create credential and sign in
+            val emailLinkCredential = EmailAuthProvider.getCredentialWithLink(email, emailLink)
+            signInAndLinkWithCredential(config, provider, emailLinkCredential)
+
+            // Clear DataStore after success
+            context.dataStore.edit { prefs ->
+                prefs.remove(AuthProvider.Email.KEY_SESSION_ID)
+                prefs.remove(AuthProvider.Email.KEY_EMAIL)
+                prefs.remove(AuthProvider.Email.KEY_ANONYMOUS_USER_ID)
+            }
+        } catch (e: CancellationException) {
+            val cancelledException = AuthException.AuthCancelledException(
+                message = "Sign in with email link was cancelled",
+                cause = e
+            )
+            updateAuthState(AuthState.Error(cancelledException))
+            throw cancelledException
+        } catch (e: AuthException) {
+            updateAuthState(AuthState.Error(e))
+            throw e
+        } catch (e: Exception) {
+            val authException = AuthException.from(e)
+            updateAuthState(AuthState.Error(authException))
+            throw authException
+        }
     }
 
     /**
@@ -374,7 +633,7 @@ class FirebaseAuthUI private constructor(
             } catch (e: IllegalStateException) {
                 throw IllegalStateException(
                     "Default FirebaseApp is not initialized. " +
-                    "Make sure to call FirebaseApp.initializeApp(Context) first.",
+                            "Make sure to call FirebaseApp.initializeApp(Context) first.",
                     e
                 )
             }
