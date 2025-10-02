@@ -91,7 +91,7 @@ dependencies {
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
-    implementation("androidx.credentials:credentials:1.3.0")
+    implementation(libs.androidx.credentials)
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
@@ -112,12 +112,27 @@ dependencies {
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
-    testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.core)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
     testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.androidx.credentials)
 
     debugImplementation(project(":internal:lintchecks"))
+}
+
+val mockitoAgent by configurations.creating
+
+dependencies {
+    mockitoAgent(libs.mockito) {
+        isTransitive = false
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }

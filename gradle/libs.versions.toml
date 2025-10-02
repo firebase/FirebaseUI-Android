@@ -1,8 +1,20 @@
 [versions]
-datastorePreferences = "1.1.1"
 kotlin = "2.2.0"
+
+# Compose
 androidxComposeBom = "2025.08.00"
 androidxActivityCompose = "1.9.0"
+
+# Authentication
+credentials = "1.3.0"
+
+# Storage
+datastorePreferences = "1.1.1"
+
+# Testing
+mockito = "5.19.0"
+mockitoInline = "5.2.0"
+mockitoKotlin = "6.0.0"
 
 [libraries]
 # Compose
@@ -16,11 +28,17 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
+# Authentication
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
+
 # Storage
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 # Testing
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockitoInline" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

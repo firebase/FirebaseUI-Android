@@ -75,11 +75,17 @@ public final class TestHelper {
     }
 
     private static void spyContextAndResources() {
-        CONTEXT = spy(CONTEXT);
+        // In Mockito 5.x, we need to avoid spying on objects that are already mocks/spies
+        if (!org.mockito.Mockito.mockingDetails(CONTEXT).isSpy()) {
+            CONTEXT = spy(CONTEXT);
+        }
         when(CONTEXT.getApplicationContext())
                 .thenReturn(CONTEXT);
-        Resources spiedResources = spy(CONTEXT.getResources());
-        when(CONTEXT.getResources()).thenReturn(spiedResources);
+        Resources resources = CONTEXT.getResources();
+        if (!org.mockito.Mockito.mockingDetails(resources).isSpy()) {
+            Resources spiedResources = spy(resources);
+            when(CONTEXT.getResources()).thenReturn(spiedResources);
+        }
     }
 
     private static void initializeApp(Context context) {
