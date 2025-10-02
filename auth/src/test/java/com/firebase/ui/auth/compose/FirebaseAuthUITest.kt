@@ -25,10 +25,10 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.actionCodeSettings
+import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -36,12 +36,14 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doThrow
+import org.mockito.Mockito.mockStatic
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -70,7 +72,7 @@ class FirebaseAuthUITest {
         FirebaseAuthUI.clearInstanceCache()
 
         // Clear any existing Firebase apps
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
         FirebaseApp.getApps(context).forEach { app ->
             app.delete()
         }
@@ -534,7 +536,7 @@ class FirebaseAuthUITest {
     // =============================================================================================
 
     @Test
-    fun `Create or link user with email and password without anonymous upgrade should succeed`() =
+    fun `Create user with email and password without anonymous upgrade should succeed`() =
         runTest {
             val applicationContext = ApplicationProvider.getApplicationContext<Context>()
             val mockUser = mock(FirebaseUser::class.java)
@@ -573,4 +575,57 @@ class FirebaseAuthUITest {
             val successState = authState as AuthState.Success
             assertThat(successState.user.email).isEqualTo("test@example.com")
         }
+
+    @Test
+    fun `Link user with email and password with anonymous upgrade should succeed`() = runTest {
+        mockStatic(EmailAuthProvider::class.java).use { mockedProvider ->
+            val applicationContext = ApplicationProvider.getApplicationContext<Context>()
+            val mockCredential = mock(AuthCredential::class.java)
+            mockedProvider.`when`<AuthCredential> {
+                EmailAuthProvider.getCredential("test@example.com", "Pass@123")
+            }.thenReturn(mockCredential)
+            val mockAnonymousUser = mock(FirebaseUser::class.java)
+            `when`(mockAnonymousUser.email).thenReturn("test@example.com")
+            `when`(mockAnonymousUser.isAnonymous).thenReturn(true)
+            `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonymousUser)
+            val taskCompletionSource = TaskCompletionSource<AuthResult>()
+            taskCompletionSource.setResult(null)
+            `when`(
+                mockFirebaseAuth.currentUser?.linkWithCredential(
+                    ArgumentMatchers.any(AuthCredential::class.java)
+                )
+            ).thenReturn(taskCompletionSource.task)
+            val instance = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
+            val emailProvider = AuthProvider.Email(
+                actionCodeSettings = null,
+                passwordValidationRules = emptyList()
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(emailProvider)
+                }
+                isAnonymousUpgradeEnabled = true
+            }
+
+            instance.createOrLinkUserWithEmailAndPassword(
+                config = config,
+                provider = emailProvider,
+                email = "test@example.com",
+                password = "Pass@123"
+            )
+
+            mockedProvider.verify {
+                EmailAuthProvider.getCredential("test@example.com", "Pass@123")
+            }
+            // Verify linkWithCredential was called with the mock credential
+            verify(mockAnonymousUser).linkWithCredential(mockCredential)
+
+            val authState = instance.authStateFlow().first()
+            assertThat(authState)
+                .isEqualTo(AuthState.Success(result = null, user = mockAnonymousUser))
+            val successState = authState as AuthState.Success
+            assertThat(successState.user.email).isEqualTo("test@example.com")
+        }
+    }
 }
