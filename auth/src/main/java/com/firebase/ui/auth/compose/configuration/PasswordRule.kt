@@ -18,7 +18,7 @@ import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringPr
 
 /**
  * An abstract class representing a set of validation rules that can be applied to a password field,
- * typically within the [AuthProvider.Email] configuration.
+ * typically within the [com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Email] configuration.
  */
 abstract class PasswordRule {
     /**

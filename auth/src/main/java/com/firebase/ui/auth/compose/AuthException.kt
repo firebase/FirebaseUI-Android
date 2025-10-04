@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose
 
+import com.firebase.ui.auth.compose.AuthException.Companion.from
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -204,6 +205,38 @@ abstract class AuthException(
         cause: Throwable? = null
     ) : AuthException(message, cause)
 
+    class InvalidEmailLinkException(
+        cause: Throwable? = null
+    ) : AuthException("You are are attempting to sign in with an invalid email link", cause)
+
+    class EmailLinkWrongDeviceException(
+        cause: Throwable? = null
+    ) : AuthException("You must open the email link on the same device.", cause)
+
+    class EmailLinkCrossDeviceLinkingException(
+        cause: Throwable? = null
+    ) : AuthException(
+        "You must determine if you want to continue linking or " +
+                "complete the sign in", cause
+    )
+
+    class EmailLinkPromptForEmailException(
+        cause: Throwable? = null
+    ) : AuthException("Please enter your email to continue signing in", cause)
+
+    class EmailLinkDifferentAnonymousUserException(
+        cause: Throwable? = null
+    ) : AuthException(
+        "The session associated with this sign-in request has either expired or " +
+                "was cleared", cause
+    )
+
+    class EmailMismatchException(
+        cause: Throwable? = null
+    ) : AuthException(
+        "You are are attempting to sign in a different email than previously " +
+                "provided", cause)
+
     companion object {
         /**
          * Creates an appropriate [AuthException] instance from a Firebase authentication exception.
@@ -244,22 +277,26 @@ abstract class AuthException(
                         cause = firebaseException
                     )
                 }
+
                 is FirebaseAuthInvalidUserException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_USER_NOT_FOUND" -> UserNotFoundException(
                             message = firebaseException.message ?: "User not found",
                             cause = firebaseException
                         )
+
                         "ERROR_USER_DISABLED" -> InvalidCredentialsException(
                             message = firebaseException.message ?: "User account has been disabled",
                             cause = firebaseException
                         )
+
                         else -> UserNotFoundException(
                             message = firebaseException.message ?: "User account error",
                             cause = firebaseException
                         )
                     }
                 }
+
                 is FirebaseAuthWeakPasswordException -> {
                     WeakPasswordException(
                         message = firebaseException.message ?: "Password is too weak",
@@ -267,52 +304,68 @@ abstract class AuthException(
                         reason = firebaseException.reason
                     )
                 }
+
                 is FirebaseAuthUserCollisionException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_EMAIL_ALREADY_IN_USE" -> EmailAlreadyInUseException(
-                            message = firebaseException.message ?: "Email address is already in use",
+                            message = firebaseException.message
+                                ?: "Email address is already in use",
                             cause = firebaseException,
                             email = firebaseException.email
                         )
+
                         "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> AccountLinkingRequiredException(
-                            message = firebaseException.message ?: "Account already exists with different credentials",
+                            message = firebaseException.message
+                                ?: "Account already exists with different credentials",
                             cause = firebaseException
                         )
+
                         "ERROR_CREDENTIAL_ALREADY_IN_USE" -> AccountLinkingRequiredException(
-                            message = firebaseException.message ?: "Credential is already associated with a different user account",
+                            message = firebaseException.message
+                                ?: "Credential is already associated with a different user account",
                             cause = firebaseException
                         )
+
                         else -> AccountLinkingRequiredException(
                             message = firebaseException.message ?: "Account collision error",
                             cause = firebaseException
                         )
                     }
                 }
+
                 is FirebaseAuthMultiFactorException -> {
                     MfaRequiredException(
-                        message = firebaseException.message ?: "Multi-factor authentication required",
+                        message = firebaseException.message
+                            ?: "Multi-factor authentication required",
                         cause = firebaseException
                     )
                 }
+
                 is FirebaseAuthRecentLoginRequiredException -> {
                     InvalidCredentialsException(
-                        message = firebaseException.message ?: "Recent login required for this operation",
+                        message = firebaseException.message
+                            ?: "Recent login required for this operation",
                         cause = firebaseException
                     )
                 }
+
                 is FirebaseAuthException -> {
                     // Handle FirebaseAuthException and check for specific error codes
                     when (firebaseException.errorCode) {
                         "ERROR_TOO_MANY_REQUESTS" -> TooManyRequestsException(
-                            message = firebaseException.message ?: "Too many requests. Please try again later",
+                            message = firebaseException.message
+                                ?: "Too many requests. Please try again later",
                             cause = firebaseException
                         )
+
                         else -> UnknownException(
-                            message = firebaseException.message ?: "An unknown authentication error occurred",
+                            message = firebaseException.message
+                                ?: "An unknown authentication error occurred",
                             cause = firebaseException
                         )
                     }
                 }
+
                 is FirebaseException -> {
                     // Handle general Firebase exceptions, which include network errors
                     NetworkException(
@@ -320,10 +373,15 @@ abstract class AuthException(
                         cause = firebaseException
                     )
                 }
+
                 else -> {
                     // Check for common cancellation patterns
-                    if (firebaseException.message?.contains("cancelled", ignoreCase = true) == true ||
-                        firebaseException.message?.contains("canceled", ignoreCase = true) == true) {
+                    if (firebaseException.message?.contains(
+                            "cancelled",
+                            ignoreCase = true
+                        ) == true ||
+                        firebaseException.message?.contains("canceled", ignoreCase = true) == true
+                    ) {
                         AuthCancelledException(
                             message = firebaseException.message ?: "Authentication was cancelled",
                             cause = firebaseException

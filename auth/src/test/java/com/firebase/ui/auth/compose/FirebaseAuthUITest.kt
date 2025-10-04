@@ -16,8 +16,9 @@ package com.firebase.ui.auth.compose
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.configuration.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
+import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUserWithEmailAndPassword
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
@@ -45,6 +46,9 @@ import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.mockStatic
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.atMost
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -354,7 +358,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform sign out
         instance.signOut(context)
@@ -372,7 +376,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform sign out and expect exception
         try {
@@ -393,7 +397,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform sign out and expect cancellation exception
         try {
@@ -422,7 +426,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform delete
         instance.delete(context)
@@ -439,7 +443,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform delete and expect exception
         try {
@@ -467,7 +471,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform delete and expect mapped exception
         try {
@@ -493,7 +497,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform delete and expect cancellation exception
         try {
@@ -519,7 +523,7 @@ class FirebaseAuthUITest {
 
         // Create instance with mock auth
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        val context = ApplicationProvider.getApplicationContext<Context>()
 
         // Perform delete and expect mapped exception
         try {
@@ -528,104 +532,6 @@ class FirebaseAuthUITest {
         } catch (e: AuthException.NetworkException) {
             assertThat(e.message).contains("Network error")
             assertThat(e.cause).isEqualTo(networkException)
-        }
-    }
-
-    // =============================================================================================
-    // Email Provider Tests
-    // =============================================================================================
-
-    @Test
-    fun `Create user with email and password without anonymous upgrade should succeed`() =
-        runTest {
-            val applicationContext = ApplicationProvider.getApplicationContext<Context>()
-            val mockUser = mock(FirebaseUser::class.java)
-            `when`(mockUser.email).thenReturn("test@example.com")
-            `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
-            val taskCompletionSource = TaskCompletionSource<AuthResult>()
-            taskCompletionSource.setResult(null)
-            `when`(mockFirebaseAuth.createUserWithEmailAndPassword("test@example.com", "Pass@123"))
-                .thenReturn(taskCompletionSource.task)
-
-            val instance = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
-            val emailProvider = AuthProvider.Email(
-                actionCodeSettings = null,
-                passwordValidationRules = emptyList()
-            )
-            val config = authUIConfiguration {
-                context = applicationContext
-                providers {
-                    provider(emailProvider)
-                }
-            }
-
-            instance.createOrLinkUserWithEmailAndPassword(
-                config = config,
-                provider = emailProvider,
-                email = "test@example.com",
-                password = "Pass@123"
-            )
-
-            verify(mockFirebaseAuth)
-                .createUserWithEmailAndPassword("test@example.com", "Pass@123")
-
-            val authState = instance.authStateFlow().first()
-            assertThat(authState)
-                .isEqualTo(AuthState.Success(result = null, user = mockUser))
-            val successState = authState as AuthState.Success
-            assertThat(successState.user.email).isEqualTo("test@example.com")
-        }
-
-    @Test
-    fun `Link user with email and password with anonymous upgrade should succeed`() = runTest {
-        mockStatic(EmailAuthProvider::class.java).use { mockedProvider ->
-            val applicationContext = ApplicationProvider.getApplicationContext<Context>()
-            val mockCredential = mock(AuthCredential::class.java)
-            mockedProvider.`when`<AuthCredential> {
-                EmailAuthProvider.getCredential("test@example.com", "Pass@123")
-            }.thenReturn(mockCredential)
-            val mockAnonymousUser = mock(FirebaseUser::class.java)
-            `when`(mockAnonymousUser.email).thenReturn("test@example.com")
-            `when`(mockAnonymousUser.isAnonymous).thenReturn(true)
-            `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonymousUser)
-            val taskCompletionSource = TaskCompletionSource<AuthResult>()
-            taskCompletionSource.setResult(null)
-            `when`(
-                mockFirebaseAuth.currentUser?.linkWithCredential(
-                    ArgumentMatchers.any(AuthCredential::class.java)
-                )
-            ).thenReturn(taskCompletionSource.task)
-            val instance = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
-            val emailProvider = AuthProvider.Email(
-                actionCodeSettings = null,
-                passwordValidationRules = emptyList()
-            )
-            val config = authUIConfiguration {
-                context = applicationContext
-                providers {
-                    provider(emailProvider)
-                }
-                isAnonymousUpgradeEnabled = true
-            }
-
-            instance.createOrLinkUserWithEmailAndPassword(
-                config = config,
-                provider = emailProvider,
-                email = "test@example.com",
-                password = "Pass@123"
-            )
-
-            mockedProvider.verify {
-                EmailAuthProvider.getCredential("test@example.com", "Pass@123")
-            }
-            // Verify linkWithCredential was called with the mock credential
-            verify(mockAnonymousUser).linkWithCredential(mockCredential)
-
-            val authState = instance.authStateFlow().first()
-            assertThat(authState)
-                .isEqualTo(AuthState.Success(result = null, user = mockAnonymousUser))
-            val successState = authState as AuthState.Success
-            assertThat(successState.user.email).isEqualTo("test@example.com")
         }
     }
 }

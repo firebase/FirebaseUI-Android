@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose
 
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
@@ -202,6 +203,25 @@ abstract class AuthState private constructor() {
 
         override fun toString(): String =
             "AuthState.RequiresProfileCompletion(user=$user, missingFields=$missingFields)"
+    }
+
+    class MergeConflict(
+        val pendingCredential: AuthCredential
+    ) : AuthState() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is MergeConflict) return false
+            return pendingCredential == other.pendingCredential
+        }
+
+        override fun hashCode(): Int {
+            var result = pendingCredential.hashCode()
+            result = 31 * result + pendingCredential.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "AuthState.MergeConflict(pendingCredential=$pendingCredential)"
     }
 
     companion object {
