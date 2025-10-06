@@ -2,11 +2,13 @@ package com.firebase.ui.auth.compose.ui.method_picker
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,8 +31,8 @@ import com.firebase.ui.auth.compose.ui.components.AuthProviderButton
  * ```kotlin
  * AuthMethodPicker(
  *     providers = listOf(
- *         AuthProvider.Google(),
- *         AuthProvider.Email(),
+ *      AuthProvider.Google(),
+ *      AuthProvider.Email(),
  *     ),
  *     onProviderSelected = { provider -> /* ... */ }
  * )
@@ -61,14 +63,12 @@ fun AuthMethodPicker(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .safeDrawingPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         logo?.let {
             Image(
                 modifier = Modifier
-                    .weight(0.4f),
+                    .weight(0.4f)
+                    .align(Alignment.CenterHorizontally),
                 painter = it.painter,
                 contentDescription = if (inPreview) ""
                 else stringResource(R.string.fui_auth_method_picker_logo)
@@ -77,26 +77,32 @@ fun AuthMethodPicker(
         if (customLayout != null) {
             customLayout(providers, onProviderSelected)
         } else {
-            LazyColumn(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-                    .testTag("AuthMethodPicker LazyColumn"),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .weight(1f),
             ) {
-                items(providers.size) { index ->
-                    val provider = providers[index]
-                    Box(
-                        modifier = Modifier
-                            .padding(bottom = 16.dp)
-                    ) {
-                        AuthProviderButton(
-                            onClick = {
-                                onProviderSelected(provider)
-                            },
-                            provider = provider,
-                            stringProvider = DefaultAuthUIStringProvider(context)
-                        )
+                val paddingWidth = maxWidth.value * 0.23
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = paddingWidth.dp)
+                        .testTag("AuthMethodPicker LazyColumn"),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    itemsIndexed(providers) { index, provider ->
+                        Box(
+                            modifier = Modifier
+                                .padding(bottom = if (index < providers.lastIndex) 16.dp else 0.dp)
+                        ) {
+                            AuthProviderButton(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                onClick = {
+                                    onProviderSelected(provider)
+                                },
+                                provider = provider,
+                                stringProvider = DefaultAuthUIStringProvider(context)
+                            )
+                        }
                     }
                 }
             }
@@ -118,46 +124,51 @@ fun AuthMethodPicker(
 @Preview(showBackground = true)
 @Composable
 fun PreviewAuthMethodPicker() {
-    AuthMethodPicker(
-        providers = listOf(
-            AuthProvider.Email(
-                actionCodeSettings = null,
-                passwordValidationRules = emptyList()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        AuthMethodPicker(
+            providers = listOf(
+                AuthProvider.Email(
+                    actionCodeSettings = null,
+                    passwordValidationRules = emptyList()
+                ),
+                AuthProvider.Phone(
+                    defaultNumber = null,
+                    defaultCountryCode = null,
+                    allowedCountries = null,
+                ),
+                AuthProvider.Google(
+                    scopes = emptyList(),
+                    serverClientId = null
+                ),
+                AuthProvider.Facebook(),
+                AuthProvider.Twitter(
+                    customParameters = emptyMap()
+                ),
+                AuthProvider.Github(
+                    customParameters = emptyMap()
+                ),
+                AuthProvider.Microsoft(
+                    tenant = null,
+                    customParameters = emptyMap()
+                ),
+                AuthProvider.Yahoo(
+                    customParameters = emptyMap()
+                ),
+                AuthProvider.Apple(
+                    locale = null,
+                    customParameters = emptyMap()
+                ),
+                AuthProvider.Anonymous,
             ),
-            AuthProvider.Phone(
-                defaultNumber = null,
-                defaultCountryCode = null,
-                allowedCountries = null,
-            ),
-            AuthProvider.Google(
-                scopes = emptyList(),
-                serverClientId = null
-            ),
-            AuthProvider.Facebook(),
-            AuthProvider.Twitter(
-                customParameters = emptyMap()
-            ),
-            AuthProvider.Github(
-                customParameters = emptyMap()
-            ),
-            AuthProvider.Microsoft(
-                tenant = null,
-                customParameters = emptyMap()
-            ),
-            AuthProvider.Yahoo(
-                customParameters = emptyMap()
-            ),
-            AuthProvider.Apple(
-                locale = null,
-                customParameters = emptyMap()
-            ),
-            AuthProvider.Anonymous,
-        ),
-        logo = AuthUIAsset.Resource(R.drawable.fui_ic_check_circle_black_128dp),
-        onProviderSelected = { provider ->
+            logo = AuthUIAsset.Resource(R.drawable.fui_ic_check_circle_black_128dp),
+            onProviderSelected = { provider ->
 
-        },
-        termsOfServiceUrl = "https://example.com/terms",
-        privacyPolicyUrl = "https://example.com/privacy"
-    )
+            },
+            termsOfServiceUrl = "https://example.com/terms",
+            privacyPolicyUrl = "https://example.com/privacy"
+        )
+    }
 }
