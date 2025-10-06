@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth.compose.ui.components
 
 import android.content.Context
 import androidx.compose.material.icons.Icons
@@ -29,8 +29,8 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.compose.configuration.AuthProvider
 import com.firebase.ui.auth.compose.configuration.Provider
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.common.truth.Truth.assertThat

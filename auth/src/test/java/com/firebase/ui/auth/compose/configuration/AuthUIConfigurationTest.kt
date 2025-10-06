@@ -20,8 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings

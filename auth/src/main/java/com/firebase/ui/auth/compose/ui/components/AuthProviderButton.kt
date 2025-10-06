@@ -1,12 +1,14 @@
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth.compose.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,12 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.configuration.AuthProvider
 import com.firebase.ui.auth.compose.configuration.Provider
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.stringprovider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 
@@ -63,10 +67,11 @@ fun AuthProviderButton(
     stringProvider: AuthUIStringProvider,
 ) {
     val providerStyle = resolveProviderStyle(provider, style)
-    val providerText = resolveProviderLabel(provider, stringProvider)
+    val providerLabel = resolveProviderLabel(provider, stringProvider)
 
     Button(
         modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 12.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = providerStyle.backgroundColor,
             contentColor = providerStyle.contentColor,
@@ -79,7 +84,9 @@ fun AuthProviderButton(
         enabled = enabled,
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
             val providerIcon = providerStyle.icon
             if (providerIcon != null) {
@@ -87,19 +94,21 @@ fun AuthProviderButton(
                 if (iconTint != null) {
                     Icon(
                         painter = providerIcon.painter,
-                        contentDescription = providerText,
+                        contentDescription = providerLabel,
                         tint = iconTint
                     )
                 } else {
                     Image(
                         painter = providerIcon.painter,
-                        contentDescription = providerText
+                        contentDescription = providerLabel
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(12.dp))
             }
             Text(
-                text = providerText
+                text = providerLabel,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
         }
     }

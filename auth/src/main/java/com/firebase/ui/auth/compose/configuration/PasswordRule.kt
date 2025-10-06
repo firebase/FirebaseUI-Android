@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth.compose.configuration
 
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 
 /**
  * An abstract class representing a set of validation rules that can be applied to a password field,

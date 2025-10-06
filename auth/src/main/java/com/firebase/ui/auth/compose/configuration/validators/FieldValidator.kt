@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-import com.firebase.ui.auth.compose.configuration.stringprovider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 
 /**
  * An interface for validating input fields.
