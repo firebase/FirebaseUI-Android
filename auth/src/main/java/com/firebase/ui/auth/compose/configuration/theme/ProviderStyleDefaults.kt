@@ -16,7 +16,7 @@ package com.firebase.ui.auth.compose.configuration.theme
 
 import androidx.compose.ui.graphics.Color
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.Provider
+import com.firebase.ui.auth.compose.configuration.auth_provider.Provider
 
 /**
  * Default provider styling configurations for authentication providers.

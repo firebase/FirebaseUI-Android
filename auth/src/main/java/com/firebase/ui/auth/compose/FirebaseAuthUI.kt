@@ -168,7 +168,8 @@ class FirebaseAuthUI private constructor(
                 // Check if email verification is required
                 if (!currentUser.isEmailVerified &&
                     currentUser.email != null &&
-                    currentUser.providerData.any { it.providerId == "password" }) {
+                    currentUser.providerData.any { it.providerId == "password" }
+                ) {
                     AuthState.RequiresEmailVerification(
                         user = currentUser,
                         email = currentUser.email!!
@@ -374,7 +375,7 @@ class FirebaseAuthUI private constructor(
             } catch (e: IllegalStateException) {
                 throw IllegalStateException(
                     "Default FirebaseApp is not initialized. " +
-                    "Make sure to call FirebaseApp.initializeApp(Context) first.",
+                            "Make sure to call FirebaseApp.initializeApp(Context) first.",
                     e
                 )
             }

@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.compose
 
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
@@ -202,6 +204,63 @@ abstract class AuthState private constructor() {
 
         override fun toString(): String =
             "AuthState.RequiresProfileCompletion(user=$user, missingFields=$missingFields)"
+    }
+
+    /**
+     * The user needs to sign in with a different provider.
+     *
+     * Emitted when a user tries to sign up with an email that already exists
+     * and needs to use the existing provider to sign in instead.
+     *
+     * @property provider The [AuthProvider] the user should sign in with
+     * @property email The email address of the existing account
+     */
+    class RequiresSignIn(
+        val provider: AuthProvider,
+        val email: String
+    ) : AuthState() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is RequiresSignIn) return false
+            return provider == other.provider &&
+                    email == other.email
+        }
+
+        override fun hashCode(): Int {
+            var result = provider.hashCode()
+            result = 31 * result + email.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "AuthState.RequiresSignIn(provider=$provider, email=$email)"
+    }
+
+    /**
+     * Pending credential for an anonymous upgrade merge conflict.
+     *
+     * Emitted when an anonymous user attempts to convert to a permanent account but
+     * Firebase detects that the target email already belongs to another user. The UI can
+     * prompt the user to resolve the conflict by signing in with the existing account and
+     * later linking the stored [pendingCredential].
+     */
+    class MergeConflict(
+        val pendingCredential: AuthCredential
+    ) : AuthState() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is MergeConflict) return false
+            return pendingCredential == other.pendingCredential
+        }
+
+        override fun hashCode(): Int {
+            var result = pendingCredential.hashCode()
+            result = 31 * result + pendingCredential.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "AuthState.MergeConflict(pendingCredential=$pendingCredential)"
     }
 
     companion object {

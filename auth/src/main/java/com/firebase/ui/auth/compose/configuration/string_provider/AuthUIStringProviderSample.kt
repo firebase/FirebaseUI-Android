@@ -15,7 +15,7 @@
 package com.firebase.ui.auth.compose.configuration.string_provider
 
 import android.content.Context
-import com.firebase.ui.auth.compose.configuration.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 

@@ -42,6 +42,8 @@ object Config {
             const val recyclerView = "androidx.recyclerview:recyclerview:1.2.1"
             const val materialDesign = "com.google.android.material:material:1.4.0"
 
+            const val datastorePreferences = "androidx.datastore:datastore-preferences:1.1.1"
+            const val credentials = "androidx.credentials:credentials:1.3.0"
             object Compose {
                 const val bom = "androidx.compose:compose-bom:2025.08.00"
                 const val ui = "androidx.compose.ui:ui"
@@ -88,6 +90,9 @@ object Config {
             const val junitExt = "androidx.test.ext:junit:1.1.5"
             const val truth = "com.google.truth:truth:0.42"
             const val mockito = "org.mockito:mockito-android:2.21.0"
+            const val mockitoCore = "org.mockito:mockito-core:5.19.0"
+            const val mockitoInline = "org.mockito:mockito-inline:5.2.0"
+            const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:6.0.0"
             const val robolectric = "org.robolectric:robolectric:4.14"
 
             const val core = "androidx.test:core:1.5.0"
