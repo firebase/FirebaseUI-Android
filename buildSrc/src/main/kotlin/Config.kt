@@ -2,7 +2,7 @@ object Config {
     const val version = "10.0.0-SNAPSHOT"
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
-    private const val kotlinVersion = "2.2.0"
+    const val kotlinVersion = "2.2.0"
 
     object SdkVersions {
         const val compile = 35
@@ -50,7 +50,8 @@ object Config {
                 const val tooling = "androidx.compose.ui:ui-tooling"
                 const val foundation = "androidx.compose.foundation:foundation"
                 const val material3 = "androidx.compose.material3:material3"
-                const val activityCompose = "androidx.activity:activity-compose"
+                const val materialIconsExtended = "androidx.compose.material:material-icons-extended"
+                const val activityCompose = "androidx.activity:activity-compose:1.9.0"
             }
         }
 
@@ -95,6 +96,7 @@ object Config {
             const val rules = "androidx.test:rules:1.5.0"
 
             const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
+            const val composeUiTestJunit4 = "androidx.compose.ui:ui-test-junit4"
         }
 
         object Lint {
