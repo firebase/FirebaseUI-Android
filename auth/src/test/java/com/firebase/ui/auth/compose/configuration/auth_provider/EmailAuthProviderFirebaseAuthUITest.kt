@@ -618,18 +618,22 @@ class EmailAuthProviderFirebaseAuthUITest {
     fun `sendPasswordResetEmail - successfully sends reset email`() = runTest {
         val taskCompletionSource = TaskCompletionSource<Void>()
         taskCompletionSource.setResult(null)
-        `when`(mockFirebaseAuth.sendPasswordResetEmail("test@example.com"))
-            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.sendPasswordResetEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            ArgumentMatchers.isNull()
+        )).thenReturn(taskCompletionSource.task)
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        val result = instance.sendPasswordResetEmail("test@example.com")
+        instance.sendPasswordResetEmail("test@example.com")
 
-        assertThat(result).isEqualTo("test@example.com")
-        verify(mockFirebaseAuth).sendPasswordResetEmail("test@example.com")
+        verify(mockFirebaseAuth).sendPasswordResetEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            ArgumentMatchers.isNull()
+        )
 
-        val finalState = instance.authStateFlow().first()
-        assertThat(finalState is AuthState.Idle).isTrue()
+        val finalState = instance.authStateFlow().first { it is AuthState.PasswordResetLinkSent }
+        assertThat(finalState).isInstanceOf(AuthState.PasswordResetLinkSent::class.java)
     }
 
     @Test
@@ -645,10 +649,12 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        val result = instance.sendPasswordResetEmail("test@example.com", actionCodeSettings)
+        instance.sendPasswordResetEmail("test@example.com", actionCodeSettings)
 
-        assertThat(result).isEqualTo("test@example.com")
         verify(mockFirebaseAuth).sendPasswordResetEmail("test@example.com", actionCodeSettings)
+
+        val finalState = instance.authStateFlow().first { it is AuthState.PasswordResetLinkSent }
+        assertThat(finalState).isInstanceOf(AuthState.PasswordResetLinkSent::class.java)
     }
 
     @Test
@@ -659,8 +665,10 @@ class EmailAuthProviderFirebaseAuthUITest {
         )
         val taskCompletionSource = TaskCompletionSource<Void>()
         taskCompletionSource.setException(userNotFoundException)
-        `when`(mockFirebaseAuth.sendPasswordResetEmail("test@example.com"))
-            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.sendPasswordResetEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            ArgumentMatchers.isNull()
+        )).thenReturn(taskCompletionSource.task)
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
@@ -680,8 +688,10 @@ class EmailAuthProviderFirebaseAuthUITest {
         )
         val taskCompletionSource = TaskCompletionSource<Void>()
         taskCompletionSource.setException(invalidEmailException)
-        `when`(mockFirebaseAuth.sendPasswordResetEmail("test@example.com"))
-            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.sendPasswordResetEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            ArgumentMatchers.isNull()
+        )).thenReturn(taskCompletionSource.task)
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
@@ -698,8 +708,10 @@ class EmailAuthProviderFirebaseAuthUITest {
         val cancellationException = CancellationException("Operation cancelled")
         val taskCompletionSource = TaskCompletionSource<Void>()
         taskCompletionSource.setException(cancellationException)
-        `when`(mockFirebaseAuth.sendPasswordResetEmail("test@example.com"))
-            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.sendPasswordResetEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            ArgumentMatchers.isNull()
+        )).thenReturn(taskCompletionSource.task)
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
