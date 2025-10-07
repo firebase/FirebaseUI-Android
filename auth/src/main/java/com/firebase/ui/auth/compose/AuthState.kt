@@ -263,6 +263,15 @@ abstract class AuthState private constructor() {
             "AuthState.MergeConflict(pendingCredential=$pendingCredential)"
     }
 
+    /**
+     * Password reset link has been sent to the user's email.
+     */
+    class PasswordResetLinkSent : AuthState() {
+        override fun equals(other: Any?): Boolean = other is PasswordResetLinkSent
+        override fun hashCode(): Int = javaClass.hashCode()
+        override fun toString(): String = "AuthState.PasswordResetLinkSent"
+    }
+
     companion object {
         /**
          * Creates an Idle state instance.

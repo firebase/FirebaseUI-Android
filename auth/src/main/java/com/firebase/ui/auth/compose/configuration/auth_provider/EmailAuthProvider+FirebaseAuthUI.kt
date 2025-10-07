@@ -860,8 +860,9 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
  * **Flow:**
  * 1. Validate the email address exists in Firebase Auth
  * 2. Send password reset email to the user
- * 3. User clicks link in email to reset password
- * 4. User is redirected to Firebase-hosted password reset page (or custom URL if configured)
+ * 3. Emit [AuthState.PasswordResetLinkSent] state
+ * 4. User clicks link in email to reset password
+ * 5. User is redirected to Firebase-hosted password reset page (or custom URL if configured)
  *
  * **Error Handling:**
  * - If the email doesn't exist: throws [AuthException.UserNotFoundException]
@@ -872,8 +873,6 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
  * @param actionCodeSettings Optional [ActionCodeSettings] to configure the password reset link.
  *                           Use this to customize the continue URL, dynamic link domain, and other settings.
  *
- * @return The email address that the reset link was sent to (useful for confirmation UI)
- *
  * @throws AuthException.UserNotFoundException if no account exists with this email
  * @throws AuthException.InvalidCredentialsException if the email format is invalid
  * @throws AuthException.NetworkException if a network error occurs
@@ -883,7 +882,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
  * **Example 1: Basic password reset**
  * ```kotlin
  * try {
- *     val email = firebaseAuthUI.sendPasswordResetEmail(
+ *     firebaseAuthUI.sendPasswordResetEmail(
  *         email = "user@example.com"
  *     )
  *     // Show success message: "Password reset email sent to $email"
@@ -906,7 +905,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
  *     )
  *     .build()
  *
- * val email = firebaseAuthUI.sendPasswordResetEmail(
+ * firebaseAuthUI.sendPasswordResetEmail(
  *     email = "user@example.com",
  *     actionCodeSettings = actionCodeSettings
  * )
@@ -924,18 +923,11 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
 internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
     email: String,
     actionCodeSettings: ActionCodeSettings? = null
-): String {
+) {
     try {
         updateAuthState(AuthState.Loading("Sending password reset email..."))
-
-        if (actionCodeSettings != null) {
-            auth.sendPasswordResetEmail(email, actionCodeSettings).await()
-        } else {
-            auth.sendPasswordResetEmail(email).await()
-        }
-
-        updateAuthState(AuthState.Idle)
-        return email
+        auth.sendPasswordResetEmail(email, actionCodeSettings).await()
+        updateAuthState(AuthState.PasswordResetLinkSent())
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Send password reset email was cancelled",
