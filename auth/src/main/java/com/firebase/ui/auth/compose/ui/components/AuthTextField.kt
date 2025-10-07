@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -89,7 +91,8 @@ fun AuthTextField(
     var passwordVisible by remember { mutableStateOf(false) }
 
     TextField(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(),
         value = value,
         onValueChange = { newValue ->
             onValueChange(newValue)
@@ -150,7 +153,8 @@ internal fun PreviewAuthTextField() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
