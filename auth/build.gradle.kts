@@ -4,7 +4,7 @@ plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.kotlin.android")
-    alias(libs.plugins.compose.compiler)
+    id("org.jetbrains.kotlin.plugin.compose") version Config.kotlinVersion
 }
 
 android {
@@ -74,24 +74,23 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.activity.compose)
+    implementation(platform(Config.Libs.Androidx.Compose.bom))
+    implementation(Config.Libs.Androidx.Compose.ui)
+    implementation(Config.Libs.Androidx.Compose.uiGraphics)
+    implementation(Config.Libs.Androidx.Compose.material3)
+    implementation(Config.Libs.Androidx.Compose.foundation)
+    implementation(Config.Libs.Androidx.Compose.tooling)
+    implementation(Config.Libs.Androidx.Compose.toolingPreview)
+    implementation(Config.Libs.Androidx.Compose.activityCompose)
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
-    implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.datastore.preferences)
+    implementation(Config.Libs.Androidx.Compose.materialIconsExtended)
     // The new activity result APIs force us to include Fragment 1.3.0
     // See https://issuetracker.google.com/issues/152554847
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
-    implementation(libs.androidx.credentials)
+    implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
@@ -112,27 +111,12 @@ dependencies {
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
+    testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.core)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(libs.androidx.ui.test.junit4)
-    testImplementation(libs.mockito)
-    testImplementation(libs.mockito.inline)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.androidx.credentials)
+    testImplementation(Config.Libs.Test.composeUiTestJunit4)
 
     debugImplementation(project(":internal:lintchecks"))
-}
-
-val mockitoAgent by configurations.creating
-
-dependencies {
-    mockitoAgent(libs.mockito) {
-        isTransitive = false
-    }
-}
-
-tasks.withType<Test>().configureEach {
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
