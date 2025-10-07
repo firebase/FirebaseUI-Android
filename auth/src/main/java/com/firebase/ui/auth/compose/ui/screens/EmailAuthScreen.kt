@@ -95,16 +95,18 @@ fun EmailAuthScreen(
     onCancel: () -> Unit,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
-    val mode = remember { mutableStateOf(EmailAuthMode.SignIn) }
+    val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }
+    val displayNameValue = rememberSaveable { mutableStateOf("") }
     val emailTextValue = rememberSaveable { mutableStateOf("") }
-    val passwordTextValue = remember { mutableStateOf("") }
+    val passwordTextValue = rememberSaveable { mutableStateOf("") }
+    val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
 
     val state = EmailAuthContentState(
         mode = mode.value,
-        displayName = "",
+        displayName = displayNameValue.value,
         email = emailTextValue.value,
         password = passwordTextValue.value,
-        confirmPassword = "",
+        confirmPassword = confirmPasswordTextValue.value,
         isLoading = false,
         error = null,
         resetLinkSent = false,
@@ -114,29 +116,29 @@ fun EmailAuthScreen(
         onPasswordChange = { password ->
             passwordTextValue.value = password
         },
-        onConfirmPasswordChange = {
-
+        onConfirmPasswordChange = { confirmPassword ->
+            confirmPasswordTextValue.value = confirmPassword
         },
-        onDisplayNameChange = {
-
+        onDisplayNameChange = { displayName ->
+            displayNameValue.value = displayName
         },
         onSignInClick = {
-            mode.value = EmailAuthMode.SignIn
+
         },
         onSignUpClick = {
-            mode.value = EmailAuthMode.SignUp
+
         },
         onSendResetLinkClick = {
-            mode.value = EmailAuthMode.ResetPassword
+
         },
         onGoToSignUp = {
-
+            mode.value = EmailAuthMode.SignUp
         },
         onGoToSignIn = {
-
+            mode.value = EmailAuthMode.SignIn
         },
         onGoToResetPassword = {
-
+            mode.value = EmailAuthMode.ResetPassword
         }
     )
 

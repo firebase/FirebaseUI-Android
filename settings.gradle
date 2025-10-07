@@ -36,3 +36,4 @@ include(
         ":internal:lint", 
         ":internal:lintchecks"
 )
+include ':composeapp'
