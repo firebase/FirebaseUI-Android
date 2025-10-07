@@ -4,7 +4,7 @@ plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.kotlin.android")
-    alias(libs.plugins.compose.compiler)
+    id("org.jetbrains.kotlin.plugin.compose") version Config.kotlinVersion
 }
 
 android {
@@ -84,6 +84,7 @@ dependencies {
     implementation(Config.Libs.Androidx.Compose.activityCompose)
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
+    implementation(Config.Libs.Androidx.Compose.materialIconsExtended)
     // The new activity result APIs force us to include Fragment 1.3.0
     // See https://issuetracker.google.com/issues/152554847
     implementation(Config.Libs.Androidx.fragment)
@@ -115,7 +116,7 @@ dependencies {
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(Config.Libs.Test.composeUiTestJunit4)
 
     debugImplementation(project(":internal:lintchecks"))
 }
