@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +40,7 @@ import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
@@ -57,6 +59,7 @@ fun SignUpUI(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
+    onGoToSignIn: () -> Unit,
     onSignUpClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -75,8 +78,11 @@ fun SignUpUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Sign Up")
+                    Text("Sign up")
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         },
     ) { innerPadding ->
@@ -85,7 +91,6 @@ fun SignUpUI(
                 .padding(innerPadding)
                 .safeDrawingPadding()
                 .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AuthTextField(
                 value = email,
@@ -131,7 +136,7 @@ fun SignUpUI(
                     Text("Password")
                 },
                 onValueChange = { text ->
-                    onPasswordChange(password)
+                    onPasswordChange(text)
                 },
                 leadingIcon = {
                     Icon(
@@ -159,21 +164,33 @@ fun SignUpUI(
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Button(
+            Row(
                 modifier = Modifier
                     .align(Alignment.End),
-                onClick = {
-                    onSignUpClick()
-                },
-                enabled = !isLoading,
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(16.dp)
-                    )
-                } else {
-                    Text("Sign Up")
+                Button(
+                    onClick = {
+                        onGoToSignIn()
+                    },
+                    enabled = !isLoading,
+                ) {
+                    Text("Sign In")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(
+                    onClick = {
+                        onSignUpClick()
+                    },
+                    enabled = !isLoading,
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(16.dp)
+                        )
+                    } else {
+                        Text("Sign Up")
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -239,22 +256,25 @@ fun PreviewSignUpUI() {
         passwordValidationRules = listOf()
     )
 
-    SignUpUI(
-        configuration = authUIConfiguration {
-            context = applicationContext
-            providers { provider(provider) }
-            tosUrl = ""
-            privacyPolicyUrl = ""
-        },
-        isLoading = false,
-        displayName = "",
-        email = "",
-        password = "",
-        confirmPassword = "",
-        onDisplayNameChange = { name -> },
-        onEmailChange = { email -> },
-        onPasswordChange = { password -> },
-        onConfirmPasswordChange = { confirmPassword -> },
-        onSignUpClick = {},
-    )
+    AuthUITheme {
+        SignUpUI(
+            configuration = authUIConfiguration {
+                context = applicationContext
+                providers { provider(provider) }
+                tosUrl = ""
+                privacyPolicyUrl = ""
+            },
+            isLoading = false,
+            displayName = "",
+            email = "",
+            password = "",
+            confirmPassword = "",
+            onDisplayNameChange = { name -> },
+            onEmailChange = { email -> },
+            onPasswordChange = { password -> },
+            onConfirmPasswordChange = { confirmPassword -> },
+            onSignUpClick = {},
+            onGoToSignIn = {}
+        )
+    }
 }

@@ -1,17 +1,18 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    alias(libs.plugins.compose.compiler)
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.firebase.composeapp"
-    compileSdk = 35
+    compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
         applicationId = "com.firebase.composeapp"
-        minSdk = 23
-        targetSdk = 35
+        minSdk = Config.SdkVersions.min
+        targetSdk = Config.SdkVersions.target
         versionCode = 1
         versionName = "1.0"
 
@@ -42,19 +43,21 @@ android {
 dependencies {
     implementation(project(":auth"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(Config.Libs.Kotlin.jvm)
+    implementation(Config.Libs.Androidx.lifecycleRuntime)
+    implementation(Config.Libs.Androidx.Compose.activityCompose)
+    implementation(platform(Config.Libs.Androidx.Compose.bom))
+    implementation(Config.Libs.Androidx.Compose.ui)
+    implementation(Config.Libs.Androidx.Compose.uiGraphics)
+    implementation(Config.Libs.Androidx.Compose.toolingPreview)
+    implementation(Config.Libs.Androidx.Compose.material3)
+
+    testImplementation(Config.Libs.Test.junit)
+    androidTestImplementation(Config.Libs.Test.junitExt)
+    androidTestImplementation(platform(Config.Libs.Androidx.Compose.bom))
+    androidTestImplementation(Config.Libs.Test.composeUiTestJunit4)
+
+    debugImplementation(Config.Libs.Androidx.Compose.tooling)
+
+    implementation(platform(Config.Libs.Firebase.bom))
 }

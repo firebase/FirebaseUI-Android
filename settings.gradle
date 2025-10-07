@@ -22,8 +22,8 @@ gradleEnterprise {
 rootProject.buildFileName = 'build.gradle.kts'
 
 include(
-        ":app", 
-
+        ":app",
+        ":composeapp",
         ":library",
         ":auth",
         ":common", 
@@ -36,4 +36,3 @@ include(
         ":internal:lint", 
         ":internal:lintchecks"
 )
-include ':composeapp'

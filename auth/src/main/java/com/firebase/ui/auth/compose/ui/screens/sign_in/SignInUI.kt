@@ -1,13 +1,10 @@
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.compose.ui.screens.sign_in
 
 import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -25,21 +22,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
@@ -47,7 +42,6 @@ import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
-import com.firebase.ui.auth.compose.ui.method_picker.AnnotatedStringResource
 import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,13 +70,23 @@ fun SignInUI(
         )
     }
 
+    val isFormValid = remember(email, password) {
+        derivedStateOf {
+            emailValidator.validate(email)
+                    && passwordValidator.validate(password)
+        }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Sign In")
+                    Text("Sign in")
                 },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             )
         },
     ) { innerPadding ->
@@ -91,7 +95,6 @@ fun SignInUI(
                 .padding(innerPadding)
                 .safeDrawingPadding()
                 .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AuthTextField(
                 value = email,
@@ -119,7 +122,7 @@ fun SignInUI(
                     Text("Password")
                 },
                 onValueChange = { text ->
-                    onPasswordChange(password)
+                    onPasswordChange(text)
                 },
                 leadingIcon = {
                     Icon(
@@ -170,7 +173,7 @@ fun SignInUI(
                         //  else we show an error dialog stating signup is not allowed
                         onSignInClick()
                     },
-                    enabled = !isLoading,
+                    enabled = !isLoading && isFormValid.value,
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
@@ -256,7 +259,7 @@ fun PreviewSignInUI() {
             provider = provider,
             email = "",
             password = "",
-            isLoading = false,
+            isLoading = true,
             onEmailChange = { email -> },
             onPasswordChange = { password -> },
             onSignInClick = {},

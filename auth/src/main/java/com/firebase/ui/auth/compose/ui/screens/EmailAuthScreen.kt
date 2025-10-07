@@ -1,17 +1,24 @@
 package com.firebase.ui.auth.compose.ui.screens
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
+import com.firebase.ui.auth.compose.AuthState
+import com.firebase.ui.auth.compose.FirebaseAuthUI
+import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUserWithEmailAndPassword
+import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
+import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 enum class EmailAuthMode {
     SignIn,
@@ -88,18 +95,47 @@ class EmailAuthContentState(
  */
 @Composable
 fun EmailAuthScreen(
-    modifier: Modifier = Modifier,
+    context: Context,
+    configuration: AuthUIConfiguration,
+    authUI: FirebaseAuthUI,
     provider: AuthProvider.Email,
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }
     val displayNameValue = rememberSaveable { mutableStateOf("") }
     val emailTextValue = rememberSaveable { mutableStateOf("") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
+
+    val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+
+    LaunchedEffect(authState) {
+        when (val state = authState) {
+            is AuthState.Success -> {
+                state.result?.let { result ->
+                    onSuccess(result)
+                }
+            }
+
+            is AuthState.Error -> {
+                onError(AuthException.from(state.exception))
+            }
+
+            is AuthState.Cancelled -> {
+                onCancel()
+            }
+
+            else -> Unit
+        }
+    }
+
+    val errorMessage =
+        if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
 
     val state = EmailAuthContentState(
         mode = mode.value,
@@ -107,8 +143,8 @@ fun EmailAuthScreen(
         email = emailTextValue.value,
         password = passwordTextValue.value,
         confirmPassword = confirmPasswordTextValue.value,
-        isLoading = false,
-        error = null,
+        isLoading = authState is AuthState.Loading,
+        error = errorMessage,
         resetLinkSent = false,
         onEmailChange = { email ->
             emailTextValue.value = email
@@ -123,13 +159,35 @@ fun EmailAuthScreen(
             displayNameValue.value = displayName
         },
         onSignInClick = {
-
+            coroutineScope.launch {
+                authUI.signInWithEmailAndPassword(
+                    context = context,
+                    config = configuration,
+                    email = emailTextValue.value,
+                    password = passwordTextValue.value,
+                    credentialForLinking = null,
+                )
+            }
         },
         onSignUpClick = {
-
+            coroutineScope.launch {
+                authUI.createOrLinkUserWithEmailAndPassword(
+                    context = context,
+                    config = configuration,
+                    provider = provider,
+                    name = displayNameValue.value,
+                    email = emailTextValue.value,
+                    password = passwordTextValue.value,
+                )
+            }
         },
         onSendResetLinkClick = {
-
+            coroutineScope.launch {
+                authUI.sendPasswordResetEmail(
+                    email = emailTextValue.value,
+                    actionCodeSettings = null,
+                )
+            }
         },
         onGoToSignUp = {
             mode.value = EmailAuthMode.SignUp
@@ -145,80 +203,101 @@ fun EmailAuthScreen(
     content?.invoke(state)
 }
 
-@Preview
-@Composable
-internal fun PreviewEmailAuthScreen() {
-    val applicationContext = LocalContext.current
-    val provider = AuthProvider.Email(
-        isDisplayNameRequired = true,
-        isEmailLinkSignInEnabled = false,
-        isEmailLinkForceSameDeviceEnabled = true,
-        actionCodeSettings = null,
-        isNewAccountsAllowed = true,
-        minimumPasswordLength = 8,
-        passwordValidationRules = listOf()
-    )
-
-    EmailAuthScreen(
-        provider = provider,
-        onSuccess = {
-
-        },
-        onError = {
-
-        },
-        onCancel = {
-
-        },
-    ) { state ->
-        when (state.mode) {
-            EmailAuthMode.SignIn -> {
-                SignInUI(
-                    configuration = authUIConfiguration {
-                        context = applicationContext
-                        providers { provider(provider) }
-                        tosUrl = ""
-                        privacyPolicyUrl = ""
-                    },
-                    provider = provider,
-                    email = state.email,
-                    isLoading = false,
-                    password = state.password,
-                    onEmailChange = state.onEmailChange,
-                    onPasswordChange = state.onPasswordChange,
-                    onSignInClick = state.onSignInClick,
-                    onGoToSignUp = state.onGoToSignUp,
-                    onGoToResetPassword = state.onGoToResetPassword,
-                )
-            }
-            EmailAuthMode.SignUp -> {
-                SignUpUI(
-                    configuration = authUIConfiguration {
-                        context = applicationContext
-                        providers { provider(provider) }
-                        tosUrl = ""
-                        privacyPolicyUrl = ""
-                    },
-                    isLoading = state.isLoading,
-                    displayName = state.displayName,
-                    email = state.email,
-                    password = state.password,
-                    confirmPassword = state.confirmPassword,
-                    onDisplayNameChange = state.onDisplayNameChange,
-                    onEmailChange = state.onEmailChange,
-                    onPasswordChange = state.onPasswordChange,
-                    onConfirmPasswordChange = state.onConfirmPasswordChange,
-                    onSignUpClick = state.onSignUpClick,
-                )
-            }
-            EmailAuthMode.ResetPassword -> {
-                ResetPasswordUI(
-                    email = state.email,
-                    resetLinkSent = state.resetLinkSent,
-                    onEmailChange = state.onEmailChange,
-                    onSendResetLink = state.onSendResetLinkClick,
-                )
-            }
-        }
-    }
-}
+//@Preview
+//@Composable
+//internal fun PreviewEmailAuthScreen() {
+//    val applicationContext = LocalContext.current
+//    val provider = AuthProvider.Email(
+//        isDisplayNameRequired = true,
+//        isEmailLinkSignInEnabled = false,
+//        isEmailLinkForceSameDeviceEnabled = true,
+//        actionCodeSettings = null,
+//        isNewAccountsAllowed = true,
+//        minimumPasswordLength = 8,
+//        passwordValidationRules = listOf()
+//    )
+//
+//    AuthUITheme {
+//        EmailAuthScreen(
+//            context = applicationContext,
+//            configuration = authUIConfiguration {
+//                context = applicationContext
+//                providers { provider(provider) }
+//                tosUrl = ""
+//                privacyPolicyUrl = ""
+//            },
+//            authUI = null,
+//            provider = provider,
+//            onSuccess = {
+//
+//            },
+//            onError = {
+//
+//            },
+//            onCancel = {
+//
+//            },
+//        ) { state ->
+//            when (state.mode) {
+//                EmailAuthMode.SignIn -> {
+//                    SignInUI(
+//                        configuration = authUIConfiguration {
+//                            context = applicationContext
+//                            providers { provider(provider) }
+//                            tosUrl = ""
+//                            privacyPolicyUrl = ""
+//                        },
+//                        provider = provider,
+//                        email = state.email,
+//                        isLoading = false,
+//                        password = state.password,
+//                        onEmailChange = state.onEmailChange,
+//                        onPasswordChange = state.onPasswordChange,
+//                        onSignInClick = state.onSignInClick,
+//                        onGoToSignUp = state.onGoToSignUp,
+//                        onGoToResetPassword = state.onGoToResetPassword,
+//                    )
+//                }
+//
+//                EmailAuthMode.SignUp -> {
+//                    SignUpUI(
+//                        configuration = authUIConfiguration {
+//                            context = applicationContext
+//                            providers { provider(provider) }
+//                            tosUrl = ""
+//                            privacyPolicyUrl = ""
+//                        },
+//                        isLoading = state.isLoading,
+//                        displayName = state.displayName,
+//                        email = state.email,
+//                        password = state.password,
+//                        confirmPassword = state.confirmPassword,
+//                        onDisplayNameChange = state.onDisplayNameChange,
+//                        onEmailChange = state.onEmailChange,
+//                        onPasswordChange = state.onPasswordChange,
+//                        onConfirmPasswordChange = state.onConfirmPasswordChange,
+//                        onSignUpClick = state.onSignUpClick,
+//                        onGoToSignIn = state.onGoToSignIn,
+//                    )
+//                }
+//
+//                EmailAuthMode.ResetPassword -> {
+//                    ResetPasswordUI(
+//                        configuration = authUIConfiguration {
+//                            context = applicationContext
+//                            providers { provider(provider) }
+//                            tosUrl = ""
+//                            privacyPolicyUrl = ""
+//                        },
+//                        isLoading = state.isLoading,
+//                        email = state.email,
+//                        resetLinkSent = state.resetLinkSent,
+//                        onEmailChange = state.onEmailChange,
+//                        onSendResetLink = state.onSendResetLinkClick,
+//                        onGoToSignIn = state.onGoToSignIn
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}
