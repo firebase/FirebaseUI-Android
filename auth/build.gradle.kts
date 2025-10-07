@@ -116,11 +116,11 @@ dependencies {
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(Config.Libs.Test.composeUiTestJunit4)
     testImplementation(Config.Libs.Test.mockitoCore)
     testImplementation(Config.Libs.Test.mockitoInline)
     testImplementation(Config.Libs.Test.mockitoKotlin)
     testImplementation(Config.Libs.Androidx.credentials)
+    testImplementation(Config.Libs.Test.composeUiTestJunit4)
 
     debugImplementation(project(":internal:lintchecks"))
 }
