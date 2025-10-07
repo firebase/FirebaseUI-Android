@@ -45,6 +45,7 @@ import androidx.test.core.app.ApplicationProvider;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -79,13 +80,13 @@ public final class TestHelper {
         if (!org.mockito.Mockito.mockingDetails(CONTEXT).isSpy()) {
             CONTEXT = spy(CONTEXT);
         }
-        when(CONTEXT.getApplicationContext())
-                .thenReturn(CONTEXT);
+        doReturn(CONTEXT).when(CONTEXT).getApplicationContext();
+
         Resources resources = CONTEXT.getResources();
         if (!org.mockito.Mockito.mockingDetails(resources).isSpy()) {
-            Resources spiedResources = spy(resources);
-            when(CONTEXT.getResources()).thenReturn(spiedResources);
+            resources = spy(resources);
         }
+        doReturn(resources).when(CONTEXT).getResources();
     }
 
     private static void initializeApp(Context context) {
@@ -100,9 +101,9 @@ public final class TestHelper {
     }
 
     private static void initializeProviders() {
-        when(CONTEXT.getString(R.string.firebase_web_host)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.default_web_client_id)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.facebook_application_id)).thenReturn("abc");
+        doReturn("abc").when(CONTEXT).getString(R.string.firebase_web_host);
+        doReturn("abc").when(CONTEXT).getString(R.string.default_web_client_id);
+        doReturn("abc").when(CONTEXT).getString(R.string.facebook_application_id);
     }
 
     public static FirebaseUser getMockFirebaseUser() {
