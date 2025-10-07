@@ -25,7 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,20 +36,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.compose.configuration.validators.GeneralFieldValidator
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
+import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpUI(
     modifier: Modifier = Modifier,
     configuration: AuthUIConfiguration,
+    provider: AuthProvider.Email,
     isLoading: Boolean,
     displayName: String,
     email: String,
@@ -63,14 +65,34 @@ fun SignUpUI(
     onSignUpClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val emailValidator = remember {
-        EmailValidator(stringProvider = DefaultAuthUIStringProvider(context))
-    }
+    val stringProvider = DefaultAuthUIStringProvider(context)
+    val displayNameValidator = remember { GeneralFieldValidator(stringProvider) }
+    val emailValidator = remember { EmailValidator(stringProvider) }
     val passwordValidator = remember {
         PasswordValidator(
-            stringProvider = DefaultAuthUIStringProvider(context),
-            rules = emptyList()
+            stringProvider = stringProvider,
+            rules = provider.passwordValidationRules
         )
+    }
+    val confirmPasswordValidator = remember(password) {
+        GeneralFieldValidator(
+            stringProvider = stringProvider,
+            isValid = { value ->
+                value == password
+            },
+            customMessage = stringProvider.passwordsDoNotMatch
+        )
+    }
+
+    val isFormValid = remember(displayName, email, password, confirmPassword) {
+        derivedStateOf {
+            listOf(
+                displayNameValidator.validate(displayName),
+                emailValidator.validate(email),
+                passwordValidator.validate(password),
+                confirmPasswordValidator.validate(confirmPassword)
+            ).all { it }
+        }
     }
 
     Scaffold(
@@ -110,28 +132,31 @@ fun SignUpUI(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            AuthTextField(
-                value = displayName,
-                validator = emailValidator,
-                enabled = !isLoading,
-                label = {
-                    Text("First & last Name")
-                },
-                onValueChange = { text ->
-                    onDisplayNameChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = ""
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            if (provider.isDisplayNameRequired) {
+                AuthTextField(
+                    value = displayName,
+                    validator = displayNameValidator,
+                    enabled = !isLoading,
+                    label = {
+                        Text("First & last Name")
+                    },
+                    onValueChange = { text ->
+                        onDisplayNameChange(text)
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = ""
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             AuthTextField(
                 value = password,
                 validator = passwordValidator,
                 enabled = !isLoading,
+                isSecureTextField = true,
                 label = {
                     Text("Password")
                 },
@@ -148,13 +173,14 @@ fun SignUpUI(
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
                 value = confirmPassword,
-                validator = passwordValidator,
+                validator = confirmPasswordValidator,
                 enabled = !isLoading,
+                isSecureTextField = true,
                 label = {
                     Text("Confirm Password")
                 },
                 onValueChange = { text ->
-                    onConfirmPasswordChange(password)
+                    onConfirmPasswordChange(text)
                 },
                 leadingIcon = {
                     Icon(
@@ -181,7 +207,7 @@ fun SignUpUI(
                     onClick = {
                         onSignUpClick()
                     },
-                    enabled = !isLoading,
+                    enabled = !isLoading && isFormValid.value,
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
@@ -194,50 +220,11 @@ fun SignUpUI(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End),
-            ) {
-                TextButton(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            configuration.tosUrl?.toUri()
-                        )
-                        context.startActivity(intent)
-                    },
-                    contentPadding = PaddingValues.Zero,
-                    enabled = !isLoading,
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = "Terms of Service",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-                Spacer(modifier = Modifier.width(24.dp))
-                TextButton(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            configuration.privacyPolicyUrl?.toUri()
-                        )
-                        context.startActivity(intent)
-                    },
-                    contentPadding = PaddingValues.Zero,
-                    enabled = !isLoading,
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = "Privacy Policy",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-            }
+            TermsAndPrivacyForm(
+                modifier = Modifier.align(Alignment.End),
+                tosUrl = configuration.tosUrl,
+                ppUrl = configuration.privacyPolicyUrl,
+            )
         }
     }
 }
@@ -264,6 +251,7 @@ fun PreviewSignUpUI() {
                 tosUrl = ""
                 privacyPolicyUrl = ""
             },
+            provider = provider,
             isLoading = false,
             displayName = "",
             email = "",

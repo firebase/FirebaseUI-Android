@@ -24,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
+import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +59,10 @@ fun ResetPasswordUI(
     val context = LocalContext.current
     val emailValidator = remember {
         EmailValidator(stringProvider = DefaultAuthUIStringProvider(context))
+    }
+
+    val isFormValid = remember(email) {
+        derivedStateOf { emailValidator.validate(email) }
     }
 
     Scaffold(
@@ -113,56 +119,17 @@ fun ResetPasswordUI(
                     onClick = {
                         onSendResetLink()
                     },
-                    enabled = !isLoading,
+                    enabled = !isLoading && isFormValid.value,
                 ) {
                     Text("Send")
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End),
-            ) {
-                TextButton(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            configuration.tosUrl?.toUri()
-                        )
-                        context.startActivity(intent)
-                    },
-                    contentPadding = PaddingValues.Zero,
-                    enabled = !isLoading,
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = "Terms of Service",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-                Spacer(modifier = Modifier.width(24.dp))
-                TextButton(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            configuration.privacyPolicyUrl?.toUri()
-                        )
-                        context.startActivity(intent)
-                    },
-                    contentPadding = PaddingValues.Zero,
-                    enabled = !isLoading,
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = "Privacy Policy",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-            }
+            TermsAndPrivacyForm(
+                modifier = Modifier.align(Alignment.End),
+                tosUrl = configuration.tosUrl,
+                ppUrl = configuration.privacyPolicyUrl,
+            )
         }
     }
 }

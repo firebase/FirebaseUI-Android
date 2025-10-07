@@ -106,11 +106,18 @@ fun EmailAuthScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }
+    val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignUp) }
     val displayNameValue = rememberSaveable { mutableStateOf("") }
     val emailTextValue = rememberSaveable { mutableStateOf("") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
+
+    val textValues = listOf(
+        displayNameValue,
+        emailTextValue,
+        passwordTextValue,
+        confirmPasswordTextValue
+    )
 
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
 
@@ -134,6 +141,7 @@ fun EmailAuthScreen(
         }
     }
 
+    val isLoading = authState is AuthState.Loading
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
 
@@ -143,7 +151,7 @@ fun EmailAuthScreen(
         email = emailTextValue.value,
         password = passwordTextValue.value,
         confirmPassword = confirmPasswordTextValue.value,
-        isLoading = authState is AuthState.Loading,
+        isLoading = isLoading,
         error = errorMessage,
         resetLinkSent = false,
         onEmailChange = { email ->
@@ -190,12 +198,15 @@ fun EmailAuthScreen(
             }
         },
         onGoToSignUp = {
+            textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.SignUp
         },
         onGoToSignIn = {
+            textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.SignIn
         },
         onGoToResetPassword = {
+            textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.ResetPassword
         }
     )

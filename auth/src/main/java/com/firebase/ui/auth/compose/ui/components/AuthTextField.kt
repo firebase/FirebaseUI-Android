@@ -77,6 +77,7 @@ fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: @Composable (() -> Unit)? = null,
+    isSecureTextField: Boolean = false,
     enabled: Boolean = true,
     isError: Boolean? = null,
     errorMessage: String? = null,
@@ -87,7 +88,6 @@ fun AuthTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val isSecureTextField = validator is PasswordValidator
     var passwordVisible by remember { mutableStateOf(false) }
 
     TextField(
@@ -188,6 +188,7 @@ internal fun PreviewAuthTextField() {
         AuthTextField(
             value = passwordTextValue.value,
             validator = passwordValidator,
+            isSecureTextField = true,
             label = {
                 Text("Password")
             },

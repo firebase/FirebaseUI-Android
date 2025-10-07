@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.firebase.composeapp.ui.screens.MainScreen
 import com.firebase.ui.auth.compose.FirebaseAuthUI
+import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
@@ -28,14 +29,18 @@ class MainActivity : ComponentActivity() {
             actionCodeSettings = null,
             isNewAccountsAllowed = true,
             minimumPasswordLength = 8,
-            passwordValidationRules = listOf()
+            passwordValidationRules = listOf(
+                PasswordRule.MinimumLength(8),
+                PasswordRule.RequireLowercase,
+                PasswordRule.RequireUppercase,
+            )
         )
 
         val configuration = authUIConfiguration {
             context = applicationContext
             providers { provider(provider) }
-            tosUrl = ""
-            privacyPolicyUrl = ""
+            tosUrl = "https://www.google.com"
+            privacyPolicyUrl = "https://www.google.com"
         }
 
         setContent {

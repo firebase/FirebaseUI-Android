@@ -106,9 +106,7 @@ class AuthUITheme(
          * pre-configured provider styles.
          */
         val Default = AuthUITheme(
-            colorScheme = lightColorScheme(
-                primary = Color(0xFFFFA611)
-            ),
+            colorScheme = lightColorScheme(),
             typography = Typography(),
             shapes = Shapes(),
             providerStyles = ProviderStyleDefaults.default

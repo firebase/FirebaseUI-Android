@@ -42,7 +42,7 @@ import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
-import androidx.core.net.toUri
+import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,20 +60,18 @@ fun SignInUI(
     onGoToResetPassword: () -> Unit,
 ) {
     val context = LocalContext.current
-    val emailValidator = remember {
-        EmailValidator(stringProvider = DefaultAuthUIStringProvider(context))
-    }
+    val stringProvider = DefaultAuthUIStringProvider(context)
+    val emailValidator = remember { EmailValidator(stringProvider) }
     val passwordValidator = remember {
-        PasswordValidator(
-            stringProvider = DefaultAuthUIStringProvider(context),
-            rules = emptyList()
-        )
+        PasswordValidator(stringProvider = stringProvider, rules = emptyList())
     }
 
     val isFormValid = remember(email, password) {
         derivedStateOf {
-            emailValidator.validate(email)
-                    && passwordValidator.validate(password)
+            listOf(
+                emailValidator.validate(email),
+                passwordValidator.validate(password),
+            ).all { it }
         }
     }
 
@@ -118,6 +116,7 @@ fun SignInUI(
                 value = password,
                 validator = passwordValidator,
                 enabled = !isLoading,
+                isSecureTextField = true,
                 label = {
                     Text("Password")
                 },
@@ -186,50 +185,11 @@ fun SignInUI(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End),
-            ) {
-                TextButton(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            configuration.tosUrl?.toUri()
-                        )
-                        context.startActivity(intent)
-                    },
-                    contentPadding = PaddingValues.Zero,
-                    enabled = !isLoading,
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = "Terms of Service",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-                Spacer(modifier = Modifier.width(24.dp))
-                TextButton(
-                    onClick = {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            configuration.privacyPolicyUrl?.toUri()
-                        )
-                        context.startActivity(intent)
-                    },
-                    contentPadding = PaddingValues.Zero,
-                    enabled = !isLoading,
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = "Privacy Policy",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-            }
+            TermsAndPrivacyForm(
+                modifier = Modifier.align(Alignment.End),
+                tosUrl = configuration.tosUrl,
+                ppUrl = configuration.privacyPolicyUrl,
+            )
         }
     }
 }
@@ -259,7 +219,7 @@ fun PreviewSignInUI() {
             provider = provider,
             email = "",
             password = "",
-            isLoading = true,
+            isLoading = false,
             onEmailChange = { email -> },
             onPasswordChange = { password -> },
             onSignInClick = {},
