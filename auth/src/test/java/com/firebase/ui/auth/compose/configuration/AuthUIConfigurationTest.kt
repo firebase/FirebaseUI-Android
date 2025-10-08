@@ -83,7 +83,7 @@ class AuthUIConfigurationTest {
         assertThat(config.tosUrl).isNull()
         assertThat(config.privacyPolicyUrl).isNull()
         assertThat(config.logo).isNull()
-        assertThat(config.actionCodeSettings).isNull()
+        assertThat(config.passwordResetActionCodeSettings).isNull()
         assertThat(config.isNewEmailAccountsAllowed).isTrue()
         assertThat(config.isDisplayNameRequired).isTrue()
         assertThat(config.isProviderChoiceAlwaysShown).isFalse()
@@ -94,7 +94,7 @@ class AuthUIConfigurationTest {
         val customTheme = AuthUITheme.Default
         val customStringProvider = mock(AuthUIStringProvider::class.java)
         val customLocale = Locale.US
-        val customActionCodeSettings = actionCodeSettings {
+        val customPasswordResetActionCodeSettings = actionCodeSettings {
             url = "https://example.com/verify"
             handleCodeInApp = true
         }
@@ -123,7 +123,7 @@ class AuthUIConfigurationTest {
             tosUrl = "https://example.com/tos"
             privacyPolicyUrl = "https://example.com/privacy"
             logo = Icons.Default.AccountCircle
-            actionCodeSettings = customActionCodeSettings
+            passwordResetActionCodeSettings = customPasswordResetActionCodeSettings
             isNewEmailAccountsAllowed = false
             isDisplayNameRequired = false
             isProviderChoiceAlwaysShown = true
@@ -140,7 +140,8 @@ class AuthUIConfigurationTest {
         assertThat(config.tosUrl).isEqualTo("https://example.com/tos")
         assertThat(config.privacyPolicyUrl).isEqualTo("https://example.com/privacy")
         assertThat(config.logo).isEqualTo(Icons.Default.AccountCircle)
-        assertThat(config.actionCodeSettings).isEqualTo(customActionCodeSettings)
+        assertThat(config.passwordResetActionCodeSettings)
+            .isEqualTo(customPasswordResetActionCodeSettings)
         assertThat(config.isNewEmailAccountsAllowed).isFalse()
         assertThat(config.isDisplayNameRequired).isFalse()
         assertThat(config.isProviderChoiceAlwaysShown).isTrue()
@@ -416,7 +417,7 @@ class AuthUIConfigurationTest {
             "tosUrl",
             "privacyPolicyUrl",
             "logo",
-            "actionCodeSettings",
+            "passwordResetActionCodeSettings",
             "isNewEmailAccountsAllowed",
             "isDisplayNameRequired",
             "isProviderChoiceAlwaysShown"
