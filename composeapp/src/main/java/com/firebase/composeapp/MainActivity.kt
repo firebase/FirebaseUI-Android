@@ -14,6 +14,7 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.actionCodeSettings
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
         val provider = AuthProvider.Email(
             isDisplayNameRequired = true,
-            isEmailLinkSignInEnabled = false,
+            isEmailLinkSignInEnabled = true,
             isEmailLinkForceSameDeviceEnabled = true,
             actionCodeSettings = null,
             isNewAccountsAllowed = true,
@@ -41,6 +42,10 @@ class MainActivity : ComponentActivity() {
             providers { provider(provider) }
             tosUrl = "https://www.google.com"
             privacyPolicyUrl = "https://www.google.com"
+            actionCodeSettings = actionCodeSettings {
+                url = "https://example.com/verify"
+                handleCodeInApp = true
+            }
         }
 
         setContent {

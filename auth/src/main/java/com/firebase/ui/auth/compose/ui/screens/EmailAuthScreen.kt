@@ -16,6 +16,7 @@ import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUserWithEmailAndPassword
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
+import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
@@ -144,6 +145,7 @@ fun EmailAuthScreen(
     val isLoading = authState is AuthState.Loading
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
+    val resetLinkSent = authState is AuthState.PasswordResetLinkSent
 
     val state = EmailAuthContentState(
         mode = mode.value,
@@ -153,7 +155,7 @@ fun EmailAuthScreen(
         confirmPassword = confirmPasswordTextValue.value,
         isLoading = isLoading,
         error = errorMessage,
-        resetLinkSent = false,
+        resetLinkSent = resetLinkSent,
         onEmailChange = { email ->
             emailTextValue.value = email
         },
@@ -168,33 +170,55 @@ fun EmailAuthScreen(
         },
         onSignInClick = {
             coroutineScope.launch {
-                authUI.signInWithEmailAndPassword(
-                    context = context,
-                    config = configuration,
-                    email = emailTextValue.value,
-                    password = passwordTextValue.value,
-                    credentialForLinking = null,
-                )
+                try {
+                    if (provider.isEmailLinkSignInEnabled) {
+                        authUI.sendSignInLinkToEmail(
+                            context = context,
+                            config = configuration,
+                            provider = provider,
+                            email = emailTextValue.value,
+                            credentialForLinking = null,
+                        )
+                    } else {
+                        authUI.signInWithEmailAndPassword(
+                            context = context,
+                            config = configuration,
+                            email = emailTextValue.value,
+                            password = passwordTextValue.value,
+                            credentialForLinking = null,
+                        )
+                    }
+                } catch (e: Exception) {
+
+                }
             }
         },
         onSignUpClick = {
             coroutineScope.launch {
-                authUI.createOrLinkUserWithEmailAndPassword(
-                    context = context,
-                    config = configuration,
-                    provider = provider,
-                    name = displayNameValue.value,
-                    email = emailTextValue.value,
-                    password = passwordTextValue.value,
-                )
+                try {
+                    authUI.createOrLinkUserWithEmailAndPassword(
+                        context = context,
+                        config = configuration,
+                        provider = provider,
+                        name = displayNameValue.value,
+                        email = emailTextValue.value,
+                        password = passwordTextValue.value,
+                    )
+                } catch (e: Exception) {
+
+                }
             }
         },
         onSendResetLinkClick = {
             coroutineScope.launch {
-                authUI.sendPasswordResetEmail(
-                    email = emailTextValue.value,
-                    actionCodeSettings = null,
-                )
+                try {
+                    authUI.sendPasswordResetEmail(
+                        email = emailTextValue.value,
+                        actionCodeSettings = null,
+                    )
+                } catch (e: Exception) {
+
+                }
             }
         },
         onGoToSignUp = {
