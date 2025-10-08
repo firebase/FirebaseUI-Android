@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -118,6 +117,7 @@ fun EmailAuthScreen(
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
 
+    // Used for clearing text fields when switching EmailAuthMode changes
     val textValues = listOf(
         displayNameValue,
         emailTextValue,
@@ -222,7 +222,7 @@ fun EmailAuthScreen(
                 try {
                     authUI.sendPasswordResetEmail(
                         email = emailTextValue.value,
-                        actionCodeSettings = null,
+                        actionCodeSettings = configuration.passwordResetActionCodeSettings,
                     )
                 } catch (e: Exception) {
 
@@ -245,25 +245,31 @@ fun EmailAuthScreen(
 
     if (isErrorDialogVisible.value) {
         ErrorRecoveryDialog(
-            error = if ((authState as AuthState.Error).exception is AuthException)
-                (authState as AuthState.Error).exception as AuthException else
-                AuthException.from((authState as AuthState.Error).exception),
+            error = when ((authState as AuthState.Error).exception) {
+                is AuthException -> {
+                    (authState as AuthState.Error).exception as AuthException
+                }
+
+                else -> {
+                    AuthException
+                        .from((authState as AuthState.Error).exception)
+                }
+            },
             stringProvider = stringProvider,
-            onRetry = {
-                // TODO(demolaf): EmailAuthScreen ErrorRecoveryDialog (onRetry) - handle retry
-                //  for failed action
+            onRetry = { exception ->
+                when (exception) {
+                    is AuthException.InvalidCredentialsException -> {
+                        state.onSignInClick()
+                    }
+
+                    is AuthException.EmailAlreadyInUseException -> {
+                        state.onGoToSignIn()
+                    }
+                }
                 isErrorDialogVisible.value = false
             },
             onDismiss = {
                 isErrorDialogVisible.value = false
-            },
-            onRecover = { exception ->
-                when (exception) {
-                    is AuthException.EmailAlreadyInUseException -> {
-                        state.onGoToSignIn()
-                        isErrorDialogVisible.value = false
-                    }
-                }
             },
         )
     }

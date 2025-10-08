@@ -27,7 +27,10 @@ class MainActivity : ComponentActivity() {
             isDisplayNameRequired = true,
             // isEmailLinkSignInEnabled = true,
             isEmailLinkForceSameDeviceEnabled = true,
-            actionCodeSettings = null,
+            actionCodeSettings = actionCodeSettings {
+                url = "https://example.com/verify"
+                handleCodeInApp = true
+            },
             isNewAccountsAllowed = true,
             minimumPasswordLength = 8,
             passwordValidationRules = listOf(
@@ -42,10 +45,6 @@ class MainActivity : ComponentActivity() {
             providers { provider(provider) }
             tosUrl = "https://www.google.com"
             privacyPolicyUrl = "https://www.google.com"
-            passwordResetActionCodeSettings = actionCodeSettings {
-                url = "https://example.com/verify"
-                handleCodeInApp = true
-            }
         }
 
         setContent {
