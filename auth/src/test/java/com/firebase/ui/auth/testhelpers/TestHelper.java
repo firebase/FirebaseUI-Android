@@ -45,6 +45,7 @@ import androidx.test.core.app.ApplicationProvider;
 
 import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -75,11 +76,19 @@ public final class TestHelper {
     }
 
     private static void spyContextAndResources() {
-        CONTEXT = spy(CONTEXT);
-        when(CONTEXT.getApplicationContext())
-                .thenReturn(CONTEXT);
-        Resources spiedResources = spy(CONTEXT.getResources());
-        when(CONTEXT.getResources()).thenReturn(spiedResources);
+        // In Mockito 5.x with inline mock maker, we can spy on final classes
+        // Use doReturn().when() pattern to avoid calling real methods during stubbing
+        if (!org.mockito.Mockito.mockingDetails(CONTEXT).isSpy()) {
+            CONTEXT = spy(CONTEXT);
+        }
+        doReturn(CONTEXT).when(CONTEXT).getApplicationContext();
+
+        // Get and spy on Resources, ensuring the spy is properly returned
+        Resources originalResources = CONTEXT.getResources();
+        if (!org.mockito.Mockito.mockingDetails(originalResources).isSpy()) {
+            Resources spiedResources = spy(originalResources);
+            doReturn(spiedResources).when(CONTEXT).getResources();
+        }
     }
 
     private static void initializeApp(Context context) {
@@ -94,9 +103,9 @@ public final class TestHelper {
     }
 
     private static void initializeProviders() {
-        when(CONTEXT.getString(R.string.firebase_web_host)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.default_web_client_id)).thenReturn("abc");
-        when(CONTEXT.getString(R.string.facebook_application_id)).thenReturn("abc");
+        doReturn("abc").when(CONTEXT).getString(R.string.firebase_web_host);
+        doReturn("abc").when(CONTEXT).getString(R.string.default_web_client_id);
+        doReturn("abc").when(CONTEXT).getString(R.string.facebook_application_id);
     }
 
     public static FirebaseUser getMockFirebaseUser() {

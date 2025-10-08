@@ -14,6 +14,9 @@
 
 package com.firebase.ui.auth.compose
 
+import com.firebase.ui.auth.compose.AuthState.Companion.Cancelled
+import com.firebase.ui.auth.compose.AuthState.Companion.Idle
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
@@ -72,8 +75,8 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is Success) return false
             return result == other.result &&
-                   user == other.user &&
-                   isNewUser == other.isNewUser
+                    user == other.user &&
+                    isNewUser == other.isNewUser
         }
 
         override fun hashCode(): Int {
@@ -101,7 +104,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is Error) return false
             return exception == other.exception &&
-                   isRecoverable == other.isRecoverable
+                    isRecoverable == other.isRecoverable
         }
 
         override fun hashCode(): Int {
@@ -137,7 +140,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is RequiresMfa) return false
             return resolver == other.resolver &&
-                   hint == other.hint
+                    hint == other.hint
         }
 
         override fun hashCode(): Int {
@@ -164,7 +167,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is RequiresEmailVerification) return false
             return user == other.user &&
-                   email == other.email
+                    email == other.email
         }
 
         override fun hashCode(): Int {
@@ -191,7 +194,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is RequiresProfileCompletion) return false
             return user == other.user &&
-                   missingFields == other.missingFields
+                    missingFields == other.missingFields
         }
 
         override fun hashCode(): Int {
@@ -202,6 +205,42 @@ abstract class AuthState private constructor() {
 
         override fun toString(): String =
             "AuthState.RequiresProfileCompletion(user=$user, missingFields=$missingFields)"
+    }
+
+    /**
+     * Pending credential for an anonymous upgrade merge conflict.
+     *
+     * Emitted when an anonymous user attempts to convert to a permanent account but
+     * Firebase detects that the target email already belongs to another user. The UI can
+     * prompt the user to resolve the conflict by signing in with the existing account and
+     * later linking the stored [pendingCredential].
+     */
+    class MergeConflict(
+        val pendingCredential: AuthCredential
+    ) : AuthState() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is MergeConflict) return false
+            return pendingCredential == other.pendingCredential
+        }
+
+        override fun hashCode(): Int {
+            var result = pendingCredential.hashCode()
+            result = 31 * result + pendingCredential.hashCode()
+            return result
+        }
+
+        override fun toString(): String =
+            "AuthState.MergeConflict(pendingCredential=$pendingCredential)"
+    }
+
+    /**
+     * Password reset link has been sent to the user's email.
+     */
+    class PasswordResetLinkSent : AuthState() {
+        override fun equals(other: Any?): Boolean = other is PasswordResetLinkSent
+        override fun hashCode(): Int = javaClass.hashCode()
+        override fun toString(): String = "AuthState.PasswordResetLinkSent"
     }
 
     companion object {

@@ -12,23 +12,33 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration
+package com.firebase.ui.auth.compose.configuration.auth_provider
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
+import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.compose.configuration.AuthUIConfigurationDsl
+import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.util.Preconditions
+import com.firebase.ui.auth.util.data.ContinueUrlBuilder
 import com.firebase.ui.auth.util.data.PhoneNumberUtils
 import com.firebase.ui.auth.util.data.ProviderAvailability
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.actionCodeSettings
+import kotlinx.coroutines.tasks.await
 
 @AuthUIConfigurationDsl
 class AuthProvidersBuilder {
@@ -44,11 +54,11 @@ class AuthProvidersBuilder {
 /**
  * Enum class to represent all possible providers.
  */
-internal enum class Provider(val id: String) {
-    GOOGLE(GoogleAuthProvider.PROVIDER_ID),
-    FACEBOOK(FacebookAuthProvider.PROVIDER_ID),
-    TWITTER(TwitterAuthProvider.PROVIDER_ID),
-    GITHUB(GithubAuthProvider.PROVIDER_ID),
+internal enum class Provider(val id: String, val isSocialProvider: Boolean = false) {
+    GOOGLE(GoogleAuthProvider.PROVIDER_ID, isSocialProvider = true),
+    FACEBOOK(FacebookAuthProvider.PROVIDER_ID, isSocialProvider = true),
+    TWITTER(TwitterAuthProvider.PROVIDER_ID, isSocialProvider = true),
+    GITHUB(GithubAuthProvider.PROVIDER_ID, isSocialProvider = true),
     EMAIL(EmailAuthProvider.PROVIDER_ID),
     PHONE(PhoneAuthProvider.PROVIDER_ID),
     ANONYMOUS("anonymous"),
@@ -76,6 +86,69 @@ abstract class OAuthProvider(
  * Base abstract class for authentication providers.
  */
 abstract class AuthProvider(open val providerId: String) {
+
+    companion object {
+        internal fun canUpgradeAnonymous(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
+            val currentUser = auth.currentUser
+            return config.isAnonymousUpgradeEnabled
+                    && currentUser != null
+                    && currentUser.isAnonymous
+        }
+
+        /**
+         * Merges profile information (display name and photo URL) with the current user's profile.
+         *
+         * This method updates the user's profile only if the current profile is incomplete
+         * (missing display name or photo URL). This prevents overwriting existing profile data.
+         *
+         * **Use case:**
+         * After creating a new user account or linking credentials, update the profile with
+         * information from the sign-up form or social provider.
+         *
+         * @param auth The [FirebaseAuth] instance
+         * @param displayName The display name to set (if current is empty)
+         * @param photoUri The photo URL to set (if current is null)
+         *
+         * **Note:** This operation always succeeds to minimize login interruptions.
+         * Failures are logged but don't prevent sign-in completion.
+         */
+        internal suspend fun mergeProfile(
+            auth: FirebaseAuth,
+            displayName: String?,
+            photoUri: Uri?
+        ) {
+            try {
+                val currentUser = auth.currentUser ?: return
+
+                // Only update if current profile is incomplete
+                val currentDisplayName = currentUser.displayName
+                val currentPhotoUrl = currentUser.photoUrl
+
+                if (!currentDisplayName.isNullOrEmpty() && currentPhotoUrl != null) {
+                    // Profile is complete, no need to update
+                    return
+                }
+
+                // Build profile update with provided values
+                val nameToSet =
+                    if (currentDisplayName.isNullOrEmpty()) displayName else currentDisplayName
+                val photoToSet = currentPhotoUrl ?: photoUri
+
+                if (nameToSet != null || photoToSet != null) {
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(nameToSet)
+                        .setPhotoUri(photoToSet)
+                        .build()
+
+                    currentUser.updateProfile(profileUpdates).await()
+                }
+            } catch (e: Exception) {
+                // Log error but don't throw - profile update failure shouldn't prevent sign-in
+                Log.e("AuthProvider.Email", "Error updating profile", e)
+            }
+        }
+    }
+
     /**
      * Email/Password authentication provider configuration.
      */
@@ -118,7 +191,18 @@ abstract class AuthProvider(open val providerId: String) {
          */
         val passwordValidationRules: List<PasswordRule>
     ) : AuthProvider(providerId = Provider.EMAIL.id) {
-        fun validate() {
+        companion object {
+            const val SESSION_ID_LENGTH = 10
+            val KEY_EMAIL = stringPreferencesKey("com.firebase.ui.auth.data.client.email")
+            val KEY_PROVIDER = stringPreferencesKey("com.firebase.ui.auth.data.client.provider")
+            val KEY_ANONYMOUS_USER_ID =
+                stringPreferencesKey("com.firebase.ui.auth.data.client.auid")
+            val KEY_SESSION_ID = stringPreferencesKey("com.firebase.ui.auth.data.client.sid")
+            val KEY_IDP_TOKEN = stringPreferencesKey("com.firebase.ui.auth.data.client.idpToken")
+            val KEY_IDP_SECRET = stringPreferencesKey("com.firebase.ui.auth.data.client.idpSecret")
+        }
+
+        internal fun validate() {
             if (isEmailLinkSignInEnabled) {
                 val actionCodeSettings = requireNotNull(actionCodeSettings) {
                     "ActionCodeSettings cannot be null when using " +
@@ -131,6 +215,47 @@ abstract class AuthProvider(open val providerId: String) {
                 }
             }
         }
+
+        // For Send Email Link
+        internal fun addSessionInfoToActionCodeSettings(
+            sessionId: String,
+            anonymousUserId: String,
+        ): ActionCodeSettings {
+            requireNotNull(actionCodeSettings) {
+                "ActionCodeSettings is required for email link sign in"
+            }
+
+            val continueUrl = continueUrl(actionCodeSettings.url) {
+                appendSessionId(sessionId)
+                appendAnonymousUserId(anonymousUserId)
+                appendForceSameDeviceBit(isEmailLinkForceSameDeviceEnabled)
+                appendProviderId(providerId)
+            }
+
+            return actionCodeSettings {
+                url = continueUrl
+                handleCodeInApp = actionCodeSettings.canHandleCodeInApp()
+                iosBundleId = actionCodeSettings.iosBundle
+                setAndroidPackageName(
+                    actionCodeSettings.androidPackageName ?: "",
+                    actionCodeSettings.androidInstallApp,
+                    actionCodeSettings.androidMinimumVersion
+                )
+            }
+        }
+
+        // For Sign In With Email Link
+        internal fun isDifferentDevice(
+            sessionIdFromLocal: String?,
+            sessionIdFromLink: String
+        ): Boolean {
+            return sessionIdFromLocal == null || sessionIdFromLocal.isEmpty()
+                    || sessionIdFromLink.isEmpty()
+                    || (sessionIdFromLink != sessionIdFromLocal)
+        }
+
+        private fun continueUrl(continueUrl: String, block: ContinueUrlBuilder.() -> Unit) =
+            ContinueUrlBuilder(continueUrl).apply(block).build()
     }
 
     /**
@@ -172,7 +297,7 @@ abstract class AuthProvider(open val providerId: String) {
          */
         val isAutoRetrievalEnabled: Boolean = true
     ) : AuthProvider(providerId = Provider.PHONE.id) {
-        fun validate() {
+        internal fun validate() {
             defaultNumber?.let {
                 check(PhoneNumberUtils.isValid(it)) {
                     "Invalid phone number: $it"
@@ -235,7 +360,7 @@ abstract class AuthProvider(open val providerId: String) {
         scopes = scopes,
         customParameters = customParameters
     ) {
-        fun validate(context: Context) {
+        internal fun validate(context: Context) {
             if (serverClientId == null) {
                 Preconditions.checkConfigured(
                     context,
@@ -287,7 +412,7 @@ abstract class AuthProvider(open val providerId: String) {
         scopes = scopes,
         customParameters = customParameters
     ) {
-        fun validate(context: Context) {
+        internal fun validate(context: Context) {
             if (!ProviderAvailability.IS_FACEBOOK_AVAILABLE) {
                 throw RuntimeException(
                     "Facebook provider cannot be configured " +
@@ -414,7 +539,7 @@ abstract class AuthProvider(open val providerId: String) {
      * Anonymous authentication provider. It has no configurable properties.
      */
     object Anonymous : AuthProvider(providerId = Provider.ANONYMOUS.id) {
-        fun validate(providers: List<AuthProvider>) {
+        internal fun validate(providers: List<AuthProvider>) {
             if (providers.size == 1 && providers.first() is Anonymous) {
                 throw IllegalStateException(
                     "Sign in as guest cannot be the only sign in method. " +
@@ -467,7 +592,7 @@ abstract class AuthProvider(open val providerId: String) {
         scopes = scopes,
         customParameters = customParameters
     ) {
-        fun validate() {
+        internal fun validate() {
             require(providerId.isNotBlank()) {
                 "Provider ID cannot be null or empty"
             }

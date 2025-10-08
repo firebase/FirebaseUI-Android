@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose
 
+import android.content.Context
 import androidx.annotation.RestrictTo
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import android.content.Context
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -168,7 +168,8 @@ class FirebaseAuthUI private constructor(
                 // Check if email verification is required
                 if (!currentUser.isEmailVerified &&
                     currentUser.email != null &&
-                    currentUser.providerData.any { it.providerId == "password" }) {
+                    currentUser.providerData.any { it.providerId == "password" }
+                ) {
                     AuthState.RequiresEmailVerification(
                         user = currentUser,
                         email = currentUser.email!!
@@ -374,7 +375,7 @@ class FirebaseAuthUI private constructor(
             } catch (e: IllegalStateException) {
                 throw IllegalStateException(
                     "Default FirebaseApp is not initialized. " +
-                    "Make sure to call FirebaseApp.initializeApp(Context) first.",
+                            "Make sure to call FirebaseApp.initializeApp(Context) first.",
                     e
                 )
             }

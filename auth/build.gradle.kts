@@ -85,12 +85,13 @@ dependencies {
     implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
     implementation(Config.Libs.Androidx.Compose.materialIconsExtended)
+    implementation(Config.Libs.Androidx.datastorePreferences)
     // The new activity result APIs force us to include Fragment 1.3.0
     // See https://issuetracker.google.com/issues/152554847
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
-    implementation("androidx.credentials:credentials:1.3.0")
+    implementation(Config.Libs.Androidx.credentials)
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
@@ -111,12 +112,27 @@ dependencies {
 
     testImplementation(Config.Libs.Test.junit)
     testImplementation(Config.Libs.Test.truth)
-    testImplementation(Config.Libs.Test.mockito)
     testImplementation(Config.Libs.Test.core)
     testImplementation(Config.Libs.Test.robolectric)
     testImplementation(Config.Libs.Test.kotlinReflect)
     testImplementation(Config.Libs.Provider.facebook)
+    testImplementation(Config.Libs.Test.mockitoCore)
+    testImplementation(Config.Libs.Test.mockitoInline)
+    testImplementation(Config.Libs.Test.mockitoKotlin)
+    testImplementation(Config.Libs.Androidx.credentials)
     testImplementation(Config.Libs.Test.composeUiTestJunit4)
 
     debugImplementation(project(":internal:lintchecks"))
+}
+
+val mockitoAgent by configurations.creating
+
+dependencies {
+    mockitoAgent(Config.Libs.Test.mockitoCore) {
+        isTransitive = false
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
