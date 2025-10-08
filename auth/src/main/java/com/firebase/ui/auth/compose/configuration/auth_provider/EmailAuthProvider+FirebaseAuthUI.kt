@@ -109,12 +109,6 @@ internal class CredentialForLinking(
  *     // This means email already exists - show merge conflict UI
  * }
  * ```
- *
- * **Old library reference:**
- * - EmailProviderResponseHandler.java:42-84 (startSignIn implementation)
- * - AuthOperationManager.java:64-74 (createOrLinkUserWithEmailAndPassword)
- * - RegisterEmailFragment.java:270-287 (validation and triggering sign-up)
- * - ProfileMerger.java:34-56 (profile merging after sign-up)
  */
 internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     context: Context,
@@ -172,11 +166,6 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         if (canUpgrade && pendingCredential != null) {
             // Anonymous upgrade collision: emit merge conflict state
             updateAuthState(AuthState.MergeConflict(pendingCredential))
-        } else {
-            // Non-upgrade collision: user exists with this email
-            // TODO: Fetch top provider and emit AuthState.RequiresSignIn(provider, email)
-            // For now, just emit the error
-            updateAuthState(AuthState.Error(authException))
         }
         throw authException
     } catch (e: CancellationException) {
@@ -276,12 +265,6 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
  *     // UI shows merge conflict resolution screen
  * }
  * ```
- *
- * **Old library reference:**
- * - WelcomeBackPasswordHandler.java:45-118 (startSignIn implementation)
- * - AuthOperationManager.java:76-84 (signInAndLinkWithCredential)
- * - AuthOperationManager.java:97-108 (safeLink for social providers)
- * - AuthOperationManager.java:92-95 (validateCredential for email-only)
  */
 internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
     context: Context,
@@ -450,13 +433,6 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
  * )
  * // User signed in with email link (passwordless)
  * ```
- *
- * **Old library reference:**
- * - AuthOperationManager.java:76-84 (signInAndLinkWithCredential implementation)
- * - ProfileMerger.java:34-56 (profile merging after sign-in)
- * - SocialProviderResponseHandler.java:69-74 (usage with profile merge)
- * - PhoneProviderResponseHandler.java:38-40 (usage for phone auth)
- * - EmailLinkSignInHandler.java:217 (usage for email link)
  */
 internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
     config: AuthUIConfiguration,
@@ -489,10 +465,6 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             } else {
                 updateAuthState(AuthState.Error(authException))
             }
-        } else {
-            // Non-anonymous collision: could be same email different provider
-            // TODO: Fetch providers and emit AuthState.RequiresSignIn
-            updateAuthState(AuthState.Error(authException))
         }
         throw authException
     } catch (e: CancellationException) {
@@ -640,13 +612,6 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * // Session includes anonymous user ID for validation
  * // When user clicks link, anonymous account is upgraded to permanent account
  * ```
- *
- * **Old library reference:**
- * - EmailLinkSendEmailHandler.java:26-55 (complete implementation)
- * - EmailLinkSendEmailHandler.java:38-39 (session ID generation)
- * - EmailLinkSendEmailHandler.java:47-48 (DataStore persistence)
- * - EmailActivity.java:92-93 (saving credential for linking before sending email)
- *
  * @see signInWithEmailLink
  * @see EmailLinkPersistenceManager.saveCredentialForLinking
  * @see com.google.firebase.auth.FirebaseAuth.sendSignInLinkToEmail
@@ -742,14 +707,6 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
  * @throws AuthException.NetworkException if a network error occurs
  * @throws AuthException.UnknownException for other errors
  *
- * **Old library reference:**
- * - EmailLinkSignInHandler.java:43-100 (complete validation and sign-in flow)
- * - EmailLinkSignInHandler.java:53-56 (retrieve session from DataStore)
- * - EmailLinkSignInHandler.java:58-63 (parse link using EmailLinkParser)
- * - EmailLinkSignInHandler.java:65-85 (same-device validation)
- * - EmailLinkSignInHandler.java:87-96 (anonymous user ID validation)
- * - EmailLinkSignInHandler.java:217 (DataStore cleanup after success)
- *
  * @see sendSignInLinkToEmail for sending the initial email link
  */
 internal suspend fun FirebaseAuthUI.signInWithEmailLink(
@@ -758,7 +715,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     provider: AuthProvider.Email,
     email: String,
     emailLink: String,
-): AuthResult {
+): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in with email link..."))
 
@@ -859,7 +816,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                 }
 
                 // Return the link result (will be non-null if successful)
-                linkResult!!
+                linkResult
             } else {
                 // Non-upgrade: Sign in with email link, then link social credential
                 val emailLinkResult = auth.signInWithCredential(emailLinkCredential).await()
@@ -884,7 +841,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                     )
                 }
 
-                linkResult!!
+                linkResult
             }
         }
 
@@ -971,13 +928,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
  * // User receives email with custom continue URL
  * ```
  *
- * **Old library reference:**
- * - RecoverPasswordHandler.java:21-33 (startReset method)
- * - RecoverPasswordActivity.java:131-133 (resetPassword caller)
- * - RecoverPasswordActivity.java:76-91 (error handling for invalid user/credentials)
- *
  * @see com.google.firebase.auth.ActionCodeSettings
- * @since 10.0.0
  */
 internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
     email: String,
