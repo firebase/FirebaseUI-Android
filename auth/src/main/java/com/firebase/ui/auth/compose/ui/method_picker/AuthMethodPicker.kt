@@ -145,7 +145,7 @@ fun PreviewAuthMethodPicker() {
         AuthMethodPicker(
             providers = listOf(
                 AuthProvider.Email(
-                    actionCodeSettings = null,
+                    emailLinkActionCodeSettings = null,
                     passwordValidationRules = emptyList()
                 ),
                 AuthProvider.Phone(

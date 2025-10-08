@@ -245,7 +245,7 @@ fun PreviewSignUpUI() {
         isDisplayNameRequired = true,
         isEmailLinkSignInEnabled = false,
         isEmailLinkForceSameDeviceEnabled = true,
-        actionCodeSettings = null,
+        emailLinkActionCodeSettings = null,
         isNewAccountsAllowed = true,
         minimumPasswordLength = 8,
         passwordValidationRules = listOf()

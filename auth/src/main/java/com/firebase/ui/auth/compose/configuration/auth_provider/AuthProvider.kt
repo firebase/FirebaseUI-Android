@@ -174,7 +174,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * Settings for email link actions.
          */
-        val actionCodeSettings: ActionCodeSettings?,
+        val emailLinkActionCodeSettings: ActionCodeSettings?,
 
         /**
          * Allows new accounts to be created. Defaults to true.
@@ -206,7 +206,7 @@ abstract class AuthProvider(open val providerId: String) {
             isAnonymousUpgradeEnabled: Boolean = false
         ) {
             if (isEmailLinkSignInEnabled) {
-                val actionCodeSettings = requireNotNull(actionCodeSettings) {
+                val actionCodeSettings = requireNotNull(emailLinkActionCodeSettings) {
                     "ActionCodeSettings cannot be null when using " +
                             "email link sign in."
                 }
@@ -230,11 +230,11 @@ abstract class AuthProvider(open val providerId: String) {
             sessionId: String,
             anonymousUserId: String,
         ): ActionCodeSettings {
-            requireNotNull(actionCodeSettings) {
+            requireNotNull(emailLinkActionCodeSettings) {
                 "ActionCodeSettings is required for email link sign in"
             }
 
-            val continueUrl = continueUrl(actionCodeSettings.url) {
+            val continueUrl = continueUrl(emailLinkActionCodeSettings.url) {
                 appendSessionId(sessionId)
                 appendAnonymousUserId(anonymousUserId)
                 appendForceSameDeviceBit(isEmailLinkForceSameDeviceEnabled)
@@ -243,12 +243,12 @@ abstract class AuthProvider(open val providerId: String) {
 
             return actionCodeSettings {
                 url = continueUrl
-                handleCodeInApp = actionCodeSettings.canHandleCodeInApp()
-                iosBundleId = actionCodeSettings.iosBundle
+                handleCodeInApp = emailLinkActionCodeSettings.canHandleCodeInApp()
+                iosBundleId = emailLinkActionCodeSettings.iosBundle
                 setAndroidPackageName(
-                    actionCodeSettings.androidPackageName ?: "",
-                    actionCodeSettings.androidInstallApp,
-                    actionCodeSettings.androidMinimumVersion
+                    emailLinkActionCodeSettings.androidPackageName ?: "",
+                    emailLinkActionCodeSettings.androidInstallApp,
+                    emailLinkActionCodeSettings.androidMinimumVersion
                 )
             }
         }

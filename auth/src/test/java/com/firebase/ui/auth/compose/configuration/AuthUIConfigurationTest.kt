@@ -309,7 +309,7 @@ class AuthUIConfigurationTest {
                 )
                 provider(
                     AuthProvider.Email(
-                        actionCodeSettings = null,
+                        emailLinkActionCodeSettings = null,
                         passwordValidationRules = listOf()
                     )
                 )

@@ -178,7 +178,7 @@ private fun PreviewAuthProviderButton() {
     ) {
         AuthProviderButton(
             provider = AuthProvider.Email(
-                actionCodeSettings = null,
+                emailLinkActionCodeSettings = null,
                 passwordValidationRules = emptyList()
             ),
             onClick = {},

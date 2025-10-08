@@ -111,7 +111,7 @@ class AuthProviderButtonTest {
     @Test
     fun `AuthProviderButton displays Email provider correctly`() {
         val provider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
 
