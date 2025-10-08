@@ -7,6 +7,8 @@ import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Companion.mergeProfile
 import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.data.EmailLinkParser
 import com.firebase.ui.auth.util.data.SessionUtils
@@ -122,7 +124,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     email: String,
     password: String
 ): AuthResult? {
-    val canUpgrade = AuthProvider.canUpgradeAnonymous(config, auth)
+    val canUpgrade = canUpgradeAnonymous(config, auth)
     val pendingCredential =
         if (canUpgrade) EmailAuthProvider.getCredential(email, password) else null
 
@@ -160,7 +162,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         }.also { authResult ->
             authResult?.user?.let {
                 // Merge display name into profile (photoUri is always null for email/password)
-                AuthProvider.mergeProfile(auth, name, null)
+                mergeProfile(auth, name, null)
             }
         }
         updateAuthState(AuthState.Idle)
@@ -221,7 +223,6 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
  *
  * @throws AuthException.InvalidCredentialsException if email or password is incorrect
  * @throws AuthException.UserNotFoundException if the user doesn't exist
- * @throws AuthException.UserDisabledException if the user account is disabled
  * @throws AuthException.AuthCancelledException if the operation is cancelled
  * @throws AuthException.NetworkException for network-related failures
  *
@@ -291,7 +292,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in..."))
-        return if (AuthProvider.canUpgradeAnonymous(config, auth)) {
+        return if (canUpgradeAnonymous(config, auth)) {
             // Anonymous upgrade flow: validate credential in scratch auth
             val credentialToValidate = EmailAuthProvider.getCredential(email, password)
 
@@ -338,7 +339,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                             .also { linkResult ->
                                 // Merge profile from social provider
                                 linkResult?.user?.let { user ->
-                                    AuthProvider.mergeProfile(
+                                    mergeProfile(
                                         auth,
                                         user.displayName,
                                         user.photoUrl
@@ -465,14 +466,14 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in user..."))
-        return if (AuthProvider.canUpgradeAnonymous(config, auth)) {
+        return if (canUpgradeAnonymous(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
             auth.signInWithCredential(credential).await()
         }.also { result ->
             // Merge profile information from the provider
             result?.user?.let {
-                AuthProvider.mergeProfile(auth, displayName, photoUrl)
+                mergeProfile(auth, displayName, photoUrl)
             }
             updateAuthState(AuthState.Idle)
         }
@@ -480,7 +481,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
         // Special handling for collision exceptions
         val authException = AuthException.from(e)
 
-        if (AuthProvider.canUpgradeAnonymous(config, auth)) {
+        if (canUpgradeAnonymous(config, auth)) {
             // Anonymous upgrade collision: emit merge conflict with updated credential
             val updatedCredential = e.updatedCredential
             if (updatedCredential != null) {
@@ -664,7 +665,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         // NOTE: check for empty string instead of null to validate anonymous user ID matches
         // when sign in from email link
         val anonymousUserId =
-            if (AuthProvider.canUpgradeAnonymous(config, auth)) (auth.currentUser?.uid
+            if (canUpgradeAnonymous(config, auth)) (auth.currentUser?.uid
                 ?: "") else ""
 
         // Generate sessionId
@@ -791,14 +792,26 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
 
         if (isDifferentDevice) {
             // Handle cross-device flow
-            provider.handleCrossDeviceEmailLink(
-                auth = auth,
-                sessionIdFromLink = sessionIdFromLink,
-                anonymousUserIdFromLink = anonymousUserIdFromLink,
-                isEmailLinkForceSameDeviceEnabled = isEmailLinkForceSameDeviceEnabled,
-                oobCode = oobCode,
-                providerIdFromLink = providerIdFromLink
-            )
+            // Session ID must always be present in the link
+            if (sessionIdFromLink.isNullOrEmpty()) {
+                throw AuthException.InvalidEmailLinkException()
+            }
+
+            // These scenarios require same-device flow
+            if (isEmailLinkForceSameDeviceEnabled || !anonymousUserIdFromLink.isNullOrEmpty()) {
+                throw AuthException.EmailLinkWrongDeviceException()
+            }
+
+            // Validate the action code
+            auth.checkActionCode(oobCode).await()
+
+            // If there's a provider ID, this is a linking flow which can't be done cross-device
+            if (!providerIdFromLink.isNullOrEmpty()) {
+                throw AuthException.EmailLinkCrossDeviceLinkingException()
+            }
+
+            // Link is valid but we need the user to provide their email
+            throw AuthException.EmailLinkPromptForEmailException()
         }
 
         // Validate anonymous user ID matches (same-device flow)
@@ -819,14 +832,60 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                 ?: throw AuthException.UnknownException("Sign in failed")
         } else {
             // Linking Flow: Sign in with email link, then link the social credential
-            provider.handleEmailLinkWithSocialLinking(
-                context = context,
-                config = config,
-                auth = auth,
-                emailLinkCredential = emailLinkCredential,
-                storedCredentialForLink = storedCredentialForLink,
-                updateAuthState = ::updateAuthState
-            )
+            if (canUpgradeAnonymous(config, auth)) {
+                // Anonymous upgrade: Use safe link pattern with scratch auth
+                val appExplicitlyForValidation = FirebaseApp.initializeApp(
+                    context,
+                    auth.app.options,
+                    "FUIAuthScratchApp_${System.currentTimeMillis()}"
+                )
+                val authExplicitlyForValidation = FirebaseAuth
+                    .getInstance(appExplicitlyForValidation)
+
+                // Safe link: Validate that both credentials can be linked
+                val emailResult = authExplicitlyForValidation
+                    .signInWithCredential(emailLinkCredential).await()
+
+                val linkResult = emailResult.user
+                    ?.linkWithCredential(storedCredentialForLink)?.await()
+
+                // If safe link succeeds, emit merge conflict for UI to handle
+                if (linkResult?.user != null) {
+                    updateAuthState(
+                        AuthState.MergeConflict(
+                            storedCredentialForLink
+                        )
+                    )
+                }
+
+                // Return the link result (will be non-null if successful)
+                linkResult!!
+            } else {
+                // Non-upgrade: Sign in with email link, then link social credential
+                val emailLinkResult = auth.signInWithCredential(emailLinkCredential).await()
+
+                // Link the social credential
+                val linkResult = emailLinkResult.user
+                    ?.linkWithCredential(storedCredentialForLink)?.await()
+
+                // Merge profile from the linked social credential
+                linkResult?.user?.let { user ->
+                    mergeProfile(auth, user.displayName, user.photoUrl)
+                }
+
+                // Update to success state
+                if (linkResult?.user != null) {
+                    updateAuthState(
+                        AuthState.Success(
+                            result = linkResult,
+                            user = linkResult.user!!,
+                            isNewUser = linkResult.additionalUserInfo?.isNewUser ?: false
+                        )
+                    )
+                }
+
+                linkResult!!
+            }
         }
 
         // Clear DataStore after success
