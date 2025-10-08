@@ -109,11 +109,6 @@ abstract class AuthProvider(open val providerId: String) {
          * @param displayName The display name to set (if current is empty)
          * @param photoUri The photo URL to set (if current is null)
          *
-         * **Old library reference:**
-         * - ProfileMerger.java:34-56 (complete implementation)
-         * - ProfileMerger.java:39-43 (only update if profile incomplete)
-         * - ProfileMerger.java:49-55 (updateProfile call)
-         *
          * **Note:** This operation always succeeds to minimize login interruptions.
          * Failures are logged but don't prevent sign-in completion.
          */
@@ -149,7 +144,6 @@ abstract class AuthProvider(open val providerId: String) {
                 }
             } catch (e: Exception) {
                 // Log error but don't throw - profile update failure shouldn't prevent sign-in
-                // Old library uses TaskFailureLogger for this
                 Log.e("AuthProvider.Email", "Error updating profile", e)
             }
         }
