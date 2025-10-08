@@ -355,12 +355,13 @@ class AuthTextFieldTest {
     // =============================================================================================
 
     @Test
-    fun `AuthTextField shows password visibility toggle for PasswordValidator`() {
+    fun `AuthTextField shows password visibility toggle when isSecureTextField`() {
         composeTestRule.setContent {
             AuthTextField(
                 value = "password123",
                 onValueChange = { },
                 label = { Text("Password") },
+                isSecureTextField = true,
                 validator = PasswordValidator(
                     stringProvider = stringProvider,
                     rules = emptyList()
@@ -380,6 +381,7 @@ class AuthTextFieldTest {
                 value = "password123",
                 onValueChange = { },
                 label = { Text("Password") },
+                isSecureTextField = true,
                 validator = PasswordValidator(
                     stringProvider = stringProvider,
                     rules = emptyList()
