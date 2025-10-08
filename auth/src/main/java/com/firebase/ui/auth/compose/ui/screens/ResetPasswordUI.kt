@@ -63,7 +63,7 @@ fun ResetPasswordUI(
         derivedStateOf { emailValidator.validate(email) }
     }
 
-    val isDialogVisible = remember { mutableStateOf(resetLinkSent) }
+    val isDialogVisible = remember(resetLinkSent) { mutableStateOf(resetLinkSent) }
 
     if (isDialogVisible.value) {
         AlertDialog(

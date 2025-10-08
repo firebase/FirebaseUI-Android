@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.firebase.ui.auth.compose.AuthException
@@ -18,6 +20,8 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUser
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
 
@@ -105,9 +109,10 @@ fun EmailAuthScreen(
     onCancel: () -> Unit,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
+    val stringProvider = DefaultAuthUIStringProvider(context)
     val coroutineScope = rememberCoroutineScope()
 
-    val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignUp) }
+    val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }
     val displayNameValue = rememberSaveable { mutableStateOf("") }
     val emailTextValue = rememberSaveable { mutableStateOf("") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
@@ -121,8 +126,16 @@ fun EmailAuthScreen(
     )
 
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+    val isLoading = authState is AuthState.Loading
+    val errorMessage =
+        if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
+    val resetLinkSent = authState is AuthState.PasswordResetLinkSent
+
+    val isErrorDialogVisible =
+        remember(authState) { mutableStateOf(authState is AuthState.Error) }
 
     LaunchedEffect(authState) {
+        Log.d("EmailAuthScreen", "Current state: $authState")
         when (val state = authState) {
             is AuthState.Success -> {
                 state.result?.let { result ->
@@ -141,11 +154,6 @@ fun EmailAuthScreen(
             else -> Unit
         }
     }
-
-    val isLoading = authState is AuthState.Loading
-    val errorMessage =
-        if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
-    val resetLinkSent = authState is AuthState.PasswordResetLinkSent
 
     val state = EmailAuthContentState(
         mode = mode.value,
@@ -234,6 +242,31 @@ fun EmailAuthScreen(
             mode.value = EmailAuthMode.ResetPassword
         }
     )
+
+    if (isErrorDialogVisible.value) {
+        ErrorRecoveryDialog(
+            error = if ((authState as AuthState.Error).exception is AuthException)
+                (authState as AuthState.Error).exception as AuthException else
+                AuthException.from((authState as AuthState.Error).exception),
+            stringProvider = stringProvider,
+            onRetry = {
+                // TODO(demolaf): EmailAuthScreen ErrorRecoveryDialog (onRetry) - handle retry
+                //  for failed action
+                isErrorDialogVisible.value = false
+            },
+            onDismiss = {
+                isErrorDialogVisible.value = false
+            },
+            onRecover = { exception ->
+                when (exception) {
+                    is AuthException.EmailAlreadyInUseException -> {
+                        state.onGoToSignIn()
+                        isErrorDialogVisible.value = false
+                    }
+                }
+            },
+        )
+    }
 
     content?.invoke(state)
 }

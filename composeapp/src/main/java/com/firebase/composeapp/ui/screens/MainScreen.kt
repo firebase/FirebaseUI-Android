@@ -41,7 +41,44 @@ fun MainScreen(
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
 
     when (authState) {
-        is AuthState.Idle -> {
+        is AuthState.Success -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text("Authenticated User: ${authUI.getCurrentUser()}")
+            }
+        }
+
+        is AuthState.RequiresEmailVerification -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    "Authenticated User - " +
+                            "Requires Email Verification: " +
+                            "${(authState as AuthState.RequiresEmailVerification).user.email}",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            authUI.signOut(context)
+                        }
+                    }
+                ) {
+                    Text("Sign Out")
+                }
+            }
+        }
+
+        else -> {
             EmailAuthScreen(
                 context = context,
                 configuration = configuration,
@@ -102,43 +139,6 @@ fun MainScreen(
                             onGoToSignIn = state.onGoToSignIn
                         )
                     }
-                }
-            }
-        }
-
-        is AuthState.Success -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text("Authenticated User: ${authUI.getCurrentUser()}")
-            }
-        }
-
-        is AuthState.RequiresEmailVerification -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    "Authenticated User - " +
-                            "Requires Email Verification: " +
-                            "${(authState as AuthState.RequiresEmailVerification).user.email}",
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            authUI.signOut(context)
-                        }
-                    }
-                ) {
-                    Text("Sign Out")
                 }
             }
         }

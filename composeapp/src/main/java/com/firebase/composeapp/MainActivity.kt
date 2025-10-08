@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
         val provider = AuthProvider.Email(
             isDisplayNameRequired = true,
-            isEmailLinkSignInEnabled = true,
+            // isEmailLinkSignInEnabled = true,
             isEmailLinkForceSameDeviceEnabled = true,
             actionCodeSettings = null,
             isNewAccountsAllowed = true,
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
             providers { provider(provider) }
             tosUrl = "https://www.google.com"
             privacyPolicyUrl = "https://www.google.com"
-            actionCodeSettings = actionCodeSettings {
+            passwordResetActionCodeSettings = actionCodeSettings {
                 url = "https://example.com/verify"
                 handleCodeInApp = true
             }

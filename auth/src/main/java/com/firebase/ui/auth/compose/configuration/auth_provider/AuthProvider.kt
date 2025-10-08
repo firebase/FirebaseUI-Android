@@ -136,7 +136,8 @@ abstract class AuthProvider(open val providerId: String) {
                 }
 
                 // Build profile update with provided values
-                val nameToSet = if (currentDisplayName.isNullOrEmpty()) displayName else currentDisplayName
+                val nameToSet =
+                    if (currentDisplayName.isNullOrEmpty()) displayName else currentDisplayName
                 val photoToSet = currentPhotoUrl ?: photoUri
 
                 if (nameToSet != null || photoToSet != null) {
@@ -208,7 +209,9 @@ abstract class AuthProvider(open val providerId: String) {
             val KEY_IDP_SECRET = stringPreferencesKey("com.firebase.ui.auth.data.client.idpSecret")
         }
 
-        internal fun validate() {
+        internal fun validate(
+            isAnonymousUpgradeEnabled: Boolean = false
+        ) {
             if (isEmailLinkSignInEnabled) {
                 val actionCodeSettings = requireNotNull(actionCodeSettings) {
                     "ActionCodeSettings cannot be null when using " +
@@ -218,6 +221,13 @@ abstract class AuthProvider(open val providerId: String) {
                 check(actionCodeSettings.canHandleCodeInApp()) {
                     "You must set canHandleCodeInApp in your " +
                             "ActionCodeSettings to true for Email-Link Sign-in."
+                }
+
+                if (isAnonymousUpgradeEnabled) {
+                    check(isEmailLinkForceSameDeviceEnabled) {
+                        "You must force the same device flow when using email link sign in " +
+                                "with anonymous user upgrade"
+                    }
                 }
             }
         }
