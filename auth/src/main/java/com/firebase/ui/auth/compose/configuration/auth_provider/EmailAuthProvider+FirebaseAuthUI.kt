@@ -166,6 +166,8 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         if (canUpgrade && pendingCredential != null) {
             // Anonymous upgrade collision: emit merge conflict state
             updateAuthState(AuthState.MergeConflict(pendingCredential))
+        } else {
+            updateAuthState(AuthState.Error(authException))
         }
         throw authException
     } catch (e: CancellationException) {
@@ -465,6 +467,8 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             } else {
                 updateAuthState(AuthState.Error(authException))
             }
+        } else {
+            updateAuthState(AuthState.Error(authException))
         }
         throw authException
     } catch (e: CancellationException) {

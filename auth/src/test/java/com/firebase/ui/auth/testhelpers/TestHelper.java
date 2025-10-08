@@ -76,17 +76,19 @@ public final class TestHelper {
     }
 
     private static void spyContextAndResources() {
-        // In Mockito 5.x, we need to avoid spying on objects that are already mocks/spies
+        // In Mockito 5.x with inline mock maker, we can spy on final classes
+        // Use doReturn().when() pattern to avoid calling real methods during stubbing
         if (!org.mockito.Mockito.mockingDetails(CONTEXT).isSpy()) {
             CONTEXT = spy(CONTEXT);
         }
         doReturn(CONTEXT).when(CONTEXT).getApplicationContext();
 
-        Resources resources = CONTEXT.getResources();
-        if (!org.mockito.Mockito.mockingDetails(resources).isSpy()) {
-            resources = spy(resources);
+        // Get and spy on Resources, ensuring the spy is properly returned
+        Resources originalResources = CONTEXT.getResources();
+        if (!org.mockito.Mockito.mockingDetails(originalResources).isSpy()) {
+            Resources spiedResources = spy(originalResources);
+            doReturn(spiedResources).when(CONTEXT).getResources();
         }
-        doReturn(resources).when(CONTEXT).getResources();
     }
 
     private static void initializeApp(Context context) {
