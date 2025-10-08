@@ -235,7 +235,8 @@ abstract class AuthException(
         cause: Throwable? = null
     ) : AuthException(
         "You are are attempting to sign in a different email than previously " +
-                "provided", cause)
+                "provided", cause
+    )
 
     companion object {
         /**

@@ -16,9 +16,7 @@ package com.firebase.ui.auth.compose
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUserWithEmailAndPassword
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
@@ -26,29 +24,19 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
-import com.google.android.gms.tasks.TaskCompletionSource
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doThrow
-import org.mockito.Mockito.mockStatic
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.atMost
-import org.mockito.kotlin.never
-import org.mockito.kotlin.times
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 

@@ -135,6 +135,7 @@ private fun getRecoveryMessage(
                 "$baseMessage\n\nReason: $reason"
             } ?: baseMessage
         }
+
         is AuthException.EmailAlreadyInUseException -> {
             // Include email if available
             val baseMessage = stringProvider.emailAlreadyInUseRecoveryMessage
@@ -142,6 +143,7 @@ private fun getRecoveryMessage(
                 "$baseMessage ($email)"
             } ?: baseMessage
         }
+
         is AuthException.TooManyRequestsException -> stringProvider.tooManyRequestsRecoveryMessage
         is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
         is AuthException.AccountLinkingRequiredException -> stringProvider.accountLinkingRequiredRecoveryMessage
@@ -173,6 +175,7 @@ private fun getRecoveryActionText(
         is AuthException.WeakPasswordException,
         is AuthException.TooManyRequestsException,
         is AuthException.UnknownException -> stringProvider.retryAction
+
         else -> stringProvider.retryAction
     }
 }
