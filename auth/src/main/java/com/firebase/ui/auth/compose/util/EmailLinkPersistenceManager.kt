@@ -36,18 +36,12 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
  * - Anonymous user ID for upgrade flows
  * - Social provider credentials for linking flows
  *
- * **Old library reference:**
- * - EmailLinkPersistenceManager.java (complete implementation)
- *
  * @since 10.0.0
  */
 object EmailLinkPersistenceManager {
 
     /**
      * Saves email and session information to DataStore for email link sign-in.
-     *
-     * **Old library reference:**
-     * - EmailLinkPersistenceManager.java:47-59 (saveEmail method)
      *
      * @param context Android context for DataStore access
      * @param email Email address to save
@@ -74,11 +68,6 @@ object EmailLinkPersistenceManager {
      * but an email link account with the same email already exists. The credential is saved
      * and will be linked after the user completes email link authentication.
      *
-     * **Old library reference:**
-     * - EmailLinkPersistenceManager.java:61-80 (saveIdpResponseForLinking method)
-     * - SocialProviderResponseHandler.java:144-152 (caller - redirects to email link flow)
-     * - EmailActivity.java:92-93 (caller - saves credential before showing email link UI)
-     *
      * @param context Android context for DataStore access
      * @param providerType Provider ID ("google.com", "facebook.com", etc.)
      * @param idToken ID token from the provider
@@ -99,9 +88,6 @@ object EmailLinkPersistenceManager {
 
     /**
      * Retrieves session information from DataStore.
-     *
-     * **Old library reference:**
-     * - EmailLinkPersistenceManager.java:82-110 (retrieveSessionRecord method)
      *
      * @param context Android context for DataStore access
      * @return SessionRecord containing saved session data, or null if no session exists
@@ -142,9 +128,6 @@ object EmailLinkPersistenceManager {
     /**
      * Clears all saved data from DataStore.
      *
-     * **Old library reference:**
-     * - EmailLinkPersistenceManager.java:112-121 (clearAllData method)
-     *
      * @param context Android context for DataStore access
      */
     suspend fun clear(context: Context) {
@@ -160,9 +143,6 @@ object EmailLinkPersistenceManager {
 
     /**
      * Holds the necessary information to complete the email link sign in flow.
-     *
-     * **Old library reference:**
-     * - EmailLinkPersistenceManager.SessionRecord (lines 123-164)
      *
      * @property sessionId Unique session identifier for same-device validation
      * @property email Email address for sign-in
