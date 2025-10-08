@@ -14,7 +14,8 @@
 
 package com.firebase.ui.auth.compose
 
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.AuthState.Companion.Cancelled
+import com.firebase.ui.auth.compose.AuthState.Companion.Idle
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
@@ -74,8 +75,8 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is Success) return false
             return result == other.result &&
-                   user == other.user &&
-                   isNewUser == other.isNewUser
+                    user == other.user &&
+                    isNewUser == other.isNewUser
         }
 
         override fun hashCode(): Int {
@@ -103,7 +104,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is Error) return false
             return exception == other.exception &&
-                   isRecoverable == other.isRecoverable
+                    isRecoverable == other.isRecoverable
         }
 
         override fun hashCode(): Int {
@@ -139,7 +140,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is RequiresMfa) return false
             return resolver == other.resolver &&
-                   hint == other.hint
+                    hint == other.hint
         }
 
         override fun hashCode(): Int {
@@ -166,7 +167,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is RequiresEmailVerification) return false
             return user == other.user &&
-                   email == other.email
+                    email == other.email
         }
 
         override fun hashCode(): Int {
@@ -193,7 +194,7 @@ abstract class AuthState private constructor() {
             if (this === other) return true
             if (other !is RequiresProfileCompletion) return false
             return user == other.user &&
-                   missingFields == other.missingFields
+                    missingFields == other.missingFields
         }
 
         override fun hashCode(): Int {
@@ -204,36 +205,6 @@ abstract class AuthState private constructor() {
 
         override fun toString(): String =
             "AuthState.RequiresProfileCompletion(user=$user, missingFields=$missingFields)"
-    }
-
-    /**
-     * The user needs to sign in with a different provider.
-     *
-     * Emitted when a user tries to sign up with an email that already exists
-     * and needs to use the existing provider to sign in instead.
-     *
-     * @property provider The [AuthProvider] the user should sign in with
-     * @property email The email address of the existing account
-     */
-    class RequiresSignIn(
-        val provider: AuthProvider,
-        val email: String
-    ) : AuthState() {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is RequiresSignIn) return false
-            return provider == other.provider &&
-                    email == other.email
-        }
-
-        override fun hashCode(): Int {
-            var result = provider.hashCode()
-            result = 31 * result + email.hashCode()
-            return result
-        }
-
-        override fun toString(): String =
-            "AuthState.RequiresSignIn(provider=$provider, email=$email)"
     }
 
     /**

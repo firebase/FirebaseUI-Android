@@ -20,7 +20,6 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.AuthUIConfigurationDsl
 import com.firebase.ui.auth.compose.configuration.PasswordRule

@@ -14,8 +14,8 @@
 
 package com.firebase.ui.auth.compose.configuration.validators
 
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.PasswordRule
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 
 internal class PasswordValidator(
     override val stringProvider: AuthUIStringProvider,

@@ -196,7 +196,11 @@ class DefaultAuthUIStringProvider(
     override val userNotFoundRecoveryMessage: String
         get() = localizedContext.getString(R.string.fui_error_email_does_not_exist)
     override val weakPasswordRecoveryMessage: String
-        get() = localizedContext.resources.getQuantityString(R.plurals.fui_error_weak_password, 6, 6)
+        get() = localizedContext.resources.getQuantityString(
+            R.plurals.fui_error_weak_password,
+            6,
+            6
+        )
     override val emailAlreadyInUseRecoveryMessage: String
         get() = localizedContext.getString(R.string.fui_email_account_creation_error)
     override val tooManyRequestsRecoveryMessage: String
