@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") apply false
 }
 
 android {
@@ -60,4 +60,9 @@ dependencies {
     debugImplementation(Config.Libs.Androidx.Compose.tooling)
 
     implementation(platform(Config.Libs.Firebase.bom))
+}
+
+// Only apply google-services plugin if the google-services.json file exists
+if (rootProject.file("composeapp/google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
 }
