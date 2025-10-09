@@ -1,6 +1,7 @@
 package com.firebase.composeapp.ui.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +27,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.ui.screens.EmailAuthMode
 import com.firebase.ui.auth.compose.ui.screens.EmailAuthScreen
 import com.firebase.ui.auth.compose.ui.screens.ResetPasswordUI
-import com.firebase.ui.auth.compose.ui.screens.sign_in.SignInUI
+import com.firebase.ui.auth.compose.ui.screens.SignInUI
 import com.firebase.ui.auth.compose.ui.screens.SignUpUI
 import kotlinx.coroutines.launch
 
@@ -34,10 +36,9 @@ fun MainScreen(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    provider: AuthProvider.Email,
+    provider: AuthProvider.Email
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val isAuthenticated = remember { mutableStateOf(false) }
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
 
     when (authState) {
@@ -48,7 +49,19 @@ fun MainScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Authenticated User: ${authUI.getCurrentUser()}")
+                Text("Authenticated User - (Success): ${authUI.getCurrentUser()?.email}",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            authUI.signOut(context)
+                        }
+                    }
+                ) {
+                    Text("Sign Out")
+                }
             }
         }
 
@@ -61,7 +74,7 @@ fun MainScreen(
             ) {
                 Text(
                     "Authenticated User - " +
-                            "Requires Email Verification: " +
+                            "(RequiresEmailVerification): " +
                             "${(authState as AuthState.RequiresEmailVerification).user.email}",
                     textAlign = TextAlign.Center
                 )
@@ -83,24 +96,17 @@ fun MainScreen(
                 context = context,
                 configuration = configuration,
                 authUI = authUI,
-                provider = provider,
-                onSuccess = { result ->
-                    isAuthenticated.value = result.user != null
-                },
-                onError = { exception ->
-
-                },
-                onCancel = {
-
-                },
+                onSuccess = { result -> },
+                onError = { exception -> },
+                onCancel = { },
             ) { state ->
                 when (state.mode) {
                     EmailAuthMode.SignIn -> {
                         SignInUI(
                             configuration = configuration,
-                            provider = provider,
                             email = state.email,
                             isLoading = state.isLoading,
+                            emailSignInLinkSent = state.emailSignInLinkSent,
                             password = state.password,
                             onEmailChange = state.onEmailChange,
                             onPasswordChange = state.onPasswordChange,
@@ -113,7 +119,6 @@ fun MainScreen(
                     EmailAuthMode.SignUp -> {
                         SignUpUI(
                             configuration = configuration,
-                            provider = provider,
                             isLoading = state.isLoading,
                             displayName = state.displayName,
                             email = state.email,

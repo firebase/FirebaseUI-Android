@@ -7,14 +7,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.firebase.composeapp.ui.screens.MainScreen
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
+import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.actionCodeSettings
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,13 +28,24 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
 
+        // Check if this is an email link sign-in flow
+        val emailLink = intent.getStringExtra(
+            EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK
+        )
+
         val provider = AuthProvider.Email(
             isDisplayNameRequired = true,
-            // isEmailLinkSignInEnabled = true,
+            isEmailLinkSignInEnabled = true,
             isEmailLinkForceSameDeviceEnabled = true,
-            actionCodeSettings = actionCodeSettings {
-                url = "https://example.com/verify"
+            emailLinkActionCodeSettings = actionCodeSettings {
+                // The continue URL - where to redirect after email link is clicked
+                url = "https://temp-test-aa342.firebaseapp.com"
                 handleCodeInApp = true
+                setAndroidPackageName(
+                    "com.firebase.composeapp",
+                    true,
+                    null
+                )
             },
             isNewAccountsAllowed = true,
             minimumPasswordLength = 8,
@@ -43,8 +59,29 @@ class MainActivity : ComponentActivity() {
         val configuration = authUIConfiguration {
             context = applicationContext
             providers { provider(provider) }
-            tosUrl = "https://www.google.com"
-            privacyPolicyUrl = "https://www.google.com"
+            tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
+            privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
+        }
+
+        if (emailLink != null) {
+            lifecycleScope.launch {
+                try {
+                    val emailFromSession = EmailLinkPersistenceManager
+                        .retrieveSessionRecord(applicationContext)?.email
+
+                    if (emailFromSession != null) {
+                        authUI.signInWithEmailLink(
+                            context = applicationContext,
+                            config = configuration,
+                            provider = provider,
+                            email = emailFromSession,
+                            emailLink = emailLink,
+                        )
+                    }
+                } catch (e: Exception) {
+                    // Error handling is done via AuthState.Error in the auth flow
+                }
+            }
         }
 
         setContent {

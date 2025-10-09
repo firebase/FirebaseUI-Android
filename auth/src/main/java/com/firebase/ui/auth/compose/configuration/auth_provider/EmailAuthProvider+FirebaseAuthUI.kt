@@ -675,7 +675,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         // Save Email to dataStore for use in signInWithEmailLink
         EmailLinkPersistenceManager.saveEmail(context, email, sessionId, anonymousUserId)
 
-        updateAuthState(AuthState.Idle)
+        updateAuthState(AuthState.EmailSignInLinkSent())
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Send sign in link to email was cancelled",
@@ -727,7 +727,8 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
  *
  * @see sendSignInLinkToEmail for sending the initial email link
  */
-internal suspend fun FirebaseAuthUI.signInWithEmailLink(
+// TODO(demolaf: make this internal when done testing email link sign in with composeapp
+suspend fun FirebaseAuthUI.signInWithEmailLink(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,
@@ -792,7 +793,10 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         // Validate anonymous user ID matches (same-device flow)
         if (!anonymousUserIdFromLink.isNullOrEmpty()) {
             val currentUser = auth.currentUser
-            if (currentUser == null || !currentUser.isAnonymous || currentUser.uid != anonymousUserIdFromLink) {
+            if (currentUser == null
+                || !currentUser.isAnonymous
+                || currentUser.uid != anonymousUserIdFromLink
+            ) {
                 throw AuthException.EmailLinkDifferentAnonymousUserException()
             }
         }
@@ -804,7 +808,6 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         val result = if (storedCredentialForLink == null) {
             // Normal Flow: Just sign in with email link
             signInAndLinkWithCredential(config, emailLinkCredential)
-                ?: throw AuthException.UnknownException("Sign in failed")
         } else {
             // Linking Flow: Sign in with email link, then link the social credential
             if (canUpgradeAnonymous(config, auth)) {
@@ -818,54 +821,39 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                     .getInstance(appExplicitlyForValidation)
 
                 // Safe link: Validate that both credentials can be linked
-                val emailResult = authExplicitlyForValidation
+                val result = authExplicitlyForValidation
                     .signInWithCredential(emailLinkCredential).await()
-
-                val linkResult = emailResult.user
-                    ?.linkWithCredential(storedCredentialForLink)?.await()
-
-                // If safe link succeeds, emit merge conflict for UI to handle
-                if (linkResult?.user != null) {
-                    updateAuthState(
-                        AuthState.MergeConflict(
-                            storedCredentialForLink
+                    .user?.linkWithCredential(storedCredentialForLink)?.await()
+                    .also { result ->
+                        // If safe link succeeds, emit merge conflict for UI to handle
+                        updateAuthState(
+                            AuthState.MergeConflict(
+                                storedCredentialForLink
+                            )
                         )
-                    )
-                }
-
-                // Return the link result (will be non-null if successful)
-                linkResult
+                    }
+                return result
             } else {
                 // Non-upgrade: Sign in with email link, then link social credential
-                val emailLinkResult = auth.signInWithCredential(emailLinkCredential).await()
-
-                // Link the social credential
-                val linkResult = emailLinkResult.user
-                    ?.linkWithCredential(storedCredentialForLink)?.await()
-
-                // Merge profile from the linked social credential
-                linkResult?.user?.let { user ->
-                    mergeProfile(auth, user.displayName, user.photoUrl)
-                }
-
-                // Update to success state
-                if (linkResult?.user != null) {
-                    updateAuthState(
-                        AuthState.Success(
-                            result = linkResult,
-                            user = linkResult.user!!,
-                            isNewUser = linkResult.additionalUserInfo?.isNewUser ?: false
-                        )
-                    )
-                }
-
-                linkResult
+                val result = auth.signInWithCredential(emailLinkCredential).await()
+                    // Link the social credential
+                    .user?.linkWithCredential(storedCredentialForLink)?.await()
+                    .also { result ->
+                        result?.user?.let { user ->
+                            // Merge profile from the linked social credential
+                            mergeProfile(
+                                auth,
+                                user.displayName,
+                                user.photoUrl
+                            )
+                        }
+                    }
+                return result
             }
         }
-
         // Clear DataStore after success
         EmailLinkPersistenceManager.clear(context)
-
+        updateAuthState(AuthState.Idle)
         return result
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(

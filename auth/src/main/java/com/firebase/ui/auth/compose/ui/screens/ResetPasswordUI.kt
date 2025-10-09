@@ -116,9 +116,7 @@ fun ResetPasswordUI(
                 title = {
                     Text("Recover Password")
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                colors = AuthUITheme.topAppBarColors
             )
         },
     ) { innerPadding ->
@@ -133,7 +131,7 @@ fun ResetPasswordUI(
                 validator = emailValidator,
                 enabled = !isLoading,
                 label = {
-                    Text("Email")
+                    Text(stringProvider.emailHint)
                 },
                 onValueChange = { text ->
                     onEmailChange(text)

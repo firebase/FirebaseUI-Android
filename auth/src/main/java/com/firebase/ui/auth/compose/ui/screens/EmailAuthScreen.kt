@@ -33,8 +33,10 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUser
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
+import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
+import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
 
@@ -74,6 +76,8 @@ enum class EmailAuthMode {
  * send a password reset email.
  * @param resetLinkSent (Mode: [EmailAuthMode.ResetPassword]) true after the password reset link
  * has been successfully sent.
+ * @param emailSignInLinkSent (Mode: [EmailAuthMode.SignIn]) true after the email sign in link has
+ * been successfully sent.
  * @param onGoToSignUp A callback to switch the UI to the SignUp mode.
  * @param onGoToSignIn A callback to switch the UI to the SignIn mode.
  * @param onGoToResetPassword A callback to switch the UI to the ResetPassword mode.
@@ -94,6 +98,7 @@ class EmailAuthContentState(
     val onSignUpClick: () -> Unit,
     val onSendResetLinkClick: () -> Unit,
     val resetLinkSent: Boolean = false,
+    val emailSignInLinkSent: Boolean = false,
     val onGoToSignUp: () -> Unit,
     val onGoToSignIn: () -> Unit,
     val onGoToResetPassword: () -> Unit,
@@ -104,8 +109,7 @@ class EmailAuthContentState(
  * including sign-in, sign-up, and password reset. It exposes the state for the current mode to
  * a custom UI via a trailing lambda (slot), allowing for complete visual customization.
  *
- * @param provider The configuration object contains rules for email auth, such as whether a
- * display name is required.
+ * @param configuration
  * @param onSuccess
  * @param onError
  * @param onCancel
@@ -116,12 +120,12 @@ fun EmailAuthScreen(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    provider: AuthProvider.Email,
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = DefaultAuthUIStringProvider(context)
     val coroutineScope = rememberCoroutineScope()
 
@@ -144,6 +148,7 @@ fun EmailAuthScreen(
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
     val resetLinkSent = authState is AuthState.PasswordResetLinkSent
+    val emailSignInLinkSent = authState is AuthState.EmailSignInLinkSent
 
     val isErrorDialogVisible =
         remember(authState) { mutableStateOf(authState is AuthState.Error) }
@@ -178,6 +183,7 @@ fun EmailAuthScreen(
         isLoading = isLoading,
         error = errorMessage,
         resetLinkSent = resetLinkSent,
+        emailSignInLinkSent = emailSignInLinkSent,
         onEmailChange = { email ->
             emailTextValue.value = email
         },
@@ -260,25 +266,15 @@ fun EmailAuthScreen(
     if (isErrorDialogVisible.value) {
         ErrorRecoveryDialog(
             error = when ((authState as AuthState.Error).exception) {
-                is AuthException -> {
-                    (authState as AuthState.Error).exception as AuthException
-                }
-
-                else -> {
-                    AuthException
-                        .from((authState as AuthState.Error).exception)
-                }
+                is AuthException -> (authState as AuthState.Error).exception as AuthException
+                else -> AuthException
+                    .from((authState as AuthState.Error).exception)
             },
             stringProvider = stringProvider,
             onRetry = { exception ->
                 when (exception) {
-                    is AuthException.InvalidCredentialsException -> {
-                        state.onSignInClick()
-                    }
-
-                    is AuthException.EmailAlreadyInUseException -> {
-                        state.onGoToSignIn()
-                    }
+                    is AuthException.InvalidCredentialsException -> state.onSignInClick()
+                    is AuthException.EmailAlreadyInUseException -> state.onGoToSignIn()
                 }
                 isErrorDialogVisible.value = false
             },
@@ -290,102 +286,3 @@ fun EmailAuthScreen(
 
     content?.invoke(state)
 }
-
-//@Preview
-//@Composable
-//internal fun PreviewEmailAuthScreen() {
-//    val applicationContext = LocalContext.current
-//    val provider = AuthProvider.Email(
-//        isDisplayNameRequired = true,
-//        isEmailLinkSignInEnabled = false,
-//        isEmailLinkForceSameDeviceEnabled = true,
-//        actionCodeSettings = null,
-//        isNewAccountsAllowed = true,
-//        minimumPasswordLength = 8,
-//        passwordValidationRules = listOf()
-//    )
-//
-//    AuthUITheme {
-//        EmailAuthScreen(
-//            context = applicationContext,
-//            configuration = authUIConfiguration {
-//                context = applicationContext
-//                providers { provider(provider) }
-//                tosUrl = ""
-//                privacyPolicyUrl = ""
-//            },
-//            authUI = null,
-//            provider = provider,
-//            onSuccess = {
-//
-//            },
-//            onError = {
-//
-//            },
-//            onCancel = {
-//
-//            },
-//        ) { state ->
-//            when (state.mode) {
-//                EmailAuthMode.SignIn -> {
-//                    SignInUI(
-//                        configuration = authUIConfiguration {
-//                            context = applicationContext
-//                            providers { provider(provider) }
-//                            tosUrl = ""
-//                            privacyPolicyUrl = ""
-//                        },
-//                        provider = provider,
-//                        email = state.email,
-//                        isLoading = false,
-//                        password = state.password,
-//                        onEmailChange = state.onEmailChange,
-//                        onPasswordChange = state.onPasswordChange,
-//                        onSignInClick = state.onSignInClick,
-//                        onGoToSignUp = state.onGoToSignUp,
-//                        onGoToResetPassword = state.onGoToResetPassword,
-//                    )
-//                }
-//
-//                EmailAuthMode.SignUp -> {
-//                    SignUpUI(
-//                        configuration = authUIConfiguration {
-//                            context = applicationContext
-//                            providers { provider(provider) }
-//                            tosUrl = ""
-//                            privacyPolicyUrl = ""
-//                        },
-//                        isLoading = state.isLoading,
-//                        displayName = state.displayName,
-//                        email = state.email,
-//                        password = state.password,
-//                        confirmPassword = state.confirmPassword,
-//                        onDisplayNameChange = state.onDisplayNameChange,
-//                        onEmailChange = state.onEmailChange,
-//                        onPasswordChange = state.onPasswordChange,
-//                        onConfirmPasswordChange = state.onConfirmPasswordChange,
-//                        onSignUpClick = state.onSignUpClick,
-//                        onGoToSignIn = state.onGoToSignIn,
-//                    )
-//                }
-//
-//                EmailAuthMode.ResetPassword -> {
-//                    ResetPasswordUI(
-//                        configuration = authUIConfiguration {
-//                            context = applicationContext
-//                            providers { provider(provider) }
-//                            tosUrl = ""
-//                            privacyPolicyUrl = ""
-//                        },
-//                        isLoading = state.isLoading,
-//                        email = state.email,
-//                        resetLinkSent = state.resetLinkSent,
-//                        onEmailChange = state.onEmailChange,
-//                        onSendResetLink = state.onSendResetLinkClick,
-//                        onGoToSignIn = state.onGoToSignIn
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}

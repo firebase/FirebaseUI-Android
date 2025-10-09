@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens.sign_in
+package com.firebase.ui.auth.compose.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,10 +36,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,7 +63,7 @@ fun SignInUI(
     modifier: Modifier = Modifier,
     configuration: AuthUIConfiguration,
     isLoading: Boolean,
-    provider: AuthProvider.Email,
+    emailSignInLinkSent: Boolean,
     email: String,
     password: String,
     onEmailChange: (String) -> Unit,
@@ -73,6 +73,7 @@ fun SignInUI(
     onGoToResetPassword: () -> Unit,
 ) {
     val context = LocalContext.current
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = DefaultAuthUIStringProvider(context)
     val emailValidator = remember { EmailValidator(stringProvider) }
     val passwordValidator = remember {
@@ -83,9 +84,43 @@ fun SignInUI(
         derivedStateOf {
             listOf(
                 emailValidator.validate(email),
-                passwordValidator.validate(password),
+                if (!provider.isEmailLinkSignInEnabled)
+                    passwordValidator.validate(password) else true,
             ).all { it }
         }
+    }
+
+    val isDialogVisible =
+        remember(emailSignInLinkSent) { mutableStateOf(emailSignInLinkSent) }
+
+    if (isDialogVisible.value) {
+        AlertDialog(
+            title = {
+                Text(
+                    text = "Email Sign In Link Sent",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            text = {
+                Text(
+                    text = "Check your email $email",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Start
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        isDialogVisible.value = false
+                    }
+                ) {
+                    Text("Dismiss")
+                }
+            },
+            onDismissRequest = {
+                isDialogVisible.value = false
+            },
+        )
     }
 
     Scaffold(
@@ -93,11 +128,9 @@ fun SignInUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Sign in")
+                    Text(stringProvider.signInDefault)
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                colors = AuthUITheme.topAppBarColors
             )
         },
     ) { innerPadding ->
@@ -112,7 +145,7 @@ fun SignInUI(
                 validator = emailValidator,
                 enabled = !isLoading,
                 label = {
-                    Text("Email")
+                    Text(stringProvider.emailHint)
                 },
                 onValueChange = { text ->
                     onEmailChange(text)
@@ -125,25 +158,27 @@ fun SignInUI(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            AuthTextField(
-                value = password,
-                validator = passwordValidator,
-                enabled = !isLoading,
-                isSecureTextField = true,
-                label = {
-                    Text("Password")
-                },
-                onValueChange = { text ->
-                    onPasswordChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = ""
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            if (!provider.isEmailLinkSignInEnabled) {
+                AuthTextField(
+                    value = password,
+                    validator = passwordValidator,
+                    enabled = !isLoading,
+                    isSecureTextField = true,
+                    label = {
+                        Text(stringProvider.passwordHint)
+                    },
+                    onValueChange = { text ->
+                        onPasswordChange(text)
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = ""
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             TextButton(
                 modifier = Modifier
                     .align(Alignment.Start),
@@ -155,7 +190,7 @@ fun SignInUI(
             ) {
                 Text(
                     modifier = modifier,
-                    text = "Trouble signing in?",
+                    text = stringProvider.troubleSigningIn,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     textDecoration = TextDecoration.Underline
@@ -174,7 +209,7 @@ fun SignInUI(
                         },
                         enabled = !isLoading,
                     ) {
-                        Text("Sign Up")
+                        Text(stringProvider.titleRegisterEmail)
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                 }
@@ -193,7 +228,7 @@ fun SignInUI(
                                 .size(16.dp)
                         )
                     } else {
-                        Text("Sign In")
+                        Text(stringProvider.signInDefault)
                     }
                 }
             }
@@ -229,10 +264,10 @@ fun PreviewSignInUI() {
                 tosUrl = ""
                 privacyPolicyUrl = ""
             },
-            provider = provider,
             email = "",
             password = "",
             isLoading = false,
+            emailSignInLinkSent = false,
             onEmailChange = { email -> },
             onPasswordChange = { password -> },
             onSignInClick = {},

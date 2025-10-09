@@ -59,7 +59,6 @@ import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
 fun SignUpUI(
     modifier: Modifier = Modifier,
     configuration: AuthUIConfiguration,
-    provider: AuthProvider.Email,
     isLoading: Boolean,
     displayName: String,
     email: String,
@@ -72,6 +71,7 @@ fun SignUpUI(
     onGoToSignIn: () -> Unit,
     onSignUpClick: () -> Unit,
 ) {
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val context = LocalContext.current
     val stringProvider = DefaultAuthUIStringProvider(context)
     val displayNameValidator = remember { GeneralFieldValidator(stringProvider) }
@@ -110,9 +110,7 @@ fun SignUpUI(
                 title = {
                     Text("Sign up")
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+                colors = AuthUITheme.topAppBarColors
             )
         },
     ) { innerPadding ->
@@ -259,7 +257,6 @@ fun PreviewSignUpUI() {
                 tosUrl = ""
                 privacyPolicyUrl = ""
             },
-            provider = provider,
             isLoading = false,
             displayName = "",
             email = "",

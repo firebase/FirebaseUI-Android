@@ -26,13 +26,13 @@ include(
         ":composeapp",
         ":library",
         ":auth",
-        ":common", 
+        ":common",
         ":database",
-        ":firestore", 
+        ":firestore",
         ":storage",
 
         ":lint",
-        ":proguard-tests", 
-        ":internal:lint", 
+        ":proguard-tests",
+        ":internal:lint",
         ":internal:lintchecks"
 )

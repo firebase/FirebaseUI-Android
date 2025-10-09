@@ -85,12 +85,7 @@ class AuthUIConfigurationBuilder {
         // Provider specific validations
         providers.forEach { provider ->
             when (provider) {
-                is AuthProvider.Email -> {
-                    provider.validate(
-                        isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled
-                    )
-                }
-
+                is AuthProvider.Email -> provider.validate(isAnonymousUpgradeEnabled)
                 is AuthProvider.Phone -> provider.validate()
                 is AuthProvider.Google -> provider.validate(context)
                 is AuthProvider.Facebook -> provider.validate(context)
