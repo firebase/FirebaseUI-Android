@@ -48,17 +48,33 @@ import org.json.JSONObject
  * This class provides methods to register and authenticate users with passkeys (WebAuthn credentials),
  * integrating with both Android's Credential Manager and Firebase Authentication.
  *
+ * **IMPORTANT - Production Requirements:**
+ *
+ * Firebase Auth does not have native passkey support yet. To use passkeys with Firebase in production,
+ * you MUST implement a server-side component that:
+ * 1. Generates WebAuthn challenges
+ * 2. Verifies passkey registration/authentication responses
+ * 3. Creates Firebase custom tokens after successful verification
+ * 4. Returns the custom token to your client
+ *
+ * The [linkPasskeyToFirebase] and [signInWithPasskey] methods are currently incomplete and will throw
+ * errors until you implement the server-side credential verification logic.
+ *
  * **Registration Flow:**
- * 1. Server generates a challenge and options
- * 2. Call [registerPasskey] with user ID and display name
- * 3. User interacts with biometric/device authentication
- * 4. Credential is created and can be linked to Firebase
+ * 1. Your server generates a challenge and options
+ * 2. Call [registerPasskey] with the server-provided challenge
+ * 3. User authenticates with biometric/device
+ * 4. Send response to your server for verification
+ * 5. Server creates a Firebase custom token
+ * 6. Use the custom token to link or sign in to Firebase
  *
  * **Authentication Flow:**
- * 1. Server generates a challenge
- * 2. Call [authenticateWithPasskey]
+ * 1. Your server generates a challenge
+ * 2. Call [authenticateWithPasskey] with the challenge
  * 3. User authenticates with biometric/device
- * 4. Returns Firebase credential for sign-in
+ * 4. Send response to your server for verification
+ * 5. Server creates a Firebase custom token
+ * 6. Use the custom token to sign in to Firebase
  *
  * @property context The Android context for credential operations
  * @property firebaseAuth The Firebase Auth instance
@@ -254,15 +270,19 @@ class PasskeyAuthHandler(
     /**
      * Links a passkey credential to the current Firebase user.
      *
-     * This method takes the response from a successful passkey registration and links it
-     * to the currently signed-in Firebase user account.
+     * **TODO: This method requires server-side implementation.**
      *
-     * **Note:** This requires the user to be already authenticated with Firebase.
+     * This method is currently incomplete. To make it work, you need to:
+     * 1. Implement server-side verification of the passkey registration response
+     * 2. Have your server create a Firebase custom token after verification
+     * 3. Complete the [createFirebaseCredentialFromPasskey] method below
+     *
+     * Once implemented, this will link the passkey to the currently signed-in Firebase user.
      *
      * @param credentialResponse The response from [registerPasskey]
      * @return The updated [FirebaseUser] with the linked credential
      * @throws AuthException.InvalidCredentialsException if no user is signed in
-     * @throws AuthException if the linking operation fails
+     * @throws AuthException.UnknownException currently always throws until implemented
      */
     suspend fun linkPasskeyToFirebase(
         credentialResponse: CreatePublicKeyCredentialResponse
@@ -273,10 +293,9 @@ class PasskeyAuthHandler(
             )
 
         try {
-            // Extract the credential from the response
+            // TODO: Implement server-side verification flow
             val authCredential = createFirebaseCredentialFromPasskey(credentialResponse)
 
-            // Link the credential to the current user
             val authResult = currentUser.linkWithCredential(authCredential).await()
 
             return authResult.user
@@ -295,17 +314,24 @@ class PasskeyAuthHandler(
     /**
      * Signs in to Firebase using a passkey authentication result.
      *
-     * This method takes the credential from a successful passkey authentication and
-     * uses it to sign in to Firebase.
+     * **TODO: This method requires server-side implementation.**
+     *
+     * This method is currently incomplete. To make it work, you need to:
+     * 1. Implement server-side verification of the passkey authentication assertion
+     * 2. Have your server create a Firebase custom token after verification
+     * 3. Complete the [createFirebaseCredentialFromPasskeyAuth] method below
+     *
+     * Once implemented, this will sign in the user to Firebase using their passkey.
      *
      * @param publicKeyCredential The credential from [authenticateWithPasskey]
      * @return The signed-in [FirebaseUser]
-     * @throws AuthException if the sign-in operation fails
+     * @throws AuthException.UnknownException currently always throws until implemented
      */
     suspend fun signInWithPasskey(
         publicKeyCredential: PublicKeyCredential
     ): FirebaseUser {
         try {
+            // TODO: Implement server-side verification flow
             val authCredential = createFirebaseCredentialFromPasskeyAuth(publicKeyCredential)
 
             val authResult = firebaseAuth.signInWithCredential(authCredential).await()
@@ -324,42 +350,74 @@ class PasskeyAuthHandler(
     }
 
     /**
-     * Creates a Firebase credential from a passkey registration response.
+     * Converts a passkey registration response to a Firebase credential.
      *
-     * This is an internal helper method that converts the Android Credential Manager
-     * response into a format suitable for Firebase Authentication.
+     * **TODO: Implement this method with your server-side verification.**
+     *
+     * To complete this method, you need to:
+     * 1. Extract the credential registration data from the response:
+     *    ```kotlin
+     *    val registrationResponseJson = response.registrationResponseJson
+     *    ```
+     * 2. Send this JSON to your server endpoint (e.g., POST to /api/verify-passkey-registration)
+     * 3. On your server:
+     *    - Verify the WebAuthn registration response using a library like @simplewebauthn/server
+     *    - Store the credential ID and public key for the user
+     *    - Create a Firebase custom token using the Firebase Admin SDK
+     *    - Return the custom token to the client
+     * 4. Create a Firebase credential using the custom token:
+     *    ```kotlin
+     *    return FirebaseAuth.getInstance().signInWithCustomToken(customToken).await().user
+     *    ```
+     *
+     * @param response The passkey registration response from Android Credential Manager
+     * @return Firebase AuthCredential that can be used to link or sign in
+     * @throws AuthException.UnknownException until this method is properly implemented
      */
     private fun createFirebaseCredentialFromPasskey(
         response: CreatePublicKeyCredentialResponse
     ): AuthCredential {
-        // This is a placeholder implementation.
-        // In a real implementation, you would need to:
-        // 1. Extract the registration response data
-        // 2. Send it to your server for verification
-        // 3. Have the server create a Firebase custom token
-        // 4. Use the custom token to create an AuthCredential
-        throw NotImplementedError(
-            "Passkey to Firebase credential conversion requires server-side implementation"
+        // TODO: Replace this with your server verification implementation
+        throw AuthException.UnknownException(
+            message = "Passkey-to-Firebase credential conversion is not yet implemented. " +
+                    "You must set up server-side WebAuthn verification and Firebase custom token generation. " +
+                    "See the method documentation for implementation details."
         )
     }
 
     /**
-     * Creates a Firebase credential from a passkey authentication result.
+     * Converts a passkey authentication response to a Firebase credential.
      *
-     * This is an internal helper method that converts the passkey authentication
-     * assertion into a format suitable for Firebase Authentication.
+     * **TODO: Implement this method with your server-side verification.**
+     *
+     * To complete this method, you need to:
+     * 1. Extract the authentication assertion from the credential:
+     *    ```kotlin
+     *    val authenticationResponseJson = credential.authenticationResponseJson
+     *    ```
+     * 2. Send this JSON to your server endpoint (e.g., POST to /api/verify-passkey-auth)
+     * 3. On your server:
+     *    - Verify the WebAuthn authentication assertion using a library like @simplewebauthn/server
+     *    - Validate the signature against the stored public key
+     *    - Create a Firebase custom token using the Firebase Admin SDK
+     *    - Return the custom token to the client
+     * 4. Create a Firebase credential using the custom token:
+     *    ```kotlin
+     *    return FirebaseAuth.getInstance().signInWithCustomToken(customToken).await().user
+     *    ```
+     *
+     * @param credential The passkey authentication credential from Android Credential Manager
+     * @return Firebase AuthCredential that can be used to sign in
+     * @throws AuthException.UnknownException until this method is properly implemented
      */
     private fun createFirebaseCredentialFromPasskeyAuth(
         credential: PublicKeyCredential
     ): AuthCredential {
-        // This is a placeholder implementation.
-        // In a real implementation, you would need to:
-        // 1. Extract the authentication assertion
-        // 2. Send it to your server for verification
-        // 3. Have the server create a Firebase custom token
-        // 4. Use the custom token to create an AuthCredential
-        throw NotImplementedError(
-            "Passkey authentication to Firebase credential conversion requires server-side implementation"
+        // TODO: Replace this with your server verification implementation
+        throw AuthException.UnknownException(
+            message = "Passkey authentication-to-Firebase credential conversion is not yet implemented. " +
+                    "You must set up server-side WebAuthn verification and Firebase custom token generation. " +
+                    "See the method documentation for implementation details."
         )
     }
 
@@ -367,16 +425,23 @@ class PasskeyAuthHandler(
         /**
          * Creates a JSON request for passkey registration.
          *
-         * This is a helper method to generate the required JSON format for passkey registration.
-         * In a production app, this should be generated by your server.
+         * **WARNING: For testing/development only. Production apps should generate this on the server.**
          *
-         * @param challenge The base64-encoded challenge from your server
-         * @param userId The user's unique identifier
-         * @param userName The user's username (typically email)
-         * @param displayName The user's display name
-         * @param rpId The Relying Party ID (typically your domain)
-         * @param rpName The Relying Party name
-         * @return JSON string suitable for [registerPasskey]
+         * This helper method generates a WebAuthn PublicKeyCredentialCreationOptions JSON.
+         * However, in production:
+         * - The challenge MUST be generated on your server with cryptographically secure randomness
+         * - The server should persist the challenge to verify the response later
+         * - The server controls security parameters (timeout, attestation requirements, etc.)
+         *
+         * This client-side method is provided for testing and prototyping only.
+         *
+         * @param challenge Base64-encoded challenge (should come from your server)
+         * @param userId Unique user identifier
+         * @param userName Username (typically email address)
+         * @param displayName User's display name
+         * @param rpId Relying Party ID (your domain, e.g., "example.com")
+         * @param rpName Relying Party name (your app name)
+         * @return WebAuthn PublicKeyCredentialCreationOptions as JSON string
          */
         @JvmStatic
         fun createRegistrationRequestJson(
@@ -387,7 +452,7 @@ class PasskeyAuthHandler(
             rpId: String,
             rpName: String
         ): String {
-            val request = JSONObject().apply {
+            return JSONObject().apply {
                 put("challenge", challenge)
                 put("rp", JSONObject().apply {
                     put("name", rpName)
@@ -399,49 +464,56 @@ class PasskeyAuthHandler(
                     put("displayName", displayName)
                 })
                 put("pubKeyCredParams", org.json.JSONArray().apply {
+                    // ES256 (preferred) - ECDSA with SHA-256
                     put(JSONObject().apply {
                         put("type", "public-key")
-                        put("alg", -7) // ES256
+                        put("alg", -7)
                     })
+                    // RS256 (fallback) - RSASSA-PKCS1-v1_5 with SHA-256
                     put(JSONObject().apply {
                         put("type", "public-key")
-                        put("alg", -257) // RS256
+                        put("alg", -257)
                     })
                 })
-                put("timeout", 60000)
-                put("attestation", "none")
+                put("timeout", 60000) // 60 seconds
+                put("attestation", "none") // Don't require attestation for privacy
                 put("authenticatorSelection", JSONObject().apply {
-                    put("authenticatorAttachment", "platform")
-                    put("requireResidentKey", true)
+                    put("authenticatorAttachment", "platform") // Device-bound passkey
+                    put("requireResidentKey", true) // Discoverable credential
                     put("residentKey", "required")
-                    put("userVerification", "required")
+                    put("userVerification", "required") // Biometric or PIN required
                 })
-            }
-            return request.toString()
+            }.toString()
         }
 
         /**
          * Creates a JSON request for passkey authentication.
          *
-         * This is a helper method to generate the required JSON format for passkey authentication.
-         * In a production app, this should be generated by your server.
+         * **WARNING: For testing/development only. Production apps should generate this on the server.**
          *
-         * @param challenge The base64-encoded challenge from your server
-         * @param rpId The Relying Party ID (typically your domain)
-         * @return JSON string suitable for [authenticateWithPasskey]
+         * This helper method generates a WebAuthn PublicKeyCredentialRequestOptions JSON.
+         * However, in production:
+         * - The challenge MUST be generated on your server with cryptographically secure randomness
+         * - The server should persist the challenge to verify the response later
+         * - The server may want to specify allowed credentials for better UX
+         *
+         * This client-side method is provided for testing and prototyping only.
+         *
+         * @param challenge Base64-encoded challenge (should come from your server)
+         * @param rpId Relying Party ID (your domain, e.g., "example.com")
+         * @return WebAuthn PublicKeyCredentialRequestOptions as JSON string
          */
         @JvmStatic
         fun createAuthenticationRequestJson(
             challenge: String,
             rpId: String
         ): String {
-            val request = JSONObject().apply {
+            return JSONObject().apply {
                 put("challenge", challenge)
-                put("timeout", 60000)
+                put("timeout", 60000) // 60 seconds
                 put("rpId", rpId)
-                put("userVerification", "required")
-            }
-            return request.toString()
+                put("userVerification", "required") // Biometric or PIN required
+            }.toString()
         }
     }
 }
