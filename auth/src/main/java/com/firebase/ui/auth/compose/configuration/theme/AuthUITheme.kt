@@ -14,11 +14,15 @@
 
 package com.firebase.ui.auth.compose.configuration.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -106,9 +110,14 @@ class AuthUITheme(
          * pre-configured provider styles.
          */
         val Default = AuthUITheme(
-            colorScheme = lightColorScheme(
-                primary = Color(0xFFFFA611)
-            ),
+            colorScheme = lightColorScheme(),
+            typography = Typography(),
+            shapes = Shapes(),
+            providerStyles = ProviderStyleDefaults.default
+        )
+
+        val DefaultDark = AuthUITheme(
+            colorScheme = darkColorScheme(),
             typography = Typography(),
             shapes = Shapes(),
             providerStyles = ProviderStyleDefaults.default
@@ -129,12 +138,21 @@ class AuthUITheme(
                 providerStyles = providerStyles
             )
         }
+
+        @OptIn(ExperimentalMaterial3Api::class)
+        @get:Composable
+        val topAppBarColors
+            get() = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            )
     }
 }
 
 @Composable
 fun AuthUITheme(
-    theme: AuthUITheme = AuthUITheme.Default,
+    theme: AuthUITheme = if (isSystemInDarkTheme())
+        AuthUITheme.DefaultDark else AuthUITheme.Default,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

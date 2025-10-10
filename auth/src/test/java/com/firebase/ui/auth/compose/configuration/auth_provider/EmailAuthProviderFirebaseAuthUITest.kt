@@ -123,7 +123,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -165,7 +165,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             ).thenReturn(taskCompletionSource.task)
             val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
             val emailProvider = AuthProvider.Email(
-                actionCodeSettings = null,
+                emailLinkActionCodeSettings = null,
                 passwordValidationRules = emptyList()
             )
             val config = authUIConfiguration {
@@ -196,7 +196,7 @@ class EmailAuthProviderFirebaseAuthUITest {
     fun `createOrLinkUserWithEmailAndPassword - rejects weak password`() = runTest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -231,7 +231,7 @@ class EmailAuthProviderFirebaseAuthUITest {
     fun `createOrLinkUserWithEmailAndPassword - validates custom password rules`() = runTest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = listOf(PasswordRule.RequireUppercase)
         )
         val config = authUIConfiguration {
@@ -259,7 +259,7 @@ class EmailAuthProviderFirebaseAuthUITest {
     fun `createOrLinkUserWithEmailAndPassword - respects isNewAccountsAllowed setting`() = runTest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList(),
             isNewAccountsAllowed = false
         )
@@ -303,7 +303,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -348,7 +348,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -383,7 +383,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -419,7 +419,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -463,7 +463,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -501,7 +501,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -537,7 +537,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {
@@ -583,7 +583,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val emailProvider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = emptyList()
         )
         val config = authUIConfiguration {

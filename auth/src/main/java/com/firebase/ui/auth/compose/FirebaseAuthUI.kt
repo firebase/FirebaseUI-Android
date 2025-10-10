@@ -27,6 +27,11 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
 
@@ -153,53 +158,58 @@ class FirebaseAuthUI private constructor(
      *
      * @return A [Flow] of [AuthState] that emits authentication state changes
      */
-    fun authStateFlow(): Flow<AuthState> = callbackFlow {
-        // Set initial state based on current auth state
-        val initialState = auth.currentUser?.let { user ->
-            AuthState.Success(result = null, user = user, isNewUser = false)
-        } ?: AuthState.Idle
+    fun authStateFlow(): Flow<AuthState> {
+        // Create a flow from FirebaseAuth state listener
+        val firebaseAuthFlow = callbackFlow {
+            // Set initial state based on current auth state
+            val initialState = auth.currentUser?.let { user ->
+                AuthState.Success(result = null, user = user, isNewUser = false)
+            } ?: AuthState.Idle
 
-        trySend(initialState)
+            trySend(initialState)
 
-        // Create auth state listener
-        val authStateListener = AuthStateListener { firebaseAuth ->
-            val currentUser = firebaseAuth.currentUser
-            val state = if (currentUser != null) {
-                // Check if email verification is required
-                if (!currentUser.isEmailVerified &&
-                    currentUser.email != null &&
-                    currentUser.providerData.any { it.providerId == "password" }
-                ) {
-                    AuthState.RequiresEmailVerification(
-                        user = currentUser,
-                        email = currentUser.email!!
-                    )
+            // Create auth state listener
+            val authStateListener = AuthStateListener { firebaseAuth ->
+                val currentUser = firebaseAuth.currentUser
+                val state = if (currentUser != null) {
+                    // Check if email verification is required
+                    if (!currentUser.isEmailVerified &&
+                        currentUser.email != null &&
+                        currentUser.providerData.any { it.providerId == "password" }
+                    ) {
+                        AuthState.RequiresEmailVerification(
+                            user = currentUser,
+                            email = currentUser.email!!
+                        )
+                    } else {
+                        AuthState.Success(
+                            result = null,
+                            user = currentUser,
+                            isNewUser = false
+                        )
+                    }
                 } else {
-                    AuthState.Success(
-                        result = null,
-                        user = currentUser,
-                        isNewUser = false
-                    )
+                    AuthState.Idle
                 }
-            } else {
-                AuthState.Idle
+                trySend(state)
             }
-            trySend(state)
-        }
 
-        // Add listener
-        auth.addAuthStateListener(authStateListener)
+            // Add listener
+            auth.addAuthStateListener(authStateListener)
+
+            // Remove listener when flow collection is cancelled
+            awaitClose {
+                auth.removeAuthStateListener(authStateListener)
+            }
+        }
 
         // Also observe internal state changes
-        _authStateFlow.value.let { currentState ->
-            if (currentState !is AuthState.Idle && currentState !is AuthState.Success) {
-                trySend(currentState)
-            }
-        }
-
-        // Remove listener when flow collection is cancelled
-        awaitClose {
-            auth.removeAuthStateListener(authStateListener)
+        return combine(
+            firebaseAuthFlow,
+            _authStateFlow
+        ) { firebaseState, internalState ->
+            // Prefer non-idle internal states (like PasswordResetLinkSent, Error, etc.)
+            if (internalState !is AuthState.Idle) internalState else firebaseState
         }
     }
 

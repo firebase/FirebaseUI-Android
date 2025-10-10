@@ -65,7 +65,7 @@ import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringPr
 fun ErrorRecoveryDialog(
     error: AuthException,
     stringProvider: AuthUIStringProvider,
-    onRetry: () -> Unit,
+    onRetry: (AuthException) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     onRecover: ((AuthException) -> Unit)? = null,
@@ -90,7 +90,7 @@ fun ErrorRecoveryDialog(
             if (isRecoverable(error)) {
                 TextButton(
                     onClick = {
-                        onRecover?.invoke(error) ?: onRetry()
+                        onRecover?.invoke(error) ?: onRetry(error)
                     }
                 ) {
                     Text(

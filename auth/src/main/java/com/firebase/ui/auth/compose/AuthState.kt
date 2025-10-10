@@ -243,6 +243,15 @@ abstract class AuthState private constructor() {
         override fun toString(): String = "AuthState.PasswordResetLinkSent"
     }
 
+    /**
+     * Email sign in link has been sent to the user's email.
+     */
+    class EmailSignInLinkSent : AuthState() {
+        override fun equals(other: Any?): Boolean = other is EmailSignInLinkSent
+        override fun hashCode(): Int = javaClass.hashCode()
+        override fun toString(): String = "AuthState.EmailSignInLinkSent"
+    }
+
     companion object {
         /**
          * Creates an Idle state instance.

@@ -44,7 +44,7 @@ class AuthUIConfigurationBuilder {
     var tosUrl: String? = null
     var privacyPolicyUrl: String? = null
     var logo: ImageVector? = null
-    var actionCodeSettings: ActionCodeSettings? = null
+    var passwordResetActionCodeSettings: ActionCodeSettings? = null
     var isNewEmailAccountsAllowed: Boolean = true
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
@@ -85,17 +85,7 @@ class AuthUIConfigurationBuilder {
         // Provider specific validations
         providers.forEach { provider ->
             when (provider) {
-                is AuthProvider.Email -> {
-                    provider.validate()
-
-                    if (isAnonymousUpgradeEnabled && provider.isEmailLinkSignInEnabled) {
-                        check(provider.isEmailLinkForceSameDeviceEnabled) {
-                            "You must force the same device flow when using email link sign in " +
-                                    "with anonymous user upgrade"
-                        }
-                    }
-                }
-
+                is AuthProvider.Email -> provider.validate(isAnonymousUpgradeEnabled)
                 is AuthProvider.Phone -> provider.validate()
                 is AuthProvider.Google -> provider.validate(context)
                 is AuthProvider.Facebook -> provider.validate(context)
@@ -116,7 +106,7 @@ class AuthUIConfigurationBuilder {
             tosUrl = tosUrl,
             privacyPolicyUrl = privacyPolicyUrl,
             logo = logo,
-            actionCodeSettings = actionCodeSettings,
+            passwordResetActionCodeSettings = passwordResetActionCodeSettings,
             isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
             isDisplayNameRequired = isDisplayNameRequired,
             isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown
@@ -184,9 +174,9 @@ class AuthUIConfiguration(
     val logo: ImageVector? = null,
 
     /**
-     * Configuration for email link sign-in.
+     * Configuration for sending email reset link.
      */
-    val actionCodeSettings: ActionCodeSettings? = null,
+    val passwordResetActionCodeSettings: ActionCodeSettings? = null,
 
     /**
      * Allows new email accounts to be created. Defaults to true.
