@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">روش احراز هویت را انتخاب کنید</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">تأیید پیامک را راه‌اندازی کنید</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">برنامه احراز هویت را راه‌اندازی کنید</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">کد خود را تأیید کنید</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">کدهای بازیابی خود را ذخیره کنید</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">برای ایمن کردن حساب خود، روش دوم احراز هویت را انتخاب کنید</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">شماره تلفن خود را وارد کنید تا کدهای تأیید دریافت کنید</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">کد QR را با برنامه احراز هویت خود اسکن کنید</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">کد ارسال شده به تلفن خود را وارد کنید</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">کد برنامه احراز هویت خود را وارد کنید</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">کد تأیید خود را وارد کنید</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">این کدها را در مکانی امن ذخیره کنید. اگر دسترسی به روش احراز هویت خود را از دست دادید، می‌توانید از آن‌ها برای ورود استفاده کنید.</string>
+
 </resources>

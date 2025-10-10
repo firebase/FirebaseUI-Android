@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">追加の認証が必要です。多要素認証を完了してください。</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">アカウントをリンクする必要があります。別のサインイン方法をお試しください。</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">認証がキャンセルされました。準備ができたら再度お試しください。</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">認証方法を選択</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS認証を設定</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">認証アプリを設定</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">コードを確認</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">復元コードを保存</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">アカウントを保護するため、2つ目の認証方法を選択してください</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">確認コードを受け取るために電話番号を入力してください</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">認証アプリでQRコードをスキャンしてください</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">電話に送信されたコードを入力してください</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">認証アプリのコードを入力してください</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">確認コードを入力してください</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">これらのコードを安全な場所に保管してください。認証方法にアクセスできなくなった場合、これらを使用してログインできます。</string>
+
 </resources>

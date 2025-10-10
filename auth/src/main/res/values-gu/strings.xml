@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">પ્રમાણીકરણ પદ્ધતિ પસંદ કરો</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS ચકાસણી સેટ કરો</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">પ્રમાણીકરણ ઍપ સેટ કરો</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">તમારો કોડ ચકાસો</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">તમારા પુનઃપ્રાપ્તિ કોડ સાચવો</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">તમારા એકાઉન્ટને સુરક્ષિત કરવા બીજી પ્રમાણીકરણ પદ્ધતિ પસંદ કરો</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ચકાસણી કોડ મેળવવા તમારો ફોન નંબર દાખલ કરો</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">તમારી પ્રમાણીકરણ ઍપથી QR કોડ સ્કેન કરો</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">તમારા ફોન પર મોકલવામાં આવેલો કોડ દાખલ કરો</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">તમારી પ્રમાણીકરણ ઍપનો કોડ દાખલ કરો</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">તમારો ચકાસણી કોડ દાખલ કરો</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">આ કોડને સુરક્ષિત સ્થળે સંગ્રહિત કરો. જો તમે તમારી પ્રમાણીકરણ પદ્ધતિની ઍક્સેસ ગુમાવો છો, તો તમે સાઇન ઇન કરવા માટે તેનો ઉપયોગ કરી શકો છો.</string>
+
 </resources>

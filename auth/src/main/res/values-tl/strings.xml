@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Kailangan ang karagdagang pagpapatotoo. Mangyaring kumpletuhin ang multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kailangang i-link ang account. Mangyaring subukan ang ibang paraan ng pag-sign in.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Ang pagpapatotoo ay nakansela. Mangyaring subukan muli kapag handa ka na.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Piliin ang Paraan ng Authentication</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">I-set Up ang SMS Verification</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">I-set Up ang Authenticator App</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">I-verify ang Iyong Code</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">I-save ang Iyong Mga Recovery Code</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pumili ng pangalawang paraan ng authentication para protektahan ang iyong account</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ilagay ang iyong numero ng telepono para makatanggap ng mga verification code</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">I-scan ang QR code gamit ang iyong authenticator app</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Ilagay ang code na ipinadala sa iyong telepono</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Ilagay ang code mula sa iyong authenticator app</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ilagay ang iyong verification code</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">I-imbak ang mga code na ito sa ligtas na lugar. Magagamit mo ang mga ito para mag-sign in kung mawawala ang access sa iyong paraan ng authentication.</string>
+
 </resources>

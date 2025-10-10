@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžaduje sa dodatočné overenie. Dokončite prosím viacfaktorové overenie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Účet je potrebné prepojiť. Skúste iný spôsob prihlásenia.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Overenie bolo zrušené. Skúste znova keď budete pripravení.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Vyberte metódu overenia</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastaviť overenie SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastaviť overovaciu aplikáciu</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Overte svoj kód</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Uložte obnovovacie kódy</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Vyberte druhú metódu overenia na zabezpečenie účtu</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Zadajte telefónne číslo na príjem overovacích kódov</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Naskenujte QR kód pomocou overovacej aplikácie</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Zadajte kód odoslaný na váš telefón</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Zadajte kód z overovacej aplikácie</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Zadajte overovací kód</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Uložte tieto kódy na bezpečnom mieste. Môžete ich použiť na prihlásenie, ak stratíte prístup k metóde overenia.</string>
+
 </resources>

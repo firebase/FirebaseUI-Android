@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Необходима е допълнителна проверка. Моля, завършете многофакторното удостоверяване.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Акаунтът трябва да бъде свързан. Опитайте различен метод за влизане.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Удостоверяването беше отменено. Опитайте отново, когато сте готови.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Изберете метод за удостоверяване</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Настройте SMS проверка</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Настройте приложение за удостоверяване</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Потвърдете кода си</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Запазете кодовете за възстановяване</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Изберете втори метод за удостоверяване, за да защитите акаунта си</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Въведете телефонния си номер, за да получавате кодове за проверка</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Сканирайте QR кода с приложението си за удостоверяване</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Въведете кода, изпратен на телефона ви</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Въведете кода от приложението си за удостоверяване</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Въведете кода си за проверка</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Съхранявайте тези кодове на сигурно място. Можете да ги използвате за влизане, ако загубите достъп до метода си за удостоверяване.</string>
+
 </resources>

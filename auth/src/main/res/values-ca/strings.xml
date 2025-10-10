@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Trieu el mètode d\'autenticació</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configureu la verificació per SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configureu l\'aplicació d\'autenticació</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiqueu el codi</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Deseu els codis de recuperació</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleccioneu un segon mètode d\'autenticació per protegir el vostre compte</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Introduïu el vostre número de telèfon per rebre codis de verificació</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Escanegeu el codi QR amb la vostra aplicació d\'autenticació</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Introduïu el codi enviat al vostre telèfon</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Introduïu el codi de la vostra aplicació d\'autenticació</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Introduïu el vostre codi de verificació</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Deseu aquests codis en un lloc segur. Podeu utilitzar-los per iniciar sessió si perdeu l\'accés al vostre mètode d\'autenticació.</string>
+
 </resources>

@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Chọn phương thức xác thực</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Thiết lập xác minh qua SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Thiết lập ứng dụng xác thực</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Xác minh mã của bạn</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Lưu mã khôi phục của bạn</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Chọn phương thức xác thực thứ hai để bảo mật tài khoản của bạn</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Nhập số điện thoại của bạn để nhận mã xác minh</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Quét mã QR bằng ứng dụng xác thực của bạn</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Nhập mã được gửi đến điện thoại của bạn</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Nhập mã từ ứng dụng xác thực của bạn</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Nhập mã xác minh của bạn</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Lưu trữ các mã này ở nơi an toàn. Bạn có thể sử dụng chúng để đăng nhập nếu mất quyền truy cập vào phương thức xác thực của mình.</string>
+
 </resources>

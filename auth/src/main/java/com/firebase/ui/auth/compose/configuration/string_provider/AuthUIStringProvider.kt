@@ -224,4 +224,42 @@ interface AuthUIStringProvider {
 
     /** Unknown error recovery message */
     val unknownErrorRecoveryMessage: String
+
+    // MFA Enrollment Step Titles
+    /** Title for MFA factor selection step */
+    val mfaStepSelectFactorTitle: String
+
+    /** Title for SMS MFA configuration step */
+    val mfaStepConfigureSmsTitle: String
+
+    /** Title for TOTP MFA configuration step */
+    val mfaStepConfigureTotpTitle: String
+
+    /** Title for MFA verification step */
+    val mfaStepVerifyFactorTitle: String
+
+    /** Title for recovery codes step */
+    val mfaStepShowRecoveryCodesTitle: String
+
+    // MFA Enrollment Helper Text
+    /** Helper text for selecting MFA factor */
+    val mfaStepSelectFactorHelper: String
+
+    /** Helper text for SMS configuration */
+    val mfaStepConfigureSmsHelper: String
+
+    /** Helper text for TOTP configuration */
+    val mfaStepConfigureTotpHelper: String
+
+    /** Helper text for SMS verification */
+    val mfaStepVerifyFactorSmsHelper: String
+
+    /** Helper text for TOTP verification */
+    val mfaStepVerifyFactorTotpHelper: String
+
+    /** Generic helper text for factor verification */
+    val mfaStepVerifyFactorGenericHelper: String
+
+    /** Helper text for recovery codes */
+    val mfaStepShowRecoveryCodesHelper: String
 }

@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligere verifisering kreves. Vennligst fullfør multifaktorgodkjenning.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontoen må kobles. Prøv en annen påloggingsmetode.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Godkjenning ble avbrutt. Prøv igjen når du er klar.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Velg autentiseringsmetode</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurer SMS-bekreftelse</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurer autentiseringsapp</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Bekreft koden din</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Lagre gjenopprettingskodene dine</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Velg en andre autentiseringsmetode for å sikre kontoen din</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Skriv inn telefonnummeret ditt for å motta bekreftelseskoder</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Skann QR-koden med autentiseringsappen din</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Skriv inn koden som ble sendt til telefonen din</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Skriv inn koden fra autentiseringsappen din</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Skriv inn bekreftelseskoden din</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Lagre disse kodene på et sikkert sted. Du kan bruke dem til å logge inn hvis du mister tilgang til autentiseringsmetoden din.</string>
+
 </resources>

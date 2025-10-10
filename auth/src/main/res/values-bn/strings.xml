@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">প্রমাণীকরণ পদ্ধতি চয়ন করুন</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS যাচাইকরণ সেট আপ করুন</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">প্রমাণীকরণকারী অ্যাপ সেট আপ করুন</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">আপনার কোড যাচাই করুন</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">আপনার পুনরুদ্ধার কোড সংরক্ষণ করুন</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">আপনার অ্যাকাউন্ট সুরক্ষিত করতে দ্বিতীয় প্রমাণীকরণ পদ্ধতি নির্বাচন করুন</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">যাচাইকরণ কোড পেতে আপনার ফোন নম্বর লিখুন</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">আপনার প্রমাণীকরণকারী অ্যাপ দিয়ে QR কোড স্ক্যান করুন</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">আপনার ফোনে পাঠানো কোড লিখুন</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">আপনার প্রমাণীকরণকারী অ্যাপ থেকে কোড লিখুন</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">আপনার যাচাইকরণ কোড লিখুন</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">এই কোডগুলি একটি নিরাপদ স্থানে সংরক্ষণ করুন। আপনি যদি আপনার প্রমাণীকরণ পদ্ধতিতে অ্যাক্সেস হারান তবে সাইন ইন করতে এগুলি ব্যবহার করতে পারেন।</string>
+
 </resources>

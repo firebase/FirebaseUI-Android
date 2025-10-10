@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">בחר שיטת אימות</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">הגדר אימות SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">הגדר אפליקציית מאמת</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">אמת את הקוד שלך</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">שמור את קודי השחזור שלך</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">בחר שיטת אימות שנייה כדי לאבטח את החשבון שלך</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">הזן את מספר הטלפון שלך כדי לקבל קודי אימות</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">סרוק את קוד ה-QR באמצעות אפליקציית המאמת שלך</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">הזן את הקוד שנשלח לטלפון שלך</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">הזן את הקוד מאפליקציית המאמת שלך</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">הזן את קוד האימות שלך</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">שמור קודים אלה במקום בטוח. תוכל להשתמש בהם כדי להיכנס אם תאבד גישה לשיטת האימות שלך.</string>
+
 </resources>

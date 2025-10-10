@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Требуется дополнительная проверка. Пожалуйста, завершите многофакторную аутентификацию.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Необходимо связать аккаунт. Попробуйте другой способ входа.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Аутентификация была отменена. Повторите попытку, когда будете готовы.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Выберите способ аутентификации</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Настроить SMS-подтверждение</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Настроить приложение-аутентификатор</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Подтвердите код</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Сохраните коды восстановления</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Выберите второй способ аутентификации для защиты аккаунта</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Введите номер телефона для получения кодов подтверждения</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Отсканируйте QR-код с помощью приложения-аутентификатора</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Введите код, отправленный на ваш телефон</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Введите код из приложения-аутентификатора</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Введите код подтверждения</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Сохраните эти коды в безопасном месте. Вы можете использовать их для входа, если потеряете доступ к способу аутентификации.</string>
+
 </resources>
