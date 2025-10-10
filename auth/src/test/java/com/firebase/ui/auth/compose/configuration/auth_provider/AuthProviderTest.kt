@@ -34,7 +34,7 @@ class AuthProviderTest {
     @Test
     fun `email provider with valid configuration should succeed`() {
         val provider = AuthProvider.Email(
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = listOf()
         )
 
@@ -50,7 +50,7 @@ class AuthProviderTest {
 
         val provider = AuthProvider.Email(
             isEmailLinkSignInEnabled = true,
-            actionCodeSettings = actionCodeSettings,
+            emailLinkActionCodeSettings = actionCodeSettings,
             passwordValidationRules = listOf()
         )
 
@@ -61,7 +61,7 @@ class AuthProviderTest {
     fun `email provider with email link enabled but null action code settings should throw`() {
         val provider = AuthProvider.Email(
             isEmailLinkSignInEnabled = true,
-            actionCodeSettings = null,
+            emailLinkActionCodeSettings = null,
             passwordValidationRules = listOf()
         )
 
@@ -85,7 +85,7 @@ class AuthProviderTest {
 
         val provider = AuthProvider.Email(
             isEmailLinkSignInEnabled = true,
-            actionCodeSettings = actionCodeSettings,
+            emailLinkActionCodeSettings = actionCodeSettings,
             passwordValidationRules = listOf()
         )
 
@@ -319,7 +319,7 @@ class AuthProviderTest {
         val providers = listOf(
             AuthProvider.Anonymous,
             AuthProvider.Email(
-                actionCodeSettings = null,
+                emailLinkActionCodeSettings = null,
                 passwordValidationRules = listOf()
             )
         )

@@ -1,10 +1,26 @@
+/*
+ * Copyright 2025 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.firebase.ui.auth.compose.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -75,6 +91,7 @@ fun AuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: @Composable (() -> Unit)? = null,
+    isSecureTextField: Boolean = false,
     enabled: Boolean = true,
     isError: Boolean? = null,
     errorMessage: String? = null,
@@ -85,11 +102,11 @@ fun AuthTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val isSecureTextField = validator is PasswordValidator
     var passwordVisible by remember { mutableStateOf(false) }
 
     TextField(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxWidth(),
         value = value,
         onValueChange = { newValue ->
             onValueChange(newValue)
@@ -150,7 +167,8 @@ internal fun PreviewAuthTextField() {
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -184,6 +202,7 @@ internal fun PreviewAuthTextField() {
         AuthTextField(
             value = passwordTextValue.value,
             validator = passwordValidator,
+            isSecureTextField = true,
             label = {
                 Text("Password")
             },

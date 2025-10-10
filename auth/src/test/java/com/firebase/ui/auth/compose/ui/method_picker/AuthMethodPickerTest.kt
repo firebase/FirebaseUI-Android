@@ -56,7 +56,10 @@ class AuthMethodPickerTest {
         val providers = listOf(
             AuthProvider.Google(scopes = emptyList(), serverClientId = null),
             AuthProvider.Facebook(),
-            AuthProvider.Email(actionCodeSettings = null, passwordValidationRules = emptyList())
+            AuthProvider.Email(
+                emailLinkActionCodeSettings = null,
+                passwordValidationRules = emptyList()
+            )
         )
 
         composeTestRule.setContent {
@@ -277,7 +280,10 @@ class AuthMethodPickerTest {
             AuthProvider.Microsoft(tenant = null, customParameters = emptyMap()),
             AuthProvider.Yahoo(customParameters = emptyMap()),
             AuthProvider.Apple(locale = null, customParameters = emptyMap()),
-            AuthProvider.Email(actionCodeSettings = null, passwordValidationRules = emptyList()),
+            AuthProvider.Email(
+                emailLinkActionCodeSettings = null,
+                passwordValidationRules = emptyList()
+            ),
             AuthProvider.Phone(
                 defaultNumber = null,
                 defaultCountryCode = null,

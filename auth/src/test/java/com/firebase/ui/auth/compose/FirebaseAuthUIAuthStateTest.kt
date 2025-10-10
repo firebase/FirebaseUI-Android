@@ -287,25 +287,31 @@ class FirebaseAuthUIAuthStateTest {
         // Given initial idle state
         `when`(mockFirebaseAuth.currentUser).thenReturn(null)
 
+        // Start collecting the flow to capture initial state
+        val states = mutableListOf<AuthState>()
+        val job = launch {
+            authUI.authStateFlow().take(3).toList(states)
+        }
+
+        // Wait for initial state to be collected
+        delay(100)
+
         // When updating auth state internally
         authUI.updateAuthState(AuthState.Loading("Signing in..."))
 
-        // Then the flow should reflect the updated state
-        val states = mutableListOf<AuthState>()
-        val job = launch {
-            authUI.authStateFlow().take(2).toList(states)
-        }
+        // Wait for state update to propagate
+        delay(100)
 
         // Update state again
-        delay(100)
         authUI.updateAuthState(AuthState.Cancelled)
 
         job.join()
 
-        // The first state should be Idle (initial), second should be Loading
-        assertThat(states[0]).isEqualTo(AuthState.Idle)
-        // Note: The internal state update may not be immediately visible in the flow
-        // because the auth state listener overrides it
+        // Verify the emitted states
+        assertThat(states).hasSize(3)
+        assertThat(states[0]).isEqualTo(AuthState.Idle) // Initial state
+        assertThat(states[1]).isInstanceOf(AuthState.Loading::class.java) // After first update
+        assertThat(states[2]).isEqualTo(AuthState.Cancelled) // After second update
     }
 
     // =============================================================================================
