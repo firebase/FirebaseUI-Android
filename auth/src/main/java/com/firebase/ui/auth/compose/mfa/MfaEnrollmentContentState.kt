@@ -87,62 +87,44 @@ data class MfaEnrollmentContentState(
     val onBackClick: () -> Unit = {},
 
     // SelectFactor step
-    /** (SelectFactor) List of MFA factors the user can choose from. */
     val availableFactors: List<MfaFactor> = emptyList(),
 
-    /** (SelectFactor) Callback when user selects an MFA factor. */
     val onFactorSelected: (MfaFactor) -> Unit = {},
 
-    /** (SelectFactor) Skip callback. `null` if enrollment is required. */
     val onSkipClick: (() -> Unit)? = null,
 
     // ConfigureSms step
-    /** (ConfigureSms) Current phone number value (without country code prefix). */
     val phoneNumber: String = "",
 
-    /** (ConfigureSms) Callback when phone number changes. */
     val onPhoneNumberChange: (String) -> Unit = {},
 
-    /** (ConfigureSms) Currently selected country (dial code, country code, flag). */
     val selectedCountry: CountryData? = null,
 
-    /** (ConfigureSms) Callback when user selects a different country. */
     val onCountrySelected: (CountryData) -> Unit = {},
 
-    /** (ConfigureSms) Callback to send SMS verification code. */
     val onSendSmsCodeClick: () -> Unit = {},
 
     // ConfigureTotp step
-    /** (ConfigureTotp) TOTP secret containing shared key. Use to display or access Firebase secret. */
     val totpSecret: TotpSecret? = null,
 
-    /** (ConfigureTotp) QR code URI for authenticator apps. */
     val totpQrCodeUrl: String? = null,
 
-    /** (ConfigureTotp) Callback to proceed to verification after QR scan. */
     val onContinueToVerifyClick: () -> Unit = {},
 
     // VerifyFactor step
-    /** (VerifyFactor) Current verification code value (6 digits). */
     val verificationCode: String = "",
 
-    /** (VerifyFactor) Callback when verification code changes. */
     val onVerificationCodeChange: (String) -> Unit = {},
 
-    /** (VerifyFactor) Callback to verify code and finalize enrollment. */
     val onVerifyClick: () -> Unit = {},
 
-    /** (VerifyFactor) The factor being verified (SMS or TOTP). Use to customize messages. */
     val selectedFactor: MfaFactor? = null,
 
-    /** (VerifyFactor, SMS only) Callback to resend SMS code. `null` for TOTP. */
     val onResendCodeClick: (() -> Unit)? = null,
 
     // ShowRecoveryCodes step
-    /** (ShowRecoveryCodes) One-time backup codes to save. Only if recovery codes are enabled. */
     val recoveryCodes: List<String>? = null,
 
-    /** (ShowRecoveryCodes) Callback when user confirms codes are saved. Completes enrollment. */
     val onCodesSavedClick: () -> Unit = {}
 ) {
     /**
