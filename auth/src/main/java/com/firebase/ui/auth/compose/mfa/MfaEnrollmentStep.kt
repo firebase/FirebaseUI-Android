@@ -14,6 +14,9 @@
 
 package com.firebase.ui.auth.compose.mfa
 
+import com.firebase.ui.auth.compose.configuration.MfaFactor
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+
 /**
  * Represents the different steps in the Multi-Factor Authentication (MFA) enrollment flow.
  *
@@ -55,4 +58,41 @@ enum class MfaEnrollmentStep {
      * This step only appears if recovery codes are enabled in the configuration.
      */
     ShowRecoveryCodes
+}
+
+/**
+ * Returns the localized title text for this enrollment step.
+ *
+ * @param stringProvider The string provider for localized strings
+ * @return The localized title for this step
+ */
+fun MfaEnrollmentStep.getTitle(stringProvider: AuthUIStringProvider): String = when (this) {
+    MfaEnrollmentStep.SelectFactor -> stringProvider.mfaStepSelectFactorTitle
+    MfaEnrollmentStep.ConfigureSms -> stringProvider.mfaStepConfigureSmsTitle
+    MfaEnrollmentStep.ConfigureTotp -> stringProvider.mfaStepConfigureTotpTitle
+    MfaEnrollmentStep.VerifyFactor -> stringProvider.mfaStepVerifyFactorTitle
+    MfaEnrollmentStep.ShowRecoveryCodes -> stringProvider.mfaStepShowRecoveryCodesTitle
+}
+
+/**
+ * Returns localized helper text providing instructions for this step.
+ *
+ * @param stringProvider The string provider for localized strings
+ * @param selectedFactor The MFA factor being configured or verified. Used for [MfaEnrollmentStep.VerifyFactor]
+ *                       to provide factor-specific instructions. Ignored for other steps.
+ * @return Localized instructional text appropriate for this step
+ */
+fun MfaEnrollmentStep.getHelperText(
+    stringProvider: AuthUIStringProvider,
+    selectedFactor: MfaFactor? = null
+): String = when (this) {
+    MfaEnrollmentStep.SelectFactor -> stringProvider.mfaStepSelectFactorHelper
+    MfaEnrollmentStep.ConfigureSms -> stringProvider.mfaStepConfigureSmsHelper
+    MfaEnrollmentStep.ConfigureTotp -> stringProvider.mfaStepConfigureTotpHelper
+    MfaEnrollmentStep.VerifyFactor -> when (selectedFactor) {
+        MfaFactor.Sms -> stringProvider.mfaStepVerifyFactorSmsHelper
+        MfaFactor.Totp -> stringProvider.mfaStepVerifyFactorTotpHelper
+        null -> stringProvider.mfaStepVerifyFactorGenericHelper
+    }
+    MfaEnrollmentStep.ShowRecoveryCodes -> stringProvider.mfaStepShowRecoveryCodesHelper
 }

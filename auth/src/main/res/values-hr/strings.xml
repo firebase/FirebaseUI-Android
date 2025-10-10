@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Potrebna je dodatna provjera. Molimo dovršite višefaktorsku provjeru identiteta.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Račun mora biti povezan. Pokušajte s drugim načinom prijave.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Provjera identiteta je otkazana. Pokušajte ponovno kad budete spremni.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Odaberite metodu provjere autentičnosti</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Postavite SMS provjeru</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Postavite aplikaciju za provjeru autentičnosti</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Potvrdite svoju šifru</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Spremite šifre za oporavak</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Odaberite drugu metodu provjere autentičnosti kako biste zaštitili svoj račun</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Unesite svoj telefonski broj kako biste primali šifre za potvrdu</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Skenirajte QR kôd svojom aplikacijom za provjeru autentičnosti</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Unesite šifru poslanu na vaš telefon</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Unesite šifru iz svoje aplikacije za provjeru autentičnosti</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Unesite svoju šifru za potvrdu</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Pohranite ove šifre na sigurno mjesto. Možete ih koristiti za prijavu ako izgubite pristup svojoj metodi provjere autentičnosti.</string>
+
 </resources>

@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">تصدیقی طریقہ منتخب کریں</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS تصدیق سیٹ اپ کریں</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">تصدیقی ایپ سیٹ اپ کریں</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">اپنا کوڈ تصدیق کریں</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">اپنے بازیافتی کوڈز محفوظ کریں</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">اپنے اکاؤنٹ کو محفوظ بنانے کے لیے دوسرا تصدیقی طریقہ منتخب کریں</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">تصدیقی کوڈز وصول کرنے کے لیے اپنا فون نمبر درج کریں</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">اپنی تصدیقی ایپ سے QR کوڈ اسکین کریں</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">اپنے فون پر بھیجا گیا کوڈ درج کریں</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">اپنی تصدیقی ایپ سے کوڈ درج کریں</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">اپنا تصدیقی کوڈ درج کریں</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">ان کوڈز کو محفوظ جگہ پر اسٹور کریں۔ اگر آپ اپنے تصدیقی طریقے تک رسائی کھو دیتے ہیں تو آپ سائن ان کرنے کے لیے ان کا استعمال کر سکتے ہیں۔</string>
+
 </resources>

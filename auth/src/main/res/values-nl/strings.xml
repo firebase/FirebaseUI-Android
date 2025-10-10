@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Aanvullende verificatie vereist. Voltooi de multi-factor authenticatie.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account moet worden gekoppeld. Probeer een andere inlogmethode.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authenticatie is geannuleerd. Probeer opnieuw wanneer u klaar bent.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Kies authenticatiemethode</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-verificatie instellen</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-app instellen</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code verifiëren</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Herstelcodes opslaan</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selecteer een tweede authenticatiemethode om je account te beveiligen</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Voer je telefoonnummer in om verificatiecodes te ontvangen</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Scan de QR-code met je authenticator-app</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Voer de code in die naar je telefoon is verzonden</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Voer de code uit je authenticator-app in</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Voer je verificatiecode in</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewaar deze codes op een veilige plek. Je kunt ze gebruiken om in te loggen als je geen toegang meer hebt tot je authenticatiemethode.</string>
+
 </resources>

@@ -213,4 +213,36 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_error_auth_cancelled_message)
     override val unknownErrorRecoveryMessage: String
         get() = localizedContext.getString(R.string.fui_error_unknown)
+
+    /**
+     * MFA Enrollment Step Titles
+     */
+    override val mfaStepSelectFactorTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_select_factor_title)
+    override val mfaStepConfigureSmsTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_configure_sms_title)
+    override val mfaStepConfigureTotpTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_configure_totp_title)
+    override val mfaStepVerifyFactorTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_title)
+    override val mfaStepShowRecoveryCodesTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_show_recovery_codes_title)
+
+    /**
+     * MFA Enrollment Helper Text
+     */
+    override val mfaStepSelectFactorHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_select_factor_helper)
+    override val mfaStepConfigureSmsHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_configure_sms_helper)
+    override val mfaStepConfigureTotpHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_configure_totp_helper)
+    override val mfaStepVerifyFactorSmsHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_sms_helper)
+    override val mfaStepVerifyFactorTotpHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_totp_helper)
+    override val mfaStepVerifyFactorGenericHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_generic_helper)
+    override val mfaStepShowRecoveryCodesHelper: String
+        get() = localizedContext.getString(R.string.fui_mfa_step_show_recovery_codes_helper)
 }

@@ -93,4 +93,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">추가 인증이 필요합니다. 다단계 인증을 완료해 주세요.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">계정을 연결해야 합니다. 다른 로그인 방법을 시도해 주세요.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">인증이 취소되었습니다. 준비가 되면 다시 시도해 주세요.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">인증 방법 선택</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS 인증 설정</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">인증 앱 설정</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">코드 확인</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">복구 코드 저장</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">계정을 보호하기 위해 두 번째 인증 방법을 선택하세요</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">인증 코드를 받을 전화번호를 입력하세요</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">인증 앱으로 QR 코드를 스캔하세요</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">휴대전화로 전송된 코드를 입력하세요</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">인증 앱의 코드를 입력하세요</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">인증 코드를 입력하세요</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">이 코드를 안전한 곳에 보관하세요. 인증 방법에 액세스할 수 없게 되면 이 코드를 사용하여 로그인할 수 있습니다.</string>
+
 </resources>

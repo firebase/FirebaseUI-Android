@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">அங்கீகார முறையைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS சரிபார்ப்பை அமைக்கவும்</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">அங்கீகரிப்பு ஆப்ஸை அமைக்கவும்</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">உங்கள் குறியீட்டைச் சரிபார்க்கவும்</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">உங்கள் மீட்டெடுப்பு குறியீடுகளைச் சேமிக்கவும்</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">உங்கள் கணக்கைப் பாதுகாக்க இரண்டாவது அங்கீகார முறையைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">சரிபார்ப்புக் குறியீடுகளைப் பெற உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">உங்கள் அங்கீகரிப்பு ஆப்ஸுடன் QR குறியீட்டை ஸ்கேன் செய்யவும்</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">உங்கள் தொலைபேசிக்கு அனுப்பப்பட்ட குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">உங்கள் அங்கீகரிப்பு ஆப்ஸிலிருந்து குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">உங்கள் சரிபார்ப்புக் குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">இந்தக் குறியீடுகளைப் பாதுகாப்பான இடத்தில் சேமிக்கவும். உங்கள் அங்கீகார முறைக்கான அணுகலை இழந்தால் உள்நுழைய இவற்றைப் பயன்படுத்தலாம்.</string>
+
 </resources>

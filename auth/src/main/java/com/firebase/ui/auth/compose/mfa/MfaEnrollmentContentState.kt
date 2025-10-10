@@ -158,34 +158,4 @@ data class MfaEnrollmentContentState(
      */
     val canGoBack: Boolean
         get() = step != MfaEnrollmentStep.SelectFactor
-
-    /**
-     * Returns the title text for the current step.
-     *
-     * This is a convenience method for providing default titles in custom UIs.
-     */
-    fun getStepTitle(): String = when (step) {
-        MfaEnrollmentStep.SelectFactor -> "Choose Authentication Method"
-        MfaEnrollmentStep.ConfigureSms -> "Set Up SMS Verification"
-        MfaEnrollmentStep.ConfigureTotp -> "Set Up Authenticator App"
-        MfaEnrollmentStep.VerifyFactor -> "Verify Your Code"
-        MfaEnrollmentStep.ShowRecoveryCodes -> "Save Your Recovery Codes"
-    }
-
-    /**
-     * Returns helper text for the current step.
-     *
-     * This is a convenience method for providing default instructions in custom UIs.
-     */
-    fun getStepHelperText(): String = when (step) {
-        MfaEnrollmentStep.SelectFactor -> "Select a second authentication method to secure your account"
-        MfaEnrollmentStep.ConfigureSms -> "Enter your phone number to receive verification codes"
-        MfaEnrollmentStep.ConfigureTotp -> "Scan the QR code with your authenticator app"
-        MfaEnrollmentStep.VerifyFactor -> when (selectedFactor) {
-            MfaFactor.Sms -> "Enter the code sent to your phone"
-            MfaFactor.Totp -> "Enter the code from your authenticator app"
-            null -> "Enter your verification code"
-        }
-        MfaEnrollmentStep.ShowRecoveryCodes -> "Store these codes in a safe place. You can use them to sign in if you lose access to your authentication method."
-    }
 }

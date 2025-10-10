@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Zusätzliche Verifizierung erforderlich. Bitte schließen Sie die Multi-Faktor-Authentifizierung ab.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Das Konto muss verknüpft werden. Bitte versuchen Sie eine andere Anmeldemethode.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Die Authentifizierung wurde abgebrochen. Bitte versuchen Sie es erneut, wenn Sie bereit sind.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Authentifizierungsmethode wählen</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-Bestätigung iirichte</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-App iirichte</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code bestätige</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Wiederherstelligscodes speichere</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wähle Sie e zweiti Authentifizierungsmethode us, zum Ihres Konto z schütze</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Gäbe Sie Ihri Telefonnummer ii, zum Bestätigungscodes z erhalte</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Scanne Sie de QR-Code mit Ihrer Authenticator-App</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Gäbe Sie de Code ii, wo an Ihres Telefon gschickt worde isch</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Gäbe Sie de Code us Ihrer Authenticator-App ii</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Gäbe Sie Ihre Bestätigungscode ii</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewahre Sie die Codes a eme sichere Ort uuf. Sie chönd si zum Aamälde benutze, falls Sie de Zuegriff uf Ihri Authentifizierungsmethode verliere.</string>
+
 </resources>

@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Lisävarmistus vaaditaan. Suorita monitekijätodennus loppuun.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Tili täytyy linkittää. Kokeile eri kirjautumistapaa.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Todennus peruutettiin. Yritä uudelleen kun olet valmis.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Valitse todennusmenetelmä</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Määritä tekstiviestivahvistus</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Määritä todennussovellus</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Vahvista koodisi</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Tallenna palautuskoodisi</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Valitse toinen todennusmenetelmä tilisi suojaamiseksi</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Anna puhelinnumerosi vastaanottaaksesi vahvistuskoodit</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Skannaa QR-koodi todennussovelluksellasi</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Anna puhelimeesi lähetetty koodi</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Anna todennussovelluksesi koodi</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Anna vahvistuskoodisi</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Tallenna nämä koodit turvalliseen paikkaan. Voit käyttää niitä kirjautumiseen, jos menetät pääsyn todennusmenetelmääsi.</string>
+
 </resources>

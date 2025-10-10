@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">További ellenőrzés szükséges. Kérjük, fejezze be a többtényezős hitelesítést.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A fiókot össze kell kapcsolni. Próbáljon meg egy másik bejelentkezési módot.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A hitelesítés megszakadt. Próbálja újra, amikor készen áll.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Válasszon hitelesítési módszert</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-ellenőrzés beállítása</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Hitelesítő alkalmazás beállítása</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Kód ellenőrzése</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Helyreállítási kódok mentése</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Válasszon második hitelesítési módszert fiókja védelme érdekében</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Adja meg telefonszámát az ellenőrző kódok fogadásához</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Olvassa be a QR-kódot hitelesítő alkalmazásával</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Adja meg a telefonjára küldött kódot</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Adja meg a hitelesítő alkalmazásából származó kódot</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Adja meg ellenőrző kódját</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Tárolja ezeket a kódokat biztonságos helyen. Ezekkel jelentkezhet be, ha elveszti a hitelesítési módszeréhez való hozzáférést.</string>
+
 </resources>

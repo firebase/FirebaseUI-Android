@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Ytterligare verifiering krävs. Vänligen slutför multifaktorautentisering.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kontot måste länkas. Försök med en annan inloggningsmetod.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Autentisering avbröts. Försök igen när du är redo.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Välj autentiseringsmetod</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurera SMS-verifiering</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurera autentiseringsapp</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiera din kod</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Spara dina återställningskoder</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Välj en andra autentiseringsmetod för att skydda ditt konto</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ange ditt telefonnummer för att ta emot verifieringskoder</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Skanna QR-koden med din autentiseringsapp</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Ange koden som skickades till din telefon</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Ange koden från din autentiseringsapp</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ange din verifieringskod</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Förvara dessa koder på en säker plats. Du kan använda dem för att logga in om du förlorar åtkomst till din autentiseringsmetod.</string>
+
 </resources>

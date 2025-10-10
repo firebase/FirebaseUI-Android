@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Pasirinkite autentifikavimo metodą</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nustatyti SMS patvirtinimą</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nustatyti autentifikatoriaus programą</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Patvirtinkite kodą</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Išsaugokite atkūrimo kodus</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pasirinkite antrą autentifikavimo metodą, kad apsaugotumėte paskyrą</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Įveskite telefono numerį, kad gautumėte patvirtinimo kodus</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Nuskaitykite QR kodą naudodami autentifikatoriaus programą</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Įveskite kodą, išsiųstą į telefoną</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Įveskite kodą iš autentifikatoriaus programos</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Įveskite patvirtinimo kodą</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Išsaugokite šiuos kodus saugioje vietoje. Galite juos naudoti prisijungti, jei prarasite prieigą prie autentifikavimo metodo.</string>
+
 </resources>

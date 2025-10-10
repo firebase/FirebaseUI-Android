@@ -94,4 +94,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Wymagana dodatkowa weryfikacja. Proszę ukończyć uwierzytelnianie wieloskładnikowe.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Konto musi zostać połączone. Spróbuj innej metody logowania.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Uwierzytelnianie zostało anulowane. Spróbuj ponownie gdy będziesz gotowy.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Wybierz metodę uwierzytelniania</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Skonfiguruj weryfikację SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Skonfiguruj aplikację uwierzytelniającą</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Zweryfikuj kod</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Zapisz kody odzyskiwania</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wybierz drugą metodę uwierzytelniania, aby zabezpieczyć swoje konto</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Wprowadź numer telefonu, aby otrzymywać kody weryfikacyjne</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Zeskanuj kod QR za pomocą aplikacji uwierzytelniającej</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Wprowadź kod wysłany na Twój telefon</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Wprowadź kod z aplikacji uwierzytelniającej</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Wprowadź kod weryfikacyjny</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Przechowuj te kody w bezpiecznym miejscu. Możesz ich użyć do zalogowania się, jeśli stracisz dostęp do metody uwierzytelniania.</string>
+
 </resources>

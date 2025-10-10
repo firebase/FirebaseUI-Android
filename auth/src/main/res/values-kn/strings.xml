@@ -95,4 +95,20 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">ದೃಢೀಕರಣ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS ಪರಿಶೀಲನೆಯನ್ನು ಹೊಂದಿಸಿ</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಹೊಂದಿಸಿ</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">ನಿಮ್ಮ ಕೋಡ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">ನಿಮ್ಮ ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳನ್ನು ಉಳಿಸಿ</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ಎರಡನೇ ದೃಢೀಕರಣ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ಪರಿಶೀಲನೆ ಕೋಡ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">ನಿಮ್ಮ ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನೊಂದಿಗೆ QR ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಕಳುಹಿಸಿದ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">ನಿಮ್ಮ ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನಿಂದ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">ನಿಮ್ಮ ಪರಿಶೀಲನೆ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">ಈ ಕೋಡ್‌ಗಳನ್ನು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ. ನಿಮ್ಮ ದೃಢೀಕರಣ ವಿಧಾನಕ್ಕೆ ಪ್ರವೇಶವನ್ನು ಕಳೆದುಕೊಂಡರೆ ಸೈನ್ ಇನ್ ಮಾಡಲು ಅವುಗಳನ್ನು ಬಳಸಬಹುದು.</string>
+
 </resources>
