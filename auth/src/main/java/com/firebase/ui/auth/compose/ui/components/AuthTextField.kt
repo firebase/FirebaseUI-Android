@@ -125,7 +125,27 @@ fun AuthTextField(
         keyboardActions = keyboardActions,
         visualTransformation = if (isSecureTextField && !passwordVisible)
             PasswordVisualTransformation() else visualTransformation,
-        leadingIcon = leadingIcon,
+        leadingIcon = leadingIcon ?: when {
+            validator is EmailValidator -> {
+                {
+                    Icon(
+                        imageVector = Icons.Default.Email,
+                        contentDescription = ""
+                    )
+                }
+            }
+
+            isSecureTextField -> {
+                {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = ""
+                    )
+                }
+            }
+
+            else -> null
+        },
         trailingIcon = trailingIcon ?: {
             if (isSecureTextField) {
                 IconButton(

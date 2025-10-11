@@ -23,14 +23,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -90,37 +88,39 @@ fun SignInUI(
         }
     }
 
-    val isDialogVisible =
-        remember(emailSignInLinkSent) { mutableStateOf(emailSignInLinkSent) }
+    if (provider.isEmailLinkSignInEnabled) {
+        val isDialogVisible =
+            remember(emailSignInLinkSent) { mutableStateOf(emailSignInLinkSent) }
 
-    if (isDialogVisible.value) {
-        AlertDialog(
-            title = {
-                Text(
-                    text = "Email Sign In Link Sent",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-            },
-            text = {
-                Text(
-                    text = "Check your email $email",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Start
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        isDialogVisible.value = false
+        if (isDialogVisible.value) {
+            AlertDialog(
+                title = {
+                    Text(
+                        text = stringProvider.emailSignInLinkSentDialogTitle,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringProvider.emailSignInLinkSentDialogBody(email),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Start
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            isDialogVisible.value = false
+                        }
+                    ) {
+                        Text(stringProvider.dismissAction)
                     }
-                ) {
-                    Text("Dismiss")
-                }
-            },
-            onDismissRequest = {
-                isDialogVisible.value = false
-            },
-        )
+                },
+                onDismissRequest = {
+                    isDialogVisible.value = false
+                },
+            )
+        }
     }
 
     Scaffold(
@@ -138,7 +138,8 @@ fun SignInUI(
             modifier = Modifier
                 .padding(innerPadding)
                 .safeDrawingPadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
                 value = email,
@@ -149,12 +150,6 @@ fun SignInUI(
                 },
                 onValueChange = { text ->
                     onEmailChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = ""
-                    )
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -169,34 +164,30 @@ fun SignInUI(
                     },
                     onValueChange = { text ->
                         onPasswordChange(text)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = ""
-                        )
                     }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            TextButton(
-                modifier = Modifier
-                    .align(Alignment.Start),
-                onClick = {
-                    onGoToResetPassword()
-                },
-                enabled = !isLoading,
-                contentPadding = PaddingValues.Zero
-            ) {
-                Text(
-                    modifier = modifier,
-                    text = stringProvider.troubleSigningIn,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    textDecoration = TextDecoration.Underline
-                )
+            if (!provider.isEmailLinkSignInEnabled) {
+                TextButton(
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                    onClick = {
+                        onGoToResetPassword()
+                    },
+                    enabled = !isLoading,
+                    contentPadding = PaddingValues.Zero
+                ) {
+                    Text(
+                        modifier = modifier,
+                        text = stringProvider.troubleSigningIn,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .align(Alignment.End),
@@ -209,7 +200,7 @@ fun SignInUI(
                         },
                         enabled = !isLoading,
                     ) {
-                        Text(stringProvider.titleRegisterEmail)
+                        Text(stringProvider.signupPageTitle.uppercase())
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                 }
@@ -228,7 +219,7 @@ fun SignInUI(
                                 .size(16.dp)
                         )
                     } else {
-                        Text(stringProvider.signInDefault)
+                        Text(stringProvider.signInDefault.uppercase())
                     }
                 }
             }

@@ -86,7 +86,7 @@ interface AuthUIStringProvider {
     val passwordsDoNotMatch: String
 
     /** Error message when password doesn't meet minimum length requirement. Should support string formatting with minimum length parameter. */
-    val passwordTooShort: String
+    fun passwordTooShort(minimumLength: Int): String
 
     /** Error message when password is missing at least one uppercase letter (A-Z) */
     val passwordMissingUppercase: String
@@ -102,13 +102,16 @@ interface AuthUIStringProvider {
 
     // Email Authentication Strings
     /** Title for email signup form */
-    val titleRegisterEmail: String
+    val signupPageTitle: String
 
     /** Hint for email input field */
     val emailHint: String
 
     /** Hint for password input field */
     val passwordHint: String
+
+    /** Hint for confirm password input field */
+    val confirmPasswordHint: String
 
     /** Hint for new password input field */
     val newPasswordHint: String
@@ -124,6 +127,24 @@ interface AuthUIStringProvider {
 
     /** Trouble signing in link text */
     val troubleSigningIn: String
+
+    /** Title for recover password page */
+    val recoverPasswordPageTitle: String
+
+    /** Button text for reset password */
+    val sendButtonText: String
+
+    /** Title for recover password link sent dialog */
+    val recoverPasswordLinkSentDialogTitle: String
+
+    /** Body for recover password link sent dialog */
+    fun recoverPasswordLinkSentDialogBody(email: String): String
+
+    /** Title for email sign in link sent dialog */
+    val emailSignInLinkSentDialogTitle: String
+
+    /** Body for email sign in link sent dialog */
+    fun emailSignInLinkSentDialogBody(email: String): String
 
     // Phone Authentication Strings
     /** Phone number entry form title */

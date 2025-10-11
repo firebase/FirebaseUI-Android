@@ -257,7 +257,7 @@ class FirebaseAuthUI private constructor(
      * @throws AuthException.UnknownException for other errors
      * @since 10.0.0
      */
-    suspend fun signOut(context: Context) {
+    fun signOut(context: Context) {
         try {
             // Update state to loading
             updateAuthState(AuthState.Loading("Signing out..."))

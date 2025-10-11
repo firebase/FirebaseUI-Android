@@ -310,7 +310,7 @@ class AuthTextFieldTest {
         composeTestRule.waitForIdle()
 
         composeTestRule
-            .onNodeWithText(stringProvider.passwordTooShort.format(8))
+            .onNodeWithText(stringProvider.passwordTooShort(8))
             .assertIsDisplayed()
 
         composeTestRule
@@ -340,7 +340,7 @@ class AuthTextFieldTest {
         composeTestRule.waitForIdle()
 
         composeTestRule
-            .onNodeWithText(stringProvider.passwordTooShort.format(8))
+            .onNodeWithText(stringProvider.passwordTooShort(8))
             .assertIsNotDisplayed()
         composeTestRule
             .onNodeWithText(stringProvider.passwordMissingLowercase)

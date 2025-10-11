@@ -30,7 +30,7 @@ abstract class PasswordRule {
         }
 
         override fun getErrorMessage(stringProvider: AuthUIStringProvider): String {
-            return stringProvider.passwordTooShort.format(value)
+            return stringProvider.passwordTooShort(value)
         }
     }
 
