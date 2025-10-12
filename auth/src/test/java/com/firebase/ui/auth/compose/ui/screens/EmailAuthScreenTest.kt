@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -27,6 +28,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.actionCodeSettings
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -85,6 +87,9 @@ class EmailAuthScreenTest {
     fun tearDown() {
         // Clean up after each test to prevent test pollution
         FirebaseAuthUI.clearInstanceCache()
+
+        // Clear emulator data
+        clearEmulatorData()
     }
 
     @Test
@@ -402,10 +407,102 @@ class EmailAuthScreenTest {
         assertThat(authUI.auth.currentUser).isNull()
         composeTestRule.onNodeWithText(stringProvider.recoverPasswordLinkSentDialogTitle)
             .assertIsDisplayed()
+        composeTestRule.onNodeWithText(stringProvider.recoverPasswordLinkSentDialogBody(email))
+            .assertIsDisplayed()
         composeTestRule.onNodeWithText(stringProvider.dismissAction)
             .assertIsDisplayed()
             .performClick()
         composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.recoverPasswordLinkSentDialogTitle)
+            .assertIsNotDisplayed()
+        composeTestRule.onNodeWithText(stringProvider.signInDefault)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `email link sign in emits EmailSignInLinkSent auth state and shows dialog`() {
+        val email = "test@example.com"
+        val password = "test123"
+
+        // Setup: Create a fresh user
+        ensureFreshUser(email, password)
+
+        // Sign out
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        isEmailLinkSignInEnabled = true,
+                        isEmailLinkForceSameDeviceEnabled = true,
+                        emailLinkActionCodeSettings = actionCodeSettings {
+                            // The continue URL - where to redirect after email link is clicked
+                            url = "https://fake-project-id.firebaseapp.com"
+                            handleCodeInApp = true
+                            setAndroidPackageName(
+                                "fake.project.id",
+                                true,
+                                null
+                            )
+                        },
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+        }
+
+        // Track auth state changes
+        var currentAuthState: AuthState = AuthState.Idle
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(configuration = configuration)
+            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+            currentAuthState = authState
+        }
+
+        composeTestRule.onNodeWithText(stringProvider.signInDefault)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(stringProvider.emailHint)
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performTextInput(email)
+        composeTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
+
+        println("TEST: Pumping looper after click...")
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Wait for auth state to transition to EmailSignInLinkSent
+        println("TEST: Waiting for auth state change... Current state: $currentAuthState")
+        composeTestRule.waitUntil {
+            shadowOf(Looper.getMainLooper()).idle()
+            println("TEST: Auth state during wait: $currentAuthState")
+            currentAuthState is AuthState.EmailSignInLinkSent
+        }
+
+        // Ensure final recomposition is complete before assertions
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Verify the auth state and user properties
+        println("TEST: Verifying final auth state: $currentAuthState")
+        assertThat(currentAuthState)
+            .isInstanceOf(AuthState.EmailSignInLinkSent::class.java)
+        assertThat(authUI.auth.currentUser).isNull()
+        composeTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogTitle)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogBody(email))
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(stringProvider.dismissAction)
+            .assertIsDisplayed()
+            .performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogTitle)
+            .assertIsNotDisplayed()
         composeTestRule.onNodeWithText(stringProvider.signInDefault)
             .assertIsDisplayed()
     }
