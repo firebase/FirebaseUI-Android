@@ -29,6 +29,8 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.actionCodeSettings
+import org.json.JSONArray
+import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +43,8 @@ import org.robolectric.annotation.Config
 import java.net.HttpURLConnection
 import java.net.URL
 
+private const val AUTH_STATE_WAIT_TIMEOUT_MS = 5_000L
+
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
 class EmailAuthScreenTest {
@@ -52,6 +56,7 @@ class EmailAuthScreenTest {
     private lateinit var stringProvider: AuthUIStringProvider
 
     lateinit var authUI: FirebaseAuthUI
+    private lateinit var emulatorApi: EmulatorAuthApi
 
     @Before
     fun setUp() {
@@ -67,7 +72,7 @@ class EmailAuthScreenTest {
         }
 
         // Initialize default FirebaseApp
-        FirebaseApp.initializeApp(
+        val firebaseApp = FirebaseApp.initializeApp(
             applicationContext,
             FirebaseOptions.Builder()
                 .setApiKey("fake-api-key")
@@ -78,6 +83,13 @@ class EmailAuthScreenTest {
 
         authUI = FirebaseAuthUI.getInstance()
         authUI.auth.useEmulator("127.0.0.1", 9099)
+
+        emulatorApi = EmulatorAuthApi(
+            projectId = firebaseApp.options.projectId
+                ?: throw IllegalStateException("Project ID is required for emulator interactions"),
+            emulatorHost = "127.0.0.1",
+            emulatorPort = 9099
+        )
 
         // Clear emulator data
         clearEmulatorData()
@@ -165,7 +177,7 @@ class EmailAuthScreenTest {
 
         // Wait for auth state to transition to RequiresEmailVerification
         println("TEST: Waiting for auth state change... Current state: $currentAuthState")
-        composeTestRule.waitUntil {
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state during wait: $currentAuthState")
             currentAuthState is AuthState.RequiresEmailVerification
@@ -239,7 +251,7 @@ class EmailAuthScreenTest {
 
         // Wait for auth state to transition to Success (since email is verified)
         println("TEST: Waiting for auth state change... Current state: $currentAuthState")
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state during wait: $currentAuthState")
             currentAuthState is AuthState.Success
@@ -319,7 +331,7 @@ class EmailAuthScreenTest {
 
         // Wait for auth state to transition to RequiresEmailVerification
         println("TEST: Waiting for auth state change... Current state: $currentAuthState")
-        composeTestRule.waitUntil {
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state during wait: $currentAuthState")
             currentAuthState is AuthState.RequiresEmailVerification
@@ -391,7 +403,7 @@ class EmailAuthScreenTest {
 
         // Wait for auth state to transition to PasswordResetLinkSent
         println("TEST: Waiting for auth state change... Current state: $currentAuthState")
-        composeTestRule.waitUntil {
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state during wait: $currentAuthState")
             currentAuthState is AuthState.PasswordResetLinkSent
@@ -479,7 +491,7 @@ class EmailAuthScreenTest {
 
         // Wait for auth state to transition to EmailSignInLinkSent
         println("TEST: Waiting for auth state change... Current state: $currentAuthState")
-        composeTestRule.waitUntil {
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state during wait: $currentAuthState")
             currentAuthState is AuthState.EmailSignInLinkSent
@@ -576,36 +588,14 @@ class EmailAuthScreenTest {
      * This function calls the emulator's clear data endpoint to remove all accounts,
      * OOB codes, and other authentication data. This ensures test isolation by providing
      * a clean slate for each test.
-     *
-     * @param emulatorHost The emulator host (default: "127.0.0.1")
-     * @param emulatorPort The emulator port (default: 9099)
-     *
-     * @throws Exception if the clear operation fails
      */
-    private fun clearEmulatorData(
-        projectId: String = "fake-project-id",
-        emulatorHost: String = "127.0.0.1",
-        emulatorPort: Int = 9099
-    ) {
-        val clearUrl =
-            URL("http://$emulatorHost:$emulatorPort/emulator/v1/projects/$projectId/accounts")
-        val clearConnection = clearUrl.openConnection() as HttpURLConnection
-
-        try {
-            clearConnection.requestMethod = "DELETE"
-            clearConnection.connectTimeout = 5000
-            clearConnection.readTimeout = 5000
-
-            val responseCode = clearConnection.responseCode
-            if (responseCode !in 200..299) {
-                println("WARNING: Failed to clear emulator data: HTTP $responseCode")
-            } else {
-                println("TEST: Cleared emulator data")
+    private fun clearEmulatorData() {
+        if (::emulatorApi.isInitialized) {
+            try {
+                emulatorApi.clearAccounts()
+            } catch (e: Exception) {
+                println("WARNING: Exception while clearing emulator data: ${e.message}")
             }
-        } catch (e: Exception) {
-            println("WARNING: Exception while clearing emulator data: ${e.message}")
-        } finally {
-            clearConnection.disconnect()
         }
     }
 
@@ -649,16 +639,9 @@ class EmailAuthScreenTest {
      * the real email verification flow that would occur in production.
      *
      * @param user The FirebaseUser whose email should be verified
-     * @param emulatorHost The emulator host (default: "127.0.0.1")
-     * @param emulatorPort The emulator port (default: 9099)
-     *
      * @throws Exception if the verification flow fails
      */
-    private fun verifyEmailInEmulator(
-        user: FirebaseUser,
-        emulatorHost: String = "127.0.0.1",
-        emulatorPort: Int = 9099
-    ) {
+    private fun verifyEmailInEmulator(user: FirebaseUser) {
         println("TEST: Starting email verification for user ${user.uid}")
 
         // Step 1: Send verification email to generate an OOB code
@@ -669,49 +652,17 @@ class EmailAuthScreenTest {
         shadowOf(Looper.getMainLooper()).idle()
         Thread.sleep(100)
 
-        // Step 2: Retrieve OOB codes from the emulator
-        val projectId = authUI.app.options.projectId
-            ?: throw IllegalStateException("Project ID is required")
-        println("TEST: Using project ID: $projectId")
-
-        val oobUrl =
-            URL("http://$emulatorHost:$emulatorPort/emulator/v1/projects/$projectId/oobCodes")
-        val oobConnection = oobUrl.openConnection() as HttpURLConnection
-
-        val oobCodesJson = try {
-            oobConnection.requestMethod = "GET"
-            oobConnection.connectTimeout = 5000
-            oobConnection.readTimeout = 5000
-
-            val responseCode = oobConnection.responseCode
-            if (responseCode != 200) {
-                throw Exception("Failed to get OOB codes: HTTP $responseCode")
-            }
-
-            oobConnection.inputStream.bufferedReader().readText()
-        } finally {
-            oobConnection.disconnect()
-        }
-
-        println("TEST: OOB codes response: $oobCodesJson")
-
-        // Step 3: Parse the response to find the VERIFY_EMAIL code for this user's email
-        // Response format: {"oobCodes": [{"email": "...", "oobCode": "...", "oobLink": "...", "requestType": "..."}]}
-        // We need to find an entry with both matching email AND requestType: "VERIFY_EMAIL"
-        val verifyEmailPattern =
-            """"email":"${user.email}","requestType":"VERIFY_EMAIL","oobCode":"([^"]+)"""".toRegex()
-
-        val oobCodeMatch = verifyEmailPattern.find(oobCodesJson)
-        val oobCode = oobCodeMatch?.groupValues?.get(1)
-            ?: throw Exception("No VERIFY_EMAIL OOB code found for user email: ${user.email}")
+        // Step 2: Retrieve the VERIFY_EMAIL OOB code for this user from the emulator
+        val email = requireNotNull(user.email) { "User email is required for OOB code lookup" }
+        val oobCode = emulatorApi.fetchVerifyEmailCode(email)
 
         println("TEST: Found OOB code: $oobCode")
 
-        // Step 4: Apply the action code to verify the email
+        // Step 3: Apply the action code to verify the email
         authUI.auth.applyActionCode(oobCode).awaitWithLooper()
         println("TEST: Applied action code")
 
-        // Step 5: Reload the user to refresh their email verification status
+        // Step 4: Reload the user to refresh their email verification status
         authUI.auth.currentUser?.reload()?.awaitWithLooper()
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -719,4 +670,87 @@ class EmailAuthScreenTest {
         println("TEST: User isEmailVerified: ${authUI.auth.currentUser?.isEmailVerified}")
     }
 
+}
+
+private class EmulatorAuthApi(
+    private val projectId: String,
+    emulatorHost: String,
+    emulatorPort: Int
+) {
+
+    private val httpClient = HttpClient(host = emulatorHost, port = emulatorPort)
+
+    fun clearAccounts() {
+        httpClient.delete("/emulator/v1/projects/$projectId/accounts") { connection ->
+            val responseCode = connection.responseCode
+            if (responseCode !in 200..299) {
+                println("WARNING: Failed to clear emulator data: HTTP $responseCode")
+            } else {
+                println("TEST: Cleared emulator data")
+            }
+        }
+    }
+
+    fun fetchVerifyEmailCode(email: String): String {
+        val oobCodes = fetchOobCodes()
+        return (0 until oobCodes.length())
+            .asSequence()
+            .mapNotNull { index -> oobCodes.optJSONObject(index) }
+            .firstOrNull { json ->
+                json.optString("email") == email &&
+                        json.optString("requestType") == "VERIFY_EMAIL"
+            }
+            ?.optString("oobCode")
+            ?.takeIf { it.isNotBlank() }
+            ?: throw Exception("No VERIFY_EMAIL OOB code found for user email: $email")
+    }
+
+    private fun fetchOobCodes(): JSONArray {
+        val payload = httpClient.get("/emulator/v1/projects/$projectId/oobCodes") { connection ->
+            val responseCode = connection.responseCode
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw Exception("Failed to get OOB codes: HTTP $responseCode")
+            }
+
+            connection.inputStream.bufferedReader().use { it.readText() }
+        }
+
+        return JSONObject(payload).optJSONArray("oobCodes") ?: JSONArray()
+    }
+}
+
+private class HttpClient(
+    private val host: String,
+    private val port: Int,
+    private val timeoutMs: Int = DEFAULT_TIMEOUT_MS
+) {
+
+    companion object {
+        const val DEFAULT_TIMEOUT_MS = 5_000
+    }
+
+    fun delete(path: String, block: (HttpURLConnection) -> Unit) {
+        execute(path = path, method = "DELETE", block = block)
+    }
+
+    fun <T> get(path: String, block: (HttpURLConnection) -> T): T {
+        return execute(path = path, method = "GET", block = block)
+    }
+
+    private fun <T> execute(path: String, method: String, block: (HttpURLConnection) -> T): T {
+        val connection = buildUrl(path).openConnection() as HttpURLConnection
+        connection.requestMethod = method
+        connection.connectTimeout = timeoutMs
+        connection.readTimeout = timeoutMs
+
+        return try {
+            block(connection)
+        } finally {
+            connection.disconnect()
+        }
+    }
+
+    private fun buildUrl(path: String): URL {
+        return URL("http://$host:$port$path")
+    }
 }
