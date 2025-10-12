@@ -15,10 +15,10 @@ if ! [ -x "$(command -v npm)" ]; then
 fi
 
 # Extract project ID from .firebaserc
-export FIREBASE_PROJECT_ID=$(cat library/.firebaserc | jq -r '.projects.default')
+export FIREBASE_PROJECT_ID=$(cat e2eTest/.firebaserc | jq -r '.projects.default')
 
 # Extract auth port from firebase.json
-AUTH_PORT=$(cat library/firebase.json | jq -r '.emulators.auth.port')
+AUTH_PORT=$(cat e2eTest/firebase.json | jq -r '.emulators.auth.port')
 export FIREBASE_AUTH_EMULATOR_URL="http://127.0.0.1:${AUTH_PORT}"
 
 # Starts firebase auth emulator only

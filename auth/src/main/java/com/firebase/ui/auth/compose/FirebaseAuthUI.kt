@@ -452,7 +452,7 @@ class FirebaseAuthUI private constructor(
          */
         @JvmStatic
         @RestrictTo(RestrictTo.Scope.TESTS)
-        internal fun clearInstanceCache() {
+        fun clearInstanceCache() {
             instanceCache.clear()
         }
 
