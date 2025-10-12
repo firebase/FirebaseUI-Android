@@ -11,4 +11,4 @@ cp library/google-services.json proguard-tests/google-services.json
 # TODO(thatfiredev): re-enable before release
 # ./gradlew $GRADLE_ARGS proguard-tests:build
 ./gradlew $GRADLE_ARGS checkstyle
-./gradlew $GRADLE_ARGS testDebugUnitTest -x :e2eTest:test
+./gradlew $GRADLE_ARGS testDebugUnitTest -x :e2eTest:e2eTest
