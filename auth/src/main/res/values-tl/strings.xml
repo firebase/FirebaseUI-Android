@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Awtomatikong na-verify ang numero ng telepono</string>
     <string name="fui_resend_code">Ipadala Muli ang Code</string>
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Sa pag-tap sa “%1$s”, ipinababatid mo na tinatanggap mo ang aming %2$s at %3$s. Maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error sa Pagpapatotoo</string>

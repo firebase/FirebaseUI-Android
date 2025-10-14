@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Phone number automatically verified</string>
     <string name="fui_resend_code">Resend code</string>
     <string name="fui_verify_phone_number">Verify Phone Number</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">By tapping "%1$s", you are indicating that you accept our %2$s and %3$s. An SMS may be sent. Message &amp; data rates may apply.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>

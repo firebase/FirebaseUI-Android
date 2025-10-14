@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Se ha verificado automáticamente el número de teléfono</string>
     <string name="fui_resend_code">Volver a enviar código</string>
     <string name="fui_verify_phone_number">Verificar número de teléfono</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Al tocar %1$s, podría enviarse un SMS. Es posible que se apliquen cargos de mensajería y de uso de datos.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Si tocas %1$s, confirmas que aceptas nuestras %2$s y nuestra %3$s. Podría enviarse un SMS, por lo que es posible que se apliquen cargos de mensajería y de uso de datos.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error de autenticación</string>

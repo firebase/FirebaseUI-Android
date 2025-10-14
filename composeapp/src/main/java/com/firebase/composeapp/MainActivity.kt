@@ -8,7 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import com.firebase.composeapp.ui.screens.MainScreen
+import com.firebase.composeapp.ui.screens.EmailAuthMain
+import com.firebase.composeapp.ui.screens.PhoneAuthMain
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
@@ -29,6 +30,45 @@ class MainActivity : ComponentActivity() {
         val authUI = FirebaseAuthUI.getInstance()
         authUI.auth.useEmulator("10.0.2.2", 9099)
 
+        //initializeEmailAuth(authUI)
+        initializePhoneAuth(authUI)
+    }
+
+    fun initializePhoneAuth(authUI: FirebaseAuthUI) {
+        val provider = AuthProvider.Phone(
+            defaultNumber = null,
+            defaultCountryCode = null,
+            allowedCountries = emptyList(),
+            smsCodeLength = 6,
+            timeout = 60L,
+            isInstantVerificationEnabled = true
+        )
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+            tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
+            privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
+        }
+
+        setContent {
+            AuthUITheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    PhoneAuthMain(
+                        context = applicationContext,
+                        configuration = configuration,
+                        authUI = authUI,
+                        provider = provider
+                    )
+                }
+            }
+        }
+    }
+
+    fun initializeEmailAuth(authUI: FirebaseAuthUI) {
         // Check if this is an email link sign-in flow
         val emailLink = intent.getStringExtra(
             EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK
@@ -90,7 +130,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(
+                    EmailAuthMain(
                         context = applicationContext,
                         configuration = configuration,
                         authUI = authUI,

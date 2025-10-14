@@ -69,6 +69,44 @@ object CountryUtils {
     }
 
     /**
+     * Searches for countries by name, country code, or dial code.
+     * Supports partial matching and diacritic-insensitive search.
+     *
+     * @param query The search query (country name, country code, or dial code).
+     * @return List of countries matching the query, sorted by relevance.
+     */
+    fun search(query: String): List<CountryData> {
+        val trimmedQuery = query.trim()
+        if (trimmedQuery.isEmpty()) return emptyList()
+
+        val normalizedQuery = normalizeString(trimmedQuery)
+        val uppercaseQuery = trimmedQuery.uppercase()
+
+        return ALL_COUNTRIES.filter { country ->
+            // Match by country name (partial, case-insensitive, diacritic-insensitive)
+            normalizeString(country.name).contains(normalizedQuery, ignoreCase = true) ||
+            // Match by country code (partial, case-insensitive)
+            country.countryCode.uppercase().contains(uppercaseQuery) ||
+            // Match by dial code (partial)
+            country.dialCode.contains(trimmedQuery)
+        }.sortedWith(
+            compareBy(
+                // Prioritize exact matches first
+                { country ->
+                    when {
+                        country.countryCode.uppercase() == uppercaseQuery -> 0
+                        country.dialCode == trimmedQuery -> 1
+                        normalizeString(country.name) == normalizedQuery -> 2
+                        else -> 3
+                    }
+                },
+                // Then sort alphabetically by name
+                { country -> country.name }
+            )
+        )
+    }
+
+    /**
      * Filters countries by allowed country codes.
      *
      * @param allowedCountryCodes Set of allowed ISO 3166-1 alpha-2 country codes.

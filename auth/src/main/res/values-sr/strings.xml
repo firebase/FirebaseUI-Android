@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Број телефона је аутоматски верификован</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ако додирнете „%1$s“, можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ако додирнете „%1$s“, потврђујете да прихватате документе %2$s и %3$s. Можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
 

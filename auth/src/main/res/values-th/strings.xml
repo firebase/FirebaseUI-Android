@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">ยืนยันหมายเลขโทรศัพท์โดยอัตโนมัติแล้ว</string>
     <string name="fui_resend_code">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number">ยืนยันหมายเลขโทรศัพท์</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s และ %3$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 

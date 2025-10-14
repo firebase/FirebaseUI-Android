@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Telefonnumret verifierades automatiskt</string>
     <string name="fui_resend_code">Skicka koden igen</string>
     <string name="fui_verify_phone_number">Verifiera telefonnummer</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Genom att trycka på %1$s skickas ett sms. Meddelande- och dataavgifter kan tillkomma.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Genom att trycka på %1$s godkänner du våra %2$s och vår %3$s. Ett sms kan skickas. Meddelande- och dataavgifter kan tillkomma.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentiseringsfel</string>

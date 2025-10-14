@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">ફોન નંબર આપમેળે ચકાસવામાં આવ્યો</string>
     <string name="fui_resend_code">કોડ ફરીથી મોકલો</string>
     <string name="fui_verify_phone_number">ફોન નંબર ચકાસો</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s”ને ટૅપ કરવાથી, કદાચ એક SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ટૅપ કરીને, તમે સૂચવી રહ્યાં છો કે તમે અમારી %2$s અને %3$sને સ્વીકારો છો. SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
 

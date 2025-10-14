@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Telefoonnummer is automatisch geverifieerd</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Als u op “%1$s” tikt, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op "%1$s" tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authenticatiefout</string>

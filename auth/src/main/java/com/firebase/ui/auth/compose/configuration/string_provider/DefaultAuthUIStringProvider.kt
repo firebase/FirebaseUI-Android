@@ -159,6 +159,8 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_country_hint)
     override val invalidPhoneNumber: String
         get() = localizedContext.getString(R.string.fui_invalid_phone_number)
+    override val missingPhoneNumber: String
+        get() = localizedContext.getString(R.string.fui_required_field)
     override val enterConfirmationCode: String
         get() = localizedContext.getString(R.string.fui_enter_confirmation_code)
     override val verifyPhoneNumber: String
@@ -167,12 +169,52 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_resend_code_in)
     override val resendCode: String
         get() = localizedContext.getString(R.string.fui_resend_code)
+
+    override fun resendCodeTimer(seconds: Int): String =
+        localizedContext.getString(R.string.fui_resend_code_in, seconds)
+
     override val verifying: String
         get() = localizedContext.getString(R.string.fui_verifying)
     override val incorrectCodeDialogBody: String
         get() = localizedContext.getString(R.string.fui_incorrect_code_dialog_body)
     override val smsTermsOfService: String
         get() = localizedContext.getString(R.string.fui_sms_terms_of_service)
+
+    override val enterPhoneNumberTitle: String
+        get() = localizedContext.getString(R.string.fui_verify_phone_number_title)
+
+    override val phoneNumberHint: String
+        get() = localizedContext.getString(R.string.fui_phone_hint)
+
+    override val sendVerificationCode: String
+        get() = localizedContext.getString(R.string.fui_next_default)
+
+    override fun enterVerificationCodeTitle(phoneNumber: String): String =
+        localizedContext.getString(R.string.fui_enter_confirmation_code) + " " + phoneNumber
+
+    override val verificationCodeHint: String
+        get() = localizedContext.getString(R.string.fui_enter_confirmation_code)
+
+    override val verifyCode: String
+        get() = localizedContext.getString(R.string.fui_verify_phone_number)
+
+    override val changePhoneNumber: String
+        get() = localizedContext.getString(R.string.fui_change_phone_number)
+
+    override val missingVerificationCode: String
+        get() = localizedContext.getString(R.string.fui_required_field)
+
+    override val invalidVerificationCode: String
+        get() = localizedContext.getString(R.string.fui_incorrect_code_dialog_body)
+
+    override val countryCode: String
+        get() = localizedContext.getString(R.string.fui_country_hint)
+
+    override val selectCountry: String
+        get() = localizedContext.getString(R.string.fui_country_hint)
+
+    override val searchCountries: String
+        get() = localizedContext.getString(R.string.fui_country_hint)
 
     /**
      * Multi-Factor Authentication Strings

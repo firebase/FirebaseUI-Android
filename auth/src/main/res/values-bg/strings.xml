@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Телефонният номер е потвърден автоматично</string>
     <string name="fui_resend_code">Повторно изпращане на кода</string>
     <string name="fui_verify_phone_number">Потвърждаване на телефонния номер</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Докосвайки „%1$s“, може да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Докосвайки „%1$s", приемате нашите %2$s и %3$s. Възможно е да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Грешка при удостоверяване</string>

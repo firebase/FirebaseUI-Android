@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Telefonnummeret ble bekreftet automatisk</string>
     <string name="fui_resend_code">Send koden på nytt</string>
     <string name="fui_verify_phone_number">Bekreft telefonnummeret</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ved å trykke på «%1$s» godtar du %2$s og %3$s våre. Du kan bli tilsendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
 

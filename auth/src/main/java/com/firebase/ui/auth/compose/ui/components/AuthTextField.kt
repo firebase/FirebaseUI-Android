@@ -130,7 +130,7 @@ fun AuthTextField(
                 {
                     Icon(
                         imageVector = Icons.Default.Email,
-                        contentDescription = ""
+                        contentDescription = "Email Input Icon"
                     )
                 }
             }
@@ -139,7 +139,7 @@ fun AuthTextField(
                 {
                     Icon(
                         imageVector = Icons.Default.Lock,
-                        contentDescription = ""
+                        contentDescription = "Password Input Icon"
                     )
                 }
             }

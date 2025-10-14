@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Nombor telefon disahkan secara automatik</string>
     <string name="fui_resend_code">Hantar Semula Kod</string>
     <string name="fui_verify_phone_number">Sahkan Nombor Telefon</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Dengan mengetik “%1$s”, SMS akan dihantar. Tertakluk pada kadar mesej &amp; data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan mengetik “%1$s”, anda menyatakan bahawa anda menerima %2$s dan %3$s kami. SMS akan dihantar. Tertakluk pada kadar mesej &amp; data.</string>
 

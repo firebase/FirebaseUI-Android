@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
     <string name="fui_resend_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_verify_phone_number">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %2$s ಮತ್ತು %3$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ. ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
 

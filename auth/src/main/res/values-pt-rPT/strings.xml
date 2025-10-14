@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Número de telefone verificado automaticamente</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Validar número de telefone</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ao tocar em “%1$s”, pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em “%1$s”, indica que aceita os %2$s e a %3$s. Pode gerar o envio de uma SMS. Podem aplicar-se tarifas de dados e de mensagens.</string>
 

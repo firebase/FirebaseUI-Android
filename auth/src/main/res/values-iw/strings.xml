@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">מספר הטלפון אומת באופן אוטומטי</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">הקשה על “%1$s” עשויה לגרום לשליחה של הודעת SMS. ייתכן שיחולו תעריפי הודעות והעברת נתונים.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">הקשה על “%1$s”, תפורש כהסכמתך ל%2$s ול%3$s. ייתכן שתישלח הודעת SMS. ייתכנו חיובים בגין שליחת הודעות ושימוש בנתונים.</string>
 

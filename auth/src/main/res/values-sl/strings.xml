@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Telefonska številka je bila samodejno preverjena</string>
     <string name="fui_resend_code">Ponovno pošlji kodo</string>
     <string name="fui_verify_phone_number">Preverjanje telefonske številke</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Če se dotaknete možnosti »%1$s«, bo morda poslano sporočilo SMS. Pošiljanje sporočila in prenos podatkov boste morda morali plačati.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Če se dotaknete možnosti »%1$s«, potrjujete, da se strinjate z dokumentoma %2$s in %3$s. Morda bo poslano sporočilo SMS. Pošiljanje sporočila in prenos podatkov boste morda morali plačati.</string>
 

@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">फोन नंबरची अपोआप पडताळणी केली आहे</string>
     <string name="fui_resend_code">कोड पुन्हा पाठवा</string>
     <string name="fui_verify_phone_number">फोन नंबरची पडताळणी करा</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s“ वर टॅप केल्याने, एक एसएमएस पाठवला जाऊ शकतो. मेसेज आणि डेटा शुल्क लागू होऊ शकते.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” वर टॅप करून, तुम्ही सूचित करता की तुम्ही आमचे %2$s आणि %3$s स्वीकारता. एसएमएस पाठवला जाऊ शकतो. मेसेज आणि डेटा दर लागू केले जाऊ शकते.</string>
 

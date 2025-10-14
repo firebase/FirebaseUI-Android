@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">A telefonszám automatikusan ellenőrizve</string>
     <string name="fui_resend_code">Kód újraküldése</string>
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ha a(z) „%1$s” gombra koppint, a rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">A(z) „%1$s” gombra való koppintással elfogadja a következő dokumentumokat: %2$s és %3$s. A rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Hitelesítési hiba</string>

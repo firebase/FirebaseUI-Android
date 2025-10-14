@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s. Gali būti išsiųstas SMS pranešimas, taip pat – taikomi pranešimų ir duomenų įkainiai.</string>
 

@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">ফোন নম্বরটি নিজে থেকে যাচাই করা হয়েছে</string>
     <string name="fui_resend_code">কোডটি আবার পাঠান</string>
     <string name="fui_verify_phone_number">ফোন নম্বর যাচাই করুন</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">%1$s এ ট্যাপ করলে আপনি একটি এসএমএস পাঠাতে পারেন। মেসেজ ও ডেটার চার্জ প্রযোজ্য।</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” বোতামে ট্যাপ করার অর্থ, আপনি আমাদের %2$s এবং %3$s-এর সাথে সম্মত। একটি এসএমএস পাঠানো হতে পারে। মেসেজ এবং ডেটার উপরে প্রযোজ্য চার্জ লাগতে পারে।</string>
 

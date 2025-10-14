@@ -87,6 +87,7 @@
     <string name="fui_auto_verified">El número de telèfon s\'ha verificat automàticament</string>
     <string name="fui_resend_code">Torna a enviar el codi</string>
     <string name="fui_verify_phone_number">Verifica el número de telèfon</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">En tocar %1$s, és possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En tocar %1$s, acceptes les nostres %2$s i la nostra %3$s. És possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
 
