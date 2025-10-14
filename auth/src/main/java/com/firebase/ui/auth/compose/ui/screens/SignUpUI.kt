@@ -22,19 +22,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +43,8 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.configuration.validators.GeneralFieldValidator
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
+import com.firebase.ui.auth.compose.configuration.validators.GeneralFieldValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
 import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
@@ -108,7 +103,7 @@ fun SignUpUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Sign up")
+                    Text(stringProvider.signupPageTitle)
                 },
                 colors = AuthUITheme.topAppBarColors
             )
@@ -118,23 +113,18 @@ fun SignUpUI(
             modifier = Modifier
                 .padding(innerPadding)
                 .safeDrawingPadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
                 label = {
-                    Text("Email")
+                    Text(stringProvider.emailHint)
                 },
                 onValueChange = { text ->
                     onEmailChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = ""
-                    )
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -144,16 +134,10 @@ fun SignUpUI(
                     validator = displayNameValidator,
                     enabled = !isLoading,
                     label = {
-                        Text("First & last Name")
+                        Text(stringProvider.nameHint)
                     },
                     onValueChange = { text ->
                         onDisplayNameChange(text)
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = ""
-                        )
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -164,16 +148,10 @@ fun SignUpUI(
                 enabled = !isLoading,
                 isSecureTextField = true,
                 label = {
-                    Text("Password")
+                    Text(stringProvider.passwordHint)
                 },
                 onValueChange = { text ->
                     onPasswordChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = ""
-                    )
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -183,16 +161,10 @@ fun SignUpUI(
                 enabled = !isLoading,
                 isSecureTextField = true,
                 label = {
-                    Text("Confirm Password")
+                    Text(stringProvider.confirmPasswordHint)
                 },
                 onValueChange = { text ->
                     onConfirmPasswordChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = ""
-                    )
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -206,7 +178,7 @@ fun SignUpUI(
                     },
                     enabled = !isLoading,
                 ) {
-                    Text("Sign In")
+                    Text(stringProvider.signInDefault.uppercase())
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
@@ -221,7 +193,7 @@ fun SignUpUI(
                                 .size(16.dp)
                         )
                     } else {
-                        Text("Sign Up")
+                        Text(stringProvider.signupPageTitle.uppercase())
                     }
                 }
             }

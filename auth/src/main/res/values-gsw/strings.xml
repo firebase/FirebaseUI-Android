@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Gäbe Sie Ihre Bestätigungscode ii</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewahre Sie die Codes a eme sichere Ort uuf. Sie chönd si zum Aamälde benutze, falls Sie de Zuegriff uf Ihri Authentifizierungsmethode verliere.</string>
 
+    <string name="fui_confirm_password_hint">Passwort bestätige</string>
+    <string name="fui_passwords_do_not_match">Passwörter stimmed nöd überiin</string>
+    <string name="fui_error_password_too_short">S Passwort muess mindischtens %1$d Zeiche lang sii</string>
+    <string name="fui_error_password_missing_uppercase">S Passwort muess mindischtens en Grossbuechschtabe enthalte</string>
+    <string name="fui_error_password_missing_lowercase">S Passwort muess mindischtens en Chliibuechschtabe enthalte</string>
+    <string name="fui_error_password_missing_digit">S Passwort muess mindischtens e Ziffere enthalte</string>
+    <string name="fui_error_password_missing_special_character">S Passwort muess mindischtens es Sonderzeiche enthalte</string>
 </resources>

@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Digite seu código de verificação</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Armazene esses códigos em um local seguro. Você pode usá-los para fazer login se perder o acesso ao seu método de autenticação.</string>
 
+    <string name="fui_confirm_password_hint">Confirmar senha</string>
+    <string name="fui_passwords_do_not_match">As senhas não correspondem</string>
+    <string name="fui_error_password_too_short">A senha precisa ter no mínimo %1$d caracteres</string>
+    <string name="fui_error_password_missing_uppercase">A senha precisa conter pelo menos uma letra maiúscula</string>
+    <string name="fui_error_password_missing_lowercase">A senha precisa conter pelo menos uma letra minúscula</string>
+    <string name="fui_error_password_missing_digit">A senha precisa conter pelo menos um número</string>
+    <string name="fui_error_password_missing_special_character">A senha precisa conter pelo menos um caractere especial</string>
 </resources>

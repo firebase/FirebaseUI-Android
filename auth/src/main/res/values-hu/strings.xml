@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Adja meg ellenőrző kódját</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Tárolja ezeket a kódokat biztonságos helyen. Ezekkel jelentkezhet be, ha elveszti a hitelesítési módszeréhez való hozzáférést.</string>
 
+    <string name="fui_confirm_password_hint">Jelszó megerősítése</string>
+    <string name="fui_passwords_do_not_match">A jelszavak nem egyeznek</string>
+    <string name="fui_error_password_too_short">A jelszónak legalább %1$d karakter hosszúnak kell lennie</string>
+    <string name="fui_error_password_missing_uppercase">A jelszónak tartalmaznia kell legalább egy nagybetűt</string>
+    <string name="fui_error_password_missing_lowercase">A jelszónak tartalmaznia kell legalább egy kisbetűt</string>
+    <string name="fui_error_password_missing_digit">A jelszónak tartalmaznia kell legalább egy számot</string>
+    <string name="fui_error_password_missing_special_character">A jelszónak tartalmaznia kell legalább egy speciális karaktert</string>
 </resources>

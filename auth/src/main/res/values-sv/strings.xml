@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ange din verifieringskod</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Förvara dessa koder på en säker plats. Du kan använda dem för att logga in om du förlorar åtkomst till din autentiseringsmetod.</string>
 
+    <string name="fui_confirm_password_hint">Bekräfta lösenord</string>
+    <string name="fui_passwords_do_not_match">Lösenorden matchar inte</string>
+    <string name="fui_error_password_too_short">Lösenordet måste vara minst %1$d tecken långt</string>
+    <string name="fui_error_password_missing_uppercase">Lösenordet måste innehålla minst en stor bokstav</string>
+    <string name="fui_error_password_missing_lowercase">Lösenordet måste innehålla minst en liten bokstav</string>
+    <string name="fui_error_password_missing_digit">Lösenordet måste innehålla minst en siffra</string>
+    <string name="fui_error_password_missing_special_character">Lösenordet måste innehålla minst ett specialtecken</string>
 </resources>

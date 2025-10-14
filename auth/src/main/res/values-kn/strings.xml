@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">ನಿಮ್ಮ ಪರಿಶೀಲನೆ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">ಈ ಕೋಡ್‌ಗಳನ್ನು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ. ನಿಮ್ಮ ದೃಢೀಕರಣ ವಿಧಾನಕ್ಕೆ ಪ್ರವೇಶವನ್ನು ಕಳೆದುಕೊಂಡರೆ ಸೈನ್ ಇನ್ ಮಾಡಲು ಅವುಗಳನ್ನು ಬಳಸಬಹುದು.</string>
 
+    <string name="fui_confirm_password_hint">ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ</string>
+    <string name="fui_passwords_do_not_match">ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ</string>
+    <string name="fui_error_password_too_short">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಷ್ಟು ಉದ್ದವಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_uppercase">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ದೊಡ್ಡಕ್ಷರವನ್ನು ಹೊಂದಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_lowercase">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ಸಣ್ಣಕ್ಷರವನ್ನು ಹೊಂದಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_digit">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ಸಂಖ್ಯೆಯನ್ನು ಹೊಂದಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_special_character">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ವಿಶೇಷ ಅಕ್ಷರವನ್ನು ಹೊಂದಿರಬೇಕು</string>
 </resources>

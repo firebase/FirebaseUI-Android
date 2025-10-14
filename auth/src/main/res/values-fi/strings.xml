@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Anna vahvistuskoodisi</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Tallenna nämä koodit turvalliseen paikkaan. Voit käyttää niitä kirjautumiseen, jos menetät pääsyn todennusmenetelmääsi.</string>
 
+    <string name="fui_confirm_password_hint">Vahvista salasana</string>
+    <string name="fui_passwords_do_not_match">Salasanat eivät täsmää</string>
+    <string name="fui_error_password_too_short">Salasanan on oltava vähintään %1$d merkkiä pitkä</string>
+    <string name="fui_error_password_missing_uppercase">Salasanan on sisällettävä vähintään yksi iso kirjain</string>
+    <string name="fui_error_password_missing_lowercase">Salasanan on sisällettävä vähintään yksi pieni kirjain</string>
+    <string name="fui_error_password_missing_digit">Salasanan on sisällettävä vähintään yksi numero</string>
+    <string name="fui_error_password_missing_special_character">Salasanan on sisällettävä vähintään yksi erikoismerkki</string>
 </resources>

@@ -37,6 +37,7 @@
     <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone Number</string>
     <string name="fui_country_hint" translation_description="Hint for phone input field">Country</string>
     <string name="fui_password_hint" translation_description="Hint for password input field for existing passwords">Password</string>
+    <string name="fui_confirm_password_hint" translation_description="Hint for confirm password input field for existing passwords">Confirm Password</string>
     <string name="fui_new_password_hint" translation_description="Hint for password input field for new passwords">New password</string>
     <string name="fui_required_field" translation_description="Inline error for required field">You can\'t leave this empty.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>

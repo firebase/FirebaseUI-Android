@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">أدخل رمز التحقق</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">احفظ هذه الرموز في مكان آمن. يمكنك استخدامها لتسجيل الدخول إذا فقدت الوصول إلى طريقة المصادقة.</string>
 
+    <string name="fui_confirm_password_hint">تأكيد كلمة المرور</string>
+    <string name="fui_passwords_do_not_match">كلمتا المرور غير متطابقتين</string>
+    <string name="fui_error_password_too_short">يجب أن تتكون كلمة المرور من %1$d حرفًا على الأقل</string>
+    <string name="fui_error_password_missing_uppercase">يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل</string>
+    <string name="fui_error_password_missing_lowercase">يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل</string>
+    <string name="fui_error_password_missing_digit">يجب أن تحتوي كلمة المرور على رقم واحد على الأقل</string>
+    <string name="fui_error_password_missing_special_character">يجب أن تحتوي كلمة المرور على حرف خاص واحد على الأقل</string>
 </resources>

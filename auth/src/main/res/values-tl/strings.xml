@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ilagay ang iyong verification code</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">I-imbak ang mga code na ito sa ligtas na lugar. Magagamit mo ang mga ito para mag-sign in kung mawawala ang access sa iyong paraan ng authentication.</string>
 
+    <string name="fui_confirm_password_hint">Kumpirmahin ang password</string>
+    <string name="fui_passwords_do_not_match">Hindi magkatugma ang mga password</string>
+    <string name="fui_error_password_too_short">Dapat ay may hindi bababa sa %1$d (na) character ang password</string>
+    <string name="fui_error_password_missing_uppercase">Dapat ay may hindi bababa sa isang malaking titik ang password</string>
+    <string name="fui_error_password_missing_lowercase">Dapat ay may hindi bababa sa isang maliit na titik ang password</string>
+    <string name="fui_error_password_missing_digit">Dapat ay may hindi bababa sa isang numero ang password</string>
+    <string name="fui_error_password_missing_special_character">Dapat ay may hindi bababa sa isang espesyal na character ang password</string>
 </resources>

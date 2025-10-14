@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
+        authUI.auth.useEmulator("10.0.2.2", 9099)
 
         // Check if this is an email link sign-in flow
         val emailLink = intent.getStringExtra(
@@ -35,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
         val provider = AuthProvider.Email(
             isDisplayNameRequired = true,
-            isEmailLinkSignInEnabled = true,
             isEmailLinkForceSameDeviceEnabled = true,
             emailLinkActionCodeSettings = actionCodeSettings {
                 // The continue URL - where to redirect after email link is clicked

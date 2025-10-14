@@ -26,6 +26,7 @@ include(
         ":composeapp",
         ":library",
         ":auth",
+        ":e2eTest",
         ":common",
         ":database",
         ":firestore",

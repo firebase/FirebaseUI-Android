@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">確認コードを入力してください</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">これらのコードを安全な場所に保管してください。認証方法にアクセスできなくなった場合、これらを使用してログインできます。</string>
 
+    <string name="fui_confirm_password_hint">パスワードの確認</string>
+    <string name="fui_passwords_do_not_match">パスワードが一致しません</string>
+    <string name="fui_error_password_too_short">パスワードは%1$d文字以上にする必要があります</string>
+    <string name="fui_error_password_missing_uppercase">パスワードには大文字が1文字以上必要です</string>
+    <string name="fui_error_password_missing_lowercase">パスワードには小文字が1文字以上必要です</string>
+    <string name="fui_error_password_missing_digit">パスワードには数字が1文字以上必要です</string>
+    <string name="fui_error_password_missing_special_character">パスワードには特殊文字が1文字以上必要です</string>
 </resources>

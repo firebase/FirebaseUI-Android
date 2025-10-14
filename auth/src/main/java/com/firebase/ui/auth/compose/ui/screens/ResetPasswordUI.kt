@@ -17,24 +17,22 @@ package com.firebase.ui.auth.compose.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -83,13 +81,13 @@ fun ResetPasswordUI(
         AlertDialog(
             title = {
                 Text(
-                    text = "Reset Link Sent",
+                    text = stringProvider.recoverPasswordLinkSentDialogTitle,
                     style = MaterialTheme.typography.headlineSmall
                 )
             },
             text = {
                 Text(
-                    text = "Check your email $email",
+                    text = stringProvider.recoverPasswordLinkSentDialogBody(email),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Start
                 )
@@ -97,10 +95,11 @@ fun ResetPasswordUI(
             confirmButton = {
                 TextButton(
                     onClick = {
+                        onGoToSignIn()
                         isDialogVisible.value = false
                     }
                 ) {
-                    Text("Dismiss")
+                    Text(stringProvider.dismissAction)
                 }
             },
             onDismissRequest = {
@@ -114,7 +113,7 @@ fun ResetPasswordUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Recover Password")
+                    Text(stringProvider.recoverPasswordPageTitle)
                 },
                 colors = AuthUITheme.topAppBarColors
             )
@@ -124,7 +123,8 @@ fun ResetPasswordUI(
             modifier = Modifier
                 .padding(innerPadding)
                 .safeDrawingPadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
                 value = email,
@@ -135,12 +135,6 @@ fun ResetPasswordUI(
                 },
                 onValueChange = { text ->
                     onEmailChange(text)
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Email,
-                        contentDescription = ""
-                    )
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -154,7 +148,7 @@ fun ResetPasswordUI(
                     },
                     enabled = !isLoading,
                 ) {
-                    Text("Sign In")
+                    Text(stringProvider.signInDefault.uppercase())
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
@@ -169,7 +163,7 @@ fun ResetPasswordUI(
                                 .size(16.dp)
                         )
                     } else {
-                        Text("Send")
+                        Text(stringProvider.sendButtonText.uppercase())
                     }
                 }
             }

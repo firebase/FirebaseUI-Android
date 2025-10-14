@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Voer je verificatiecode in</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewaar deze codes op een veilige plek. Je kunt ze gebruiken om in te loggen als je geen toegang meer hebt tot je authenticatiemethode.</string>
 
+    <string name="fui_confirm_password_hint">Bevestig wachtwoord</string>
+    <string name="fui_passwords_do_not_match">Wachtwoorden komen niet overeen</string>
+    <string name="fui_error_password_too_short">Wachtwoord moet minimaal %1$d tekens lang zijn</string>
+    <string name="fui_error_password_missing_uppercase">Wachtwoord moet minimaal één hoofdletter bevatten</string>
+    <string name="fui_error_password_missing_lowercase">Wachtwoord moet minimaal één kleine letter bevatten</string>
+    <string name="fui_error_password_missing_digit">Wachtwoord moet minimaal één cijfer bevatten</string>
+    <string name="fui_error_password_missing_special_character">Wachtwoord moet minimaal één speciaal teken bevatten</string>
 </resources>

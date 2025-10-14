@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">আপনার যাচাইকরণ কোড লিখুন</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">এই কোডগুলি একটি নিরাপদ স্থানে সংরক্ষণ করুন। আপনি যদি আপনার প্রমাণীকরণ পদ্ধতিতে অ্যাক্সেস হারান তবে সাইন ইন করতে এগুলি ব্যবহার করতে পারেন।</string>
 
+    <string name="fui_confirm_password_hint">পাসওয়ার্ড নিশ্চিত করুন</string>
+    <string name="fui_passwords_do_not_match">পাসওয়ার্ড মিলছে না</string>
+    <string name="fui_error_password_too_short">পাসওয়ার্ডে অন্তত %1$dটি অক্ষর থাকতে হবে</string>
+    <string name="fui_error_password_missing_uppercase">পাসওয়ার্ডে অন্তত একটি বড় হাতের অক্ষর থাকতে হবে</string>
+    <string name="fui_error_password_missing_lowercase">পাসওয়ার্ডে অন্তত একটি ছোট হাতের অক্ষর থাকতে হবে</string>
+    <string name="fui_error_password_missing_digit">পাসওয়ার্ডে অন্তত একটি সংখ্যা থাকতে হবে</string>
+    <string name="fui_error_password_missing_special_character">পাসওয়ার্ডে অন্তত একটি বিশেষ অক্ষর থাকতে হবে</string>
 </resources>

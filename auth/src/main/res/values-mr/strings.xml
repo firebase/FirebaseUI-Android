@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">तुमचा पडताळणी कोड प्रविष्ट करा</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">हे कोड सुरक्षित ठिकाणी संग्रहित करा. तुम्ही तुमच्या प्रमाणीकरण पद्धतीचा प्रवेश गमावल्यास साइन इन करण्यासाठी त्यांचा वापर करू शकता.</string>
 
+    <string name="fui_confirm_password_hint">पासवर्डची पुष्टी करा</string>
+    <string name="fui_passwords_do_not_match">पासवर्ड जुळत नाहीत</string>
+    <string name="fui_error_password_too_short">पासवर्ड किमान %1$d वर्णांचा असावा</string>
+    <string name="fui_error_password_missing_uppercase">पासवर्डमध्ये किमान एक मोठे अक्षर असावे</string>
+    <string name="fui_error_password_missing_lowercase">पासवर्डमध्ये किमान एक लहान अक्षर असावे</string>
+    <string name="fui_error_password_missing_digit">पासवर्डमध्ये किमान एक अंक असावा</string>
+    <string name="fui_error_password_missing_special_character">पासवर्डमध्ये किमान एक विशेष वर्ण असावा</string>
 </resources>

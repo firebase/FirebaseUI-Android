@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">הזן את קוד האימות שלך</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">שמור קודים אלה במקום בטוח. תוכל להשתמש בהם כדי להיכנס אם תאבד גישה לשיטת האימות שלך.</string>
 
+    <string name="fui_confirm_password_hint">אישור סיסמה</string>
+    <string name="fui_passwords_do_not_match">הסיסמאות אינן תואמות</string>
+    <string name="fui_error_password_too_short">הסיסמה חייבת להכיל לפחות %1$d תווים</string>
+    <string name="fui_error_password_missing_uppercase">הסיסמה חייבת להכיל לפחות אות גדולה אחת</string>
+    <string name="fui_error_password_missing_lowercase">הסיסמה חייבת להכיל לפחות אות קטנה אחת</string>
+    <string name="fui_error_password_missing_digit">הסיסמה חייבת להכיל לפחות מספר אחד</string>
+    <string name="fui_error_password_missing_special_character">הסיסמה חייבת להכיל לפחות תו מיוחד אחד</string>
 </resources>

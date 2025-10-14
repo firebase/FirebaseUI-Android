@@ -257,7 +257,7 @@ class FirebaseAuthUI private constructor(
      * @throws AuthException.UnknownException for other errors
      * @since 10.0.0
      */
-    suspend fun signOut(context: Context) {
+    fun signOut(context: Context) {
         try {
             // Update state to loading
             updateAuthState(AuthState.Loading("Signing out..."))
@@ -452,7 +452,7 @@ class FirebaseAuthUI private constructor(
          */
         @JvmStatic
         @RestrictTo(RestrictTo.Scope.TESTS)
-        internal fun clearInstanceCache() {
+        fun clearInstanceCache() {
             instanceCache.clear()
         }
 

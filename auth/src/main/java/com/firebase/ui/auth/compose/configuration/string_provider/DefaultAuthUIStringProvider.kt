@@ -20,8 +20,8 @@ import com.firebase.ui.auth.R
 import java.util.Locale
 
 class DefaultAuthUIStringProvider(
-    private val context: Context,
-    private val locale: Locale? = null,
+    context: Context,
+    locale: Locale? = null,
 ) : AuthUIStringProvider {
     /**
      * Allows overriding locale.
@@ -95,8 +95,10 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_error_invalid_password)
     override val passwordsDoNotMatch: String
         get() = localizedContext.getString(R.string.fui_passwords_do_not_match)
-    override val passwordTooShort: String
-        get() = localizedContext.getString(R.string.fui_error_password_too_short)
+
+    override fun passwordTooShort(minimumLength: Int): String =
+        localizedContext.getString(R.string.fui_error_password_too_short, minimumLength)
+
     override val passwordMissingUppercase: String
         get() = localizedContext.getString(R.string.fui_error_password_missing_uppercase)
     override val passwordMissingLowercase: String
@@ -109,12 +111,14 @@ class DefaultAuthUIStringProvider(
     /**
      * Email Authentication Strings
      */
-    override val titleRegisterEmail: String
+    override val signupPageTitle: String
         get() = localizedContext.getString(R.string.fui_title_register_email)
     override val emailHint: String
         get() = localizedContext.getString(R.string.fui_email_hint)
     override val passwordHint: String
         get() = localizedContext.getString(R.string.fui_password_hint)
+    override val confirmPasswordHint: String
+        get() = localizedContext.getString(R.string.fui_confirm_password_hint)
     override val newPasswordHint: String
         get() = localizedContext.getString(R.string.fui_new_password_hint)
     override val nameHint: String
@@ -125,6 +129,24 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_welcome_back_email_header)
     override val troubleSigningIn: String
         get() = localizedContext.getString(R.string.fui_trouble_signing_in)
+
+    override val recoverPasswordPageTitle: String
+        get() = localizedContext.getString(R.string.fui_title_recover_password_activity)
+
+    override val sendButtonText: String
+        get() = localizedContext.getString(R.string.fui_button_text_send)
+
+    override val recoverPasswordLinkSentDialogTitle: String
+        get() = localizedContext.getString(R.string.fui_title_confirm_recover_password)
+
+    override fun recoverPasswordLinkSentDialogBody(email: String): String =
+        localizedContext.getString(R.string.fui_confirm_recovery_body, email)
+
+    override val emailSignInLinkSentDialogTitle: String
+        get() = localizedContext.getString(R.string.fui_email_link_header)
+
+    override fun emailSignInLinkSentDialogBody(email: String): String =
+        localizedContext.getString(R.string.fui_email_link_email_sent, email)
 
     /**
      * Phone Authentication Strings
