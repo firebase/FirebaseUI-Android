@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Въведете кода си за проверка</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Съхранявайте тези кодове на сигурно място. Можете да ги използвате за влизане, ако загубите достъп до метода си за удостоверяване.</string>
 
+    <string name="fui_confirm_password_hint">Потвърдете паролата</string>
+    <string name="fui_passwords_do_not_match">Паролите не съвпадат</string>
+    <string name="fui_error_password_too_short">Паролата трябва да е с дължина поне %1$d знака</string>
+    <string name="fui_error_password_missing_uppercase">Паролата трябва да съдържа поне една главна буква</string>
+    <string name="fui_error_password_missing_lowercase">Паролата трябва да съдържа поне една малка буква</string>
+    <string name="fui_error_password_missing_digit">Паролата трябва да съдържа поне една цифра</string>
+    <string name="fui_error_password_missing_special_character">Паролата трябва да съдържа поне един специален знак</string>
 </resources>

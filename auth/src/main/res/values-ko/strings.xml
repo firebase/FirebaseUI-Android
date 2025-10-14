@@ -109,4 +109,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">인증 코드를 입력하세요</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">이 코드를 안전한 곳에 보관하세요. 인증 방법에 액세스할 수 없게 되면 이 코드를 사용하여 로그인할 수 있습니다.</string>
 
+    <string name="fui_confirm_password_hint">비밀번호 확인</string>
+    <string name="fui_passwords_do_not_match">비밀번호가 일치하지 않습니다</string>
+    <string name="fui_error_password_too_short">비밀번호는 %1$d자 이상이어야 합니다</string>
+    <string name="fui_error_password_missing_uppercase">비밀번호에 대문자가 하나 이상 포함되어야 합니다</string>
+    <string name="fui_error_password_missing_lowercase">비밀번호에 소문자가 하나 이상 포함되어야 합니다</string>
+    <string name="fui_error_password_missing_digit">비밀번호에 숫자가 하나 이상 포함되어야 합니다</string>
+    <string name="fui_error_password_missing_special_character">비밀번호에 특수문자가 하나 이상 포함되어야 합니다</string>
 </resources>

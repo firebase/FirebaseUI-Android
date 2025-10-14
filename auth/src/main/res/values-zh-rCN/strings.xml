@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">输入您的验证码</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">将这些代码保存在安全的地方。如果您无法访问身份验证方法，可以使用这些代码登录。</string>
 
+    <string name="fui_confirm_password_hint">确认密码</string>
+    <string name="fui_passwords_do_not_match">密码不匹配</string>
+    <string name="fui_error_password_too_short">密码长度至少为 %1$d 个字符</string>
+    <string name="fui_error_password_missing_uppercase">密码必须包含至少一个大写字母</string>
+    <string name="fui_error_password_missing_lowercase">密码必须包含至少一个小写字母</string>
+    <string name="fui_error_password_missing_digit">密码必须包含至少一个数字</string>
+    <string name="fui_error_password_missing_special_character">密码必须包含至少一个特殊字符</string>
 </resources>

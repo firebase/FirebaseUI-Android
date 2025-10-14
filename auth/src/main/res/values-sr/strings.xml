@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Унесите свој код за верификацију</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Похраните ове кодове на сигурно место. Можете их користити за пријаву ако изгубите приступ методу аутентификације.</string>
 
+    <string name="fui_confirm_password_hint">Потврди лозинку</string>
+    <string name="fui_passwords_do_not_match">Лозинке се не подударају</string>
+    <string name="fui_error_password_too_short">Лозинка мора да има најмање %1$d знакова</string>
+    <string name="fui_error_password_missing_uppercase">Лозинка мора да садржи најмање једно велико слово</string>
+    <string name="fui_error_password_missing_lowercase">Лозинка мора да садржи најмање једно мало слово</string>
+    <string name="fui_error_password_missing_digit">Лозинка мора да садржи најмање један број</string>
+    <string name="fui_error_password_missing_special_character">Лозинка мора да садржи најмање један посебан знак</string>
 </resources>

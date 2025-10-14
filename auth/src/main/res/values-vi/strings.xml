@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Nhập mã xác minh của bạn</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Lưu trữ các mã này ở nơi an toàn. Bạn có thể sử dụng chúng để đăng nhập nếu mất quyền truy cập vào phương thức xác thực của mình.</string>
 
+    <string name="fui_confirm_password_hint">Xác nhận mật khẩu</string>
+    <string name="fui_passwords_do_not_match">Mật khẩu không khớp</string>
+    <string name="fui_error_password_too_short">Mật khẩu phải có ít nhất %1$d ký tự</string>
+    <string name="fui_error_password_missing_uppercase">Mật khẩu phải chứa ít nhất một chữ cái viết hoa</string>
+    <string name="fui_error_password_missing_lowercase">Mật khẩu phải chứa ít nhất một chữ cái viết thường</string>
+    <string name="fui_error_password_missing_digit">Mật khẩu phải chứa ít nhất một chữ số</string>
+    <string name="fui_error_password_missing_special_character">Mật khẩu phải chứa ít nhất một ký tự đặc biệt</string>
 </resources>

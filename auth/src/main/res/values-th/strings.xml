@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">ป้อนรหัสยืนยันของคุณ</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">เก็บรหัสเหล่านี้ไว้ในที่ปลอดภัย คุณสามารถใช้รหัสเหล่านี้ลงชื่อเข้าใช้หากคุณไม่สามารถเข้าถึงวิธีการตรวจสอบสิทธิ์ของคุณ</string>
 
+    <string name="fui_confirm_password_hint">ยืนยันรหัสผ่าน</string>
+    <string name="fui_passwords_do_not_match">รหัสผ่านไม่ตรงกัน</string>
+    <string name="fui_error_password_too_short">รหัสผ่านต้องมีความยาวอย่างน้อย %1$d อักขระ</string>
+    <string name="fui_error_password_missing_uppercase">รหัสผ่านต้องมีตัวพิมพ์ใหญ่อย่างน้อยหนึ่งตัว</string>
+    <string name="fui_error_password_missing_lowercase">รหัสผ่านต้องมีตัวพิมพ์เล็กอย่างน้อยหนึ่งตัว</string>
+    <string name="fui_error_password_missing_digit">รหัสผ่านต้องมีตัวเลขอย่างน้อยหนึ่งตัว</string>
+    <string name="fui_error_password_missing_special_character">รหัสผ่านต้องมีอักขระพิเศษอย่างน้อยหนึ่งตัว</string>
 </resources>

@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">کد تأیید خود را وارد کنید</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">این کدها را در مکانی امن ذخیره کنید. اگر دسترسی به روش احراز هویت خود را از دست دادید، می‌توانید از آن‌ها برای ورود استفاده کنید.</string>
 
+    <string name="fui_confirm_password_hint">تأیید گذرواژه</string>
+    <string name="fui_passwords_do_not_match">گذرواژه‌ها مطابقت ندارند</string>
+    <string name="fui_error_password_too_short">گذرواژه باید حداقل %1$d نویسه باشد</string>
+    <string name="fui_error_password_missing_uppercase">گذرواژه باید حداقل یک حرف بزرگ داشته باشد</string>
+    <string name="fui_error_password_missing_lowercase">گذرواژه باید حداقل یک حرف کوچک داشته باشد</string>
+    <string name="fui_error_password_missing_digit">گذرواژه باید حداقل یک عدد داشته باشد</string>
+    <string name="fui_error_password_missing_special_character">گذرواژه باید حداقل یک نویسه خاص داشته باشد</string>
 </resources>

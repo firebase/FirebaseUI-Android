@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">اپنا تصدیقی کوڈ درج کریں</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">ان کوڈز کو محفوظ جگہ پر اسٹور کریں۔ اگر آپ اپنے تصدیقی طریقے تک رسائی کھو دیتے ہیں تو آپ سائن ان کرنے کے لیے ان کا استعمال کر سکتے ہیں۔</string>
 
+    <string name="fui_confirm_password_hint">پاس ورڈ کی تصدیق کریں</string>
+    <string name="fui_passwords_do_not_match">پاس ورڈز مماثل نہیں ہیں</string>
+    <string name="fui_error_password_too_short">پاس ورڈ کم از کم %1$d حروف پر مشتمل ہونا چاہیے</string>
+    <string name="fui_error_password_missing_uppercase">پاس ورڈ میں کم از کم ایک بڑا حرف ہونا چاہیے</string>
+    <string name="fui_error_password_missing_lowercase">پاس ورڈ میں کم از کم ایک چھوٹا حرف ہونا چاہیے</string>
+    <string name="fui_error_password_missing_digit">پاس ورڈ میں کم از کم ایک ہندسہ ہونا چاہیے</string>
+    <string name="fui_error_password_missing_special_character">پاس ورڈ میں کم از کم ایک خاص حرف ہونا چاہیے</string>
 </resources>

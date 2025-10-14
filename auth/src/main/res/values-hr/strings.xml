@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Unesite svoju šifru za potvrdu</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Pohranite ove šifre na sigurno mjesto. Možete ih koristiti za prijavu ako izgubite pristup svojoj metodi provjere autentičnosti.</string>
 
+    <string name="fui_confirm_password_hint">Potvrdite zaporku</string>
+    <string name="fui_passwords_do_not_match">Zaporke se ne podudaraju</string>
+    <string name="fui_error_password_too_short">Zaporka mora imati najmanje %1$d znakova</string>
+    <string name="fui_error_password_missing_uppercase">Zaporka mora sadržavati barem jedno veliko slovo</string>
+    <string name="fui_error_password_missing_lowercase">Zaporka mora sadržavati barem jedno malo slovo</string>
+    <string name="fui_error_password_missing_digit">Zaporka mora sadržavati barem jedan broj</string>
+    <string name="fui_error_password_missing_special_character">Zaporka mora sadržavati barem jedan poseban znak</string>
 </resources>

@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Skriv inn bekreftelseskoden din</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Lagre disse kodene på et sikkert sted. Du kan bruke dem til å logge inn hvis du mister tilgang til autentiseringsmetoden din.</string>
 
+    <string name="fui_confirm_password_hint">Bekreft passord</string>
+    <string name="fui_passwords_do_not_match">Passordene stemmer ikke overens</string>
+    <string name="fui_error_password_too_short">Passordet må være på minst %1$d tegn</string>
+    <string name="fui_error_password_missing_uppercase">Passordet må inneholde minst én stor bokstav</string>
+    <string name="fui_error_password_missing_lowercase">Passordet må inneholde minst én liten bokstav</string>
+    <string name="fui_error_password_missing_digit">Passordet må inneholde minst ett tall</string>
+    <string name="fui_error_password_missing_special_character">Passordet må inneholde minst ett spesialtegn</string>
 </resources>

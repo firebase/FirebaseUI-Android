@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">உங்கள் சரிபார்ப்புக் குறியீட்டை உள்ளிடவும்</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">இந்தக் குறியீடுகளைப் பாதுகாப்பான இடத்தில் சேமிக்கவும். உங்கள் அங்கீகார முறைக்கான அணுகலை இழந்தால் உள்நுழைய இவற்றைப் பயன்படுத்தலாம்.</string>
 
+    <string name="fui_confirm_password_hint">கடவுச்சொல்லை உறுதிப்படுத்தவும்</string>
+    <string name="fui_passwords_do_not_match">கடவுச்சொற்கள் பொருந்தவில்லை</string>
+    <string name="fui_error_password_too_short">கடவுச்சொல் குறைந்தது %1$d எழுத்துக்குறிகளைக் கொண்டிருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_uppercase">கடவுச்சொல்லில் குறைந்தது ஒரு பெரிய எழுத்து இருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_lowercase">கடவுச்சொல்லில் குறைந்தது ஒரு சிறிய எழுத்து இருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_digit">கடவுச்சொல்லில் குறைந்தது ஒரு எண் இருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_special_character">கடவுச்சொல்லில் குறைந்தது ஒரு சிறப்பு எழுத்துக்குறி இருக்க வேண்டும்</string>
 </resources>

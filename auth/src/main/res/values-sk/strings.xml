@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Zadajte overovací kód</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Uložte tieto kódy na bezpečnom mieste. Môžete ich použiť na prihlásenie, ak stratíte prístup k metóde overenia.</string>
 
+    <string name="fui_confirm_password_hint">Potvrdiť heslo</string>
+    <string name="fui_passwords_do_not_match">Heslá sa nezhodujú</string>
+    <string name="fui_error_password_too_short">Heslo musí mať aspoň %1$d znakov</string>
+    <string name="fui_error_password_missing_uppercase">Heslo musí obsahovať aspoň jedno veľké písmeno</string>
+    <string name="fui_error_password_missing_lowercase">Heslo musí obsahovať aspoň jedno malé písmeno</string>
+    <string name="fui_error_password_missing_digit">Heslo musí obsahovať aspoň jedno číslo</string>
+    <string name="fui_error_password_missing_special_character">Heslo musí obsahovať aspoň jeden špeciálny znak</string>
 </resources>

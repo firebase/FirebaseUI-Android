@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Masukkan kode verifikasi Anda</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Simpan kode ini di tempat yang aman. Anda dapat menggunakannya untuk masuk jika kehilangan akses ke metode autentikasi Anda.</string>
 
+    <string name="fui_confirm_password_hint">Konfirmasi sandi</string>
+    <string name="fui_passwords_do_not_match">Sandi tidak cocok</string>
+    <string name="fui_error_password_too_short">Sandi minimal harus terdiri dari %1$d karakter</string>
+    <string name="fui_error_password_missing_uppercase">Sandi harus berisi setidaknya satu huruf besar</string>
+    <string name="fui_error_password_missing_lowercase">Sandi harus berisi setidaknya satu huruf kecil</string>
+    <string name="fui_error_password_missing_digit">Sandi harus berisi setidaknya satu angka</string>
+    <string name="fui_error_password_missing_special_character">Sandi harus berisi setidaknya satu karakter khusus</string>
 </resources>

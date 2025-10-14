@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Įveskite patvirtinimo kodą</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Išsaugokite šiuos kodus saugioje vietoje. Galite juos naudoti prisijungti, jei prarasite prieigą prie autentifikavimo metodo.</string>
 
+    <string name="fui_confirm_password_hint">Patvirtinti slaptažodį</string>
+    <string name="fui_passwords_do_not_match">Slaptažodžiai nesutampa</string>
+    <string name="fui_error_password_too_short">Slaptažodis turi būti ne trumpesnis kaip %1$d simbolių</string>
+    <string name="fui_error_password_missing_uppercase">Slaptažodyje turi būti bent viena didžioji raidė</string>
+    <string name="fui_error_password_missing_lowercase">Slaptažodyje turi būti bent viena mažoji raidė</string>
+    <string name="fui_error_password_missing_digit">Slaptažodyje turi būti bent vienas skaičius</string>
+    <string name="fui_error_password_missing_special_character">Slaptažodyje turi būti bent vienas specialusis simbolis</string>
 </resources>

@@ -110,4 +110,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Indtast din bekræftelseskode</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Gem disse koder et sikkert sted. Du kan bruge dem til at logge ind, hvis du mister adgang til din godkendelsesmetode.</string>
 
+    <string name="fui_confirm_password_hint">Bekræft adgangskode</string>
+    <string name="fui_passwords_do_not_match">Adgangskoderne stemmer ikke overens</string>
+    <string name="fui_error_password_too_short">Adgangskoden skal være på mindst %1$d tegn</string>
+    <string name="fui_error_password_missing_uppercase">Adgangskoden skal indeholde mindst ét stort bogstav</string>
+    <string name="fui_error_password_missing_lowercase">Adgangskoden skal indeholde mindst ét lille bogstav</string>
+    <string name="fui_error_password_missing_digit">Adgangskoden skal indeholde mindst ét tal</string>
+    <string name="fui_error_password_missing_special_character">Adgangskoden skal indeholde mindst ét specialtegn</string>
 </resources>

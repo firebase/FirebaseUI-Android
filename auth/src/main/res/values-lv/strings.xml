@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ievadiet verificēšanas kodu</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Glabājiet šos kodus drošā vietā. Varat tos izmantot, lai pierakstītos, ja zaudējat piekļuvi autentifikācijas metodei.</string>
 
+    <string name="fui_confirm_password_hint">Apstipriniet paroli</string>
+    <string name="fui_passwords_do_not_match">Paroles nesakrīt</string>
+    <string name="fui_error_password_too_short">Parolei jābūt vismaz %1$d rakstzīmes garai</string>
+    <string name="fui_error_password_missing_uppercase">Parolei jāsatur vismaz viens lielais burts</string>
+    <string name="fui_error_password_missing_lowercase">Parolei jāsatur vismaz viens mazais burts</string>
+    <string name="fui_error_password_missing_digit">Parolei jāsatur vismaz viens cipars</string>
+    <string name="fui_error_password_missing_special_character">Parolei jāsatur vismaz viena īpašā rakstzīme</string>
 </resources>

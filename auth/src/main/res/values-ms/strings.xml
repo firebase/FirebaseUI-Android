@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Masukkan kod pengesahan anda</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Simpan kod ini di tempat yang selamat. Anda boleh menggunakannya untuk log masuk jika anda kehilangan akses kepada kaedah pengesahan anda.</string>
 
+    <string name="fui_confirm_password_hint">Sahkan Kata Laluan</string>
+    <string name="fui_passwords_do_not_match">Kata laluan tidak sepadan</string>
+    <string name="fui_error_password_too_short">Kata laluan mestilah sekurang-kurangnya %1$d aksara panjang</string>
+    <string name="fui_error_password_missing_uppercase">Kata laluan mestilah mengandungi sekurang-kurangnya satu huruf besar</string>
+    <string name="fui_error_password_missing_lowercase">Kata laluan mestilah mengandungi sekurang-kurangnya satu huruf kecil</string>
+    <string name="fui_error_password_missing_digit">Kata laluan mestilah mengandungi sekurang-kurangnya satu nombor</string>
+    <string name="fui_error_password_missing_special_character">Kata laluan mestilah mengandungi sekurang-kurangnya satu aksara khas</string>
 </resources>

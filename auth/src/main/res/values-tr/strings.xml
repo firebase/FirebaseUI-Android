@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Doğrulama kodunuzu girin</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bu kodları güvenli bir yerde saklayın. Kimlik doğrulama yönteminize erişimi kaybederseniz oturum açmak için bunları kullanabilirsiniz.</string>
 
+    <string name="fui_confirm_password_hint">Şifreyi onayla</string>
+    <string name="fui_passwords_do_not_match">Şifreler eşleşmiyor</string>
+    <string name="fui_error_password_too_short">Şifre en az %1$d karakter uzunluğunda olmalıdır</string>
+    <string name="fui_error_password_missing_uppercase">Şifre en az bir büyük harf içermelidir</string>
+    <string name="fui_error_password_missing_lowercase">Şifre en az bir küçük harf içermelidir</string>
+    <string name="fui_error_password_missing_digit">Şifre en az bir rakam içermelidir</string>
+    <string name="fui_error_password_missing_special_character">Şifre en az bir özel karakter içermelidir</string>
 </resources>

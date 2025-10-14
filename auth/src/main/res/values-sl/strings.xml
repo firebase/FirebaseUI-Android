@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Vnesite kodo za preverjanje</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Shranite te kode na varno mesto. Uporabite jih lahko za prijavo, če izgubite dostop do načina preverjanja pristnosti.</string>
 
+    <string name="fui_confirm_password_hint">Potrdite geslo</string>
+    <string name="fui_passwords_do_not_match">Gesli se ne ujemata</string>
+    <string name="fui_error_password_too_short">Geslo mora vsebovati vsaj %1$d znakov</string>
+    <string name="fui_error_password_missing_uppercase">Geslo mora vsebovati vsaj eno veliko črko</string>
+    <string name="fui_error_password_missing_lowercase">Geslo mora vsebovati vsaj eno malo črko</string>
+    <string name="fui_error_password_missing_digit">Geslo mora vsebovati vsaj eno števko</string>
+    <string name="fui_error_password_missing_special_character">Geslo mora vsebovati vsaj en poseben znak</string>
 </resources>

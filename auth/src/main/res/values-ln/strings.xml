@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Kota kode na yo ya bondimi</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bomba ba kode oyo na esika moko ya libateli. Okoki kosalela yango po na kokota soki obungi nzela ya bondimi na yo.</string>
 
+    <string name="fui_confirm_password_hint">Ndima mot de passe</string>
+    <string name="fui_passwords_do_not_match">Ba mot de passe ekokani te</string>
+    <string name="fui_error_password_too_short">Mot de passe esengeli kozala na ba caractères %1$d na molayi</string>
+    <string name="fui_error_password_missing_uppercase">Mot de passe esengeli kozala na ata lettre moko ya monene</string>
+    <string name="fui_error_password_missing_lowercase">Mot de passe esengeli kozala na ata lettre moko ya moke</string>
+    <string name="fui_error_password_missing_digit">Mot de passe esengeli kozala na ata nimero moko</string>
+    <string name="fui_error_password_missing_special_character">Mot de passe esengeli kozala na ata caractère moko ya spécial</string>
 </resources>

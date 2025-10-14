@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Εισαγάγετε τον κωδικό επαλήθευσης</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Αποθηκεύστε αυτούς τους κωδικούς σε ασφαλές μέρος. Μπορείτε να τους χρησιμοποιήσετε για σύνδεση εάν χάσετε την πρόσβαση στη μέθοδο ελέγχου ταυτότητας.</string>
 
+    <string name="fui_confirm_password_hint">Επιβεβαίωση κωδικού πρόσβασης</string>
+    <string name="fui_passwords_do_not_match">Οι κωδικοί πρόσβασης δεν ταιριάζουν</string>
+    <string name="fui_error_password_too_short">Ο κωδικός πρόσβασης πρέπει να αποτελείται από τουλάχιστον %1$d χαρακτήρες</string>
+    <string name="fui_error_password_missing_uppercase">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον ένα κεφαλαίο γράμμα</string>
+    <string name="fui_error_password_missing_lowercase">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον ένα μικρό γράμμα</string>
+    <string name="fui_error_password_missing_digit">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν αριθμό</string>
+    <string name="fui_error_password_missing_special_character">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα</string>
 </resources>

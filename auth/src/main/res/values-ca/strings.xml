@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Introduïu el vostre codi de verificació</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Deseu aquests codis en un lloc segur. Podeu utilitzar-los per iniciar sessió si perdeu l\'accés al vostre mètode d\'autenticació.</string>
 
+    <string name="fui_confirm_password_hint">Confirma la contrasenya</string>
+    <string name="fui_passwords_do_not_match">Les contrasenyes no coincideixen</string>
+    <string name="fui_error_password_too_short">La contrasenya ha de tenir almenys %1$d caràcters</string>
+    <string name="fui_error_password_missing_uppercase">La contrasenya ha de contenir almenys una lletra majúscula</string>
+    <string name="fui_error_password_missing_lowercase">La contrasenya ha de contenir almenys una lletra minúscula</string>
+    <string name="fui_error_password_missing_digit">La contrasenya ha de contenir almenys un número</string>
+    <string name="fui_error_password_missing_special_character">La contrasenya ha de contenir almenys un caràcter especial</string>
 </resources>

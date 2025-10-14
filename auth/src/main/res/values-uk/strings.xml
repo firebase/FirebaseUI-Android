@@ -111,4 +111,11 @@
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Введіть код підтвердження</string>
     <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Збережіть ці коди в безпечному місці. Ви можете використовувати їх для входу, якщо втратите доступ до способу автентифікації.</string>
 
+    <string name="fui_confirm_password_hint">Підтвердьте пароль</string>
+    <string name="fui_passwords_do_not_match">Паролі не збігаються</string>
+    <string name="fui_error_password_too_short">Пароль має містити щонайменше %1$d символів</string>
+    <string name="fui_error_password_missing_uppercase">Пароль має містити щонайменше одну велику літеру</string>
+    <string name="fui_error_password_missing_lowercase">Пароль має містити щонайменше одну малу літеру</string>
+    <string name="fui_error_password_missing_digit">Пароль має містити щонайменше одну цифру</string>
+    <string name="fui_error_password_missing_special_character">Пароль має містити щонайменше один спеціальний символ</string>
 </resources>
