@@ -14,19 +14,14 @@
 
 package com.firebase.ui.auth.compose.mfa
 
-import android.app.Activity
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorAssertion
 import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneMultiFactorGenerator
 import kotlinx.coroutines.tasks.await
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Handler for SMS multi-factor authentication enrollment.
@@ -37,9 +32,12 @@ import kotlin.coroutines.suspendCoroutine
  * - Verifying SMS codes entered by users
  * - Finalizing enrollment with Firebase Authentication
  *
+ * This handler uses the existing [AuthProvider.Phone.verifyPhoneNumberAwait] infrastructure
+ * for sending and verifying SMS codes, ensuring consistency with the primary phone auth flow.
+ *
  * **Usage:**
  * ```kotlin
- * val handler = SmsEnrollmentHandler(auth, user, activity)
+ * val handler = SmsEnrollmentHandler(auth, user)
  *
  * // Step 1: Send verification code
  * val session = handler.sendVerificationCode("+1234567890")
@@ -57,15 +55,23 @@ import kotlin.coroutines.suspendCoroutine
  *
  * @property auth The [FirebaseAuth] instance
  * @property user The [FirebaseUser] to enroll in SMS MFA
- * @property activity The [Activity] context required for phone authentication
  *
  * @since 10.0.0
+ * @see TotpEnrollmentHandler
+ * @see AuthProvider.Phone.verifyPhoneNumberAwait
  */
 class SmsEnrollmentHandler(
     private val auth: FirebaseAuth,
-    private val user: FirebaseUser,
-    private val activity: Activity
+    private val user: FirebaseUser
 ) {
+    private val phoneProvider = AuthProvider.Phone(
+        defaultNumber = null,
+        defaultCountryCode = null,
+        allowedCountries = null,
+        smsCodeLength = SMS_CODE_LENGTH,
+        timeout = VERIFICATION_TIMEOUT_SECONDS,
+        isInstantVerificationEnabled = true
+    )
     /**
      * Sends an SMS verification code to the specified phone number.
      *
@@ -89,53 +95,32 @@ class SmsEnrollmentHandler(
             "Phone number must be in E.164 format (e.g., +1234567890)"
         }
 
-        // Get the multi-factor session
         val multiFactorSession = user.multiFactor.session.await()
+        val result = phoneProvider.verifyPhoneNumberAwait(
+            auth = auth,
+            phoneNumber = phoneNumber,
+            multiFactorSession = multiFactorSession,
+            forceResendingToken = null
+        )
 
-        return suspendCoroutine { continuation ->
-            val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    // Auto-verification succeeded - create session with credential
-                    // Note: Auto-verification rarely happens for MFA enrollment
-                    continuation.resume(
-                        SmsEnrollmentSession(
-                            verificationId = credential.smsCode ?: "",
-                            phoneNumber = phoneNumber,
-                            forceResendingToken = null,
-                            sentAt = System.currentTimeMillis(),
-                            autoVerifiedCredential = credential
-                        )
-                    )
-                }
-
-                override fun onVerificationFailed(e: com.google.firebase.FirebaseException) {
-                    continuation.resumeWithException(e)
-                }
-
-                override fun onCodeSent(
-                    verificationId: String,
-                    token: PhoneAuthProvider.ForceResendingToken
-                ) {
-                    continuation.resume(
-                        SmsEnrollmentSession(
-                            verificationId = verificationId,
-                            phoneNumber = phoneNumber,
-                            forceResendingToken = token,
-                            sentAt = System.currentTimeMillis()
-                        )
-                    )
-                }
+        return when (result) {
+            is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
+                SmsEnrollmentSession(
+                    verificationId = "", // Not needed when auto-verified
+                    phoneNumber = phoneNumber,
+                    forceResendingToken = null,
+                    sentAt = System.currentTimeMillis(),
+                    autoVerifiedCredential = result.credential
+                )
             }
-
-            val options = PhoneAuthOptions.newBuilder(auth)
-                .setPhoneNumber(phoneNumber)
-                .setTimeout(VERIFICATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .setActivity(activity)
-                .setCallbacks(callbacks)
-                .setMultiFactorSession(multiFactorSession)
-                .build()
-
-            PhoneAuthProvider.verifyPhoneNumber(options)
+            is AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification -> {
+                SmsEnrollmentSession(
+                    verificationId = result.verificationId,
+                    phoneNumber = phoneNumber,
+                    forceResendingToken = result.token,
+                    sentAt = System.currentTimeMillis()
+                )
+            }
         }
     }
 
@@ -157,52 +142,32 @@ class SmsEnrollmentHandler(
             "Cannot resend code without a force resending token"
         }
 
-        // Get a fresh multi-factor session
         val multiFactorSession = user.multiFactor.session.await()
+        val result = phoneProvider.verifyPhoneNumberAwait(
+            auth = auth,
+            phoneNumber = session.phoneNumber,
+            multiFactorSession = multiFactorSession,
+            forceResendingToken = session.forceResendingToken
+        )
 
-        return suspendCoroutine { continuation ->
-            val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                    continuation.resume(
-                        SmsEnrollmentSession(
-                            verificationId = credential.smsCode ?: session.verificationId,
-                            phoneNumber = session.phoneNumber,
-                            forceResendingToken = session.forceResendingToken,
-                            sentAt = System.currentTimeMillis(),
-                            autoVerifiedCredential = credential
-                        )
-                    )
-                }
-
-                override fun onVerificationFailed(e: com.google.firebase.FirebaseException) {
-                    continuation.resumeWithException(e)
-                }
-
-                override fun onCodeSent(
-                    verificationId: String,
-                    token: PhoneAuthProvider.ForceResendingToken
-                ) {
-                    continuation.resume(
-                        SmsEnrollmentSession(
-                            verificationId = verificationId,
-                            phoneNumber = session.phoneNumber,
-                            forceResendingToken = token,
-                            sentAt = System.currentTimeMillis()
-                        )
-                    )
-                }
+        return when (result) {
+            is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
+                SmsEnrollmentSession(
+                    verificationId = "", // Not needed when auto-verified
+                    phoneNumber = session.phoneNumber,
+                    forceResendingToken = session.forceResendingToken,
+                    sentAt = System.currentTimeMillis(),
+                    autoVerifiedCredential = result.credential
+                )
             }
-
-            val options = PhoneAuthOptions.newBuilder(auth)
-                .setPhoneNumber(session.phoneNumber)
-                .setTimeout(VERIFICATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .setActivity(activity)
-                .setCallbacks(callbacks)
-                .setMultiFactorSession(multiFactorSession)
-                .setForceResendingToken(session.forceResendingToken)
-                .build()
-
-            PhoneAuthProvider.verifyPhoneNumber(options)
+            is AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification -> {
+                SmsEnrollmentSession(
+                    verificationId = result.verificationId,
+                    phoneNumber = session.phoneNumber,
+                    forceResendingToken = result.token,
+                    sentAt = System.currentTimeMillis()
+                )
+            }
         }
     }
 
@@ -229,15 +194,10 @@ class SmsEnrollmentHandler(
             "Verification code must be 6 digits"
         }
 
-        // Use auto-verified credential if available, otherwise create from code
         val credential = session.autoVerifiedCredential
             ?: PhoneAuthProvider.getCredential(session.verificationId, verificationCode)
 
-        // Create the multi-factor assertion for enrollment
-        val multiFactorAssertion: MultiFactorAssertion =
-            PhoneMultiFactorGenerator.getAssertion(credential)
-
-        // Enroll the user with the SMS factor
+        val multiFactorAssertion = PhoneMultiFactorGenerator.getAssertion(credential)
         user.multiFactor.enroll(multiFactorAssertion, displayName).await()
     }
 
