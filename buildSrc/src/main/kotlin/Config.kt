@@ -83,6 +83,7 @@ object Config {
             const val glideCompiler = "com.github.bumptech.glide:compiler:$glideVersion"
 
             const val permissions = "pub.devrel:easypermissions:3.0.0"
+            const val libphonenumber = "com.googlecode.libphonenumber:libphonenumber:9.0.16"
         }
 
         object Test {

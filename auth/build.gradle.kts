@@ -106,6 +106,9 @@ dependencies {
     api(Config.Libs.Firebase.auth)
     api(Config.Libs.PlayServices.auth)
 
+    // Phone number validation
+    implementation(Config.Libs.Misc.libphonenumber)
+
     compileOnly(Config.Libs.Provider.facebook)
     implementation(Config.Libs.Androidx.legacySupportv4) // Needed to override deps
     implementation(Config.Libs.Androidx.cardView) // Needed to override Facebook
