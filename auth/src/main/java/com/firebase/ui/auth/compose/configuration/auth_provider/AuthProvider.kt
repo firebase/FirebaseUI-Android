@@ -28,17 +28,26 @@ import com.firebase.ui.auth.util.Preconditions
 import com.firebase.ui.auth.util.data.ContinueUrlBuilder
 import com.firebase.ui.auth.util.data.PhoneNumberUtils
 import com.firebase.ui.auth.util.data.ProviderAvailability
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GithubAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.MultiFactorSession
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.tasks.await
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 @AuthUIConfigurationDsl
 class AuthProvidersBuilder {
@@ -79,7 +88,7 @@ internal enum class Provider(val id: String, val isSocialProvider: Boolean = fal
 abstract class OAuthProvider(
     override val providerId: String,
     open val scopes: List<String> = emptyList(),
-    open val customParameters: Map<String, String> = emptyMap()
+    open val customParameters: Map<String, String> = emptyMap(),
 ) : AuthProvider(providerId)
 
 /**
@@ -115,7 +124,7 @@ abstract class AuthProvider(open val providerId: String) {
         internal suspend fun mergeProfile(
             auth: FirebaseAuth,
             displayName: String?,
-            photoUri: Uri?
+            photoUri: Uri?,
         ) {
             try {
                 val currentUser = auth.currentUser ?: return
@@ -189,7 +198,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A list of custom password validation rules.
          */
-        val passwordValidationRules: List<PasswordRule>
+        val passwordValidationRules: List<PasswordRule>,
     ) : AuthProvider(providerId = Provider.EMAIL.id) {
         companion object {
             const val SESSION_ID_LENGTH = 10
@@ -202,9 +211,7 @@ abstract class AuthProvider(open val providerId: String) {
             val KEY_IDP_SECRET = stringPreferencesKey("com.firebase.ui.auth.data.client.idpSecret")
         }
 
-        internal fun validate(
-            isAnonymousUpgradeEnabled: Boolean = false
-        ) {
+        internal fun validate(isAnonymousUpgradeEnabled: Boolean = false) {
             if (isEmailLinkSignInEnabled) {
                 val actionCodeSettings = requireNotNull(emailLinkActionCodeSettings) {
                     "ActionCodeSettings cannot be null when using " +
@@ -256,7 +263,7 @@ abstract class AuthProvider(open val providerId: String) {
         // For Sign In With Email Link
         internal fun isDifferentDevice(
             sessionIdFromLocal: String?,
-            sessionIdFromLink: String
+            sessionIdFromLink: String,
         ): Boolean {
             return sessionIdFromLocal == null || sessionIdFromLocal.isEmpty()
                     || sessionIdFromLink.isEmpty()
@@ -265,6 +272,24 @@ abstract class AuthProvider(open val providerId: String) {
 
         private fun continueUrl(continueUrl: String, block: ContinueUrlBuilder.() -> Unit) =
             ContinueUrlBuilder(continueUrl).apply(block).build()
+
+        /**
+         * An interface to wrap the static `EmailAuthProvider.getCredential` method to make it testable.
+         * @suppress
+         */
+        internal interface CredentialProvider {
+            fun getCredential(email: String, password: String): AuthCredential
+        }
+
+        /**
+         * The default implementation of [CredentialProvider] that calls the static method.
+         * @suppress
+         */
+        internal class DefaultCredentialProvider : CredentialProvider {
+            override fun getCredential(email: String, password: String): AuthCredential {
+                return EmailAuthProvider.getCredential(email, password)
+            }
+        }
     }
 
     /**
@@ -300,12 +325,34 @@ abstract class AuthProvider(open val providerId: String) {
          * Enables instant verification of the phone number. Defaults to true.
          */
         val isInstantVerificationEnabled: Boolean = true,
-
-        /**
-         * Enables automatic retrieval of the SMS code. Defaults to true.
-         */
-        val isAutoRetrievalEnabled: Boolean = true
     ) : AuthProvider(providerId = Provider.PHONE.id) {
+        /**
+         * Sealed class representing the result of phone number verification.
+         *
+         * Phone verification can complete in two ways:
+         * - [AutoVerified]: SMS was instantly retrieved and verified by the Firebase SDK
+         * - [NeedsManualVerification]: SMS code was sent, user must manually enter it
+         */
+        internal sealed class VerifyPhoneNumberResult {
+            /**
+             * Instant verification succeeded via SMS auto-retrieval.
+             *
+             * @property credential The [PhoneAuthCredential] that can be used to sign in
+             */
+            class AutoVerified(val credential: PhoneAuthCredential) : VerifyPhoneNumberResult()
+
+            /**
+             * Instant verification failed, manual code entry required.
+             *
+             * @property verificationId The verification ID to use when submitting the code
+             * @property token Token for resending the verification code
+             */
+            class NeedsManualVerification(
+                val verificationId: String,
+                val token: PhoneAuthProvider.ForceResendingToken,
+            ) : VerifyPhoneNumberResult()
+        }
+
         internal fun validate() {
             defaultNumber?.let {
                 check(PhoneNumberUtils.isValid(it)) {
@@ -329,6 +376,130 @@ abstract class AuthProvider(open val providerId: String) {
                 }
             }
         }
+
+        /**
+         * Internal coroutine-based wrapper for Firebase Phone Authentication verification.
+         *
+         * This method wraps the callback-based Firebase Phone Auth API into a suspending function
+         * using Kotlin coroutines. It handles the Firebase [PhoneAuthProvider.OnVerificationStateChangedCallbacks]
+         * and converts them into a [VerifyPhoneNumberResult].
+         *
+         * **Callback mapping:**
+         * - `onVerificationCompleted` → [VerifyPhoneNumberResult.AutoVerified]
+         * - `onCodeSent` → [VerifyPhoneNumberResult.NeedsManualVerification]
+         * - `onVerificationFailed` → throws the exception
+         *
+         * This is a private helper method used by [verifyPhoneNumber]. Callers should use
+         * [verifyPhoneNumber] instead as it handles state management and error handling.
+         *
+         * @param auth The [FirebaseAuth] instance to use for verification
+         * @param phoneNumber The phone number to verify in E.164 format
+         * @param multiFactorSession Optional [MultiFactorSession] for MFA enrollment. When provided,
+         * Firebase verifies the phone number for enrolling as a second authentication factor
+         * instead of primary sign-in. Pass null for standard phone authentication.
+         * @param forceResendingToken Optional token from previous verification for resending
+         *
+         * @return [VerifyPhoneNumberResult] indicating auto-verified or manual verification needed
+         * @throws FirebaseException if verification fails
+         */
+        internal suspend fun verifyPhoneNumberAwait(
+            auth: FirebaseAuth,
+            phoneNumber: String,
+            multiFactorSession: MultiFactorSession? = null,
+            forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
+            verifier: Verifier = DefaultVerifier(),
+        ): VerifyPhoneNumberResult {
+            return verifier.verifyPhoneNumber(
+                auth,
+                phoneNumber,
+                timeout,
+                forceResendingToken,
+                multiFactorSession,
+                isInstantVerificationEnabled
+            )
+        }
+
+        /**
+         * @suppress
+         */
+        internal interface Verifier {
+            suspend fun verifyPhoneNumber(
+                auth: FirebaseAuth,
+                phoneNumber: String,
+                timeout: Long,
+                forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
+                multiFactorSession: MultiFactorSession?,
+                isInstantVerificationEnabled: Boolean
+            ): VerifyPhoneNumberResult
+        }
+
+        /**
+         * @suppress
+         */
+        internal class DefaultVerifier : Verifier {
+            override suspend fun verifyPhoneNumber(
+                auth: FirebaseAuth,
+                phoneNumber: String,
+                timeout: Long,
+                forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
+                multiFactorSession: MultiFactorSession?,
+                isInstantVerificationEnabled: Boolean
+            ): VerifyPhoneNumberResult {
+                return suspendCoroutine { continuation ->
+                    val options = PhoneAuthOptions.newBuilder(auth)
+                        .setPhoneNumber(phoneNumber)
+                        .requireSmsValidation(!isInstantVerificationEnabled)
+                        .setTimeout(timeout, TimeUnit.SECONDS)
+                        .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                                continuation.resume(VerifyPhoneNumberResult.AutoVerified(credential))
+                            }
+
+                            override fun onVerificationFailed(e: FirebaseException) {
+                                continuation.resumeWithException(e)
+                            }
+
+                            override fun onCodeSent(
+                                verificationId: String,
+                                token: PhoneAuthProvider.ForceResendingToken,
+                            ) {
+                                continuation.resume(
+                                    VerifyPhoneNumberResult.NeedsManualVerification(
+                                        verificationId,
+                                        token
+                                    )
+                                )
+                            }
+                        })
+                    if (forceResendingToken != null) {
+                        options.setForceResendingToken(forceResendingToken)
+                    }
+                    if (multiFactorSession != null) {
+                        options.setMultiFactorSession(multiFactorSession)
+                    }
+                    PhoneAuthProvider.verifyPhoneNumber(options.build())
+                }
+            }
+        }
+
+        /**
+         * An interface to wrap the static `PhoneAuthProvider.getCredential` method to make it testable.
+         * @suppress
+         */
+        internal interface CredentialProvider {
+            fun getCredential(verificationId: String, smsCode: String): PhoneAuthCredential
+        }
+
+        /**
+         * The default implementation of [CredentialProvider] that calls the static method.
+         * @suppress
+         */
+        internal class DefaultCredentialProvider : CredentialProvider {
+            override fun getCredential(verificationId: String, smsCode: String): PhoneAuthCredential {
+                return PhoneAuthProvider.getCredential(verificationId, smsCode)
+            }
+        }
+
     }
 
     /**
@@ -363,7 +534,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String> = emptyMap()
+        override val customParameters: Map<String, String> = emptyMap(),
     ) : OAuthProvider(
         providerId = Provider.GOOGLE.id,
         scopes = scopes,
@@ -415,7 +586,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String> = emptyMap()
+        override val customParameters: Map<String, String> = emptyMap(),
     ) : OAuthProvider(
         providerId = Provider.FACEBOOK.id,
         scopes = scopes,
@@ -452,7 +623,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String>
+        override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.TWITTER.id,
         customParameters = customParameters
@@ -470,7 +641,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String>
+        override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.GITHUB.id,
         scopes = scopes,
@@ -494,7 +665,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String>
+        override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.MICROSOFT.id,
         scopes = scopes,
@@ -513,7 +684,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String>
+        override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.YAHOO.id,
         scopes = scopes,
@@ -537,7 +708,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * A map of custom OAuth parameters.
          */
-        override val customParameters: Map<String, String>
+        override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.APPLE.id,
         scopes = scopes,
@@ -595,7 +766,7 @@ abstract class AuthProvider(open val providerId: String) {
         /**
          * An optional content color for the provider button.
          */
-        val contentColor: Color?
+        val contentColor: Color?,
     ) : OAuthProvider(
         providerId = providerId,
         scopes = scopes,
