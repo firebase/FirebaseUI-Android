@@ -50,7 +50,7 @@ import kotlinx.coroutines.tasks.await
 internal class CredentialForLinking(
     val providerType: String,
     val idToken: String?,
-    val accessToken: String?
+    val accessToken: String?,
 )
 
 /**
@@ -130,11 +130,12 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     provider: AuthProvider.Email,
     name: String?,
     email: String,
-    password: String
+    password: String,
+    credentialProvider: AuthProvider.Email.CredentialProvider = AuthProvider.Email.DefaultCredentialProvider(),
 ): AuthResult? {
     val canUpgrade = canUpgradeAnonymous(config, auth)
     val pendingCredential =
-        if (canUpgrade) EmailAuthProvider.getCredential(email, password) else null
+        if (canUpgrade) credentialProvider.getCredential(email, password) else null
 
     try {
         // Check if new accounts are allowed (only for non-upgrade flows)
@@ -454,7 +455,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
     config: AuthUIConfiguration,
     credential: AuthCredential,
     displayName: String? = null,
-    photoUrl: Uri? = null
+    photoUrl: Uri? = null,
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in user..."))
@@ -639,7 +640,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,
     email: String,
-    credentialForLinking: CredentialForLinking? = null
+    credentialForLinking: CredentialForLinking? = null,
 ) {
     try {
         updateAuthState(AuthState.Loading("Sending sign in email link..."))
@@ -938,7 +939,7 @@ suspend fun FirebaseAuthUI.signInWithEmailLink(
  */
 internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
     email: String,
-    actionCodeSettings: ActionCodeSettings? = null
+    actionCodeSettings: ActionCodeSettings? = null,
 ) {
     try {
         updateAuthState(AuthState.Loading("Sending password reset email..."))

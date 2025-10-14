@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the
  * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing permissions and
@@ -29,7 +29,6 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -47,11 +46,11 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -74,6 +73,9 @@ class EmailAuthProviderFirebaseAuthUITest {
 
     @Mock
     private lateinit var mockFirebaseAuth: FirebaseAuth
+
+    @Mock
+    private lateinit var mockEmailAuthCredentialProvider: AuthProvider.Email.CredentialProvider
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
@@ -148,48 +150,44 @@ class EmailAuthProviderFirebaseAuthUITest {
 
     @Test
     fun `Link user with email and password with anonymous upgrade should succeed`() = runTest {
-        mockStatic(EmailAuthProvider::class.java).use { mockedProvider ->
-            val mockCredential = mock(AuthCredential::class.java)
-            mockedProvider.`when`<AuthCredential> {
-                EmailAuthProvider.getCredential("test@example.com", "Pass@123")
-            }.thenReturn(mockCredential)
-            val mockAnonymousUser = mock(FirebaseUser::class.java)
-            `when`(mockAnonymousUser.isAnonymous).thenReturn(true)
-            `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonymousUser)
-            val taskCompletionSource = TaskCompletionSource<AuthResult>()
-            taskCompletionSource.setResult(null)
-            `when`(
-                mockFirebaseAuth.currentUser?.linkWithCredential(
-                    ArgumentMatchers.any(AuthCredential::class.java)
-                )
-            ).thenReturn(taskCompletionSource.task)
-            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-            val emailProvider = AuthProvider.Email(
-                emailLinkActionCodeSettings = null,
-                passwordValidationRules = emptyList()
+        val mockCredential = mock(AuthCredential::class.java)
+        `when`(mockEmailAuthCredentialProvider.getCredential("test@example.com", "Pass@123"))
+            .thenReturn(mockCredential)
+        val mockAnonymousUser = mock(FirebaseUser::class.java)
+        `when`(mockAnonymousUser.isAnonymous).thenReturn(true)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonymousUser)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(null)
+        `when`(
+            mockFirebaseAuth.currentUser?.linkWithCredential(
+                ArgumentMatchers.any(AuthCredential::class.java)
             )
-            val config = authUIConfiguration {
-                context = applicationContext
-                providers {
-                    provider(emailProvider)
-                }
-                isAnonymousUpgradeEnabled = true
+        ).thenReturn(taskCompletionSource.task)
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
             }
-
-            instance.createOrLinkUserWithEmailAndPassword(
-                context = applicationContext,
-                config = config,
-                provider = emailProvider,
-                name = null,
-                email = "test@example.com",
-                password = "Pass@123"
-            )
-
-            mockedProvider.verify {
-                EmailAuthProvider.getCredential("test@example.com", "Pass@123")
-            }
-            verify(mockAnonymousUser).linkWithCredential(mockCredential)
+            isAnonymousUpgradeEnabled = true
         }
+
+        instance.createOrLinkUserWithEmailAndPassword(
+            context = applicationContext,
+            config = config,
+            provider = emailProvider,
+            name = null,
+            email = "test@example.com",
+            password = "Pass@123",
+            credentialProvider = mockEmailAuthCredentialProvider
+        )
+
+        verify(mockEmailAuthCredentialProvider).getCredential("test@example.com", "Pass@123")
+        verify(mockAnonymousUser).linkWithCredential(mockCredential)
     }
 
     @Test
@@ -292,10 +290,9 @@ class EmailAuthProviderFirebaseAuthUITest {
         `when`(mockAnonymousUser.email).thenReturn("test@example.com")
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonymousUser)
 
-        val collisionException = FirebaseAuthUserCollisionException(
-            "ERROR_EMAIL_ALREADY_IN_USE",
-            "Email already in use"
-        )
+        val collisionException = mock(FirebaseAuthUserCollisionException::class.java)
+        `when`(collisionException.errorCode).thenReturn("ERROR_EMAIL_ALREADY_IN_USE")
+
         val taskCompletionSource = TaskCompletionSource<AuthResult>()
         taskCompletionSource.setException(collisionException)
         `when`(mockAnonymousUser.linkWithCredential(ArgumentMatchers.any(AuthCredential::class.java)))
@@ -565,16 +562,11 @@ class EmailAuthProviderFirebaseAuthUITest {
         `when`(mockFirebaseAuth.currentUser).thenReturn(anonymousUser)
 
         val credential = GoogleAuthProvider.getCredential("google-id-token", null)
-        val updatedCredential = EmailAuthProvider.getCredential("test@example.com", "Pass@123")
+        val updatedCredential = mock(AuthCredential::class.java)
 
-        val collisionException = FirebaseAuthUserCollisionException(
-            "ERROR_CREDENTIAL_ALREADY_IN_USE",
-            "Credential already in use"
-        )
-        // Set updatedCredential using reflection
-        val field = FirebaseAuthUserCollisionException::class.java.getDeclaredField("zza")
-        field.isAccessible = true
-        field.set(collisionException, updatedCredential)
+        val collisionException = mock(FirebaseAuthUserCollisionException::class.java)
+        `when`(collisionException.errorCode).thenReturn("ERROR_CREDENTIAL_ALREADY_IN_USE")
+        `when`(collisionException.updatedCredential).thenReturn(updatedCredential)
 
         val taskCompletionSource = TaskCompletionSource<AuthResult>()
         taskCompletionSource.setException(collisionException)
