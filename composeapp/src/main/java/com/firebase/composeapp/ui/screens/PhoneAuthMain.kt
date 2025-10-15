@@ -101,8 +101,6 @@ fun PhoneAuthMain(
                             configuration = configuration,
                             isLoading = state.isLoading,
                             phoneNumber = state.phoneNumber,
-                            useInstantVerificationEnabled = state.useInstantVerificationEnabled,
-                            onUseInstantVerificationChange = state.onUseInstantVerificationChange,
                             selectedCountry = state.selectedCountry,
                             onPhoneNumberChange = state.onPhoneNumberChange,
                             onCountrySelected = state.onCountrySelected,

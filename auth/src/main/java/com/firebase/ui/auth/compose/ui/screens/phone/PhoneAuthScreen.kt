@@ -14,9 +14,9 @@
 
 package com.firebase.ui.auth.compose.ui.screens.phone
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
@@ -44,7 +43,6 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.activity.compose.LocalActivity
 
 enum class PhoneAuthStep {
     /**
@@ -70,8 +68,6 @@ enum class PhoneAuthStep {
  * @param error An optional error message to display to the user.
  * @param phoneNumber (Step: [PhoneAuthStep.EnterPhoneNumber]) The current value of the phone
  * number input field.
- * @param useInstantVerificationEnabled
- * @param onUseInstantVerificationChange
  * @param onPhoneNumberChange (Step: [PhoneAuthStep.EnterPhoneNumber]) A callback to be invoked
  * when the phone number input changes.
  * @param selectedCountry (Step: [PhoneAuthStep.EnterPhoneNumber]) The currently selected country
@@ -100,8 +96,6 @@ class PhoneAuthContentState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val phoneNumber: String,
-    val useInstantVerificationEnabled: Boolean,
-    val onUseInstantVerificationChange: (Boolean) -> Unit,
     val onPhoneNumberChange: (String) -> Unit,
     val selectedCountry: CountryData,
     val onCountrySelected: (CountryData) -> Unit,
@@ -148,8 +142,6 @@ fun PhoneAuthScreen(
 
     val step = rememberSaveable { mutableStateOf(PhoneAuthStep.EnterPhoneNumber) }
     val phoneNumberValue = rememberSaveable { mutableStateOf(provider.defaultNumber ?: "") }
-    val useInstantVerificationEnabled =
-        rememberSaveable { mutableStateOf(provider.isInstantVerificationEnabled) }
     val verificationCodeValue = rememberSaveable { mutableStateOf("") }
     val selectedCountry = remember {
         mutableStateOf(
@@ -199,16 +191,14 @@ fun PhoneAuthScreen(
 
             is AuthState.SMSAutoVerified -> {
                 // Auto-verification succeeded, sign in with the credential
-                if (useInstantVerificationEnabled.value) {
-                    coroutineScope.launch {
-                        try {
-                            authUI.signInWithPhoneAuthCredential(
-                                config = configuration,
-                                credential = state.credential
-                            )
-                        } catch (e: Exception) {
-                            // Error will be handled by authState flow
-                        }
+                coroutineScope.launch {
+                    try {
+                        authUI.signInWithPhoneAuthCredential(
+                            config = configuration,
+                            credential = state.credential
+                        )
+                    } catch (e: Exception) {
+                        // Error will be handled by authState flow
                     }
                 }
             }
@@ -230,10 +220,6 @@ fun PhoneAuthScreen(
         isLoading = isLoading,
         error = errorMessage,
         phoneNumber = phoneNumberValue.value,
-        useInstantVerificationEnabled = useInstantVerificationEnabled.value,
-        onUseInstantVerificationChange = { value ->
-            useInstantVerificationEnabled.value = value
-        },
         onPhoneNumberChange = { number ->
             phoneNumberValue.value = number
         },

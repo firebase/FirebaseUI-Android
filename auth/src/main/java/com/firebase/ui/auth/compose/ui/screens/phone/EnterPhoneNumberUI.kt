@@ -65,8 +65,6 @@ fun EnterPhoneNumberUI(
     configuration: AuthUIConfiguration,
     isLoading: Boolean,
     phoneNumber: String,
-    useInstantVerificationEnabled: Boolean,
-    onUseInstantVerificationChange: (Boolean) -> Unit,
     selectedCountry: CountryData,
     onPhoneNumberChange: (String) -> Unit,
     onCountrySelected: (CountryData) -> Unit,
@@ -128,26 +126,6 @@ fun EnterPhoneNumberUI(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            if (provider.isInstantVerificationEnabled) {
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable {
-                            onUseInstantVerificationChange(!useInstantVerificationEnabled)
-                        },
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("Use instant verification for SMS")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = if (useInstantVerificationEnabled) Icons.Default.CheckBox else
-                            Icons.Default.CheckBoxOutlineBlank,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
 
             Row(
                 modifier = Modifier
@@ -199,8 +177,6 @@ fun PreviewEnterPhoneNumberUI() {
             },
             isLoading = false,
             phoneNumber = "",
-            useInstantVerificationEnabled = true,
-            onUseInstantVerificationChange = { value -> },
             selectedCountry = CountryUtils.getDefaultCountry(),
             onPhoneNumberChange = {},
             onCountrySelected = {},
