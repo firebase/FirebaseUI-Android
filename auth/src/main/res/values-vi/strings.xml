@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Nhập số điện thoại của bạn</string>
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>
     <string name="fui_enter_confirmation_code">Nhập mã 6 chữ số mà chúng tôi đã gửi cho bạn</string>
-    <string name="fui_resend_code_in">Gửi lại mã sau 0:%02d</string>
+    <string name="fui_resend_code_in">Gửi lại mã sau %1$s</string>
     <string name="fui_verify_your_phone_title">Xác minh số điện thoại của bạn</string>
     <string name="fui_verifying">Đang xác minh…</string>
     <string name="fui_incorrect_code_dialog_body">Mã không chính xác. Hãy thử lại.</string>

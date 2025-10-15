@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Masukkan nombor telefon anda</string>
     <string name="fui_invalid_phone_number">Masukkan nombor telefon yang sah</string>
     <string name="fui_enter_confirmation_code">Masukkan kod 6 digit yang kami hantar ke</string>
-    <string name="fui_resend_code_in">Hantar semula kod dalam 0:%02d</string>
+    <string name="fui_resend_code_in">Hantar semula kod dalam %1$s</string>
     <string name="fui_verify_your_phone_title">Sahkan nombor telefon anda</string>
     <string name="fui_verifying">Mengesahkan…</string>
     <string name="fui_incorrect_code_dialog_body">Kod salah. Cuba lagi.</string>

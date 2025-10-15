@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">شماره تلفن خود را وارد کنید</string>
     <string name="fui_invalid_phone_number">شماره تلفن معتبری وارد کنید</string>
     <string name="fui_enter_confirmation_code">وارد کردن کد ۶ رقمی ارسال‌شده به</string>
-    <string name="fui_resend_code_in">کد پس از %02d:0 مجدداً ارسال می‌شود</string>
+    <string name="fui_resend_code_in">کد پس از %1$s:0 مجدداً ارسال می‌شود</string>
     <string name="fui_verify_your_phone_title">تأیید شماره تلفن</string>
     <string name="fui_verifying">درحال تأیید…</string>
     <string name="fui_incorrect_code_dialog_body">کد اشتباه است. دوباره امتحان کنید.</string>

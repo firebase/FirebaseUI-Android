@@ -90,7 +90,7 @@ fun EnterPhoneNumberUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringProvider.verifyPhoneNumber)
+                    Text(stringProvider.signInWithPhone)
                 },
                 colors = AuthUITheme.topAppBarColors
             )

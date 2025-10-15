@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Introduza o seu número de telefone</string>
     <string name="fui_invalid_phone_number">Introduza um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Introduza o código de 6 dígitos que enviámos para</string>
-    <string name="fui_resend_code_in">Reenviar código em 0:%02d</string>
+    <string name="fui_resend_code_in">Reenviar código em %1$s</string>
     <string name="fui_verify_your_phone_title">Validar o número de telefone</string>
     <string name="fui_verifying">A validar…</string>
     <string name="fui_incorrect_code_dialog_body">Código errado. Tente novamente.</string>

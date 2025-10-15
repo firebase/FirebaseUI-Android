@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Unesite telefonski broj</string>
     <string name="fui_invalid_phone_number">Unesite važeći telefonski broj</string>
     <string name="fui_enter_confirmation_code">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>
-    <string name="fui_resend_code_in">Ponovno slanje koda za 0:%02d</string>
+    <string name="fui_resend_code_in">Ponovno slanje koda za %1$s</string>
     <string name="fui_verify_your_phone_title">Potvrda telefonskog broja</string>
     <string name="fui_verifying">Potvrđivanje…</string>
     <string name="fui_incorrect_code_dialog_body">Pogrešan kôd. Pokušajte ponovo.</string>

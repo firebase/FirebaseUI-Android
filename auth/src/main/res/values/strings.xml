@@ -129,7 +129,7 @@
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>
     <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Enter a valid phone number</string>
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Enter the 6-digit code we sent to</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in %s</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in %1$s</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
     <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>

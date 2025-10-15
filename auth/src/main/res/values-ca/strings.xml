@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Introdueix el número de telèfon</string>
     <string name="fui_invalid_phone_number">Introdueix un número de telèfon vàlid</string>
     <string name="fui_enter_confirmation_code">Introdueix el codi de 6 dígits que s\'ha enviat al número</string>
-    <string name="fui_resend_code_in">Torna a enviar el codi d\'aquí a 0:%02d</string>
+    <string name="fui_resend_code_in">Torna a enviar el codi d\'aquí a %1$s</string>
     <string name="fui_verify_your_phone_title">Verifica el número de telèfon</string>
     <string name="fui_verifying">S\'està verificant…</string>
     <string name="fui_incorrect_code_dialog_body">El codi no és correcte. Torna-ho a provar.</string>

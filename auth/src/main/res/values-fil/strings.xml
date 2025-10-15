@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>
-    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng 0:%02d</string>
+    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng %1$s</string>
     <string name="fui_verify_your_phone_title">I-verify ang numero ng iyong telepono</string>
     <string name="fui_verifying">Bine-verify…</string>
     <string name="fui_incorrect_code_dialog_body">Maling code. Subukang muli.</string>

@@ -195,9 +195,6 @@ class DefaultAuthUIStringProvider(
     override val verificationCodeHint: String
         get() = localizedContext.getString(R.string.fui_enter_confirmation_code)
 
-    override val verifyCode: String
-        get() = localizedContext.getString(R.string.fui_verify_phone_number)
-
     override val changePhoneNumber: String
         get() = localizedContext.getString(R.string.fui_change_phone_number)
 

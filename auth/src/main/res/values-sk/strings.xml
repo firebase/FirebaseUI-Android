@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Zadajte svoje telefónne číslo</string>
     <string name="fui_invalid_phone_number">Zadajte platné telefónne číslo</string>
     <string name="fui_enter_confirmation_code">Zadajte 6-ciferný kód, ktorý sme odoslali na adresu</string>
-    <string name="fui_resend_code_in">Kód sa znova odošle o 0:%02d</string>
+    <string name="fui_resend_code_in">Kód sa znova odošle o %1$s</string>
     <string name="fui_verify_your_phone_title">Overiť telefónne číslo</string>
     <string name="fui_verifying">Overuje sa…</string>
     <string name="fui_incorrect_code_dialog_body">Nesprávny kód. Skúste to znova.</string>

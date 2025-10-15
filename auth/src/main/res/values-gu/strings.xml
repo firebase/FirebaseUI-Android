@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">તમારો ફોન નંબર દાખલ કરો</string>
     <string name="fui_invalid_phone_number">એક માન્ય ફોન નંબર દાખલ કરો</string>
     <string name="fui_enter_confirmation_code">અમે આ ફોન નંબર પર મોકલેલ 6-અંકનો કોડ દાખલ કરો</string>
-    <string name="fui_resend_code_in">0 માં કોડ ફરીથી મોકલો:%02d</string>
+    <string name="fui_resend_code_in">0 માં કોડ ફરીથી મોકલો:%1$s</string>
     <string name="fui_verify_your_phone_title">તમારો ફોન નંબર ચકાસો</string>
     <string name="fui_verifying">ચકાસી રહ્યાં છીએ…</string>
     <string name="fui_incorrect_code_dialog_body">કોડ ખોટો છે. ફરી પ્રયાસ કરો.</string>

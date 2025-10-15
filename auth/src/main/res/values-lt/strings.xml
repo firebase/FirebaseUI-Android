@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Įveskite telefono numerį</string>
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>
-    <string name="fui_resend_code_in">Siųsti kodą iš naujo po 0:%02d</string>
+    <string name="fui_resend_code_in">Siųsti kodą iš naujo po %1$s</string>
     <string name="fui_verify_your_phone_title">Patvirtinti telefono numerį</string>
     <string name="fui_verifying">Patvirtinama…</string>
     <string name="fui_incorrect_code_dialog_body">Klaidingas kodas. Bandykite dar kartą.</string>

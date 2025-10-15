@@ -201,9 +201,6 @@ interface AuthUIStringProvider {
     /** Verification code hint */
     val verificationCodeHint: String
 
-    /** Verify code button text */
-    val verifyCode: String
-
     /** Change phone number link text */
     val changePhoneNumber: String
 

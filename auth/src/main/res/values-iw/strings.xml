@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">הזן את מספר הטלפון שלך</string>
     <string name="fui_invalid_phone_number">מספר הטלפון שהזנת לא תקין</string>
     <string name="fui_enter_confirmation_code">הזן את הקוד בן 6 הספרות ששלחנו אל</string>
-    <string name="fui_resend_code_in">שולח קוד חדש בעוד %02d:0</string>
+    <string name="fui_resend_code_in">שולח קוד חדש בעוד %1$s:0</string>
     <string name="fui_verify_your_phone_title">אמת את מספר הטלפון</string>
     <string name="fui_verifying">מאמת…</string>
     <string name="fui_incorrect_code_dialog_body">הקוד שגוי. נסה שוב.</string>

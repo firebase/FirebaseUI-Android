@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Въвеждане на телефонния ви номер</string>
     <string name="fui_invalid_phone_number">Въведете валиден телефонен номер</string>
     <string name="fui_enter_confirmation_code">Въведете 6-цифрения код, който изпратихме до</string>
-    <string name="fui_resend_code_in">Повторно изпращане на кода след 0:%02d</string>
+    <string name="fui_resend_code_in">Повторно изпращане на кода след %1$s</string>
     <string name="fui_verify_your_phone_title">Потвърждаване на телефонния ви номер</string>
     <string name="fui_verifying">Потвърждава се…</string>
     <string name="fui_incorrect_code_dialog_body">Неправилен код. Опитайте отново.</string>

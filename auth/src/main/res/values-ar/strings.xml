@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">أدخل رقم هاتفك</string>
     <string name="fui_invalid_phone_number">يُرجى إدخال رقم هاتف صالح</string>
     <string name="fui_enter_confirmation_code">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>
-    <string name="fui_resend_code_in">إعادة إرسال الرمز بعد 0:%02d</string>
+    <string name="fui_resend_code_in">إعادة إرسال الرمز بعد %1$s</string>
     <string name="fui_verify_your_phone_title">إثبات ملكية رقم هاتفك</string>
     <string name="fui_verifying">جارٍ التحقق…</string>
     <string name="fui_incorrect_code_dialog_body">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>

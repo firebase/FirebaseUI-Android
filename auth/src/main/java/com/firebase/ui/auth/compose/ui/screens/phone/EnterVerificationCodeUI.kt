@@ -50,6 +50,7 @@ import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
 import com.firebase.ui.auth.compose.ui.components.VerificationCodeInputField
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +136,8 @@ fun EnterVerificationCodeUI(
                     text = if (resendTimer > 0) {
                         val minutes = resendTimer / 60
                         val seconds = resendTimer % 60
-                        val timeFormatted = "$minutes:${String.format("%02d", seconds)}"
+                        val timeFormatted =
+                            "$minutes:${String.format(Locale.ROOT, "%02d", seconds)}"
                         stringProvider.resendCodeTimer(timeFormatted)
                     } else {
                         stringProvider.resendCode
@@ -161,7 +163,7 @@ fun EnterVerificationCodeUI(
                                 .size(16.dp)
                         )
                     } else {
-                        Text(stringProvider.verifyCode.uppercase())
+                        Text(stringProvider.verifyPhoneNumber.uppercase())
                     }
                 }
             }

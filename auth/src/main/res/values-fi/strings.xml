@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">Anna puhelinnumerosi</string>
     <string name="fui_invalid_phone_number">Anna voimassa oleva puhelinnumero.</string>
     <string name="fui_enter_confirmation_code">Anna 6 merkin pituinen koodi, jonka lähetimme numeroon</string>
-    <string name="fui_resend_code_in">Lähetä koodi uudelleen seuraavan ajan kuluttua: 0:%02d.</string>
+    <string name="fui_resend_code_in">Lähetä koodi uudelleen seuraavan ajan kuluttua: %1$s.</string>
     <string name="fui_verify_your_phone_title">Puhelinnumeron vahvistaminen</string>
     <string name="fui_verifying">Vahvistetaan…</string>
     <string name="fui_incorrect_code_dialog_body">Väärä koodi. Yritä uudelleen.</string>

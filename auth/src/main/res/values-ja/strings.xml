@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">電話番号を入力してください</string>
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>
     <string name="fui_enter_confirmation_code">送信された 6 桁のコードを入力してください</string>
-    <string name="fui_resend_code_in">0:%02d 秒後にコードを再送信します</string>
+    <string name="fui_resend_code_in">%1$s 秒後にコードを再送信します</string>
     <string name="fui_verify_your_phone_title">電話番号を確認</string>
     <string name="fui_verifying">確認しています…</string>
     <string name="fui_incorrect_code_dialog_body">コードが間違っています。もう一度お試しください。</string>

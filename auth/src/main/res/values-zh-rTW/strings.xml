@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">請輸入您的電話號碼</string>
     <string name="fui_invalid_phone_number">請輸入有效的電話號碼</string>
     <string name="fui_enter_confirmation_code">請輸入傳送至以下電話號碼的 6 位數驗證碼</string>
-    <string name="fui_resend_code_in">0:%02d 秒後將重新發送驗證碼</string>
+    <string name="fui_resend_code_in">%1$s 秒後將重新發送驗證碼</string>
     <string name="fui_verify_your_phone_title">驗證您的電話號碼</string>
     <string name="fui_verifying">驗證中…</string>
     <string name="fui_incorrect_code_dialog_body">驗證碼錯誤，請再試一次。</string>

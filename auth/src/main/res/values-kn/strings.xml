@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>
-    <string name="fui_resend_code_in">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ 0:%02d</string>
+    <string name="fui_resend_code_in">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ %1$s</string>
     <string name="fui_verify_your_phone_title">ನಿಮ್ಮ ಪೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_verifying">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_incorrect_code_dialog_body">ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>

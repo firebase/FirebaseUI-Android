@@ -76,7 +76,7 @@
     <string name="fui_verify_phone_number_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>
-    <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน 0:%02d</string>
+    <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน %1$s</string>
     <string name="fui_verify_your_phone_title">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_verifying">กำลังยืนยัน…</string>
     <string name="fui_incorrect_code_dialog_body">รหัสไม่ถูกต้อง โปรดลองอีกครั้ง</string>
