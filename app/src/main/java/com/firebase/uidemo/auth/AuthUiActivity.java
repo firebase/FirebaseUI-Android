@@ -31,7 +31,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.uidemo.R;
-import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.databinding.AuthUiLayoutBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
 import com.google.android.gms.common.Scopes;
@@ -54,8 +53,9 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.view.WindowCompat;
 
-public class AuthUiActivity extends BaseActivity
+public class AuthUiActivity extends AppCompatActivity
         implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
     private static final String TAG = "AuthUiActivity";
 
@@ -81,6 +81,10 @@ public class AuthUiActivity extends BaseActivity
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         mBinding = AuthUiLayoutBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 

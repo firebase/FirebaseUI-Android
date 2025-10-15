@@ -43,12 +43,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ChooserActivity extends BaseActivity {
+public class ChooserActivity extends AppCompatActivity {
     private ActivityChooserBinding mBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         if (AuthUI.canHandleIntent(getIntent())) {
             Intent intent = new Intent(ChooserActivity.this, AuthUiActivity

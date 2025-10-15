@@ -12,7 +12,6 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.databinding.ActivityAnonymousUpgradeBinding;
 import com.firebase.uidemo.util.ConfigurationUtils;
@@ -29,8 +28,10 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
-public class AnonymousUpgradeActivity extends BaseActivity
+public class AnonymousUpgradeActivity extends AppCompatActivity
         implements ActivityResultCallback<FirebaseAuthUIAuthenticationResult> {
 
     private static final String TAG = "AccountLink";
@@ -45,6 +46,10 @@ public class AnonymousUpgradeActivity extends BaseActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         mBinding = ActivityAnonymousUpgradeBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 

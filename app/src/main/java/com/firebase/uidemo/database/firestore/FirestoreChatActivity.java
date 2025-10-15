@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.firebase.uidemo.BaseActivity;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.databinding.ActivityChatBinding;
@@ -24,6 +23,8 @@ import com.google.firebase.firestore.Query;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,7 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * Lists</a>.
  */
 @SuppressLint("RestrictedApi")
-public class FirestoreChatActivity extends BaseActivity
+public class FirestoreChatActivity extends AppCompatActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "FirestoreChatActivity";
 
@@ -55,6 +56,10 @@ public class FirestoreChatActivity extends BaseActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         mBinding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
 

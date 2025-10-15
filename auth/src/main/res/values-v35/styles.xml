@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
-
-    <!-- Override the base FirebaseUI theme for edge-to-edge support -->
-    <style name="FirebaseUI" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-    </style>
-
-</resources>
