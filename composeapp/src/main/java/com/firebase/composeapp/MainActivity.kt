@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                         AuthMethodPicker(
                                             modifier = Modifier.padding(innerPadding),
                                             providers = configuration.providers,
-                                            logo = AuthUIAsset.Resource(R.drawable.fui_ic_googleg_color_24dp),
+                                            logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp),
                                             termsOfServiceUrl = configuration.tosUrl,
                                             privacyPolicyUrl = configuration.privacyPolicyUrl,
                                             onProviderSelected = { provider ->
