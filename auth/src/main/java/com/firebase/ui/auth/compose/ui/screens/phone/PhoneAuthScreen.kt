@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose.ui.screens.phone
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
@@ -42,6 +44,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.activity.compose.LocalActivity
 
 enum class PhoneAuthStep {
     /**
@@ -138,6 +141,7 @@ fun PhoneAuthScreen(
     modifier: Modifier = Modifier,
     content: @Composable ((PhoneAuthContentState) -> Unit)? = null,
 ) {
+    val activity = LocalActivity.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
     val stringProvider = DefaultAuthUIStringProvider(context)
     val coroutineScope = rememberCoroutineScope()
@@ -242,6 +246,7 @@ fun PhoneAuthScreen(
                 try {
                     authUI.verifyPhoneNumber(
                         provider = provider,
+                        activity = activity,
                         phoneNumber = fullPhoneNumber,
                     )
                 } catch (e: Exception) {
@@ -274,6 +279,7 @@ fun PhoneAuthScreen(
                 coroutineScope.launch {
                     try {
                         authUI.verifyPhoneNumber(
+                            activity = activity,
                             provider = provider,
                             phoneNumber = fullPhoneNumber,
                             forceResendingToken = forceResendingToken.value,
@@ -288,6 +294,7 @@ fun PhoneAuthScreen(
         resendTimer = resendTimerSeconds.intValue,
         onChangeNumberClick = {
             step.value = PhoneAuthStep.EnterPhoneNumber
+            //phoneNumberValue.value = ""
             verificationCodeValue.value = ""
             verificationId.value = null
             forceResendingToken.value = null

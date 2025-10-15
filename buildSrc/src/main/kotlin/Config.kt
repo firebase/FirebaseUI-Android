@@ -3,10 +3,11 @@ object Config {
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     const val kotlinVersion = "2.2.0"
+    const val kotlinSerializationVersion = "1.9.0"
 
     object SdkVersions {
-        const val compile = 35
-        const val target = 35
+        const val compile = 36
+        const val target = 36
         const val min = 23
     }
 
@@ -45,7 +46,7 @@ object Config {
             const val datastorePreferences = "androidx.datastore:datastore-preferences:1.1.1"
             const val credentials = "androidx.credentials:credentials:1.3.0"
             object Compose {
-                const val bom = "androidx.compose:compose-bom:2025.08.00"
+                const val bom = "androidx.compose:compose-bom:2025.10.00"
                 const val ui = "androidx.compose.ui:ui"
                 const val uiGraphics = "androidx.compose.ui:ui-graphics"
                 const val toolingPreview = "androidx.compose.ui:ui-tooling-preview"
@@ -53,8 +54,16 @@ object Config {
                 const val foundation = "androidx.compose.foundation:foundation"
                 const val material3 = "androidx.compose.material3:material3"
                 const val materialIconsExtended = "androidx.compose.material:material-icons-extended"
-                const val activityCompose = "androidx.activity:activity-compose:1.9.0"
+                const val activityCompose = "androidx.activity:activity-compose:1.11.0"
             }
+
+            object Navigation {
+                const val nav3Runtime = "androidx.navigation3:navigation3-runtime:1.0.0-alpha08"
+                const val nav3UI = "androidx.navigation3:navigation3-ui:1.0.0-alpha08"
+                const val lifecycleViewmodelNav3 = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04"
+            }
+
+            const val kotlinxSerialization = "org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinSerializationVersion"
         }
 
         object Firebase {

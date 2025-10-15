@@ -31,7 +31,6 @@ fun PhoneAuthMain(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    provider: AuthProvider.Phone,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)

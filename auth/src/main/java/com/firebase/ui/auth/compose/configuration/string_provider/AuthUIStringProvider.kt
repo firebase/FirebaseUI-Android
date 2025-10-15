@@ -175,7 +175,7 @@ interface AuthUIStringProvider {
     val resendCode: String
 
     /** Resend code with timer */
-    fun resendCodeTimer(seconds: Int): String
+    fun resendCodeTimer(timeFormatted: String): String
 
     /** Verifying progress text */
     val verifying: String

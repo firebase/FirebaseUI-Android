@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.plugin.serialization") version Config.kotlinVersion
     id("com.google.gms.google-services") apply false
 }
 
@@ -51,6 +52,12 @@ dependencies {
     implementation(Config.Libs.Androidx.Compose.uiGraphics)
     implementation(Config.Libs.Androidx.Compose.toolingPreview)
     implementation(Config.Libs.Androidx.Compose.material3)
+
+    // Navigation 3
+    implementation(Config.Libs.Androidx.Navigation.nav3Runtime)
+    implementation(Config.Libs.Androidx.Navigation.nav3UI)
+    implementation(Config.Libs.Androidx.Navigation.lifecycleViewmodelNav3)
+    implementation(Config.Libs.Androidx.kotlinxSerialization)
 
     testImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.junitExt)

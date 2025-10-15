@@ -170,8 +170,8 @@ class DefaultAuthUIStringProvider(
     override val resendCode: String
         get() = localizedContext.getString(R.string.fui_resend_code)
 
-    override fun resendCodeTimer(seconds: Int): String =
-        localizedContext.getString(R.string.fui_resend_code_in, seconds)
+    override fun resendCodeTimer(timeFormatted: String): String =
+        localizedContext.getString(R.string.fui_resend_code_in, timeFormatted)
 
     override val verifying: String
         get() = localizedContext.getString(R.string.fui_verifying)

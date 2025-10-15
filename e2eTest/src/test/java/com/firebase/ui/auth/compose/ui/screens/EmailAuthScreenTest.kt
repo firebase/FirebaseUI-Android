@@ -22,6 +22,7 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.compose.testutil.awaitWithLooper
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -670,87 +671,4 @@ class EmailAuthScreenTest {
         println("TEST: User isEmailVerified: ${authUI.auth.currentUser?.isEmailVerified}")
     }
 
-}
-
-private class EmulatorAuthApi(
-    private val projectId: String,
-    emulatorHost: String,
-    emulatorPort: Int
-) {
-
-    private val httpClient = HttpClient(host = emulatorHost, port = emulatorPort)
-
-    fun clearAccounts() {
-        httpClient.delete("/emulator/v1/projects/$projectId/accounts") { connection ->
-            val responseCode = connection.responseCode
-            if (responseCode !in 200..299) {
-                println("WARNING: Failed to clear emulator data: HTTP $responseCode")
-            } else {
-                println("TEST: Cleared emulator data")
-            }
-        }
-    }
-
-    fun fetchVerifyEmailCode(email: String): String {
-        val oobCodes = fetchOobCodes()
-        return (0 until oobCodes.length())
-            .asSequence()
-            .mapNotNull { index -> oobCodes.optJSONObject(index) }
-            .firstOrNull { json ->
-                json.optString("email") == email &&
-                        json.optString("requestType") == "VERIFY_EMAIL"
-            }
-            ?.optString("oobCode")
-            ?.takeIf { it.isNotBlank() }
-            ?: throw Exception("No VERIFY_EMAIL OOB code found for user email: $email")
-    }
-
-    private fun fetchOobCodes(): JSONArray {
-        val payload = httpClient.get("/emulator/v1/projects/$projectId/oobCodes") { connection ->
-            val responseCode = connection.responseCode
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw Exception("Failed to get OOB codes: HTTP $responseCode")
-            }
-
-            connection.inputStream.bufferedReader().use { it.readText() }
-        }
-
-        return JSONObject(payload).optJSONArray("oobCodes") ?: JSONArray()
-    }
-}
-
-private class HttpClient(
-    private val host: String,
-    private val port: Int,
-    private val timeoutMs: Int = DEFAULT_TIMEOUT_MS
-) {
-
-    companion object {
-        const val DEFAULT_TIMEOUT_MS = 5_000
-    }
-
-    fun delete(path: String, block: (HttpURLConnection) -> Unit) {
-        execute(path = path, method = "DELETE", block = block)
-    }
-
-    fun <T> get(path: String, block: (HttpURLConnection) -> T): T {
-        return execute(path = path, method = "GET", block = block)
-    }
-
-    private fun <T> execute(path: String, method: String, block: (HttpURLConnection) -> T): T {
-        val connection = buildUrl(path).openConnection() as HttpURLConnection
-        connection.requestMethod = method
-        connection.connectTimeout = timeoutMs
-        connection.readTimeout = timeoutMs
-
-        return try {
-            block(connection)
-        } finally {
-            connection.disconnect()
-        }
-    }
-
-    private fun buildUrl(path: String): URL {
-        return URL("http://$host:$port$path")
-    }
 }

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -44,6 +45,7 @@ import com.google.firebase.auth.TwitterAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.tasks.await
+import kotlinx.serialization.Serializable
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -404,6 +406,7 @@ abstract class AuthProvider(open val providerId: String) {
          */
         internal suspend fun verifyPhoneNumberAwait(
             auth: FirebaseAuth,
+            activity: Activity?,
             phoneNumber: String,
             multiFactorSession: MultiFactorSession? = null,
             forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
@@ -411,6 +414,7 @@ abstract class AuthProvider(open val providerId: String) {
         ): VerifyPhoneNumberResult {
             return verifier.verifyPhoneNumber(
                 auth,
+                activity,
                 phoneNumber,
                 timeout,
                 forceResendingToken,
@@ -425,11 +429,12 @@ abstract class AuthProvider(open val providerId: String) {
         internal interface Verifier {
             suspend fun verifyPhoneNumber(
                 auth: FirebaseAuth,
+                activity: Activity?,
                 phoneNumber: String,
                 timeout: Long,
                 forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
                 multiFactorSession: MultiFactorSession?,
-                isInstantVerificationEnabled: Boolean
+                isInstantVerificationEnabled: Boolean,
             ): VerifyPhoneNumberResult
         }
 
@@ -439,18 +444,20 @@ abstract class AuthProvider(open val providerId: String) {
         internal class DefaultVerifier : Verifier {
             override suspend fun verifyPhoneNumber(
                 auth: FirebaseAuth,
+                activity: Activity?,
                 phoneNumber: String,
                 timeout: Long,
                 forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
                 multiFactorSession: MultiFactorSession?,
-                isInstantVerificationEnabled: Boolean
+                isInstantVerificationEnabled: Boolean,
             ): VerifyPhoneNumberResult {
                 return suspendCoroutine { continuation ->
                     val options = PhoneAuthOptions.newBuilder(auth)
                         .setPhoneNumber(phoneNumber)
                         .requireSmsValidation(!isInstantVerificationEnabled)
                         .setTimeout(timeout, TimeUnit.SECONDS)
-                        .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                        .setCallbacks(object :
+                            PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                                 continuation.resume(VerifyPhoneNumberResult.AutoVerified(credential))
                             }
@@ -471,11 +478,14 @@ abstract class AuthProvider(open val providerId: String) {
                                 )
                             }
                         })
-                    if (forceResendingToken != null) {
-                        options.setForceResendingToken(forceResendingToken)
+                    activity?.let {
+                        options.setActivity(it)
                     }
-                    if (multiFactorSession != null) {
-                        options.setMultiFactorSession(multiFactorSession)
+                    forceResendingToken?.let {
+                        options.setForceResendingToken(it)
+                    }
+                    multiFactorSession?.let {
+                        options.setMultiFactorSession(it)
                     }
                     PhoneAuthProvider.verifyPhoneNumber(options.build())
                 }
@@ -495,7 +505,10 @@ abstract class AuthProvider(open val providerId: String) {
          * @suppress
          */
         internal class DefaultCredentialProvider : CredentialProvider {
-            override fun getCredential(verificationId: String, smsCode: String): PhoneAuthCredential {
+            override fun getCredential(
+                verificationId: String,
+                smsCode: String,
+            ): PhoneAuthCredential {
                 return PhoneAuthProvider.getCredential(verificationId, smsCode)
             }
         }

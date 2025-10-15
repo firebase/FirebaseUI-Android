@@ -133,7 +133,10 @@ fun EnterVerificationCodeUI(
             ) {
                 Text(
                     text = if (resendTimer > 0) {
-                        stringProvider.resendCodeTimer(resendTimer)
+                        val minutes = resendTimer / 60
+                        val seconds = resendTimer % 60
+                        val timeFormatted = "$minutes:${String.format("%02d", seconds)}"
+                        stringProvider.resendCodeTimer(timeFormatted)
                     } else {
                         stringProvider.resendCode
                     },
