@@ -42,6 +42,7 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.timeout
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -121,17 +122,19 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
         `when`(
             mockPhoneAuthVerifier.verifyPhoneNumber(
-                any(),
-                any(),
-                any(),
-                anyOrNull(),
-                anyOrNull(),
-                eq(true)
+                auth = any(),
+                activity = anyOrNull(),
+                phoneNumber = any(),
+                timeout =  eq(60L),
+                forceResendingToken = anyOrNull(),
+                multiFactorSession = anyOrNull(),
+                isInstantVerificationEnabled = eq(true)
             )
         ).thenReturn(AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified(mockCredential))
 
         instance.verifyPhoneNumber(
             provider = phoneProvider,
+            activity = null,
             phoneNumber = "+1234567890",
             verifier = mockPhoneAuthVerifier
         )
@@ -157,12 +160,13 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
             `when`(
                 mockPhoneAuthVerifier.verifyPhoneNumber(
-                    any(),
-                    any(),
-                    any(),
-                    anyOrNull(),
-                    anyOrNull(),
-                    eq(true)
+                    auth = any(),
+                    activity = anyOrNull(),
+                    phoneNumber = any(),
+                    timeout = eq(60L),
+                    forceResendingToken = anyOrNull(),
+                    multiFactorSession = anyOrNull(),
+                    isInstantVerificationEnabled = eq(true)
                 )
             ).thenReturn(
                 AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
@@ -173,6 +177,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
             instance.verifyPhoneNumber(
                 provider = phoneProvider,
+                activity = null,
                 phoneNumber = "+1234567890",
                 verifier = mockPhoneAuthVerifier
             )
@@ -200,12 +205,13 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
         `when`(
             mockPhoneAuthVerifier.verifyPhoneNumber(
-                any(),
-                any(),
-                any(),
-                eq(mockToken),
-                anyOrNull(),
-                eq(true)
+                auth = any(),
+                activity = anyOrNull(),
+                phoneNumber = any(),
+                timeout = eq(60L),
+                forceResendingToken = eq(mockToken),
+                multiFactorSession = anyOrNull(),
+                isInstantVerificationEnabled = eq(true)
             )
         ).thenReturn(
             AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
@@ -216,6 +222,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
         instance.verifyPhoneNumber(
             provider = phoneProvider,
+            activity = null,
             phoneNumber = "+1234567890",
             forceResendingToken = mockToken,
             verifier = mockPhoneAuthVerifier
@@ -242,12 +249,13 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
         `when`(
             mockPhoneAuthVerifier.verifyPhoneNumber(
-                any(),
-                any(),
-                any(),
-                anyOrNull(),
-                anyOrNull(),
-                eq(false)
+                auth = any(),
+                activity = anyOrNull(),
+                phoneNumber = any(),
+                timeout = eq(60L),
+                forceResendingToken = anyOrNull(),
+                multiFactorSession = anyOrNull(),
+                isInstantVerificationEnabled = eq(false)
             )
         ).thenReturn(
             AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
@@ -258,14 +266,16 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
         instance.verifyPhoneNumber(
             provider = phoneProvider,
+            activity = null,
             phoneNumber = "+1234567890",
             verifier = mockPhoneAuthVerifier
         )
 
         verify(mockPhoneAuthVerifier).verifyPhoneNumber(
             any(),
+            anyOrNull(),
             any(),
-            any(),
+            eq(60L),
             anyOrNull(),
             anyOrNull(),
             eq(false)
