@@ -47,6 +47,7 @@ import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
 
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
@@ -321,7 +322,11 @@ class PhoneAuthScreenTest {
             .performClick()
         composeTestRule.waitForIdle()
 
-        // Check that timer text is displayed (should show 2:00 for 120 seconds)
+        // Process pending tasks to render the verification screen
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // With LooperMode.PAUSED, time doesn't advance automatically,
+        // so the timer will stay frozen at "2:00" (the configured timeout)
         val expectedTimerText = stringProvider.resendCodeTimer("2:00")
         composeTestRule.onNodeWithText(expectedTimerText, substring = true)
             .assertIsDisplayed()
