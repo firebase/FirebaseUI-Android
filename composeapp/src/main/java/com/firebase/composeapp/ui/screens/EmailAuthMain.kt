@@ -1,7 +1,6 @@
 package com.firebase.composeapp.ui.screens
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,11 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,11 +28,10 @@ import com.firebase.ui.auth.compose.ui.screens.SignUpUI
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(
+fun EmailAuthMain(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    provider: AuthProvider.Email
 ) {
     val coroutineScope = rememberCoroutineScope()
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)

@@ -14,10 +14,11 @@
 
 package com.firebase.ui.auth.compose.mfa
 
+import android.app.Activity
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.mfa.SmsEnrollmentHandler.Companion.RESEND_DELAY_SECONDS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.MultiFactorAssertion
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneMultiFactorGenerator
@@ -61,6 +62,7 @@ import kotlinx.coroutines.tasks.await
  * @see AuthProvider.Phone.verifyPhoneNumberAwait
  */
 class SmsEnrollmentHandler(
+    private val activity: Activity,
     private val auth: FirebaseAuth,
     private val user: FirebaseUser
 ) {
@@ -98,6 +100,7 @@ class SmsEnrollmentHandler(
         val multiFactorSession = user.multiFactor.session.await()
         val result = phoneProvider.verifyPhoneNumberAwait(
             auth = auth,
+            activity = activity,
             phoneNumber = phoneNumber,
             multiFactorSession = multiFactorSession,
             forceResendingToken = null
@@ -145,6 +148,7 @@ class SmsEnrollmentHandler(
         val multiFactorSession = user.multiFactor.session.await()
         val result = phoneProvider.verifyPhoneNumberAwait(
             auth = auth,
+            activity = activity,
             phoneNumber = session.phoneNumber,
             multiFactorSession = multiFactorSession,
             forceResendingToken = session.forceResendingToken

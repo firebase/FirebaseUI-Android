@@ -25,6 +25,8 @@
     <string name="fui_email_hint">電子郵件</string>
     <string name="fui_phone_hint">電話號碼</string>
     <string name="fui_country_hint">國家/地區</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">選取國家/地區</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">搜尋國家/地區，例如 +1、"US"</string>
     <string name="fui_password_hint">密碼</string>
     <string name="fui_new_password_hint">新密碼</string>
     <string name="fui_required_field">此欄位不可留空。</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">請輸入您的電話號碼</string>
     <string name="fui_invalid_phone_number">請輸入有效的電話號碼</string>
     <string name="fui_enter_confirmation_code">請輸入傳送至以下電話號碼的 6 位數驗證碼</string>
-    <string name="fui_resend_code_in">0:%02d 秒後將重新發送驗證碼</string>
+    <string name="fui_resend_code_in">%1$s 秒後將重新發送驗證碼</string>
     <string name="fui_verify_your_phone_title">驗證您的電話號碼</string>
     <string name="fui_verifying">驗證中…</string>
     <string name="fui_incorrect_code_dialog_body">驗證碼錯誤，請再試一次。</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">已自動驗證電話號碼</string>
     <string name="fui_resend_code">重新傳送驗證碼</string>
     <string name="fui_verify_phone_number">驗證電話號碼</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">輕觸 [%1$s] 後，系統將會傳送一封簡訊。您可能需支付簡訊和數據傳輸費用。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">輕觸 [%1$s] 即表示您同意接受我們的《%2$s》和《%3$s》。系統將會傳送簡訊給您，不過您可能需要支付簡訊和數據傳輸費用。</string>
 

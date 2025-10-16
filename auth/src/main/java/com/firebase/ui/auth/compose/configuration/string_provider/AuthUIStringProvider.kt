@@ -159,6 +159,9 @@ interface AuthUIStringProvider {
     /** Invalid phone number error */
     val invalidPhoneNumber: String
 
+    /** Missing phone number error */
+    val missingPhoneNumber: String
+
     /** Phone verification code entry form title */
     val enterConfirmationCode: String
 
@@ -171,6 +174,9 @@ interface AuthUIStringProvider {
     /** Resend code link text */
     val resendCode: String
 
+    /** Resend code with timer */
+    fun resendCodeTimer(timeFormatted: String): String
+
     /** Verifying progress text */
     val verifying: String
 
@@ -179,6 +185,36 @@ interface AuthUIStringProvider {
 
     /** SMS terms of service warning */
     val smsTermsOfService: String
+
+    /** Enter phone number title */
+    val enterPhoneNumberTitle: String
+
+    /** Phone number hint */
+    val phoneNumberHint: String
+
+    /** Send verification code button text */
+    val sendVerificationCode: String
+
+    /** Enter verification code title with phone number */
+    fun enterVerificationCodeTitle(phoneNumber: String): String
+
+    /** Verification code hint */
+    val verificationCodeHint: String
+
+    /** Change phone number link text */
+    val changePhoneNumber: String
+
+    /** Missing verification code error */
+    val missingVerificationCode: String
+
+    /** Invalid verification code error */
+    val invalidVerificationCode: String
+
+    /** Select country modal sheet title */
+    val countrySelectorModalTitle: String
+
+    /** Select country modal sheet input field hint */
+    val searchCountriesHint: String
 
     // Provider Picker Strings
     /** Common button text for sign in */

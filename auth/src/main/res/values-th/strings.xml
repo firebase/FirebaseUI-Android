@@ -25,6 +25,8 @@
     <string name="fui_email_hint">อีเมล</string>
     <string name="fui_phone_hint">หมายเลขโทรศัพท์</string>
     <string name="fui_country_hint">ประเทศ</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">เลือกประเทศ</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">ค้นหาประเทศ เช่น +1 "US"</string>
     <string name="fui_password_hint">รหัสผ่าน</string>
     <string name="fui_new_password_hint">รหัสผ่านใหม่</string>
     <string name="fui_required_field">ต้องป้อนข้อมูลในช่องนี้</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>
-    <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน 0:%02d</string>
+    <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน %1$s</string>
     <string name="fui_verify_your_phone_title">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_verifying">กำลังยืนยัน…</string>
     <string name="fui_incorrect_code_dialog_body">รหัสไม่ถูกต้อง โปรดลองอีกครั้ง</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">ยืนยันหมายเลขโทรศัพท์โดยอัตโนมัติแล้ว</string>
     <string name="fui_resend_code">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number">ยืนยันหมายเลขโทรศัพท์</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s และ %3$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 

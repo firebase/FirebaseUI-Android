@@ -33,10 +33,8 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUser
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
-import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
 

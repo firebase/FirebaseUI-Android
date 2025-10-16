@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Електронна адреса</string>
     <string name="fui_phone_hint">Номер телефону</string>
     <string name="fui_country_hint">Країна</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Виберіть країну</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Шукати країну, наприклад +1, "US"</string>
     <string name="fui_password_hint">Пароль</string>
     <string name="fui_new_password_hint">Новий пароль</string>
     <string name="fui_required_field">Потрібно заповнити це поле.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Введіть свій номер телефону</string>
     <string name="fui_invalid_phone_number">Введіть дійсний номер телефону</string>
     <string name="fui_enter_confirmation_code">Введіть 6-значний код, який ми надіслали на номер</string>
-    <string name="fui_resend_code_in">Повторно надіслати код через 0:%02d</string>
+    <string name="fui_resend_code_in">Повторно надіслати код через %1$s</string>
     <string name="fui_verify_your_phone_title">Підтвердити номер телефону</string>
     <string name="fui_verifying">Підтвердження…</string>
     <string name="fui_incorrect_code_dialog_body">Неправильний код. Повторіть спробу.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Номер телефону підтверджено автоматично</string>
     <string name="fui_resend_code">Повторно надіслати код</string>
     <string name="fui_verify_phone_number">Підтвердити номер телефону</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Коли ви торкнетесь опції “%1$s”, вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Торкаючись кнопки “%1$s”, ви приймаєте такі документи: %2$s і %3$s. Вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
 

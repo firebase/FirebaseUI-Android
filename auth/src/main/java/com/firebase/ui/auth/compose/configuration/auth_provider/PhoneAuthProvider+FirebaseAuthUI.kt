@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
+import android.app.Activity
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
@@ -101,6 +102,7 @@ import kotlinx.coroutines.CancellationException
  */
 internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     provider: AuthProvider.Phone,
+    activity: Activity?,
     phoneNumber: String,
     multiFactorSession: MultiFactorSession? = null,
     forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null,
@@ -110,6 +112,7 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
         updateAuthState(AuthState.Loading("Verifying phone number..."))
         val result = provider.verifyPhoneNumberAwait(
             auth = auth,
+            activity = activity,
             phoneNumber = phoneNumber,
             multiFactorSession = multiFactorSession,
             forceResendingToken = forceResendingToken,

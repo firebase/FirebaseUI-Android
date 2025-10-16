@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Välj ett land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Sök land t.ex. +1, "US"</string>
     <string name="fui_password_hint">Lösenord</string>
     <string name="fui_new_password_hint">Nytt lösenord</string>
     <string name="fui_required_field">Du måste fylla i det här fältet.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Ange ditt telefonnummer</string>
     <string name="fui_invalid_phone_number">Ange ett giltigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Ange den sexsiffriga koden vi skickade till</string>
-    <string name="fui_resend_code_in">Skicka kod igen om 0:%02d</string>
+    <string name="fui_resend_code_in">Skicka kod igen om %1$s</string>
     <string name="fui_verify_your_phone_title">Verifiera ditt telefonnummer</string>
     <string name="fui_verifying">Verifierar …</string>
     <string name="fui_incorrect_code_dialog_body">Fel kod. Försök igen.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonnumret verifierades automatiskt</string>
     <string name="fui_resend_code">Skicka koden igen</string>
     <string name="fui_verify_phone_number">Verifiera telefonnummer</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Genom att trycka på %1$s skickas ett sms. Meddelande- och dataavgifter kan tillkomma.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Genom att trycka på %1$s godkänner du våra %2$s och vår %3$s. Ett sms kan skickas. Meddelande- och dataavgifter kan tillkomma.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Autentiseringsfel</string>

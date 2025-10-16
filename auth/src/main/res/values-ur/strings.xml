@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ای میل</string>
     <string name="fui_phone_hint">فون نمبر</string>
     <string name="fui_country_hint">ملک</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">ملک منتخب کریں</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">ملک تلاش کریں مثلاً +1، "US"</string>
     <string name="fui_password_hint">پاس ورڈ</string>
     <string name="fui_new_password_hint">نیا پاس ورڈ</string>
     <string name="fui_required_field">آپ اسے خالی نہیں چھوڑ سکتے۔</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>
-    <string name="fui_resend_code_in">0:%02d میں دوبارہ کوڈ بھیجیں</string>
+    <string name="fui_resend_code_in">%1$s میں دوبارہ کوڈ بھیجیں</string>
     <string name="fui_verify_your_phone_title">اپنے فون نمبر کی توثیق کریں</string>
     <string name="fui_verifying">توثیق ہو رہی ہے…</string>
     <string name="fui_incorrect_code_dialog_body">غلط کوڈ۔ دوبارہ کوشش کریں۔</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">فون نمبر کی خودکار طور پر توثیق ہو گئی</string>
     <string name="fui_resend_code">کوڈ دوبارہ بھیجیں</string>
     <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">%1$s پر تھپتھپانے سے، ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا کی شرحوں کا اطلاق ہو سکتا ہے۔</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” کو تھپتھپا کر، آپ نشاندہی کر رہے ہیں کہ آپ ہماری %2$s اور %3$s کو قبول کرتے ہیں۔ ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
 

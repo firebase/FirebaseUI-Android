@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Имейл</string>
     <string name="fui_phone_hint">Телефонен номер</string>
     <string name="fui_country_hint">Държава</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Изберете държава</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Търсене на държава напр. +1, "US"</string>
     <string name="fui_password_hint">Парола</string>
     <string name="fui_new_password_hint">Нова парола</string>
     <string name="fui_required_field">Трябва да се попълни.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Въвеждане на телефонния ви номер</string>
     <string name="fui_invalid_phone_number">Въведете валиден телефонен номер</string>
     <string name="fui_enter_confirmation_code">Въведете 6-цифрения код, който изпратихме до</string>
-    <string name="fui_resend_code_in">Повторно изпращане на кода след 0:%02d</string>
+    <string name="fui_resend_code_in">Повторно изпращане на кода след %1$s</string>
     <string name="fui_verify_your_phone_title">Потвърждаване на телефонния ви номер</string>
     <string name="fui_verifying">Потвърждава се…</string>
     <string name="fui_incorrect_code_dialog_body">Неправилен код. Опитайте отново.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Телефонният номер е потвърден автоматично</string>
     <string name="fui_resend_code">Повторно изпращане на кода</string>
     <string name="fui_verify_phone_number">Потвърждаване на телефонния номер</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Докосвайки „%1$s“, може да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Докосвайки „%1$s", приемате нашите %2$s и %3$s. Възможно е да получите SMS съобщение. То може да се таксува по тарифите за данни и SMS.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Грешка при удостоверяване</string>

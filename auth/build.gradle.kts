@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.dsl.TestOptions
-
 plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
@@ -13,7 +11,7 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk =Config.SdkVersions.target
+        targetSdk = Config.SdkVersions.target
 
         buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
 
@@ -27,8 +25,8 @@ android {
             consumerProguardFiles("auth-proguard.pro")
         }
     }
-        
-    compileOptions {    
+
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -82,8 +80,8 @@ dependencies {
     implementation(Config.Libs.Androidx.Compose.tooling)
     implementation(Config.Libs.Androidx.Compose.toolingPreview)
     implementation(Config.Libs.Androidx.Compose.activityCompose)
-    implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.activity)
+    implementation(Config.Libs.Androidx.materialDesign)
     implementation(Config.Libs.Androidx.Compose.materialIconsExtended)
     implementation(Config.Libs.Androidx.datastorePreferences)
     // The new activity result APIs force us to include Fragment 1.3.0
@@ -105,6 +103,9 @@ dependencies {
     implementation(platform(Config.Libs.Firebase.bom))
     api(Config.Libs.Firebase.auth)
     api(Config.Libs.PlayServices.auth)
+
+    // Phone number validation
+    implementation(Config.Libs.Misc.libphonenumber)
 
     compileOnly(Config.Libs.Provider.facebook)
     implementation(Config.Libs.Androidx.legacySupportv4) // Needed to override deps

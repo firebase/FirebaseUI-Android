@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonní číslo</string>
     <string name="fui_country_hint">Země</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Vyberte zemi</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Hledat zemi např. +1, "US"</string>
     <string name="fui_password_hint">Heslo</string>
     <string name="fui_new_password_hint">Nové heslo</string>
     <string name="fui_required_field">Toto pole nesmí zůstat prázdné.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Zadejte své telefonní číslo</string>
     <string name="fui_invalid_phone_number">Zadejte platné telefonní číslo</string>
     <string name="fui_enter_confirmation_code">Zadejte šestimístný kód, který jsme vám zaslali</string>
-    <string name="fui_resend_code_in">Znovu zaslat kód za 0:%02d</string>
+    <string name="fui_resend_code_in">Znovu zaslat kód za %1$s</string>
     <string name="fui_verify_your_phone_title">Ověřit telefonní číslo</string>
     <string name="fui_verifying">Ověřování…</string>
     <string name="fui_incorrect_code_dialog_body">Špatný kód. Zkuste to znovu.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonní číslo bylo automaticky ověřeno</string>
     <string name="fui_resend_code">Znovu poslat kód</string>
     <string name="fui_verify_phone_number">Ověřit telefonní číslo</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Po klepnutí na možnost %1$s může být odeslána SMS. Mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačítko %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s. Může být odeslána SMS a mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba ověření</string>

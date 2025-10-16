@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-adresa</string>
     <string name="fui_phone_hint">Telefonski broj</string>
     <string name="fui_country_hint">Zemlja</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Odaberite zemlju</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Pretraživanje zemlje npr. +1, "US"</string>
     <string name="fui_password_hint">Zaporka</string>
     <string name="fui_new_password_hint">Nova zaporka</string>
     <string name="fui_required_field">Ne možete to ostaviti prazno.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Unesite telefonski broj</string>
     <string name="fui_invalid_phone_number">Unesite važeći telefonski broj</string>
     <string name="fui_enter_confirmation_code">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>
-    <string name="fui_resend_code_in">Ponovno slanje koda za 0:%02d</string>
+    <string name="fui_resend_code_in">Ponovno slanje koda za %1$s</string>
     <string name="fui_verify_your_phone_title">Potvrda telefonskog broja</string>
     <string name="fui_verifying">Potvrđivanje…</string>
     <string name="fui_incorrect_code_dialog_body">Pogrešan kôd. Pokušajte ponovo.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonski je broj automatski potvrđen</string>
     <string name="fui_resend_code">Ponovo pošalji kôd</string>
     <string name="fui_verify_phone_number">Potvrda telefonskog broja</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Dodirivanje gumba “%1$s” može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ako dodirnete "%1$s", potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s. Možda ćemo vam poslati SMS. Moguća je naplata poruke i podatkovnog prometa.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Greška provjere identiteta</string>

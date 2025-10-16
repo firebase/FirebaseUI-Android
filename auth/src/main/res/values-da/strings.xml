@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Mail</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Vælg et land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Søg efter land f.eks. +1, "US"</string>
     <string name="fui_password_hint">Adgangskode</string>
     <string name="fui_new_password_hint">Ny adgangskode</string>
     <string name="fui_required_field">Dette felt skal udfyldes.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Angiv dit telefonnummer</string>
     <string name="fui_invalid_phone_number">Angiv et gyldigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Angiv den 6-cifrede kode, vi sendte til</string>
-    <string name="fui_resend_code_in">Send koden igen om 0:%02d</string>
+    <string name="fui_resend_code_in">Send koden igen om %1$s</string>
     <string name="fui_verify_your_phone_title">Bekræft dit telefonnummer</string>
     <string name="fui_verifying">Bekræfter…</string>
     <string name="fui_incorrect_code_dialog_body">Koden er forkert. Prøv igen.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonnummeret blev bekræftet automatisk</string>
     <string name="fui_resend_code">Send koden igen</string>
     <string name="fui_verify_phone_number">Bekræft telefonnummer</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Når du trykker på “%1$s”, sendes der måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Når du trykker på "%1$s", indikerer du, at du accepterer vores %2$s og %3$s. Der sendes måske en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Godkendelsesfejl</string>

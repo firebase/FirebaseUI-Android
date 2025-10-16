@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Número de telefone</string>
     <string name="fui_country_hint">País</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecione um país</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Pesquisar país, por ex., +1, "US"</string>
     <string name="fui_password_hint">Palavra-passe</string>
     <string name="fui_new_password_hint">Nova palavra-passe</string>
     <string name="fui_required_field">Não pode deixar este campo em branco.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Introduza o seu número de telefone</string>
     <string name="fui_invalid_phone_number">Introduza um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Introduza o código de 6 dígitos que enviámos para</string>
-    <string name="fui_resend_code_in">Reenviar código em 0:%02d</string>
+    <string name="fui_resend_code_in">Reenviar código em %1$s</string>
     <string name="fui_verify_your_phone_title">Validar o número de telefone</string>
     <string name="fui_verifying">A validar…</string>
     <string name="fui_incorrect_code_dialog_body">Código errado. Tente novamente.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Número de telefone verificado automaticamente</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Validar número de telefone</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ao tocar em “%1$s”, pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em “%1$s”, indica que aceita os %2$s e a %3$s. Pode gerar o envio de uma SMS. Podem aplicar-se tarifas de dados e de mensagens.</string>
 

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>
     <string name="fui_country_hint">国家/地区</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">选择国家/地区</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">搜索国家/地区，例如 +1、"US"</string>
     <string name="fui_password_hint">密码</string>
     <string name="fui_new_password_hint">新密码</string>
     <string name="fui_required_field">此处不能留空。</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">输入您的电话号码</string>
     <string name="fui_invalid_phone_number">请输入有效的电话号码</string>
     <string name="fui_enter_confirmation_code">输入我们发送至以下电话号码的 6 位数验证码</string>
-    <string name="fui_resend_code_in">%02d 后可重新发送验证码</string>
+    <string name="fui_resend_code_in">%1$s 后可重新发送验证码</string>
     <string name="fui_verify_your_phone_title">验证您的电话号码</string>
     <string name="fui_verifying">正在验证…</string>
     <string name="fui_incorrect_code_dialog_body">验证码有误，请重试。</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">电话号码已自动验证</string>
     <string name="fui_resend_code">重新发送验证码</string>
     <string name="fui_verify_phone_number">验证电话号码</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">您点按“%1$s”后，系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">点按"%1$s"即表示您接受我们的%2$s和%3$s。系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">身份验证错误</string>

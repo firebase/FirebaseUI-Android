@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Адрес электронной почты</string>
     <string name="fui_phone_hint">Номер телефона</string>
     <string name="fui_country_hint">Страна</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Выберите страну</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Поиск страны, напр. +1, "US"</string>
     <string name="fui_password_hint">Пароль</string>
     <string name="fui_new_password_hint">Новый пароль</string>
     <string name="fui_required_field">Это поле должно быть заполнено.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Введите номер телефона</string>
     <string name="fui_invalid_phone_number">Введите действительный номер телефона.</string>
     <string name="fui_enter_confirmation_code">Введите 6-значный код, отправленный на номер</string>
-    <string name="fui_resend_code_in">Отправить код ещё раз можно будет через 0:%02d.</string>
+    <string name="fui_resend_code_in">Отправить код ещё раз можно будет через %1$s.</string>
     <string name="fui_verify_your_phone_title">Подтвердить номер телефона</string>
     <string name="fui_verifying">Проверка…</string>
     <string name="fui_incorrect_code_dialog_body">Неверный код. Повторите попытку.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Номер телефона был подтвержден автоматически</string>
     <string name="fui_resend_code">Отправить код ещё раз</string>
     <string name="fui_verify_phone_number">Подтвердить номер телефона</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Нажимая кнопку “%1$s”, вы соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Нажимая кнопку "%1$s", вы принимаете %2$s и %3$s, а также соглашаетесь получить SMS. За его отправку и обмен данными может взиматься плата.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Ошибка аутентификации</string>

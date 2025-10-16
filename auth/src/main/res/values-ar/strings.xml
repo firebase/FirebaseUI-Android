@@ -25,6 +25,8 @@
     <string name="fui_email_hint">البريد الإلكتروني</string>
     <string name="fui_phone_hint">رقم الهاتف</string>
     <string name="fui_country_hint">البلد</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">اختيار بلد</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">البحث عن بلد مثلاً +1 أو "US"</string>
     <string name="fui_password_hint">كلمة المرور</string>
     <string name="fui_new_password_hint">كلمة المرور الجديدة</string>
     <string name="fui_required_field">يجب ملء هذا الحقل.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">أدخل رقم هاتفك</string>
     <string name="fui_invalid_phone_number">يُرجى إدخال رقم هاتف صالح</string>
     <string name="fui_enter_confirmation_code">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>
-    <string name="fui_resend_code_in">إعادة إرسال الرمز بعد 0:%02d</string>
+    <string name="fui_resend_code_in">إعادة إرسال الرمز بعد %1$s</string>
     <string name="fui_verify_your_phone_title">إثبات ملكية رقم هاتفك</string>
     <string name="fui_verifying">جارٍ التحقق…</string>
     <string name="fui_incorrect_code_dialog_body">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على "%1$s" إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">خطأ في المصادقة</string>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Número de telefone</string>
     <string name="fui_country_hint">País</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecione um país</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Pesquisar país, por ex., +1, "US"</string>
     <string name="fui_password_hint">Senha</string>
     <string name="fui_new_password_hint">Nova senha</string>
     <string name="fui_required_field">Esse campo não pode ficar em branco.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Insira o número do seu telefone</string>
     <string name="fui_invalid_phone_number">Insira um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Insira o código de 6 dígitos enviado para</string>
-    <string name="fui_resend_code_in">Reenviar código em 0:%02d</string>
+    <string name="fui_resend_code_in">Reenviar código em %1$s</string>
     <string name="fui_verify_your_phone_title">Confirmar seu número de telefone</string>
     <string name="fui_verifying">Verificando…</string>
     <string name="fui_incorrect_code_dialog_body">Código incorreto. Tente novamente.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">O número de telefone foi verificado automaticamente</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Confirmar número de telefone</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Se você tocar em “%1$s”, um SMS poderá ser enviado e tarifas de mensagens e de dados serão cobradas.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ao tocar em "%1$s", você concorda com nossos %2$s e a %3$s. Um SMS poderá ser enviado e tarifas de mensagens e de dados poderão ser cobradas.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Erro de autenticação</string>

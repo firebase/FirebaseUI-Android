@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फोन नंबर</string>
     <string name="fui_country_hint">देश</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">देश निवडा</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">देश शोधा उदा. +1, "US"</string>
     <string name="fui_password_hint">पासवर्ड</string>
     <string name="fui_new_password_hint">नवीन पासवर्ड</string>
     <string name="fui_required_field">तुम्ही हे रिक्त सोडू शकत नाही.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">तुमचा फोन नंबर टाका</string>
     <string name="fui_invalid_phone_number">कृपया वैध फोन नंबर टाका</string>
     <string name="fui_enter_confirmation_code">वर आम्ही पाठवलेला 6 अंकी कोड टाका</string>
-    <string name="fui_resend_code_in">कोड 0:%02dमध्ये पुन्हा पाठवा</string>
+    <string name="fui_resend_code_in">कोड %1$sमध्ये पुन्हा पाठवा</string>
     <string name="fui_verify_your_phone_title">तुमच्या फोन नंबरची पडताळणी करा</string>
     <string name="fui_verifying">पडताळणी करत आहे…</string>
     <string name="fui_incorrect_code_dialog_body">कोड चुकीचा आहे. पुन्हा प्रयत्न करा.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">फोन नंबरची अपोआप पडताळणी केली आहे</string>
     <string name="fui_resend_code">कोड पुन्हा पाठवा</string>
     <string name="fui_verify_phone_number">फोन नंबरची पडताळणी करा</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s“ वर टॅप केल्याने, एक एसएमएस पाठवला जाऊ शकतो. मेसेज आणि डेटा शुल्क लागू होऊ शकते.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” वर टॅप करून, तुम्ही सूचित करता की तुम्ही आमचे %2$s आणि %3$s स्वीकारता. एसएमएस पाठवला जाऊ शकतो. मेसेज आणि डेटा दर लागू केले जाऊ शकते.</string>
 

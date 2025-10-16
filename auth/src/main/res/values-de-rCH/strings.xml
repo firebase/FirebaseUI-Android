@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-Mail-Adresse</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Land auswählen</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Land suchen z. B. +1, "US"</string>
     <string name="fui_password_hint">Passwort</string>
     <string name="fui_new_password_hint">Neues Passwort</string>
     <string name="fui_required_field">Pflichtfeld.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Telefonnummer eingeben</string>
     <string name="fui_invalid_phone_number">Geben Sie eine gültige Telefonnummer ein</string>
     <string name="fui_enter_confirmation_code">Geben Sie den 6-stelligen Code ein, der gesendet wurde an</string>
-    <string name="fui_resend_code_in">Code in 0:%02d erneut senden</string>
+    <string name="fui_resend_code_in">Code in %1$s erneut senden</string>
     <string name="fui_verify_your_phone_title">Telefonnummer bestätigen</string>
     <string name="fui_verifying">Wird verifiziert…</string>
     <string name="fui_incorrect_code_dialog_body">Falscher Code. Versuchen Sie es noch einmal.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonnummer wurde automatisch bestätigt</string>
     <string name="fui_resend_code">Code erneut senden</string>
     <string name="fui_verify_phone_number">Telefonnummer bestätigen</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Wenn Sie auf “%1$s” tippen, erhalten Sie möglicherweise eine SMS. Es können Gebühren für SMS und Datenübertragung anfallen.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Indem Sie auf “%1$s” tippen, stimmen Sie unseren %2$s und unserer %3$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
 

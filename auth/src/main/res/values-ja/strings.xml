@@ -25,6 +25,8 @@
     <string name="fui_email_hint">メールアドレス</string>
     <string name="fui_phone_hint">電話番号</string>
     <string name="fui_country_hint">国</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">国を選択</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">国を検索（例：+1、「US」）</string>
     <string name="fui_password_hint">パスワード</string>
     <string name="fui_new_password_hint">新しいパスワード</string>
     <string name="fui_required_field">入力必須項目です。</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">電話番号を入力してください</string>
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>
     <string name="fui_enter_confirmation_code">送信された 6 桁のコードを入力してください</string>
-    <string name="fui_resend_code_in">0:%02d 秒後にコードを再送信します</string>
+    <string name="fui_resend_code_in">%1$s 秒後にコードを再送信します</string>
     <string name="fui_verify_your_phone_title">電話番号を確認</string>
     <string name="fui_verifying">確認しています…</string>
     <string name="fui_incorrect_code_dialog_body">コードが間違っています。もう一度お試しください。</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">電話番号は自動的に確認されました</string>
     <string name="fui_resend_code">コードを再送信</string>
     <string name="fui_verify_phone_number">電話番号を確認</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">[%1$s] をタップすると、SMS が送信されます。データ通信料がかかることがあります。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">[%1$s] をタップすると、%2$s と %3$s に同意したことになり、SMS が送信されます。データ通信料がかかることがあります。</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">認証エラー</string>

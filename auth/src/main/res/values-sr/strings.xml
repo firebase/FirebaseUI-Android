@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Имејл</string>
     <string name="fui_phone_hint">Број телефона</string>
     <string name="fui_country_hint">Земља</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Изаберите земљу</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Претражите земљу нпр. +1, "US"</string>
     <string name="fui_password_hint">Лозинка</string>
     <string name="fui_new_password_hint">Нова лозинка</string>
     <string name="fui_required_field">Ово поље не може да буде празно.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Унесите број телефона</string>
     <string name="fui_invalid_phone_number">Унесите важећи број телефона</string>
     <string name="fui_enter_confirmation_code">Унесите 6-цифрени кôд који смо послали на</string>
-    <string name="fui_resend_code_in">Кôд ће бити поново послат за 0:%02d</string>
+    <string name="fui_resend_code_in">Кôд ће бити поново послат за %1$s</string>
     <string name="fui_verify_your_phone_title">Верификујте број телефона</string>
     <string name="fui_verifying">Верификује се…</string>
     <string name="fui_incorrect_code_dialog_body">Кôд није тачан. Пробајте поново.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Број телефона је аутоматски верификован</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ако додирнете „%1$s“, можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ако додирнете „%1$s“, потврђујете да прихватате документе %2$s и %3$s. Можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
 

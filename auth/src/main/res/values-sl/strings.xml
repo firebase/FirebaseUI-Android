@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-pošta</string>
     <string name="fui_phone_hint">Telefonska številka</string>
     <string name="fui_country_hint">Država</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Izberi državo</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Iskanje države, npr. +1, "US"</string>
     <string name="fui_password_hint">Geslo</string>
     <string name="fui_new_password_hint">Novo geslo</string>
     <string name="fui_required_field">To polje ne sme biti prazno.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Vnesite telefonsko številko</string>
     <string name="fui_invalid_phone_number">Vnesite veljavno telefonsko številko</string>
     <string name="fui_enter_confirmation_code">Vnesite 6-mestno kodo, ki smo jo poslali na številko</string>
-    <string name="fui_resend_code_in">Ponovno pošlji kodo čez 0:%02d</string>
+    <string name="fui_resend_code_in">Ponovno pošlji kodo čez %1$s</string>
     <string name="fui_verify_your_phone_title">Preverjanje telefonske številke</string>
     <string name="fui_verifying">Preverjanje…</string>
     <string name="fui_incorrect_code_dialog_body">Napačna koda. Poskusite znova.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonska številka je bila samodejno preverjena</string>
     <string name="fui_resend_code">Ponovno pošlji kodo</string>
     <string name="fui_verify_phone_number">Preverjanje telefonske številke</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Če se dotaknete možnosti »%1$s«, bo morda poslano sporočilo SMS. Pošiljanje sporočila in prenos podatkov boste morda morali plačati.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Če se dotaknete možnosti »%1$s«, potrjujete, da se strinjate z dokumentoma %2$s in %3$s. Morda bo poslano sporočilo SMS. Pošiljanje sporočila in prenos podatkov boste morda morali plačati.</string>
 

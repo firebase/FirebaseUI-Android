@@ -25,6 +25,8 @@
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>
     <string name="fui_country_hint">நாடு</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">நாட்டைத் தேர்வுசெய்க</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">நாட்டைத் தேடுக எ.கா. +1, "US"</string>
     <string name="fui_password_hint">கடவுச்சொல்</string>
     <string name="fui_new_password_hint">புதிய கடவுச்சொல்</string>
     <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_invalid_phone_number">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_enter_confirmation_code">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>
-    <string name="fui_resend_code_in">குறியீட்டை 0:%02d நேரத்தில் மீண்டும் அனுப்பவும்</string>
+    <string name="fui_resend_code_in">குறியீட்டை %1$s நேரத்தில் மீண்டும் அனுப்பவும்</string>
     <string name="fui_verify_your_phone_title">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_verifying">சரிபார்க்கிறது…</string>
     <string name="fui_incorrect_code_dialog_body">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s” என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” என்பதைத் தட்டுவதன் மூலம், எங்கள் %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள். SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
 

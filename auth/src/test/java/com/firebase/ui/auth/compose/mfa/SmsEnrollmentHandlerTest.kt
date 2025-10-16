@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose.mfa
 
+import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactor
@@ -43,6 +44,8 @@ import org.robolectric.annotation.Config
 class SmsEnrollmentHandlerTest {
 
     @Mock
+    private lateinit var mockActivity: Activity
+    @Mock
     private lateinit var mockAuth: FirebaseAuth
     @Mock
     private lateinit var mockUser: FirebaseUser
@@ -54,7 +57,7 @@ class SmsEnrollmentHandlerTest {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         `when`(mockUser.multiFactor).thenReturn(mockMultiFactor)
-        handler = SmsEnrollmentHandler(mockAuth, mockUser)
+        handler = SmsEnrollmentHandler(mockActivity, mockAuth, mockUser)
     }
 
     // isValidCodeFormat tests
@@ -153,7 +156,7 @@ class SmsEnrollmentHandlerTest {
     @Test
     fun `handler is created with correct auth and user references`() {
         // Verify handler can be instantiated
-        val newHandler = SmsEnrollmentHandler(mockAuth, mockUser)
+        val newHandler = SmsEnrollmentHandler(mockActivity, mockAuth, mockUser)
         // Basic smoke test - if we get here, construction succeeded
         assertTrue(newHandler.isValidCodeFormat("123456"))
     }

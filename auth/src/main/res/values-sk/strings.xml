@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefónne číslo</string>
     <string name="fui_country_hint">Krajina</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Vyberte krajinu</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Vyhľadať krajinu napr. +1, "US"</string>
     <string name="fui_password_hint">Heslo</string>
     <string name="fui_new_password_hint">Nové heslo</string>
     <string name="fui_required_field">Toto pole nesmie byť prázdne.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Zadajte svoje telefónne číslo</string>
     <string name="fui_invalid_phone_number">Zadajte platné telefónne číslo</string>
     <string name="fui_enter_confirmation_code">Zadajte 6-ciferný kód, ktorý sme odoslali na adresu</string>
-    <string name="fui_resend_code_in">Kód sa znova odošle o 0:%02d</string>
+    <string name="fui_resend_code_in">Kód sa znova odošle o %1$s</string>
     <string name="fui_verify_your_phone_title">Overiť telefónne číslo</string>
     <string name="fui_verifying">Overuje sa…</string>
     <string name="fui_incorrect_code_dialog_body">Nesprávny kód. Skúste to znova.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefónne číslo bolo automaticky overené</string>
     <string name="fui_resend_code">Znova odoslať kód</string>
     <string name="fui_verify_phone_number">Overiť telefónne číslo</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Klepnutím na tlačidlo %1$s možno odoslať SMS. Môžu sa účtovať poplatky za správy a dáta.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačidlo %1$s vyjadrujete súhlas s dokumentmi %2$s a %3$s. Môže byť odoslaná SMS a môžu sa účtovať poplatky za správy a dáta.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba overenia</string>

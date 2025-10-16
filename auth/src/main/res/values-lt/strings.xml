@@ -25,6 +25,8 @@
     <string name="fui_email_hint">El. pašto adresas</string>
     <string name="fui_phone_hint">Telefono numeris</string>
     <string name="fui_country_hint">Šalis</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pasirinkite šalį</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Ieškoti šalies, pvz., +1, "US"</string>
     <string name="fui_password_hint">Slaptažodis</string>
     <string name="fui_new_password_hint">Naujas slaptažodis</string>
     <string name="fui_required_field">Šį lauką būtina užpildyti.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Įveskite telefono numerį</string>
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>
-    <string name="fui_resend_code_in">Siųsti kodą iš naujo po 0:%02d</string>
+    <string name="fui_resend_code_in">Siųsti kodą iš naujo po %1$s</string>
     <string name="fui_verify_your_phone_title">Patvirtinti telefono numerį</string>
     <string name="fui_verifying">Patvirtinama…</string>
     <string name="fui_incorrect_code_dialog_body">Klaidingas kodas. Bandykite dar kartą.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s. Gali būti išsiųstas SMS pranešimas, taip pat – taikomi pranešimų ir duomenų įkainiai.</string>
 

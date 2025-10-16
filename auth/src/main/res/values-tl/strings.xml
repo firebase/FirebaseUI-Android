@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Mag-email</string>
     <string name="fui_phone_hint">Numero ng Telepono</string>
     <string name="fui_country_hint">Bansa</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pumili ng bansa</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Maghanap ng bansa hal. +1, "US"</string>
     <string name="fui_password_hint">Password</string>
     <string name="fui_new_password_hint">Bagong password</string>
     <string name="fui_required_field">Hindi mo ito maaaring iwanan na walang laman.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>
-    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng 0:%02d</string>
+    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng %1$s</string>
     <string name="fui_verify_your_phone_title">I-verify ang numero ng iyong telepono</string>
     <string name="fui_verifying">Bine-verify…</string>
     <string name="fui_incorrect_code_dialog_body">Maling code. Subukang muli.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Awtomatikong na-verify ang numero ng telepono</string>
     <string name="fui_resend_code">Ipadala Muli ang Code</string>
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Sa pag-tap sa “%1$s”, ipinababatid mo na tinatanggap mo ang aming %2$s at %3$s. Maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error sa Pagpapatotoo</string>

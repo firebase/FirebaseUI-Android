@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
     <string name="fui_country_hint">Quốc gia</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Chọn quốc gia</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Tìm kiếm quốc gia, ví dụ: +1, "US"</string>
     <string name="fui_password_hint">Mật khẩu</string>
     <string name="fui_new_password_hint">Mật khẩu mới</string>
     <string name="fui_required_field">Bạn không được để trống trường này.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Nhập số điện thoại của bạn</string>
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>
     <string name="fui_enter_confirmation_code">Nhập mã 6 chữ số mà chúng tôi đã gửi cho bạn</string>
-    <string name="fui_resend_code_in">Gửi lại mã sau 0:%02d</string>
+    <string name="fui_resend_code_in">Gửi lại mã sau %1$s</string>
     <string name="fui_verify_your_phone_title">Xác minh số điện thoại của bạn</string>
     <string name="fui_verifying">Đang xác minh…</string>
     <string name="fui_incorrect_code_dialog_body">Mã không chính xác. Hãy thử lại.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Đã tự động xác minh số điện thoại</string>
     <string name="fui_resend_code">Gửi lại mã</string>
     <string name="fui_verify_phone_number">Xác minh số điện thoại</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Bằng cách nhấn vào “%1$s”, bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Bằng cách nhấn vào “%1$s”, bạn cho biết rằng bạn chấp nhận %2$s và %3$s của chúng tôi. Bạn có thể nhận được một tin nhắn SMS. Cước tin nhắn và dữ liệu có thể áp dụng.</string>
 

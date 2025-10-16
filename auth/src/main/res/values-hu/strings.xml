@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>
     <string name="fui_country_hint">Ország</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Válasszon országot</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Ország keresése pl. +1, "US"</string>
     <string name="fui_password_hint">Jelszó</string>
     <string name="fui_new_password_hint">Az új jelszó</string>
     <string name="fui_required_field">Ezt nem hagyhatja üresen.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Adja meg telefonszámát</string>
     <string name="fui_invalid_phone_number">Érvényes telefonszámot adjon meg.</string>
     <string name="fui_enter_confirmation_code">Adja meg a telefonszámra elküldött 6 számjegyű kódot</string>
-    <string name="fui_resend_code_in">Kód újraküldése ennyi idő elteltével: 0:%02d</string>
+    <string name="fui_resend_code_in">Kód újraküldése ennyi idő elteltével: %1$s</string>
     <string name="fui_verify_your_phone_title">Telefonszám igazolása</string>
     <string name="fui_verifying">Ellenőrzés…</string>
     <string name="fui_incorrect_code_dialog_body">Hibás kód. Próbálja újra.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">A telefonszám automatikusan ellenőrizve</string>
     <string name="fui_resend_code">Kód újraküldése</string>
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ha a(z) „%1$s” gombra koppint, a rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">A(z) „%1$s” gombra való koppintással elfogadja a következő dokumentumokat: %2$s és %3$s. A rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Hitelesítési hiba</string>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Velg et land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Søk etter land, f.eks. +1, "US"</string>
     <string name="fui_password_hint">Passord</string>
     <string name="fui_new_password_hint">Nytt passord</string>
     <string name="fui_required_field">Du må fylle ut dette feltet.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Oppgi telefonnummeret ditt</string>
     <string name="fui_invalid_phone_number">Oppgi et gyldig telefonnummer</string>
     <string name="fui_enter_confirmation_code">Oppgi den 6-sifrede koden vi sendte til</string>
-    <string name="fui_resend_code_in">Send koden på nytt om 0:%02d</string>
+    <string name="fui_resend_code_in">Send koden på nytt om %1$s</string>
     <string name="fui_verify_your_phone_title">Bekreft telefonnummeret ditt</string>
     <string name="fui_verifying">Bekrefter…</string>
     <string name="fui_incorrect_code_dialog_body">Feil kode. Prøv på nytt.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Telefonnummeret ble bekreftet automatisk</string>
     <string name="fui_resend_code">Send koden på nytt</string>
     <string name="fui_verify_phone_number">Bekreft telefonnummeret</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ved å trykke på «%1$s» godtar du %2$s og %3$s våre. Du kan bli tilsendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
 

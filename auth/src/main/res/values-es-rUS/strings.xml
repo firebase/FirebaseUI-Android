@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Correo electrónico</string>
     <string name="fui_phone_hint">Número de teléfono</string>
     <string name="fui_country_hint">País</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecciona un país</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Buscar país por ej. +1, "US"</string>
     <string name="fui_password_hint">Contraseña</string>
     <string name="fui_new_password_hint">Contraseña nueva</string>
     <string name="fui_required_field">Este campo no puede estar en blanco.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Ingresa tu número de teléfono</string>
     <string name="fui_invalid_phone_number">Ingresa un número de teléfono válido</string>
     <string name="fui_enter_confirmation_code">Ingresa el código de 6 dígitos que enviamos al número</string>
-    <string name="fui_resend_code_in">Se reenviará el código en 0:%02d</string>
+    <string name="fui_resend_code_in">Se reenviará el código en %1$s</string>
     <string name="fui_verify_your_phone_title">Verifica tu número de teléfono</string>
     <string name="fui_verifying">Verificando…</string>
     <string name="fui_incorrect_code_dialog_body">Código incorrecto. Vuelve a intentarlo.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Se verificó automáticamente el número de teléfono</string>
     <string name="fui_resend_code">Reenviar código</string>
     <string name="fui_verify_phone_number">Verificar número de teléfono</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Si presionas “%1$s”, se enviará un SMS. Se aplicarán las tarifas de mensajes y datos.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Si presionas "%1$s", indicas que aceptas nuestras %2$s y %3$s. Es posible que se te envíe un SMS. Podrían aplicarse las tarifas de mensajes y datos.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error de autenticación</string>

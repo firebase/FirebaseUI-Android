@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Adres e-mail</string>
     <string name="fui_phone_hint">Numer telefonu</string>
     <string name="fui_country_hint">Kraj</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Wybierz kraj</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Szukaj kraju np. +1, "US"</string>
     <string name="fui_password_hint">Hasło</string>
     <string name="fui_new_password_hint">Nowe hasło</string>
     <string name="fui_required_field">Nie możesz zostawić tego pola pustego.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Wpisz numer telefonu</string>
     <string name="fui_invalid_phone_number">Wpisz prawidłowy numer telefonu</string>
     <string name="fui_enter_confirmation_code">Wpisz sześciocyfrowy kod, który wysłaliśmy na numer</string>
-    <string name="fui_resend_code_in">Kod można ponownie wysłać za 0:%02d</string>
+    <string name="fui_resend_code_in">Kod można ponownie wysłać za %1$s</string>
     <string name="fui_verify_your_phone_title">Zweryfikuj swój numer telefonu</string>
     <string name="fui_verifying">Weryfikuję…</string>
     <string name="fui_incorrect_code_dialog_body">Nieprawidłowy kod. Spróbuj jeszcze raz.</string>
@@ -87,6 +89,7 @@
     <string name="fui_auto_verified">Numer telefonu został automatycznie zweryfikowany</string>
     <string name="fui_resend_code">Wyślij kod ponownie</string>
     <string name="fui_verify_phone_number">Zweryfikuj numer telefonu</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Gdy klikniesz „%1$s”, może zostać wysłany SMS. Może to skutkować pobraniem opłaty za przesłanie wiadomości i danych.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klikając „%1$s", potwierdzasz, że akceptujesz te dokumenty: %2$s i %3$s. Może zostać wysłany SMS. Może to skutkować pobraniem opłat za przesłanie wiadomości i danych.</string>
     <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Błąd uwierzytelniania</string>
