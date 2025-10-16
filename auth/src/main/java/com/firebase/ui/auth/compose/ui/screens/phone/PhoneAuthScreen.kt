@@ -150,8 +150,9 @@ fun PhoneAuthScreen(
             } ?: CountryUtils.getDefaultCountry()
         )
     }
-    val fullPhoneNumber =
+    val fullPhoneNumber = remember(selectedCountry.value, phoneNumberValue.value) {
         CountryUtils.formatPhoneNumber(selectedCountry.value.dialCode, phoneNumberValue.value)
+    }
     val verificationId = rememberSaveable { mutableStateOf<String?>(null) }
     val forceResendingToken =
         rememberSaveable { mutableStateOf<PhoneAuthProvider.ForceResendingToken?>(null) }
@@ -186,7 +187,7 @@ fun PhoneAuthScreen(
                 verificationId.value = state.verificationId
                 forceResendingToken.value = state.forceResendingToken
                 step.value = PhoneAuthStep.EnterVerificationCode
-                resendTimerSeconds.intValue = 60 // Start 60-second countdown
+                resendTimerSeconds.intValue = provider.timeout.toInt() // Start 60-second countdown
             }
 
             is AuthState.SMSAutoVerified -> {
@@ -270,7 +271,7 @@ fun PhoneAuthScreen(
                             phoneNumber = fullPhoneNumber,
                             forceResendingToken = forceResendingToken.value,
                         )
-                        resendTimerSeconds.intValue = 60 // Restart timer
+                        resendTimerSeconds.intValue = provider.timeout.toInt() // Restart timer
                     } catch (e: Exception) {
                         // Error will be handled by authState flow
                     }
@@ -280,7 +281,6 @@ fun PhoneAuthScreen(
         resendTimer = resendTimerSeconds.intValue,
         onChangeNumberClick = {
             step.value = PhoneAuthStep.EnterPhoneNumber
-            //phoneNumberValue.value = ""
             verificationCodeValue.value = ""
             verificationId.value = null
             forceResendingToken.value = null

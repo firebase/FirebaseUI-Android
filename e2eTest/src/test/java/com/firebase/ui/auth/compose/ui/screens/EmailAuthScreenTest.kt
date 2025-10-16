@@ -22,6 +22,7 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.compose.testutil.awaitWithLooper
 import com.google.common.truth.Truth.assertThat
@@ -30,8 +31,6 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.actionCodeSettings
-import org.json.JSONArray
-import org.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,10 +40,6 @@ import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import java.net.HttpURLConnection
-import java.net.URL
-
-private const val AUTH_STATE_WAIT_TIMEOUT_MS = 5_000L
 
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
@@ -93,7 +88,7 @@ class EmailAuthScreenTest {
         )
 
         // Clear emulator data
-        clearEmulatorData()
+        emulatorApi.clearEmulatorData()
     }
 
     @After
@@ -102,7 +97,7 @@ class EmailAuthScreenTest {
         FirebaseAuthUI.clearInstanceCache()
 
         // Clear emulator data
-        clearEmulatorData()
+        emulatorApi.clearEmulatorData()
     }
 
     @Test
@@ -525,7 +520,7 @@ class EmailAuthScreenTest {
         configuration: AuthUIConfiguration,
         onSuccess: ((AuthResult) -> Unit) = {},
         onError: ((AuthException) -> Unit) = {},
-        onCancel: (() -> Unit) = {}
+        onCancel: (() -> Unit) = {},
     ) {
         EmailAuthScreen(
             context = applicationContext,
@@ -579,23 +574,6 @@ class EmailAuthScreenTest {
                         onGoToSignIn = state.onGoToSignIn
                     )
                 }
-            }
-        }
-    }
-
-    /**
-     * Clears all data from the Firebase Auth Emulator.
-     *
-     * This function calls the emulator's clear data endpoint to remove all accounts,
-     * OOB codes, and other authentication data. This ensures test isolation by providing
-     * a clean slate for each test.
-     */
-    private fun clearEmulatorData() {
-        if (::emulatorApi.isInitialized) {
-            try {
-                emulatorApi.clearAccounts()
-            } catch (e: Exception) {
-                println("WARNING: Exception while clearing emulator data: ${e.message}")
             }
         }
     }

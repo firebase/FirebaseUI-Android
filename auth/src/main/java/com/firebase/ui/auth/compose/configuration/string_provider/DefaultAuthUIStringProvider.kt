@@ -204,14 +204,11 @@ class DefaultAuthUIStringProvider(
     override val invalidVerificationCode: String
         get() = localizedContext.getString(R.string.fui_incorrect_code_dialog_body)
 
-    override val countryCode: String
-        get() = localizedContext.getString(R.string.fui_country_hint)
+    override val countrySelectorModalTitle: String
+        get() = localizedContext.getString(R.string.fui_country_selector_title)
 
-    override val selectCountry: String
-        get() = localizedContext.getString(R.string.fui_country_hint)
-
-    override val searchCountries: String
-        get() = localizedContext.getString(R.string.fui_country_hint)
+    override val searchCountriesHint: String
+        get() = localizedContext.getString(R.string.fui_search_country_field_hint)
 
     /**
      * Multi-Factor Authentication Strings

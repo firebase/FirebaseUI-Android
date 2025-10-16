@@ -36,6 +36,8 @@
     <string name="fui_email_hint" translation_description="Hint in email input field">Email</string>
     <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone Number</string>
     <string name="fui_country_hint" translation_description="Hint for phone input field">Country</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Select a country</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Select for country e.g. +1, "US"</string>
     <string name="fui_password_hint" translation_description="Hint for password input field for existing passwords">Password</string>
     <string name="fui_confirm_password_hint" translation_description="Hint for confirm password input field for existing passwords">Confirm Password</string>
     <string name="fui_new_password_hint" translation_description="Hint for password input field for new passwords">New password</string>

@@ -210,14 +210,11 @@ interface AuthUIStringProvider {
     /** Invalid verification code error */
     val invalidVerificationCode: String
 
-    /** Country code label */
-    val countryCode: String
+    /** Select country modal sheet title */
+    val countrySelectorModalTitle: String
 
-    /** Select country dialog title */
-    val selectCountry: String
-
-    /** Search countries hint */
-    val searchCountries: String
+    /** Select country modal sheet input field hint */
+    val searchCountriesHint: String
 
     // Provider Picker Strings
     /** Common button text for sign in */

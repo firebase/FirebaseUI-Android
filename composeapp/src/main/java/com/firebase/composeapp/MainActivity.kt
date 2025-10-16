@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                         defaultCountryCode = null,
                         allowedCountries = emptyList(),
                         smsCodeLength = 6,
-                        timeout = 60L,
+                        timeout = 120L,
                         isInstantVerificationEnabled = true
                     )
                 )
