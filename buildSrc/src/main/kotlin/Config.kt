@@ -103,7 +103,7 @@ object Config {
             const val mockitoCore = "org.mockito:mockito-core:5.19.0"
             const val mockitoInline = "org.mockito:mockito-inline:5.2.0"
             const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:6.0.0"
-            const val robolectric = "org.robolectric:robolectric:4.14"
+            const val robolectric = "org.robolectric:robolectric:4.15.1"
 
             const val core = "androidx.test:core:1.5.0"
             const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
