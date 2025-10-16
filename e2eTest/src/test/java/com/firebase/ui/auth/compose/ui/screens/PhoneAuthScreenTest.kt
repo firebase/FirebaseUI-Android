@@ -51,6 +51,7 @@ import org.robolectric.annotation.LooperMode
 
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
+@LooperMode(LooperMode.Mode.PAUSED)
 class PhoneAuthScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
