@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Adresă de e-mail</string>
     <string name="fui_phone_hint">Număr de telefon</string>
     <string name="fui_country_hint">Țară</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selectați o țară</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Căutați țară de ex. +1, "US"</string>
     <string name="fui_password_hint">Parolă</string>
     <string name="fui_new_password_hint">Parolă nouă</string>
     <string name="fui_required_field">Câmpul este obligatoriu.</string>

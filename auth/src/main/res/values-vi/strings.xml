@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>
     <string name="fui_country_hint">Quốc gia</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Chọn quốc gia</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Tìm kiếm quốc gia, ví dụ: +1, "US"</string>
     <string name="fui_password_hint">Mật khẩu</string>
     <string name="fui_new_password_hint">Mật khẩu mới</string>
     <string name="fui_required_field">Bạn không được để trống trường này.</string>

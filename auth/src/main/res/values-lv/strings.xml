@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-pasts</string>
     <string name="fui_phone_hint">Tālruņa numurs</string>
     <string name="fui_country_hint">Valsts</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Atlasiet valsti</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Meklēt valsti, piem., +1, "US"</string>
     <string name="fui_password_hint">Parole</string>
     <string name="fui_new_password_hint">Jauna parole</string>
     <string name="fui_required_field">Šo laukumu nedrīkst atstāt tukšu.</string>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Velg et land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Søk etter land, f.eks. +1, "US"</string>
     <string name="fui_password_hint">Passord</string>
     <string name="fui_new_password_hint">Nytt passord</string>
     <string name="fui_required_field">Du må fylle ut dette feltet.</string>

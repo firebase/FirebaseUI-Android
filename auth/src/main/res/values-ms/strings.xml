@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mel</string>
     <string name="fui_phone_hint">Nombor Telefon</string>
     <string name="fui_country_hint">Negara</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pilih negara</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Cari negara cth. +1, "US"</string>
     <string name="fui_password_hint">Kata Laluan</string>
     <string name="fui_new_password_hint">Kata laluan baharu</string>
     <string name="fui_required_field">Anda tidak boleh membiarkan ruang ini kosong.</string>

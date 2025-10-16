@@ -25,6 +25,8 @@
     <string name="fui_email_hint">البريد الإلكتروني</string>
     <string name="fui_phone_hint">رقم الهاتف</string>
     <string name="fui_country_hint">البلد</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">اختيار بلد</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">البحث عن بلد مثلاً +1 أو "US"</string>
     <string name="fui_password_hint">كلمة المرور</string>
     <string name="fui_new_password_hint">كلمة المرور الجديدة</string>
     <string name="fui_required_field">يجب ملء هذا الحقل.</string>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">メールアドレス</string>
     <string name="fui_phone_hint">電話番号</string>
     <string name="fui_country_hint">国</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">国を選択</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">国を検索（例：+1、「US」）</string>
     <string name="fui_password_hint">パスワード</string>
     <string name="fui_new_password_hint">新しいパスワード</string>
     <string name="fui_required_field">入力必須項目です。</string>

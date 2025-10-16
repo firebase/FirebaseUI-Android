@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefoonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecteer een land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Land zoeken bijv. +1, "US"</string>
     <string name="fui_password_hint">Wachtwoord</string>
     <string name="fui_new_password_hint">Nieuw wachtwoord</string>
     <string name="fui_required_field">Dit veld mag niet leeg zijn.</string>

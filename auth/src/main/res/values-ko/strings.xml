@@ -25,6 +25,8 @@
     <string name="fui_email_hint">이메일</string>
     <string name="fui_phone_hint">전화번호</string>
     <string name="fui_country_hint">국가</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">국가 선택</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">국가 검색(예: +1, "US")</string>
     <string name="fui_password_hint">비밀번호</string>
     <string name="fui_new_password_hint">새 비밀번호</string>
     <string name="fui_required_field">이 입력란을 비워둘 수 없습니다.</string>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Адрес электронной почты</string>
     <string name="fui_phone_hint">Номер телефона</string>
     <string name="fui_country_hint">Страна</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Выберите страну</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Поиск страны, напр. +1, "US"</string>
     <string name="fui_password_hint">Пароль</string>
     <string name="fui_new_password_hint">Новый пароль</string>
     <string name="fui_required_field">Это поле должно быть заполнено.</string>

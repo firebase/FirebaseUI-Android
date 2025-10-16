@@ -25,6 +25,8 @@
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>
     <string name="fui_country_hint">நாடு</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">நாட்டைத் தேர்வுசெய்க</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">நாட்டைத் தேடுக எ.கா. +1, "US"</string>
     <string name="fui_password_hint">கடவுச்சொல்</string>
     <string name="fui_new_password_hint">புதிய கடவுச்சொல்</string>
     <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>

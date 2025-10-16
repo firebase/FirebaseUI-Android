@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="fui_phone_hint">Αριθμός τηλεφώνου</string>
     <string name="fui_country_hint">Χώρα</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Επιλογή χώρας</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Αναζήτηση χώρας π.χ. +1, "US"</string>
     <string name="fui_password_hint">Κωδικός πρόσβασης</string>
     <string name="fui_new_password_hint">Νέος κωδικός πρόσβασης</string>
     <string name="fui_required_field">Αυτό το πεδίο είναι υποχρεωτικό.</string>

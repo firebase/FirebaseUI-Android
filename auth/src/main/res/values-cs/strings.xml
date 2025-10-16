@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonní číslo</string>
     <string name="fui_country_hint">Země</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Vyberte zemi</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Hledat zemi např. +1, "US"</string>
     <string name="fui_password_hint">Heslo</string>
     <string name="fui_new_password_hint">Nové heslo</string>
     <string name="fui_required_field">Toto pole nesmí zůstat prázdné.</string>

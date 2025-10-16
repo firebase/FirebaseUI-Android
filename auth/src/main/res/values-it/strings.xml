@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Indirizzo email</string>
     <string name="fui_phone_hint">Numero di telefono</string>
     <string name="fui_country_hint">Paese</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Seleziona un paese</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Cerca paese ad es. +1, "US"</string>
     <string name="fui_password_hint">Password</string>
     <string name="fui_new_password_hint">Nuova password</string>
     <string name="fui_required_field">Questo campo non può restare vuoto.</string>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">電子郵件</string>
     <string name="fui_phone_hint">電話號碼</string>
     <string name="fui_country_hint">國家/地區</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">選取國家/地區</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">搜尋國家/地區，例如 +1、"US"</string>
     <string name="fui_password_hint">密碼</string>
     <string name="fui_new_password_hint">新密碼</string>
     <string name="fui_required_field">此欄位不可留空。</string>

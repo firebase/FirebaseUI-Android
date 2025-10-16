@@ -25,6 +25,8 @@
     <string name="fui_email_hint">อีเมล</string>
     <string name="fui_phone_hint">หมายเลขโทรศัพท์</string>
     <string name="fui_country_hint">ประเทศ</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">เลือกประเทศ</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">ค้นหาประเทศ เช่น +1 "US"</string>
     <string name="fui_password_hint">รหัสผ่าน</string>
     <string name="fui_new_password_hint">รหัสผ่านใหม่</string>
     <string name="fui_required_field">ต้องป้อนข้อมูลในช่องนี้</string>

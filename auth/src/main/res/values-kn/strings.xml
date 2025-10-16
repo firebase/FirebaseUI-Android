@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ಇಮೇಲ್</string>
     <string name="fui_phone_hint">ಫೋನ್ ಸಂಖ್ಯೆ</string>
     <string name="fui_country_hint">ದೇಶ</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">ದೇಶವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">ದೇಶವನ್ನು ಹುಡುಕಿ ಉದಾ. +1, "US"</string>
     <string name="fui_password_hint">ಪಾಸ್‌ವರ್ಡ್</string>
     <string name="fui_new_password_hint">ಹೊಸ ಪಾಸ್‌ವರ್ಡ್</string>
     <string name="fui_required_field">ನೀವು ಇದನ್ನು ಖಾಲಿ ಬಿಡುವಂತಿಲ್ಲ.</string>

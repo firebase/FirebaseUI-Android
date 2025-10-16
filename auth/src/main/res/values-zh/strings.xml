@@ -25,6 +25,8 @@
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>
     <string name="fui_country_hint">国家/地区</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">选择国家/地区</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">搜索国家/地区，例如 +1、"US"</string>
     <string name="fui_password_hint">密码</string>
     <string name="fui_new_password_hint">新密码</string>
     <string name="fui_required_field">此处不能留空。</string>

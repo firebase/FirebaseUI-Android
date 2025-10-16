@@ -25,6 +25,8 @@
     <string name="fui_email_hint">אימייל</string>
     <string name="fui_phone_hint">מספר טלפון</string>
     <string name="fui_country_hint">מדינה</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">בחירת מדינה</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">חיפוש מדינה למשל +1, "US"</string>
     <string name="fui_password_hint">סיסמה</string>
     <string name="fui_new_password_hint">סיסמה חדשה</string>
     <string name="fui_required_field">אי אפשר להשאיר את השדה הזה ריק.</string>

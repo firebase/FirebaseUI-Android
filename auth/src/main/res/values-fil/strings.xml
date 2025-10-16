@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Mag-email</string>
     <string name="fui_phone_hint">Numero ng Telepono</string>
     <string name="fui_country_hint">Bansa</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pumili ng bansa</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Maghanap ng bansa hal. +1, "US"</string>
     <string name="fui_password_hint">Password</string>
     <string name="fui_new_password_hint">Bagong password</string>
     <string name="fui_required_field">Hindi mo ito maaaring iwanan na walang laman.</string>

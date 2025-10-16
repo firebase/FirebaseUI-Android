@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फ़ोन नंबर</string>
     <string name="fui_country_hint">देश</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">देश चुनें</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">देश खोजें जैसे +1, "US"</string>
     <string name="fui_password_hint">पासवर्ड</string>
     <string name="fui_new_password_hint">नया पासवर्ड</string>
     <string name="fui_required_field">आप इसे खाली नहीं छोड़ सकते.</string>

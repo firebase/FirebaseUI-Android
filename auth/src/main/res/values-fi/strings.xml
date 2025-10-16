@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Sähköposti</string>
     <string name="fui_phone_hint">Puhelinnumero</string>
     <string name="fui_country_hint">Maa</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Valitse maa</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Hae maata esim. +1, "US"</string>
     <string name="fui_password_hint">Salasana</string>
     <string name="fui_new_password_hint">Uusi salasana</string>
     <string name="fui_required_field">Tätä ei voi jättää tyhjäksi.</string>

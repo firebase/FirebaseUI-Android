@@ -25,6 +25,8 @@
     <string name="fui_email_hint">El. pašto adresas</string>
     <string name="fui_phone_hint">Telefono numeris</string>
     <string name="fui_country_hint">Šalis</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pasirinkite šalį</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Ieškoti šalies, pvz., +1, "US"</string>
     <string name="fui_password_hint">Slaptažodis</string>
     <string name="fui_new_password_hint">Naujas slaptažodis</string>
     <string name="fui_required_field">Šį lauką būtina užpildyti.</string>

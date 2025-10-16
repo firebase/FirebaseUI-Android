@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Имейл</string>
     <string name="fui_phone_hint">Телефонен номер</string>
     <string name="fui_country_hint">Държава</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Изберете държава</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Търсене на държава напр. +1, "US"</string>
     <string name="fui_password_hint">Парола</string>
     <string name="fui_new_password_hint">Нова парола</string>
     <string name="fui_required_field">Трябва да се попълни.</string>

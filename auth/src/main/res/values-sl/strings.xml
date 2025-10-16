@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-pošta</string>
     <string name="fui_phone_hint">Telefonska številka</string>
     <string name="fui_country_hint">Država</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Izberi državo</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Iskanje države, npr. +1, "US"</string>
     <string name="fui_password_hint">Geslo</string>
     <string name="fui_new_password_hint">Novo geslo</string>
     <string name="fui_required_field">To polje ne sme biti prazno.</string>

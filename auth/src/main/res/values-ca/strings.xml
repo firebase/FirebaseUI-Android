@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Adreça electrònica</string>
     <string name="fui_phone_hint">Número de telèfon</string>
     <string name="fui_country_hint">País</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecciona un país</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Cerca país p. ex. +1, "US"</string>
     <string name="fui_password_hint">Contrasenya</string>
     <string name="fui_new_password_hint">Contrasenya nova</string>
     <string name="fui_required_field">Aquest camp no es pot deixar en blanc.</string>
