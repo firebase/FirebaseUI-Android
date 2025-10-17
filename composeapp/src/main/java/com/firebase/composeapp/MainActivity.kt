@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("10.0.2.2", 9099)
+        // authUI.auth.useEmulator("10.0.2.2", 9099)
 
         val configuration = authUIConfiguration {
             context = applicationContext

@@ -114,12 +114,20 @@ fun EmailAuthMain(
                         coroutineScope.launch {
                             try {
                                 // Reload the user to refresh the authentication token
-                                verificationState.user.reload().addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        android.util.Log.d("EmailAuthMain", "User reloaded. isEmailVerified: ${verificationState.user.isEmailVerified}")
-                                        // The auth state listener will automatically update the state
+                                verificationState.user.reload().addOnCompleteListener { reloadTask ->
+                                    if (reloadTask.isSuccessful) {
+                                        // Force a token refresh to trigger the AuthStateListener
+                                        verificationState.user.getIdToken(true).addOnCompleteListener { tokenTask ->
+                                            if (tokenTask.isSuccessful) {
+                                                val currentUser = authUI.getCurrentUser()
+                                                android.util.Log.d("EmailAuthMain", "User reloaded. isEmailVerified: ${currentUser?.isEmailVerified}")
+                                                // The AuthStateListener should fire automatically after token refresh
+                                            } else {
+                                                android.util.Log.e("EmailAuthMain", "Failed to refresh token", tokenTask.exception)
+                                            }
+                                        }
                                     } else {
-                                        android.util.Log.e("EmailAuthMain", "Failed to reload user", task.exception)
+                                        android.util.Log.e("EmailAuthMain", "Failed to reload user", reloadTask.exception)
                                     }
                                 }
                             } catch (e: Exception) {

@@ -496,11 +496,11 @@ private fun ConfigureTotpUI(
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center
                 )
-                Text(
-                    text = "(QR code would be displayed here)",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
+                Spacer(modifier = Modifier.height(8.dp))
+                com.firebase.composeapp.ui.components.QrCodeImage(
+                    content = url,
+                    modifier = Modifier.padding(16.dp),
+                    size = 250.dp
                 )
             }
 
