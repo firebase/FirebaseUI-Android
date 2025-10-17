@@ -54,6 +54,7 @@ import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
 import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
+import com.google.firebase.auth.AuthCredential
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

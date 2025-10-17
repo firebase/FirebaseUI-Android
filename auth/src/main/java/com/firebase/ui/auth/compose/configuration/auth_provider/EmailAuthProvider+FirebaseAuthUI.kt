@@ -454,6 +454,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
 internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
     config: AuthUIConfiguration,
     credential: AuthCredential,
+    provider: AuthProvider? = null,
     displayName: String? = null,
     photoUrl: Uri? = null,
 ): AuthResult? {
@@ -472,20 +473,38 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
         }
     } catch (e: FirebaseAuthUserCollisionException) {
         // Special handling for collision exceptions
-        val authException = AuthException.from(e)
-
         if (canUpgradeAnonymous(config, auth)) {
             // Anonymous upgrade collision: emit merge conflict with updated credential
             val updatedCredential = e.updatedCredential
+            val authException = AuthException.from(e)
             if (updatedCredential != null) {
                 updateAuthState(AuthState.MergeConflict(updatedCredential))
             } else {
                 updateAuthState(AuthState.Error(authException))
             }
+            throw authException
         } else {
-            updateAuthState(AuthState.Error(authException))
+            // Non-anonymous collision: account already exists with different sign-in method
+            // Create AccountLinkingRequiredException with credential for linking
+            val email = e.email
+            // TODO(demolaf): make this cleaner!
+            val providerName = when (provider) {
+                is AuthProvider.Facebook -> "Facebook"
+                is AuthProvider.Google -> "Google"
+                is AuthProvider.Phone -> "Phone"
+                is AuthProvider.Email -> "Email"
+                else -> "this provider"
+            }
+
+            val accountLinkingException = AuthException.AccountLinkingRequiredException(
+                message = "An account already exists with the email ${email ?: ""}. Please sign in with your existing account to link your $providerName account.",
+                email = email,
+                credential = credential,
+                cause = e
+            )
+            updateAuthState(AuthState.Error(accountLinkingException))
+            throw accountLinkingException
         }
-        throw authException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in and link with credential was cancelled",

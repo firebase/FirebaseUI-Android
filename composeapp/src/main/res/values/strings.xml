@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ComposeApp</string>
+
+    <!-- Facebook SDK Configuration -->
+    <string name="facebook_application_id" translatable="false">1131506989188007</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb1131506989188007</string>
+    <string name="facebook_client_token" translatable="false">e3968638d7751ba83063e2a78bc27e4e</string>
 </resources>

@@ -59,6 +59,9 @@ dependencies {
     implementation(Config.Libs.Androidx.Navigation.lifecycleViewmodelNav3)
     implementation(Config.Libs.Androidx.kotlinxSerialization)
 
+    // Facebook
+    implementation(Config.Libs.Provider.facebook)
+
     testImplementation(Config.Libs.Test.junit)
     androidTestImplementation(Config.Libs.Test.junitExt)
     androidTestImplementation(platform(Config.Libs.Androidx.Compose.bom))

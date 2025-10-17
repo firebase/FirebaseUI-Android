@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose
 
 import com.firebase.ui.auth.compose.AuthException.Companion.from
 import com.google.firebase.FirebaseException
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -167,13 +168,19 @@ abstract class AuthException(
      * Account linking is required to complete sign-in.
      *
      * This exception is thrown when a user tries to sign in with a provider
-     * that needs to be linked to an existing account.
+     * that needs to be linked to an existing account. For example, when a user
+     * tries to sign in with Facebook but an account already exists with that
+     * email using a different provider (like email/password).
      *
      * @property message The detailed error message
+     * @property email The email address that already has an account (optional)
+     * @property credential The credential that should be linked after signing in (optional)
      * @property cause The underlying [Throwable] that caused this exception
      */
     class AccountLinkingRequiredException(
         message: String,
+        val email: String? = null,
+        val credential: AuthCredential? = null,
         cause: Throwable? = null
     ) : AuthException(message, cause)
 

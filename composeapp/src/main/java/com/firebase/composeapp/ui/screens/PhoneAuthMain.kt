@@ -60,32 +60,6 @@ fun PhoneAuthMain(
             }
         }
 
-        is AuthState.RequiresEmailVerification -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    "Authenticated User - " +
-                            "(RequiresEmailVerification): " +
-                            "${(authState as AuthState.RequiresEmailVerification).user.email}",
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            authUI.signOut(context)
-                        }
-                    }
-                ) {
-                    Text("Sign Out")
-                }
-            }
-        }
-
         else -> {
             PhoneAuthScreen(
                 context = context,

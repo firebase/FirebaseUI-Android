@@ -19,7 +19,9 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.graphics.Color
+import androidx.core.net.toUri
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.facebook.AccessToken
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.AuthUIConfigurationDsl
@@ -44,8 +46,8 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.actionCodeSettings
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlinx.serialization.Serializable
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -592,11 +594,6 @@ abstract class AuthProvider(open val providerId: String) {
         override val scopes: List<String> = listOf("email", "public_profile"),
 
         /**
-         * if true, enable limited login mode. Defaults to false.
-         */
-        val limitedLogin: Boolean = false,
-
-        /**
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String> = emptyMap(),
@@ -625,6 +622,113 @@ abstract class AuthProvider(open val providerId: String) {
                 require(applicationId.isNotBlank()) {
                     "Facebook application ID cannot be blank"
                 }
+            }
+        }
+
+        /**
+         * An interface to wrap the static `FacebookAuthProvider.getCredential` method to make it testable.
+         * @suppress
+         */
+        // TODO(demolaf): make this internal after testing
+        interface CredentialProvider {
+            fun getCredential(token: String): AuthCredential
+        }
+
+        /**
+         * The default implementation of [CredentialProvider] that calls the static method.
+         * @suppress
+         */
+        internal class DefaultCredentialProvider : CredentialProvider {
+            override fun getCredential(token: String): AuthCredential {
+                return FacebookAuthProvider.getCredential(token)
+            }
+        }
+
+        /**
+         * Internal data class to hold Facebook profile information.
+         */
+        internal class FacebookProfileData(
+            val displayName: String?,
+            val email: String?,
+            val photoUrl: Uri?,
+        )
+
+        /**
+         * Fetches user profile data from Facebook Graph API.
+         *
+         * @param accessToken The Facebook access token
+         * @return FacebookProfileData containing user's display name, email, and photo URL
+         */
+        internal suspend fun fetchFacebookProfile(accessToken: AccessToken): FacebookProfileData? {
+            return suspendCancellableCoroutine { continuation ->
+                val request =
+                    com.facebook.GraphRequest.newMeRequest(accessToken) { jsonObject, response ->
+                        try {
+                            val error = response?.error
+                            if (error != null) {
+                                Log.e(
+                                    "FirebaseAuthUI.signInWithFacebook",
+                                    "Graph API error: ${error.errorMessage}"
+                                )
+                                continuation.resume(null)
+                                return@newMeRequest
+                            }
+
+                            if (jsonObject == null) {
+                                Log.e(
+                                    "FirebaseAuthUI.signInWithFacebook",
+                                    "Graph API returned null response"
+                                )
+                                continuation.resume(null)
+                                return@newMeRequest
+                            }
+
+                            val name = jsonObject.optString("name")
+                            val email = jsonObject.optString("email")
+
+                            // Extract photo URL from picture object
+                            val photoUrl = try {
+                                jsonObject.optJSONObject("picture")
+                                    ?.optJSONObject("data")
+                                    ?.optString("url")
+                                    ?.takeIf { it.isNotEmpty() }?.toUri()
+                            } catch (e: Exception) {
+                                Log.w(
+                                    "FirebaseAuthUI.signInWithFacebook",
+                                    "Error parsing photo URL",
+                                    e
+                                )
+                                null
+                            }
+
+                            Log.d(
+                                "FirebaseAuthUI.signInWithFacebook",
+                                "Profile fetched: name=$name, email=$email, hasPhoto=${photoUrl != null}"
+                            )
+
+                            continuation.resume(
+                                FacebookProfileData(
+                                    displayName = name,
+                                    email = email,
+                                    photoUrl = photoUrl
+                                )
+                            )
+                        } catch (e: Exception) {
+                            Log.e(
+                                "FirebaseAuthUI.signInWithFacebook",
+                                "Error processing Graph API response",
+                                e
+                            )
+                            continuation.resume(null)
+                        }
+                    }
+
+                // Request specific fields: id, name, email, and picture
+                val parameters = android.os.Bundle().apply {
+                    putString("fields", "id,name,email,picture")
+                }
+                request.parameters = parameters
+                request.executeAsync()
             }
         }
     }

@@ -146,7 +146,10 @@ private fun getRecoveryMessage(
 
         is AuthException.TooManyRequestsException -> stringProvider.tooManyRequestsRecoveryMessage
         is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
-        is AuthException.AccountLinkingRequiredException -> stringProvider.accountLinkingRequiredRecoveryMessage
+        is AuthException.AccountLinkingRequiredException -> {
+            // Use the custom message which includes email and provider details
+            error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
+        }
         is AuthException.AuthCancelledException -> stringProvider.authCancelledRecoveryMessage
         is AuthException.UnknownException -> stringProvider.unknownErrorRecoveryMessage
         else -> stringProvider.unknownErrorRecoveryMessage
@@ -167,7 +170,7 @@ private fun getRecoveryActionText(
     return when (error) {
         is AuthException.AuthCancelledException -> stringProvider.continueText
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
-        is AuthException.AccountLinkingRequiredException -> stringProvider.continueText // Use "Continue" for linking
+        is AuthException.AccountLinkingRequiredException -> stringProvider.signInDefault // User needs to sign in to link accounts
         is AuthException.MfaRequiredException -> stringProvider.continueText // Use "Continue" for MFA
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,

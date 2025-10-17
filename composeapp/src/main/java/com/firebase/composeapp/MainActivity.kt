@@ -1,13 +1,10 @@
 package com.firebase.composeapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +14,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.firebase.composeapp.ui.screens.EmailAuthMain
+import com.firebase.composeapp.ui.screens.FirebaseAuthScreen
 import com.firebase.composeapp.ui.screens.PhoneAuthMain
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
@@ -24,12 +22,11 @@ import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
 import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.actionCodeSettings
 import kotlinx.serialization.Serializable
 
@@ -38,10 +35,8 @@ sealed class Route : NavKey {
     @Serializable
     object MethodPicker : Route()
 
-    @Serializable
-    object EmailAuth : Route()
+    class EmailAuth(val credentialForLinking: AuthCredential? = null) : Route()
 
-    @Serializable
     object PhoneAuth : Route()
 }
 
@@ -51,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("10.0.2.2", 9099)
+        // authUI.auth.useEmulator("10.0.2.2", 9099)
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -89,6 +84,11 @@ class MainActivity : ComponentActivity() {
                         isInstantVerificationEnabled = true
                     )
                 )
+                provider(
+                    AuthProvider.Facebook(
+                        applicationId = "792556260059222"
+                    )
+                )
             }
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
@@ -113,32 +113,23 @@ class MainActivity : ComponentActivity() {
                             val route = entry as Route
                             when (route) {
                                 is Route.MethodPicker -> NavEntry(entry) {
-                                    Scaffold { innerPadding ->
-                                        AuthMethodPicker(
-                                            modifier = Modifier.padding(innerPadding),
-                                            providers = configuration.providers,
-                                            logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp),
-                                            termsOfServiceUrl = configuration.tosUrl,
-                                            privacyPolicyUrl = configuration.privacyPolicyUrl,
-                                            onProviderSelected = { provider ->
-                                                Log.d(
-                                                    "MainActivity",
-                                                    "Selected Provider: $provider"
-                                                )
-                                                when (provider) {
-                                                    is AuthProvider.Email -> backStack.add(Route.EmailAuth)
-                                                    is AuthProvider.Phone -> backStack.add(Route.PhoneAuth)
-                                                }
-                                            },
-                                        )
-                                    }
+                                    FirebaseAuthScreen(
+                                        authUI = authUI,
+                                        configuration = configuration,
+                                        backStack = backStack
+                                    )
                                 }
 
                                 is Route.EmailAuth -> NavEntry(entry) {
                                     val emailProvider = configuration.providers
                                         .filterIsInstance<AuthProvider.Email>()
                                         .first()
-                                    LaunchEmailAuth(authUI, configuration, emailProvider)
+                                    LaunchEmailAuth(
+                                        authUI = authUI,
+                                        configuration = configuration,
+                                        selectedProvider = emailProvider,
+                                        credentialForLinking = route.credentialForLinking
+                                    )
                                 }
 
                                 is Route.PhoneAuth -> NavEntry(entry) {
@@ -160,6 +151,7 @@ class MainActivity : ComponentActivity() {
         authUI: FirebaseAuthUI,
         configuration: AuthUIConfiguration,
         selectedProvider: AuthProvider.Email,
+        credentialForLinking: AuthCredential? = null,
     ) {
         // Check if this is an email link sign-in flow
         val emailLink = intent.getStringExtra(
@@ -195,6 +187,7 @@ class MainActivity : ComponentActivity() {
             context = applicationContext,
             configuration = configuration,
             authUI = authUI,
+            credentialForLinking = credentialForLinking
         )
     }
 

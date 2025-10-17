@@ -35,6 +35,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkTo
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
 
@@ -118,6 +119,7 @@ fun EmailAuthScreen(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
+    credentialForLinking: AuthCredential? = null,
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
@@ -143,6 +145,7 @@ fun EmailAuthScreen(
 
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
+    val oAuthCredentialForLinking = remember { credentialForLinking }
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
     val resetLinkSent = authState is AuthState.PasswordResetLinkSent
@@ -211,7 +214,7 @@ fun EmailAuthScreen(
                             config = configuration,
                             email = emailTextValue.value,
                             password = passwordTextValue.value,
-                            credentialForLinking = null,
+                            credentialForLinking = oAuthCredentialForLinking,
                         )
                     }
                 } catch (e: Exception) {
