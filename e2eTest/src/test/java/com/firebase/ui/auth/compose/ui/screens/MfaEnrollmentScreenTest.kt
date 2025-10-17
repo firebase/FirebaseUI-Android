@@ -73,6 +73,9 @@ class MfaEnrollmentScreenTest {
     @Mock
     private lateinit var mockFirebaseUser: FirebaseUser
 
+    @Mock
+    private lateinit var mockMultiFactor: com.google.firebase.auth.MultiFactor
+
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
@@ -100,6 +103,8 @@ class MfaEnrollmentScreenTest {
         // Use mock user instead of real Firebase user
         `when`(mockFirebaseUser.email).thenReturn("mfatest@example.com")
         `when`(mockFirebaseUser.uid).thenReturn("test-uid-123")
+        `when`(mockFirebaseUser.multiFactor).thenReturn(mockMultiFactor)
+        `when`(mockMultiFactor.enrolledFactors).thenReturn(emptyList())
         testUser = mockFirebaseUser
     }
 

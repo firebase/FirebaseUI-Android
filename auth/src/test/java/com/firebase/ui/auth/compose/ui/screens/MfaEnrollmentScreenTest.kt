@@ -63,6 +63,9 @@ class MfaEnrollmentScreenTest {
     @Mock
     private lateinit var mockFirebaseApp: FirebaseApp
 
+    @Mock
+    private lateinit var mockMultiFactor: com.google.firebase.auth.MultiFactor
+
     private lateinit var capturedState: MfaEnrollmentContentState
 
     @Before
@@ -72,6 +75,8 @@ class MfaEnrollmentScreenTest {
         `when`(mockAuth.app).thenReturn(mockFirebaseApp)
         `when`(mockFirebaseApp.name).thenReturn("TestApp")
         `when`(mockUser.email).thenReturn("test@example.com")
+        `when`(mockUser.multiFactor).thenReturn(mockMultiFactor)
+        `when`(mockMultiFactor.enrolledFactors).thenReturn(emptyList())
     }
 
     @Test
