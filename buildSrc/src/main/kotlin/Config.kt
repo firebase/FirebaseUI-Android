@@ -79,7 +79,7 @@ object Config {
         }
 
         object Provider {
-            const val facebook = "com.facebook.android:facebook-login:8.1.0"
+            const val facebook = "com.facebook.android:facebook-login:18.0.3"
         }
 
         object Misc {
