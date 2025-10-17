@@ -32,6 +32,7 @@ fun EmailAuthMain(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
+    onSetupMfa: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
@@ -49,6 +50,12 @@ fun EmailAuthMain(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
+                    onClick = onSetupMfa
+                ) {
+                    Text("Setup MFA")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
                     onClick = {
                         coroutineScope.launch {
                             authUI.signOut(context)
@@ -61,6 +68,7 @@ fun EmailAuthMain(
         }
 
         is AuthState.RequiresEmailVerification -> {
+            val verificationState = authState as AuthState.RequiresEmailVerification
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -70,9 +78,58 @@ fun EmailAuthMain(
                 Text(
                     "Authenticated User - " +
                             "(RequiresEmailVerification): " +
-                            "${(authState as AuthState.RequiresEmailVerification).user.email}",
+                            "${verificationState.user.email}",
                     textAlign = TextAlign.Center
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Please verify your email to continue.",
+                    textAlign = TextAlign.Center,
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            try {
+                                verificationState.user.sendEmailVerification()
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            android.util.Log.d("EmailAuthMain", "Verification email sent")
+                                        } else {
+                                            android.util.Log.e("EmailAuthMain", "Failed to send verification email", task.exception)
+                                        }
+                                    }
+                            } catch (e: Exception) {
+                                android.util.Log.e("EmailAuthMain", "Error sending verification email", e)
+                            }
+                        }
+                    }
+                ) {
+                    Text("Send Verification Email")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            try {
+                                // Reload the user to refresh the authentication token
+                                verificationState.user.reload().addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        android.util.Log.d("EmailAuthMain", "User reloaded. isEmailVerified: ${verificationState.user.isEmailVerified}")
+                                        // The auth state listener will automatically update the state
+                                    } else {
+                                        android.util.Log.e("EmailAuthMain", "Failed to reload user", task.exception)
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                android.util.Log.e("EmailAuthMain", "Error reloading user", e)
+                            }
+                        }
+                    }
+                ) {
+                    Text("Check Verification Status")
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {

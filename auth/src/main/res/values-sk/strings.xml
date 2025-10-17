@@ -120,4 +120,13 @@
     <string name="fui_error_password_missing_lowercase">Heslo musí obsahovať aspoň jedno malé písmeno</string>
     <string name="fui_error_password_missing_digit">Heslo musí obsahovať aspoň jedno číslo</string>
     <string name="fui_error_password_missing_special_character">Heslo musí obsahovať aspoň jeden špeciálny znak</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Nastaviť SMS overenie</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Overiť SMS kód</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Táto operácia vyžaduje nedávne overenie. Prihláste sa znova a skúste to znova.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Overovací kód je nesprávny. Skúste to znova.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Vyskytla sa sieťová chyba. Skontrolujte pripojenie a skúste to znova.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Počas registrácie sa vyskytla chyba. Skúste to znova.</string>
 </resources>

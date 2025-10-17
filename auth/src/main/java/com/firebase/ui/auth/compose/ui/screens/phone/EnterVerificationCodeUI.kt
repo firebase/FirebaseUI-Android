@@ -65,6 +65,7 @@ fun EnterVerificationCodeUI(
     onVerifyCodeClick: () -> Unit,
     onResendCodeClick: () -> Unit,
     onChangeNumberClick: () -> Unit,
+    title: String? = null,
 ) {
     val context = LocalContext.current
     val stringProvider = DefaultAuthUIStringProvider(context)
@@ -85,7 +86,7 @@ fun EnterVerificationCodeUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringProvider.verifyPhoneNumber)
+                    Text(title ?: stringProvider.verifyPhoneNumber)
                 },
                 colors = AuthUITheme.topAppBarColors
             )

@@ -163,7 +163,18 @@ class FirebaseAuthUI private constructor(
         val firebaseAuthFlow = callbackFlow {
             // Set initial state based on current auth state
             val initialState = auth.currentUser?.let { user ->
-                AuthState.Success(result = null, user = user, isNewUser = false)
+                // Check if email verification is required
+                if (!user.isEmailVerified &&
+                    user.email != null &&
+                    user.providerData.any { it.providerId == "password" }
+                ) {
+                    AuthState.RequiresEmailVerification(
+                        user = user,
+                        email = user.email!!
+                    )
+                } else {
+                    AuthState.Success(result = null, user = user, isNewUser = false)
+                }
             } ?: AuthState.Idle
 
             trySend(initialState)
