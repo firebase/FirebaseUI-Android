@@ -303,4 +303,20 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_generic_helper)
     override val mfaStepShowRecoveryCodesHelper: String
         get() = localizedContext.getString(R.string.fui_mfa_step_show_recovery_codes_helper)
+
+    // MFA Enrollment Screen Titles
+    override val mfaEnrollmentEnterPhoneNumber: String
+        get() = localizedContext.getString(R.string.fui_mfa_enrollment_enter_phone_number)
+    override val mfaEnrollmentVerifySmsCode: String
+        get() = localizedContext.getString(R.string.fui_mfa_enrollment_verify_sms_code)
+
+    // MFA Error Messages
+    override val mfaErrorRecentLoginRequired: String
+        get() = localizedContext.getString(R.string.fui_mfa_error_recent_login_required)
+    override val mfaErrorInvalidVerificationCode: String
+        get() = localizedContext.getString(R.string.fui_mfa_error_invalid_verification_code)
+    override val mfaErrorNetwork: String
+        get() = localizedContext.getString(R.string.fui_mfa_error_network)
+    override val mfaErrorGeneric: String
+        get() = localizedContext.getString(R.string.fui_mfa_error_generic)
 }

@@ -198,10 +198,8 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     @Test
-    fun `authStateFlow() emits Success even with unverified email for now`() = runBlocking {
-        // Given a signed-in user with unverified email
-        // Note: The current implementation checks for password provider, which might not be
-        // matched properly due to mocking limitations. This test verifies current behavior.
+    fun `authStateFlow() emits RequiresEmailVerification for unverified password users`() = runBlocking {
+        // Given a signed-in user with unverified email using password authentication
         val mockProviderData = mock(UserInfo::class.java)
         `when`(mockProviderData.providerId).thenReturn("password")
 
@@ -213,10 +211,11 @@ class FirebaseAuthUIAuthStateTest {
         // When collecting auth state flow
         val state = authUI.authStateFlow().first()
 
-        // Then it should emit Success state (current behavior with mocked data)
-        assertThat(state).isInstanceOf(AuthState.Success::class.java)
-        val successState = state as AuthState.Success
-        assertThat(successState.user).isEqualTo(mockFirebaseUser)
+        // Then it should emit RequiresEmailVerification state
+        assertThat(state).isInstanceOf(AuthState.RequiresEmailVerification::class.java)
+        val verificationState = state as AuthState.RequiresEmailVerification
+        assertThat(verificationState.user).isEqualTo(mockFirebaseUser)
+        assertThat(verificationState.email).isEqualTo("test@example.com")
     }
 
     @Test

@@ -121,4 +121,13 @@
     <string name="fui_error_password_missing_lowercase">Mật khẩu phải chứa ít nhất một chữ cái viết thường</string>
     <string name="fui_error_password_missing_digit">Mật khẩu phải chứa ít nhất một chữ số</string>
     <string name="fui_error_password_missing_special_character">Mật khẩu phải chứa ít nhất một ký tự đặc biệt</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Thiết lập xác thực SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Xác minh mã SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Hoạt động này yêu cầu xác thực gần đây. Vui lòng đăng nhập lại và thử lại.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Mã xác minh không chính xác. Vui lòng thử lại.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Đã xảy ra lỗi mạng. Vui lòng kiểm tra kết nối của bạn và thử lại.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại.</string>
 </resources>

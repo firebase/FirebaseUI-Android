@@ -59,6 +59,9 @@ dependencies {
     implementation(Config.Libs.Androidx.Navigation.lifecycleViewmodelNav3)
     implementation(Config.Libs.Androidx.kotlinxSerialization)
 
+    // QR Code generation for TOTP
+    implementation("com.google.zxing:core:3.5.3")
+
     // Facebook
     implementation(Config.Libs.Provider.facebook)
 
