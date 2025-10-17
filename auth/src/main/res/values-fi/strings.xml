@@ -120,4 +120,13 @@
     <string name="fui_error_password_missing_lowercase">Salasanan on sisällettävä vähintään yksi pieni kirjain</string>
     <string name="fui_error_password_missing_digit">Salasanan on sisällettävä vähintään yksi numero</string>
     <string name="fui_error_password_missing_special_character">Salasanan on sisällettävä vähintään yksi erikoismerkki</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Määritä tekstiviestivahvistus</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Vahvista tekstiviestikoodi</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Tämä toiminto edellyttää viimeaikaista todennusta. Kirjaudu sisään uudelleen ja yritä uudelleen.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Vahvistuskoodi on väärä. Yritä uudelleen.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Rekisteröinnin aikana tapahtui virhe. Yritä uudelleen.</string>
 </resources>

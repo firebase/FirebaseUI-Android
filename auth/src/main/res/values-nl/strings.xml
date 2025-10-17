@@ -120,4 +120,13 @@
     <string name="fui_error_password_missing_lowercase">Wachtwoord moet minimaal één kleine letter bevatten</string>
     <string name="fui_error_password_missing_digit">Wachtwoord moet minimaal één cijfer bevatten</string>
     <string name="fui_error_password_missing_special_character">Wachtwoord moet minimaal één speciaal teken bevatten</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS-authenticatie instellen</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS-code verifiëren</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Voor deze bewerking is recente authenticatie vereist. Log opnieuw in en probeer het opnieuw.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">De verificatiecode is onjuist. Probeer het opnieuw.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Er is een netwerkfout opgetreden. Controleer je verbinding en probeer het opnieuw.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Er is een fout opgetreden tijdens de inschrijving. Probeer het opnieuw.</string>
 </resources>

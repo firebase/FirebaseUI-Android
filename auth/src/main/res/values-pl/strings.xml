@@ -120,4 +120,13 @@
     <string name="fui_error_password_missing_lowercase">Hasło musi zawierać co najmniej jedną małą literę</string>
     <string name="fui_error_password_missing_digit">Hasło musi zawierać co najmniej jedną cyfrę</string>
     <string name="fui_error_password_missing_special_character">Hasło musi zawierać co najmniej jeden znak specjalny</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Skonfiguruj uwierzytelnianie SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Zweryfikuj kod SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Ta operacja wymaga niedawnego uwierzytelnienia. Zaloguj się ponownie i spróbuj ponownie.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Kod weryfikacyjny jest nieprawidłowy. Spróbuj ponownie.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Wystąpił błąd sieci. Sprawdź połączenie i spróbuj ponownie.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Wystąpił błąd podczas rejestracji. Spróbuj ponownie.</string>
 </resources>

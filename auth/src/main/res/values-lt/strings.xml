@@ -121,4 +121,13 @@
     <string name="fui_error_password_missing_lowercase">Slaptažodyje turi būti bent viena mažoji raidė</string>
     <string name="fui_error_password_missing_digit">Slaptažodyje turi būti bent vienas skaičius</string>
     <string name="fui_error_password_missing_special_character">Slaptažodyje turi būti bent vienas specialusis simbolis</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Nustatyti SMS autentifikavimą</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Patvirtinti SMS kodą</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Šiai operacijai reikalingas naujas autentifikavimas. Prisijunkite dar kartą ir bandykite dar kartą.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Patvirtinimo kodas neteisingas. Bandykite dar kartą.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Įvyko tinklo klaida. Patikrinkite ryšį ir bandykite dar kartą.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Registracijos metu įvyko klaida. Bandykite dar kartą.</string>
 </resources>

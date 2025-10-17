@@ -319,4 +319,24 @@ interface AuthUIStringProvider {
 
     /** Helper text for recovery codes */
     val mfaStepShowRecoveryCodesHelper: String
+
+    // MFA Enrollment Screen Titles
+    /** Title for MFA phone number enrollment screen (top app bar) */
+    val mfaEnrollmentEnterPhoneNumber: String
+
+    /** Title for MFA SMS verification screen (top app bar) */
+    val mfaEnrollmentVerifySmsCode: String
+
+    // MFA Error Messages
+    /** Error message when MFA enrollment requires recent authentication */
+    val mfaErrorRecentLoginRequired: String
+
+    /** Error message when MFA enrollment fails due to invalid verification code */
+    val mfaErrorInvalidVerificationCode: String
+
+    /** Error message when MFA enrollment fails due to network issues */
+    val mfaErrorNetwork: String
+
+    /** Generic error message for MFA enrollment failures */
+    val mfaErrorGeneric: String
 }

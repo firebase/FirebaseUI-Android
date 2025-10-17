@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose.mfa
 
 import com.firebase.ui.auth.compose.configuration.MfaFactor
 import com.firebase.ui.auth.compose.data.CountryData
+import com.google.firebase.auth.MultiFactorInfo
 
 /**
  * State class containing all the necessary information to render a custom UI for the
@@ -66,6 +67,7 @@ import com.firebase.ui.auth.compose.data.CountryData
  * @property onVerificationCodeChange (Step: [MfaEnrollmentStep.VerifyFactor]) Callback invoked when the verification code input changes. Receives the new code string.
  * @property onVerifyClick (Step: [MfaEnrollmentStep.VerifyFactor]) Callback to verify the entered code and finalize MFA enrollment.
  * @property selectedFactor (Step: [MfaEnrollmentStep.VerifyFactor]) The MFA factor being verified (SMS or TOTP). Use this to customize UI messages.
+ * @property resendTimer (Step: [MfaEnrollmentStep.VerifyFactor], SMS only) The number of seconds remaining before the "Resend" action is available. Will be 0 when resend is allowed.
  * @property onResendCodeClick (Step: [MfaEnrollmentStep.VerifyFactor], SMS only) Callback to resend the SMS verification code. Will be `null` for TOTP verification.
  *
  * @property recoveryCodes (Step: [MfaEnrollmentStep.ShowRecoveryCodes]) A list of one-time backup codes the user should save. Only present if [com.firebase.ui.auth.compose.configuration.MfaConfiguration.enableRecoveryCodes] is `true`.
@@ -89,7 +91,11 @@ data class MfaEnrollmentContentState(
     // SelectFactor step
     val availableFactors: List<MfaFactor> = emptyList(),
 
+    val enrolledFactors: List<MultiFactorInfo> = emptyList(),
+
     val onFactorSelected: (MfaFactor) -> Unit = {},
+
+    val onUnenrollFactor: (MultiFactorInfo) -> Unit = {},
 
     val onSkipClick: (() -> Unit)? = null,
 
@@ -119,6 +125,8 @@ data class MfaEnrollmentContentState(
     val onVerifyClick: () -> Unit = {},
 
     val selectedFactor: MfaFactor? = null,
+
+    val resendTimer: Int = 0,
 
     val onResendCodeClick: (() -> Unit)? = null,
 

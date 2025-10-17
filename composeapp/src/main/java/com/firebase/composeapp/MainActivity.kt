@@ -12,11 +12,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.firebase.composeapp.ui.screens.EmailAuthMain
+import com.firebase.composeapp.ui.screens.MfaEnrollmentMain
 import com.firebase.composeapp.ui.screens.PhoneAuthMain
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
@@ -43,6 +45,9 @@ sealed class Route : NavKey {
 
     @Serializable
     object PhoneAuth : Route()
+
+    @Serializable
+    object MfaEnrollment : Route()
 }
 
 class MainActivity : ComponentActivity() {
@@ -138,7 +143,7 @@ class MainActivity : ComponentActivity() {
                                     val emailProvider = configuration.providers
                                         .filterIsInstance<AuthProvider.Email>()
                                         .first()
-                                    LaunchEmailAuth(authUI, configuration, emailProvider)
+                                    LaunchEmailAuth(authUI, configuration, emailProvider, backStack)
                                 }
 
                                 is Route.PhoneAuth -> NavEntry(entry) {
@@ -146,6 +151,10 @@ class MainActivity : ComponentActivity() {
                                         .filterIsInstance<AuthProvider.Phone>()
                                         .first()
                                     LaunchPhoneAuth(authUI, configuration, phoneProvider)
+                                }
+
+                                is Route.MfaEnrollment -> NavEntry(entry) {
+                                    LaunchMfaEnrollment(authUI, backStack)
                                 }
                             }
                         }
@@ -160,6 +169,7 @@ class MainActivity : ComponentActivity() {
         authUI: FirebaseAuthUI,
         configuration: AuthUIConfiguration,
         selectedProvider: AuthProvider.Email,
+        backStack: androidx.compose.runtime.snapshots.SnapshotStateList<androidx.navigation3.runtime.NavKey>
     ) {
         // Check if this is an email link sign-in flow
         val emailLink = intent.getStringExtra(
@@ -195,6 +205,9 @@ class MainActivity : ComponentActivity() {
             context = applicationContext,
             configuration = configuration,
             authUI = authUI,
+            onSetupMfa = {
+                backStack.add(Route.MfaEnrollment)
+            }
         )
     }
 
@@ -209,5 +222,58 @@ class MainActivity : ComponentActivity() {
             configuration = configuration,
             authUI = authUI,
         )
+    }
+
+    @Composable
+    private fun LaunchMfaEnrollment(
+        authUI: FirebaseAuthUI,
+        backStack: NavBackStack
+    ) {
+        val user = authUI.getCurrentUser()
+        if (user != null) {
+            val authConfiguration = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(
+                        com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Phone(
+                            defaultNumber = null,
+                            defaultCountryCode = null,
+                            allowedCountries = emptyList(),
+                            smsCodeLength = 6,
+                            timeout = 120L,
+                            isInstantVerificationEnabled = true
+                        )
+                    )
+                }
+            }
+
+            val mfaConfiguration = com.firebase.ui.auth.compose.configuration.MfaConfiguration(
+                allowedFactors = listOf(
+                    com.firebase.ui.auth.compose.configuration.MfaFactor.Sms,
+                    com.firebase.ui.auth.compose.configuration.MfaFactor.Totp
+                ),
+                requireEnrollment = false,
+                enableRecoveryCodes = true
+            )
+
+            MfaEnrollmentMain(
+                context = applicationContext,
+                authUI = authUI,
+                user = user,
+                authConfiguration = authConfiguration,
+                mfaConfiguration = mfaConfiguration,
+                onComplete = {
+                    // Navigate back to the previous screen after successful enrollment
+                    backStack.removeLastOrNull()
+                },
+                onSkip = {
+                    // Navigate back if user skips enrollment
+                    backStack.removeLastOrNull()
+                }
+            )
+        } else {
+            // No user signed in, navigate back
+            backStack.removeLastOrNull()
+        }
     }
 }

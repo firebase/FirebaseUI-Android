@@ -69,6 +69,7 @@ fun EnterPhoneNumberUI(
     onPhoneNumberChange: (String) -> Unit,
     onCountrySelected: (CountryData) -> Unit,
     onSendCodeClick: () -> Unit,
+    title: String? = null,
 ) {
     val context = LocalContext.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
@@ -88,7 +89,7 @@ fun EnterPhoneNumberUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringProvider.signInWithPhone)
+                    Text(title ?: stringProvider.signInWithPhone)
                 },
                 colors = AuthUITheme.topAppBarColors
             )

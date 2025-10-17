@@ -121,4 +121,13 @@
     <string name="fui_error_password_missing_lowercase">पासवर्ड में कम से कम एक छोटा अक्षर होना चाहिए</string>
     <string name="fui_error_password_missing_digit">પાસવર્ડમાં ઓછામાં ઓછો એક નંબર હોવો આવશ્યક છે</string>
     <string name="fui_error_password_missing_special_character">પાસવર્ડમાં ઓછામાં ઓછો એક વિશેષ અક્ષર હોવો આવશ્યક છે</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">एसएमएस प्रमाणीकरण सेट करें</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">एसएमएस कोड सत्यापित करें</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">इस ऑपरेशन के लिए हाल ही की पुष्टि की ज़रूरत है. कृपया फिर से साइन इन करें और फिर से कोशिश करें.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">पुष्टि करने वाला कोड गलत है. कृपया फिर से कोशिश करें.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">नेटवर्क में कोई गड़बड़ी हुई. कृपया अपने कनेक्शन की जांच करें और फिर से कोशिश करें.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">नामांकन के दौरान एक गड़बड़ी हुई. कृपया फिर से कोशिश करें.</string>
 </resources>

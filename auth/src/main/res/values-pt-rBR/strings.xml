@@ -121,4 +121,13 @@
     <string name="fui_error_password_missing_lowercase">A senha precisa conter pelo menos uma letra minúscula</string>
     <string name="fui_error_password_missing_digit">A senha precisa conter pelo menos um número</string>
     <string name="fui_error_password_missing_special_character">A senha precisa conter pelo menos um caractere especial</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Configurar autenticação por SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Verificar código SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Esta operação requer autenticação recente. Faça login novamente e tente novamente.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">O código de verificação está incorreto. Tente novamente.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Ocorreu um erro de rede. Verifique sua conexão e tente novamente.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Ocorreu um erro durante a inscrição. Tente novamente.</string>
 </resources>
