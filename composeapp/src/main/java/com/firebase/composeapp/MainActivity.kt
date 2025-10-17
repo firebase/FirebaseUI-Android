@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -226,7 +227,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun LaunchMfaEnrollment(
         authUI: FirebaseAuthUI,
-        backStack: androidx.compose.runtime.snapshots.SnapshotStateList<androidx.navigation3.runtime.NavKey>
+        backStack: NavBackStack
     ) {
         val user = authUI.getCurrentUser()
         if (user != null) {
