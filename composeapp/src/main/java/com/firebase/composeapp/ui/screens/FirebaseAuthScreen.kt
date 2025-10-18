@@ -108,6 +108,7 @@ fun FirebaseAuthScreen(
 
                 else -> {
                     val onSignInWithFacebook = authUI.rememberSignInWithFacebookLauncher(
+                        context = context,
                         config = configuration,
                         provider = configuration.providers.filterIsInstance<AuthProvider.Facebook>()
                             .first()
