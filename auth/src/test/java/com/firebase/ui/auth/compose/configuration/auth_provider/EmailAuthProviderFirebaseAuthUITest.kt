@@ -292,6 +292,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val collisionException = mock(FirebaseAuthUserCollisionException::class.java)
         `when`(collisionException.errorCode).thenReturn("ERROR_EMAIL_ALREADY_IN_USE")
+        `when`(collisionException.email).thenReturn("test@example.com")
 
         val taskCompletionSource = TaskCompletionSource<AuthResult>()
         taskCompletionSource.setException(collisionException)
@@ -320,12 +321,16 @@ class EmailAuthProviderFirebaseAuthUITest {
                 email = "test@example.com",
                 password = "Pass@123"
             )
-        } catch (e: AuthException) {
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.AccountLinkingRequiredException) {
             assertThat(e.cause).isEqualTo(collisionException)
-            val currentState = instance.authStateFlow().first { it is AuthState.MergeConflict }
-            assertThat(currentState).isInstanceOf(AuthState.MergeConflict::class.java)
-            val mergeConflict = currentState as AuthState.MergeConflict
-            assertThat(mergeConflict.pendingCredential).isNotNull()
+            assertThat(e.email).isNotNull()
+            assertThat(e.credential).isNotNull()
+
+            val currentState = instance.authStateFlow().first { it is AuthState.Error }
+            assertThat(currentState).isInstanceOf(AuthState.Error::class.java)
+            val errorState = currentState as AuthState.Error
+            assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
         }
     }
 
@@ -556,7 +561,7 @@ class EmailAuthProviderFirebaseAuthUITest {
     }
 
     @Test
-    fun `signInAndLinkWithCredential - handles collision and emits MergeConflict`() = runTest {
+    fun `signInAndLinkWithCredential - handles collision and throws AccountLinkingRequiredException`() = runTest {
         val anonymousUser = mock(FirebaseUser::class.java)
         `when`(anonymousUser.isAnonymous).thenReturn(true)
         `when`(mockFirebaseAuth.currentUser).thenReturn(anonymousUser)
@@ -567,6 +572,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val collisionException = mock(FirebaseAuthUserCollisionException::class.java)
         `when`(collisionException.errorCode).thenReturn("ERROR_CREDENTIAL_ALREADY_IN_USE")
         `when`(collisionException.updatedCredential).thenReturn(updatedCredential)
+        `when`(collisionException.email).thenReturn("test@example.com")
 
         val taskCompletionSource = TaskCompletionSource<AuthResult>()
         taskCompletionSource.setException(collisionException)
@@ -592,14 +598,16 @@ class EmailAuthProviderFirebaseAuthUITest {
                 credential = credential
             )
             assertThat(false).isTrue() // Should not reach here
-        } catch (e: AuthException) {
-            // Expected
+        } catch (e: AuthException.AccountLinkingRequiredException) {
+            assertThat(e.email).isEqualTo("test@example.com")
+            assertThat(e.credential).isEqualTo(updatedCredential)
+            assertThat(e.cause).isEqualTo(collisionException)
         }
 
-        val currentState = instance.authStateFlow().first { it is AuthState.MergeConflict }
-        assertThat(currentState).isInstanceOf(AuthState.MergeConflict::class.java)
-        val mergeConflict = currentState as AuthState.MergeConflict
-        assertThat(mergeConflict.pendingCredential).isEqualTo(updatedCredential)
+        val currentState = instance.authStateFlow().first { it is AuthState.Error }
+        assertThat(currentState).isInstanceOf(AuthState.Error::class.java)
+        val errorState = currentState as AuthState.Error
+        assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
     }
 
     // =============================================================================================

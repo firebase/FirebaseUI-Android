@@ -145,7 +145,7 @@ fun EmailAuthScreen(
 
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
-    val oAuthCredentialForLinking = remember { credentialForLinking }
+    val authCredentialForLinking = remember { credentialForLinking }
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
     val resetLinkSent = authState is AuthState.PasswordResetLinkSent
@@ -206,7 +206,6 @@ fun EmailAuthScreen(
                             config = configuration,
                             provider = provider,
                             email = emailTextValue.value,
-                            credentialForLinking = null,
                         )
                     } else {
                         authUI.signInWithEmailAndPassword(
@@ -214,7 +213,7 @@ fun EmailAuthScreen(
                             config = configuration,
                             email = emailTextValue.value,
                             password = passwordTextValue.value,
-                            credentialForLinking = oAuthCredentialForLinking,
+                            credentialForLinking = authCredentialForLinking,
                         )
                     }
                 } catch (e: Exception) {

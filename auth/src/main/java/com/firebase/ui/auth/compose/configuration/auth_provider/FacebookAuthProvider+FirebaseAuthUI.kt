@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
+import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -40,6 +42,7 @@ import kotlinx.coroutines.launch
  * profile data fetching, Firebase credential creation, anonymous account upgrades, and account
  * linking when an email collision occurs.
  *
+ * @param context Android context for DataStore access when saving credentials for linking
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Facebook] configuration with scopes and credential provider
  *
@@ -49,6 +52,7 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
+    context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
 ): () -> Unit {
@@ -72,6 +76,7 @@ fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                     coroutineScope.launch {
                         try {
                             signInWithFacebook(
+                                context = context,
                                 config = config,
                                 provider = provider,
                                 accessToken = result.accessToken,
@@ -120,9 +125,10 @@ fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
  * Signs in a user with Facebook by converting a Facebook access token to a Firebase credential.
  *
  * Fetches user profile data from Facebook Graph API, creates a Firebase credential, and signs in
- * or upgrades an anonymous account. Handles account collisions by throwing
- * [AuthException.AccountLinkingRequiredException] with the credential for later linking.
+ * or upgrades an anonymous account. Handles account collisions by saving the Facebook credential
+ * for linking and throwing [AuthException.AccountLinkingRequiredException].
  *
+ * @param context Android context for DataStore access when saving credentials for linking
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Facebook] configuration
  * @param accessToken The Facebook [AccessToken] from successful login
@@ -137,6 +143,7 @@ fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
  * @see signInAndLinkWithCredential
  */
 internal suspend fun FirebaseAuthUI.signInWithFacebook(
+    context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     accessToken: AccessToken,
@@ -155,6 +162,19 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
             displayName = profileData?.displayName,
             photoUrl = profileData?.photoUrl,
         )
+    } catch (e: AuthException.AccountLinkingRequiredException) {
+        // Account collision occurred - save Facebook credential for linking after email link sign-in
+        // This happens when a user tries to sign in with Facebook but an email link account exists
+        EmailLinkPersistenceManager.saveCredentialForLinking(
+            context = context,
+            providerType = provider.providerId,
+            idToken = null,
+            accessToken = accessToken.token
+        )
+
+        // Re-throw to let UI handle the account linking flow
+        updateAuthState(AuthState.Error(e))
+        throw e
     } catch (e: FacebookException) {
         val authException = AuthException.from(e)
         updateAuthState(AuthState.Error(authException))
