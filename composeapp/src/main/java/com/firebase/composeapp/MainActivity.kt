@@ -159,6 +159,10 @@ class MainActivity : ComponentActivity() {
                                 is Route.MfaEnrollment -> NavEntry(entry) {
                                     LaunchMfaEnrollment(authUI, backStack)
                                 }
+
+                                is Route.MfaEnrollment -> NavEntry(entry) {
+                                    LaunchMfaEnrollment(authUI, backStack)
+                                }
                             }
                         }
                     )
@@ -235,7 +239,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun LaunchMfaEnrollment(
         authUI: FirebaseAuthUI,
-        backStack: androidx.compose.runtime.snapshots.SnapshotStateList<androidx.navigation3.runtime.NavKey>
+        backStack: NavBackStack
     ) {
         val user = authUI.getCurrentUser()
         if (user != null) {

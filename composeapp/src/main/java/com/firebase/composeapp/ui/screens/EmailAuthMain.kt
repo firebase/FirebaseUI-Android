@@ -32,8 +32,8 @@ fun EmailAuthMain(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    onSetupMfa: () -> Unit = {},
     credentialForLinking: AuthCredential? = null,
+    onSetupMfa: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
