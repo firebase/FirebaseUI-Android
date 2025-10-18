@@ -30,6 +30,7 @@ import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.actionCodeSettings
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,8 +38,10 @@ sealed class Route : NavKey {
     @Serializable
     object MethodPicker : Route()
 
-    class EmailAuth(val credentialForLinking: AuthCredential? = null) : Route()
+    @Serializable
+    class EmailAuth(@Contextual val credentialForLinking: AuthCredential? = null) : Route()
 
+    @Serializable
     object PhoneAuth : Route()
 
     @Serializable
@@ -53,6 +56,9 @@ class MainActivity : ComponentActivity() {
         val authUI = FirebaseAuthUI.getInstance()
         // authUI.auth.useEmulator("10.0.2.2", 9099)
 
+        // Check if this activity was launched from an email link deep link
+        val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
+
         val configuration = authUIConfiguration {
             context = applicationContext
             providers {
@@ -60,6 +66,7 @@ class MainActivity : ComponentActivity() {
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
                         isEmailLinkForceSameDeviceEnabled = true,
+                        isEmailLinkSignInEnabled = true,
                         emailLinkActionCodeSettings = actionCodeSettings {
                             // The continue URL - where to redirect after email link is clicked
                             url = "https://temp-test-aa342.firebaseapp.com"
@@ -100,7 +107,14 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val backStack = rememberNavBackStack(Route.MethodPicker)
+            // If there's an email link, navigate to EmailAuth screen
+            val initialRoute = if (emailLink != null) {
+                Route.EmailAuth(credentialForLinking = null)
+            } else {
+                Route.MethodPicker
+            }
+
+            val backStack = rememberNavBackStack(initialRoute)
 
             AuthUITheme {
                 Surface(
@@ -126,23 +140,20 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 is Route.EmailAuth -> NavEntry(entry) {
-                                    val emailProvider = configuration.providers
-                                        .filterIsInstance<AuthProvider.Email>()
-                                        .first()
                                     LaunchEmailAuth(
                                         authUI = authUI,
                                         configuration = configuration,
-                                        selectedProvider = emailProvider,
                                         backStack = backStack,
-                                        credentialForLinking = route.credentialForLinking
+                                        credentialForLinking = route.credentialForLinking,
+                                        emailLink = emailLink
                                     )
                                 }
 
                                 is Route.PhoneAuth -> NavEntry(entry) {
-                                    val phoneProvider = configuration.providers
-                                        .filterIsInstance<AuthProvider.Phone>()
-                                        .first()
-                                    LaunchPhoneAuth(authUI, configuration, phoneProvider)
+                                    LaunchPhoneAuth(
+                                        authUI = authUI,
+                                        configuration = configuration,
+                                    )
                                 }
 
                                 is Route.MfaEnrollment -> NavEntry(entry) {
@@ -160,15 +171,15 @@ class MainActivity : ComponentActivity() {
     private fun LaunchEmailAuth(
         authUI: FirebaseAuthUI,
         configuration: AuthUIConfiguration,
-        selectedProvider: AuthProvider.Email,
         credentialForLinking: AuthCredential? = null,
-        backStack: NavBackStack
+        backStack: NavBackStack,
+        emailLink: String? = null
     ) {
-        // Check if this is an email link sign-in flow
-        val emailLink = intent.getStringExtra(
-            EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK
-        )
+        val provider = configuration.providers
+            .filterIsInstance<AuthProvider.Email>()
+            .first()
 
+        // Handle email link sign-in if present
         if (emailLink != null) {
             LaunchedEffect(emailLink) {
 
@@ -183,7 +194,7 @@ class MainActivity : ComponentActivity() {
                         authUI.signInWithEmailLink(
                             context = applicationContext,
                             config = configuration,
-                            provider = selectedProvider,
+                            provider = provider,
                             email = emailFromSession,
                             emailLink = emailLink,
                         )
@@ -209,8 +220,11 @@ class MainActivity : ComponentActivity() {
     private fun LaunchPhoneAuth(
         authUI: FirebaseAuthUI,
         configuration: AuthUIConfiguration,
-        selectedProvider: AuthProvider.Phone,
     ) {
+        val provider = configuration.providers
+            .filterIsInstance<AuthProvider.Phone>()
+            .first()
+
         PhoneAuthMain(
             context = applicationContext,
             configuration = configuration,

@@ -250,6 +250,7 @@ private fun PreviewAuthProviderButton() {
         )
         AuthProviderButton(
             provider = AuthProvider.GenericOAuth(
+                name = "Generic Provider",
                 providerId = "google.com",
                 scopes = emptyList(),
                 customParameters = emptyMap(),
@@ -263,6 +264,7 @@ private fun PreviewAuthProviderButton() {
         )
         AuthProviderButton(
             provider = AuthProvider.GenericOAuth(
+                name = "Generic Provider",
                 providerId = "google.com",
                 scopes = emptyList(),
                 customParameters = emptyMap(),
@@ -284,6 +286,7 @@ private fun PreviewAuthProviderButton() {
         )
         AuthProviderButton(
             provider = AuthProvider.GenericOAuth(
+                name = "Generic Provider",
                 providerId = "unknown_provider",
                 scopes = emptyList(),
                 customParameters = emptyMap(),

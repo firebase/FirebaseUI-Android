@@ -18,6 +18,8 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.RestrictTo
+import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.graphics.Color
 import androidx.core.net.toUri
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -91,14 +93,16 @@ internal enum class Provider(val id: String, val isSocialProvider: Boolean = fal
  */
 abstract class OAuthProvider(
     override val providerId: String,
+
+    override val name: String,
     open val scopes: List<String> = emptyList(),
     open val customParameters: Map<String, String> = emptyMap(),
-) : AuthProvider(providerId)
+) : AuthProvider(providerId = providerId, name = name)
 
 /**
  * Base abstract class for authentication providers.
  */
-abstract class AuthProvider(open val providerId: String) {
+abstract class AuthProvider(open val providerId: String, open val name: String) {
 
     companion object {
         internal fun canUpgradeAnonymous(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
@@ -203,7 +207,7 @@ abstract class AuthProvider(open val providerId: String) {
          * A list of custom password validation rules.
          */
         val passwordValidationRules: List<PasswordRule>,
-    ) : AuthProvider(providerId = Provider.EMAIL.id) {
+    ) : AuthProvider(providerId = Provider.EMAIL.id, name = "Email") {
         companion object {
             const val SESSION_ID_LENGTH = 10
             val KEY_EMAIL = stringPreferencesKey("com.firebase.ui.auth.data.client.email")
@@ -329,7 +333,7 @@ abstract class AuthProvider(open val providerId: String) {
          * Enables instant verification of the phone number. Defaults to true.
          */
         val isInstantVerificationEnabled: Boolean = true,
-    ) : AuthProvider(providerId = Provider.PHONE.id) {
+    ) : AuthProvider(providerId = Provider.PHONE.id, name = "Phone") {
         /**
          * Sealed class representing the result of phone number verification.
          *
@@ -552,6 +556,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String> = emptyMap(),
     ) : OAuthProvider(
         providerId = Provider.GOOGLE.id,
+        name = "Google",
         scopes = scopes,
         customParameters = customParameters
     ) {
@@ -599,6 +604,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String> = emptyMap(),
     ) : OAuthProvider(
         providerId = Provider.FACEBOOK.id,
+        name = "Facebook",
         scopes = scopes,
         customParameters = customParameters
     ) {
@@ -629,7 +635,7 @@ abstract class AuthProvider(open val providerId: String) {
          * An interface to wrap the static `FacebookAuthProvider.getCredential` method to make it testable.
          * @suppress
          */
-        // TODO(demolaf): make this internal after testing
+        @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
         interface CredentialProvider {
             fun getCredential(token: String): AuthCredential
         }
@@ -743,6 +749,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.TWITTER.id,
+        name = "Twitter",
         customParameters = customParameters
     )
 
@@ -761,6 +768,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.GITHUB.id,
+        name = "Github",
         scopes = scopes,
         customParameters = customParameters
     )
@@ -785,6 +793,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.MICROSOFT.id,
+        name = "Microsoft",
         scopes = scopes,
         customParameters = customParameters
     )
@@ -804,6 +813,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.YAHOO.id,
+        name = "Yahoo",
         scopes = scopes,
         customParameters = customParameters
     )
@@ -828,6 +838,7 @@ abstract class AuthProvider(open val providerId: String) {
         override val customParameters: Map<String, String>,
     ) : OAuthProvider(
         providerId = Provider.APPLE.id,
+        name = "Apple",
         scopes = scopes,
         customParameters = customParameters
     )
@@ -835,7 +846,10 @@ abstract class AuthProvider(open val providerId: String) {
     /**
      * Anonymous authentication provider. It has no configurable properties.
      */
-    object Anonymous : AuthProvider(providerId = Provider.ANONYMOUS.id) {
+    object Anonymous : AuthProvider(
+        providerId = Provider.ANONYMOUS.id,
+        name = "Anonymous"
+    ) {
         internal fun validate(providers: List<AuthProvider>) {
             if (providers.size == 1 && providers.first() is Anonymous) {
                 throw IllegalStateException(
@@ -850,6 +864,11 @@ abstract class AuthProvider(open val providerId: String) {
      * A generic OAuth provider for any unsupported provider.
      */
     class GenericOAuth(
+        /**
+         * The provider name.
+         */
+        override val name: String,
+
         /**
          * The provider ID as configured in the Firebase console.
          */
@@ -886,6 +905,7 @@ abstract class AuthProvider(open val providerId: String) {
         val contentColor: Color?,
     ) : OAuthProvider(
         providerId = providerId,
+        name = name,
         scopes = scopes,
         customParameters = customParameters
     ) {

@@ -23,24 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Email Link Sign-In Handler -->
-        <!-- This activity handles deep links for passwordless email authentication -->
-        <activity
-            android:name="com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity"
-            android:exported="true"
-            tools:replace="android:exported">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Match all Firebase auth paths (/__/auth/links, /__/auth/action, etc.) -->
-                <data
-                    android:scheme="https"
-                    android:host="temp-test-aa342.firebaseapp.com"
-                    android:pathPattern="/__/auth/.*" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

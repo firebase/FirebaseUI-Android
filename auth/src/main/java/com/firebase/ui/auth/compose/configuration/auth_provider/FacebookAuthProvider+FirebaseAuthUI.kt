@@ -1,3 +1,17 @@
+/*
+ * Copyright 2025 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
 import android.util.Log
@@ -16,10 +30,23 @@ import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Creates a remembered launcher function for Facebook sign-in.
+ *
+ * Returns a launcher function that initiates the Facebook sign-in flow. Automatically handles
+ * profile data fetching, Firebase credential creation, anonymous account upgrades, and account
+ * linking when an email collision occurs.
+ *
+ * @param config The [AuthUIConfiguration] containing authentication settings
+ * @param provider The [AuthProvider.Facebook] configuration with scopes and credential provider
+ *
+ * @return A launcher function that starts the Facebook sign-in flow when invoked
+ *
+ * @see signInWithFacebook
+ */
 @Composable
 fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     config: AuthUIConfiguration,
@@ -89,18 +116,26 @@ fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     }
 }
 
-// Your app can only have one person at a time logged in, and LoginManager sets the current
-// AccessToken and Profile for that person. The FacebookSDK saves this data in shared preferences
-// and sets at the beginning of the session. You can see if a person is already logged in by
-// checking AccessToken.getCurrentAccessToken() and Profile.getCurrentProfile().
-//
-// You can load AccessToken.getCurrentAccessToken with the SDK from cache or from an app book
-// mark when your app launches from a cold start. You should check its validity in your Activity's
-// onCreate method:
-//
-// AccessToken accessToken = AccessToken.getCurrentAccessToken();
-// boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-
+/**
+ * Signs in a user with Facebook by converting a Facebook access token to a Firebase credential.
+ *
+ * Fetches user profile data from Facebook Graph API, creates a Firebase credential, and signs in
+ * or upgrades an anonymous account. Handles account collisions by throwing
+ * [AuthException.AccountLinkingRequiredException] with the credential for later linking.
+ *
+ * @param config The [AuthUIConfiguration] containing authentication settings
+ * @param provider The [AuthProvider.Facebook] configuration
+ * @param accessToken The Facebook [AccessToken] from successful login
+ * @param credentialProvider Creates Firebase credentials from Facebook tokens
+ *
+ * @throws AuthException.AccountLinkingRequiredException if an account exists with the same email
+ * @throws AuthException.AuthCancelledException if the coroutine is cancelled
+ * @throws AuthException.NetworkException if a network error occurs
+ * @throws AuthException.InvalidCredentialsException if the Facebook token is invalid
+ *
+ * @see rememberSignInWithFacebookLauncher
+ * @see signInAndLinkWithCredential
+ */
 internal suspend fun FirebaseAuthUI.signInWithFacebook(
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,

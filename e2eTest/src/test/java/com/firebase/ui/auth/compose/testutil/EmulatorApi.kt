@@ -4,7 +4,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 
-internal class EmulatorAuthApi(
+class EmulatorAuthApi(
     private val projectId: String,
     emulatorHost: String,
     emulatorPort: Int,

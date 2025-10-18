@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ComposeApp</string>
 
+    <string name="firebase_web_host" translatable="false">temp-test-aa342.firebaseapp.com</string>
+
     <!-- Facebook SDK Configuration -->
     <string name="facebook_application_id" translatable="false">1131506989188007</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1131506989188007</string>

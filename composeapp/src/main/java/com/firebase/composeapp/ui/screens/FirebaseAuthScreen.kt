@@ -81,6 +81,31 @@ fun FirebaseAuthScreen(
                     }
                 }
 
+                is AuthState.RequiresEmailVerification -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            "Authenticated User - " +
+                                    "(RequiresEmailVerification): ${authUI.getCurrentUser()?.email}",
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = {
+                                coroutineScope.launch {
+                                    authUI.signOut(context)
+                                }
+                            }
+                        ) {
+                            Text("Sign Out")
+                        }
+                    }
+                }
+
                 else -> {
                     val onSignInWithFacebook = authUI.rememberSignInWithFacebookLauncher(
                         config = configuration,
@@ -146,18 +171,18 @@ fun FirebaseAuthScreen(
             // Loading modal
             if (authState is AuthState.Loading) {
                 AlertDialog(
-                    onDismissRequest = {
-                        // Dismiss by resetting auth state or going back
-                    },
+                    onDismissRequest = {},
                     confirmButton = {},
                     containerColor = Color.Transparent,
                     text = {
                         Column(
-                            modifier = Modifier.padding(24.dp),
+                            modifier = Modifier.padding(24.dp)
+                                .fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                            verticalArrangement = Arrangement.Center,
                         ) {
                             CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 text = (authState as? AuthState.Loading)?.message
                                     ?: "Loading...",
