@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="fui_phone_hint">Αριθμός τηλεφώνου</string>
     <string name="fui_country_hint">Χώρα</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Επιλογή χώρας</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Αναζήτηση χώρας π.χ. +1, "US"</string>
     <string name="fui_password_hint">Κωδικός πρόσβασης</string>
     <string name="fui_new_password_hint">Νέος κωδικός πρόσβασης</string>
     <string name="fui_required_field">Αυτό το πεδίο είναι υποχρεωτικό.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Εισαγάγετε τον αριθμό τηλεφώνου σας</string>
     <string name="fui_invalid_phone_number">Καταχωρίστε έναν έγκυρο αριθμό τηλεφώνου</string>
     <string name="fui_enter_confirmation_code">Εισαγάγετε τον 6ψήφιο κωδικό που σας στείλαμε στο</string>
-    <string name="fui_resend_code_in">Επανάληψη αποστολής κωδικού σε 0:%02d</string>
+    <string name="fui_resend_code_in">Επανάληψη αποστολής κωδικού σε %1$s</string>
     <string name="fui_verify_your_phone_title">Επαλήθευση του τηλεφώνου σας</string>
     <string name="fui_verifying">Επαλήθευση…</string>
     <string name="fui_incorrect_code_dialog_body">Εσφαλμένος κωδικός. Δοκιμάστε ξανά.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">Ο αριθμός τηλεφώνου επαληθεύτηκε αυτόματα</string>
     <string name="fui_resend_code">Επανάληψη αποστολής κωδικού</string>
     <string name="fui_verify_phone_number">Επαλήθευση αριθμού τηλεφώνου</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Αν πατήσετε “%1$s”, δηλώνετε ότι αποδέχεστε τους %2$s και την %3$s. Μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Επιλέξτε μέθοδο ελέγχου ταυτότητας</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Ρύθμιση επαλήθευσης SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Ρύθμιση εφαρμογής ελέγχου ταυτότητας</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Επαληθεύστε τον κωδικό σας</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Αποθηκεύστε τους κωδικούς ανάκτησης</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Επιλέξτε μια δεύτερη μέθοδο ελέγχου ταυτότητας για να προστατεύσετε τον λογαριασμό σας</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Εισαγάγετε τον αριθμό τηλεφώνου σας για να λαμβάνετε κωδικούς επαλήθευσης</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Σαρώστε τον κωδικό QR με την εφαρμογή ελέγχου ταυτότητας</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Εισαγάγετε τον κωδικό που στάλθηκε στο τηλέφωνό σας</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Εισαγάγετε τον κωδικό από την εφαρμογή ελέγχου ταυτότητας</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Εισαγάγετε τον κωδικό επαλήθευσης</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Αποθηκεύστε αυτούς τους κωδικούς σε ασφαλές μέρος. Μπορείτε να τους χρησιμοποιήσετε για σύνδεση εάν χάσετε την πρόσβαση στη μέθοδο ελέγχου ταυτότητας.</string>
+
+    <string name="fui_confirm_password_hint">Επιβεβαίωση κωδικού πρόσβασης</string>
+    <string name="fui_passwords_do_not_match">Οι κωδικοί πρόσβασης δεν ταιριάζουν</string>
+    <string name="fui_error_password_too_short">Ο κωδικός πρόσβασης πρέπει να αποτελείται από τουλάχιστον %1$d χαρακτήρες</string>
+    <string name="fui_error_password_missing_uppercase">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον ένα κεφαλαίο γράμμα</string>
+    <string name="fui_error_password_missing_lowercase">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον ένα μικρό γράμμα</string>
+    <string name="fui_error_password_missing_digit">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν αριθμό</string>
+    <string name="fui_error_password_missing_special_character">Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Ρύθμιση ελέγχου ταυτότητας SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Επαλήθευση κωδικού SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Αυτή η λειτουργία απαιτεί πρόσφατο έλεγχο ταυτότητας. Συνδεθείτε ξανά και δοκιμάστε ξανά.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Ο κωδικός επαλήθευσης είναι εσφαλμένος. Δοκιμάστε ξανά.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Παρουσιάστηκε σφάλμα δικτύου. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Παρουσιάστηκε σφάλμα κατά την εγγραφή. Δοκιμάστε ξανά.</string>
 </resources>

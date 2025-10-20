@@ -25,6 +25,8 @@
     <string name="fui_email_hint">El. pašto adresas</string>
     <string name="fui_phone_hint">Telefono numeris</string>
     <string name="fui_country_hint">Šalis</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pasirinkite šalį</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Ieškoti šalies, pvz., +1, "US"</string>
     <string name="fui_password_hint">Slaptažodis</string>
     <string name="fui_new_password_hint">Naujas slaptažodis</string>
     <string name="fui_required_field">Šį lauką būtina užpildyti.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Įveskite telefono numerį</string>
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>
-    <string name="fui_resend_code_in">Siųsti kodą iš naujo po 0:%02d</string>
+    <string name="fui_resend_code_in">Siųsti kodą iš naujo po %1$s</string>
     <string name="fui_verify_your_phone_title">Patvirtinti telefono numerį</string>
     <string name="fui_verifying">Patvirtinama…</string>
     <string name="fui_incorrect_code_dialog_body">Klaidingas kodas. Bandykite dar kartą.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">Telefono numeris patvirtintas automatiškai</string>
     <string name="fui_resend_code">Siųsti kodą iš naujo</string>
     <string name="fui_verify_phone_number">Patvirtinti telefono numerį</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s. Gali būti išsiųstas SMS pranešimas, taip pat – taikomi pranešimų ir duomenų įkainiai.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Pasirinkite autentifikavimo metodą</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nustatyti SMS patvirtinimą</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nustatyti autentifikatoriaus programą</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Patvirtinkite kodą</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Išsaugokite atkūrimo kodus</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pasirinkite antrą autentifikavimo metodą, kad apsaugotumėte paskyrą</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Įveskite telefono numerį, kad gautumėte patvirtinimo kodus</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Nuskaitykite QR kodą naudodami autentifikatoriaus programą</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Įveskite kodą, išsiųstą į telefoną</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Įveskite kodą iš autentifikatoriaus programos</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Įveskite patvirtinimo kodą</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Išsaugokite šiuos kodus saugioje vietoje. Galite juos naudoti prisijungti, jei prarasite prieigą prie autentifikavimo metodo.</string>
+
+    <string name="fui_confirm_password_hint">Patvirtinti slaptažodį</string>
+    <string name="fui_passwords_do_not_match">Slaptažodžiai nesutampa</string>
+    <string name="fui_error_password_too_short">Slaptažodis turi būti ne trumpesnis kaip %1$d simbolių</string>
+    <string name="fui_error_password_missing_uppercase">Slaptažodyje turi būti bent viena didžioji raidė</string>
+    <string name="fui_error_password_missing_lowercase">Slaptažodyje turi būti bent viena mažoji raidė</string>
+    <string name="fui_error_password_missing_digit">Slaptažodyje turi būti bent vienas skaičius</string>
+    <string name="fui_error_password_missing_special_character">Slaptažodyje turi būti bent vienas specialusis simbolis</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Nustatyti SMS autentifikavimą</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Patvirtinti SMS kodą</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Šiai operacijai reikalingas naujas autentifikavimas. Prisijunkite dar kartą ir bandykite dar kartą.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Patvirtinimo kodas neteisingas. Bandykite dar kartą.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Įvyko tinklo klaida. Patikrinkite ryšį ir bandykite dar kartą.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Registracijos metu įvyko klaida. Bandykite dar kartą.</string>
 </resources>

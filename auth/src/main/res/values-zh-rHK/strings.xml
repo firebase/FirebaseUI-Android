@@ -25,6 +25,8 @@
     <string name="fui_email_hint">電子郵件</string>
     <string name="fui_phone_hint">電話號碼</string>
     <string name="fui_country_hint">國家/地區</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">選取國家/地區</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">搜尋國家/地區，例如 +1、"US"</string>
     <string name="fui_password_hint">密碼</string>
     <string name="fui_new_password_hint">新密碼</string>
     <string name="fui_required_field">此欄位不可留空。</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">請輸入您的電話號碼</string>
     <string name="fui_invalid_phone_number">請輸入有效的電話號碼</string>
     <string name="fui_enter_confirmation_code">請輸入傳送至以下電話號碼的 6 位數驗證碼</string>
-    <string name="fui_resend_code_in">0:%02d 秒後將重新發送驗證碼</string>
+    <string name="fui_resend_code_in">%1$s 秒後將重新發送驗證碼</string>
     <string name="fui_verify_your_phone_title">驗證您的電話號碼</string>
     <string name="fui_verifying">驗證中…</string>
     <string name="fui_incorrect_code_dialog_body">驗證碼錯誤，請再試一次。</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">已自動驗證電話號碼</string>
     <string name="fui_resend_code">重新傳送驗證碼</string>
     <string name="fui_verify_phone_number">驗證電話號碼</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">輕觸 [%1$s] 後，系統將會傳送一封簡訊。您可能需支付簡訊和數據傳輸費用。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">輕觸 [%1$s] 即表示您同意接受我們的《%2$s》和《%3$s》。系統將會傳送簡訊給您，不過您可能需要支付簡訊和數據傳輸費用。</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">選擇驗證方法</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">設定短訊驗證</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">設定驗證器應用程式</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">驗證代碼</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">儲存復原代碼</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">選擇第二種驗證方法以保護您的帳戶</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">輸入您的電話號碼以接收驗證碼</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">使用驗證器應用程式掃描 QR 碼</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">輸入傳送至您手機的驗證碼</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">輸入驗證器應用程式中的驗證碼</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">輸入您的驗證碼</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">將這些代碼儲存在安全的地方。如果您無法存取驗證方法，可以使用這些代碼登入。</string>
+
+    <string name="fui_confirm_password_hint">確認密碼</string>
+    <string name="fui_passwords_do_not_match">密碼不符</string>
+    <string name="fui_error_password_too_short">密碼長度必須至少為 %1$d 個字元</string>
+    <string name="fui_error_password_missing_uppercase">密碼必須包含至少一個大寫字母</string>
+    <string name="fui_error_password_missing_lowercase">密碼必須包含至少一個小寫字母</string>
+    <string name="fui_error_password_missing_digit">密碼必須包含至少一個數字</string>
+    <string name="fui_error_password_missing_special_character">密碼必須包含至少一個特殊字元</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">設定短訊驗證</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">驗證短訊驗證碼</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">此操作需要最近的身份驗證。請重新登入並重試。</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">驗證碼不正確。請重試。</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">發生網絡錯誤。請檢查您的連接並重試。</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">註冊期間發生錯誤。請重試。</string>
 </resources>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-Mail-Adresse</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Land auswählen</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Land suchen z. B. +1, "US"</string>
     <string name="fui_password_hint">Passwort</string>
     <string name="fui_new_password_hint">Neues Passwort</string>
     <string name="fui_required_field">Pflichtfeld.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Telefonnummer eingeben</string>
     <string name="fui_invalid_phone_number">Geben Sie eine gültige Telefonnummer ein</string>
     <string name="fui_enter_confirmation_code">Geben Sie den 6-stelligen Code ein, der gesendet wurde an</string>
-    <string name="fui_resend_code_in">Code in 0:%02d erneut senden</string>
+    <string name="fui_resend_code_in">Code in %1$s erneut senden</string>
     <string name="fui_verify_your_phone_title">Telefonnummer bestätigen</string>
     <string name="fui_verifying">Wird verifiziert…</string>
     <string name="fui_incorrect_code_dialog_body">Falscher Code. Versuchen Sie es noch einmal.</string>
@@ -87,6 +89,44 @@
     <string name="fui_auto_verified">Telefonnummer wurde automatisch bestätigt</string>
     <string name="fui_resend_code">Code erneut senden</string>
     <string name="fui_verify_phone_number">Telefonnummer bestätigen</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Wenn Sie auf “%1$s” tippen, erhalten Sie möglicherweise eine SMS. Es können Gebühren für SMS und Datenübertragung anfallen.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Indem Sie auf “%1$s” tippen, stimmen Sie unseren %2$s und unserer %3$s zu. Sie erhalten möglicherweise eine SMS und es können Gebühren für die Nachricht und die Datenübertragung anfallen.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Authentifizierungsmethode auswählen</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-Bestätigung einrichten</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-App einrichten</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code bestätigen</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Wiederherstellungscodes speichern</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wählen Sie eine zweite Authentifizierungsmethode aus, um Ihr Konto zu schützen</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Geben Sie Ihre Telefonnummer ein, um Bestätigungscodes zu erhalten</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Scannen Sie den QR-Code mit Ihrer Authenticator-App</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Geben Sie den an Ihr Telefon gesendeten Code ein</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Geben Sie den Code aus Ihrer Authenticator-App ein</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Geben Sie Ihren Bestätigungscode ein</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewahren Sie diese Codes an einem sicheren Ort auf. Sie können sie zum Anmelden verwenden, wenn Sie den Zugriff auf Ihre Authentifizierungsmethode verlieren.</string>
+
+    <string name="fui_confirm_password_hint">Passwort bestätigen</string>
+    <string name="fui_passwords_do_not_match">Passwörter stimmen nicht überein</string>
+    <string name="fui_error_password_too_short">Das Passwort muss mindestens %1$d Zeichen lang sein</string>
+    <string name="fui_error_password_missing_uppercase">Das Passwort muss mindestens einen Großbuchstaben enthalten</string>
+    <string name="fui_error_password_missing_lowercase">Das Passwort muss mindestens einen Kleinbuchstaben enthalten</string>
+    <string name="fui_error_password_missing_digit">Das Passwort muss mindestens eine Ziffer enthalten</string>
+    <string name="fui_error_password_missing_special_character">Das Passwort muss mindestens ein Sonderzeichen enthalten</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS-Authentifizierung einrichten</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS-Code bestätigen</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Für diesen Vorgang ist eine kürzliche Authentifizierung erforderlich. Bitte melden Sie sich erneut an und versuchen Sie es erneut.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Der Bestätigungscode ist falsch. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Ein Netzwerkfehler ist aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</string>
 </resources>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefoonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecteer een land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Land zoeken bijv. +1, "US"</string>
     <string name="fui_password_hint">Wachtwoord</string>
     <string name="fui_new_password_hint">Nieuw wachtwoord</string>
     <string name="fui_required_field">Dit veld mag niet leeg zijn.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Voer uw telefoonnummer in</string>
     <string name="fui_invalid_phone_number">Voer een geldig telefoonnummer in</string>
     <string name="fui_enter_confirmation_code">Voer de zescijferige code in die we hebben verzonden naar</string>
-    <string name="fui_resend_code_in">Code opnieuw verzenden over 0:%02d</string>
+    <string name="fui_resend_code_in">Code opnieuw verzenden over %1$s</string>
     <string name="fui_verify_your_phone_title">Uw telefoonnummer verifiëren</string>
     <string name="fui_verifying">Verifiëren…</string>
     <string name="fui_incorrect_code_dialog_body">Onjuiste code. Probeer het opnieuw.</string>
@@ -87,6 +89,44 @@
     <string name="fui_auto_verified">Telefoonnummer is automatisch geverifieerd</string>
     <string name="fui_resend_code">Code opnieuw verzenden</string>
     <string name="fui_verify_phone_number">Telefoonnummer verifiëren</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Als u op “%1$s” tikt, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op “%1$s” tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Als u op "%1$s" tikt, geeft u aan dat u onze %2$s en ons %3$s accepteert. Mogelijk ontvangt u een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authenticatiefout</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Opnieuw proberen</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Aanvullende verificatie vereist. Voltooi de multi-factor authenticatie.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account moet worden gekoppeld. Probeer een andere inlogmethode.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authenticatie is geannuleerd. Probeer opnieuw wanneer u klaar bent.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Kies authenticatiemethode</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-verificatie instellen</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-app instellen</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code verifiëren</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Herstelcodes opslaan</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selecteer een tweede authenticatiemethode om je account te beveiligen</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Voer je telefoonnummer in om verificatiecodes te ontvangen</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Scan de QR-code met je authenticator-app</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Voer de code in die naar je telefoon is verzonden</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Voer de code uit je authenticator-app in</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Voer je verificatiecode in</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewaar deze codes op een veilige plek. Je kunt ze gebruiken om in te loggen als je geen toegang meer hebt tot je authenticatiemethode.</string>
+
+    <string name="fui_confirm_password_hint">Bevestig wachtwoord</string>
+    <string name="fui_passwords_do_not_match">Wachtwoorden komen niet overeen</string>
+    <string name="fui_error_password_too_short">Wachtwoord moet minimaal %1$d tekens lang zijn</string>
+    <string name="fui_error_password_missing_uppercase">Wachtwoord moet minimaal één hoofdletter bevatten</string>
+    <string name="fui_error_password_missing_lowercase">Wachtwoord moet minimaal één kleine letter bevatten</string>
+    <string name="fui_error_password_missing_digit">Wachtwoord moet minimaal één cijfer bevatten</string>
+    <string name="fui_error_password_missing_special_character">Wachtwoord moet minimaal één speciaal teken bevatten</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS-authenticatie instellen</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS-code verifiëren</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Voor deze bewerking is recente authenticatie vereist. Log opnieuw in en probeer het opnieuw.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">De verificatiecode is onjuist. Probeer het opnieuw.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Er is een netwerkfout opgetreden. Controleer je verbinding en probeer het opnieuw.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Er is een fout opgetreden tijdens de inschrijving. Probeer het opnieuw.</string>
 </resources>

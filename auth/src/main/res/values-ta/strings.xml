@@ -25,6 +25,8 @@
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>
     <string name="fui_country_hint">நாடு</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">நாட்டைத் தேர்வுசெய்க</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">நாட்டைத் தேடுக எ.கா. +1, "US"</string>
     <string name="fui_password_hint">கடவுச்சொல்</string>
     <string name="fui_new_password_hint">புதிய கடவுச்சொல்</string>
     <string name="fui_required_field">இதை காலியாக விடக்கூடாது.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_invalid_phone_number">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_enter_confirmation_code">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>
-    <string name="fui_resend_code_in">குறியீட்டை 0:%02d நேரத்தில் மீண்டும் அனுப்பவும்</string>
+    <string name="fui_resend_code_in">குறியீட்டை %1$s நேரத்தில் மீண்டும் அனுப்பவும்</string>
     <string name="fui_verify_your_phone_title">ஃபோன் எண்ணைச் சரிபார்</string>
     <string name="fui_verifying">சரிபார்க்கிறது…</string>
     <string name="fui_incorrect_code_dialog_body">தவறான குறியீடு. மீண்டும் முயலவும்.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">ஃபோன் எண் தானாகவே சரிபார்க்கப்பட்டது</string>
     <string name="fui_resend_code">குறியீட்டை மீண்டும் அனுப்பு</string>
     <string name="fui_verify_phone_number">ஃபோன் எண்ணைச் சரிபார்</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s” என்பதைத் தட்டுவதன் மூலம், SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” என்பதைத் தட்டுவதன் மூலம், எங்கள் %2$s மற்றும் %3$sஐ ஏற்பதாகக் குறிப்பிடுகிறீர்கள். SMS அனுப்பப்படலாம். செய்தி மற்றும் தரவுக் கட்டணங்கள் விதிக்கப்படலாம்.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">அங்கீகார முறையைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS சரிபார்ப்பை அமைக்கவும்</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">அங்கீகரிப்பு ஆப்ஸை அமைக்கவும்</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">உங்கள் குறியீட்டைச் சரிபார்க்கவும்</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">உங்கள் மீட்டெடுப்பு குறியீடுகளைச் சேமிக்கவும்</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">உங்கள் கணக்கைப் பாதுகாக்க இரண்டாவது அங்கீகார முறையைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">சரிபார்ப்புக் குறியீடுகளைப் பெற உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">உங்கள் அங்கீகரிப்பு ஆப்ஸுடன் QR குறியீட்டை ஸ்கேன் செய்யவும்</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">உங்கள் தொலைபேசிக்கு அனுப்பப்பட்ட குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">உங்கள் அங்கீகரிப்பு ஆப்ஸிலிருந்து குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">உங்கள் சரிபார்ப்புக் குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">இந்தக் குறியீடுகளைப் பாதுகாப்பான இடத்தில் சேமிக்கவும். உங்கள் அங்கீகார முறைக்கான அணுகலை இழந்தால் உள்நுழைய இவற்றைப் பயன்படுத்தலாம்.</string>
+
+    <string name="fui_confirm_password_hint">கடவுச்சொல்லை உறுதிப்படுத்தவும்</string>
+    <string name="fui_passwords_do_not_match">கடவுச்சொற்கள் பொருந்தவில்லை</string>
+    <string name="fui_error_password_too_short">கடவுச்சொல் குறைந்தது %1$d எழுத்துக்குறிகளைக் கொண்டிருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_uppercase">கடவுச்சொல்லில் குறைந்தது ஒரு பெரிய எழுத்து இருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_lowercase">கடவுச்சொல்லில் குறைந்தது ஒரு சிறிய எழுத்து இருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_digit">கடவுச்சொல்லில் குறைந்தது ஒரு எண் இருக்க வேண்டும்</string>
+    <string name="fui_error_password_missing_special_character">கடவுச்சொல்லில் குறைந்தது ஒரு சிறப்பு எழுத்துக்குறி இருக்க வேண்டும்</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS அங்கீகாரத்தை அமைக்கவும்</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS குறியீட்டைச் சரிபார்க்கவும்</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">இந்த செயல்பாட்டிற்கு சமீபத்திய அங்கீகாரம் தேவை. மீண்டும் உள்நுழைந்து மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">சரிபார்ப்புக் குறியீடு தவறானது. மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">நெட்வொர்க் பிழை ஏற்பட்டது. உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">பதிவின் போது பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.</string>
 </resources>

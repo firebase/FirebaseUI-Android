@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>
     <string name="fui_country_hint">Ország</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Válasszon országot</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Ország keresése pl. +1, "US"</string>
     <string name="fui_password_hint">Jelszó</string>
     <string name="fui_new_password_hint">Az új jelszó</string>
     <string name="fui_required_field">Ezt nem hagyhatja üresen.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Adja meg telefonszámát</string>
     <string name="fui_invalid_phone_number">Érvényes telefonszámot adjon meg.</string>
     <string name="fui_enter_confirmation_code">Adja meg a telefonszámra elküldött 6 számjegyű kódot</string>
-    <string name="fui_resend_code_in">Kód újraküldése ennyi idő elteltével: 0:%02d</string>
+    <string name="fui_resend_code_in">Kód újraküldése ennyi idő elteltével: %1$s</string>
     <string name="fui_verify_your_phone_title">Telefonszám igazolása</string>
     <string name="fui_verifying">Ellenőrzés…</string>
     <string name="fui_incorrect_code_dialog_body">Hibás kód. Próbálja újra.</string>
@@ -87,6 +89,44 @@
     <string name="fui_auto_verified">A telefonszám automatikusan ellenőrizve</string>
     <string name="fui_resend_code">Kód újraküldése</string>
     <string name="fui_verify_phone_number">Telefonszám igazolása</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ha a(z) „%1$s” gombra koppint, a rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">A(z) „%1$s” gombra való koppintással elfogadja a következő dokumentumokat: %2$s és %3$s. A rendszer SMS-t küldhet Önnek. A szolgáltató ezért üzenet- és adatforgalmi díjat számíthat fel.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Hitelesítési hiba</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Próbáld újra</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">További ellenőrzés szükséges. Kérjük, fejezze be a többtényezős hitelesítést.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">A fiókot össze kell kapcsolni. Próbáljon meg egy másik bejelentkezési módot.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">A hitelesítés megszakadt. Próbálja újra, amikor készen áll.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Válasszon hitelesítési módszert</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-ellenőrzés beállítása</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Hitelesítő alkalmazás beállítása</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Kód ellenőrzése</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Helyreállítási kódok mentése</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Válasszon második hitelesítési módszert fiókja védelme érdekében</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Adja meg telefonszámát az ellenőrző kódok fogadásához</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Olvassa be a QR-kódot hitelesítő alkalmazásával</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Adja meg a telefonjára küldött kódot</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Adja meg a hitelesítő alkalmazásából származó kódot</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Adja meg ellenőrző kódját</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Tárolja ezeket a kódokat biztonságos helyen. Ezekkel jelentkezhet be, ha elveszti a hitelesítési módszeréhez való hozzáférést.</string>
+
+    <string name="fui_confirm_password_hint">Jelszó megerősítése</string>
+    <string name="fui_passwords_do_not_match">A jelszavak nem egyeznek</string>
+    <string name="fui_error_password_too_short">A jelszónak legalább %1$d karakter hosszúnak kell lennie</string>
+    <string name="fui_error_password_missing_uppercase">A jelszónak tartalmaznia kell legalább egy nagybetűt</string>
+    <string name="fui_error_password_missing_lowercase">A jelszónak tartalmaznia kell legalább egy kisbetűt</string>
+    <string name="fui_error_password_missing_digit">A jelszónak tartalmaznia kell legalább egy számot</string>
+    <string name="fui_error_password_missing_special_character">A jelszónak tartalmaznia kell legalább egy speciális karaktert</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS-hitelesítés beállítása</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS-kód ellenőrzése</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Ehhez a művelethez újabb hitelesítés szükséges. Kérjük, jelentkezzen be újra, és próbálja újra.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">A megerősítő kód helytelen. Kérjük, próbálja újra.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Hálózati hiba történt. Ellenőrizze a kapcsolatot, és próbálja újra.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Hiba történt a regisztráció során. Kérjük, próbálja újra.</string>
 </resources>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ایمیل </string>
     <string name="fui_phone_hint">شماره تلفن</string>
     <string name="fui_country_hint">کشور</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">انتخاب کشور</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">جستجوی کشور مثلاً +1، "US"</string>
     <string name="fui_password_hint">گذرواژه</string>
     <string name="fui_new_password_hint">گذرواژه جدید</string>
     <string name="fui_required_field">اینجا نباید خالی باشد.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">شماره تلفن خود را وارد کنید</string>
     <string name="fui_invalid_phone_number">شماره تلفن معتبری وارد کنید</string>
     <string name="fui_enter_confirmation_code">وارد کردن کد ۶ رقمی ارسال‌شده به</string>
-    <string name="fui_resend_code_in">کد پس از %02d:0 مجدداً ارسال می‌شود</string>
+    <string name="fui_resend_code_in">کد پس از %1$s:0 مجدداً ارسال می‌شود</string>
     <string name="fui_verify_your_phone_title">تأیید شماره تلفن</string>
     <string name="fui_verifying">درحال تأیید…</string>
     <string name="fui_incorrect_code_dialog_body">کد اشتباه است. دوباره امتحان کنید.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">شماره تلفن به‌طور خودکار به‌تأیید رسید</string>
     <string name="fui_resend_code">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number">تأیید شماره تلفن</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">با ضربه زدن روی «%1$s»، پیامکی برایتان ارسال می‌شود. هزینه پیام و داده اعمال می‌شود.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">درصورت ضربه‌زدن روی «%1$s»، موافقتتان را با %2$s و %3$s اعلام می‌کنید. پیامکی ارسال می‌شود. ممکن است هزینه داده و «پیام» محاسبه شود.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">روش احراز هویت را انتخاب کنید</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">تأیید پیامک را راه‌اندازی کنید</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">برنامه احراز هویت را راه‌اندازی کنید</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">کد خود را تأیید کنید</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">کدهای بازیابی خود را ذخیره کنید</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">برای ایمن کردن حساب خود، روش دوم احراز هویت را انتخاب کنید</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">شماره تلفن خود را وارد کنید تا کدهای تأیید دریافت کنید</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">کد QR را با برنامه احراز هویت خود اسکن کنید</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">کد ارسال شده به تلفن خود را وارد کنید</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">کد برنامه احراز هویت خود را وارد کنید</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">کد تأیید خود را وارد کنید</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">این کدها را در مکانی امن ذخیره کنید. اگر دسترسی به روش احراز هویت خود را از دست دادید، می‌توانید از آن‌ها برای ورود استفاده کنید.</string>
+
+    <string name="fui_confirm_password_hint">تأیید گذرواژه</string>
+    <string name="fui_passwords_do_not_match">گذرواژه‌ها مطابقت ندارند</string>
+    <string name="fui_error_password_too_short">گذرواژه باید حداقل %1$d نویسه باشد</string>
+    <string name="fui_error_password_missing_uppercase">گذرواژه باید حداقل یک حرف بزرگ داشته باشد</string>
+    <string name="fui_error_password_missing_lowercase">گذرواژه باید حداقل یک حرف کوچک داشته باشد</string>
+    <string name="fui_error_password_missing_digit">گذرواژه باید حداقل یک عدد داشته باشد</string>
+    <string name="fui_error_password_missing_special_character">گذرواژه باید حداقل یک نویسه خاص داشته باشد</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">راه‌اندازی احراز هویت پیامک</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">تأیید کد پیامک</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">این عملیات نیاز به احراز هویت اخیر دارد. لطفاً دوباره وارد سیستم شوید و دوباره امتحان کنید.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">کد تأیید نادرست است. لطفاً دوباره امتحان کنید.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">خطای شبکه رخ داد. لطفاً اتصال خود را بررسی کنید و دوباره امتحان کنید.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">در طول ثبت‌نام خطایی رخ داد. لطفاً دوباره امتحان کنید.</string>
 </resources>

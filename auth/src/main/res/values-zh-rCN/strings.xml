@@ -25,6 +25,8 @@
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>
     <string name="fui_country_hint">国家/地区</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">选择国家/地区</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">搜索国家/地区，例如 +1、"US"</string>
     <string name="fui_password_hint">密码</string>
     <string name="fui_new_password_hint">新密码</string>
     <string name="fui_required_field">此处不能留空。</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">输入您的电话号码</string>
     <string name="fui_invalid_phone_number">请输入有效的电话号码</string>
     <string name="fui_enter_confirmation_code">输入我们发送至以下电话号码的 6 位数验证码</string>
-    <string name="fui_resend_code_in">%02d 后可重新发送验证码</string>
+    <string name="fui_resend_code_in">%1$s 后可重新发送验证码</string>
     <string name="fui_verify_your_phone_title">验证您的电话号码</string>
     <string name="fui_verifying">正在验证…</string>
     <string name="fui_incorrect_code_dialog_body">验证码有误，请重试。</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">电话号码已自动验证</string>
     <string name="fui_resend_code">重新发送验证码</string>
     <string name="fui_verify_phone_number">验证电话号码</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">您点按“%1$s”后，系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">点按“%1$s”即表示您接受我们的%2$s和%3$s。系统会向您发送一条短信。这可能会产生短信费用和上网流量费。</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">选择身份验证方法</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">设置短信验证</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">设置身份验证器应用</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">验证代码</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">保存恢复代码</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">选择第二种身份验证方法以保护您的帐号</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">输入您的电话号码以接收验证码</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">使用身份验证器应用扫描二维码</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">输入发送到您手机的验证码</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">输入身份验证器应用中的验证码</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">输入您的验证码</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">将这些代码保存在安全的地方。如果您无法访问身份验证方法，可以使用这些代码登录。</string>
+
+    <string name="fui_confirm_password_hint">确认密码</string>
+    <string name="fui_passwords_do_not_match">密码不匹配</string>
+    <string name="fui_error_password_too_short">密码长度至少为 %1$d 个字符</string>
+    <string name="fui_error_password_missing_uppercase">密码必须包含至少一个大写字母</string>
+    <string name="fui_error_password_missing_lowercase">密码必须包含至少一个小写字母</string>
+    <string name="fui_error_password_missing_digit">密码必须包含至少一个数字</string>
+    <string name="fui_error_password_missing_special_character">密码必须包含至少一个特殊字符</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">设置短信验证</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">验证短信验证码</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">此操作需要最近的身份验证。请重新登录并重试。</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">验证码不正确。请重试。</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">发生网络错误。请检查您的连接并重试。</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">注册期间发生错误。请重试。</string>
 </resources>

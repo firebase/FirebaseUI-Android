@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.firebase.composeapp",
+    "sha256_cert_fingerprints": [
+      "EB:06:B9:FC:79:32:D6:01:04:2D:2E:FD:AF:7D:74:6E:04:74:D4:57:DF:27:0E:B7:B2:82:56:6F:9A:CB:FD:81"
+    ]
+  }
+}]

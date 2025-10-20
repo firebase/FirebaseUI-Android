@@ -22,6 +22,15 @@
     <string name="facebook_login_protocol_scheme" translatable="false">fb_your_app_id</string>
 
     <!--
+    The Facebook Client Token associated with this Facebook application. This is required
+    for Facebook SDK v13.0 and above. You can find this in your Facebook App Dashboard under
+    Settings > Advanced > Security > Client Token.
+
+    See:
+    https://developers.facebook.com/docs/facebook-login/android
+    -->
+    <string name="facebook_client_token" translatable="false">CHANGE-ME</string>
+    <!--
     The Google web client ID associated with this Android application. The
     google-services gradle plugin will automatically provide this value.
 

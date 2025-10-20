@@ -25,6 +25,8 @@
     <string name="fui_email_hint">البريد الإلكتروني</string>
     <string name="fui_phone_hint">رقم الهاتف</string>
     <string name="fui_country_hint">البلد</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">اختيار بلد</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">البحث عن بلد مثلاً +1 أو "US"</string>
     <string name="fui_password_hint">كلمة المرور</string>
     <string name="fui_new_password_hint">كلمة المرور الجديدة</string>
     <string name="fui_required_field">يجب ملء هذا الحقل.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">أدخل رقم هاتفك</string>
     <string name="fui_invalid_phone_number">يُرجى إدخال رقم هاتف صالح</string>
     <string name="fui_enter_confirmation_code">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>
-    <string name="fui_resend_code_in">إعادة إرسال الرمز بعد 0:%02d</string>
+    <string name="fui_resend_code_in">إعادة إرسال الرمز بعد %1$s</string>
     <string name="fui_verify_your_phone_title">إثبات ملكية رقم هاتفك</string>
     <string name="fui_verifying">جارٍ التحقق…</string>
     <string name="fui_incorrect_code_dialog_body">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
@@ -87,6 +89,44 @@
     <string name="fui_auto_verified">تمّ التحقّق تلقائيًا من رقم الهاتف.</string>
     <string name="fui_resend_code">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number">تأكيد ملكية رقم الهاتف</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">عند النقر على “%1$s”، قد يتمّ إرسال رسالة قصيرة SMS وقد يتمّ تطبيق رسوم الرسائل والبيانات.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على “%1$s” إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">يشير النقر على "%1$s" إلى موافقتك على %2$s و%3$s. وقد يتمّ إرسال رسالة قصيرة كما قد تنطبق رسوم الرسائل والبيانات.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">خطأ في المصادقة</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">أعد المحاولة</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">مطلوب تحقق إضافي. يرجى إكمال المصادقة متعددة العوامل.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">يجب ربط الحساب. جرب طريقة تسجيل دخول مختلفة.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">تم إلغاء المصادقة. أعد المحاولة عندما تكون جاهزاً.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">اختر طريقة المصادقة</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">إعداد التحقق بالرسائل القصيرة</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">إعداد تطبيق المصادقة</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">تحقق من الرمز</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">احفظ رموز الاسترداد</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">اختر طريقة مصادقة ثانية لتأمين حسابك</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">أدخل رقم هاتفك لتلقي رموز التحقق</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">امسح رمز الاستجابة السريعة باستخدام تطبيق المصادقة</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">أدخل الرمز المرسل إلى هاتفك</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">أدخل الرمز من تطبيق المصادقة</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">أدخل رمز التحقق</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">احفظ هذه الرموز في مكان آمن. يمكنك استخدامها لتسجيل الدخول إذا فقدت الوصول إلى طريقة المصادقة.</string>
+
+    <string name="fui_confirm_password_hint">تأكيد كلمة المرور</string>
+    <string name="fui_passwords_do_not_match">كلمتا المرور غير متطابقتين</string>
+    <string name="fui_error_password_too_short">يجب أن تتكون كلمة المرور من %1$d حرفًا على الأقل</string>
+    <string name="fui_error_password_missing_uppercase">يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل</string>
+    <string name="fui_error_password_missing_lowercase">يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل</string>
+    <string name="fui_error_password_missing_digit">يجب أن تحتوي كلمة المرور على رقم واحد على الأقل</string>
+    <string name="fui_error_password_missing_special_character">يجب أن تحتوي كلمة المرور على حرف خاص واحد على الأقل</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">إعداد مصادقة الرسائل القصيرة</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">التحقق من رمز الرسائل القصيرة</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">تتطلب هذه العملية مصادقة حديثة. يُرجى تسجيل الدخول مرة أخرى والمحاولة مرة أخرى.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">رمز التحقق غير صحيح. يُرجى المحاولة مرة أخرى.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">حدث خطأ في الشبكة. يُرجى التحقق من اتصالك والمحاولة مرة أخرى.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">حدث خطأ أثناء التسجيل. يُرجى المحاولة مرة أخرى.</string>
 </resources>

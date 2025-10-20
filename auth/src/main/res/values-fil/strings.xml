@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Mag-email</string>
     <string name="fui_phone_hint">Numero ng Telepono</string>
     <string name="fui_country_hint">Bansa</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pumili ng bansa</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Maghanap ng bansa hal. +1, "US"</string>
     <string name="fui_password_hint">Password</string>
     <string name="fui_new_password_hint">Bagong password</string>
     <string name="fui_required_field">Hindi mo ito maaaring iwanan na walang laman.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>
-    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng 0:%02d</string>
+    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng %1$s</string>
     <string name="fui_verify_your_phone_title">I-verify ang numero ng iyong telepono</string>
     <string name="fui_verifying">Bine-verify…</string>
     <string name="fui_incorrect_code_dialog_body">Maling code. Subukang muli.</string>
@@ -87,6 +89,44 @@
     <string name="fui_auto_verified">Awtomatikong na-verify ang numero ng telepono</string>
     <string name="fui_resend_code">Ipadala Muli ang Code</string>
     <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Sa pag-tap sa “%1$s”, ipinababatid mo na tinatanggap mo ang aming %2$s at %3$s. Maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Error sa Pagpapatotoo</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Subukan Muli</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Kailangan ang karagdagang pagpapatotoo. Mangyaring kumpletuhin ang multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Kailangang i-link ang account. Mangyaring subukan ang ibang paraan ng pag-sign in.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Ang pagpapatotoo ay nakansela. Mangyaring subukan muli kapag handa ka na.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Piliin ang Paraan ng Authentication</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">I-set Up ang SMS Verification</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">I-set Up ang Authenticator App</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">I-verify ang Iyong Code</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">I-save ang Iyong Mga Recovery Code</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pumili ng pangalawang paraan ng authentication para protektahan ang iyong account</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ilagay ang iyong numero ng telepono para makatanggap ng mga verification code</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">I-scan ang QR code gamit ang iyong authenticator app</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Ilagay ang code na ipinadala sa iyong telepono</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Ilagay ang code mula sa iyong authenticator app</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ilagay ang iyong verification code</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">I-imbak ang mga code na ito sa ligtas na lugar. Magagamit mo ang mga ito para mag-sign in kung mawawala ang access sa iyong paraan ng authentication.</string>
+
+    <string name="fui_confirm_password_hint">Kumpirmahin ang password</string>
+    <string name="fui_passwords_do_not_match">Hindi tugma ang mga password</string>
+    <string name="fui_error_password_too_short">Dapat may hindi bababa sa %1$d na character ang password</string>
+    <string name="fui_error_password_missing_uppercase">Dapat may kahit isang malaking titik ang password</string>
+    <string name="fui_error_password_missing_lowercase">Dapat may kahit isang maliit na titik ang password</string>
+    <string name="fui_error_password_missing_digit">Dapat may kahit isang numero ang password</string>
+    <string name="fui_error_password_missing_special_character">Dapat may kahit isang espesyal na character ang password</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">I-set Up ang SMS Authentication</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">I-verify ang SMS Code</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Kailangan ng kamakailang pag-authenticate para sa operasyong ito. Mag-sign in muli at subukang muli.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Mali ang verification code. Subukang muli.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">May naganap na error sa network. Tingnan ang iyong koneksyon at subukang muli.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">May naganap na error habang nag-e-enroll. Subukang muli.</string>
 </resources>

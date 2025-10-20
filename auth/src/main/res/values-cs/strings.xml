@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonní číslo</string>
     <string name="fui_country_hint">Země</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Vyberte zemi</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Hledat zemi např. +1, "US"</string>
     <string name="fui_password_hint">Heslo</string>
     <string name="fui_new_password_hint">Nové heslo</string>
     <string name="fui_required_field">Toto pole nesmí zůstat prázdné.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Zadejte své telefonní číslo</string>
     <string name="fui_invalid_phone_number">Zadejte platné telefonní číslo</string>
     <string name="fui_enter_confirmation_code">Zadejte šestimístný kód, který jsme vám zaslali</string>
-    <string name="fui_resend_code_in">Znovu zaslat kód za 0:%02d</string>
+    <string name="fui_resend_code_in">Znovu zaslat kód za %1$s</string>
     <string name="fui_verify_your_phone_title">Ověřit telefonní číslo</string>
     <string name="fui_verifying">Ověřování…</string>
     <string name="fui_incorrect_code_dialog_body">Špatný kód. Zkuste to znovu.</string>
@@ -87,6 +89,44 @@
     <string name="fui_auto_verified">Telefonní číslo bylo automaticky ověřeno</string>
     <string name="fui_resend_code">Znovu poslat kód</string>
     <string name="fui_verify_phone_number">Ověřit telefonní číslo</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Po klepnutí na možnost %1$s může být odeslána SMS. Mohou být účtovány poplatky za zprávy a data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Klepnutím na tlačítko %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s. Může být odeslána SMS a mohou být účtovány poplatky za zprávy a data.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Chyba ověření</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Zkusit znovu</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vyžadováno další ověření. Dokončete prosím vícefaktorové ověření.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Účet je třeba propojit. Zkuste jiný způsob přihlášení.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Ověření bylo zrušeno. Zkuste znovu až budete připraveni.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Vyberte metodu ověření</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastavit ověření SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastavit ověřovací aplikaci</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Ověřte svůj kód</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Uložte obnovací kódy</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Vyberte druhou metodu ověření pro zabezpečení účtu</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Zadejte telefonní číslo pro příjem ověřovacích kódů</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Naskenujte QR kód pomocí ověřovací aplikace</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Zadejte kód odeslaný na váš telefon</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Zadejte kód z ověřovací aplikace</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Zadejte ověřovací kód</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Uložte tyto kódy na bezpečném místě. Můžete je použít k přihlášení, pokud ztratíte přístup k metodě ověření.</string>
+
+    <string name="fui_confirm_password_hint">Potvrďte heslo</string>
+    <string name="fui_passwords_do_not_match">Hesla se neshodují</string>
+    <string name="fui_error_password_too_short">Heslo musí mít alespoň %1$d znaků</string>
+    <string name="fui_error_password_missing_uppercase">Heslo musí obsahovat alespoň jedno velké písmeno</string>
+    <string name="fui_error_password_missing_lowercase">Heslo musí obsahovat alespoň jedno malé písmeno</string>
+    <string name="fui_error_password_missing_digit">Heslo musí obsahovat alespoň jednu číslici</string>
+    <string name="fui_error_password_missing_special_character">Heslo musí obsahovat alespoň jeden speciální znak</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Nastavit SMS ověření</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Ověřit SMS kód</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Tato operace vyžaduje nedávné ověření. Přihlaste se znovu a zkuste to znovu.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Ověřovací kód je nesprávný. Zkuste to znovu.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Došlo k chybě sítě. Zkontrolujte připojení a zkuste to znovu.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Během registrace došlo k chybě. Zkuste to znovu.</string>
 </resources>

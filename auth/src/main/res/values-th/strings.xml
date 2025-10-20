@@ -25,6 +25,8 @@
     <string name="fui_email_hint">อีเมล</string>
     <string name="fui_phone_hint">หมายเลขโทรศัพท์</string>
     <string name="fui_country_hint">ประเทศ</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">เลือกประเทศ</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">ค้นหาประเทศ เช่น +1 "US"</string>
     <string name="fui_password_hint">รหัสผ่าน</string>
     <string name="fui_new_password_hint">รหัสผ่านใหม่</string>
     <string name="fui_required_field">ต้องป้อนข้อมูลในช่องนี้</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>
-    <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน 0:%02d</string>
+    <string name="fui_resend_code_in">ส่งรหัสอีกครั้งใน %1$s</string>
     <string name="fui_verify_your_phone_title">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_verifying">กำลังยืนยัน…</string>
     <string name="fui_incorrect_code_dialog_body">รหัสไม่ถูกต้อง โปรดลองอีกครั้ง</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">ยืนยันหมายเลขโทรศัพท์โดยอัตโนมัติแล้ว</string>
     <string name="fui_resend_code">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number">ยืนยันหมายเลขโทรศัพท์</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">การแตะ “%1$s” แสดงว่าคุณยอมรับ %2$s และ %3$s ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">เลือกวิธีการตรวจสอบสิทธิ์</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">ตั้งค่าการยืนยัน SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">ตั้งค่าแอปตรวจสอบสิทธิ์</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">ยืนยันรหัสของคุณ</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">บันทึกรหัสกู้คืนของคุณ</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">เลือกวิธีการตรวจสอบสิทธิ์ที่สองเพื่อรักษาความปลอดภัยบัญชีของคุณ</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ป้อนหมายเลขโทรศัพท์ของคุณเพื่อรับรหัสยืนยัน</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">สแกนรหัส QR ด้วยแอปตรวจสอบสิทธิ์ของคุณ</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">ป้อนรหัสที่ส่งไปยังโทรศัพท์ของคุณ</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">ป้อนรหัสจากแอปตรวจสอบสิทธิ์ของคุณ</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">ป้อนรหัสยืนยันของคุณ</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">เก็บรหัสเหล่านี้ไว้ในที่ปลอดภัย คุณสามารถใช้รหัสเหล่านี้ลงชื่อเข้าใช้หากคุณไม่สามารถเข้าถึงวิธีการตรวจสอบสิทธิ์ของคุณ</string>
+
+    <string name="fui_confirm_password_hint">ยืนยันรหัสผ่าน</string>
+    <string name="fui_passwords_do_not_match">รหัสผ่านไม่ตรงกัน</string>
+    <string name="fui_error_password_too_short">รหัสผ่านต้องมีความยาวอย่างน้อย %1$d อักขระ</string>
+    <string name="fui_error_password_missing_uppercase">รหัสผ่านต้องมีตัวพิมพ์ใหญ่อย่างน้อยหนึ่งตัว</string>
+    <string name="fui_error_password_missing_lowercase">รหัสผ่านต้องมีตัวพิมพ์เล็กอย่างน้อยหนึ่งตัว</string>
+    <string name="fui_error_password_missing_digit">รหัสผ่านต้องมีตัวเลขอย่างน้อยหนึ่งตัว</string>
+    <string name="fui_error_password_missing_special_character">รหัสผ่านต้องมีอักขระพิเศษอย่างน้อยหนึ่งตัว</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">ตั้งค่าการยืนยันตัวตนผ่าน SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">ยืนยันรหัส SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">การดำเนินการนี้จำเป็นต้องมีการตรวจสอบสิทธิ์ล่าสุด โปรดลงชื่อเข้าใช้อีกครั้งแล้วลองอีกครั้ง</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">รหัสยืนยันไม่ถูกต้อง โปรดลองอีกครั้ง</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">เกิดข้อผิดพลาดของเครือข่าย โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">เกิดข้อผิดพลาดระหว่างการลงทะเบียน โปรดลองอีกครั้ง</string>
 </resources>

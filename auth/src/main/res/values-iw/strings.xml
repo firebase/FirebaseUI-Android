@@ -25,6 +25,8 @@
     <string name="fui_email_hint">אימייל</string>
     <string name="fui_phone_hint">מספר טלפון</string>
     <string name="fui_country_hint">מדינה</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">בחירת מדינה</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">חיפוש מדינה למשל +1, "US"</string>
     <string name="fui_password_hint">סיסמה</string>
     <string name="fui_new_password_hint">סיסמה חדשה</string>
     <string name="fui_required_field">אי אפשר להשאיר את השדה הזה ריק.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">הזן את מספר הטלפון שלך</string>
     <string name="fui_invalid_phone_number">מספר הטלפון שהזנת לא תקין</string>
     <string name="fui_enter_confirmation_code">הזן את הקוד בן 6 הספרות ששלחנו אל</string>
-    <string name="fui_resend_code_in">שולח קוד חדש בעוד %02d:0</string>
+    <string name="fui_resend_code_in">שולח קוד חדש בעוד %1$s:0</string>
     <string name="fui_verify_your_phone_title">אמת את מספר הטלפון</string>
     <string name="fui_verifying">מאמת…</string>
     <string name="fui_incorrect_code_dialog_body">הקוד שגוי. נסה שוב.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">מספר הטלפון אומת באופן אוטומטי</string>
     <string name="fui_resend_code">שלח קוד חדש</string>
     <string name="fui_verify_phone_number">אמת את מספר הטלפון</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">הקשה על “%1$s” עשויה לגרום לשליחה של הודעת SMS. ייתכן שיחולו תעריפי הודעות והעברת נתונים.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">הקשה על “%1$s”, תפורש כהסכמתך ל%2$s ול%3$s. ייתכן שתישלח הודעת SMS. ייתכנו חיובים בגין שליחת הודעות ושימוש בנתונים.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">בחר שיטת אימות</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">הגדר אימות SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">הגדר אפליקציית מאמת</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">אמת את הקוד שלך</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">שמור את קודי השחזור שלך</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">בחר שיטת אימות שנייה כדי לאבטח את החשבון שלך</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">הזן את מספר הטלפון שלך כדי לקבל קודי אימות</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">סרוק את קוד ה-QR באמצעות אפליקציית המאמת שלך</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">הזן את הקוד שנשלח לטלפון שלך</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">הזן את הקוד מאפליקציית המאמת שלך</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">הזן את קוד האימות שלך</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">שמור קודים אלה במקום בטוח. תוכל להשתמש בהם כדי להיכנס אם תאבד גישה לשיטת האימות שלך.</string>
+
+    <string name="fui_confirm_password_hint">אישור סיסמה</string>
+    <string name="fui_passwords_do_not_match">הסיסמאות אינן תואמות</string>
+    <string name="fui_error_password_too_short">הסיסמה חייבת להכיל לפחות %1$d תווים</string>
+    <string name="fui_error_password_missing_uppercase">הסיסמה חייבת להכיל לפחות אות גדולה אחת</string>
+    <string name="fui_error_password_missing_lowercase">הסיסמה חייבת להכיל לפחות אות קטנה אחת</string>
+    <string name="fui_error_password_missing_digit">הסיסמה חייבת להכיל לפחות מספר אחד</string>
+    <string name="fui_error_password_missing_special_character">הסיסמה חייבת להכיל לפחות תו מיוחד אחד</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">הגדרת אימות SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">אימות קוד SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">הפעולה הזו דורשת אימות עדכני. יש להיכנס שוב ולנסות שוב.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">קוד האימות שגוי. יש לנסות שוב.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">אירעה שגיאת רשת. יש לבדוק את החיבור ולנסות שוב.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">אירעה שגיאה במהלך ההרשמה. יש לנסות שוב.</string>
 </resources>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
     <string name="fui_country_hint">Land</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Velg et land</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Søk etter land, f.eks. +1, "US"</string>
     <string name="fui_password_hint">Passord</string>
     <string name="fui_new_password_hint">Nytt passord</string>
     <string name="fui_required_field">Du må fylle ut dette feltet.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Oppgi telefonnummeret ditt</string>
     <string name="fui_invalid_phone_number">Oppgi et gyldig telefonnummer</string>
     <string name="fui_enter_confirmation_code">Oppgi den 6-sifrede koden vi sendte til</string>
-    <string name="fui_resend_code_in">Send koden på nytt om 0:%02d</string>
+    <string name="fui_resend_code_in">Send koden på nytt om %1$s</string>
     <string name="fui_verify_your_phone_title">Bekreft telefonnummeret ditt</string>
     <string name="fui_verifying">Bekrefter…</string>
     <string name="fui_incorrect_code_dialog_body">Feil kode. Prøv på nytt.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">Telefonnummeret ble bekreftet automatisk</string>
     <string name="fui_resend_code">Send koden på nytt</string>
     <string name="fui_verify_phone_number">Bekreft telefonnummeret</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ved å trykke på «%1$s» godtar du %2$s og %3$s våre. Du kan bli tilsendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Velg autentiseringsmetode</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurer SMS-bekreftelse</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurer autentiseringsapp</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Bekreft koden din</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Lagre gjenopprettingskodene dine</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Velg en andre autentiseringsmetode for å sikre kontoen din</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Skriv inn telefonnummeret ditt for å motta bekreftelseskoder</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Skann QR-koden med autentiseringsappen din</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Skriv inn koden som ble sendt til telefonen din</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Skriv inn koden fra autentiseringsappen din</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Skriv inn bekreftelseskoden din</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Lagre disse kodene på et sikkert sted. Du kan bruke dem til å logge inn hvis du mister tilgang til autentiseringsmetoden din.</string>
+
+    <string name="fui_confirm_password_hint">Bekreft passord</string>
+    <string name="fui_passwords_do_not_match">Passordene stemmer ikke overens</string>
+    <string name="fui_error_password_too_short">Passordet må være på minst %1$d tegn</string>
+    <string name="fui_error_password_missing_uppercase">Passordet må inneholde minst én stor bokstav</string>
+    <string name="fui_error_password_missing_lowercase">Passordet må inneholde minst én liten bokstav</string>
+    <string name="fui_error_password_missing_digit">Passordet må inneholde minst ett tall</string>
+    <string name="fui_error_password_missing_special_character">Passordet må inneholde minst ett spesialtegn</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Konfigurer SMS-godkjenning</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Bekreft SMS-kode</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Denne handlingen krever nylig godkjenning. Logg på igjen og prøv igjen.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Bekreftelseskoden er feil. Prøv igjen.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Det oppstod en nettverksfeil. Sjekk tilkoblingen og prøv igjen.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Det oppstod en feil under registrering. Prøv igjen.</string>
 </resources>

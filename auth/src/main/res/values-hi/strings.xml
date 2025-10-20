@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फ़ोन नंबर</string>
     <string name="fui_country_hint">देश</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">देश चुनें</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">देश खोजें जैसे +1, "US"</string>
     <string name="fui_password_hint">पासवर्ड</string>
     <string name="fui_new_password_hint">नया पासवर्ड</string>
     <string name="fui_required_field">आप इसे खाली नहीं छोड़ सकते.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">अपना फ़ोन नंबर डालें</string>
     <string name="fui_invalid_phone_number">कोई मान्य फ़ोन नंबर डालें</string>
     <string name="fui_enter_confirmation_code">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>
-    <string name="fui_resend_code_in">0:%02d में कोड फिर से भेजें</string>
+    <string name="fui_resend_code_in">%1$s में कोड फिर से भेजें</string>
     <string name="fui_verify_your_phone_title">अपने फ़ोन नंबर की पुष्टि करें</string>
     <string name="fui_verifying">पुष्टि की जा रही है…</string>
     <string name="fui_incorrect_code_dialog_body">गलत कोड. फिर से कोशिश करें.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">फ़ोन नंबर की अपने आप पुष्टि की गई</string>
     <string name="fui_resend_code">कोड फिर से भेजें</string>
     <string name="fui_verify_phone_number">फ़ोन नंबर की पुष्टि करें</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s” पर टैप करने पर, एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” पर टैप करके, आप यह बताते हैं कि आप हमारी %2$s और %3$s को मंज़ूर करते हैं. एक मैसेज (एसएमएस) भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">प्रमाणीकरण विधि चुनें</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS सत्यापन सेट करें</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">प्रमाणक ऐप सेट करें</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">अपना कोड सत्यापित करें</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">अपने पुनर्प्राप्ति कोड सहेजें</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">अपने खाते को सुरक्षित करने के लिए दूसरी प्रमाणीकरण विधि चुनें</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">सत्यापन कोड प्राप्त करने के लिए अपना फ़ोन नंबर दर्ज करें</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">अपने प्रमाणक ऐप से QR कोड स्कैन करें</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">अपने फ़ोन पर भेजा गया कोड दर्ज करें</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">अपने प्रमाणक ऐप से कोड दर्ज करें</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">अपना सत्यापन कोड दर्ज करें</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">इन कोड को सुरक्षित स्थान पर संग्रहीत करें। यदि आप अपनी प्रमाणीकरण विधि तक पहुंच खो देते हैं, तो आप साइन इन करने के लिए इनका उपयोग कर सकते हैं।</string>
+
+    <string name="fui_confirm_password_hint">पासवर्ड की पुष्टि करें</string>
+    <string name="fui_passwords_do_not_match">पासवर्ड मेल नहीं खाते</string>
+    <string name="fui_error_password_too_short">पासवर्ड कम से कम %1$d वर्णों का होना चाहिए</string>
+    <string name="fui_error_password_missing_uppercase">पासवर्ड में कम से कम एक बड़ा अक्षर होना चाहिए</string>
+    <string name="fui_error_password_missing_lowercase">पासवर्ड में कम से कम एक छोटा अक्षर होना चाहिए</string>
+    <string name="fui_error_password_missing_digit">પાસવર્ડમાં ઓછામાં ઓછો એક નંબર હોવો આવશ્યક છે</string>
+    <string name="fui_error_password_missing_special_character">પાસવર્ડમાં ઓછામાં ઓછો એક વિશેષ અક્ષર હોવો આવશ્યક છે</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">एसएमएस प्रमाणीकरण सेट करें</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">एसएमएस कोड सत्यापित करें</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">इस ऑपरेशन के लिए हाल ही की पुष्टि की ज़रूरत है. कृपया फिर से साइन इन करें और फिर से कोशिश करें.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">पुष्टि करने वाला कोड गलत है. कृपया फिर से कोशिश करें.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">नेटवर्क में कोई गड़बड़ी हुई. कृपया अपने कनेक्शन की जांच करें और फिर से कोशिश करें.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">नामांकन के दौरान एक गड़बड़ी हुई. कृपया फिर से कोशिश करें.</string>
 </resources>

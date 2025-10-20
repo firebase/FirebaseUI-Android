@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mel</string>
     <string name="fui_phone_hint">Nombor Telefon</string>
     <string name="fui_country_hint">Negara</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Pilih negara</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Cari negara cth. +1, "US"</string>
     <string name="fui_password_hint">Kata Laluan</string>
     <string name="fui_new_password_hint">Kata laluan baharu</string>
     <string name="fui_required_field">Anda tidak boleh membiarkan ruang ini kosong.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Masukkan nombor telefon anda</string>
     <string name="fui_invalid_phone_number">Masukkan nombor telefon yang sah</string>
     <string name="fui_enter_confirmation_code">Masukkan kod 6 digit yang kami hantar ke</string>
-    <string name="fui_resend_code_in">Hantar semula kod dalam 0:%02d</string>
+    <string name="fui_resend_code_in">Hantar semula kod dalam %1$s</string>
     <string name="fui_verify_your_phone_title">Sahkan nombor telefon anda</string>
     <string name="fui_verifying">Mengesahkan…</string>
     <string name="fui_incorrect_code_dialog_body">Kod salah. Cuba lagi.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">Nombor telefon disahkan secara automatik</string>
     <string name="fui_resend_code">Hantar Semula Kod</string>
     <string name="fui_verify_phone_number">Sahkan Nombor Telefon</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Dengan mengetik “%1$s”, SMS akan dihantar. Tertakluk pada kadar mesej &amp; data.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Dengan mengetik “%1$s”, anda menyatakan bahawa anda menerima %2$s dan %3$s kami. SMS akan dihantar. Tertakluk pada kadar mesej &amp; data.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Pilih Kaedah Pengesahan</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Sediakan Pengesahan SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Sediakan Aplikasi Pengesah</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Sahkan Kod Anda</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Simpan Kod Pemulihan Anda</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pilih kaedah pengesahan kedua untuk melindungi akaun anda</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Masukkan nombor telefon anda untuk menerima kod pengesahan</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Imbas kod QR dengan aplikasi pengesah anda</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Masukkan kod yang dihantar ke telefon anda</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Masukkan kod dari aplikasi pengesah anda</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Masukkan kod pengesahan anda</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Simpan kod ini di tempat yang selamat. Anda boleh menggunakannya untuk log masuk jika anda kehilangan akses kepada kaedah pengesahan anda.</string>
+
+    <string name="fui_confirm_password_hint">Sahkan Kata Laluan</string>
+    <string name="fui_passwords_do_not_match">Kata laluan tidak sepadan</string>
+    <string name="fui_error_password_too_short">Kata laluan mestilah sekurang-kurangnya %1$d aksara panjang</string>
+    <string name="fui_error_password_missing_uppercase">Kata laluan mestilah mengandungi sekurang-kurangnya satu huruf besar</string>
+    <string name="fui_error_password_missing_lowercase">Kata laluan mestilah mengandungi sekurang-kurangnya satu huruf kecil</string>
+    <string name="fui_error_password_missing_digit">Kata laluan mestilah mengandungi sekurang-kurangnya satu nombor</string>
+    <string name="fui_error_password_missing_special_character">Kata laluan mestilah mengandungi sekurang-kurangnya satu aksara khas</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Sediakan Pengesahan SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Sahkan Kod SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Operasi ini memerlukan pengesahan terkini. Sila log masuk semula dan cuba lagi.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Kod pengesahan tidak betul. Sila cuba lagi.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Ralat rangkaian berlaku. Sila semak sambungan anda dan cuba lagi.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Ralat berlaku semasa pendaftaran. Sila cuba lagi.</string>
 </resources>

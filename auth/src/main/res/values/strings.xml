@@ -19,6 +19,7 @@
     <string name="fui_idp_name_email">Email</string>
 
     <!-- Auth method picker -->
+    <string name="fui_auth_method_picker_logo" translatable="false">"Auth method picker logo"</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Sign in with Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Sign in with Twitter</string>
@@ -35,7 +36,10 @@
     <string name="fui_email_hint" translation_description="Hint in email input field">Email</string>
     <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone Number</string>
     <string name="fui_country_hint" translation_description="Hint for phone input field">Country</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Select a country</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Select for country e.g. +1, "US"</string>
     <string name="fui_password_hint" translation_description="Hint for password input field for existing passwords">Password</string>
+    <string name="fui_confirm_password_hint" translation_description="Hint for confirm password input field for existing passwords">Confirm Password</string>
     <string name="fui_new_password_hint" translation_description="Hint for password input field for new passwords">New password</string>
     <string name="fui_required_field" translation_description="Inline error for required field">You can\'t leave this empty.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>
@@ -93,6 +97,14 @@
     <string name="fui_error_unknown" translation_description="General error messages for an unknown failure.">An unknown error occurred.</string>
     <string name="fui_error_invalid_password" translation_description="Error message for when the user enters an invalid or wrong password.">Incorrect password.</string>
 
+    <!-- Password validation messages -->
+    <string name="fui_passwords_do_not_match" translation_description="Error message when password don't match">Passwords do not match</string>
+    <string name="fui_error_password_too_short" translation_description="Error message when password is too short">Password must be at least %1$d characters long</string>
+    <string name="fui_error_password_missing_uppercase" translation_description="Error message when password is missing uppercase letter">Password must contain at least one uppercase letter</string>
+    <string name="fui_error_password_missing_lowercase" translation_description="Error message when password is missing lowercase letter">Password must contain at least one lowercase letter</string>
+    <string name="fui_error_password_missing_digit" translation_description="Error message when password is missing digit">Password must contain at least one number</string>
+    <string name="fui_error_password_missing_special_character" translation_description="Error message when password is missing special character">Password must contain at least one special character</string>
+
     <!-- Accessibility -->
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">App logo</string>
 
@@ -119,7 +131,7 @@
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>
     <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Enter a valid phone number</string>
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Enter the 6-digit code we sent to</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in 0:%02d</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in %1$s</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
     <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>
@@ -130,6 +142,38 @@
     <string name="fui_auto_verified" translation_description="Popup informing the user that their phone number was automatically verified">Phone number automatically verified</string>
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Resend Code</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verify Phone Number</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%2$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%3$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="fui_change_phone_number" translation_description="Link text to change the phone number during verification">Use a different phone number</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping "%1$s", an SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping "%1$s", you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%2$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%3$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
+
+    <!-- Error Recovery Dialog -->
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Choose Authentication Method</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Set Up SMS Verification</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Set Up Authenticator App</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verify Your Code</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Save Your Recovery Codes</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Select a second authentication method to secure your account</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Enter your phone number to receive verification codes</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Scan the QR code with your authenticator app</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Enter the code sent to your phone</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Enter the code from your authenticator app</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Enter your verification code</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Store these codes in a safe place. You can use them to sign in if you lose access to your authentication method.</string>
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Set Up SMS Authentication</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Verify SMS Code</string>
+
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">This operation requires recent authentication. Please sign in again and try again.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">The verification code is incorrect. Please try again.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">A network error occurred. Please check your connection and try again.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">An error occurred during enrollment. Please try again.</string>
 </resources>

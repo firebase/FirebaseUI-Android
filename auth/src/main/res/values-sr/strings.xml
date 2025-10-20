@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Имејл</string>
     <string name="fui_phone_hint">Број телефона</string>
     <string name="fui_country_hint">Земља</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Изаберите земљу</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Претражите земљу нпр. +1, "US"</string>
     <string name="fui_password_hint">Лозинка</string>
     <string name="fui_new_password_hint">Нова лозинка</string>
     <string name="fui_required_field">Ово поље не може да буде празно.</string>
@@ -76,7 +78,7 @@
     <string name="fui_verify_phone_number_title">Унесите број телефона</string>
     <string name="fui_invalid_phone_number">Унесите важећи број телефона</string>
     <string name="fui_enter_confirmation_code">Унесите 6-цифрени кôд који смо послали на</string>
-    <string name="fui_resend_code_in">Кôд ће бити поново послат за 0:%02d</string>
+    <string name="fui_resend_code_in">Кôд ће бити поново послат за %1$s</string>
     <string name="fui_verify_your_phone_title">Верификујте број телефона</string>
     <string name="fui_verifying">Верификује се…</string>
     <string name="fui_incorrect_code_dialog_body">Кôд није тачан. Пробајте поново.</string>
@@ -87,6 +89,45 @@
     <string name="fui_auto_verified">Број телефона је аутоматски верификован</string>
     <string name="fui_resend_code">Поново пошаљи кôд</string>
     <string name="fui_verify_phone_number">Верификуј број телефона</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">Ако додирнете „%1$s“, можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">Ако додирнете „%1$s“, потврђујете да прихватате документе %2$s и %3$s. Можда ћете послати SMS. Могу да вам буду наплаћени трошкови слања поруке и преноса података.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Изаберите метод аутентификације</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Подесите SMS верификацију</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Подесите апликацију за аутентификацију</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Верификујте свој код</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Сачувајте кодове за опоравак</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Изаберите други метод аутентификације да бисте заштитили свој налог</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Унесите свој број телефона да бисте примали кодове за верификацију</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Скенирајте QR код помоћу своје апликације за аутентификацију</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Унесите код послат на ваш телефон</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Унесите код из своје апликације за аутентификацију</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Унесите свој код за верификацију</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Похраните ове кодове на сигурно место. Можете их користити за пријаву ако изгубите приступ методу аутентификације.</string>
+
+    <string name="fui_confirm_password_hint">Потврди лозинку</string>
+    <string name="fui_passwords_do_not_match">Лозинке се не подударају</string>
+    <string name="fui_error_password_too_short">Лозинка мора да има најмање %1$d знакова</string>
+    <string name="fui_error_password_missing_uppercase">Лозинка мора да садржи најмање једно велико слово</string>
+    <string name="fui_error_password_missing_lowercase">Лозинка мора да садржи најмање једно мало слово</string>
+    <string name="fui_error_password_missing_digit">Лозинка мора да садржи најмање један број</string>
+    <string name="fui_error_password_missing_special_character">Лозинка мора да садржи најмање један посебан знак</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Подесите SMS аутентификацију</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Потврдите SMS код</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">За ову операцију је потребна недавна провера идентитета. Пријавите се поново и покушајте поново.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Код за потврду је нетачан. Покушајте поново.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Дошло је до грешке на мрежи. Проверите везу и покушајте поново.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Дошло је до грешке током регистрације. Покушајте поново.</string>
 </resources>
