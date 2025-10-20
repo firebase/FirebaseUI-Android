@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
                         isEmailLinkForceSameDeviceEnabled = true,
-                        isEmailLinkSignInEnabled = true,
+                        isEmailLinkSignInEnabled = false,
                         emailLinkActionCodeSettings = actionCodeSettings {
                             // The continue URL - where to redirect after email link is clicked
                             url = "https://temp-test-aa342.firebaseapp.com"
@@ -154,10 +154,6 @@ class MainActivity : ComponentActivity() {
                                         authUI = authUI,
                                         configuration = configuration,
                                     )
-                                }
-
-                                is Route.MfaEnrollment -> NavEntry(entry) {
-                                    LaunchMfaEnrollment(authUI, backStack)
                                 }
 
                                 is Route.MfaEnrollment -> NavEntry(entry) {

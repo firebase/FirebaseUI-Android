@@ -338,20 +338,25 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
         } else {
             // Normal sign-in
             auth.signInWithEmailAndPassword(email, password).await()
-                .also { result ->
+                .let { result ->
                     // If there's a credential to link, link it after sign-in
                     if (credentialForLinking != null) {
-                        return result.user?.linkWithCredential(credentialForLinking)?.await()
-                            .also { linkResult ->
-                                // Merge profile from social provider
-                                linkResult?.user?.let { user ->
-                                    mergeProfile(
-                                        auth,
-                                        user.displayName,
-                                        user.photoUrl
-                                    )
-                                }
-                            }
+                        val linkResult = result.user
+                            ?.linkWithCredential(credentialForLinking)
+                            ?.await()
+
+                        // Merge profile from social provider
+                        linkResult?.user?.let { user ->
+                            mergeProfile(
+                                auth,
+                                user.displayName,
+                                user.photoUrl
+                            )
+                        }
+
+                        linkResult ?: result
+                    } else {
+                        result
                     }
                 }
         }.also {
@@ -773,7 +778,7 @@ suspend fun FirebaseAuthUI.signInWithEmailLink(
                     .getInstance(appExplicitlyForValidation)
 
                 // Safe link: Validate that both credentials can be linked
-                val result = authExplicitlyForValidation
+                authExplicitlyForValidation
                     .signInWithCredential(emailLinkCredential).await()
                     .user?.linkWithCredential(storedCredentialForLink)?.await()
                     .also { result ->
@@ -788,10 +793,9 @@ suspend fun FirebaseAuthUI.signInWithEmailLink(
                         updateAuthState(AuthState.Error(accountLinkingException))
                         throw accountLinkingException
                     }
-                return result
             } else {
                 // Non-upgrade: Sign in with email link, then link social credential
-                val result = auth.signInWithCredential(emailLinkCredential).await()
+                auth.signInWithCredential(emailLinkCredential).await()
                     // Link the social credential
                     .user?.linkWithCredential(storedCredentialForLink)?.await()
                     .also { result ->
@@ -804,7 +808,6 @@ suspend fun FirebaseAuthUI.signInWithEmailLink(
                             )
                         }
                     }
-                return result
             }
         }
         // Clear DataStore after success
