@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.ui.screens.EmailAuthMode
 import com.firebase.ui.auth.compose.ui.screens.EmailAuthScreen
 import com.firebase.ui.auth.compose.ui.screens.ResetPasswordUI
 import com.firebase.ui.auth.compose.ui.screens.SignInUI
 import com.firebase.ui.auth.compose.ui.screens.SignUpUI
+import com.google.firebase.auth.AuthCredential
 import kotlinx.coroutines.launch
 
 @Composable
@@ -32,6 +32,7 @@ fun EmailAuthMain(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
+    credentialForLinking: AuthCredential? = null,
     onSetupMfa: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -45,7 +46,8 @@ fun EmailAuthMain(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Authenticated User - (Success): ${authUI.getCurrentUser()?.email}",
+                Text(
+                    "Authenticated User - (Success): ${authUI.getCurrentUser()?.email}",
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -156,6 +158,7 @@ fun EmailAuthMain(
                 context = context,
                 configuration = configuration,
                 authUI = authUI,
+                credentialForLinking = credentialForLinking,
                 onSuccess = { result -> },
                 onError = { exception -> },
                 onCancel = { },

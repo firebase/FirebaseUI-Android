@@ -241,7 +241,7 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
  * The method automatically handles:
  * - Normal sign-in for new or returning users
  * - Linking phone credential to anonymous accounts (if enabled in config)
- * - Emitting [AuthState.MergeConflict] if phone number already exists on another account
+ * - Throwing [AuthException.AccountLinkingRequiredException] if phone number already exists on another account
  *
  * **Example: Sign in after instant verification**
  * ```kotlin
@@ -270,10 +270,10 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
  *         config = authUIConfig,
  *         credential = phoneCredential
  *     )
- * } catch (e: FirebaseAuthUserCollisionException) {
+ * } catch (e: AuthException.AccountLinkingRequiredException) {
  *     // Phone number already exists on another account
- *     // AuthState.MergeConflict will be emitted
- *     // Show merge conflict resolution screen
+ *     // Account linking required - show account linking screen
+ *     // User needs to sign in with existing account to link
  * }
  * ```
  *

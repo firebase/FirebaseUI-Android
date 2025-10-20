@@ -334,6 +334,7 @@ class AuthProviderTest {
     @Test
     fun `generic oauth provider with valid configuration should succeed`() {
         val provider = AuthProvider.GenericOAuth(
+            name = "Generic Provider",
             providerId = "custom.provider",
             scopes = listOf("read"),
             customParameters = mapOf(),
@@ -349,6 +350,7 @@ class AuthProviderTest {
     @Test
     fun `generic oauth provider with blank provider id should throw`() {
         val provider = AuthProvider.GenericOAuth(
+            name = "Generic Provider",
             providerId = "",
             scopes = listOf("read"),
             customParameters = mapOf(),
@@ -369,6 +371,7 @@ class AuthProviderTest {
     @Test
     fun `generic oauth provider with blank button label should throw`() {
         val provider = AuthProvider.GenericOAuth(
+            name = "Generic Provider",
             providerId = "custom.provider",
             scopes = listOf("read"),
             customParameters = mapOf(),

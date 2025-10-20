@@ -321,6 +321,7 @@ class AuthUIConfigurationTest {
     @Test
     fun `validation throws for unsupported provider`() {
         val mockProvider = AuthProvider.GenericOAuth(
+            name = "Generic Provider",
             providerId = "unsupported.provider",
             scopes = listOf(),
             customParameters = mapOf(),

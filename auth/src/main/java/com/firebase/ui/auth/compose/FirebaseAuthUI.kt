@@ -29,9 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
 
@@ -221,7 +218,7 @@ class FirebaseAuthUI private constructor(
         ) { firebaseState, internalState ->
             // Prefer non-idle internal states (like PasswordResetLinkSent, Error, etc.)
             if (internalState !is AuthState.Idle) internalState else firebaseState
-        }
+        }.distinctUntilChanged()
     }
 
     /**

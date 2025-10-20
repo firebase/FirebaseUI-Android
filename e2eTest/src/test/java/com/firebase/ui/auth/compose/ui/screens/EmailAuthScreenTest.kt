@@ -25,11 +25,12 @@ import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIS
 import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.compose.testutil.awaitWithLooper
+import com.firebase.ui.auth.compose.testutil.ensureFreshUser
+import com.firebase.ui.auth.compose.testutil.verifyEmailInEmulator
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.After
 import org.junit.Before
@@ -128,7 +129,7 @@ class EmailAuthScreenTest {
         val password = "test123"
 
         // Setup: Create a fresh unverified user
-        ensureFreshUser(email, password)
+        ensureFreshUser(authUI, email, password)
 
         // Sign out
         authUI.auth.signOut()
@@ -197,12 +198,12 @@ class EmailAuthScreenTest {
         val password = "test123"
 
         // Setup: Create a fresh unverified user
-        val user = ensureFreshUser(email, password)
+        val user = ensureFreshUser(authUI, email, password)
 
         requireNotNull(user) { "Failed to create user" }
 
         // Verify email using Firebase Auth Emulator OOB codes flow
-        verifyEmailInEmulator(user = user)
+        verifyEmailInEmulator(authUI, emulatorApi, user)
 
         // Sign out
         authUI.auth.signOut()
@@ -351,7 +352,7 @@ class EmailAuthScreenTest {
         val password = "test123"
 
         // Setup: Create a fresh user
-        ensureFreshUser(email, password)
+        ensureFreshUser(authUI, email, password)
 
         // Sign out
         authUI.auth.signOut()
@@ -433,7 +434,7 @@ class EmailAuthScreenTest {
         val password = "test123"
 
         // Setup: Create a fresh user
-        ensureFreshUser(email, password)
+        ensureFreshUser(authUI, email, password)
 
         // Sign out
         authUI.auth.signOut()
@@ -577,76 +578,4 @@ class EmailAuthScreenTest {
             }
         }
     }
-
-    /**
-     * Ensures a fresh user exists in the Firebase emulator with the given credentials.
-     * If a user already exists, they will be deleted first.
-     * The user will be signed out after creation, leaving an unverified account ready for testing.
-     *
-     * This function uses coroutines and automatically handles Robolectric's main looper.
-     */
-    private fun ensureFreshUser(email: String, password: String): FirebaseUser? {
-        println("TEST: Ensuring fresh user for $email")
-        // Try to sign in - if successful, user exists and should be deleted
-        try {
-            authUI.auth.signInWithEmailAndPassword(email, password).awaitWithLooper()
-                .also { result ->
-                    println("TEST: User exists (${result.user?.uid}), deleting...")
-                    // User exists, delete them
-                    result.user?.delete()?.awaitWithLooper()
-                    println("TEST: User deleted")
-                }
-        } catch (_: Exception) {
-            // User doesn't exist - this is expected
-        }
-
-        // Create fresh user
-        return authUI.auth.createUserWithEmailAndPassword(email, password).awaitWithLooper()
-            .user
-    }
-
-    /**
-     * Verifies a user's email in the Firebase Auth Emulator by simulating the complete
-     * email verification flow.
-     *
-     * This function:
-     * 1. Sends a verification email using sendEmailVerification()
-     * 2. Retrieves the OOB (out-of-band) code from the emulator's OOB codes endpoint
-     * 3. Applies the action code to complete email verification
-     *
-     * This approach works with the Firebase Auth Emulator's documented API and simulates
-     * the real email verification flow that would occur in production.
-     *
-     * @param user The FirebaseUser whose email should be verified
-     * @throws Exception if the verification flow fails
-     */
-    private fun verifyEmailInEmulator(user: FirebaseUser) {
-        println("TEST: Starting email verification for user ${user.uid}")
-
-        // Step 1: Send verification email to generate an OOB code
-        user.sendEmailVerification().awaitWithLooper()
-        println("TEST: Sent email verification request")
-
-        // Give the emulator time to process and store the OOB code
-        shadowOf(Looper.getMainLooper()).idle()
-        Thread.sleep(100)
-
-        // Step 2: Retrieve the VERIFY_EMAIL OOB code for this user from the emulator
-        val email = requireNotNull(user.email) { "User email is required for OOB code lookup" }
-        val oobCode = emulatorApi.fetchVerifyEmailCode(email)
-
-        println("TEST: Found OOB code: $oobCode")
-
-        // Step 3: Apply the action code to verify the email
-        authUI.auth.applyActionCode(oobCode).awaitWithLooper()
-        println("TEST: Applied action code")
-
-        // Step 4: Reload the user to refresh their email verification status
-        authUI.auth.currentUser?.reload()?.awaitWithLooper()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        println("TEST: Email verified successfully for user ${user.uid}")
-        println("TEST: User isEmailVerified: ${authUI.auth.currentUser?.isEmailVerified}")
-    }
-
 }

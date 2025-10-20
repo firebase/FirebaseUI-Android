@@ -36,22 +36,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
-/**
- * Holds credential information for account linking with email link sign-in.
- *
- * When a user tries to sign in with a social provider (Google, Facebook, etc.) but an
- * email link account exists with that email, this data is used to link the accounts
- * after email link authentication completes.
- *
- * @property providerType The provider ID (e.g., "google.com", "facebook.com")
- * @property idToken The ID token from the provider (required for Google, optional for Facebook)
- * @property accessToken The access token from the provider (required for Facebook, optional for Google)
- */
-internal class CredentialForLinking(
-    val providerType: String,
-    val idToken: String?,
-    val accessToken: String?,
-)
 
 /**
  * Creates an email/password account or links the credential to an anonymous user.
@@ -59,8 +43,8 @@ internal class CredentialForLinking(
  * Mirrors the legacy email sign-up handler: validates password strength, validates custom
  * password rules, checks if new accounts are allowed, chooses between
  * `createUserWithEmailAndPassword` and `linkWithCredential`, merges the supplied display name
- * into the Firebase profile, and emits [AuthState.MergeConflict] when anonymous upgrade
- * encounters an existing account for the email.
+ * into the Firebase profile, and throws [AuthException.AccountLinkingRequiredException] when
+ * anonymous upgrade encounters an existing account for the email.
  *
  * **Flow:**
  * 1. Check if new accounts are allowed (for non-upgrade flows)
@@ -118,9 +102,9 @@ internal class CredentialForLinking(
  *         password = "MyPassword456"
  *     )
  *     // Anonymous account upgraded to permanent email/password account
- * } catch (e: AuthException) {
- *     // Check if AuthState.MergeConflict was emitted
- *     // This means email already exists - show merge conflict UI
+ * } catch (e: AuthException.AccountLinkingRequiredException) {
+ *     // Email already exists - show account linking UI
+ *     // User needs to sign in with existing account to link
  * }
  * ```
  */
@@ -177,14 +161,20 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         updateAuthState(AuthState.Idle)
         return result
     } catch (e: FirebaseAuthUserCollisionException) {
-        val authException = AuthException.from(e)
-        if (canUpgrade && pendingCredential != null) {
-            // Anonymous upgrade collision: emit merge conflict state
-            updateAuthState(AuthState.MergeConflict(pendingCredential))
-        } else {
-            updateAuthState(AuthState.Error(authException))
-        }
-        throw authException
+        // Account collision: email already exists
+        val accountLinkingException = AuthException.AccountLinkingRequiredException(
+            message = "An account already exists with this email. " +
+                    "Please sign in with your existing account.",
+            email = e.email,
+            credential = if (canUpgrade) {
+                e.updatedCredential ?: pendingCredential
+            } else {
+                null
+            },
+            cause = e
+        )
+        updateAuthState(AuthState.Error(accountLinkingException))
+        throw accountLinkingException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Create or link user with email and password was cancelled",
@@ -206,15 +196,15 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
  * Signs in a user with email and password, optionally linking a social credential.
  *
  * This method handles both normal sign-in and anonymous upgrade flows. In anonymous upgrade
- * scenarios, it validates credentials in a scratch auth instance before emitting a merge
- * conflict state.
+ * scenarios, it validates credentials in a scratch auth instance before throwing
+ * [AuthException.AccountLinkingRequiredException].
  *
  * **Flow:**
  * 1. If anonymous upgrade:
  *    - Create scratch auth instance to validate credential
  *    - If linking social provider: sign in with email, then link social credential (safe link)
  *    - Otherwise: just validate email credential
- *    - Emit [AuthState.MergeConflict] after successful validation
+ *    - Throw [AuthException.AccountLinkingRequiredException] after successful validation
  * 2. If normal sign-in:
  *    - Sign in with email/password
  *    - If credential provided: link it and merge profile
@@ -277,9 +267,9 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
  *         email = "existing@example.com",
  *         password = "password123"
  *     )
- * } catch (e: AuthException) {
- *     // AuthState.MergeConflict emitted
- *     // UI shows merge conflict resolution screen
+ * } catch (e: AuthException.AccountLinkingRequiredException) {
+ *     // Account linking required - UI shows account linking screen
+ *     // User needs to sign in with existing account to link anonymous account
  * }
  * ```
  */
@@ -315,8 +305,16 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                     .signInWithCredential(credentialToValidate).await()
                     .user?.linkWithCredential(credentialForLinking)?.await()
                     .also {
-                        // Emit merge conflict after successful validation
-                        updateAuthState(AuthState.MergeConflict(credentialToValidate))
+                        // Throw AccountLinkingRequiredException after successful validation
+                        val accountLinkingException = AuthException.AccountLinkingRequiredException(
+                            message = "An account already exists with this email. " +
+                                    "Please sign in with your existing account to upgrade your anonymous account.",
+                            email = email,
+                            credential = credentialToValidate,
+                            cause = null
+                        )
+                        updateAuthState(AuthState.Error(accountLinkingException))
+                        throw accountLinkingException
                     }
             } else {
                 // Just validate the email credential
@@ -324,28 +322,41 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                 authExplicitlyForValidation
                     .signInWithCredential(credentialToValidate).await()
                     .also {
-                        // Emit merge conflict after successful validation
-                        // Merge failure occurs because account exists and user is anonymous
-                        updateAuthState(AuthState.MergeConflict(credentialToValidate))
+                        // Throw AccountLinkingRequiredException after successful validation
+                        // Account exists and user is anonymous - needs to link accounts
+                        val accountLinkingException = AuthException.AccountLinkingRequiredException(
+                            message = "An account already exists with this email. " +
+                                    "Please sign in with your existing account to upgrade your anonymous account.",
+                            email = email,
+                            credential = credentialToValidate,
+                            cause = null
+                        )
+                        updateAuthState(AuthState.Error(accountLinkingException))
+                        throw accountLinkingException
                     }
             }
         } else {
             // Normal sign-in
             auth.signInWithEmailAndPassword(email, password).await()
-                .also { result ->
+                .let { result ->
                     // If there's a credential to link, link it after sign-in
                     if (credentialForLinking != null) {
-                        return result.user?.linkWithCredential(credentialForLinking)?.await()
-                            .also { linkResult ->
-                                // Merge profile from social provider
-                                linkResult?.user?.let { user ->
-                                    mergeProfile(
-                                        auth,
-                                        user.displayName,
-                                        user.photoUrl
-                                    )
-                                }
-                            }
+                        val linkResult = result.user
+                            ?.linkWithCredential(credentialForLinking)
+                            ?.await()
+
+                        // Merge profile from social provider
+                        linkResult?.user?.let { user ->
+                            mergeProfile(
+                                auth,
+                                user.displayName,
+                                user.photoUrl
+                            )
+                        }
+
+                        linkResult ?: result
+                    } else {
+                        result
                     }
                 }
         }.also {
@@ -380,7 +391,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
  * 2. If yes: Link credential to anonymous user
  * 3. If no: Sign in with credential
  * 4. Merge profile information (name, photo) into Firebase user
- * 5. Handle collision exceptions by emitting [AuthState.MergeConflict]
+ * 5. Handle collision exceptions by throwing [AuthException.AccountLinkingRequiredException]
  *
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param credential The [AuthCredential] to use for authentication. Can be from any provider.
@@ -430,10 +441,10 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
  *         config = authUIConfig,
  *         credential = phoneCredential
  *     )
- * } catch (e: FirebaseAuthUserCollisionException) {
+ * } catch (e: AuthException.AccountLinkingRequiredException) {
  *     // Phone number already exists on another account
- *     // AuthState.MergeConflict emitted with updatedCredential
- *     // UI can show merge conflict resolution screen
+ *     // Account linking required - UI can show account linking screen
+ *     // User needs to sign in with existing account to link
  * }
  * ```
  *
@@ -454,6 +465,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
 internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
     config: AuthUIConfiguration,
     credential: AuthCredential,
+    provider: AuthProvider? = null,
     displayName: String? = null,
     photoUrl: Uri? = null,
 ): AuthResult? {
@@ -471,21 +483,27 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             updateAuthState(AuthState.Idle)
         }
     } catch (e: FirebaseAuthUserCollisionException) {
-        // Special handling for collision exceptions
-        val authException = AuthException.from(e)
-
-        if (canUpgradeAnonymous(config, auth)) {
-            // Anonymous upgrade collision: emit merge conflict with updated credential
-            val updatedCredential = e.updatedCredential
-            if (updatedCredential != null) {
-                updateAuthState(AuthState.MergeConflict(updatedCredential))
-            } else {
-                updateAuthState(AuthState.Error(authException))
-            }
+        // Account collision: account already exists with different sign-in method
+        // Create AccountLinkingRequiredException with credential for linking
+        val email = e.email
+        val credentialForException = if (canUpgradeAnonymous(config, auth)) {
+            // For anonymous upgrade, use the updated credential from the exception
+            e.updatedCredential ?: credential
         } else {
-            updateAuthState(AuthState.Error(authException))
+            // For non-anonymous, use the original credential
+            credential
         }
-        throw authException
+
+        val accountLinkingException = AuthException.AccountLinkingRequiredException(
+            message = "An account already exists with the email ${email ?: ""}. " +
+                    "Please sign in with your existing account to link " +
+                    "your ${provider?.name ?: "this provider"} account.",
+            email = email,
+            credential = credentialForException,
+            cause = e
+        )
+        updateAuthState(AuthState.Error(accountLinkingException))
+        throw accountLinkingException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in and link with credential was cancelled",
@@ -508,8 +526,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  *
  * This method initiates the email-link (passwordless) authentication flow by sending
  * an email containing a magic link. The link includes session information for validation
- * and security. Optionally supports account linking when a user tries to sign in with
- * a social provider but an email link account exists.
+ * and security.
  *
  * **How it works:**
  * 1. Generates a unique session ID for same-device validation
@@ -522,10 +539,11 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  *
  * **Account Linking Support:**
  * If a user tries to sign in with a social provider (Google, Facebook) but an email link
- * account already exists with that email, you can link the accounts by:
- * 1. Catching the [FirebaseAuthUserCollisionException] from the social sign-in attempt
- * 2. Calling this method with [credentialForLinking] containing the social provider tokens
- * 3. When [signInWithEmailLink] completes, it automatically retrieves and links the saved credential
+ * account already exists with that email, the social provider implementation should:
+ * 1. Catch the [FirebaseAuthUserCollisionException] from the sign-in attempt
+ * 2. Call [EmailLinkPersistenceManager.saveCredentialForLinking] with the provider tokens
+ * 3. Call this method to send the email link
+ * 4. When [signInWithEmailLink] completes, it automatically retrieves and links the saved credential
  *
  * **Session Security:**
  * - **Session ID**: Random 10-character string for same-device validation
@@ -537,9 +555,6 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Email] configuration with [ActionCodeSettings]
  * @param email The email address to send the sign-in link to
- * @param credentialForLinking Optional credential linking data. If provided, this credential
- *        will be automatically linked after email link sign-in completes. Pass null for basic
- *        email link sign-in without account linking.
  *
  * @throws AuthException.InvalidCredentialsException if email is invalid
  * @throws AuthException.AuthCancelledException if the operation is cancelled
@@ -570,55 +585,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * // User is now signed in
  * ```
  *
- * **Example 2: Complete account linking flow (Google → Email Link)**
- * ```kotlin
- * // Step 1: User tries to sign in with Google
- * try {
- *     val googleAccount = GoogleSignIn.getLastSignedInAccount(context)
- *     val googleIdToken = googleAccount?.idToken
- *     val googleCredential = GoogleAuthProvider.getCredential(googleIdToken, null)
- *
- *     firebaseAuthUI.signInAndLinkWithCredential(
- *         config = authUIConfig,
- *         credential = googleCredential
- *     )
- * } catch (e: FirebaseAuthUserCollisionException) {
- *     // Email already exists with Email Link provider
- *
- *     // Step 2: Send email link with credential for linking
- *     firebaseAuthUI.sendSignInLinkToEmail(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = email,
- *         credentialForLinking = CredentialForLinking(
- *             providerType = "google.com",
- *             idToken = googleIdToken,  // From GoogleSignInAccount
- *             accessToken = null
- *         )
- *     )
- *
- *     // Step 3: Show "Check your email" UI
- * }
- *
- * // Step 4: User clicks email link → App opens
- * // (In your deep link handling Activity)
- * val emailLink = intent.data.toString()
- * firebaseAuthUI.signInWithEmailLink(
- *     context = context,
- *     config = authUIConfig,
- *     provider = emailProvider,
- *     email = email,
- *     emailLink = emailLink
- * )
- * // signInWithEmailLink automatically:
- * // 1. Signs in with email link
- * // 2. Retrieves the saved Google credential from DataStore
- * // 3. Links the Google credential to the email link account
- * // 4. User is now signed in with both Email Link AND Google linked
- * ```
- *
- * **Example 3: Anonymous user upgrade**
+ * **Example 2: Anonymous user upgrade**
  * ```kotlin
  * // User is currently signed in anonymously
  * // Send email link to upgrade anonymous account to permanent email account
@@ -640,7 +607,6 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,
     email: String,
-    credentialForLinking: CredentialForLinking? = null,
 ) {
     try {
         updateAuthState(AuthState.Loading("Sending sign in email link..."))
@@ -655,16 +621,6 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         // Generate sessionId
         val sessionId =
             SessionUtils.generateRandomAlphaNumericString(AuthProvider.Email.SESSION_ID_LENGTH)
-
-        // If credential provided, save it for linking after email link sign-in
-        if (credentialForLinking != null) {
-            EmailLinkPersistenceManager.saveCredentialForLinking(
-                context = context,
-                providerType = credentialForLinking.providerType,
-                idToken = credentialForLinking.idToken,
-                accessToken = credentialForLinking.accessToken
-            )
-        }
 
         // Modify actionCodeSettings Url to include sessionId, anonymousUserId, force same
         // device flag
@@ -822,21 +778,24 @@ suspend fun FirebaseAuthUI.signInWithEmailLink(
                     .getInstance(appExplicitlyForValidation)
 
                 // Safe link: Validate that both credentials can be linked
-                val result = authExplicitlyForValidation
+                authExplicitlyForValidation
                     .signInWithCredential(emailLinkCredential).await()
                     .user?.linkWithCredential(storedCredentialForLink)?.await()
                     .also { result ->
-                        // If safe link succeeds, emit merge conflict for UI to handle
-                        updateAuthState(
-                            AuthState.MergeConflict(
-                                storedCredentialForLink
-                            )
+                        // If safe link succeeds, throw AccountLinkingRequiredException for UI to handle
+                        val accountLinkingException = AuthException.AccountLinkingRequiredException(
+                            message = "An account already exists with this email. " +
+                                    "Please sign in with your existing account to upgrade your anonymous account.",
+                            email = email,
+                            credential = storedCredentialForLink,
+                            cause = null
                         )
+                        updateAuthState(AuthState.Error(accountLinkingException))
+                        throw accountLinkingException
                     }
-                return result
             } else {
                 // Non-upgrade: Sign in with email link, then link social credential
-                val result = auth.signInWithCredential(emailLinkCredential).await()
+                auth.signInWithCredential(emailLinkCredential).await()
                     // Link the social credential
                     .user?.linkWithCredential(storedCredentialForLink)?.await()
                     .also { result ->
@@ -849,7 +808,6 @@ suspend fun FirebaseAuthUI.signInWithEmailLink(
                             )
                         }
                     }
-                return result
             }
         }
         // Clear DataStore after success
