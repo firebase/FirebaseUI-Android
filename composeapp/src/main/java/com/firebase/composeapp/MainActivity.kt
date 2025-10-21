@@ -1,8 +1,10 @@
 package com.firebase.composeapp
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -51,6 +53,7 @@ sealed class Route : NavKey {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
@@ -62,6 +65,9 @@ class MainActivity : ComponentActivity() {
         val configuration = authUIConfiguration {
             context = applicationContext
             providers {
+                provider(
+                    AuthProvider.Anonymous
+                )
                 provider(
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
@@ -102,6 +108,7 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             }
+            isAnonymousUpgradeEnabled = true
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
         }
@@ -141,6 +148,7 @@ class MainActivity : ComponentActivity() {
 
                                 is Route.EmailAuth -> NavEntry(entry) {
                                     LaunchEmailAuth(
+                                        context = applicationContext,
                                         authUI = authUI,
                                         configuration = configuration,
                                         backStack = backStack,
@@ -165,55 +173,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    @Composable
-    private fun LaunchEmailAuth(
-        authUI: FirebaseAuthUI,
-        configuration: AuthUIConfiguration,
-        credentialForLinking: AuthCredential? = null,
-        backStack: NavBackStack,
-        emailLink: String? = null
-    ) {
-        val provider = configuration.providers
-            .filterIsInstance<AuthProvider.Email>()
-            .first()
-
-        // Handle email link sign-in if present
-        if (emailLink != null) {
-            LaunchedEffect(emailLink) {
-
-                try {
-                    val emailFromSession =
-                        EmailLinkPersistenceManager
-                            .retrieveSessionRecord(
-                                applicationContext
-                            )?.email
-
-                    if (emailFromSession != null) {
-                        authUI.signInWithEmailLink(
-                            context = applicationContext,
-                            config = configuration,
-                            provider = provider,
-                            email = emailFromSession,
-                            emailLink = emailLink,
-                        )
-                    }
-                } catch (e: Exception) {
-                    // Error handling is done via AuthState.Error in the auth flow
-                }
-            }
-        }
-
-        EmailAuthMain(
-            context = applicationContext,
-            configuration = configuration,
-            authUI = authUI,
-            credentialForLinking = credentialForLinking,
-            onSetupMfa = {
-                backStack.add(Route.MfaEnrollment)
-            }
-        )
     }
 
     @Composable
@@ -284,4 +243,51 @@ class MainActivity : ComponentActivity() {
             backStack.removeLastOrNull()
         }
     }
+}
+
+@Composable
+fun LaunchEmailAuth(
+    context: Context,
+    authUI: FirebaseAuthUI,
+    configuration: AuthUIConfiguration,
+    credentialForLinking: AuthCredential? = null,
+    backStack: NavBackStack,
+    emailLink: String? = null
+) {
+    val provider = configuration.providers
+        .filterIsInstance<AuthProvider.Email>()
+        .first()
+
+    // Handle email link sign-in if present
+    if (emailLink != null) {
+        LaunchedEffect(emailLink) {
+
+            try {
+                val emailFromSession =
+                    EmailLinkPersistenceManager.retrieveSessionRecord(context)?.email
+
+                if (emailFromSession != null) {
+                    authUI.signInWithEmailLink(
+                        context = context,
+                        config = configuration,
+                        provider = provider,
+                        email = emailFromSession,
+                        emailLink = emailLink,
+                    )
+                }
+            } catch (e: Exception) {
+                // Error handling is done via AuthState.Error in the auth flow
+            }
+        }
+    }
+
+    EmailAuthMain(
+        context = context,
+        configuration = configuration,
+        authUI = authUI,
+        credentialForLinking = credentialForLinking,
+        onSetupMfa = {
+            backStack.add(Route.MfaEnrollment)
+        }
+    )
 }

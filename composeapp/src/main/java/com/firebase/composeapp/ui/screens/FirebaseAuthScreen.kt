@@ -34,6 +34,7 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
+import com.firebase.ui.auth.compose.configuration.auth_provider.signInAnonymously
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
@@ -53,6 +54,24 @@ fun FirebaseAuthScreen(
 
     val isErrorDialogVisible = remember(authState) { mutableStateOf(authState is AuthState.Error) }
 
+    val onSignInWithFacebook: () -> Unit =
+        authUI.rememberSignInWithFacebookLauncher(
+            context = context,
+            config = configuration,
+            provider = configuration.providers.filterIsInstance<AuthProvider.Facebook>()
+                .first()
+        )
+
+    val onSignAnonymously: () -> Unit = {
+        try {
+            coroutineScope.launch {
+                authUI.signInAnonymously()
+            }
+        } catch (e: Exception) {
+
+        }
+    }
+
     Scaffold { innerPadding ->
         Log.d("FirebaseAuthScreen", "Current state: $authState")
         Box {
@@ -68,6 +87,28 @@ fun FirebaseAuthScreen(
                             "Authenticated User - (Success): ${authUI.getCurrentUser()?.email}",
                             textAlign = TextAlign.Center
                         )
+                        Text(
+                            "UID - ${authUI.getCurrentUser()?.uid}",
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            "isAnonymous - ${authUI.getCurrentUser()?.isAnonymous}",
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            "Providers - ${authUI.getCurrentUser()?.providerData?.map { it.providerId }}",
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (authUI.getCurrentUser()?.isAnonymous == true) {
+                            Button(
+                                onClick = {
+                                    onSignInWithFacebook()
+                                }
+                            ) {
+                                Text("Upgrade with Facebook")
+                            }
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
                             onClick = {
@@ -107,13 +148,6 @@ fun FirebaseAuthScreen(
                 }
 
                 else -> {
-                    val onSignInWithFacebook = authUI.rememberSignInWithFacebookLauncher(
-                        context = context,
-                        config = configuration,
-                        provider = configuration.providers.filterIsInstance<AuthProvider.Facebook>()
-                            .first()
-                    )
-
                     AuthMethodPicker(
                         modifier = Modifier.padding(innerPadding),
                         providers = configuration.providers,
@@ -129,6 +163,7 @@ fun FirebaseAuthScreen(
                                 is AuthProvider.Email -> backStack.add(Route.EmailAuth())
                                 is AuthProvider.Phone -> backStack.add(Route.PhoneAuth)
                                 is AuthProvider.Facebook -> onSignInWithFacebook()
+                                is AuthProvider.Anonymous -> onSignAnonymously()
                             }
                         },
                     )
@@ -169,6 +204,9 @@ fun FirebaseAuthScreen(
                 )
             }
 
+            // TODO(demolaf): We get double error dialog pop ups from FirebaseAuthScreen and other
+            //  Screens e.g. EmailAuthScreen because they have dialog logics, is it possible to have
+            //  one that pops up above all views?
             // Loading modal
             if (authState is AuthState.Loading) {
                 AlertDialog(
@@ -177,7 +215,8 @@ fun FirebaseAuthScreen(
                     containerColor = Color.Transparent,
                     text = {
                         Column(
-                            modifier = Modifier.padding(24.dp)
+                            modifier = Modifier
+                                .padding(24.dp)
                                 .fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
@@ -187,7 +226,8 @@ fun FirebaseAuthScreen(
                             Text(
                                 text = (authState as? AuthState.Loading)?.message
                                     ?: "Loading...",
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = Color.White
                             )
                         }
                     }

@@ -50,6 +50,7 @@ import kotlinx.coroutines.launch
  *
  * @see signInWithFacebook
  */
+// TODO(demolaf): make this internal after testing with compose app
 @Composable
 fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     context: Context,

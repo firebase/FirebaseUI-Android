@@ -22,6 +22,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Email Link Sign-In Handler Activity for Compose -->
+            <!-- This activity handles deep links for passwordless email authentication -->
+            <!-- The host is automatically read from firebase_web_host in config.xml -->
+            <!-- NOTE: firebase_web_host must be lowercase (e.g., project-id.firebaseapp.com) -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="@string/firebase_web_host"
+                    android:pathPattern="/__/auth/links"
+                    tools:ignore="AppLinksAutoVerify,AppLinkUrlError" />
+            </intent-filter>
         </activity>
     </application>
 
