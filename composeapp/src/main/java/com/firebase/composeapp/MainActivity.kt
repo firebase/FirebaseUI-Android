@@ -1,80 +1,65 @@
 package com.firebase.composeapp
 
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.ui.NavDisplay
-import com.firebase.composeapp.ui.screens.EmailAuthMain
-import com.firebase.composeapp.ui.screens.MfaEnrollmentMain
-import com.firebase.composeapp.ui.screens.FirebaseAuthScreen
-import com.firebase.composeapp.ui.screens.PhoneAuthMain
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.Composable
+import com.firebase.ui.auth.compose.AuthException
+import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.actionCodeSettings
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
-
-@Serializable
-sealed class Route : NavKey {
-    @Serializable
-    object MethodPicker : Route()
-
-    @Serializable
-    class EmailAuth(@Contextual val credentialForLinking: AuthCredential? = null) : Route()
-
-    @Serializable
-    object PhoneAuth : Route()
-
-    @Serializable
-    object MfaEnrollment : Route()
-}
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val USE_AUTH_EMULATOR = true
+        private const val AUTH_EMULATOR_HOST = "10.0.2.2"
+        private const val AUTH_EMULATOR_PORT = 9099
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
-        // authUI.auth.useEmulator("10.0.2.2", 9099)
 
-        // Check if this activity was launched from an email link deep link
+        if (USE_AUTH_EMULATOR) {
+            authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
+        }
+
         val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
 
         val configuration = authUIConfiguration {
             context = applicationContext
             providers {
                 provider(
-                    AuthProvider.Anonymous
-                )
-                provider(
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
                         isEmailLinkForceSameDeviceEnabled = true,
                         isEmailLinkSignInEnabled = false,
                         emailLinkActionCodeSettings = actionCodeSettings {
-                            // The continue URL - where to redirect after email link is clicked
                             url = "https://temp-test-aa342.firebaseapp.com"
                             handleCodeInApp = true
                             setAndroidPackageName(
@@ -108,186 +93,131 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             }
-            isAnonymousUpgradeEnabled = true
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
         }
 
         setContent {
-            // If there's an email link, navigate to EmailAuth screen
-            val initialRoute = if (emailLink != null) {
-                Route.EmailAuth(credentialForLinking = null)
-            } else {
-                Route.MethodPicker
-            }
-
-            val backStack = rememberNavBackStack(initialRoute)
-
             AuthUITheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavDisplay(
-                        backStack = backStack,
-                        onBack = {
-                            if (backStack.size > 1) {
-                                backStack.removeLastOrNull()
-                            }
+                    FirebaseAuthScreen(
+                        configuration = configuration,
+                        authUI = authUI,
+                        emailLink = emailLink,
+                        onSignInSuccess = { result ->
+                            Log.d("MainActivity", "Authentication success: ${result.user?.uid}")
                         },
-                        entryProvider = { entry ->
-                            val route = entry as Route
-                            when (route) {
-                                is Route.MethodPicker -> NavEntry(entry) {
-                                    FirebaseAuthScreen(
-                                        authUI = authUI,
-                                        configuration = configuration,
-                                        backStack = backStack
-                                    )
-                                }
-
-                                is Route.EmailAuth -> NavEntry(entry) {
-                                    LaunchEmailAuth(
-                                        context = applicationContext,
-                                        authUI = authUI,
-                                        configuration = configuration,
-                                        backStack = backStack,
-                                        credentialForLinking = route.credentialForLinking,
-                                        emailLink = emailLink
-                                    )
-                                }
-
-                                is Route.PhoneAuth -> NavEntry(entry) {
-                                    LaunchPhoneAuth(
-                                        authUI = authUI,
-                                        configuration = configuration,
-                                    )
-                                }
-
-                                is Route.MfaEnrollment -> NavEntry(entry) {
-                                    LaunchMfaEnrollment(authUI, backStack)
-                                }
-                            }
+                        onSignInFailure = { exception: AuthException ->
+                            Log.e("MainActivity", "Authentication failed", exception)
+                        },
+                        onSignInCancelled = {
+                            Log.d("MainActivity", "Authentication cancelled")
+                        },
+                        authenticatedContent = { state, uiContext ->
+                            AppAuthenticatedContent(state, uiContext)
                         }
                     )
                 }
             }
         }
     }
-
-    @Composable
-    private fun LaunchPhoneAuth(
-        authUI: FirebaseAuthUI,
-        configuration: AuthUIConfiguration,
-    ) {
-        val provider = configuration.providers
-            .filterIsInstance<AuthProvider.Phone>()
-            .first()
-
-        PhoneAuthMain(
-            context = applicationContext,
-            configuration = configuration,
-            authUI = authUI,
-        )
-    }
-
-    @Composable
-    private fun LaunchMfaEnrollment(
-        authUI: FirebaseAuthUI,
-        backStack: NavBackStack
-    ) {
-        val user = authUI.getCurrentUser()
-        if (user != null) {
-            val authConfiguration = authUIConfiguration {
-                context = applicationContext
-                providers {
-                    provider(
-                        com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Phone(
-                            defaultNumber = null,
-                            defaultCountryCode = null,
-                            allowedCountries = emptyList(),
-                            smsCodeLength = 6,
-                            timeout = 120L,
-                            isInstantVerificationEnabled = true
-                        )
-                    )
-                }
-            }
-
-            val mfaConfiguration = com.firebase.ui.auth.compose.configuration.MfaConfiguration(
-                allowedFactors = listOf(
-                    com.firebase.ui.auth.compose.configuration.MfaFactor.Sms,
-                    com.firebase.ui.auth.compose.configuration.MfaFactor.Totp
-                ),
-                requireEnrollment = false,
-                enableRecoveryCodes = true
-            )
-
-            MfaEnrollmentMain(
-                context = applicationContext,
-                authUI = authUI,
-                user = user,
-                authConfiguration = authConfiguration,
-                mfaConfiguration = mfaConfiguration,
-                onComplete = {
-                    // Navigate back to the previous screen after successful enrollment
-                    backStack.removeLastOrNull()
-                },
-                onSkip = {
-                    // Navigate back if user skips enrollment
-                    backStack.removeLastOrNull()
-                }
-            )
-        } else {
-            // No user signed in, navigate back
-            backStack.removeLastOrNull()
-        }
-    }
 }
 
 @Composable
-fun LaunchEmailAuth(
-    context: Context,
-    authUI: FirebaseAuthUI,
-    configuration: AuthUIConfiguration,
-    credentialForLinking: AuthCredential? = null,
-    backStack: NavBackStack,
-    emailLink: String? = null
+private fun AppAuthenticatedContent(
+    state: AuthState,
+    uiContext: AuthSuccessUiContext
 ) {
-    val provider = configuration.providers
-        .filterIsInstance<AuthProvider.Email>()
-        .first()
+    val stringProvider = uiContext.stringProvider
+    when (state) {
+        is AuthState.Success -> {
+            val user = uiContext.authUI.getCurrentUser()
+            val identifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (identifier.isNotBlank()) {
+                    Text(
+                        text = stringProvider.signedInAs(identifier),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
-    // Handle email link sign-in if present
-    if (emailLink != null) {
-        LaunchedEffect(emailLink) {
+                Button(onClick = uiContext.onManageMfa) {
+                    Text(stringProvider.manageMfaAction)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = uiContext.onSignOut) {
+                    Text(stringProvider.signOutAction)
+                }
+            }
+        }
 
-            try {
-                val emailFromSession =
-                    EmailLinkPersistenceManager.retrieveSessionRecord(context)?.email
+        is AuthState.RequiresEmailVerification -> {
+            val email = uiContext.authUI.getCurrentUser()?.email ?: stringProvider.emailProvider
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringProvider.verifyEmailInstruction(email),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { uiContext.authUI.getCurrentUser()?.sendEmailVerification() }) {
+                    Text(stringProvider.resendVerificationEmailAction)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = uiContext.onReloadUser) {
+                    Text(stringProvider.verifiedEmailAction)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = uiContext.onSignOut) {
+                    Text(stringProvider.signOutAction)
+                }
+            }
+        }
 
-                if (emailFromSession != null) {
-                    authUI.signInWithEmailLink(
-                        context = context,
-                        config = configuration,
-                        provider = provider,
-                        email = emailFromSession,
-                        emailLink = emailLink,
+        is AuthState.RequiresProfileCompletion -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringProvider.profileCompletionMessage,
+                    textAlign = TextAlign.Center
+                )
+                if (state.missingFields.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringProvider.profileMissingFieldsMessage(state.missingFields.joinToString()),
+                        textAlign = TextAlign.Center
                     )
                 }
-            } catch (e: Exception) {
-                // Error handling is done via AuthState.Error in the auth flow
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = uiContext.onSignOut) {
+                    Text(stringProvider.signOutAction)
+                }
+            }
+        }
+
+        else -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
     }
-
-    EmailAuthMain(
-        context = context,
-        configuration = configuration,
-        authUI = authUI,
-        credentialForLinking = credentialForLinking,
-        onSetupMfa = {
-            backStack.add(Route.MfaEnrollment)
-        }
-    )
 }

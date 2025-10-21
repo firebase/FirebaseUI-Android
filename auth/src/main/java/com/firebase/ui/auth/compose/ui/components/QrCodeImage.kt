@@ -12,14 +12,13 @@
  * limitations under the License.
  */
 
-package com.firebase.composeapp.ui.components
+package com.firebase.ui.auth.compose.ui.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,13 +33,16 @@ import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 
 /**
- * Composable that displays a QR code image generated from the provided content.
+ * Renders a QR code from the provided content string.
  *
- * @param content The string content to encode in the QR code (e.g., TOTP URI)
- * @param modifier Modifier to be applied to the QR code image
- * @param size The size (width and height) of the QR code image
- * @param foregroundColor The color of the QR code pixels (default: black)
- * @param backgroundColor The background color of the QR code (default: white)
+ * This component is typically used to display TOTP enrollment URIs. The QR code is generated on the
+ * fly and memoized for the given [content].
+ *
+ * @param content The string content to encode into the QR code (for example the TOTP URI).
+ * @param modifier Optional [Modifier] applied to the QR container.
+ * @param size The size of the QR code square in density-independent pixels.
+ * @param foregroundColor Color used to render the QR pixels (defaults to black).
+ * @param backgroundColor Background color for the QR code (defaults to white).
  */
 @Composable
 fun QrCodeImage(
@@ -53,7 +55,7 @@ fun QrCodeImage(
     val bitmap = remember(content, size, foregroundColor, backgroundColor) {
         generateQrCodeBitmap(
             content = content,
-            sizePx = (size.value * 2).toInt(), // 2x for better resolution
+            sizePx = (size.value * 2).toInt(), // Render at 2x for better scaling quality.
             foregroundColor = foregroundColor,
             backgroundColor = backgroundColor
         )
@@ -75,15 +77,6 @@ fun QrCodeImage(
     }
 }
 
-/**
- * Generates a QR code bitmap from the provided content.
- *
- * @param content The string to encode
- * @param sizePx The size of the bitmap in pixels
- * @param foregroundColor The color for the QR code pixels
- * @param backgroundColor The background color
- * @return A Bitmap containing the QR code, or null if generation fails
- */
 private fun generateQrCodeBitmap(
     content: String,
     sizePx: Int,
@@ -93,7 +86,7 @@ private fun generateQrCodeBitmap(
     return try {
         val qrCodeWriter = QRCodeWriter()
         val hints = mapOf(
-            EncodeHintType.MARGIN to 1 // Minimal margin
+            EncodeHintType.MARGIN to 1 // Small margin keeps QR code compact while remaining scannable.
         )
 
         val bitMatrix = qrCodeWriter.encode(
@@ -132,7 +125,6 @@ private fun generateQrCodeBitmap(
 
         bitmap
     } catch (e: WriterException) {
-        e.printStackTrace()
         null
     }
 }

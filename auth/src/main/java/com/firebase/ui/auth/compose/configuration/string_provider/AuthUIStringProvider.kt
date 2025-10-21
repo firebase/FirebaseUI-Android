@@ -236,6 +236,87 @@ interface AuthUIStringProvider {
     /** Loading progress text */
     val progressDialogLoading: String
 
+    /** Label shown when the user is signed in. String should contain a single %s placeholder. */
+    fun signedInAs(userIdentifier: String): String
+
+    /** Action text for managing multi-factor authentication settings. */
+    val manageMfaAction: String
+
+    /** Action text for signing out. */
+    val signOutAction: String
+
+    /** Instruction shown when the user must verify their email. Accepts the email value. */
+    fun verifyEmailInstruction(email: String): String
+
+    /** Action text for resending the verification email. */
+    val resendVerificationEmailAction: String
+
+    /** Action text once the user has verified their email. */
+    val verifiedEmailAction: String
+
+    /** Message shown when profile completion is required. */
+    val profileCompletionMessage: String
+
+    /** Message listing missing profile fields. Accepts a comma-separated list. */
+    fun profileMissingFieldsMessage(fields: String): String
+
+    /** Action text for skipping an optional step. */
+    val skipAction: String
+
+    /** Action text for removing an item (for example, an MFA factor). */
+    val removeAction: String
+
+    /** Action text for navigating back. */
+    val backAction: String
+
+    /** Action text for confirming verification. */
+    val verifyAction: String
+
+    /** Action text for choosing a different factor during MFA challenge. */
+    val useDifferentMethodAction: String
+
+    /** Action text for confirming recovery codes have been saved. */
+    val recoveryCodesSavedAction: String
+
+    /** Label for secret key text displayed during TOTP setup. */
+    val secretKeyLabel: String
+
+    /** Label for verification code input fields. */
+    val verificationCodeLabel: String
+
+    /** Generic identity verified confirmation message. */
+    val identityVerifiedMessage: String
+
+    /** Title for the manage MFA screen. */
+    val mfaManageFactorsTitle: String
+
+    /** Helper description for the manage MFA screen. */
+    val mfaManageFactorsDescription: String
+
+    /** Header for the list of currently enrolled MFA factors. */
+    val mfaActiveMethodsTitle: String
+
+    /** Header for the list of available MFA factors to enroll. */
+    val mfaAddNewMethodTitle: String
+
+    /** Message shown when all factors are already enrolled. */
+    val mfaAllMethodsEnrolledMessage: String
+
+    /** Label for SMS MFA factor. */
+    val smsAuthenticationLabel: String
+
+    /** Label for authenticator-app MFA factor. */
+    val totpAuthenticationLabel: String
+
+    /** Label used when the factor type is unknown. */
+    val unknownMethodLabel: String
+
+    /** Label describing the enrollment date. Accepts a formatted date string. */
+    fun enrolledOnDateLabel(date: String): String
+
+    /** Description displayed during authenticator app setup. */
+    val setupAuthenticatorDescription: String
+
     /** Network error message */
     val noInternet: String
 
@@ -339,4 +420,20 @@ interface AuthUIStringProvider {
 
     /** Generic error message for MFA enrollment failures */
     val mfaErrorGeneric: String
+
+    // Re-authentication Dialog
+    /** Title displayed in the re-authentication dialog. */
+    val reauthDialogTitle: String
+
+    /** Descriptive message shown in the re-authentication dialog. */
+    val reauthDialogMessage: String
+
+    /** Label showing the account email being re-authenticated. */
+    fun reauthAccountLabel(email: String): String
+
+    /** Error message shown when the provided password is incorrect. */
+    val incorrectPasswordError: String
+
+    /** General error message for re-authentication failures. */
+    val reauthGenericError: String
 }

@@ -12,10 +12,10 @@
  * limitations under the License.
  */
 
-package com.firebase.composeapp.ui.screens
+package com.firebase.ui.auth.compose.ui.screens
 
-import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +27,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -36,8 +38,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,21 +50,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaFactor
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.compose.mfa.MfaEnrollmentStep
-import com.firebase.ui.auth.compose.mfa.getHelperText
-import com.firebase.ui.auth.compose.mfa.getTitle
 import com.firebase.ui.auth.compose.mfa.toMfaErrorMessage
-import com.firebase.ui.auth.compose.ui.components.CountrySelector
-import com.firebase.ui.auth.compose.ui.screens.MfaEnrollmentScreen
+import com.firebase.ui.auth.compose.ui.components.QrCodeImage
+import com.firebase.ui.auth.compose.ui.components.ReauthenticationDialog
 import com.firebase.ui.auth.compose.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.compose.ui.screens.phone.EnterVerificationCodeUI
-import com.firebase.composeapp.ui.components.ReauthenticationDialog
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorInfo
@@ -67,36 +67,32 @@ import com.google.firebase.auth.PhoneMultiFactorInfo
 import com.google.firebase.auth.TotpMultiFactorInfo
 
 @Composable
-fun MfaEnrollmentMain(
-    context: Context,
-    authUI: FirebaseAuthUI,
-    user: FirebaseUser,
+internal fun DefaultMfaEnrollmentContent(
+    state: MfaEnrollmentContentState,
     authConfiguration: AuthUIConfiguration,
-    mfaConfiguration: MfaConfiguration,
-    onComplete: () -> Unit,
-    onSkip: () -> Unit = {},
+    user: FirebaseUser
 ) {
     val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
     val snackbarHostState = remember { SnackbarHostState() }
-    val currentError = remember { androidx.compose.runtime.mutableStateOf<Exception?>(null) }
-    val showReauthDialog = remember { androidx.compose.runtime.mutableStateOf(false) }
-    val retryAction = remember { androidx.compose.runtime.mutableStateOf<(() -> Unit)?>(null) }
-    val successMessage = remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
-    val reauthErrorMessage = remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+    val showReauthDialog = remember { mutableStateOf(false) }
+    val reauthErrorMessage = remember { mutableStateOf<String?>(null) }
+    val successMessage = remember { mutableStateOf<String?>(null) }
 
-    // Show error in snackbar when error occurs
-    LaunchedEffect(currentError.value) {
-        currentError.value?.let { exception ->
-            // Don't show snackbar for recent login required - we'll show re-auth dialog instead
-            if (exception !is FirebaseAuthRecentLoginRequiredException) {
-                val errorMessage = exception.toMfaErrorMessage(stringProvider)
-                snackbarHostState.showSnackbar(errorMessage)
+    LaunchedEffect(state.error, state.exception) {
+        val exception = state.exception
+        when {
+            exception is FirebaseAuthRecentLoginRequiredException -> {
+                showReauthDialog.value = true
             }
-            currentError.value = null // Clear error after showing
+            exception != null -> {
+                snackbarHostState.showSnackbar(exception.toMfaErrorMessage(stringProvider))
+            }
+            !state.error.isNullOrBlank() -> {
+                snackbarHostState.showSnackbar(state.error!!)
+            }
         }
     }
 
-    // Show success message after re-authentication
     LaunchedEffect(successMessage.value) {
         successMessage.value?.let { message ->
             snackbarHostState.showSnackbar(message)
@@ -104,7 +100,6 @@ fun MfaEnrollmentMain(
         }
     }
 
-    // Show re-auth error message
     LaunchedEffect(reauthErrorMessage.value) {
         reauthErrorMessage.value?.let { message ->
             snackbarHostState.showSnackbar(message)
@@ -112,58 +107,30 @@ fun MfaEnrollmentMain(
         }
     }
 
-    // Show re-authentication dialog when needed
     if (showReauthDialog.value) {
         ReauthenticationDialog(
             user = user,
             onDismiss = {
                 showReauthDialog.value = false
-                retryAction.value = null
             },
             onSuccess = {
                 showReauthDialog.value = false
-                // Trigger success message
-                successMessage.value = "Identity verified. Please try your action again."
-                retryAction.value = null
+                successMessage.value = stringProvider.identityVerifiedMessage
             },
             onError = { exception ->
-                android.util.Log.e("MfaEnrollmentMain", "Re-authentication failed", exception)
-                // Trigger error message
                 reauthErrorMessage.value = when {
                     exception.message?.contains("password", ignoreCase = true) == true ->
-                        "Incorrect password. Please try again."
-                    else -> "Re-authentication failed. Please try again."
+                        stringProvider.incorrectPasswordError
+                    exception.message?.contains("network", ignoreCase = true) == true ->
+                        stringProvider.noInternet
+                    else -> stringProvider.reauthGenericError
                 }
             }
         )
     }
 
-    MfaEnrollmentScreen(
-        user = user,
-        auth = authUI.auth,
-        configuration = mfaConfiguration,
-        onComplete = onComplete,
-        onSkip = onSkip,
-        onError = { exception ->
-            android.util.Log.e("MfaEnrollmentMain", "MFA enrollment error", exception)
-
-            // Check if re-authentication is required
-            if (exception is FirebaseAuthRecentLoginRequiredException) {
-                showReauthDialog.value = true
-                // Store the retry action - we'll need to trigger it manually from state
-                // For now, we'll just show the dialog and let the user know to try again
-            } else if (exception is FirebaseAuthException &&
-                       exception.message?.contains("already enrolled", ignoreCase = true) == true) {
-                // Handle "already enrolled" error with a friendlier message
-                currentError.value = Exception("This authentication method is already enrolled. Please go back to remove it first or choose a different method.")
-            } else {
-                currentError.value = exception
-            }
-        }
-    ) { state ->
-        androidx.compose.foundation.layout.Box(modifier = Modifier.fillMaxSize()) {
-            // Step-specific UI - EnterPhoneNumberUI and EnterVerificationCodeUI have their own Scaffold
-            when (state.step) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (state.step) {
             MfaEnrollmentStep.SelectFactor -> {
                 SelectFactorUI(
                     availableFactors = state.availableFactors,
@@ -172,13 +139,13 @@ fun MfaEnrollmentMain(
                     onUnenrollFactor = state.onUnenrollFactor,
                     onSkipClick = state.onSkipClick,
                     isLoading = state.isLoading,
-                    error = state.error
+                    error = state.error,
+                    stringProvider = stringProvider
                 )
             }
 
             MfaEnrollmentStep.ConfigureSms -> {
                 state.selectedCountry?.let { country ->
-                    val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
                     EnterPhoneNumberUI(
                         configuration = authConfiguration,
                         isLoading = state.isLoading,
@@ -200,19 +167,21 @@ fun MfaEnrollmentMain(
                     onBackClick = state.onBackClick,
                     isLoading = state.isLoading,
                     isValid = state.isValid,
-                    error = state.error
+                    error = state.error,
+                    stringProvider = stringProvider
                 )
             }
 
             MfaEnrollmentStep.VerifyFactor -> {
                 when (state.selectedFactor) {
                     MfaFactor.Sms -> {
-                        val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
+                        val formattedPhone =
+                            "${state.selectedCountry?.dialCode ?: ""}${state.phoneNumber}"
                         EnterVerificationCodeUI(
                             configuration = authConfiguration,
                             isLoading = state.isLoading,
                             verificationCode = state.verificationCode,
-                            fullPhoneNumber = "${state.selectedCountry?.dialCode ?: ""}${state.phoneNumber}",
+                            fullPhoneNumber = formattedPhone,
                             resendTimer = state.resendTimer,
                             onVerificationCodeChange = state.onVerificationCodeChange,
                             onVerifyCodeClick = state.onVerifyClick,
@@ -221,6 +190,7 @@ fun MfaEnrollmentMain(
                             title = stringProvider.mfaEnrollmentVerifySmsCode
                         )
                     }
+
                     MfaFactor.Totp -> {
                         VerifyTotpUI(
                             verificationCode = state.verificationCode,
@@ -229,33 +199,37 @@ fun MfaEnrollmentMain(
                             onBackClick = state.onBackClick,
                             isLoading = state.isLoading,
                             isValid = state.isValid,
-                            error = state.error
+                            error = state.error,
+                            stringProvider = stringProvider
                         )
                     }
-                    null -> {}
+
+                    null -> Unit
                 }
             }
 
             MfaEnrollmentStep.ShowRecoveryCodes -> {
                 ShowRecoveryCodesUI(
-                    recoveryCodes = state.recoveryCodes ?: emptyList(),
+                    recoveryCodes = state.recoveryCodes.orEmpty(),
                     onDoneClick = state.onCodesSavedClick,
                     isLoading = state.isLoading,
-                    error = state.error
+                    error = state.error,
+                    stringProvider = stringProvider
                 )
             }
         }
 
-            // Snackbar for error messages
-            SnackbarHost(
-                hostState = snackbarHostState,
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-        }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp)
+        )
     }
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun SelectFactorUI(
     availableFactors: List<MfaFactor>,
     enrolledFactors: List<MultiFactorInfo>,
@@ -263,20 +237,26 @@ private fun SelectFactorUI(
     onUnenrollFactor: (MultiFactorInfo) -> Unit,
     onSkipClick: (() -> Unit)?,
     isLoading: Boolean,
-    error: String?
+    error: String?,
+    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 ) {
-    // Filter out already enrolled factors
-    val enrolledFactorIds = enrolledFactors.map {
+    val enrolledFactorIds = enrolledFactors.mapNotNull {
         when (it) {
             is PhoneMultiFactorInfo -> MfaFactor.Sms
             is TotpMultiFactorInfo -> MfaFactor.Totp
             else -> null
         }
-    }.filterNotNull().toSet()
+    }.toSet()
 
     val factorsToEnroll = availableFactors.filter { it !in enrolledFactorIds }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringProvider.mfaManageFactorsTitle) }
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -287,33 +267,25 @@ private fun SelectFactorUI(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Manage Two-Factor Authentication",
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = "Add or remove authentication methods for your account",
+                text = stringProvider.mfaManageFactorsDescription,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             error?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Show enrolled factors
             if (enrolledFactors.isNotEmpty()) {
                 Text(
-                    text = "Active Methods",
+                    text = stringProvider.mfaActiveMethodsTitle,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -322,17 +294,17 @@ private fun SelectFactorUI(
                     EnrolledFactorItem(
                         factorInfo = factorInfo,
                         onRemove = { onUnenrollFactor(factorInfo) },
-                        enabled = !isLoading
+                        enabled = !isLoading,
+                        stringProvider = stringProvider
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
 
-            // Show available factors to enroll
             if (factorsToEnroll.isNotEmpty()) {
                 Text(
-                    text = "Add New Method",
+                    text = stringProvider.mfaAddNewMethodTitle,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -343,22 +315,18 @@ private fun SelectFactorUI(
                         enabled = !isLoading,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            when (factor) {
-                                MfaFactor.Sms -> "Add SMS Authentication"
-                                MfaFactor.Totp -> "Add Authenticator App"
-                            }
-                        )
+                        when (factor) {
+                            MfaFactor.Sms -> Text(stringProvider.mfaStepConfigureSmsTitle)
+                            MfaFactor.Totp -> Text(stringProvider.mfaStepConfigureTotpTitle)
+                        }
                     }
                 }
-            }
-
-            if (factorsToEnroll.isEmpty() && enrolledFactors.isNotEmpty()) {
+            } else if (enrolledFactors.isNotEmpty()) {
                 Text(
-                    text = "All available authentication methods are enrolled",
+                    text = stringProvider.mfaAllMethodsEnrolledMessage,
                     style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -368,7 +336,7 @@ private fun SelectFactorUI(
                     onClick = it,
                     enabled = !isLoading
                 ) {
-                    Text("Skip for now")
+                    Text(stringProvider.skipAction)
                 }
             }
         }
@@ -379,11 +347,12 @@ private fun SelectFactorUI(
 private fun EnrolledFactorItem(
     factorInfo: MultiFactorInfo,
     onRemove: () -> Unit,
-    enabled: Boolean
+    enabled: Boolean,
+    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 ) {
-    androidx.compose.material3.Card(
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = androidx.compose.material3.CardDefaults.cardColors(
+        colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
@@ -397,23 +366,28 @@ private fun EnrolledFactorItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = when (factorInfo) {
-                        is PhoneMultiFactorInfo -> "SMS Authentication"
-                        is TotpMultiFactorInfo -> "Authenticator App"
-                        else -> "Unknown Method"
+                        is PhoneMultiFactorInfo -> stringProvider.smsAuthenticationLabel
+                        is TotpMultiFactorInfo -> stringProvider.totpAuthenticationLabel
+                        else -> stringProvider.unknownMethodLabel
                     },
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
                     text = when (factorInfo) {
-                        is PhoneMultiFactorInfo -> factorInfo.phoneNumber ?: "Phone"
-                        is TotpMultiFactorInfo -> factorInfo.displayName ?: "TOTP"
+                        is PhoneMultiFactorInfo -> factorInfo.phoneNumber ?: stringProvider.smsAuthenticationLabel
+                        is TotpMultiFactorInfo -> factorInfo.displayName ?: stringProvider.totpAuthenticationLabel
                         else -> ""
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Enrolled on ${java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault()).format(java.util.Date(factorInfo.enrollmentTimestamp * 1000))}",
+                    text = stringProvider.enrolledOnDateLabel(
+                        java.text.SimpleDateFormat(
+                            "MMM dd, yyyy",
+                            java.util.Locale.getDefault()
+                        ).format(java.util.Date(factorInfo.enrollmentTimestamp * 1000))
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -421,11 +395,11 @@ private fun EnrolledFactorItem(
             OutlinedButton(
                 onClick = onRemove,
                 enabled = enabled,
-                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Text("Remove")
+                Text(stringProvider.removeAction)
             }
         }
     }
@@ -439,7 +413,8 @@ private fun ConfigureTotpUI(
     onBackClick: () -> Unit,
     isLoading: Boolean,
     isValid: Boolean,
-    error: String?
+    error: String?,
+    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -452,19 +427,17 @@ private fun ConfigureTotpUI(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Setup Authenticator App",
+                text = stringProvider.mfaStepConfigureTotpTitle,
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = "Scan the QR code or enter the secret key in your authenticator app",
+                text = stringProvider.setupAuthenticatorDescription,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             error?.let {
                 Text(
@@ -475,47 +448,38 @@ private fun ConfigureTotpUI(
                 )
             }
 
+            totpQrCodeUrl?.let { url ->
+                QrCodeImage(
+                    content = url,
+                    size = 220.dp
+                )
+            }
+
             totpSecret?.let { secret ->
                 Text(
-                    text = "Secret Key:",
-                    style = MaterialTheme.typography.labelMedium
+                    text = stringProvider.secretKeyLabel,
+                    style = MaterialTheme.typography.titleSmall
                 )
                 Text(
                     text = secret,
                     style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
-                    textAlign = TextAlign.Center
+                        .padding(horizontal = 24.dp)
                 )
             }
-
-            totpQrCodeUrl?.let { url ->
-                Text(
-                    text = "Scan this with your authenticator app:",
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                com.firebase.composeapp.ui.components.QrCodeImage(
-                    content = url,
-                    modifier = Modifier.padding(16.dp),
-                    size = 250.dp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedButton(
+                TextButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Back")
+                    Text(stringProvider.backAction)
                 }
 
                 Button(
@@ -523,7 +487,7 @@ private fun ConfigureTotpUI(
                     enabled = !isLoading && isValid,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Continue")
+                    Text(stringProvider.continueText)
                 }
             }
         }
@@ -538,7 +502,8 @@ private fun VerifyTotpUI(
     onBackClick: () -> Unit,
     isLoading: Boolean,
     isValid: Boolean,
-    error: String?
+    error: String?,
+    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -551,19 +516,17 @@ private fun VerifyTotpUI(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Verify Your Code",
+                text = stringProvider.mfaStepVerifyFactorTitle,
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = "Enter the code from your authenticator app",
+                text = stringProvider.mfaStepVerifyFactorTotpHelper,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             error?.let {
                 Text(
@@ -577,7 +540,7 @@ private fun VerifyTotpUI(
             OutlinedTextField(
                 value = verificationCode,
                 onValueChange = onVerificationCodeChange,
-                label = { Text("Verification code") },
+                label = { Text(stringProvider.verificationCodeLabel) },
                 enabled = !isLoading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
@@ -592,7 +555,7 @@ private fun VerifyTotpUI(
                     enabled = !isLoading,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Back")
+                    Text(stringProvider.backAction)
                 }
 
                 Button(
@@ -600,7 +563,7 @@ private fun VerifyTotpUI(
                     enabled = !isLoading && isValid,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Verify")
+                    Text(stringProvider.verifyAction)
                 }
             }
         }
@@ -612,7 +575,8 @@ private fun ShowRecoveryCodesUI(
     recoveryCodes: List<String>,
     onDoneClick: () -> Unit,
     isLoading: Boolean,
-    error: String?
+    error: String?,
+    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -625,19 +589,17 @@ private fun ShowRecoveryCodesUI(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Recovery Codes",
+                text = stringProvider.mfaStepShowRecoveryCodesTitle,
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center
             )
 
             Text(
-                text = "Save these recovery codes in a safe place. You can use them to sign in if you lose access to your authentication method.",
+                text = stringProvider.mfaStepShowRecoveryCodesHelper,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.error
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             error?.let {
                 Text(
@@ -669,7 +631,7 @@ private fun ShowRecoveryCodesUI(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("I've saved these codes")
+                Text(stringProvider.recoveryCodesSavedAction)
             }
         }
     }
