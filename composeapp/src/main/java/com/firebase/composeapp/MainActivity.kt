@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
 import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
@@ -34,13 +36,14 @@ import com.google.firebase.auth.actionCodeSettings
 
 class MainActivity : ComponentActivity() {
     companion object {
-        private const val USE_AUTH_EMULATOR = true
+        private const val USE_AUTH_EMULATOR = false
         private const val AUTH_EMULATOR_HOST = "10.0.2.2"
         private const val AUTH_EMULATOR_PORT = 9099
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
@@ -51,53 +54,55 @@ class MainActivity : ComponentActivity() {
 
         val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
 
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        isDisplayNameRequired = true,
-                        isEmailLinkForceSameDeviceEnabled = true,
-                        isEmailLinkSignInEnabled = false,
-                        emailLinkActionCodeSettings = actionCodeSettings {
-                            url = "https://temp-test-aa342.firebaseapp.com"
-                            handleCodeInApp = true
-                            setAndroidPackageName(
-                                "com.firebase.composeapp",
-                                true,
-                                null
+        setContent {
+            val configuration = authUIConfiguration {
+                context = applicationContext
+                providers {
+                    provider(AuthProvider.Anonymous)
+                    provider(
+                        AuthProvider.Email(
+                            isDisplayNameRequired = true,
+                            isEmailLinkForceSameDeviceEnabled = true,
+                            isEmailLinkSignInEnabled = false,
+                            emailLinkActionCodeSettings = actionCodeSettings {
+                                url = "https://temp-test-aa342.firebaseapp.com"
+                                handleCodeInApp = true
+                                setAndroidPackageName(
+                                    "com.firebase.composeapp",
+                                    true,
+                                    null
+                                )
+                            },
+                            isNewAccountsAllowed = true,
+                            minimumPasswordLength = 8,
+                            passwordValidationRules = listOf(
+                                PasswordRule.MinimumLength(8),
+                                PasswordRule.RequireLowercase,
+                                PasswordRule.RequireUppercase,
                             )
-                        },
-                        isNewAccountsAllowed = true,
-                        minimumPasswordLength = 8,
-                        passwordValidationRules = listOf(
-                            PasswordRule.MinimumLength(8),
-                            PasswordRule.RequireLowercase,
-                            PasswordRule.RequireUppercase,
                         )
                     )
-                )
-                provider(
-                    AuthProvider.Phone(
-                        defaultNumber = null,
-                        defaultCountryCode = null,
-                        allowedCountries = emptyList(),
-                        smsCodeLength = 6,
-                        timeout = 120L,
-                        isInstantVerificationEnabled = true
+                    provider(
+                        AuthProvider.Phone(
+                            defaultNumber = null,
+                            defaultCountryCode = null,
+                            allowedCountries = emptyList(),
+                            smsCodeLength = 6,
+                            timeout = 120L,
+                            isInstantVerificationEnabled = true
+                        )
                     )
-                )
-                provider(
-                    AuthProvider.Facebook(
-                        applicationId = "792556260059222"
+                    provider(
+                        AuthProvider.Facebook(
+                            applicationId = "792556260059222"
+                        )
                     )
-                )
+                }
+                logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
+                tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
+                privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
             }
-            tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
-            privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
-        }
 
-        setContent {
             AuthUITheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -148,7 +153,25 @@ private fun AppAuthenticatedContent(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
+                Text(
+                    "isAnonymous - ${state.user.isAnonymous}",
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    "Providers - ${state.user.providerData.map { it.providerId }}",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                if (state.user.isAnonymous) {
+                    Button(
+                        onClick = {
 
+                        }
+                    ) {
+                        Text("Upgrade with Email")
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = uiContext.onManageMfa) {
                     Text(stringProvider.manageMfaAction)
                 }

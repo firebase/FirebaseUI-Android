@@ -122,7 +122,7 @@ class PhoneAuthScreenTest {
         }
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
         }
 
         composeTestRule.onNodeWithText(stringProvider.enterPhoneNumberTitle)
@@ -151,7 +151,7 @@ class PhoneAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -279,7 +279,7 @@ class PhoneAuthScreenTest {
         }
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
         }
 
         // Send verification code to get to verification screen
@@ -326,7 +326,7 @@ class PhoneAuthScreenTest {
         }
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
         }
 
         // The country selector should show the default country's dial code (GB = +44)
@@ -355,7 +355,7 @@ class PhoneAuthScreenTest {
         }
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
         }
 
         // Send verification code
@@ -394,7 +394,7 @@ class PhoneAuthScreenTest {
         }
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
         }
 
         // The send verification code button should be enabled since phone number is pre-filled
@@ -404,7 +404,7 @@ class PhoneAuthScreenTest {
     }
 
     @Composable
-    private fun FirebaseAuthScreen(
+    private fun TestAuthScreen(
         configuration: AuthUIConfiguration,
         onSuccess: ((AuthResult) -> Unit) = {},
         onError: ((AuthException) -> Unit) = {},

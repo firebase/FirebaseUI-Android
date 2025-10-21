@@ -23,6 +23,7 @@ import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings
@@ -98,6 +99,7 @@ class AuthUIConfigurationTest {
             url = "https://example.com/verify"
             handleCodeInApp = true
         }
+        val logoAsset = AuthUIAsset.Vector(Icons.Default.AccountCircle)
 
         val config = authUIConfiguration {
             context = applicationContext
@@ -122,7 +124,7 @@ class AuthUIConfigurationTest {
             isAnonymousUpgradeEnabled = true
             tosUrl = "https://example.com/tos"
             privacyPolicyUrl = "https://example.com/privacy"
-            logo = Icons.Default.AccountCircle
+            logo = logoAsset
             passwordResetActionCodeSettings = customPasswordResetActionCodeSettings
             isNewEmailAccountsAllowed = false
             isDisplayNameRequired = false
@@ -139,7 +141,7 @@ class AuthUIConfigurationTest {
         assertThat(config.isAnonymousUpgradeEnabled).isTrue()
         assertThat(config.tosUrl).isEqualTo("https://example.com/tos")
         assertThat(config.privacyPolicyUrl).isEqualTo("https://example.com/privacy")
-        assertThat(config.logo).isEqualTo(Icons.Default.AccountCircle)
+        assertThat(config.logo).isEqualTo(logoAsset)
         assertThat(config.passwordResetActionCodeSettings)
             .isEqualTo(customPasswordResetActionCodeSettings)
         assertThat(config.isNewEmailAccountsAllowed).isFalse()

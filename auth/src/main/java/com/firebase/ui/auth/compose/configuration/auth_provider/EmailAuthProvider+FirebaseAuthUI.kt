@@ -108,7 +108,8 @@ import kotlinx.coroutines.tasks.await
  * }
  * ```
  */
-internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
+// TODO(demolaf): make this internal
+suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,
@@ -684,8 +685,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
  *
  * @see sendSignInLinkToEmail for sending the initial email link
  */
-// TODO(demolaf: make this internal when done testing email link sign in with composeapp
-suspend fun FirebaseAuthUI.signInWithEmailLink(
+internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,

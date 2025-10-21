@@ -28,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,10 +49,10 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
@@ -97,9 +96,14 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
 
+    val anonymousProvider = configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
     val facebookProvider = configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
-    val logoAsset = configuration.logo?.let { AuthUIAsset.Vector(it) }
+    val logoAsset = configuration.logo
+
+    val onSignInAnonymously = anonymousProvider?.let {
+        authUI.rememberAnonymousSignInHandler()
+    }
 
     val onSignInWithFacebook = facebookProvider?.let {
         authUI.rememberSignInWithFacebookLauncher(
@@ -107,103 +111,6 @@ fun FirebaseAuthScreen(
             config = configuration,
             provider = it
         )
-    }
-
-    // Handle email link sign-in (deep links)
-    LaunchedEffect(emailLink) {
-        if (emailLink != null && emailProvider != null) {
-            try {
-                EmailLinkPersistenceManager.retrieveSessionRecord(context)?.email?.let { email ->
-                    authUI.signInWithEmailLink(
-                        context = context,
-                        config = configuration,
-                        provider = emailProvider,
-                        email = email,
-                        emailLink = emailLink
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e("FirebaseAuthScreen", "Failed to complete email link sign-in", e)
-            }
-
-            if (navController.currentBackStackEntry?.destination?.route != AuthRoute.Email.route) {
-                navController.navigate(AuthRoute.Email.route)
-            }
-        }
-    }
-
-    // Synchronise auth state changes with navigation stack.
-    LaunchedEffect(authState) {
-        val state = authState
-        val currentRoute = navController.currentBackStackEntry?.destination?.route
-        when (state) {
-            is AuthState.Success -> {
-                pendingResolver.value = null
-                pendingLinkingCredential.value = null
-
-                state.result?.let { result ->
-                    if (state.user.uid != lastSuccessfulUserId.value) {
-                        onSignInSuccess(result)
-                        lastSuccessfulUserId.value = state.user.uid
-                    }
-                }
-
-                if (currentRoute != AuthRoute.Success.route) {
-                    navController.navigate(AuthRoute.Success.route) {
-                        popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-            }
-
-            is AuthState.RequiresEmailVerification,
-            is AuthState.RequiresProfileCompletion -> {
-                pendingResolver.value = null
-                pendingLinkingCredential.value = null
-                if (currentRoute != AuthRoute.Success.route) {
-                    navController.navigate(AuthRoute.Success.route) {
-                        popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-            }
-
-            is AuthState.RequiresMfa -> {
-                pendingResolver.value = state.resolver
-                if (currentRoute != AuthRoute.MfaChallenge.route) {
-                    navController.navigate(AuthRoute.MfaChallenge.route) {
-                        launchSingleTop = true
-                    }
-                }
-            }
-
-            is AuthState.Cancelled -> {
-                pendingResolver.value = null
-                pendingLinkingCredential.value = null
-                lastSuccessfulUserId.value = null
-                if (currentRoute != AuthRoute.MethodPicker.route) {
-                    navController.navigate(AuthRoute.MethodPicker.route) {
-                        popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-                onSignInCancelled()
-            }
-
-            is AuthState.Idle -> {
-                pendingResolver.value = null
-                pendingLinkingCredential.value = null
-                lastSuccessfulUserId.value = null
-                if (currentRoute != AuthRoute.MethodPicker.route) {
-                    navController.navigate(AuthRoute.MethodPicker.route) {
-                        popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-            }
-
-            else -> Unit
-        }
     }
 
     Scaffold(modifier = modifier) { innerPadding ->
@@ -224,6 +131,8 @@ fun FirebaseAuthScreen(
                         privacyPolicyUrl = configuration.privacyPolicyUrl,
                         onProviderSelected = { provider ->
                             when (provider) {
+                                is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
+
                                 is AuthProvider.Email -> {
                                     navController.navigate(AuthRoute.Email.route)
                                 }
@@ -376,6 +285,103 @@ fun FirebaseAuthScreen(
                     } else {
                         navController.popBackStack()
                     }
+                }
+            }
+
+            // Handle email link sign-in (deep links)
+            LaunchedEffect(emailLink) {
+                if (emailLink != null && emailProvider != null) {
+                    try {
+                        EmailLinkPersistenceManager.retrieveSessionRecord(context)?.email?.let { email ->
+                            authUI.signInWithEmailLink(
+                                context = context,
+                                config = configuration,
+                                provider = emailProvider,
+                                email = email,
+                                emailLink = emailLink
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseAuthScreen", "Failed to complete email link sign-in", e)
+                    }
+
+                    if (navController.currentBackStackEntry?.destination?.route != AuthRoute.Email.route) {
+                        navController.navigate(AuthRoute.Email.route)
+                    }
+                }
+            }
+
+            // Synchronise auth state changes with navigation stack.
+            LaunchedEffect(authState) {
+                val state = authState
+                val currentRoute = navController.currentBackStackEntry?.destination?.route
+                when (state) {
+                    is AuthState.Success -> {
+                        pendingResolver.value = null
+                        pendingLinkingCredential.value = null
+
+                        state.result?.let { result ->
+                            if (state.user.uid != lastSuccessfulUserId.value) {
+                                onSignInSuccess(result)
+                                lastSuccessfulUserId.value = state.user.uid
+                            }
+                        }
+
+                        if (currentRoute != AuthRoute.Success.route) {
+                            navController.navigate(AuthRoute.Success.route) {
+                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+
+                    is AuthState.RequiresEmailVerification,
+                    is AuthState.RequiresProfileCompletion -> {
+                        pendingResolver.value = null
+                        pendingLinkingCredential.value = null
+                        if (currentRoute != AuthRoute.Success.route) {
+                            navController.navigate(AuthRoute.Success.route) {
+                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+
+                    is AuthState.RequiresMfa -> {
+                        pendingResolver.value = state.resolver
+                        if (currentRoute != AuthRoute.MfaChallenge.route) {
+                            navController.navigate(AuthRoute.MfaChallenge.route) {
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+
+                    is AuthState.Cancelled -> {
+                        pendingResolver.value = null
+                        pendingLinkingCredential.value = null
+                        lastSuccessfulUserId.value = null
+                        if (currentRoute != AuthRoute.MethodPicker.route) {
+                            navController.navigate(AuthRoute.MethodPicker.route) {
+                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                        onSignInCancelled()
+                    }
+
+                    is AuthState.Idle -> {
+                        pendingResolver.value = null
+                        pendingLinkingCredential.value = null
+                        lastSuccessfulUserId.value = null
+                        if (currentRoute != AuthRoute.MethodPicker.route) {
+                            navController.navigate(AuthRoute.MethodPicker.route) {
+                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+
+                    else -> Unit
                 }
             }
 

@@ -1,11 +1,39 @@
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Creates a remembered launcher function for anonymous sign-in.
+ *
+ * @return A launcher function that starts the anonymous sign-in flow when invoked
+ *
+ * @see signInAnonymously
+ * @see createOrLinkUserWithEmailAndPassword for upgrading anonymous accounts
+ */
+@Composable
+internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
+    val coroutineScope = rememberCoroutineScope()
+    return remember(this) {
+        {
+            coroutineScope.launch {
+                try {
+                    signInAnonymously()
+                } catch (e: Exception) {
+                    // Error already handled via auth state flow in signInAnonymously()
+                    // No additional action needed - ErrorRecoveryDialog will show automatically
+                }
+            }
+        }
+    }
+}
 
 /**
  * Signs in a user anonymously with Firebase Authentication.
@@ -75,7 +103,7 @@ import kotlinx.coroutines.tasks.await
  * @see createOrLinkUserWithEmailAndPassword for email/password upgrade
  * @see signInWithPhoneAuthCredential for phone authentication upgrade
  */
-suspend fun FirebaseAuthUI.signInAnonymously() {
+internal suspend fun FirebaseAuthUI.signInAnonymously() {
     try {
         updateAuthState(AuthState.Loading("Signing in anonymously..."))
         auth.signInAnonymously().await()
