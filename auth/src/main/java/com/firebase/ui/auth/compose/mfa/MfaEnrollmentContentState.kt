@@ -85,6 +85,9 @@ data class MfaEnrollmentContentState(
     /** Optional error message to display. `null` if no error. */
     val error: String? = null,
 
+    /** The last exception encountered during enrollment, if available. */
+    val exception: Exception? = null,
+
     /** Callback to navigate to the previous step. */
     val onBackClick: () -> Unit = {},
 

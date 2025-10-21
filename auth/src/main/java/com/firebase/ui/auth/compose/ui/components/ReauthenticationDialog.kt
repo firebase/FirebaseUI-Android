@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.composeapp.ui.components
+package com.firebase.ui.auth.compose.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,18 +38,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 /**
- * Dialog that prompts the user to re-authenticate with their password.
- * This is required when performing sensitive operations like MFA enrollment.
+ * Dialog presented when Firebase requires the current user to re-authenticate before performing
+ * a sensitive operation (for example, MFA enrollment).
  */
 @Composable
 fun ReauthenticationDialog(
@@ -63,8 +66,8 @@ fun ReauthenticationDialog(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
+    val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
 
-    // Auto-focus the password field when dialog opens
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -73,7 +76,7 @@ fun ReauthenticationDialog(
         onDismissRequest = { if (!isLoading) onDismiss() },
         title = {
             Text(
-                text = "Verify Your Identity",
+                text = stringProvider.reauthDialogTitle,
                 style = MaterialTheme.typography.headlineSmall
             )
         },
@@ -83,14 +86,14 @@ fun ReauthenticationDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "For your security, please re-enter your password to continue.",
+                    text = stringProvider.reauthDialogMessage,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
-                if (user.email != null) {
+                user.email?.let { email ->
                     Text(
-                        text = "Account: ${user.email}",
+                        text = stringProvider.reauthAccountLabel(email),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -102,7 +105,7 @@ fun ReauthenticationDialog(
                         password = it
                         errorMessage = null
                     },
-                    label = { Text("Password") },
+                    label = { Text(stringProvider.passwordHint) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,
@@ -118,13 +121,7 @@ fun ReauthenticationDialog(
                                         onLoading = { isLoading = it },
                                         onSuccess = onSuccess,
                                         onError = { error ->
-                                            errorMessage = when {
-                                                error.message?.contains("password", ignoreCase = true) == true ->
-                                                    "Incorrect password. Please try again."
-                                                error.message?.contains("network", ignoreCase = true) == true ->
-                                                    "Network error. Please check your connection."
-                                                else -> "Authentication failed. Please try again."
-                                            }
+                                            errorMessage = error.toUserMessage(stringProvider)
                                             onError(error)
                                         }
                                     )
@@ -134,7 +131,7 @@ fun ReauthenticationDialog(
                     ),
                     enabled = !isLoading,
                     isError = errorMessage != null,
-                    supportingText = errorMessage?.let { { Text(it) } },
+                    supportingText = errorMessage?.let { message -> { Text(message) } },
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
@@ -159,13 +156,7 @@ fun ReauthenticationDialog(
                             onLoading = { isLoading = it },
                             onSuccess = onSuccess,
                             onError = { error ->
-                                errorMessage = when {
-                                    error.message?.contains("password", ignoreCase = true) == true ->
-                                        "Incorrect password. Please try again."
-                                    error.message?.contains("network", ignoreCase = true) == true ->
-                                        "Network error. Please check your connection."
-                                    else -> "Authentication failed. Please try again."
-                                }
+                                errorMessage = error.toUserMessage(stringProvider)
                                 onError(error)
                             }
                         )
@@ -173,7 +164,7 @@ fun ReauthenticationDialog(
                 },
                 enabled = password.isNotBlank() && !isLoading
             ) {
-                Text("Verify")
+                Text(stringProvider.verifyAction)
             }
         },
         dismissButton = {
@@ -181,7 +172,7 @@ fun ReauthenticationDialog(
                 onClick = onDismiss,
                 enabled = !isLoading
             ) {
-                Text("Cancel")
+                Text(stringProvider.dismissAction)
             }
         }
     )
@@ -196,19 +187,24 @@ private suspend fun reauthenticate(
 ) {
     try {
         onLoading(true)
-
-        val email = user.email
-        if (email == null) {
-            throw IllegalStateException("User email not available")
+        val email = requireNotNull(user.email) {
+            "Email must be available to re-authenticate with password."
         }
 
         val credential = EmailAuthProvider.getCredential(email, password)
         user.reauthenticate(credential).await()
-
         onSuccess()
     } catch (e: Exception) {
         onError(e)
     } finally {
         onLoading(false)
     }
+}
+
+private fun Exception.toUserMessage(stringProvider: AuthUIStringProvider): String = when {
+    message?.contains("password", ignoreCase = true) == true ->
+        stringProvider.incorrectPasswordError
+    message?.contains("network", ignoreCase = true) == true ->
+        stringProvider.noInternet
+    else -> stringProvider.reauthGenericError
 }

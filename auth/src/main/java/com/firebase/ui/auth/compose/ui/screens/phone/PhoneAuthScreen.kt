@@ -315,6 +315,46 @@ fun PhoneAuthScreen(
         )
     }
 
-    content?.invoke(state)
+    if (content != null) {
+        content(state)
+    } else {
+        DefaultPhoneAuthContent(
+            configuration = configuration,
+            state = state
+        )
+    }
 }
 
+@Composable
+private fun DefaultPhoneAuthContent(
+    configuration: AuthUIConfiguration,
+    state: PhoneAuthContentState
+) {
+    when (state.step) {
+        PhoneAuthStep.EnterPhoneNumber -> {
+            EnterPhoneNumberUI(
+                configuration = configuration,
+                isLoading = state.isLoading,
+                phoneNumber = state.phoneNumber,
+                selectedCountry = state.selectedCountry,
+                onPhoneNumberChange = state.onPhoneNumberChange,
+                onCountrySelected = state.onCountrySelected,
+                onSendCodeClick = state.onSendCodeClick
+            )
+        }
+
+        PhoneAuthStep.EnterVerificationCode -> {
+            EnterVerificationCodeUI(
+                configuration = configuration,
+                isLoading = state.isLoading,
+                verificationCode = state.verificationCode,
+                fullPhoneNumber = state.fullPhoneNumber,
+                resendTimer = state.resendTimer,
+                onVerificationCodeChange = state.onVerificationCodeChange,
+                onVerifyCodeClick = state.onVerifyCodeClick,
+                onResendCodeClick = state.onResendCodeClick,
+                onChangeNumberClick = state.onChangeNumberClick
+            )
+        }
+    }
+}

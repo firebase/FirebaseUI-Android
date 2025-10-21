@@ -71,7 +71,7 @@ fun MfaChallengeScreen(
     onSuccess: (AuthResult) -> Unit,
     onCancel: () -> Unit,
     onError: (Exception) -> Unit = {},
-    content: @Composable (MfaChallengeContentState) -> Unit
+    content: @Composable ((MfaChallengeContentState) -> Unit)? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -259,5 +259,9 @@ fun MfaChallengeScreen(
         onCancelClick = onCancel
     )
 
-    content(state)
+    if (content != null) {
+        content(state)
+    } else {
+        DefaultMfaChallengeContent(state)
+    }
 }
