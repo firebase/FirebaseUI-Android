@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaFactor
@@ -78,6 +79,7 @@ fun MfaEnrollmentScreen(
         "MfaEnrollmentScreen must be used within an Activity context for SMS verification"
     }
     val coroutineScope = rememberCoroutineScope()
+    val applicationContext = LocalContext.current.applicationContext
 
     val smsHandler = remember(activity, auth, user) { SmsEnrollmentHandler(activity, auth, user) }
     val totpHandler = remember(auth, user) { TotpEnrollmentHandler(auth, user) }
@@ -102,8 +104,9 @@ fun MfaEnrollmentScreen(
 
     val resendTimerSeconds = rememberSaveable { mutableIntStateOf(0) }
 
-    val phoneAuthConfiguration = remember(authConfiguration) {
+    val phoneAuthConfiguration = remember(authConfiguration, applicationContext) {
         authConfiguration ?: authUIConfiguration {
+            context = applicationContext
             providers {
                 provider(
                     AuthProvider.Phone(

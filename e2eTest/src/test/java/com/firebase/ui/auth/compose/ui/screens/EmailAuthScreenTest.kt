@@ -27,6 +27,11 @@ import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.compose.testutil.awaitWithLooper
 import com.firebase.ui.auth.compose.testutil.ensureFreshUser
 import com.firebase.ui.auth.compose.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.compose.ui.screens.EmailAuthMode
+import com.firebase.ui.auth.compose.ui.screens.EmailAuthScreen
+import com.firebase.ui.auth.compose.ui.screens.ResetPasswordUI
+import com.firebase.ui.auth.compose.ui.screens.SignInUI
+import com.firebase.ui.auth.compose.ui.screens.SignUpUI
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
