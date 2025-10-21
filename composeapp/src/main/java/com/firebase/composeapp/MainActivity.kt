@@ -33,11 +33,21 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.actionCodeSettings
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val USE_AUTH_EMULATOR = true
+        private const val AUTH_EMULATOR_HOST = "10.0.2.2"
+        private const val AUTH_EMULATOR_PORT = 9099
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
+
+        if (USE_AUTH_EMULATOR) {
+            authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
+        }
 
         val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
 
