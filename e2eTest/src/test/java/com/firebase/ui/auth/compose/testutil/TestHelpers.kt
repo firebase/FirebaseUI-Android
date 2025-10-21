@@ -63,11 +63,28 @@ fun verifyEmailInEmulator(authUI: FirebaseAuthUI, emulatorApi: EmulatorAuthApi, 
 
     // Give the emulator time to process and store the OOB code
     shadowOf(Looper.getMainLooper()).idle()
-    Thread.sleep(100)
 
     // Step 2: Retrieve the VERIFY_EMAIL OOB code for this user from the emulator
+    // Retry with exponential backoff since emulator may be slow
     val email = requireNotNull(user.email) { "User email is required for OOB code lookup" }
-    val oobCode = emulatorApi.fetchVerifyEmailCode(email)
+    var oobCode: String? = null
+    var retries = 0
+    val maxRetries = 5
+    while (oobCode == null && retries < maxRetries) {
+        Thread.sleep(if (retries == 0) 200L else 500L * retries)
+        shadowOf(Looper.getMainLooper()).idle()
+        try {
+            oobCode = emulatorApi.fetchVerifyEmailCode(email)
+            println("TEST: Found OOB code after ${retries + 1} attempts")
+        } catch (e: Exception) {
+            retries++
+            if (retries >= maxRetries) {
+                throw Exception("Failed to fetch VERIFY_EMAIL OOB code after $maxRetries attempts: ${e.message}")
+            }
+            println("TEST: OOB code not found yet, retrying... (attempt $retries/$maxRetries)")
+        }
+    }
+    requireNotNull(oobCode) { "OOB code should not be null at this point" }
 
     println("TEST: Found OOB code: $oobCode")
 
