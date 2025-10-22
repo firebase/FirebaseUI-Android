@@ -103,154 +103,147 @@ class MainActivity : ComponentActivity() {
                 privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
             }
 
-        setContent {
-            AuthUITheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    FirebaseAuthScreen(
-                        configuration = configuration,
-                        authUI = authUI,
-                        emailLink = emailLink,
-                        onSignInSuccess = { result ->
-                            Log.d("MainActivity", "Authentication success: ${result.user?.uid}")
-                        },
-                        onSignInFailure = { exception: AuthException ->
-                            Log.e("MainActivity", "Authentication failed", exception)
-                        },
-                        onSignInCancelled = {
-                            Log.d("MainActivity", "Authentication cancelled")
-                        },
-                        authenticatedContent = { state, uiContext ->
-                            AppAuthenticatedContent(state, uiContext)
-                        }
-                    )
+            setContent {
+                AuthUITheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        FirebaseAuthScreen(
+                            configuration = configuration,
+                            authUI = authUI,
+                            emailLink = emailLink,
+                            onSignInSuccess = { result ->
+                                Log.d("MainActivity", "Authentication success: ${result.user?.uid}")
+                            },
+                            onSignInFailure = { exception: AuthException ->
+                                Log.e("MainActivity", "Authentication failed", exception)
+                            },
+                            onSignInCancelled = {
+                                Log.d("MainActivity", "Authentication cancelled")
+                            },
+                            authenticatedContent = { state, uiContext ->
+                                AppAuthenticatedContent(state, uiContext)
+                            }
+                        )
+                    }
                 }
             }
         }
     }
-}
 
-@Composable
-private fun AppAuthenticatedContent(
-    state: AuthState,
-    uiContext: AuthSuccessUiContext
-) {
-    val stringProvider = uiContext.stringProvider
-    when (state) {
-        is AuthState.Success -> {
-            val user = uiContext.authUI.getCurrentUser()
-            val identifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (identifier.isNotBlank()) {
+    @Composable
+    private fun AppAuthenticatedContent(
+        state: AuthState,
+        uiContext: AuthSuccessUiContext
+    ) {
+        val stringProvider = uiContext.stringProvider
+        when (state) {
+            is AuthState.Success -> {
+                val user = uiContext.authUI.getCurrentUser()
+                val identifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (identifier.isNotBlank()) {
+                        Text(
+                            text = stringProvider.signedInAs(identifier),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                     Text(
-                        text = stringProvider.signedInAs(identifier),
+                        "isAnonymous - ${state.user.isAnonymous}",
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                Text(
-                    "isAnonymous - ${state.user.isAnonymous}",
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    "Providers - ${state.user.providerData.map { it.providerId }}",
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                if (state.user.isAnonymous) {
-                    Button(
-                        onClick = {
+                    Text(
+                        "Providers - ${state.user.providerData.map { it.providerId }}",
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    if (state.user.isAnonymous) {
+                        Button(
+                            onClick = {
 
+                            }
+                        ) {
+                            Text("Upgrade with Email")
                         }
-                    ) {
-                        Text("Upgrade with Email")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = uiContext.onManageMfa) {
+                        Text(stringProvider.manageMfaAction)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = uiContext.onSignOut) {
+                        Text(stringProvider.signOutAction)
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = uiContext.onManageMfa) {
-                    Text(stringProvider.manageMfaAction)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = uiContext.onSignOut) {
-                    Text(stringProvider.signOutAction)
-                }
             }
-        }
 
-        is AuthState.RequiresEmailVerification -> {
-            val email = uiContext.authUI.getCurrentUser()?.email ?: stringProvider.emailProvider
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringProvider.verifyEmailInstruction(email),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { uiContext.authUI.getCurrentUser()?.sendEmailVerification() }) {
-                    Text(stringProvider.resendVerificationEmailAction)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = uiContext.onReloadUser) {
-                    Text(stringProvider.verifiedEmailAction)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = uiContext.onSignOut) {
-                    Text(stringProvider.signOutAction)
-                }
-            }
-        }
-
-        is AuthState.RequiresProfileCompletion -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringProvider.profileCompletionMessage,
-                    textAlign = TextAlign.Center
-                )
-                if (state.missingFields.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(12.dp))
+            is AuthState.RequiresEmailVerification -> {
+                val email = uiContext.authUI.getCurrentUser()?.email ?: stringProvider.emailProvider
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(
-                        text = stringProvider.profileMissingFieldsMessage(state.missingFields.joinToString()),
+                        text = stringProvider.verifyEmailInstruction(email),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = {
+                        uiContext.authUI.getCurrentUser()?.sendEmailVerification()
+                    }) {
+                        Text(stringProvider.resendVerificationEmailAction)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = uiContext.onReloadUser) {
+                        Text(stringProvider.verifiedEmailAction)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = uiContext.onSignOut) {
+                        Text(stringProvider.signOutAction)
+                    }
+                }
+            }
+
+            is AuthState.RequiresProfileCompletion -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringProvider.profileCompletionMessage,
                         textAlign = TextAlign.Center
                     )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = uiContext.onSignOut) {
-                    Text(stringProvider.signOutAction)
+                    if (state.missingFields.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = stringProvider.profileMissingFieldsMessage(state.missingFields.joinToString()),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = uiContext.onSignOut) {
+                        Text(stringProvider.signOutAction)
+                    }
                 }
             }
-        }
 
-        else -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        else -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
+            else -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
