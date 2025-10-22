@@ -32,6 +32,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
@@ -362,6 +363,12 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
         }.also {
             updateAuthState(AuthState.Idle)
         }
+    } catch (e: FirebaseAuthMultiFactorException) {
+        // MFA required - extract resolver and update state
+        val resolver = e.resolver
+        val hint = resolver.hints.firstOrNull()?.displayName
+        updateAuthState(AuthState.RequiresMfa(resolver, hint))
+        return null
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with email and password was cancelled",
@@ -482,6 +489,12 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             }
             updateAuthState(AuthState.Idle)
         }
+    } catch (e: FirebaseAuthMultiFactorException) {
+        // MFA required - extract resolver and update state
+        val resolver = e.resolver
+        val hint = resolver.hints.firstOrNull()?.displayName
+        updateAuthState(AuthState.RequiresMfa(resolver, hint))
+        return null
     } catch (e: FirebaseAuthUserCollisionException) {
         // Account collision: account already exists with different sign-in method
         // Create AccountLinkingRequiredException with credential for linking
