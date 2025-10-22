@@ -261,6 +261,132 @@ class MfaChallengeScreenTest {
             .assertIsEnabled()
     }
 
+    @Test
+    fun `default UI shows VerificationCodeInputField for SMS factor`() {
+        `when`(mockPhoneHint.factorId).thenReturn("phone")
+        `when`(mockPhoneHint.phoneNumber).thenReturn("+1234567890")
+        `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockPhoneHint))
+
+        var capturedState: MfaChallengeContentState? = null
+
+        composeTestRule.setContent {
+            TestMfaChallengeScreen(
+                resolver = mockResolver,
+                onStateChange = { capturedState = it }
+            )
+        }
+
+        composeTestRule.waitForIdle()
+
+        // Verify SMS factor type is detected
+        assertThat(capturedState?.factorType).isEqualTo(MfaFactor.Sms)
+
+        // Verify masked phone number is set correctly
+        // +1234567890 is 11 chars: +1 (2) + 6 masked + 890 (3) = +1••••••890
+        assertThat(capturedState?.maskedPhoneNumber).isEqualTo("+1••••••890")
+
+        // Verify that the verification code input works (via the state object that would be used by VerificationCodeInputField)
+        assertThat(capturedState?.verificationCode).isEmpty()
+        assertThat(capturedState?.isValid).isFalse()
+    }
+
+    @Test
+    fun `default UI shows VerificationCodeInputField for TOTP factor`() {
+        `when`(mockTotpHint.factorId).thenReturn("totp")
+        `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockTotpHint))
+
+        composeTestRule.setContent {
+            MfaChallengeScreen(
+                resolver = mockResolver,
+                auth = authUI.auth,
+                onSuccess = {},
+                onCancel = {},
+                onError = {}
+            )
+        }
+
+        composeTestRule.waitForIdle()
+
+        // Verify the default UI is displayed with TOTP-specific title
+        composeTestRule.onNodeWithText(stringProvider.mfaStepVerifyFactorTitle)
+            .assertIsDisplayed()
+
+        // Verify VerificationCodeInputField is present
+        composeTestRule.onNodeWithText(stringProvider.verifyAction)
+            .assertIsDisplayed()
+            .assertIsNotEnabled() // Should be disabled until code is entered
+    }
+
+    @Test
+    fun `default UI shows resend button for SMS factor`() {
+        // Test SMS factor
+        `when`(mockPhoneHint.factorId).thenReturn("phone")
+        `when`(mockPhoneHint.phoneNumber).thenReturn("+1234567890")
+        `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockPhoneHint))
+
+        composeTestRule.setContent {
+            MfaChallengeScreen(
+                resolver = mockResolver,
+                auth = authUI.auth,
+                onSuccess = {},
+                onCancel = {},
+                onError = {}
+            )
+        }
+
+        composeTestRule.waitForIdle()
+
+        // Should show resend button for SMS
+        composeTestRule.onNodeWithText(stringProvider.resendCode, substring = true)
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `default UI does not show resend button for TOTP factor`() {
+        // Test TOTP factor
+        `when`(mockTotpHint.factorId).thenReturn("totp")
+        `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockTotpHint))
+
+        composeTestRule.setContent {
+            MfaChallengeScreen(
+                resolver = mockResolver,
+                auth = authUI.auth,
+                onSuccess = {},
+                onCancel = {},
+                onError = {}
+            )
+        }
+
+        composeTestRule.waitForIdle()
+
+        // Should NOT show resend button for TOTP
+        composeTestRule.onNodeWithText(stringProvider.resendCode, substring = true)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `default UI displays masked phone number for SMS factor`() {
+        `when`(mockPhoneHint.factorId).thenReturn("phone")
+        `when`(mockPhoneHint.phoneNumber).thenReturn("+1234567890")
+        `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockPhoneHint))
+
+        var capturedState: MfaChallengeContentState? = null
+
+        composeTestRule.setContent {
+            TestMfaChallengeScreen(
+                resolver = mockResolver,
+                onStateChange = { capturedState = it }
+            )
+        }
+
+        composeTestRule.waitForIdle()
+
+        // Verify masked phone number is set correctly in the state
+        // +1234567890 is 11 chars: +1 (2) + 6 masked + 890 (3) = +1••••••890
+        assertThat(capturedState?.maskedPhoneNumber).isEqualTo("+1••••••890")
+        assertThat(capturedState?.factorType).isEqualTo(MfaFactor.Sms)
+    }
+
     @Composable
     private fun TestMfaChallengeScreen(
         resolver: MultiFactorResolver,

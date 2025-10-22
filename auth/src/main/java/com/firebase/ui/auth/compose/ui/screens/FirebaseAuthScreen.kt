@@ -277,9 +277,12 @@ fun FirebaseAuthScreen(
                             auth = authUI.auth,
                             onSuccess = {
                                 pendingResolver.value = null
+                                // Reset auth state to Idle so the firebaseAuthFlow Success state takes over
+                                authUI.updateAuthState(AuthState.Idle)
                             },
                             onCancel = {
                                 pendingResolver.value = null
+                                authUI.updateAuthState(AuthState.Cancelled)
                                 navController.popBackStack()
                             },
                             onError = { exception ->

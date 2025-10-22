@@ -17,33 +17,38 @@ package com.firebase.ui.auth.compose.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.configuration.MfaFactor
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.compose.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.compose.ui.components.VerificationCodeInputField
 
 @Composable
 internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
     val isSms = state.factorType == MfaFactor.Sms
     val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
+    val verificationCodeValidator = remember {
+        VerificationCodeValidator(stringProvider)
+    }
 
     Column(
         modifier = Modifier
@@ -82,16 +87,18 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
             )
         }
 
-        OutlinedTextField(
-            value = state.verificationCode,
-            onValueChange = state.onVerificationCodeChange,
-            label = { Text(stringProvider.verificationCodeLabel) },
-            enabled = !state.isLoading,
+        Spacer(modifier = Modifier.height(8.dp))
+
+        VerificationCodeInputField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            codeLength = 6,
+            validator = verificationCodeValidator,
             isError = state.error != null,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            errorMessage = state.error,
+            onCodeChange = state.onVerificationCodeChange
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (isSms) {
             Row(
