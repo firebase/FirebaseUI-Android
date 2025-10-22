@@ -232,6 +232,9 @@ fun FirebaseAuthScreen(
                                         Log.e("FirebaseAuthScreen", "Failed to refresh user", e)
                                     }
                                 }
+                            },
+                            onNavigate = { route ->
+                                navController.navigate(route.route)
                             }
                         )
                     }
@@ -434,7 +437,7 @@ fun FirebaseAuthScreen(
     }
 }
 
-private sealed class AuthRoute(val route: String) {
+sealed class AuthRoute(val route: String) {
     object MethodPicker : AuthRoute("auth_method_picker")
     object Email : AuthRoute("auth_email")
     object Phone : AuthRoute("auth_phone")
@@ -448,7 +451,8 @@ data class AuthSuccessUiContext(
     val stringProvider: AuthUIStringProvider,
     val onSignOut: () -> Unit,
     val onManageMfa: () -> Unit,
-    val onReloadUser: () -> Unit
+    val onReloadUser: () -> Unit,
+    val onNavigate: (AuthRoute) -> Unit,
 )
 
 @Composable

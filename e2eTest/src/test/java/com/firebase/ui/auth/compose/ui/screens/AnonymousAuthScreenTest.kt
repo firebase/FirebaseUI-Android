@@ -12,13 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
@@ -28,7 +29,6 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUserWithEmailAndPassword
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
@@ -36,7 +36,6 @@ import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -231,6 +230,30 @@ class AnonymousAuthScreenTest {
             .performClick()
 
         composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .assertIsDisplayed()
+            .performClick()
+        composeTestRule.onNodeWithText(stringProvider.emailHint)
+            .assertIsDisplayed()
+            .performTextInput(email)
+        composeTestRule.onNodeWithText(stringProvider.nameHint)
+            .assertIsDisplayed()
+            .performTextInput(name)
+        composeTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performTextInput(password)
+        composeTestRule.onNodeWithText(stringProvider.confirmPasswordHint)
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performTextInput(password)
+        composeTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.waitForIdle()
         println("TEST: Pumping looper after click...")
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -243,7 +266,11 @@ class AnonymousAuthScreenTest {
         }
 
         // Verify the auth state and user properties
-        println("TEST: Verifying final auth state: $currentAuthState")
+        println(
+            "TEST: Verifying final auth state: $currentAuthState, " +
+                    "anonymous user uid - $anonymousUserUID, linked user uid - " +
+                    authUI.auth.currentUser!!.uid
+        )
         assertThat(currentAuthState)
             .isInstanceOf(AuthState.RequiresEmailVerification::class.java)
         assertThat(authUI.auth.currentUser).isNotNull()
@@ -260,7 +287,6 @@ class AnonymousAuthScreenTest {
         email: String = "",
         password: String = "",
     ) {
-        val coroutineScope = rememberCoroutineScope()
         authUI.signOut(applicationContext)
         composeTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
@@ -301,22 +327,7 @@ class AnonymousAuthScreenTest {
                             if (state.user.isAnonymous) {
                                 Button(
                                     onClick = {
-                                        coroutineScope.launch {
-                                            try {
-                                                authUI.createOrLinkUserWithEmailAndPassword(
-                                                    context = applicationContext,
-                                                    config = configuration,
-                                                    provider = configuration.providers
-                                                        .filterIsInstance<AuthProvider.Email>()
-                                                        .first(),
-                                                    name = name,
-                                                    email = email,
-                                                    password = password,
-                                                )
-                                            } catch (e: Exception) {
-
-                                            }
-                                        }
+                                        uiContext.onNavigate(AuthRoute.Email)
                                     }
                                 ) {
                                     Text("Upgrade with Email")

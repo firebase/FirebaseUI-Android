@@ -26,9 +26,12 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
             coroutineScope.launch {
                 try {
                     signInAnonymously()
+                } catch (e: AuthException) {
+                    // Already an AuthException, don't re-wrap it
+                    updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
-                    // Error already handled via auth state flow in signInAnonymously()
-                    // No additional action needed - ErrorRecoveryDialog will show automatically
+                    val authException = AuthException.from(e)
+                    updateAuthState(AuthState.Error(authException))
                 }
             }
         }

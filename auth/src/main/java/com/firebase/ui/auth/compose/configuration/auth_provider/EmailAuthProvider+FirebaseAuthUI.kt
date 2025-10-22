@@ -108,8 +108,7 @@ import kotlinx.coroutines.tasks.await
  * }
  * ```
  */
-// TODO(demolaf): make this internal
-suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
+internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,

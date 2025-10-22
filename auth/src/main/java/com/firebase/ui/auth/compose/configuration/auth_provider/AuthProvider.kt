@@ -285,8 +285,7 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * An interface to wrap the static `EmailAuthProvider.getCredential` method to make it testable.
          * @suppress
          */
-        // TODO(demolaf): make this internal
-        interface CredentialProvider {
+        internal interface CredentialProvider {
             fun getCredential(email: String, password: String): AuthCredential
         }
 
