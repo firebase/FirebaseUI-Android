@@ -36,7 +36,7 @@ import com.google.firebase.auth.actionCodeSettings
 
 class MainActivity : ComponentActivity() {
     companion object {
-        private const val USE_AUTH_EMULATOR = false
+        private const val USE_AUTH_EMULATOR = true
         private const val AUTH_EMULATOR_HOST = "10.0.2.2"
         private const val AUTH_EMULATOR_PORT = 9099
     }
@@ -103,6 +103,7 @@ class MainActivity : ComponentActivity() {
                 privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
             }
 
+        setContent {
             AuthUITheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -230,6 +231,16 @@ private fun AppAuthenticatedContent(
                 Button(onClick = uiContext.onSignOut) {
                     Text(stringProvider.signOutAction)
                 }
+            }
+        }
+
+        else -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
 

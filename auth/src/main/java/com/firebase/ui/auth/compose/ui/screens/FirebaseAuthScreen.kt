@@ -52,6 +52,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
+import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
@@ -444,7 +445,7 @@ private sealed class AuthRoute(val route: String) {
 
 data class AuthSuccessUiContext(
     val authUI: FirebaseAuthUI,
-    val stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider,
+    val stringProvider: AuthUIStringProvider,
     val onSignOut: () -> Unit,
     val onManageMfa: () -> Unit,
     val onReloadUser: () -> Unit
@@ -453,7 +454,7 @@ data class AuthSuccessUiContext(
 @Composable
 private fun SuccessDestination(
     authState: AuthState,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider,
+    stringProvider: AuthUIStringProvider,
     uiContext: AuthSuccessUiContext
 ) {
     when (authState) {
@@ -497,7 +498,7 @@ private fun SuccessDestination(
 @Composable
 private fun AuthSuccessContent(
     authUI: FirebaseAuthUI,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider,
+    stringProvider: AuthUIStringProvider,
     onSignOut: () -> Unit,
     onManageMfa: () -> Unit
 ) {
@@ -530,7 +531,7 @@ private fun AuthSuccessContent(
 @Composable
 private fun EmailVerificationContent(
     authUI: FirebaseAuthUI,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider,
+    stringProvider: AuthUIStringProvider,
     onCheckStatus: () -> Unit,
     onSignOut: () -> Unit
 ) {
@@ -564,7 +565,7 @@ private fun EmailVerificationContent(
 @Composable
 private fun ProfileCompletionContent(
     missingFields: List<String>,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+    stringProvider: AuthUIStringProvider
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
