@@ -5,8 +5,8 @@ object Config {
     private const val kotlinVersion = "2.1.0"
 
     object SdkVersions {
-        const val compile = 34
-        const val target = 34
+        const val compile = 35
+        const val target = 35
         // Note that auth uses a different minSdk than this and
         // should be changed in auth/build.gradle.kts
         const val min = 21

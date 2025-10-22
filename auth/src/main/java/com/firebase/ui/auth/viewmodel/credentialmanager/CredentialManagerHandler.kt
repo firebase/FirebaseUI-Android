@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import androidx.credentials.CreatePasswordRequest
+import androidx.credentials.CredentialManager
 import androidx.credentials.CreateCredentialResponse
 import androidx.credentials.exceptions.CreateCredentialException
 import com.firebase.ui.auth.ErrorCodes

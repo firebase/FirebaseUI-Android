@@ -16,13 +16,22 @@ package com.firebase.ui.auth.ui;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 
 import com.firebase.ui.auth.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.core.graphics.Insets;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -34,8 +43,25 @@ public abstract class AppCompatBase extends HelperActivityBase {
         setTheme(R.style.FirebaseUI); // Provides default values
         setTheme(getFlowParams().themeId);
 
+        // Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        
         if (getFlowParams().lockOrientation) {
             lockOrientation();
+        }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // Add padding to the top for API 35+ when using edge-to-edge
+            View rootView = findViewById(android.R.id.content);
+            ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(v.getPaddingLeft(), systemBars.top, v.getPaddingRight(), v.getPaddingBottom());
+                return insets;
+            });
         }
     }
 

@@ -20,6 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -45,6 +50,9 @@ public class ChooserActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Enable edge-to-edge
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         if (AuthUI.canHandleIntent(getIntent())) {
             Intent intent = new Intent(ChooserActivity.this, AuthUiActivity
                     .class);
@@ -55,6 +63,22 @@ public class ChooserActivity extends AppCompatActivity {
         }
         mBinding = ActivityChooserBinding.inflate(getLayoutInflater());
         setContentView(mBinding.getRoot());
+
+        // Set up toolbar
+        setSupportActionBar(mBinding.toolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
+
+        // Handle the navigation bar padding
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.activities, (view, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            view.setPadding(
+                view.getPaddingLeft(),
+                view.getPaddingTop(),
+                view.getPaddingRight(),
+                insets.bottom
+            );
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         mBinding.activities.setLayoutManager(new LinearLayoutManager(this));
         mBinding.activities.setAdapter(new ActivityChooserAdapter());
