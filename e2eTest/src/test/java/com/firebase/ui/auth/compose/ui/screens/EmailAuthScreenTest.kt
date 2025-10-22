@@ -121,7 +121,7 @@ class EmailAuthScreenTest {
         }
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
         }
 
         composeTestRule.onNodeWithText(stringProvider.signInDefault)
@@ -156,7 +156,7 @@ class EmailAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -242,7 +242,7 @@ class EmailAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -309,7 +309,7 @@ class EmailAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -391,7 +391,7 @@ class EmailAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -484,7 +484,7 @@ class EmailAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            FirebaseAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -534,7 +534,7 @@ class EmailAuthScreenTest {
     }
 
     @Composable
-    private fun FirebaseAuthScreen(
+    private fun TestAuthScreen(
         configuration: AuthUIConfiguration,
         onSuccess: ((AuthResult) -> Unit) = {},
         onError: ((AuthException) -> Unit) = {},

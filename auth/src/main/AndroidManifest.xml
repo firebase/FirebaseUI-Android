@@ -122,27 +122,6 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-        <!-- Email Link Sign-In Handler Activity for Compose -->
-        <!-- This activity handles deep links for passwordless email authentication -->
-        <!-- The host is automatically read from firebase_web_host in config.xml -->
-        <!-- NOTE: firebase_web_host must be lowercase (e.g., project-id.firebaseapp.com) -->
-        <activity
-            android:name=".compose.ui.screens.EmailSignInLinkHandlerActivity"
-            android:label=""
-            android:exported="true"
-            android:theme="@style/FirebaseUI.Transparent">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="@string/firebase_web_host"
-                    tools:ignore="AppLinksAutoVerify,AppLinkUrlError" />
-            </intent-filter>
-        </activity>
-
         <provider
             android:name=".data.client.AuthUiInitProvider"
             android:authorities="${applicationId}.authuiinitprovider"

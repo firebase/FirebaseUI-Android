@@ -122,10 +122,10 @@ fun AuthMethodPicker(
             }
         }
         AnnotatedStringResource(
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
             context = context,
             inPreview = inPreview,
             previewText = "By continuing, you accept our Terms of Service and Privacy Policy.",
-            modifier = Modifier.padding(vertical = 16.dp),
             id = R.string.fui_tos_and_pp,
             links = arrayOf(
                 "Terms of Service" to (termsOfServiceUrl ?: ""),

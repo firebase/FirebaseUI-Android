@@ -21,6 +21,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvidersBui
 import com.firebase.ui.auth.compose.configuration.auth_provider.Provider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.google.firebase.auth.ActionCodeSettings
 import java.util.Locale
@@ -43,7 +44,7 @@ class AuthUIConfigurationBuilder {
     var isAnonymousUpgradeEnabled: Boolean = false
     var tosUrl: String? = null
     var privacyPolicyUrl: String? = null
-    var logo: ImageVector? = null
+    var logo: AuthUIAsset? = null
     var passwordResetActionCodeSettings: ActionCodeSettings? = null
     var isNewEmailAccountsAllowed: Boolean = true
     var isDisplayNameRequired: Boolean = true
@@ -171,7 +172,7 @@ class AuthUIConfiguration(
     /**
      * The logo to display on the authentication screens.
      */
-    val logo: ImageVector? = null,
+    val logo: AuthUIAsset? = null,
 
     /**
      * Configuration for sending email reset link.

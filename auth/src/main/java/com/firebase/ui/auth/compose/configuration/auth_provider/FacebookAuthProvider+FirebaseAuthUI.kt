@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
  * @see signInWithFacebook
  */
 @Composable
-fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
+internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,

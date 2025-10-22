@@ -28,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,11 +49,11 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
@@ -98,9 +97,14 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
 
+    val anonymousProvider = configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
     val facebookProvider = configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
-    val logoAsset = configuration.logo?.let { AuthUIAsset.Vector(it) }
+    val logoAsset = configuration.logo
+
+    val onSignInAnonymously = anonymousProvider?.let {
+        authUI.rememberAnonymousSignInHandler()
+    }
 
     val onSignInWithFacebook = facebookProvider?.let {
         authUI.rememberSignInWithFacebookLauncher(
@@ -128,6 +132,8 @@ fun FirebaseAuthScreen(
                         privacyPolicyUrl = configuration.privacyPolicyUrl,
                         onProviderSelected = { provider ->
                             when (provider) {
+                                is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
+
                                 is AuthProvider.Email -> {
                                     navController.navigate(AuthRoute.Email.route)
                                 }
@@ -226,6 +232,9 @@ fun FirebaseAuthScreen(
                                         Log.e("FirebaseAuthScreen", "Failed to refresh user", e)
                                     }
                                 }
+                            },
+                            onNavigate = { route ->
+                                navController.navigate(route.route)
                             }
                         )
                     }
@@ -431,7 +440,7 @@ fun FirebaseAuthScreen(
     }
 }
 
-private sealed class AuthRoute(val route: String) {
+sealed class AuthRoute(val route: String) {
     object MethodPicker : AuthRoute("auth_method_picker")
     object Email : AuthRoute("auth_email")
     object Phone : AuthRoute("auth_phone")
@@ -445,7 +454,8 @@ data class AuthSuccessUiContext(
     val stringProvider: AuthUIStringProvider,
     val onSignOut: () -> Unit,
     val onManageMfa: () -> Unit,
-    val onReloadUser: () -> Unit
+    val onReloadUser: () -> Unit,
+    val onNavigate: (AuthRoute) -> Unit,
 )
 
 @Composable
