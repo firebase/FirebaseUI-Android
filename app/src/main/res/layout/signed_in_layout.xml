@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="16dp"
+    android:paddingTop="32dp"
     android:paddingBottom="16dp"
     android:clipToPadding="false"
+    android:fitsSystemWindows="true"
     tools:context=".auth.SignedInActivity">
 
     <LinearLayout
