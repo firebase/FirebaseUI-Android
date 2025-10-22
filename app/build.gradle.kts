@@ -10,7 +10,7 @@ android {
     namespace = "com.firebase.uidemo"
 
     defaultConfig {
-        minSdk = 23
+        minSdk = Config.SdkVersions.min
         targetSdk = Config.SdkVersions.target
 
         versionName = Config.version
