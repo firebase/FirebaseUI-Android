@@ -284,5 +284,64 @@ fun EmailAuthScreen(
         )
     }
 
-    content?.invoke(state)
+    if (content != null) {
+        content(state)
+    } else {
+        DefaultEmailAuthContent(
+            configuration = configuration,
+            state = state
+        )
+    }
+}
+
+@Composable
+private fun DefaultEmailAuthContent(
+    configuration: AuthUIConfiguration,
+    state: EmailAuthContentState
+) {
+    when (state.mode) {
+        EmailAuthMode.SignIn -> {
+            SignInUI(
+                configuration = configuration,
+                email = state.email,
+                isLoading = state.isLoading,
+                emailSignInLinkSent = state.emailSignInLinkSent,
+                password = state.password,
+                onEmailChange = state.onEmailChange,
+                onPasswordChange = state.onPasswordChange,
+                onSignInClick = state.onSignInClick,
+                onGoToSignUp = state.onGoToSignUp,
+                onGoToResetPassword = state.onGoToResetPassword
+            )
+        }
+
+        EmailAuthMode.SignUp -> {
+            SignUpUI(
+                configuration = configuration,
+                isLoading = state.isLoading,
+                displayName = state.displayName,
+                email = state.email,
+                password = state.password,
+                confirmPassword = state.confirmPassword,
+                onDisplayNameChange = state.onDisplayNameChange,
+                onEmailChange = state.onEmailChange,
+                onPasswordChange = state.onPasswordChange,
+                onConfirmPasswordChange = state.onConfirmPasswordChange,
+                onSignUpClick = state.onSignUpClick,
+                onGoToSignIn = state.onGoToSignIn
+            )
+        }
+
+        EmailAuthMode.ResetPassword -> {
+            ResetPasswordUI(
+                configuration = configuration,
+                isLoading = state.isLoading,
+                email = state.email,
+                resetLinkSent = state.resetLinkSent,
+                onEmailChange = state.onEmailChange,
+                onSendResetLink = state.onSendResetLinkClick,
+                onGoToSignIn = state.onGoToSignIn
+            )
+        }
+    }
 }

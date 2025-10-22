@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization") version Config.kotlinVersion
     id("com.google.gms.google-services") apply false
 }
 
@@ -53,14 +52,6 @@ dependencies {
     implementation(Config.Libs.Androidx.Compose.toolingPreview)
     implementation(Config.Libs.Androidx.Compose.material3)
 
-    // Navigation 3
-    implementation(Config.Libs.Androidx.Navigation.nav3Runtime)
-    implementation(Config.Libs.Androidx.Navigation.nav3UI)
-    implementation(Config.Libs.Androidx.Navigation.lifecycleViewmodelNav3)
-    implementation(Config.Libs.Androidx.kotlinxSerialization)
-
-    // QR Code generation for TOTP
-    implementation("com.google.zxing:core:3.5.3")
 
     // Facebook
     implementation(Config.Libs.Provider.facebook)

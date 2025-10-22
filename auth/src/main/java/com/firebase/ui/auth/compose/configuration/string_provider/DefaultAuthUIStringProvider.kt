@@ -235,6 +235,87 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_required_field)
     override val progressDialogLoading: String
         get() = localizedContext.getString(R.string.fui_progress_dialog_loading)
+
+    override fun signedInAs(userIdentifier: String): String =
+        localizedContext.getString(R.string.fui_signed_in_as, userIdentifier)
+
+    override val manageMfaAction: String
+        get() = localizedContext.getString(R.string.fui_manage_mfa_action)
+
+    override val signOutAction: String
+        get() = localizedContext.getString(R.string.fui_sign_out_action)
+
+    override fun verifyEmailInstruction(email: String): String =
+        localizedContext.getString(R.string.fui_verify_email_instruction, email)
+
+    override val resendVerificationEmailAction: String
+        get() = localizedContext.getString(R.string.fui_resend_verification_email_action)
+
+    override val verifiedEmailAction: String
+        get() = localizedContext.getString(R.string.fui_verified_email_action)
+
+    override val profileCompletionMessage: String
+        get() = localizedContext.getString(R.string.fui_profile_completion_message)
+
+    override fun profileMissingFieldsMessage(fields: String): String =
+        localizedContext.getString(R.string.fui_profile_missing_fields_message, fields)
+
+    override val skipAction: String
+        get() = localizedContext.getString(R.string.fui_skip_action)
+
+    override val removeAction: String
+        get() = localizedContext.getString(R.string.fui_remove_action)
+
+    override val backAction: String
+        get() = localizedContext.getString(R.string.fui_back_action)
+
+    override val verifyAction: String
+        get() = localizedContext.getString(R.string.fui_verify_action)
+
+    override val useDifferentMethodAction: String
+        get() = localizedContext.getString(R.string.fui_use_different_method_action)
+
+    override val recoveryCodesSavedAction: String
+        get() = localizedContext.getString(R.string.fui_recovery_codes_saved_action)
+
+    override val secretKeyLabel: String
+        get() = localizedContext.getString(R.string.fui_secret_key_label)
+
+    override val verificationCodeLabel: String
+        get() = localizedContext.getString(R.string.fui_verification_code_label)
+
+    override val identityVerifiedMessage: String
+        get() = localizedContext.getString(R.string.fui_identity_verified_message)
+
+    override val mfaManageFactorsTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_manage_factors_title)
+
+    override val mfaManageFactorsDescription: String
+        get() = localizedContext.getString(R.string.fui_mfa_manage_factors_description)
+
+    override val mfaActiveMethodsTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_active_methods_title)
+
+    override val mfaAddNewMethodTitle: String
+        get() = localizedContext.getString(R.string.fui_mfa_add_new_method_title)
+
+    override val mfaAllMethodsEnrolledMessage: String
+        get() = localizedContext.getString(R.string.fui_mfa_all_methods_enrolled_message)
+
+    override val smsAuthenticationLabel: String
+        get() = localizedContext.getString(R.string.fui_mfa_label_sms_authentication)
+
+    override val totpAuthenticationLabel: String
+        get() = localizedContext.getString(R.string.fui_mfa_label_totp_authentication)
+
+    override val unknownMethodLabel: String
+        get() = localizedContext.getString(R.string.fui_mfa_label_unknown_method)
+
+    override fun enrolledOnDateLabel(date: String): String =
+        localizedContext.getString(R.string.fui_mfa_enrolled_on, date)
+
+    override val setupAuthenticatorDescription: String
+        get() = localizedContext.getString(R.string.fui_mfa_setup_authenticator_description)
     override val noInternet: String
         get() = localizedContext.getString(R.string.fui_no_internet)
 
@@ -319,4 +400,19 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_mfa_error_network)
     override val mfaErrorGeneric: String
         get() = localizedContext.getString(R.string.fui_mfa_error_generic)
+
+    override val reauthDialogTitle: String
+        get() = localizedContext.getString(R.string.fui_reauth_dialog_title)
+
+    override val reauthDialogMessage: String
+        get() = localizedContext.getString(R.string.fui_reauth_dialog_message)
+
+    override fun reauthAccountLabel(email: String): String =
+        localizedContext.getString(R.string.fui_reauth_account_label, email)
+
+    override val incorrectPasswordError: String
+        get() = localizedContext.getString(R.string.fui_incorrect_password_error)
+
+    override val reauthGenericError: String
+        get() = localizedContext.getString(R.string.fui_reauth_generic_error)
 }

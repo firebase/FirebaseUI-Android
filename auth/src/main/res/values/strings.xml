@@ -31,6 +31,44 @@
     <string name="fui_sign_in_with_microsoft" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Microsoft</string>
     <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Yahoo</string>
 
+    <!-- Account management -->
+    <string name="fui_signed_in_as" translation_description="Message showing who is signed in.">Signed in as %1$s</string>
+    <string name="fui_manage_mfa_action" translation_description="Action label for managing multi-factor authentication.">Manage multi-factor authentication</string>
+    <string name="fui_sign_out_action" translation_description="Action label for signing out.">Sign out</string>
+    <string name="fui_verify_email_instruction" translation_description="Instruction asking the user to verify their email.">Please verify %1$s to continue.</string>
+    <string name="fui_resend_verification_email_action" translation_description="Action label for resending a verification email.">Resend verification email</string>
+    <string name="fui_verified_email_action" translation_description="Action label once the user has verified their email.">I\'ve verified my email</string>
+    <string name="fui_profile_completion_message" translation_description="Message shown when profile completion is required.">Please complete your profile information to continue.</string>
+    <string name="fui_profile_missing_fields_message" translation_description="Message enumerating missing profile fields.">Missing fields: %1$s</string>
+    <string name="fui_skip_action" translation_description="Generic action for skipping an optional step.">Skip for now</string>
+    <string name="fui_remove_action" translation_description="Generic remove action label.">Remove</string>
+    <string name="fui_back_action" translation_description="Generic back action label.">Back</string>
+    <string name="fui_verify_action" translation_description="Generic verify action label.">Verify</string>
+    <string name="fui_use_different_method_action" translation_description="Action prompting the user to select a different MFA method.">Use a different method</string>
+    <string name="fui_recovery_codes_saved_action" translation_description="Action confirming recovery codes have been saved.">I\'ve saved these codes</string>
+    <string name="fui_secret_key_label" translation_description="Label for a secret key value.">Secret key</string>
+    <string name="fui_verification_code_label" translation_description="Label for verification code input fields.">Verification code</string>
+    <string name="fui_identity_verified_message" translation_description="Message shown when identity verification succeeds.">Identity verified. Please try your action again.</string>
+
+    <!-- MFA management -->
+    <string name="fui_mfa_manage_factors_title" translation_description="Title for the manage MFA screen.">Manage two-factor authentication</string>
+    <string name="fui_mfa_manage_factors_description" translation_description="Helper description for managing MFA methods.">Add or remove authentication methods for your account</string>
+    <string name="fui_mfa_active_methods_title" translation_description="Title for the list of enrolled factors.">Active methods</string>
+    <string name="fui_mfa_add_new_method_title" translation_description="Title for the list of available factors to enroll.">Add new method</string>
+    <string name="fui_mfa_all_methods_enrolled_message" translation_description="Message shown when all available factors are already enrolled.">All available authentication methods are enrolled</string>
+    <string name="fui_mfa_label_sms_authentication" translation_description="Label for the SMS MFA factor.">SMS authentication</string>
+    <string name="fui_mfa_label_totp_authentication" translation_description="Label for the authenticator app MFA factor.">Authenticator app</string>
+    <string name="fui_mfa_label_unknown_method" translation_description="Label for an unknown MFA factor.">Unknown method</string>
+    <string name="fui_mfa_enrolled_on" translation_description="Label indicating the enrollment date of an MFA factor.">Enrolled on %1$s</string>
+    <string name="fui_mfa_setup_authenticator_description" translation_description="Description displayed during authenticator app setup.">Scan the QR code or enter the secret key in your authenticator app</string>
+
+    <!-- Re-authentication dialog -->
+    <string name="fui_reauth_dialog_title" translation_description="Title for the re-authentication dialog.">Verify your identity</string>
+    <string name="fui_reauth_dialog_message" translation_description="Message shown in the re-authentication dialog.">For your security, please re-enter your password to continue.</string>
+    <string name="fui_reauth_account_label" translation_description="Label indicating the email account being re-authenticated.">Account: %1$s</string>
+    <string name="fui_incorrect_password_error" translation_description="Error shown when the provided password is incorrect.">Incorrect password. Please try again.</string>
+    <string name="fui_reauth_generic_error" translation_description="Generic error shown when re-authentication fails.">Authentication failed. Please try again.</string>
+
     <!-- Common-->
     <string name="fui_next_default" translation_description="Button text to continue">Next</string>
     <string name="fui_email_hint" translation_description="Hint in email input field">Email</string>

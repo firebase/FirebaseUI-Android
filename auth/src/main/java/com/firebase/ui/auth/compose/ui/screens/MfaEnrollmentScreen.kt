@@ -22,8 +22,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
+import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaFactor
+import com.firebase.ui.auth.compose.configuration.authUIConfiguration
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.data.CountryData
 import com.firebase.ui.auth.compose.data.CountryUtils
 import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
@@ -65,15 +69,17 @@ fun MfaEnrollmentScreen(
     user: FirebaseUser,
     auth: FirebaseAuth,
     configuration: MfaConfiguration,
+    authConfiguration: AuthUIConfiguration? = null,
     onComplete: () -> Unit,
     onSkip: () -> Unit = {},
     onError: (Exception) -> Unit = {},
-    content: @Composable (MfaEnrollmentContentState) -> Unit
+    content: @Composable ((MfaEnrollmentContentState) -> Unit)? = null
 ) {
     val activity = requireNotNull(LocalActivity.current) {
         "MfaEnrollmentScreen must be used within an Activity context for SMS verification"
     }
     val coroutineScope = rememberCoroutineScope()
+    val applicationContext = LocalContext.current.applicationContext
 
     val smsHandler = remember(activity, auth, user) { SmsEnrollmentHandler(activity, auth, user) }
     val totpHandler = remember(auth, user) { TotpEnrollmentHandler(auth, user) }
@@ -82,6 +88,7 @@ fun MfaEnrollmentScreen(
     val selectedFactor = rememberSaveable { mutableStateOf<MfaFactor?>(null) }
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf<String?>(null) }
+    val lastException = remember { mutableStateOf<Exception?>(null) }
     val enrolledFactors = remember { mutableStateOf(user.multiFactor.enrolledFactors) }
 
     val phoneNumber = rememberSaveable { mutableStateOf("") }
@@ -96,6 +103,21 @@ fun MfaEnrollmentScreen(
     val recoveryCodes = remember { mutableStateOf<List<String>?>(null) }
 
     val resendTimerSeconds = rememberSaveable { mutableIntStateOf(0) }
+
+    val phoneAuthConfiguration = remember(authConfiguration, applicationContext) {
+        authConfiguration ?: authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = null,
+                        allowedCountries = null
+                    )
+                )
+            }
+        }
+    }
 
     // Handle resend timer countdown
     LaunchedEffect(resendTimerSeconds.intValue) {
@@ -121,8 +143,10 @@ fun MfaEnrollmentScreen(
                             issuer = auth.app.name
                         )
                         error.value = null
+                        lastException.value = null
                     } catch (e: Exception) {
                         error.value = e.message
+                        lastException.value = e
                         onError(e)
                     } finally {
                         isLoading.value = false
@@ -137,6 +161,7 @@ fun MfaEnrollmentScreen(
         step = currentStep.value,
         isLoading = isLoading.value,
         error = error.value,
+        exception = lastException.value,
         onBackClick = {
             when (currentStep.value) {
                 MfaEnrollmentStep.SelectFactor -> {}
@@ -160,6 +185,7 @@ fun MfaEnrollmentScreen(
                 }
             }
             error.value = null
+            lastException.value = null
         },
         availableFactors = configuration.allowedFactors,
         enrolledFactors = enrolledFactors.value,
@@ -181,8 +207,10 @@ fun MfaEnrollmentScreen(
                                 issuer = auth.app.name
                             )
                             error.value = null
+                            lastException.value = null
                         } catch (e: Exception) {
                             error.value = e.message
+                            lastException.value = e
                             onError(e)
                         } finally {
                             isLoading.value = false
@@ -202,12 +230,16 @@ fun MfaEnrollmentScreen(
                             error.value = null
                         } else {
                             error.value = task.exception?.message
-                            task.exception?.let { onError(it) }
+                            task.exception?.let {
+                                lastException.value = it
+                                onError(it)
+                            }
                         }
                         isLoading.value = false
                     }
                 } catch (e: Exception) {
                     error.value = e.message
+                    lastException.value = e
                     onError(e)
                     isLoading.value = false
                 }
@@ -235,8 +267,10 @@ fun MfaEnrollmentScreen(
                     currentStep.value = MfaEnrollmentStep.VerifyFactor
                     resendTimerSeconds.intValue = SmsEnrollmentHandler.RESEND_DELAY_SECONDS
                     error.value = null
+                    lastException.value = null
                 } catch (e: Exception) {
                     error.value = e.message
+                    lastException.value = e
                     onError(e)
                 } finally {
                     isLoading.value = false
@@ -295,8 +329,10 @@ fun MfaEnrollmentScreen(
                         onComplete()
                     }
                     error.value = null
+                    lastException.value = null
                 } catch (e: Exception) {
                     error.value = e.message
+                    lastException.value = e
                     onError(e)
                 } finally {
                     isLoading.value = false
@@ -317,8 +353,10 @@ fun MfaEnrollmentScreen(
                                 smsSession.value = newSession
                                 resendTimerSeconds.intValue = SmsEnrollmentHandler.RESEND_DELAY_SECONDS
                                 error.value = null
+                                lastException.value = null
                             } catch (e: Exception) {
                                 error.value = e.message
+                                lastException.value = e
                                 onError(e)
                             } finally {
                                 isLoading.value = false
@@ -334,7 +372,15 @@ fun MfaEnrollmentScreen(
         }
     )
 
-    content(state)
+    if (content != null) {
+        content(state)
+    } else {
+        DefaultMfaEnrollmentContent(
+            state = state,
+            authConfiguration = phoneAuthConfiguration,
+            user = user
+        )
+    }
 }
 
 /**
