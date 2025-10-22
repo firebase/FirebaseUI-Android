@@ -21,7 +21,6 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PrivacyDisclosureUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.EmailAuthProvider;
 
@@ -30,8 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
-
-import static com.firebase.ui.auth.AuthUI.EMAIL_LINK_PROVIDER;
 
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that email.
@@ -95,8 +92,8 @@ public class CheckEmailFragment extends FragmentBase implements
         mSignInButton.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
 
-        // Hide sign up button for email link authentication
-        if (getEmailProvider().equals(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD)) {
+        // Hide sign up button for email link authentication or if explicitly disabled.
+        if (getEmailProvider().equals(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) || hideSignUpButton()) {
             mSignUpButton.setVisibility(View.GONE);
         }
 
@@ -163,6 +160,15 @@ public class CheckEmailFragment extends FragmentBase implements
     public void onDonePressed() {
         // When the user hits “done” on the keyboard, default to sign‑in.
         signIn();
+    }
+
+    private Boolean hideSignUpButton() {
+        for (AuthUI.IdpConfig config : getFlowParams().providers) {
+            if (EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD.equals(config.getProviderId())) {
+                return config.getParams().containsKey(ExtraConstants.HIDE_EMAIL_SIGN_UP);
+            }
+        }
+        return false;
     }
 
     private String getEmailProvider() {
