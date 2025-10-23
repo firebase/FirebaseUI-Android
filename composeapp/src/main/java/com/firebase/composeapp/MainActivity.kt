@@ -1,39 +1,24 @@
 package com.firebase.composeapp
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.Composable
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
-import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.actionCodeSettings
 
+/**
+ * Main launcher activity that allows users to choose between different
+ * authentication API demonstrations.
+ */
 class MainActivity : ComponentActivity() {
     companion object {
         private const val USE_AUTH_EMULATOR = true
@@ -45,6 +30,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        // Initialize Firebase and configure emulator if needed
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
 
@@ -52,198 +38,149 @@ class MainActivity : ComponentActivity() {
             authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
         }
 
-        val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
-
         setContent {
-            val configuration = authUIConfiguration {
-                context = applicationContext
-                providers {
-                    provider(AuthProvider.Anonymous)
-                    provider(
-                        AuthProvider.Email(
-                            isDisplayNameRequired = true,
-                            isEmailLinkForceSameDeviceEnabled = true,
-                            isEmailLinkSignInEnabled = false,
-                            emailLinkActionCodeSettings = actionCodeSettings {
-                                url = "https://temp-test-aa342.firebaseapp.com"
-                                handleCodeInApp = true
-                                setAndroidPackageName(
-                                    "com.firebase.composeapp",
-                                    true,
-                                    null
-                                )
-                            },
-                            isNewAccountsAllowed = true,
-                            minimumPasswordLength = 8,
-                            passwordValidationRules = listOf(
-                                PasswordRule.MinimumLength(8),
-                                PasswordRule.RequireLowercase,
-                                PasswordRule.RequireUppercase,
-                            )
-                        )
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    ChooserScreen(
+                        onHighLevelApiClick = {
+                            startActivity(Intent(this, HighLevelApiDemoActivity::class.java))
+                        },
+                        onLowLevelApiClick = {
+                            startActivity(Intent(this, AuthFlowControllerDemoActivity::class.java))
+                        }
                     )
-                    provider(
-                        AuthProvider.Phone(
-                            defaultNumber = null,
-                            defaultCountryCode = null,
-                            allowedCountries = emptyList(),
-                            smsCodeLength = 6,
-                            timeout = 120L,
-                            isInstantVerificationEnabled = true
-                        )
-                    )
-                    provider(
-                        AuthProvider.Facebook(
-                            applicationId = "792556260059222"
-                        )
-                    )
-                }
-                logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
-                tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
-                privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
-            }
-
-            setContent {
-                AuthUITheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        FirebaseAuthScreen(
-                            configuration = configuration,
-                            authUI = authUI,
-                            emailLink = emailLink,
-                            onSignInSuccess = { result ->
-                                Log.d("MainActivity", "Authentication success: ${result.user?.uid}")
-                            },
-                            onSignInFailure = { exception: AuthException ->
-                                Log.e("MainActivity", "Authentication failed", exception)
-                            },
-                            onSignInCancelled = {
-                                Log.d("MainActivity", "Authentication cancelled")
-                            },
-                            authenticatedContent = { state, uiContext ->
-                                AppAuthenticatedContent(state, uiContext)
-                            }
-                        )
-                    }
                 }
             }
         }
     }
+}
 
-    @Composable
-    private fun AppAuthenticatedContent(
-        state: AuthState,
-        uiContext: AuthSuccessUiContext
+@Composable
+fun ChooserScreen(
+    onHighLevelApiClick: () -> Unit,
+    onLowLevelApiClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
     ) {
-        val stringProvider = uiContext.stringProvider
-        when (state) {
-            is AuthState.Success -> {
-                val user = uiContext.authUI.getCurrentUser()
-                val identifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    if (identifier.isNotBlank()) {
-                        Text(
-                            text = stringProvider.signedInAs(identifier),
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    Text(
-                        "isAnonymous - ${state.user.isAnonymous}",
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        "Providers - ${state.user.providerData.map { it.providerId }}",
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    if (state.user.isAnonymous) {
-                        Button(
-                            onClick = {
+        // Header
+        Text(
+            text = "Firebase Auth UI Compose",
+            style = MaterialTheme.typography.headlineLarge,
+            textAlign = TextAlign.Center
+        )
 
-                            }
-                        ) {
-                            Text("Upgrade with Email")
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = uiContext.onManageMfa) {
-                        Text(stringProvider.manageMfaAction)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = uiContext.onSignOut) {
-                        Text(stringProvider.signOutAction)
-                    }
-                }
+        Text(
+            text = "Choose a demo to explore different authentication APIs",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // High-Level API Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onHighLevelApiClick
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "🎨 High-Level API",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "FirebaseAuthScreen Composable",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Best for: Pure Compose applications that want a complete, ready-to-use authentication UI with minimal setup.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Features:",
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "• Drop-in Composable\n• Automatic navigation\n• State management included\n• Customizable content",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
+        }
 
-            is AuthState.RequiresEmailVerification -> {
-                val email = uiContext.authUI.getCurrentUser()?.email ?: stringProvider.emailProvider
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringProvider.verifyEmailInstruction(email),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = {
-                        uiContext.authUI.getCurrentUser()?.sendEmailVerification()
-                    }) {
-                        Text(stringProvider.resendVerificationEmailAction)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = uiContext.onReloadUser) {
-                        Text(stringProvider.verifiedEmailAction)
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = uiContext.onSignOut) {
-                        Text(stringProvider.signOutAction)
-                    }
-                }
+        // Low-Level API Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onLowLevelApiClick
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "⚙️ Low-Level API",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "AuthFlowController",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Best for: Applications that need fine-grained control over the authentication flow with ActivityResultLauncher integration.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Features:",
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "• Lifecycle-safe controller\n• ActivityResultLauncher\n• Observable state with Flow\n• Manual flow control",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
+        }
 
-            is AuthState.RequiresProfileCompletion -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringProvider.profileCompletionMessage,
-                        textAlign = TextAlign.Center
-                    )
-                    if (state.missingFields.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = stringProvider.profileMissingFieldsMessage(state.missingFields.joinToString()),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = uiContext.onSignOut) {
-                        Text(stringProvider.signOutAction)
-                    }
-                }
-            }
+        Spacer(modifier = Modifier.height(16.dp))
 
-            else -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+        // Info card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "💡 Tip",
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "Both APIs provide the same authentication capabilities. Choose based on your app's architecture and control requirements.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
             }
         }
     }
