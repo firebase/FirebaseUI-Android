@@ -50,6 +50,12 @@
             android:label="Low-Level API Demo"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name=".CustomSlotsThemingDemoActivity"
+            android:label="Custom Slots &amp; Theming Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
     </application>
 
 </manifest>
