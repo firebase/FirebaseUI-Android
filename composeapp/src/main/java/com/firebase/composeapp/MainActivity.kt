@@ -10,16 +10,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.Composable
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
@@ -28,15 +28,15 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
 import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.actionCodeSettings
 
 class MainActivity : ComponentActivity() {
     companion object {
-        private const val USE_AUTH_EMULATOR = true
+        private const val USE_AUTH_EMULATOR = false
         private const val AUTH_EMULATOR_HOST = "10.0.2.2"
         private const val AUTH_EMULATOR_PORT = 9099
     }
@@ -54,79 +54,83 @@ class MainActivity : ComponentActivity() {
 
         val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
 
-        setContent {
-            val configuration = authUIConfiguration {
-                context = applicationContext
-                providers {
-                    provider(AuthProvider.Anonymous)
-                    provider(
-                        AuthProvider.Email(
-                            isDisplayNameRequired = true,
-                            isEmailLinkForceSameDeviceEnabled = true,
-                            isEmailLinkSignInEnabled = false,
-                            emailLinkActionCodeSettings = actionCodeSettings {
-                                url = "https://temp-test-aa342.firebaseapp.com"
-                                handleCodeInApp = true
-                                setAndroidPackageName(
-                                    "com.firebase.composeapp",
-                                    true,
-                                    null
-                                )
-                            },
-                            isNewAccountsAllowed = true,
-                            minimumPasswordLength = 8,
-                            passwordValidationRules = listOf(
-                                PasswordRule.MinimumLength(8),
-                                PasswordRule.RequireLowercase,
-                                PasswordRule.RequireUppercase,
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Anonymous)
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf("email"),
+                        serverClientId = "771411398215-o39fujhds88bs4mb5ai7u6o73g86fspp.apps.googleusercontent.com",
+                    )
+                )
+                provider(
+                    AuthProvider.Email(
+                        isDisplayNameRequired = true,
+                        isEmailLinkForceSameDeviceEnabled = true,
+                        isEmailLinkSignInEnabled = true,
+                        emailLinkActionCodeSettings = actionCodeSettings {
+                            url = "https://temp-test-aa342.firebaseapp.com"
+                            handleCodeInApp = true
+                            setAndroidPackageName(
+                                "com.firebase.composeapp",
+                                true,
+                                null
                             )
+                        },
+                        isNewAccountsAllowed = true,
+                        minimumPasswordLength = 8,
+                        passwordValidationRules = listOf(
+                            PasswordRule.MinimumLength(8),
+                            PasswordRule.RequireLowercase,
+                            PasswordRule.RequireUppercase,
                         )
                     )
-                    provider(
-                        AuthProvider.Phone(
-                            defaultNumber = null,
-                            defaultCountryCode = null,
-                            allowedCountries = emptyList(),
-                            smsCodeLength = 6,
-                            timeout = 120L,
-                            isInstantVerificationEnabled = true
-                        )
+                )
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = null,
+                        allowedCountries = emptyList(),
+                        smsCodeLength = 6,
+                        timeout = 120L,
+                        isInstantVerificationEnabled = true
                     )
-                    provider(
-                        AuthProvider.Facebook(
-                            applicationId = "792556260059222"
-                        )
+                )
+                provider(
+                    AuthProvider.Facebook(
+                        applicationId = "792556260059222"
                     )
-                }
-                logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
-                tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
-                privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
+                )
             }
+            logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
+            tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
+            privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
+        }
 
-            setContent {
-                AuthUITheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        FirebaseAuthScreen(
-                            configuration = configuration,
-                            authUI = authUI,
-                            emailLink = emailLink,
-                            onSignInSuccess = { result ->
-                                Log.d("MainActivity", "Authentication success: ${result.user?.uid}")
-                            },
-                            onSignInFailure = { exception: AuthException ->
-                                Log.e("MainActivity", "Authentication failed", exception)
-                            },
-                            onSignInCancelled = {
-                                Log.d("MainActivity", "Authentication cancelled")
-                            },
-                            authenticatedContent = { state, uiContext ->
-                                AppAuthenticatedContent(state, uiContext)
-                            }
-                        )
-                    }
+        setContent {
+            AuthUITheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    FirebaseAuthScreen(
+                        configuration = configuration,
+                        authUI = authUI,
+                        emailLink = emailLink,
+                        onSignInSuccess = { result ->
+                            Log.d("MainActivity", "Authentication success: ${result.user?.uid}")
+                        },
+                        onSignInFailure = { exception: AuthException ->
+                            Log.e("MainActivity", "Authentication failed", exception)
+                        },
+                        onSignInCancelled = {
+                            Log.d("MainActivity", "Authentication cancelled")
+                        },
+                        authenticatedContent = { state, uiContext ->
+                            AppAuthenticatedContent(state, uiContext)
+                        }
+                    )
                 }
             }
         }
