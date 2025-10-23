@@ -16,6 +16,8 @@ package com.firebase.ui.auth.compose
 
 import android.content.Context
 import androidx.annotation.RestrictTo
+import com.firebase.ui.auth.compose.configuration.auth_provider.signOutFromGoogle
+import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -111,6 +113,81 @@ class FirebaseAuthUI private constructor(
      * @return The currently signed-in [FirebaseUser], or `null` if no user is signed in
      */
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
+    /**
+     * Creates a new authentication flow controller with the specified configuration.
+     *
+     * This method returns an [AuthFlowController] that manages the authentication flow
+     * lifecycle. The controller provides methods to start the flow, monitor its state,
+     * and clean up resources when done.
+     *
+     * **Example with ActivityResultLauncher:**
+     * ```kotlin
+     * class MyActivity : ComponentActivity() {
+     *     private lateinit var authController: AuthFlowController
+     *
+     *     private val authLauncher = registerForActivityResult(
+     *         ActivityResultContracts.StartActivityForResult()
+     *     ) { result ->
+     *         if (result.resultCode == Activity.RESULT_OK) {
+     *             val userId = result.data?.getStringExtra(FirebaseAuthActivity.EXTRA_USER_ID)
+     *             val isNewUser = result.data?.getBooleanExtra(
+     *                 FirebaseAuthActivity.EXTRA_IS_NEW_USER,
+     *                 false
+     *             ) ?: false
+     *             // Get the full user object
+     *             val user = FirebaseAuth.getInstance().currentUser
+     *         }
+     *     }
+     *
+     *     override fun onCreate(savedInstanceState: Bundle?) {
+     *         super.onCreate(savedInstanceState)
+     *
+     *         val authUI = FirebaseAuthUI.getInstance()
+     *         val configuration = authUIConfiguration {
+     *             providers = listOf(
+     *                 AuthProvider.Email(),
+     *                 AuthProvider.Google(...)
+     *             )
+     *         }
+     *
+     *         authController = authUI.createAuthFlow(configuration)
+     *
+     *         // Observe auth state
+     *         lifecycleScope.launch {
+     *             authController.authStateFlow.collect { state ->
+     *                 when (state) {
+     *                     is AuthState.Success -> {
+     *                         // User signed in successfully
+     *                     }
+     *                     is AuthState.Error -> {
+     *                         // Handle error
+     *                     }
+     *                     else -> {}
+     *                 }
+     *             }
+     *         }
+     *
+     *         // Start auth flow
+     *         val intent = authController.createIntent(this)
+     *         authLauncher.launch(intent)
+     *     }
+     *
+     *     override fun onDestroy() {
+     *         super.onDestroy()
+     *         authController.dispose()
+     *     }
+     * }
+     * ```
+     *
+     * @param configuration The [AuthUIConfiguration] defining the auth flow behavior
+     * @return A new [AuthFlowController] instance
+     * @see AuthFlowController
+     * @since 10.0.0
+     */
+    fun createAuthFlow(configuration: AuthUIConfiguration): AuthFlowController {
+        return AuthFlowController(this, configuration)
+    }
 
     /**
      * Returns a [Flow] that emits [AuthState] changes.
@@ -265,13 +342,16 @@ class FirebaseAuthUI private constructor(
      * @throws AuthException.UnknownException for other errors
      * @since 10.0.0
      */
-    fun signOut(context: Context) {
+    suspend fun signOut(context: Context) {
         try {
             // Update state to loading
             updateAuthState(AuthState.Loading("Signing out..."))
 
             // Sign out from Firebase Auth
             auth.signOut()
+                .also {
+                    signOutFromGoogle(context)
+                }
 
             // Update state to idle (user signed out)
             updateAuthState(AuthState.Idle)

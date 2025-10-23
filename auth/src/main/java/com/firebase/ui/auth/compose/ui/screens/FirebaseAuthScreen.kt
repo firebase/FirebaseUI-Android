@@ -53,6 +53,7 @@ import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberOAuthSignInHandler
+import com.firebase.ui.auth.compose.configuration.auth_provider.rememberGoogleSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
@@ -102,6 +103,7 @@ fun FirebaseAuthScreen(
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
 
     val anonymousProvider = configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
+    val googleProvider = configuration.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
     val facebookProvider = configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
     val appleProvider = configuration.providers.filterIsInstance<AuthProvider.Apple>().firstOrNull()
@@ -116,6 +118,14 @@ fun FirebaseAuthScreen(
 
     val onSignInAnonymously = anonymousProvider?.let {
         authUI.rememberAnonymousSignInHandler()
+    }
+
+    val onSignInWithGoogle = googleProvider?.let {
+        authUI.rememberGoogleSignInHandler(
+            context = context,
+            config = configuration,
+            provider = it
+        )
     }
 
     val onSignInWithFacebook = facebookProvider?.let {
@@ -216,6 +226,8 @@ fun FirebaseAuthScreen(
                                 is AuthProvider.Phone -> {
                                     navController.navigate(AuthRoute.Phone.route)
                                 }
+
+                                is AuthProvider.Google -> onSignInWithGoogle?.invoke()
 
                                 is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
 
