@@ -22,7 +22,6 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.launch
@@ -72,15 +71,8 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        FirebaseApp.initializeApp(applicationContext)
-
         // Initialize FirebaseAuthUI
         val authUI = FirebaseAuthUI.getInstance()
-
-        // Use emulator if needed
-        if (USE_AUTH_EMULATOR) {
-            authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
-        }
 
         // Create auth configuration
         val configuration = AuthUIConfiguration(
@@ -159,10 +151,6 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val USE_AUTH_EMULATOR = true
-        private const val AUTH_EMULATOR_HOST = "10.0.2.2"
-        private const val AUTH_EMULATOR_PORT = 9099
-
         fun createIntent(context: Context): Intent {
             return Intent(context, AuthFlowControllerDemoActivity::class.java)
         }

@@ -12,15 +12,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.compose.FirebaseAuthUI
+import com.google.firebase.FirebaseApp
 
 /**
  * Main launcher activity that allows users to choose between different
  * authentication API demonstrations.
  */
 class MainActivity : ComponentActivity() {
+    companion object {
+        private const val USE_AUTH_EMULATOR = true
+        private const val AUTH_EMULATOR_HOST = "10.0.2.2"
+        private const val AUTH_EMULATOR_PORT = 9099
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Initialize Firebase and configure emulator if needed
+        FirebaseApp.initializeApp(applicationContext)
+        val authUI = FirebaseAuthUI.getInstance()
+
+        if (USE_AUTH_EMULATOR) {
+            authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
+        }
 
         setContent {
             MaterialTheme {
