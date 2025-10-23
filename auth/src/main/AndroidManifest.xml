@@ -122,6 +122,7 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
         <provider
             android:name=".data.client.AuthUiInitProvider"
             android:authorities="${applicationId}.authuiinitprovider"
