@@ -79,6 +79,8 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_sign_in_with_microsoft)
     override val signInWithYahoo: String
         get() = localizedContext.getString(R.string.fui_sign_in_with_yahoo)
+    override val signInWithLine: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_line)
 
     /**
      * Email Validator Strings

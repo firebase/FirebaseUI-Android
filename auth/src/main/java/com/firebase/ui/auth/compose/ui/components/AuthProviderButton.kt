@@ -162,6 +162,7 @@ internal fun resolveProviderLabel(
         Provider.MICROSOFT -> stringProvider.signInWithMicrosoft
         Provider.YAHOO -> stringProvider.signInWithYahoo
         Provider.APPLE -> stringProvider.signInWithApple
+        Provider.LINE -> stringProvider.signInWithLine
         null -> "Unknown Provider"
     }
 }
@@ -250,7 +251,7 @@ private fun PreviewAuthProviderButton() {
         )
         AuthProviderButton(
             provider = AuthProvider.GenericOAuth(
-                name = "Generic Provider",
+                providerName = "Generic Provider",
                 providerId = "google.com",
                 scopes = emptyList(),
                 customParameters = emptyMap(),
@@ -264,7 +265,7 @@ private fun PreviewAuthProviderButton() {
         )
         AuthProviderButton(
             provider = AuthProvider.GenericOAuth(
-                name = "Generic Provider",
+                providerName = "Generic Provider",
                 providerId = "google.com",
                 scopes = emptyList(),
                 customParameters = emptyMap(),
@@ -286,7 +287,7 @@ private fun PreviewAuthProviderButton() {
         )
         AuthProviderButton(
             provider = AuthProvider.GenericOAuth(
-                name = "Generic Provider",
+                providerName = "Generic Provider",
                 providerId = "unknown_provider",
                 scopes = emptyList(),
                 customParameters = emptyMap(),

@@ -151,7 +151,10 @@ private fun getRecoveryMessage(
             error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
         is AuthException.AuthCancelledException -> stringProvider.authCancelledRecoveryMessage
-        is AuthException.UnknownException -> stringProvider.unknownErrorRecoveryMessage
+        is AuthException.UnknownException -> {
+            // Use custom message if available (e.g., for configuration errors)
+            error.message?.takeIf { it.isNotBlank() } ?: stringProvider.unknownErrorRecoveryMessage
+        }
         else -> stringProvider.unknownErrorRecoveryMessage
     }
 }
@@ -168,7 +171,7 @@ private fun getRecoveryActionText(
     stringProvider: AuthUIStringProvider
 ): String {
     return when (error) {
-        is AuthException.AuthCancelledException -> stringProvider.continueText
+        is AuthException.AuthCancelledException -> error.message ?: stringProvider.continueText
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
         is AuthException.AccountLinkingRequiredException -> stringProvider.signInDefault // User needs to sign in to link accounts
         is AuthException.MfaRequiredException -> stringProvider.continueText // Use "Continue" for MFA

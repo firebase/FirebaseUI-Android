@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.compose.ui.screens
 
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,6 +52,7 @@ import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
+import com.firebase.ui.auth.compose.configuration.auth_provider.rememberOAuthSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
@@ -86,6 +89,7 @@ fun FirebaseAuthScreen(
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
     authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null
 ) {
+    val activity = LocalActivity.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val stringProvider = DefaultAuthUIStringProvider(context)
@@ -100,6 +104,14 @@ fun FirebaseAuthScreen(
     val anonymousProvider = configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
     val facebookProvider = configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
+    val appleProvider = configuration.providers.filterIsInstance<AuthProvider.Apple>().firstOrNull()
+    val githubProvider = configuration.providers.filterIsInstance<AuthProvider.Github>().firstOrNull()
+    val microsoftProvider = configuration.providers.filterIsInstance<AuthProvider.Microsoft>().firstOrNull()
+    val yahooProvider = configuration.providers.filterIsInstance<AuthProvider.Yahoo>().firstOrNull()
+    val twitterProvider = configuration.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
+    val lineProvider = configuration.providers.filterIsInstance<AuthProvider.Line>().firstOrNull()
+    val genericOAuthProviders = configuration.providers.filterIsInstance<AuthProvider.GenericOAuth>()
+
     val logoAsset = configuration.logo
 
     val onSignInAnonymously = anonymousProvider?.let {
@@ -111,6 +123,69 @@ fun FirebaseAuthScreen(
             context = context,
             config = configuration,
             provider = it
+        )
+    }
+
+    val onSignInWithApple = appleProvider?.let {
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = it
+        )
+    }
+
+    val onSignInWithGithub = githubProvider?.let {
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = it
+        )
+    }
+
+    val onSignInWithMicrosoft = microsoftProvider?.let {
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = it
+        )
+    }
+
+    val onSignInWithYahoo = yahooProvider?.let {
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = it
+        )
+    }
+
+    val onSignInWithTwitter = twitterProvider?.let {
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = it
+        )
+    }
+
+    val onSignInWithLine = lineProvider?.let {
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = it
+        )
+    }
+
+    val genericOAuthHandlers = genericOAuthProviders.associateWith { provider ->
+        authUI.rememberOAuthSignInHandler(
+            context = context,
+            activity = activity,
+            config = configuration,
+            provider = provider
         )
     }
 
@@ -143,6 +218,23 @@ fun FirebaseAuthScreen(
                                 }
 
                                 is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
+
+                                is AuthProvider.Apple -> onSignInWithApple?.invoke()
+
+                                is AuthProvider.Github -> onSignInWithGithub?.invoke()
+
+                                is AuthProvider.Microsoft -> onSignInWithMicrosoft?.invoke()
+
+                                is AuthProvider.Yahoo -> onSignInWithYahoo?.invoke()
+
+                                is AuthProvider.Twitter -> onSignInWithTwitter?.invoke()
+
+                                is AuthProvider.Line -> onSignInWithLine?.invoke()
+
+                                is AuthProvider.GenericOAuth -> {
+                                    // Find and invoke the handler for this specific GenericOAuth provider
+                                    genericOAuthHandlers[provider]?.invoke()
+                                }
 
                                 else -> {
                                     onSignInFailure(
@@ -599,17 +691,20 @@ private fun LoadingDialog(message: String) {
     AlertDialog(
         onDismissRequest = {},
         confirmButton = {},
+        containerColor = Color.Transparent,
         text = {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(24.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 CircularProgressIndicator()
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = message,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.White
                 )
             }
         }

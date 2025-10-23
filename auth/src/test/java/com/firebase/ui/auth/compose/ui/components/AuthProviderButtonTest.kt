@@ -271,7 +271,7 @@ class AuthProviderButtonTest {
     fun `AuthProviderButton displays GenericOAuth provider with custom label`() {
         val customLabel = "Sign in with Custom Provider"
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -376,7 +376,7 @@ class AuthProviderButtonTest {
         val customIcon = AuthUIAsset.Vector(Icons.Default.Star)
 
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -414,7 +414,7 @@ class AuthProviderButtonTest {
     fun `GenericOAuth provider falls back to default style when custom properties are null`() {
         val customLabel = "Custom Provider"
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -450,7 +450,7 @@ class AuthProviderButtonTest {
 
     @Test
     fun `AuthProviderButton provides fallback for unknown provider`() {
-        val provider = object : AuthProvider(providerId = "unknown.provider", name = "Generic Provider",) {}
+        val provider = object : AuthProvider(providerId = "unknown.provider", providerName = "Generic Provider",) {}
 
         composeTestRule.setContent {
             AuthProviderButton(
@@ -473,7 +473,7 @@ class AuthProviderButtonTest {
         val customContentColor = Color.White
 
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -493,7 +493,7 @@ class AuthProviderButtonTest {
     @Test
     fun `resolveProviderStyle handles GenericOAuth without icon`() {
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "custom.provider",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -513,7 +513,7 @@ class AuthProviderButtonTest {
 
     @Test
     fun `resolveProviderStyle provides fallback for unknown provider`() {
-        val provider = object : AuthProvider(providerId = "unknown.provider", name = "Generic Provider") {}
+        val provider = object : AuthProvider(providerId = "unknown.provider", providerName = "Generic Provider") {}
 
         val resolvedStyle = resolveProviderStyle(provider, null)
 
