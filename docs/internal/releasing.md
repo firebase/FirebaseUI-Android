@@ -48,7 +48,7 @@ When ready, merge the pull request.
 ### Credentials
 
 The library is published to Maven Central by the `firebase-sonatype` account, Googlers can find the
-password for this account in [Valentine](http://go/valentine/)
+password for this account in [Valentine](http://go/valentine/).
 
 ### GPG Key
 
@@ -100,8 +100,8 @@ sudo pkill dirmngr
 
 ### Local Properties
 
-1. Navigate to https://oss.sonatype.org/ and **Log In** using the credentials from [Valentine](http://go/valentine).
-1. Follow [these instructions](https://central.sonatype.org/publish/generate-token/) to **Access User Token**.
+1. Navigate to https://central.sonatype.com/ and **Log In** using the credentials from [Valentine](http://go/valentine).
+1. Go to [View user tokens](https://central.sonatype.com/usertoken) and generate a new token.
     You should see an XML that looks like this:
     ```xml
     <server>
@@ -122,11 +122,6 @@ mavenCentralPassword=<PASSWORD FROM THE XML ABOVE (eg. tokenkey-dlghnfgh8+4LfXmg
 
 ## 2b - Publish and release
 
-_Publish_ and _release_ [used to be done](https://github.com/firebase/FirebaseUI-Android/blob/9.0.0/docs/internal/releasing.md#2b---publish-and-release)
-in two separate manual steps, but starting in [v0.22.0](https://vanniktech.github.io/gradle-maven-publish-plugin/changelog/#0220-2022-09-09)
-of the `com.vanniktech:gradle-maven-publish-plugin`, the `publishAllPublicationsToMavenRepository`
-now handles the _publish_ step automatically and you only need to perform the _release_ manually.
-
 Once you are sure the release branch is healthy, run the following commands:
 
 ```shell
@@ -136,9 +131,10 @@ Once you are sure the release branch is healthy, run the following commands:
 
 Follow [the instructions here](https://central.sonatype.org/pages/releasing-the-deployment.html):
 
-  1. Navigate to https://oss.sonatype.org/ and **Log In**, if you haven't already.
-  1. On the left side click **Staging Repositories** and look for the `com.firebaseui` repo.
-  1. Click **Release**
+  1. Navigate to https://central.sonatype.com/ and **Log In**, if you haven't already.
+  1. Click on [View deployments](https://central.sonatype.com/publishing/deployments) and look for
+  the `com.firebaseui-firebase-ui-$VERSION` deployment that you started.
+  1. Wait for the artifacts to be verified, and when ready, click **Publish**.
 
 ## 3 - Update issues, milestones, and release notes
 
