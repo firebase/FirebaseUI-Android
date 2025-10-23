@@ -89,6 +89,36 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         applicationId = "792556260059222"
                     )
                 )
+                provider(
+                    AuthProvider.Line(
+                        scopes = emptyList(),
+                        customParameters = emptyMap()
+                    )
+                )
+                provider(
+                    AuthProvider.Twitter(
+                        customParameters = emptyMap()
+                    )
+                )
+                provider(
+                    AuthProvider.Microsoft(
+                        scopes = emptyList(),
+                        tenant = "",
+                        customParameters = emptyMap(),
+                    )
+                )
+                provider(
+                    AuthProvider.Github(
+                        scopes = emptyList(),
+                        customParameters = emptyMap(),
+                    )
+                )
+                provider(
+                    AuthProvider.Yahoo(
+                        scopes = emptyList(),
+                        customParameters = emptyMap(),
+                    )
+                )
             }
             logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
