@@ -176,7 +176,19 @@ fun AuthFlowDemo(
     onCancelAuth: () -> Unit
 ) {
     val authState by authController.authStateFlow.collectAsState(AuthState.Idle)
-    val currentUser = FirebaseAuth.getInstance().currentUser
+    var currentUser by remember { mutableStateOf(FirebaseAuth.getInstance().currentUser) }
+
+    // Observe Firebase auth state changes
+    DisposableEffect(Unit) {
+        val authStateListener = FirebaseAuth.AuthStateListener { auth ->
+            currentUser = auth.currentUser
+        }
+        FirebaseAuth.getInstance().addAuthStateListener(authStateListener)
+
+        onDispose {
+            FirebaseAuth.getInstance().removeAuthStateListener(authStateListener)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -186,13 +198,20 @@ fun AuthFlowDemo(
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
     ) {
         Text(
-            text = "AuthFlowController Demo",
+            text = "⚙️ Low-Level API Demo",
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "This demonstrates the new AuthFlowController API for lifecycle-safe authentication management.",
+            text = "AuthFlowController with ActivityResultLauncher",
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Text(
+            text = "This demonstrates manual control over the authentication flow with lifecycle-safe management.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -238,7 +257,7 @@ fun AuthFlowDemo(
         }
 
         // Current User Card
-        if (currentUser != null) {
+        currentUser?.let { user ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -254,11 +273,11 @@ fun AuthFlowDemo(
                         style = MaterialTheme.typography.labelLarge
                     )
                     Text(
-                        text = "Email: ${currentUser.email ?: "N/A"}",
+                        text = "Email: ${user.email ?: "N/A"}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = "UID: ${currentUser.uid}",
+                        text = "UID: ${user.uid}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
                     )
