@@ -13,9 +13,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
@@ -131,6 +133,7 @@ private fun AppAuthenticatedContent(
     state: AuthState,
     uiContext: AuthSuccessUiContext
 ) {
+    val context = LocalContext.current
     val stringProvider = uiContext.stringProvider
     when (state) {
         is AuthState.Success -> {
@@ -155,6 +158,16 @@ private fun AppAuthenticatedContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = uiContext.onSignOut) {
                     Text(stringProvider.signOutAction)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedButton(
+                    onClick = {
+                        // Launch AuthFlowController demo
+                        val intent = AuthFlowControllerDemoActivity.createIntent(context)
+                        context.startActivity(intent)
+                    }
+                ) {
+                    Text("Test AuthFlowController API")
                 }
             }
         }

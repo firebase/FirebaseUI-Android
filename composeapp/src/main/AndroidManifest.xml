@@ -23,6 +23,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".AuthFlowControllerDemoActivity"
+            android:label="AuthFlowController Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
     </application>
 
 </manifest>

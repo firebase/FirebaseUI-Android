@@ -143,6 +143,14 @@
             </intent-filter>
         </activity>
 
+        <!-- Firebase Auth Flow Activity for Compose -->
+        <!-- This activity hosts the complete Firebase authentication flow UI -->
+        <activity
+            android:name=".compose.FirebaseAuthActivity"
+            android:label=""
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <provider
             android:name=".data.client.AuthUiInitProvider"
             android:authorities="${applicationId}.authuiinitprovider"
