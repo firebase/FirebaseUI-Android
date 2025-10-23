@@ -635,8 +635,7 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * An interface to wrap the static `FacebookAuthProvider.getCredential` method to make it testable.
          * @suppress
          */
-        @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-        interface CredentialProvider {
+        internal interface CredentialProvider {
             fun getCredential(token: String): AuthCredential
         }
 
