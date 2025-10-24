@@ -15,27 +15,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
-import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
-import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
 import com.google.firebase.FirebaseApp
 
 /**

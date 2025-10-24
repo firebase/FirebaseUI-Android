@@ -16,12 +16,10 @@ package com.firebase.ui.auth.compose.ui.method_picker
 
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.StringRes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -35,17 +33,15 @@ import androidx.core.net.toUri
 internal fun AnnotatedStringResource(
     context: Context,
     modifier: Modifier = Modifier,
-    @StringRes id: Int,
+    text: String,
     vararg links: Pair<String, String>,
     inPreview: Boolean = false,
     previewText: String? = null,
 ) {
-    val labels = links.map { it.first }.toTypedArray()
-
     val template = if (inPreview && previewText != null) {
         previewText
     } else {
-        stringResource(id = id, *labels)
+        text
     }
 
     val annotated = buildAnnotatedString {

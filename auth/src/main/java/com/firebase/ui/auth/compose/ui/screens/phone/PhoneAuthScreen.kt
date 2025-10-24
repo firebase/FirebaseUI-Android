@@ -35,7 +35,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithPhoneAuthCredential
 import com.firebase.ui.auth.compose.configuration.auth_provider.submitVerificationCode
 import com.firebase.ui.auth.compose.configuration.auth_provider.verifyPhoneNumber
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.data.CountryData
 import com.firebase.ui.auth.compose.data.CountryUtils
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
@@ -137,7 +137,7 @@ fun PhoneAuthScreen(
 ) {
     val activity = LocalActivity.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
-    val stringProvider = DefaultAuthUIStringProvider(context)
+    val stringProvider = LocalAuthUIStringProvider.current
     val coroutineScope = rememberCoroutineScope()
 
     val step = rememberSaveable { mutableStateOf(PhoneAuthStep.EnterPhoneNumber) }

@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.AuthException
@@ -32,6 +33,7 @@ import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
 import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
 import com.google.firebase.auth.actionCodeSettings
+import java.util.Locale
 
 class HighLevelApiDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +45,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
 
         val configuration = authUIConfiguration {
             context = applicationContext
+            locale = Locale.GERMANY
             providers {
                 provider(AuthProvider.Anonymous)
                 provider(
@@ -101,6 +104,12 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                     )
                 )
                 provider(
+                    AuthProvider.Apple(
+                        locale = "DE",
+                        customParameters = emptyMap()
+                    )
+                )
+                provider(
                     AuthProvider.Microsoft(
                         scopes = emptyList(),
                         tenant = "",
@@ -119,8 +128,32 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         customParameters = emptyMap(),
                     )
                 )
+                provider(
+                    AuthProvider.GenericOAuth(
+                        providerName = "LinkedIn",
+                        providerId = "oidc.linkedin",
+                        scopes = listOf("openid", "profile", "email"),
+                        customParameters = emptyMap(),
+                        buttonLabel = "Sign in with LinkedIn",
+                        buttonIcon = AuthUIAsset.Resource(R.drawable.ic_linkedin_logo_24dp),
+                        buttonColor = null,
+                        contentColor = Color(0xFF0072B1)
+                    )
+                )
+                provider(
+                    AuthProvider.GenericOAuth(
+                        providerName = "Discord",
+                        providerId = "oidc.discord",
+                        scopes = emptyList(),
+                        customParameters = emptyMap(),
+                        buttonLabel = "Sign in with Discord",
+                        buttonIcon = AuthUIAsset.Resource(R.drawable.ic_discord_24dp),
+                        buttonColor = Color(0xFF5865F2),
+                        contentColor = Color.White
+                    )
+                )
             }
-            logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
+            logo = AuthUIAsset.Resource(R.drawable.firebase_auth)
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
         }

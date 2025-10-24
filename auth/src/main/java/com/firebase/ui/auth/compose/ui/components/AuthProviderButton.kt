@@ -78,8 +78,9 @@ fun AuthProviderButton(
     style: AuthUITheme.ProviderStyle? = null,
     stringProvider: AuthUIStringProvider,
 ) {
+    val context = LocalContext.current
     val providerStyle = resolveProviderStyle(provider, style)
-    val providerLabel = resolveProviderLabel(provider, stringProvider)
+    val providerLabel = resolveProviderLabel(provider, stringProvider, context)
 
     Button(
         modifier = modifier,
@@ -148,9 +149,20 @@ internal fun resolveProviderStyle(
 
 internal fun resolveProviderLabel(
     provider: AuthProvider,
-    stringProvider: AuthUIStringProvider
+    stringProvider: AuthUIStringProvider,
+    context: android.content.Context
 ): String = when (provider) {
     is AuthProvider.GenericOAuth -> provider.buttonLabel
+    is AuthProvider.Apple -> {
+        // Use Apple-specific locale if provided, otherwise use default stringProvider
+        if (provider.locale != null) {
+            val appleLocale = java.util.Locale.forLanguageTag(provider.locale)
+            val appleStringProvider = DefaultAuthUIStringProvider(context, appleLocale)
+            appleStringProvider.signInWithApple
+        } else {
+            stringProvider.signInWithApple
+        }
+    }
     else -> when (Provider.fromId(provider.providerId)) {
         Provider.GOOGLE -> stringProvider.signInWithGoogle
         Provider.FACEBOOK -> stringProvider.signInWithFacebook

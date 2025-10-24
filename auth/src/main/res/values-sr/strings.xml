@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Пријавите се преко Apple налога</string>
     <string name="fui_sign_in_with_microsoft">Пријавите се преко Microsoft налога</string>
     <string name="fui_sign_in_with_yahoo">Пријавите се преко Yahoo налога</string>
+    <string name="fui_sign_in_with_line">Пријавите се преко LINE налога</string>
     <string name="fui_next_default">Даље</string>
     <string name="fui_email_hint">Имејл</string>
     <string name="fui_phone_hint">Број телефона</string>

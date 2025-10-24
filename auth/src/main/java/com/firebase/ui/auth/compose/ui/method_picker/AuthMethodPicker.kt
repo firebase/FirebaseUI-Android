@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.ui.components.AuthProviderButton
 
@@ -74,6 +74,7 @@ fun AuthMethodPicker(
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
+    val stringProvider = LocalAuthUIStringProvider.current
 
     Column(
         modifier = modifier
@@ -114,7 +115,7 @@ fun AuthMethodPicker(
                                     onProviderSelected(provider)
                                 },
                                 provider = provider,
-                                stringProvider = DefaultAuthUIStringProvider(context)
+                                stringProvider = LocalAuthUIStringProvider.current
                             )
                         }
                     }
@@ -126,10 +127,13 @@ fun AuthMethodPicker(
             context = context,
             inPreview = inPreview,
             previewText = "By continuing, you accept our Terms of Service and Privacy Policy.",
-            id = R.string.fui_tos_and_pp,
+            text = stringProvider.tosAndPrivacyPolicy(
+                termsOfServiceLabel = stringProvider.termsOfService,
+                privacyPolicyLabel = stringProvider.privacyPolicy
+            ),
             links = arrayOf(
-                "Terms of Service" to (termsOfServiceUrl ?: ""),
-                "Privacy Policy" to (privacyPolicyUrl ?: "")
+                stringProvider.termsOfService to (termsOfServiceUrl ?: ""),
+                stringProvider.privacyPolicy to (privacyPolicyUrl ?: "")
             )
         )
     }

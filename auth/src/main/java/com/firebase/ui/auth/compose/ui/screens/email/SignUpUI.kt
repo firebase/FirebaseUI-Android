@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
 import com.firebase.ui.auth.compose.configuration.validators.GeneralFieldValidator
@@ -68,7 +68,7 @@ fun SignUpUI(
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val context = LocalContext.current
-    val stringProvider = DefaultAuthUIStringProvider(context)
+    val stringProvider = LocalAuthUIStringProvider.current
     val displayNameValidator = remember { GeneralFieldValidator(stringProvider) }
     val emailValidator = remember { EmailValidator(stringProvider) }
     val passwordValidator = remember {

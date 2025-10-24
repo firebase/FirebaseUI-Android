@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Inloggen met Apple</string>
     <string name="fui_sign_in_with_microsoft">Inloggen met Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Inloggen met Yahoo</string>
+    <string name="fui_sign_in_with_line">Inloggen met LINE</string>
     <string name="fui_next_default">Volgende</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefoonnummer</string>

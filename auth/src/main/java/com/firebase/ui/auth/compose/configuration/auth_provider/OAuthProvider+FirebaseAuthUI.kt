@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
 import android.app.Activity
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,7 +28,6 @@ import kotlinx.coroutines.tasks.await
  * **Usage:**
  * ```kotlin
  * val onSignInWithGitHub = authUI.rememberOAuthSignInHandler(
- *     context = context,
  *     config = configuration,
  *     provider = githubProvider
  * )
@@ -39,7 +37,6 @@ import kotlinx.coroutines.tasks.await
  * }
  * ```
  *
- * @param context Android context
  * @param config Authentication UI configuration
  * @param provider OAuth provider configuration
  *
@@ -51,7 +48,6 @@ import kotlinx.coroutines.tasks.await
  */
 @Composable
 fun FirebaseAuthUI.rememberOAuthSignInHandler(
-    context: Context,
     activity: Activity?,
     config: AuthUIConfiguration,
     provider: AuthProvider.OAuth,
@@ -67,7 +63,6 @@ fun FirebaseAuthUI.rememberOAuthSignInHandler(
             coroutineScope.launch {
                 try {
                     signInWithProvider(
-                        context = context,
                         config = config,
                         activity = activity,
                         provider = provider
@@ -114,7 +109,6 @@ fun FirebaseAuthUI.rememberOAuthSignInHandler(
  * - [AuthException.AccountLinkingRequiredException]: Account collision (email already exists)
  * - [AuthException]: Other authentication errors
  *
- * @param context Android context
  * @param config Authentication UI configuration
  * @param activity Activity for OAuth flow
  * @param provider OAuth provider configuration with scopes and custom parameters
@@ -127,7 +121,6 @@ fun FirebaseAuthUI.rememberOAuthSignInHandler(
  * @see signInAndLinkWithCredential
  */
 internal suspend fun FirebaseAuthUI.signInWithProvider(
-    context: Context,
     config: AuthUIConfiguration,
     activity: Activity,
     provider: AuthProvider.OAuth,

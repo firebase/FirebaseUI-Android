@@ -26,10 +26,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,12 +52,13 @@ import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
-import com.firebase.ui.auth.compose.configuration.auth_provider.rememberOAuthSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberGoogleSignInHandler
+import com.firebase.ui.auth.compose.configuration.auth_provider.rememberOAuthSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
@@ -88,7 +89,7 @@ fun FirebaseAuthScreen(
     authUI: FirebaseAuthUI = FirebaseAuthUI.getInstance(),
     emailLink: String? = null,
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
-    authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null
+    authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
 ) {
     val activity = LocalActivity.current
     val context = LocalContext.current
@@ -102,17 +103,24 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
 
-    val anonymousProvider = configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
-    val googleProvider = configuration.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
+    val anonymousProvider =
+        configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
+    val googleProvider =
+        configuration.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
-    val facebookProvider = configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
+    val facebookProvider =
+        configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
     val appleProvider = configuration.providers.filterIsInstance<AuthProvider.Apple>().firstOrNull()
-    val githubProvider = configuration.providers.filterIsInstance<AuthProvider.Github>().firstOrNull()
-    val microsoftProvider = configuration.providers.filterIsInstance<AuthProvider.Microsoft>().firstOrNull()
+    val githubProvider =
+        configuration.providers.filterIsInstance<AuthProvider.Github>().firstOrNull()
+    val microsoftProvider =
+        configuration.providers.filterIsInstance<AuthProvider.Microsoft>().firstOrNull()
     val yahooProvider = configuration.providers.filterIsInstance<AuthProvider.Yahoo>().firstOrNull()
-    val twitterProvider = configuration.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
+    val twitterProvider =
+        configuration.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
     val lineProvider = configuration.providers.filterIsInstance<AuthProvider.Line>().firstOrNull()
-    val genericOAuthProviders = configuration.providers.filterIsInstance<AuthProvider.GenericOAuth>()
+    val genericOAuthProviders =
+        configuration.providers.filterIsInstance<AuthProvider.GenericOAuth>()
 
     val logoAsset = configuration.logo
 
@@ -138,7 +146,6 @@ fun FirebaseAuthScreen(
 
     val onSignInWithApple = appleProvider?.let {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -147,7 +154,6 @@ fun FirebaseAuthScreen(
 
     val onSignInWithGithub = githubProvider?.let {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -156,7 +162,6 @@ fun FirebaseAuthScreen(
 
     val onSignInWithMicrosoft = microsoftProvider?.let {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -165,7 +170,6 @@ fun FirebaseAuthScreen(
 
     val onSignInWithYahoo = yahooProvider?.let {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -174,7 +178,6 @@ fun FirebaseAuthScreen(
 
     val onSignInWithTwitter = twitterProvider?.let {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -183,26 +186,23 @@ fun FirebaseAuthScreen(
 
     val onSignInWithLine = lineProvider?.let {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
             provider = it
         )
     }
 
-    val genericOAuthHandlers = genericOAuthProviders.associateWith { provider ->
+    val genericOAuthHandlers = genericOAuthProviders.associateWith {
         authUI.rememberOAuthSignInHandler(
-            context = context,
             activity = activity,
             config = configuration,
-            provider = provider
+            provider = it
         )
     }
 
-    Scaffold(modifier = modifier) { innerPadding ->
+    CompositionLocalProvider(LocalAuthUIStringProvider provides configuration.stringProvider) {
         Surface(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
         ) {
             NavHost(
@@ -243,10 +243,7 @@ fun FirebaseAuthScreen(
 
                                 is AuthProvider.Line -> onSignInWithLine?.invoke()
 
-                                is AuthProvider.GenericOAuth -> {
-                                    // Find and invoke the handler for this specific GenericOAuth provider
-                                    genericOAuthHandlers[provider]?.invoke()
-                                }
+                                is AuthProvider.GenericOAuth -> genericOAuthHandlers[provider]?.invoke()
 
                                 else -> {
                                     onSignInFailure(
@@ -447,7 +444,8 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.RequiresEmailVerification,
-                    is AuthState.RequiresProfileCompletion -> {
+                    is AuthState.RequiresProfileCompletion,
+                        -> {
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         if (currentRoute != AuthRoute.Success.route) {
@@ -706,7 +704,8 @@ private fun LoadingDialog(message: String) {
         containerColor = Color.Transparent,
         text = {
             Column(
-                modifier = Modifier.padding(24.dp)
+                modifier = Modifier
+                    .padding(24.dp)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,

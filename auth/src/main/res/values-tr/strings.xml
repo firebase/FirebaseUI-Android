@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Apple ile oturum aç</string>
     <string name="fui_sign_in_with_microsoft">Microsoft ile oturum aç</string>
     <string name="fui_sign_in_with_yahoo">Yahoo ile oturum aç</string>
+    <string name="fui_sign_in_with_line">LINE ile oturum aç</string>
     <string name="fui_next_default">İleri</string>
     <string name="fui_email_hint">E-posta</string>
     <string name="fui_phone_hint">Telefon Numarası</string>

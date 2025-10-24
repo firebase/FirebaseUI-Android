@@ -268,6 +268,29 @@ class AuthProviderButtonTest {
     }
 
     @Test
+    fun `AuthProviderButton displays Apple provider with custom locale correctly`() {
+        val provider = AuthProvider.Apple(
+            locale = "es", // Spanish locale
+            customParameters = emptyMap()
+        )
+
+        composeTestRule.setContent {
+            AuthProviderButton(
+                provider = provider,
+                onClick = { clickedProvider = provider },
+                stringProvider = stringProvider // Default stringProvider (English)
+            )
+        }
+
+        // Should display Spanish text despite English stringProvider
+        composeTestRule
+            .onNodeWithText("Iniciar sesión con Apple")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .assertIsEnabled()
+    }
+
+    @Test
     fun `AuthProviderButton displays GenericOAuth provider with custom label`() {
         val customLabel = "Sign in with Custom Provider"
         val provider = AuthProvider.GenericOAuth(
