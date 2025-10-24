@@ -181,8 +181,12 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
  * @param context Android context for Credential Manager
  */
 internal suspend fun signOutFromGoogle(context: Context) {
-    val credentialManager = CredentialManager.create(context)
-    credentialManager.clearCredentialState(
-        ClearCredentialStateRequest()
-    )
+    try {
+        val credentialManager = CredentialManager.create(context)
+        credentialManager.clearCredentialState(
+            ClearCredentialStateRequest()
+        )
+    } catch (_: Exception) {
+
+    }
 }
