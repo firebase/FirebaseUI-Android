@@ -178,19 +178,18 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
  * - Before allowing user to select a different Google account
  * - When switching between accounts
  *
- * **Note:** This does not sign out from Firebase Auth itself. Call [FirebaseAuth.signOut]
+ * **Note:** This does not sign out from Firebase Auth itself. Call [FirebaseAuthUI.signOut]
  * separately if you need to sign out from Firebase.
  *
  * @param context Android context for Credential Manager
  */
-suspend fun FirebaseAuthUI.signOutFromGoogle(context: Context) {
+internal suspend fun signOutFromGoogle(context: Context) {
     try {
         val credentialManager = CredentialManager.create(context)
         credentialManager.clearCredentialState(
             ClearCredentialStateRequest()
         )
-        // Log.d("GoogleSignIn", "Cleared Google credential state")
-    } catch (e: Exception) {
-        // Log.w("GoogleSignIn", "Failed to clear credential state", e)
+    } catch (_: Exception) {
+
     }
 }
