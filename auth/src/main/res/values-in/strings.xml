@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Login dengan Apple</string>
     <string name="fui_sign_in_with_microsoft">Login dengan Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Login dengan Yahoo</string>
-    <string name="fui_sign_in_with_line">Masuk dengan LINE</string>
     <string name="fui_next_default">Berikutnya</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Nomor Telepon</string>

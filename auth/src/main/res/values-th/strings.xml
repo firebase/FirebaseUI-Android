@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">ลงชื่อเข้าใช้ด้วย Apple</string>
     <string name="fui_sign_in_with_microsoft">ลงชื่อเข้าใช้ด้วย Microsoft</string>
     <string name="fui_sign_in_with_yahoo">ลงชื่อเข้าใช้ด้วย Yahoo</string>
-    <string name="fui_sign_in_with_line">ลงชื่อเข้าใช้ด้วย LINE</string>
     <string name="fui_next_default">ถัดไป</string>
     <string name="fui_email_hint">อีเมล</string>
     <string name="fui_phone_hint">หมายเลขโทรศัพท์</string>

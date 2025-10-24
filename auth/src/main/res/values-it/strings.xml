@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Accedi con Apple</string>
     <string name="fui_sign_in_with_microsoft">Accedi con Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Accedi con Yahoo</string>
-    <string name="fui_sign_in_with_line">Accedi con LINE</string>
     <string name="fui_next_default">Avanti</string>
     <string name="fui_email_hint">Indirizzo email</string>
     <string name="fui_phone_hint">Numero di telefono</string>

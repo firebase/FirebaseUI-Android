@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Prisijungti per „Apple“</string>
     <string name="fui_sign_in_with_microsoft">Prisijungti per „Microsoft“</string>
     <string name="fui_sign_in_with_yahoo">Prisijungti per „Yahoo“</string>
-    <string name="fui_sign_in_with_line">Prisijungti per „LINE“</string>
     <string name="fui_next_default">Kitas</string>
     <string name="fui_email_hint">El. pašto adresas</string>
     <string name="fui_phone_hint">Telefono numeris</string>

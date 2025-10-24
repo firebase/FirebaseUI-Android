@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Přihlásit se účtem Apple</string>
     <string name="fui_sign_in_with_microsoft">Přihlásit se účtem Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Přihlásit se účtem Yahoo</string>
-    <string name="fui_sign_in_with_line">Přihlásit se účtem LINE</string>
     <string name="fui_next_default">Další</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonní číslo</string>

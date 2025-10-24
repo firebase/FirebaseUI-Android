@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">ورود به سیستم با Apple</string>
     <string name="fui_sign_in_with_microsoft">ورود به سیستم با Microsoft</string>
     <string name="fui_sign_in_with_yahoo">ورود به سیستم با Yahoo</string>
-    <string name="fui_sign_in_with_line">ورود به سیستم با LINE</string>
     <string name="fui_next_default">بعدی</string>
     <string name="fui_email_hint">ایمیل </string>
     <string name="fui_phone_hint">شماره تلفن</string>

@@ -88,8 +88,7 @@ internal enum class Provider(
     ANONYMOUS("anonymous", providerName = "Anonymous"),
     MICROSOFT("microsoft.com", providerName = "Microsoft", isSocialProvider = true),
     YAHOO("yahoo.com", providerName = "Yahoo", isSocialProvider = true),
-    APPLE("apple.com", providerName = "Apple", isSocialProvider = true),
-    LINE("oidc.line", providerName = "LINE", isSocialProvider = true);
+    APPLE("apple.com", providerName = "Apple", isSocialProvider = true);
 
     companion object {
         fun fromId(id: String): Provider? {
@@ -888,18 +887,6 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 )
             }
         }
-    }
-
-    class Line(
-        override val scopes: List<String>,
-        override val customParameters: Map<String, String>,
-    ) : OAuth(
-        providerId = Provider.LINE.id,
-        providerName = Provider.LINE.providerName,
-        scopes = scopes,
-        customParameters = customParameters
-    ) {
-        internal fun validate() {}
     }
 
     /**

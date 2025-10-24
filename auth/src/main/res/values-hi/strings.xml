@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Apple खाते से साइन इन करें</string>
     <string name="fui_sign_in_with_microsoft">Microsoft खाते से साइन इन करें</string>
     <string name="fui_sign_in_with_yahoo">Yahoo खाते से साइन इन करें</string>
-    <string name="fui_sign_in_with_line">LINE से साइन इन करें</string>
     <string name="fui_next_default">अगला</string>
     <string name="fui_email_hint">ईमेल</string>
     <string name="fui_phone_hint">फ़ोन नंबर</string>

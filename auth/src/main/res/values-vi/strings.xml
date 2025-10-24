@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Đăng nhập bằng Apple</string>
     <string name="fui_sign_in_with_microsoft">Đăng nhập bằng Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Đăng nhập bằng Yahoo</string>
-    <string name="fui_sign_in_with_line">Đăng nhập bằng LINE</string>
     <string name="fui_next_default">Tiếp</string>
     <string name="fui_email_hint">Email</string>
     <string name="fui_phone_hint">Số điện thoại</string>

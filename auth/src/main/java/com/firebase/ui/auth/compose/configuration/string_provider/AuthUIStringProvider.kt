@@ -97,9 +97,6 @@ interface AuthUIStringProvider {
     /** Button text for Yahoo sign-in option */
     val signInWithYahoo: String
 
-    /** Button text for LINE sign-in option */
-    val signInWithLine: String
-
     /** Error message when email address field is empty */
     val missingEmailAddress: String
 

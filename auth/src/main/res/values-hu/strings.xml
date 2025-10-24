@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Bejelentkezés Apple-fiókkal</string>
     <string name="fui_sign_in_with_microsoft">Bejelentkezés Microsoft-fiókkal</string>
     <string name="fui_sign_in_with_yahoo">Bejelentkezés Yahoo-fiókkal</string>
-    <string name="fui_sign_in_with_line">Bejelentkezés LINE-fiókkal</string>
     <string name="fui_next_default">Következő</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefonszám</string>

@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">تسجيل الدخول باستخدام Apple</string>
     <string name="fui_sign_in_with_microsoft">تسجيل الدخول باستخدام Microsoft</string>
     <string name="fui_sign_in_with_yahoo">تسجيل الدخول باستخدام Yahoo</string>
-    <string name="fui_sign_in_with_line">تسجيل الدخول باستخدام LINE</string>
     <string name="fui_next_default">التالي</string>
     <string name="fui_email_hint">البريد الإلكتروني</string>
     <string name="fui_phone_hint">رقم الهاتف</string>

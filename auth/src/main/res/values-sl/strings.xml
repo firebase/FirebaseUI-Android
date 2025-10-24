@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Prijava z računom za Apple</string>
     <string name="fui_sign_in_with_microsoft">Prijava z računom za Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Prijava z računom za Yahoo</string>
-    <string name="fui_sign_in_with_line">Prijava z računom za LINE</string>
     <string name="fui_next_default">Naprej</string>
     <string name="fui_email_hint">E-pošta</string>
     <string name="fui_phone_hint">Telefonska številka</string>

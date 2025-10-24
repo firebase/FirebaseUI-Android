@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Fazer login com a Apple</string>
     <string name="fui_sign_in_with_microsoft">Fazer login com a Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Fazer login com o Yahoo</string>
-    <string name="fui_sign_in_with_line">Fazer login com o LINE</string>
     <string name="fui_next_default">Próxima</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Número de telefone</string>
