@@ -186,12 +186,7 @@ class AnonymousAuthScreenTest {
         var currentAuthState: AuthState = AuthState.Idle
 
         composeTestRule.setContent {
-            TestAuthScreen(
-                configuration = configuration,
-                name = name,
-                email = email,
-                password = password,
-            )
+            TestAuthScreen(configuration = configuration)
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -281,13 +276,7 @@ class AnonymousAuthScreenTest {
     }
 
     @Composable
-    private fun TestAuthScreen(
-        configuration: AuthUIConfiguration,
-        name: String = "",
-        email: String = "",
-        password: String = "",
-    ) {
-        authUI.signOut(applicationContext)
+    private fun TestAuthScreen(configuration: AuthUIConfiguration) {
         composeTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
 

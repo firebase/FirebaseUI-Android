@@ -89,8 +89,13 @@ dependencies {
     implementation(Config.Libs.Androidx.fragment)
     implementation(Config.Libs.Androidx.customTabs)
     implementation(Config.Libs.Androidx.constraint)
+
+    // Google Authentication
     implementation(Config.Libs.Androidx.credentials)
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation(Config.Libs.Androidx.credentialsPlayServices)
+    implementation(Config.Libs.Misc.googleid)
+    implementation(Config.Libs.PlayServices.auth)
+    //api(Config.Libs.PlayServices.auth)
 
     implementation(Config.Libs.Androidx.lifecycleExtensions)
     implementation("androidx.core:core-ktx:1.13.1")
@@ -99,12 +104,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.navigation:navigation-compose:2.8.3")
     implementation("com.google.zxing:core:3.5.3")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
     implementation(platform(Config.Libs.Firebase.bom))
     api(Config.Libs.Firebase.auth)
-    api(Config.Libs.PlayServices.auth)
 
     // Phone number validation
     implementation(Config.Libs.Misc.libphonenumber)

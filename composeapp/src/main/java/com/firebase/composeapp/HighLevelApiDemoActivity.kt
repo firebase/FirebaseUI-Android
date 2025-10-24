@@ -4,36 +4,39 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.Composable
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.compose.ui.screens.EmailSignInLinkHandlerActivity
 import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.google.firebase.auth.actionCodeSettings
 
 class HighLevelApiDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         val authUI = FirebaseAuthUI.getInstance()
         val emailLink = intent.getStringExtra(EmailSignInLinkHandlerActivity.EXTRA_EMAIL_LINK)
@@ -41,6 +44,13 @@ class HighLevelApiDemoActivity : ComponentActivity() {
         val configuration = authUIConfiguration {
             context = applicationContext
             providers {
+                provider(AuthProvider.Anonymous)
+                provider(
+                    AuthProvider.Google(
+                        scopes = listOf("email"),
+                        serverClientId = "771411398215-o39fujhds88bs4mb5ai7u6o73g86fspp.apps.googleusercontent.com",
+                    )
+                )
                 provider(
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
@@ -80,6 +90,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                     )
                 )
             }
+            logo = AuthUIAsset.Resource(R.drawable.firebase_auth_120dp)
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
         }
@@ -135,7 +146,17 @@ private fun AppAuthenticatedContent(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
+                Text(
+                    "isAnonymous - ${state.user.isAnonymous}",
+                    textAlign = TextAlign.Center
+                )
 
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "Providers - ${state.user.providerData.map { it.providerId }}",
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = uiContext.onManageMfa) {
                     Text(stringProvider.manageMfaAction)
                 }

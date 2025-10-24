@@ -44,7 +44,9 @@ object Config {
             const val materialDesign = "com.google.android.material:material:1.4.0"
 
             const val datastorePreferences = "androidx.datastore:datastore-preferences:1.1.1"
-            const val credentials = "androidx.credentials:credentials:1.3.0"
+            const val credentials = "androidx.credentials:credentials:1.5.0"
+            const val credentialsPlayServices = "androidx.credentials:credentials-play-services-auth:1.5.0"
+
             object Compose {
                 const val bom = "androidx.compose:compose-bom:2025.10.00"
                 const val ui = "androidx.compose.ui:ui"
@@ -75,7 +77,7 @@ object Config {
         }
 
         object PlayServices {
-            const val auth = "com.google.android.gms:play-services-auth:21.3.0"
+            const val auth = "com.google.android.gms:play-services-auth:21.4.0"
         }
 
         object Provider {
@@ -93,6 +95,8 @@ object Config {
 
             const val permissions = "pub.devrel:easypermissions:3.0.0"
             const val libphonenumber = "com.googlecode.libphonenumber:libphonenumber:9.0.16"
+
+            const val googleid = "com.google.android.libraries.identity.googleid:googleid:1.1.1"
         }
 
         object Test {
