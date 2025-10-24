@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Inicia la sessió amb Apple</string>
     <string name="fui_sign_in_with_microsoft">Inicia la sessió amb Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Inicia la sessió amb Yahoo</string>
-    <string name="fui_sign_in_with_line">Inicia la sessió amb LINE</string>
     <string name="fui_next_default">Següent</string>
     <string name="fui_email_hint">Adreça electrònica</string>
     <string name="fui_phone_hint">Número de telèfon</string>

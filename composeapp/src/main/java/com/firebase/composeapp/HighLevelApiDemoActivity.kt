@@ -93,12 +93,6 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                     )
                 )
                 provider(
-                    AuthProvider.Line(
-                        scopes = emptyList(),
-                        customParameters = emptyMap()
-                    )
-                )
-                provider(
                     AuthProvider.Twitter(
                         customParameters = emptyMap()
                     )
@@ -130,14 +124,14 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                 )
                 provider(
                     AuthProvider.GenericOAuth(
-                        providerName = "LinkedIn",
-                        providerId = "oidc.linkedin",
-                        scopes = listOf("openid", "profile", "email"),
+                        providerName = "LINE",
+                        providerId = "oidc.line",
+                        scopes = emptyList(),
                         customParameters = emptyMap(),
-                        buttonLabel = "Sign in with LinkedIn",
-                        buttonIcon = AuthUIAsset.Resource(R.drawable.ic_linkedin_logo_24dp),
-                        buttonColor = null,
-                        contentColor = Color(0xFF0072B1)
+                        buttonLabel = "Sign in with LINE",
+                        buttonIcon = AuthUIAsset.Resource(com.firebase.ui.auth.R.drawable.fui_ic_line_24dp),
+                        buttonColor = Color(0xFF06C755),
+                        contentColor = Color.White
                     )
                 )
                 provider(

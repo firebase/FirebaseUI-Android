@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Apple アカウントでログイン</string>
     <string name="fui_sign_in_with_microsoft">Microsoft アカウントでログイン</string>
     <string name="fui_sign_in_with_yahoo">Yahoo アカウントでログイン</string>
-    <string name="fui_sign_in_with_line">LINEでサインイン</string>
     <string name="fui_next_default">次へ</string>
     <string name="fui_email_hint">メールアドレス</string>
     <string name="fui_phone_hint">電話番号</string>

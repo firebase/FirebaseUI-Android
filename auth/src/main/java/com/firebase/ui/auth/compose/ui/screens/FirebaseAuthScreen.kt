@@ -118,7 +118,6 @@ fun FirebaseAuthScreen(
     val yahooProvider = configuration.providers.filterIsInstance<AuthProvider.Yahoo>().firstOrNull()
     val twitterProvider =
         configuration.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
-    val lineProvider = configuration.providers.filterIsInstance<AuthProvider.Line>().firstOrNull()
     val genericOAuthProviders =
         configuration.providers.filterIsInstance<AuthProvider.GenericOAuth>()
 
@@ -184,14 +183,6 @@ fun FirebaseAuthScreen(
         )
     }
 
-    val onSignInWithLine = lineProvider?.let {
-        authUI.rememberOAuthSignInHandler(
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
-
     val genericOAuthHandlers = genericOAuthProviders.associateWith {
         authUI.rememberOAuthSignInHandler(
             activity = activity,
@@ -240,8 +231,6 @@ fun FirebaseAuthScreen(
                                 is AuthProvider.Yahoo -> onSignInWithYahoo?.invoke()
 
                                 is AuthProvider.Twitter -> onSignInWithTwitter?.invoke()
-
-                                is AuthProvider.Line -> onSignInWithLine?.invoke()
 
                                 is AuthProvider.GenericOAuth -> genericOAuthHandlers[provider]?.invoke()
 

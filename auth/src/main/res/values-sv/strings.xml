@@ -21,7 +21,6 @@
     <string name="fui_sign_in_with_apple">Logga in med Apple</string>
     <string name="fui_sign_in_with_microsoft">Logga in med Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Logga in med Yahoo</string>
-    <string name="fui_sign_in_with_line">Logga in med LINE</string>
     <string name="fui_next_default">Nästa</string>
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>

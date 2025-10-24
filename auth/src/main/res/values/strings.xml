@@ -30,7 +30,6 @@
     <string name="fui_sign_in_with_apple" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Apple</string>
     <string name="fui_sign_in_with_microsoft" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Microsoft</string>
     <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Yahoo</string>
-    <string name="fui_sign_in_with_line" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with LINE</string>
 
     <!-- Account management -->
     <string name="fui_signed_in_as" translation_description="Message showing who is signed in.">Signed in as %1$s</string>

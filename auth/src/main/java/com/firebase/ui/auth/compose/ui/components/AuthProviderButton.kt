@@ -174,7 +174,6 @@ internal fun resolveProviderLabel(
         Provider.MICROSOFT -> stringProvider.signInWithMicrosoft
         Provider.YAHOO -> stringProvider.signInWithYahoo
         Provider.APPLE -> stringProvider.signInWithApple
-        Provider.LINE -> stringProvider.signInWithLine
         null -> "Unknown Provider"
     }
 }

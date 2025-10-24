@@ -111,14 +111,6 @@ internal object ProviderStyleDefaults {
                         contentColor = Color.White
                     )
                 }
-
-                Provider.LINE -> {
-                    provider.id to AuthUITheme.ProviderStyle(
-                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_line_24dp),
-                        backgroundColor = Color(0xFF06C755),
-                        contentColor = Color.White
-                    )
-                }
             }
         }
 }
