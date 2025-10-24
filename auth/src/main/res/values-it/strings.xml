@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Il codice di verifica non è corretto. Riprova.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Si è verificato un errore di rete. Controlla la connessione e riprova.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Si è verificato un errore durante la registrazione. Riprova.</string>
+
+    <string name="fui_back_action">Indietro</string>
+    <string name="fui_identity_verified_message">Identità verificata. Riprova l\'azione.</string>
+    <string name="fui_manage_mfa_action">Gestisci autenticazione a due fattori</string>
+    <string name="fui_incorrect_password_error">Password non corretta</string>
+    <string name="fui_mfa_choose_method_instruction">Scegli un metodo di verifica</string>
+    <string name="fui_mfa_enrollment_instruction">Aggiungi un livello di sicurezza extra</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">App di autenticazione</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Questo numero di telefono è già associato a un altro account</string>
+    <string name="fui_mfa_second_factor_required_error">Verifica richiesta</string>
+    <string name="fui_mfa_setup_instruction">Scansiona il codice QR con la tua app di autenticazione</string>
+    <string name="fui_mfa_totp_already_exists_error">L\'app di autenticazione è già configurata</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Sei sicuro di voler rimuovere questo metodo?</string>
+    <string name="fui_mfa_unenrollment_error">Impossibile rimuovere il metodo</string>
+    <string name="fui_mfa_unenrollment_success_message">Metodo rimosso</string>
+    <string name="fui_mfa_verification_instruction">Inserisci il codice di verifica</string>
+    <string name="fui_profile_update_error">Impossibile aggiornare il profilo</string>
+    <string name="fui_profile_update_success_message">Profilo aggiornato</string>
+    <string name="fui_reauth_instruction">Conferma la tua identità per continuare</string>
+    <string name="fui_reauth_required_error">Riautenticazione richiesta</string>
+    <string name="fui_reauth_success_message">Riautenticazione riuscita</string>
+    <string name="fui_reauthenticate_action">Riautentica</string>
+    <string name="fui_recovery_codes_saved_action">Ho salvato i miei codici di recupero</string>
+    <string name="fui_remove_action">Rimuovi</string>
+    <string name="fui_resend_verification_email_action">Invia nuovamente email di verifica</string>
+    <string name="fui_secret_key_label">Chiave segreta</string>
+    <string name="fui_sign_out_action">Esci</string>
+    <string name="fui_signed_in_as">Connesso come</string>
+    <string name="fui_skip_action">Salta</string>
+    <string name="fui_use_different_method_action">Usa un metodo diverso</string>
+    <string name="fui_verification_code_label">Codice di verifica</string>
+    <string name="fui_verified_email_action">Email verificata</string>
+    <string name="fui_verify_action">Verifica</string>
+    <string name="fui_verify_email_instruction">Abbiamo inviato un\'email di verifica a %1$s</string>
 </resources>

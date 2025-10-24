@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">確認コードが正しくありません。もう一度お試しください。</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">ネットワークエラーが発生しました。接続を確認して、もう一度お試しください。</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">登録中にエラーが発生しました。もう一度お試しください。</string>
+
+    <string name="fui_back_action">戻る</string>
+    <string name="fui_identity_verified_message">本人確認が完了しました。操作を再試行してください。</string>
+    <string name="fui_manage_mfa_action">2段階認証を管理</string>
+    <string name="fui_incorrect_password_error">パスワードが正しくありません</string>
+    <string name="fui_mfa_choose_method_instruction">確認方法を選択してください</string>
+    <string name="fui_mfa_enrollment_instruction">セキュリティをさらに強化</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">認証アプリ</string>
+    <string name="fui_mfa_phone_number_already_exists_error">この電話番号は別のアカウントに関連付けられています</string>
+    <string name="fui_mfa_second_factor_required_error">確認が必要です</string>
+    <string name="fui_mfa_setup_instruction">認証アプリでQRコードをスキャンしてください</string>
+    <string name="fui_mfa_totp_already_exists_error">認証アプリは既に設定されています</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">この確認方法を削除してもよろしいですか？</string>
+    <string name="fui_mfa_unenrollment_error">確認方法を削除できません</string>
+    <string name="fui_mfa_unenrollment_success_message">確認方法を削除しました</string>
+    <string name="fui_mfa_verification_instruction">確認コードを入力してください</string>
+    <string name="fui_profile_update_error">プロフィールを更新できません</string>
+    <string name="fui_profile_update_success_message">プロフィールを更新しました</string>
+    <string name="fui_reauth_instruction">本人確認を行って続行してください</string>
+    <string name="fui_reauth_required_error">再認証が必要です</string>
+    <string name="fui_reauth_success_message">再認証に成功しました</string>
+    <string name="fui_reauthenticate_action">再認証</string>
+    <string name="fui_recovery_codes_saved_action">復旧コードを保存しました</string>
+    <string name="fui_remove_action">削除</string>
+    <string name="fui_resend_verification_email_action">確認メールを再送信</string>
+    <string name="fui_secret_key_label">シークレットキー</string>
+    <string name="fui_sign_out_action">ログアウト</string>
+    <string name="fui_signed_in_as">ログイン中</string>
+    <string name="fui_skip_action">スキップ</string>
+    <string name="fui_use_different_method_action">別の方法を使用</string>
+    <string name="fui_verification_code_label">確認コード</string>
+    <string name="fui_verified_email_action">メールアドレスを確認済み</string>
+    <string name="fui_verify_action">確認</string>
+    <string name="fui_verify_email_instruction">%1$s に確認メールを送信しました</string>
 </resources>

@@ -131,4 +131,57 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Der Bestätigungscode ist falsch. Bitte versuchen Sie es erneut.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Ein Netzwerkfehler ist aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</string>
+
+    <!-- MFA and Account Management - Added for v10 -->
+    <string name="fui_back_action">Zurück</string>
+    <string name="fui_identity_verified_message">Identität verifiziert. Bitte versuchen Sie Ihre Aktion erneut.</string>
+    <string name="fui_incorrect_password_error">Falsches Passwort. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_manage_mfa_action">Multifaktor-Authentifizierung verwalten</string>
+    <string name="fui_mfa_active_methods_title">Aktive Methoden</string>
+    <string name="fui_mfa_add_new_method_title">Neue Methode hinzufügen</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Alle verfügbaren Authentifizierungsmethoden sind registriert</string>
+    <string name="fui_mfa_enrolled_on">Registriert am %1$s</string>
+    <string name="fui_mfa_label_sms_authentication">SMS-Authentifizierung</string>
+    <string name="fui_mfa_label_totp_authentication">Authenticator-App</string>
+    <string name="fui_mfa_label_unknown_method">Unbekannte Methode</string>
+    <string name="fui_mfa_manage_factors_description">Authentifizierungsmethoden für Ihr Konto hinzufügen oder entfernen</string>
+    <string name="fui_mfa_manage_factors_title">Zwei-Faktor-Authentifizierung verwalten</string>
+    <string name="fui_mfa_setup_authenticator_description">Scannen Sie den QR-Code oder geben Sie den geheimen Schlüssel in Ihrer Authenticator-App ein</string>
+    <string name="fui_profile_completion_message">Bitte vervollständigen Sie Ihre Profilinformationen, um fortzufahren.</string>
+    <string name="fui_profile_missing_fields_message">Fehlende Felder: %1$s</string>
+    <string name="fui_reauth_account_label">Konto: %1$s</string>
+    <string name="fui_reauth_dialog_message">Zu Ihrer Sicherheit geben Sie bitte Ihr Passwort erneut ein, um fortzufahren.</string>
+    <string name="fui_reauth_dialog_title">Verifizieren Sie Ihre Identität</string>
+    <string name="fui_reauth_generic_error">Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.</string>
+    <string name="fui_recovery_codes_saved_action">Ich habe diese Codes gespeichert</string>
+    <string name="fui_remove_action">Entfernen</string>
+    <string name="fui_resend_verification_email_action">Bestätigungs-E-Mail erneut senden</string>
+    <string name="fui_secret_key_label">Geheimer Schlüssel</string>
+    <string name="fui_sign_out_action">Abmelden</string>
+    <string name="fui_signed_in_as">Angemeldet als %1$s</string>
+    <string name="fui_skip_action">Vorerst überspringen</string>
+    <string name="fui_use_different_method_action">Eine andere Methode verwenden</string>
+    <string name="fui_verification_code_label">Verifizierungscode</string>
+    <string name="fui_verified_email_action">Ich habe meine E-Mail verifiziert</string>
+    <string name="fui_verify_action">Verifizieren</string>
+    <string name="fui_verify_email_instruction">Bitte verifizieren Sie %1$s, um fortzufahren.</string>
+
+    <string name="fui_mfa_choose_method_instruction">Wählen Sie eine Verifizierungsmethode</string>
+    <string name="fui_mfa_enrollment_instruction">Fügen Sie eine zusätzliche Sicherheitsebene hinzu</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Authenticator-App</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Diese Telefonnummer ist mit einem anderen Konto verknüpft</string>
+    <string name="fui_mfa_second_factor_required_error">Verifizierung erforderlich</string>
+    <string name="fui_mfa_setup_instruction">Scannen Sie den QR-Code mit Ihrer Authenticator-App</string>
+    <string name="fui_mfa_totp_already_exists_error">Authenticator-App ist bereits eingerichtet</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Möchten Sie diese Methode wirklich entfernen?</string>
+    <string name="fui_mfa_unenrollment_error">Methode kann nicht entfernt werden</string>
+    <string name="fui_mfa_unenrollment_success_message">Methode entfernt</string>
+    <string name="fui_mfa_verification_instruction">Geben Sie den Verifizierungscode ein</string>
+    <string name="fui_profile_update_error">Profil kann nicht aktualisiert werden</string>
+    <string name="fui_profile_update_success_message">Profil aktualisiert</string>
+    <string name="fui_reauth_instruction">Bestätigen Sie Ihre Identität, um fortzufahren</string>
+    <string name="fui_reauth_required_error">Erneute Authentifizierung erforderlich</string>
+    <string name="fui_reauth_success_message">Erneute Authentifizierung erfolgreich</string>
+    <string name="fui_reauthenticate_action">Erneut authentifizieren</string>
 </resources>

@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">رمز التحقق غير صحيح. يُرجى المحاولة مرة أخرى.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">حدث خطأ في الشبكة. يُرجى التحقق من اتصالك والمحاولة مرة أخرى.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">حدث خطأ أثناء التسجيل. يُرجى المحاولة مرة أخرى.</string>
+
+    <string name="fui_back_action">رجوع</string>
+    <string name="fui_identity_verified_message">تم التحقق من الهوية. أعد المحاولة.</string>
+    <string name="fui_manage_mfa_action">إدارة المصادقة الثنائية</string>
+    <string name="fui_incorrect_password_error">كلمة المرور غير صحيحة</string>
+    <string name="fui_mfa_choose_method_instruction">اختر طريقة التحقق</string>
+    <string name="fui_mfa_enrollment_instruction">أضف طبقة أمان إضافية</string>
+    <string name="fui_mfa_method_sms">رسالة نصية</string>
+    <string name="fui_mfa_method_totp">تطبيق المصادقة</string>
+    <string name="fui_mfa_phone_number_already_exists_error">رقم الهاتف هذا مرتبط بحساب آخر</string>
+    <string name="fui_mfa_second_factor_required_error">التحقق مطلوب</string>
+    <string name="fui_mfa_setup_instruction">امسح رمز الاستجابة السريعة باستخدام تطبيق المصادقة</string>
+    <string name="fui_mfa_totp_already_exists_error">تطبيق المصادقة معد بالفعل</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">هل أنت متأكد من إزالة طريقة التحقق هذه؟</string>
+    <string name="fui_mfa_unenrollment_error">تعذرت إزالة طريقة التحقق</string>
+    <string name="fui_mfa_unenrollment_success_message">تمت إزالة طريقة التحقق</string>
+    <string name="fui_mfa_verification_instruction">أدخل رمز التحقق</string>
+    <string name="fui_profile_update_error">تعذر تحديث الملف الشخصي</string>
+    <string name="fui_profile_update_success_message">تم تحديث الملف الشخصي</string>
+    <string name="fui_reauth_instruction">أكد هويتك للمتابعة</string>
+    <string name="fui_reauth_required_error">إعادة المصادقة مطلوبة</string>
+    <string name="fui_reauth_success_message">نجحت إعادة المصادقة</string>
+    <string name="fui_reauthenticate_action">إعادة المصادقة</string>
+    <string name="fui_recovery_codes_saved_action">حفظت رموز الاسترداد</string>
+    <string name="fui_remove_action">إزالة</string>
+    <string name="fui_resend_verification_email_action">إعادة إرسال بريد التحقق</string>
+    <string name="fui_secret_key_label">المفتاح السري</string>
+    <string name="fui_sign_out_action">تسجيل الخروج</string>
+    <string name="fui_signed_in_as">مسجل الدخول باسم</string>
+    <string name="fui_skip_action">تخطي</string>
+    <string name="fui_use_different_method_action">استخدم طريقة أخرى</string>
+    <string name="fui_verification_code_label">رمز التحقق</string>
+    <string name="fui_verified_email_action">البريد الإلكتروني محقق</string>
+    <string name="fui_verify_action">تحقق</string>
+    <string name="fui_verify_email_instruction">أرسلنا بريدًا للتحقق إلى %1$s</string>
 </resources>

@@ -129,4 +129,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">인증 코드가 잘못되었습니다. 다시 시도하세요.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">네트워크 오류가 발생했습니다. 연결 상태를 확인한 후 다시 시도하세요.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">등록 중 오류가 발생했습니다. 다시 시도하세요.</string>
+
+    <string name="fui_back_action">뒤로</string>
+    <string name="fui_identity_verified_message">신원이 확인되었습니다. 작업을 다시 시도하세요.</string>
+    <string name="fui_manage_mfa_action">2단계 인증 관리</string>
+    <string name="fui_incorrect_password_error">비밀번호가 올바르지 않습니다</string>
+    <string name="fui_mfa_choose_method_instruction">확인 방법을 선택하세요</string>
+    <string name="fui_mfa_enrollment_instruction">추가 보안 계층 추가</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">인증 앱</string>
+    <string name="fui_mfa_phone_number_already_exists_error">이 전화번호는 이미 다른 계정과 연결되어 있습니다</string>
+    <string name="fui_mfa_second_factor_required_error">확인이 필요합니다</string>
+    <string name="fui_mfa_setup_instruction">인증 앱으로 QR 코드를 스캔하세요</string>
+    <string name="fui_mfa_totp_already_exists_error">인증 앱이 이미 설정되어 있습니다</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">이 확인 방법을 삭제하시겠습니까?</string>
+    <string name="fui_mfa_unenrollment_error">확인 방법을 삭제할 수 없습니다</string>
+    <string name="fui_mfa_unenrollment_success_message">확인 방법이 삭제되었습니다</string>
+    <string name="fui_mfa_verification_instruction">확인 코드를 입력하세요</string>
+    <string name="fui_profile_update_error">프로필을 업데이트할 수 없습니다</string>
+    <string name="fui_profile_update_success_message">프로필이 업데이트되었습니다</string>
+    <string name="fui_reauth_instruction">계속하려면 본인 확인을 진행하세요</string>
+    <string name="fui_reauth_required_error">재인증이 필요합니다</string>
+    <string name="fui_reauth_success_message">재인증에 성공했습니다</string>
+    <string name="fui_reauthenticate_action">재인증</string>
+    <string name="fui_recovery_codes_saved_action">복구 코드를 저장했습니다</string>
+    <string name="fui_remove_action">삭제</string>
+    <string name="fui_resend_verification_email_action">확인 이메일 다시 보내기</string>
+    <string name="fui_secret_key_label">비밀 키</string>
+    <string name="fui_sign_out_action">로그아웃</string>
+    <string name="fui_signed_in_as">로그인 상태</string>
+    <string name="fui_skip_action">건너뛰기</string>
+    <string name="fui_use_different_method_action">다른 방법 사용</string>
+    <string name="fui_verification_code_label">확인 코드</string>
+    <string name="fui_verified_email_action">이메일 확인 완료</string>
+    <string name="fui_verify_action">확인</string>
+    <string name="fui_verify_email_instruction">%1$s(으)로 확인 이메일을 보냈습니다</string>
 </resources>

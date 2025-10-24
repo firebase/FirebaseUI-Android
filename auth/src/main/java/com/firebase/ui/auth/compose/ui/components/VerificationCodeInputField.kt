@@ -52,6 +52,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.core.text.isDigitsOnly
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.FieldValidator
@@ -248,6 +252,9 @@ private fun SingleDigitField(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize()
+                .semantics {
+                    contentDescription = "Verification code digit"
+                }
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     isFocused.value = it.isFocused

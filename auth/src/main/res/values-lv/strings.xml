@@ -131,4 +131,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Verifikācijas kods ir nepareizs. Lūdzu, mēģiniet vēlreiz.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Radās tīkla kļūda. Lūdzu, pārbaudiet savienojumu un mēģiniet vēlreiz.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Reģistrācijas laikā radās kļūda. Lūdzu, mēģiniet vēlreiz.</string>
+
+    <string name="fui_back_action">Atpakaļ</string>
+    <string name="fui_identity_verified_message">Identitāte apstiprināta. Mēģiniet vēlreiz.</string>
+    <string name="fui_manage_mfa_action">Pārvaldīt divfaktoru autentifikāciju</string>
+    <string name="fui_incorrect_password_error">Nepareiza parole</string>
+    <string name="fui_mfa_choose_method_instruction">Izvēlieties verifikācijas metodi</string>
+    <string name="fui_mfa_enrollment_instruction">Pievienojiet papildu drošības slāni</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Autentifikācijas lietotne</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Šis tālruņa numurs ir saistīts ar citu kontu</string>
+    <string name="fui_mfa_second_factor_required_error">Nepieciešama verifikācija</string>
+    <string name="fui_mfa_setup_instruction">Skenējiet QR kodu ar autentifikācijas lietotni</string>
+    <string name="fui_mfa_totp_already_exists_error">Autentifikācijas lietotne jau ir iestatīta</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Vai tiešām vēlaties noņemt šo metodi?</string>
+    <string name="fui_mfa_unenrollment_error">Nevar noņemt metodi</string>
+    <string name="fui_mfa_unenrollment_success_message">Metode noņemta</string>
+    <string name="fui_mfa_verification_instruction">Ievadiet verifikācijas kodu</string>
+    <string name="fui_profile_update_error">Nevar atjaunināt profilu</string>
+    <string name="fui_profile_update_success_message">Profils atjaunināts</string>
+    <string name="fui_reauth_instruction">Apstipriniet savu identitāti, lai turpinātu</string>
+    <string name="fui_reauth_required_error">Nepieciešama atkārtota autentifikācija</string>
+    <string name="fui_reauth_success_message">Atkārtota autentifikācija veiksmīga</string>
+    <string name="fui_reauthenticate_action">Autentificēt atkārtoti</string>
+    <string name="fui_recovery_codes_saved_action">Esmu saglabājis atgūšanas kodus</string>
+    <string name="fui_remove_action">Noņemt</string>
+    <string name="fui_resend_verification_email_action">Atkārtoti nosūtīt verifikācijas e-pastu</string>
+    <string name="fui_secret_key_label">Slepenā atslēga</string>
+    <string name="fui_sign_out_action">Izrakstīties</string>
+    <string name="fui_signed_in_as">Pierakstījies kā</string>
+    <string name="fui_skip_action">Izlaist</string>
+    <string name="fui_use_different_method_action">Izmantot citu metodi</string>
+    <string name="fui_verification_code_label">Verifikācijas kods</string>
+    <string name="fui_verified_email_action">E-pasts apstiprināts</string>
+    <string name="fui_verify_action">Verificēt</string>
+    <string name="fui_verify_email_instruction">Nosūtījām verifikācijas e-pastu uz %1$s</string>
 </resources>

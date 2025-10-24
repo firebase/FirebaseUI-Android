@@ -62,6 +62,18 @@
     <string name="fui_mfa_label_unknown_method" translation_description="Label for an unknown MFA factor.">Unknown method</string>
     <string name="fui_mfa_enrolled_on" translation_description="Label indicating the enrollment date of an MFA factor.">Enrolled on %1$s</string>
     <string name="fui_mfa_setup_authenticator_description" translation_description="Description displayed during authenticator app setup.">Scan the QR code or enter the secret key in your authenticator app</string>
+    <string name="fui_mfa_choose_method_instruction" translation_description="Instruction to choose an MFA verification method.">Choose a verification method</string>
+    <string name="fui_mfa_enrollment_instruction" translation_description="Instruction to enroll in MFA.">Add an extra layer of security</string>
+    <string name="fui_mfa_method_sms" translation_description="Label for SMS MFA method.">SMS</string>
+    <string name="fui_mfa_method_totp" translation_description="Label for authenticator app MFA method.">Authenticator app</string>
+    <string name="fui_mfa_phone_number_already_exists_error" translation_description="Error when phone number is already associated with another account.">This phone number is associated with another account</string>
+    <string name="fui_mfa_second_factor_required_error" translation_description="Error when second factor verification is required.">Verification required</string>
+    <string name="fui_mfa_setup_instruction" translation_description="Instruction for setting up authenticator app.">Scan the QR code with your authenticator app</string>
+    <string name="fui_mfa_totp_already_exists_error" translation_description="Error when authenticator app is already set up.">Authenticator app is already set up</string>
+    <string name="fui_mfa_unenrollment_confirmation_message" translation_description="Confirmation message before removing an MFA method.">Are you sure you want to remove this method?</string>
+    <string name="fui_mfa_unenrollment_error" translation_description="Error when unable to remove MFA method.">Unable to remove method</string>
+    <string name="fui_mfa_unenrollment_success_message" translation_description="Success message after removing MFA method.">Method removed</string>
+    <string name="fui_mfa_verification_instruction" translation_description="Instruction to enter verification code.">Enter the verification code</string>
 
     <!-- Re-authentication dialog -->
     <string name="fui_reauth_dialog_title" translation_description="Title for the re-authentication dialog.">Verify your identity</string>
@@ -69,6 +81,14 @@
     <string name="fui_reauth_account_label" translation_description="Label indicating the email account being re-authenticated.">Account: %1$s</string>
     <string name="fui_incorrect_password_error" translation_description="Error shown when the provided password is incorrect.">Incorrect password. Please try again.</string>
     <string name="fui_reauth_generic_error" translation_description="Generic error shown when re-authentication fails.">Authentication failed. Please try again.</string>
+    <string name="fui_reauth_instruction" translation_description="Instruction to confirm identity to continue.">Confirm your identity to continue</string>
+    <string name="fui_reauth_required_error" translation_description="Error when re-authentication is required.">Re-authentication required</string>
+    <string name="fui_reauth_success_message" translation_description="Success message after re-authentication.">Re-authentication successful</string>
+    <string name="fui_reauthenticate_action" translation_description="Action to re-authenticate.">Re-authenticate</string>
+
+    <!-- Profile updates -->
+    <string name="fui_profile_update_error" translation_description="Error when unable to update profile.">Unable to update profile</string>
+    <string name="fui_profile_update_success_message" translation_description="Success message after profile update.">Profile updated</string>
 
     <!-- Common-->
     <string name="fui_next_default" translation_description="Button text to continue">Next</string>

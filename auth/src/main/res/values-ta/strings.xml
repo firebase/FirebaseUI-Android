@@ -131,4 +131,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">சரிபார்ப்புக் குறியீடு தவறானது. மீண்டும் முயற்சிக்கவும்.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">நெட்வொர்க் பிழை ஏற்பட்டது. உங்கள் இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">பதிவின் போது பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.</string>
+
+    <string name="fui_back_action">பின்</string>
+    <string name="fui_identity_verified_message">அடையாளம் சரிபார்க்கப்பட்டது. உங்கள் செயலை மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="fui_manage_mfa_action">இரு-காரணி அங்கீகாரத்தை நிர்வகி</string>
+    <string name="fui_incorrect_password_error">தவறான கடவுச்சொல்</string>
+    <string name="fui_mfa_choose_method_instruction">சரிபார்ப்பு முறையைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="fui_mfa_enrollment_instruction">கூடுதல் பாதுகாப்பு அடுக்கைச் சேர்க்கவும்</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">அங்கீகார பயன்பாடு</string>
+    <string name="fui_mfa_phone_number_already_exists_error">இந்த தொலைபேசி எண் மற்றொரு கணக்குடன் தொடர்புடையது</string>
+    <string name="fui_mfa_second_factor_required_error">சரிபார்ப்பு தேவை</string>
+    <string name="fui_mfa_setup_instruction">உங்கள் அங்கீகார பயன்பாட்டில் QR குறியீட்டை ஸ்கேன் செய்யவும்</string>
+    <string name="fui_mfa_totp_already_exists_error">அங்கீகார பயன்பாடு ஏற்கனவே அமைக்கப்பட்டுள்ளது</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">இந்த முறையை அகற்ற விரும்புகிறீர்களா?</string>
+    <string name="fui_mfa_unenrollment_error">முறையை அகற்ற முடியவில்லை</string>
+    <string name="fui_mfa_unenrollment_success_message">முறை அகற்றப்பட்டது</string>
+    <string name="fui_mfa_verification_instruction">சரிபார்ப்பு குறியீட்டை உள்ளிடவும்</string>
+    <string name="fui_profile_update_error">சுயவிவரத்தைப் புதுப்பிக்க முடியவில்லை</string>
+    <string name="fui_profile_update_success_message">சுயவிவரம் புதுப்பிக்கப்பட்டது</string>
+    <string name="fui_reauth_instruction">தொடர உங்கள் அடையாளத்தை உறுதிப்படுத்தவும்</string>
+    <string name="fui_reauth_required_error">மீண்டும் அங்கீகாரம் தேவை</string>
+    <string name="fui_reauth_success_message">மீண்டும் அங்கீகாரம் வெற்றிகரமாக</string>
+    <string name="fui_reauthenticate_action">மீண்டும் அங்கீகரி</string>
+    <string name="fui_recovery_codes_saved_action">எனது மீட்பு குறியீடுகளைச் சேமித்துள்ளேன்</string>
+    <string name="fui_remove_action">அகற்று</string>
+    <string name="fui_resend_verification_email_action">சரிபார்ப்பு மின்னஞ்சலை மீண்டும் அனுப்பு</string>
+    <string name="fui_secret_key_label">ரகசிய திறவுகோல்</string>
+    <string name="fui_sign_out_action">வெளியேறு</string>
+    <string name="fui_signed_in_as">இவராக உள்நுழைந்துள்ளது</string>
+    <string name="fui_skip_action">தவிர்</string>
+    <string name="fui_use_different_method_action">வேறு முறையைப் பயன்படுத்து</string>
+    <string name="fui_verification_code_label">சரிபார்ப்பு குறியீடு</string>
+    <string name="fui_verified_email_action">மின்னஞ்சல் சரிபார்க்கப்பட்டது</string>
+    <string name="fui_verify_action">சரிபார்</string>
+    <string name="fui_verify_email_instruction">%1$s க்கு சரிபார்ப்பு மின்னஞ்சலை அனுப்பியுள்ளோம்</string>
 </resources>

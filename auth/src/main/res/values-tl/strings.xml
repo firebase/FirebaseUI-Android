@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Mali ang verification code. Subukang muli.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">May naganap na error sa network. Tingnan ang iyong koneksyon at subukang muli.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">May naganap na error habang nag-e-enroll. Subukang muli.</string>
+
+    <string name="fui_back_action">Bumalik</string>
+    <string name="fui_identity_verified_message">Na-verify ang pagkakakilanlan. Subukan muli ang iyong aksyon.</string>
+    <string name="fui_manage_mfa_action">Pamahalaan ang two-factor authentication</string>
+    <string name="fui_incorrect_password_error">Maling password</string>
+    <string name="fui_mfa_choose_method_instruction">Pumili ng paraan ng pag-verify</string>
+    <string name="fui_mfa_enrollment_instruction">Magdagdag ng karagdagang layer ng seguridad</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Authenticator app</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Ang numerong ito ay nauugnay sa ibang account</string>
+    <string name="fui_mfa_second_factor_required_error">Kinakailangan ang pag-verify</string>
+    <string name="fui_mfa_setup_instruction">I-scan ang QR code gamit ang iyong authenticator app</string>
+    <string name="fui_mfa_totp_already_exists_error">Naka-set up na ang authenticator app</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Sigurado ka bang gusto mong alisin ang paraang ito?</string>
+    <string name="fui_mfa_unenrollment_error">Hindi ma-alis ang paraan</string>
+    <string name="fui_mfa_unenrollment_success_message">Naalis ang paraan</string>
+    <string name="fui_mfa_verification_instruction">Ilagay ang verification code</string>
+    <string name="fui_profile_update_error">Hindi ma-update ang profile</string>
+    <string name="fui_profile_update_success_message">Na-update ang profile</string>
+    <string name="fui_reauth_instruction">Kumpirmahin ang iyong pagkakakilanlan upang magpatuloy</string>
+    <string name="fui_reauth_required_error">Kinakailangan ang muling pag-authenticate</string>
+    <string name="fui_reauth_success_message">Matagumpay ang muling pag-authenticate</string>
+    <string name="fui_reauthenticate_action">Mag-authenticate muli</string>
+    <string name="fui_recovery_codes_saved_action">Na-save ko ang aking mga recovery code</string>
+    <string name="fui_remove_action">Alisin</string>
+    <string name="fui_resend_verification_email_action">Ipadala muli ang verification email</string>
+    <string name="fui_secret_key_label">Secret key</string>
+    <string name="fui_sign_out_action">Mag-sign out</string>
+    <string name="fui_signed_in_as">Naka-sign in bilang</string>
+    <string name="fui_skip_action">Laktawan</string>
+    <string name="fui_use_different_method_action">Gumamit ng ibang paraan</string>
+    <string name="fui_verification_code_label">Verification code</string>
+    <string name="fui_verified_email_action">Na-verify ang email</string>
+    <string name="fui_verify_action">I-verify</string>
+    <string name="fui_verify_email_instruction">Nagpadala kami ng verification email sa %1$s</string>
 </resources>

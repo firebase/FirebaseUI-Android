@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Ověřovací kód je nesprávný. Zkuste to znovu.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Došlo k chybě sítě. Zkontrolujte připojení a zkuste to znovu.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Během registrace došlo k chybě. Zkuste to znovu.</string>
+
+    <string name="fui_back_action">Zpět</string>
+    <string name="fui_identity_verified_message">Identita ověřena. Zkuste akci znovu.</string>
+    <string name="fui_manage_mfa_action">Správa dvoufázového ověření</string>
+    <string name="fui_incorrect_password_error">Nesprávné heslo</string>
+    <string name="fui_mfa_choose_method_instruction">Vyberte metodu ověření</string>
+    <string name="fui_mfa_enrollment_instruction">Přidejte další vrstvu zabezpečení</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Ověřovací aplikace</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Toto telefonní číslo je spojeno s jiným účtem</string>
+    <string name="fui_mfa_second_factor_required_error">Vyžaduje se ověření</string>
+    <string name="fui_mfa_setup_instruction">Naskenujte QR kód pomocí ověřovací aplikace</string>
+    <string name="fui_mfa_totp_already_exists_error">Ověřovací aplikace je již nastavena</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Opravdu chcete odstranit tuto metodu?</string>
+    <string name="fui_mfa_unenrollment_error">Metodu nelze odstranit</string>
+    <string name="fui_mfa_unenrollment_success_message">Metoda odstraněna</string>
+    <string name="fui_mfa_verification_instruction">Zadejte ověřovací kód</string>
+    <string name="fui_profile_update_error">Profil nelze aktualizovat</string>
+    <string name="fui_profile_update_success_message">Profil aktualizován</string>
+    <string name="fui_reauth_instruction">Potvrďte svou identitu a pokračujte</string>
+    <string name="fui_reauth_required_error">Vyžaduje se opětovné ověření</string>
+    <string name="fui_reauth_success_message">Opětovné ověření proběhlo úspěšně</string>
+    <string name="fui_reauthenticate_action">Znovu ověřit</string>
+    <string name="fui_recovery_codes_saved_action">Uložil jsem kódy pro obnovení</string>
+    <string name="fui_remove_action">Odstranit</string>
+    <string name="fui_resend_verification_email_action">Znovu odeslat ověřovací e-mail</string>
+    <string name="fui_secret_key_label">Tajný klíč</string>
+    <string name="fui_sign_out_action">Odhlásit se</string>
+    <string name="fui_signed_in_as">Přihlášen jako</string>
+    <string name="fui_skip_action">Přeskočit</string>
+    <string name="fui_use_different_method_action">Použít jinou metodu</string>
+    <string name="fui_verification_code_label">Ověřovací kód</string>
+    <string name="fui_verified_email_action">E-mail ověřen</string>
+    <string name="fui_verify_action">Ověřit</string>
+    <string name="fui_verify_email_instruction">Odeslali jsme ověřovací e-mail na %1$s</string>
 </resources>

@@ -131,4 +131,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Codul de verificare este incorect. Vă rugăm să încercați din nou.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">A apărut o eroare de rețea. Vă rugăm să verificați conexiunea și să încercați din nou.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">A apărut o eroare în timpul înregistrării. Vă rugăm să încercați din nou.</string>
+
+    <string name="fui_back_action">Înapoi</string>
+    <string name="fui_identity_verified_message">Identitate verificată. Reîncercați acțiunea.</string>
+    <string name="fui_manage_mfa_action">Gestionați autentificarea în doi pași</string>
+    <string name="fui_incorrect_password_error">Parolă incorectă</string>
+    <string name="fui_mfa_choose_method_instruction">Alegeți o metodă de verificare</string>
+    <string name="fui_mfa_enrollment_instruction">Adăugați un strat suplimentar de securitate</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Aplicație de autentificare</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Acest număr de telefon este asociat cu alt cont</string>
+    <string name="fui_mfa_second_factor_required_error">Verificare necesară</string>
+    <string name="fui_mfa_setup_instruction">Scanați codul QR cu aplicația de autentificare</string>
+    <string name="fui_mfa_totp_already_exists_error">Aplicația de autentificare este deja configurată</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Sigur doriți să eliminați această metodă?</string>
+    <string name="fui_mfa_unenrollment_error">Nu se poate elimina metoda</string>
+    <string name="fui_mfa_unenrollment_success_message">Metodă eliminată</string>
+    <string name="fui_mfa_verification_instruction">Introduceți codul de verificare</string>
+    <string name="fui_profile_update_error">Nu se poate actualiza profilul</string>
+    <string name="fui_profile_update_success_message">Profil actualizat</string>
+    <string name="fui_reauth_instruction">Confirmați-vă identitatea pentru a continua</string>
+    <string name="fui_reauth_required_error">Este necesară reautentificarea</string>
+    <string name="fui_reauth_success_message">Reautentificare reușită</string>
+    <string name="fui_reauthenticate_action">Reautentificare</string>
+    <string name="fui_recovery_codes_saved_action">Am salvat codurile de recuperare</string>
+    <string name="fui_remove_action">Eliminare</string>
+    <string name="fui_resend_verification_email_action">Retrimite e-mailul de verificare</string>
+    <string name="fui_secret_key_label">Cheie secretă</string>
+    <string name="fui_sign_out_action">Deconectare</string>
+    <string name="fui_signed_in_as">Conectat ca</string>
+    <string name="fui_skip_action">Omite</string>
+    <string name="fui_use_different_method_action">Folosiți o altă metodă</string>
+    <string name="fui_verification_code_label">Cod de verificare</string>
+    <string name="fui_verified_email_action">E-mail verificat</string>
+    <string name="fui_verify_action">Verificare</string>
+    <string name="fui_verify_email_instruction">Am trimis un e-mail de verificare la %1$s</string>
 </resources>

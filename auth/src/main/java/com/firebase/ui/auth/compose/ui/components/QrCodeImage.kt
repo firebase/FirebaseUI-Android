@@ -70,7 +70,7 @@ fun QrCodeImage(
         bitmap?.let {
             Image(
                 bitmap = it.asImageBitmap(),
-                contentDescription = "QR Code for $content",
+                contentDescription = "QR code for authenticator app setup",
                 modifier = Modifier.size(size)
             )
         }

@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -104,6 +106,22 @@ fun AuthTextField(
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
+    // Automatically set the correct keyboard type based on validator or field type
+    val resolvedKeyboardOptions = remember(validator, isSecureTextField, keyboardOptions) {
+        when {
+            keyboardOptions != KeyboardOptions.Default -> keyboardOptions
+            validator is EmailValidator -> KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            )
+            isSecureTextField -> KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            )
+            else -> keyboardOptions
+        }
+    }
+
     TextField(
         modifier = modifier
             .fillMaxWidth(),
@@ -121,7 +139,7 @@ fun AuthTextField(
                 Text(text = errorMessage ?: validator.errorMessage)
             }
         },
-        keyboardOptions = keyboardOptions,
+        keyboardOptions = resolvedKeyboardOptions,
         keyboardActions = keyboardActions,
         visualTransformation = if (isSecureTextField && !passwordVisible)
             PasswordVisualTransformation() else visualTransformation,

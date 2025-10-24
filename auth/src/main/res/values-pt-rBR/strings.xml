@@ -131,4 +131,57 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">O código de verificação está incorreto. Tente novamente.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Ocorreu um erro de rede. Verifique sua conexão e tente novamente.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Ocorreu um erro durante a inscrição. Tente novamente.</string>
+
+    <!-- MFA and Account Management - Added for v10 -->
+    <string name="fui_back_action">Voltar</string>
+    <string name="fui_identity_verified_message">Identidade verificada. Tente sua ação novamente.</string>
+    <string name="fui_incorrect_password_error">Senha incorreta. Tente novamente.</string>
+    <string name="fui_manage_mfa_action">Gerenciar autenticação multifator</string>
+    <string name="fui_mfa_active_methods_title">Métodos ativos</string>
+    <string name="fui_mfa_add_new_method_title">Adicionar novo método</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Todos os métodos de autenticação disponíveis estão cadastrados</string>
+    <string name="fui_mfa_enrolled_on">Cadastrado em %1$s</string>
+    <string name="fui_mfa_label_sms_authentication">Autenticação por SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Aplicativo autenticador</string>
+    <string name="fui_mfa_label_unknown_method">Método desconhecido</string>
+    <string name="fui_mfa_manage_factors_description">Adicionar ou remover métodos de autenticação para sua conta</string>
+    <string name="fui_mfa_manage_factors_title">Gerenciar autenticação de dois fatores</string>
+    <string name="fui_mfa_setup_authenticator_description">Escaneie o código QR ou insira a chave secreta no seu aplicativo autenticador</string>
+    <string name="fui_profile_completion_message">Complete as informações do seu perfil para continuar.</string>
+    <string name="fui_profile_missing_fields_message">Campos faltando: %1$s</string>
+    <string name="fui_reauth_account_label">Conta: %1$s</string>
+    <string name="fui_reauth_dialog_message">Para sua segurança, insira sua senha novamente para continuar.</string>
+    <string name="fui_reauth_dialog_title">Verifique sua identidade</string>
+    <string name="fui_reauth_generic_error">Falha na autenticação. Tente novamente.</string>
+    <string name="fui_recovery_codes_saved_action">Salvei estes códigos</string>
+    <string name="fui_remove_action">Remover</string>
+    <string name="fui_resend_verification_email_action">Reenviar e-mail de verificação</string>
+    <string name="fui_secret_key_label">Chave secreta</string>
+    <string name="fui_sign_out_action">Sair</string>
+    <string name="fui_signed_in_as">Conectado como %1$s</string>
+    <string name="fui_skip_action">Pular por enquanto</string>
+    <string name="fui_use_different_method_action">Usar um método diferente</string>
+    <string name="fui_verification_code_label">Código de verificação</string>
+    <string name="fui_verified_email_action">Verifiquei meu e-mail</string>
+    <string name="fui_verify_action">Verificar</string>
+    <string name="fui_verify_email_instruction">Verifique %1$s para continuar.</string>
+
+    <string name="fui_mfa_choose_method_instruction">Escolha um método de verificação</string>
+    <string name="fui_mfa_enrollment_instruction">Adicione uma camada extra de segurança</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Aplicativo autenticador</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Este número de telefone está associado a outra conta</string>
+    <string name="fui_mfa_second_factor_required_error">Verificação necessária</string>
+    <string name="fui_mfa_setup_instruction">Escaneie o código QR com seu aplicativo autenticador</string>
+    <string name="fui_mfa_totp_already_exists_error">O aplicativo autenticador já está configurado</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Tem certeza de que deseja remover este método?</string>
+    <string name="fui_mfa_unenrollment_error">Não foi possível remover o método</string>
+    <string name="fui_mfa_unenrollment_success_message">Método removido</string>
+    <string name="fui_mfa_verification_instruction">Insira o código de verificação</string>
+    <string name="fui_profile_update_error">Não foi possível atualizar o perfil</string>
+    <string name="fui_profile_update_success_message">Perfil atualizado</string>
+    <string name="fui_reauth_instruction">Confirme sua identidade para continuar</string>
+    <string name="fui_reauth_required_error">Reautenticação necessária</string>
+    <string name="fui_reauth_success_message">Reautenticação bem-sucedida</string>
+    <string name="fui_reauthenticate_action">Reautenticar</string>
 </resources>

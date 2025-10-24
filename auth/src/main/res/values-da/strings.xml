@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Bekræftelseskoden er forkert. Prøv igen.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Der opstod en netværksfejl. Tjek din forbindelse, og prøv igen.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Der opstod en fejl under tilmelding. Prøv igen.</string>
+
+    <string name="fui_back_action">Tilbage</string>
+    <string name="fui_identity_verified_message">Identitet bekræftet. Prøv din handling igen.</string>
+    <string name="fui_manage_mfa_action">Administrer totrinsgodkendelse</string>
+    <string name="fui_incorrect_password_error">Forkert adgangskode</string>
+    <string name="fui_mfa_choose_method_instruction">Vælg en bekræftelsesmetode</string>
+    <string name="fui_mfa_enrollment_instruction">Tilføj et ekstra sikkerhedslag</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Godkendelsesapp</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Dette telefonnummer er tilknyttet en anden konto</string>
+    <string name="fui_mfa_second_factor_required_error">Bekræftelse påkrævet</string>
+    <string name="fui_mfa_setup_instruction">Scan QR-koden med din godkendelsesapp</string>
+    <string name="fui_mfa_totp_already_exists_error">Godkendelsesapp er allerede konfigureret</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Er du sikker på, at du vil fjerne denne metode?</string>
+    <string name="fui_mfa_unenrollment_error">Kan ikke fjerne metode</string>
+    <string name="fui_mfa_unenrollment_success_message">Metode fjernet</string>
+    <string name="fui_mfa_verification_instruction">Indtast bekræftelseskode</string>
+    <string name="fui_profile_update_error">Kan ikke opdatere profil</string>
+    <string name="fui_profile_update_success_message">Profil opdateret</string>
+    <string name="fui_reauth_instruction">Bekræft din identitet for at fortsætte</string>
+    <string name="fui_reauth_required_error">Gengodkendelse påkrævet</string>
+    <string name="fui_reauth_success_message">Gengodkendelse lykkedes</string>
+    <string name="fui_reauthenticate_action">Gengodkend</string>
+    <string name="fui_recovery_codes_saved_action">Jeg har gemt mine gendannelseskoder</string>
+    <string name="fui_remove_action">Fjern</string>
+    <string name="fui_resend_verification_email_action">Send bekræftelsesemail igen</string>
+    <string name="fui_secret_key_label">Hemmelig nøgle</string>
+    <string name="fui_sign_out_action">Log ud</string>
+    <string name="fui_signed_in_as">Logget ind som</string>
+    <string name="fui_skip_action">Spring over</string>
+    <string name="fui_use_different_method_action">Brug en anden metode</string>
+    <string name="fui_verification_code_label">Bekræftelseskode</string>
+    <string name="fui_verified_email_action">E-mail bekræftet</string>
+    <string name="fui_verify_action">Bekræft</string>
+    <string name="fui_verify_email_instruction">Vi har sendt en bekræftelsesemail til %1$s</string>
 </resources>

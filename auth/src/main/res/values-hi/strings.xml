@@ -131,4 +131,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">पुष्टि करने वाला कोड गलत है. कृपया फिर से कोशिश करें.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">नेटवर्क में कोई गड़बड़ी हुई. कृपया अपने कनेक्शन की जांच करें और फिर से कोशिश करें.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">नामांकन के दौरान एक गड़बड़ी हुई. कृपया फिर से कोशिश करें.</string>
+
+    <string name="fui_back_action">वापस</string>
+    <string name="fui_identity_verified_message">पहचान सत्यापित हुई। अपनी कार्रवाई फिर से आज़माएं।</string>
+    <string name="fui_manage_mfa_action">दो-कारक प्रमाणीकरण प्रबंधित करें</string>
+    <string name="fui_incorrect_password_error">गलत पासवर्ड</string>
+    <string name="fui_mfa_choose_method_instruction">सत्यापन विधि चुनें</string>
+    <string name="fui_mfa_enrollment_instruction">सुरक्षा की एक अतिरिक्त परत जोड़ें</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">प्रमाणीकरण ऐप</string>
+    <string name="fui_mfa_phone_number_already_exists_error">यह फ़ोन नंबर किसी अन्य खाते से जुड़ा है</string>
+    <string name="fui_mfa_second_factor_required_error">सत्यापन आवश्यक है</string>
+    <string name="fui_mfa_setup_instruction">अपने प्रमाणीकरण ऐप से QR कोड स्कैन करें</string>
+    <string name="fui_mfa_totp_already_exists_error">प्रमाणीकरण ऐप पहले से सेट अप है</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">क्या आप वाकई इस विधि को हटाना चाहते हैं?</string>
+    <string name="fui_mfa_unenrollment_error">विधि हटाने में असमर्थ</string>
+    <string name="fui_mfa_unenrollment_success_message">विधि हटाई गई</string>
+    <string name="fui_mfa_verification_instruction">सत्यापन कोड दर्ज करें</string>
+    <string name="fui_profile_update_error">प्रोफ़ाइल अपडेट करने में असमर्थ</string>
+    <string name="fui_profile_update_success_message">प्रोफ़ाइल अपडेट हुआ</string>
+    <string name="fui_reauth_instruction">जारी रखने के लिए अपनी पहचान की पुष्टि करें</string>
+    <string name="fui_reauth_required_error">पुनः प्रमाणीकरण आवश्यक है</string>
+    <string name="fui_reauth_success_message">पुनः प्रमाणीकरण सफल</string>
+    <string name="fui_reauthenticate_action">पुनः प्रमाणीकरण</string>
+    <string name="fui_recovery_codes_saved_action">मैंने अपने पुनर्प्राप्ति कोड सहेज लिए हैं</string>
+    <string name="fui_remove_action">हटाएं</string>
+    <string name="fui_resend_verification_email_action">सत्यापन ईमेल फिर से भेजें</string>
+    <string name="fui_secret_key_label">गुप्त कुंजी</string>
+    <string name="fui_sign_out_action">साइन आउट</string>
+    <string name="fui_signed_in_as">इस रूप में साइन इन किया</string>
+    <string name="fui_skip_action">छोड़ें</string>
+    <string name="fui_use_different_method_action">एक अलग विधि उपयोग करें</string>
+    <string name="fui_verification_code_label">सत्यापन कोड</string>
+    <string name="fui_verified_email_action">ईमेल सत्यापित</string>
+    <string name="fui_verify_action">सत्यापित करें</string>
+    <string name="fui_verify_email_instruction">हमने %1$s पर एक सत्यापन ईमेल भेजा</string>
 </resources>
