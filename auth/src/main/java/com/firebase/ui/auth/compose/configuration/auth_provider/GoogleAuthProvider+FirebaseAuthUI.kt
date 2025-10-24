@@ -63,7 +63,6 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
                 try {
                     signInWithGoogle(context, config, provider)
                 } catch (e: AuthException) {
-                    // Log.d("rememberGoogleSignInHandler", "exception: $e")
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
                     val authException = AuthException.from(e)
