@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose
 
 import android.content.Context
 import androidx.annotation.RestrictTo
+import com.firebase.ui.auth.compose.configuration.auth_provider.signOutFromGoogle
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -341,13 +342,16 @@ class FirebaseAuthUI private constructor(
      * @throws AuthException.UnknownException for other errors
      * @since 10.0.0
      */
-    fun signOut(context: Context) {
+    suspend fun signOut(context: Context) {
         try {
             // Update state to loading
             updateAuthState(AuthState.Loading("Signing out..."))
 
             // Sign out from Firebase Auth
             auth.signOut()
+                .also {
+                    signOutFromGoogle(context)
+                }
 
             // Update state to idle (user signed out)
             updateAuthState(AuthState.Idle)

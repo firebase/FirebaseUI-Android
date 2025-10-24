@@ -18,10 +18,10 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.annotation.RestrictTo
-import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.graphics.Color
 import androidx.core.net.toUri
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.facebook.AccessToken
 import com.firebase.ui.auth.R
@@ -33,6 +33,11 @@ import com.firebase.ui.auth.util.Preconditions
 import com.firebase.ui.auth.util.data.ContinueUrlBuilder
 import com.firebase.ui.auth.util.data.PhoneNumberUtils
 import com.firebase.ui.auth.util.data.ProviderAvailability
+import com.google.android.gms.auth.api.identity.AuthorizationRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.common.api.Scope
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.AuthCredential
@@ -484,16 +489,19 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
                                 )
                             }
                         })
-                    activity?.let {
-                        options.setActivity(it)
-                    }
-                    forceResendingToken?.let {
-                        options.setForceResendingToken(it)
-                    }
-                    multiFactorSession?.let {
-                        options.setMultiFactorSession(it)
-                    }
-                    PhoneAuthProvider.verifyPhoneNumber(options.build())
+                        .apply {
+                            activity?.let {
+                                setActivity(it)
+                            }
+                            forceResendingToken?.let {
+                                setForceResendingToken(it)
+                            }
+                            multiFactorSession?.let {
+                                setMultiFactorSession(it)
+                            }
+                        }
+                        .build()
+                    PhoneAuthProvider.verifyPhoneNumber(options)
                 }
             }
         }
@@ -579,6 +587,87 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
                 Log.w(
                     "AuthProvider.Google",
                     "The scopes do not include 'email'. In most cases this is a mistake!"
+                )
+            }
+        }
+
+        /**
+         * Result container for Google Sign-In credential flow.
+         * @suppress
+         */
+        internal data class GoogleSignInResult(
+            val credential: AuthCredential,
+            val displayName: String?,
+            val photoUrl: Uri?
+        )
+
+        /**
+         * An interface to wrap the Authorization API for requesting OAuth scopes.
+         * @suppress
+         */
+        internal interface AuthorizationProvider {
+            suspend fun authorize(context: Context, scopes: List<Scope>)
+        }
+
+        /**
+         * The default implementation of [AuthorizationProvider].
+         * @suppress
+         */
+        internal class DefaultAuthorizationProvider : AuthorizationProvider {
+            override suspend fun authorize(context: Context, scopes: List<Scope>) {
+                val authorizationRequest = AuthorizationRequest.builder()
+                    .setRequestedScopes(scopes)
+                    .build()
+
+                Identity.getAuthorizationClient(context)
+                    .authorize(authorizationRequest)
+                    .await()
+            }
+        }
+
+        /**
+         * An interface to wrap the Credential Manager flow for Google Sign-In.
+         * @suppress
+         */
+        internal interface CredentialManagerProvider {
+            suspend fun getGoogleCredential(
+                context: Context,
+                serverClientId: String,
+                filterByAuthorizedAccounts: Boolean,
+                autoSelectEnabled: Boolean
+            ): GoogleSignInResult
+        }
+
+        /**
+         * The default implementation of [CredentialManagerProvider].
+         * @suppress
+         */
+        internal class DefaultCredentialManagerProvider : CredentialManagerProvider {
+            override suspend fun getGoogleCredential(
+                context: Context,
+                serverClientId: String,
+                filterByAuthorizedAccounts: Boolean,
+                autoSelectEnabled: Boolean
+            ): GoogleSignInResult {
+                val credentialManager = CredentialManager.create(context)
+                val googleIdOption = GetGoogleIdOption.Builder()
+                    .setServerClientId(serverClientId)
+                    .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
+                    .setAutoSelectEnabled(autoSelectEnabled)
+                    .build()
+
+                val request = GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOption)
+                    .build()
+
+                val result = credentialManager.getCredential(context, request)
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(result.credential.data)
+                val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+
+                return GoogleSignInResult(
+                    credential = credential,
+                    displayName = googleIdTokenCredential.displayName,
+                    photoUrl = googleIdTokenCredential.profilePictureUri
                 )
             }
         }

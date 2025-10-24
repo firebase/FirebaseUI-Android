@@ -6,10 +6,20 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.FirebaseAuthUI
@@ -50,6 +60,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onLowLevelApiClick = {
                             startActivity(Intent(this, AuthFlowControllerDemoActivity::class.java))
+                        },
+                        onCustomSlotsClick = {
+                            startActivity(Intent(this, CustomSlotsThemingDemoActivity::class.java))
                         }
                     )
                 }
@@ -61,16 +74,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ChooserScreen(
     onHighLevelApiClick: () -> Unit,
-    onLowLevelApiClick: () -> Unit
+    onLowLevelApiClick: () -> Unit,
+    onCustomSlotsClick: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .systemBarsPadding()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
         // Header
         Text(
             text = "Firebase Auth UI Compose",
@@ -159,6 +177,42 @@ fun ChooserScreen(
             }
         }
 
+        // Custom Slots & Theming Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onCustomSlotsClick
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "🎨 Custom Slots & Theming",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Slot APIs & Theme Customization",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Best for: Applications that need fully custom UI while leveraging the authentication logic and state management.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Features:",
+                    style = MaterialTheme.typography.labelLarge
+                )
+                Text(
+                    text = "• Custom email auth UI via slots\n• Custom phone auth UI via slots\n• AuthUITheme.fromMaterialTheme()\n• Custom ProviderStyle examples",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Info card
@@ -183,5 +237,7 @@ fun ChooserScreen(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

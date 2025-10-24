@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,6 +51,7 @@ import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
+import com.firebase.ui.auth.compose.configuration.auth_provider.rememberGoogleSignInHandler
 import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
@@ -98,12 +100,21 @@ fun FirebaseAuthScreen(
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
 
     val anonymousProvider = configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
+    val googleProvider = configuration.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
     val facebookProvider = configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
     val logoAsset = configuration.logo
 
     val onSignInAnonymously = anonymousProvider?.let {
         authUI.rememberAnonymousSignInHandler()
+    }
+
+    val onSignInWithGoogle = googleProvider?.let {
+        authUI.rememberGoogleSignInHandler(
+            context = context,
+            config = configuration,
+            provider = it
+        )
     }
 
     val onSignInWithFacebook = facebookProvider?.let {
@@ -141,6 +152,8 @@ fun FirebaseAuthScreen(
                                 is AuthProvider.Phone -> {
                                     navController.navigate(AuthRoute.Phone.route)
                                 }
+
+                                is AuthProvider.Google -> onSignInWithGoogle?.invoke()
 
                                 is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
 
@@ -599,17 +612,20 @@ private fun LoadingDialog(message: String) {
     AlertDialog(
         onDismissRequest = {},
         confirmButton = {},
+        containerColor = Color.Transparent,
         text = {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(24.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 CircularProgressIndicator()
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = message,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.White
                 )
             }
         }
