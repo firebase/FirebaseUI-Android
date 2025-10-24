@@ -124,10 +124,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
             try {
                 val requestedScopes = provider.scopes.map { Scope(it) }
                 authorizationProvider.authorize(context, requestedScopes)
-                // Log.d("GoogleSignIn", "Successfully authorized scopes: ${provider.scopes}")
             } catch (e: Exception) {
-                // Log.w("GoogleSignIn", "Failed to authorize scopes: ${provider.scopes}", e)
-                // Continue with sign-in even if scope authorization fails
                 val authException = AuthException.from(e)
                 updateAuthState(AuthState.Error(authException))
             }
@@ -178,19 +175,14 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
  * - Before allowing user to select a different Google account
  * - When switching between accounts
  *
- * **Note:** This does not sign out from Firebase Auth itself. Call [FirebaseAuth.signOut]
+ * **Note:** This does not sign out from Firebase Auth itself. Call [FirebaseAuthUI.signOut]
  * separately if you need to sign out from Firebase.
  *
  * @param context Android context for Credential Manager
  */
-suspend fun FirebaseAuthUI.signOutFromGoogle(context: Context) {
-    try {
-        val credentialManager = CredentialManager.create(context)
-        credentialManager.clearCredentialState(
-            ClearCredentialStateRequest()
-        )
-        // Log.d("GoogleSignIn", "Cleared Google credential state")
-    } catch (e: Exception) {
-        // Log.w("GoogleSignIn", "Failed to clear credential state", e)
-    }
+internal suspend fun signOutFromGoogle(context: Context) {
+    val credentialManager = CredentialManager.create(context)
+    credentialManager.clearCredentialState(
+        ClearCredentialStateRequest()
+    )
 }
