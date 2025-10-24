@@ -213,6 +213,7 @@ class EmailAuthProviderFirebaseAuthUITest {
                 email = "test@example.com",
                 password = "weak"
             )
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e.message).contains(
                 applicationContext
@@ -248,6 +249,7 @@ class EmailAuthProviderFirebaseAuthUITest {
                 email = "test@example.com",
                 password = "pass@123"
             )
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e.message).isEqualTo(applicationContext.getString(R.string.fui_error_password_missing_uppercase))
         }
@@ -277,6 +279,7 @@ class EmailAuthProviderFirebaseAuthUITest {
                 email = "test@example.com",
                 password = "Pass@123"
             )
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e.message)
                 .isEqualTo(applicationContext.getString(R.string.fui_error_email_does_not_exist))

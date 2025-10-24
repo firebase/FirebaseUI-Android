@@ -52,7 +52,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.data.ALL_COUNTRIES
 import com.firebase.ui.auth.compose.data.CountryData
 import com.firebase.ui.auth.compose.data.CountryUtils
@@ -76,7 +76,7 @@ fun CountrySelector(
     allowedCountries: Set<String>? = null,
 ) {
     val context = LocalContext.current
-    val stringProvider = DefaultAuthUIStringProvider(context)
+    val stringProvider = LocalAuthUIStringProvider.current
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }

@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose.ui.screens
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -28,6 +29,7 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.MfaFactor
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.mfa.MfaChallengeContentState
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -296,13 +298,17 @@ class MfaChallengeScreenTest {
         `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockTotpHint))
 
         composeTestRule.setContent {
-            MfaChallengeScreen(
-                resolver = mockResolver,
-                auth = authUI.auth,
-                onSuccess = {},
-                onCancel = {},
-                onError = {}
-            )
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                MfaChallengeScreen(
+                    resolver = mockResolver,
+                    auth = authUI.auth,
+                    onSuccess = {},
+                    onCancel = {},
+                    onError = {}
+                )
+            }
         }
 
         composeTestRule.waitForIdle()
@@ -325,13 +331,17 @@ class MfaChallengeScreenTest {
         `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockPhoneHint))
 
         composeTestRule.setContent {
-            MfaChallengeScreen(
-                resolver = mockResolver,
-                auth = authUI.auth,
-                onSuccess = {},
-                onCancel = {},
-                onError = {}
-            )
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                MfaChallengeScreen(
+                    resolver = mockResolver,
+                    auth = authUI.auth,
+                    onSuccess = {},
+                    onCancel = {},
+                    onError = {}
+                )
+            }
         }
 
         composeTestRule.waitForIdle()
@@ -348,13 +358,17 @@ class MfaChallengeScreenTest {
         `when`(mockResolver.hints).thenReturn(listOf<MultiFactorInfo>(mockTotpHint))
 
         composeTestRule.setContent {
-            MfaChallengeScreen(
-                resolver = mockResolver,
-                auth = authUI.auth,
-                onSuccess = {},
-                onCancel = {},
-                onError = {}
-            )
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                MfaChallengeScreen(
+                    resolver = mockResolver,
+                    auth = authUI.auth,
+                    onSuccess = {},
+                    onCancel = {},
+                    onError = {}
+                )
+            }
         }
 
         composeTestRule.waitForIdle()

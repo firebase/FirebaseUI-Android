@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Σύνδεση μέσω Apple</string>
     <string name="fui_sign_in_with_microsoft">Σύνδεση μέσω Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Σύνδεση μέσω Yahoo</string>
+    <string name="fui_sign_in_with_line">Σύνδεση μέσω LINE</string>
     <string name="fui_next_default">Επόμενο</string>
     <string name="fui_email_hint">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="fui_phone_hint">Αριθμός τηλεφώνου</string>

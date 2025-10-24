@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Conectați-vă cu Apple</string>
     <string name="fui_sign_in_with_microsoft">Conectați-vă cu Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Conectați-vă cu Yahoo</string>
+    <string name="fui_sign_in_with_line">Conectați-vă cu LINE</string>
     <string name="fui_next_default">Înainte</string>
     <string name="fui_email_hint">Adresă de e-mail</string>
     <string name="fui_phone_hint">Număr de telefon</string>

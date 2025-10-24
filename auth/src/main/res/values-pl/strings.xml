@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Zaloguj się przez Apple</string>
     <string name="fui_sign_in_with_microsoft">Zaloguj się przez Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Zaloguj się przez Yahoo</string>
+    <string name="fui_sign_in_with_line">Zaloguj się przez LINE</string>
     <string name="fui_next_default">Dalej</string>
     <string name="fui_email_hint">Adres e-mail</string>
     <string name="fui_phone_hint">Numer telefonu</string>

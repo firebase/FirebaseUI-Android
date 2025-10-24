@@ -44,7 +44,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -66,7 +66,7 @@ fun ReauthenticationDialog(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
-    val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
+    val stringProvider = LocalAuthUIStringProvider.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()

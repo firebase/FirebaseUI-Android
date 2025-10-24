@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Mag-sign in sa Apple</string>
     <string name="fui_sign_in_with_microsoft">Mag-sign in sa Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Mag-sign in sa Yahoo</string>
+    <string name="fui_sign_in_with_line">Mag-sign in sa LINE</string>
     <string name="fui_next_default">Susunod</string>
     <string name="fui_email_hint">Mag-email</string>
     <string name="fui_phone_hint">Numero ng Telepono</string>

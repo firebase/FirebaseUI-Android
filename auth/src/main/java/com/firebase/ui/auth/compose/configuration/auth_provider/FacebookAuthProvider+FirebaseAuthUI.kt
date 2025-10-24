@@ -92,10 +92,6 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                 }
 
                 override fun onCancel() {
-                    // val cancelledException = AuthException.AuthCancelledException(
-                    //     message = "Sign in with facebook was cancelled",
-                    // )
-                    // updateAuthState(AuthState.Error(cancelledException))
                     updateAuthState(AuthState.Idle)
                 }
 

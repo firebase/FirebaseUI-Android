@@ -3,6 +3,8 @@ package com.firebase.ui.auth.compose.ui.method_picker
 import android.content.Context
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -16,6 +18,8 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.google.common.truth.Truth
 import org.junit.Before
@@ -47,6 +51,16 @@ class AuthMethodPickerTest {
         selectedProvider = null
     }
 
+    private fun setContentWithStringProvider(content: @Composable () -> Unit) {
+        composeTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(context)
+            ) {
+                content()
+            }
+        }
+    }
+
     // =============================================================================================
     // Basic UI Tests
     // =============================================================================================
@@ -62,7 +76,7 @@ class AuthMethodPickerTest {
             )
         )
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it }
@@ -94,7 +108,7 @@ class AuthMethodPickerTest {
             AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         )
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it }
@@ -112,7 +126,7 @@ class AuthMethodPickerTest {
             AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         )
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 logo = AuthUIAsset.Resource(R.drawable.fui_ic_check_circle_black_128dp),
@@ -131,7 +145,7 @@ class AuthMethodPickerTest {
             AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         )
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 logo = null,
@@ -153,7 +167,7 @@ class AuthMethodPickerTest {
             AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         )
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 logo = AuthUIAsset.Resource(R.drawable.fui_ic_check_circle_black_128dp),
@@ -179,7 +193,7 @@ class AuthMethodPickerTest {
         val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         val providers = listOf(googleProvider)
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it }
@@ -204,7 +218,7 @@ class AuthMethodPickerTest {
         )
         var customLayoutCalled = false
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it },
@@ -229,7 +243,7 @@ class AuthMethodPickerTest {
         )
         var receivedProviders: List<AuthProvider>? = null
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it },
@@ -247,7 +261,7 @@ class AuthMethodPickerTest {
         val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         val providers = listOf(googleProvider)
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it },
@@ -292,7 +306,7 @@ class AuthMethodPickerTest {
             AuthProvider.Anonymous
         )
 
-        composeTestRule.setContent {
+        setContentWithStringProvider {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it }

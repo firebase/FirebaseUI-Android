@@ -33,7 +33,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUser
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -126,7 +126,7 @@ fun EmailAuthScreen(
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
-    val stringProvider = DefaultAuthUIStringProvider(context)
+    val stringProvider = LocalAuthUIStringProvider.current
     val coroutineScope = rememberCoroutineScope()
 
     val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }

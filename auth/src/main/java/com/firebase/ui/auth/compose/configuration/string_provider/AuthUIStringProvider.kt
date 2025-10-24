@@ -14,6 +14,30 @@
 
 package com.firebase.ui.auth.compose.configuration.string_provider
 
+import androidx.compose.runtime.staticCompositionLocalOf
+
+/**
+ * CompositionLocal for providing [AuthUIStringProvider] throughout the Compose tree.
+ *
+ * This allows accessing localized strings without manually passing the provider through
+ * every composable. The provider is set at the top level in FirebaseAuthScreen and can
+ * be accessed anywhere in the auth UI using `LocalAuthUIStringProvider.current`.
+ *
+ * **Usage:**
+ * ```kotlin
+ * @Composable
+ * fun MyAuthComponent() {
+ *     val stringProvider = LocalAuthUIStringProvider.current
+ *     Text(stringProvider.signInWithGoogle)
+ * }
+ * ```
+ *
+ * @since 10.0.0
+ */
+val LocalAuthUIStringProvider = staticCompositionLocalOf<AuthUIStringProvider> {
+    error("No AuthUIStringProvider provided. Ensure FirebaseAuthScreen is used as the root composable.")
+}
+
 /**
  * An interface for providing localized string resources. This interface defines methods for all
  * user-facing strings, such as initializing(), signInWithGoogle(), invalidEmailAddress(),
@@ -72,6 +96,9 @@ interface AuthUIStringProvider {
 
     /** Button text for Yahoo sign-in option */
     val signInWithYahoo: String
+
+    /** Button text for LINE sign-in option */
+    val signInWithLine: String
 
     /** Error message when email address field is empty */
     val missingEmailAddress: String
@@ -436,4 +463,14 @@ interface AuthUIStringProvider {
 
     /** General error message for re-authentication failures. */
     val reauthGenericError: String
+
+    // Terms of Service and Privacy Policy
+    /** Terms of Service link text */
+    val termsOfService: String
+
+    /** Privacy Policy link text */
+    val privacyPolicy: String
+
+    /** ToS and Privacy Policy combined message with placeholders for links */
+    fun tosAndPrivacyPolicy(termsOfServiceLabel: String, privacyPolicyLabel: String): String
 }

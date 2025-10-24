@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Apple மூலம் உள்நுழை</string>
     <string name="fui_sign_in_with_microsoft">Microsoft மூலம் உள்நுழை</string>
     <string name="fui_sign_in_with_yahoo">Yahoo மூலம் உள்நுழை</string>
+    <string name="fui_sign_in_with_line">LINE மூலம் உள்நுழை</string>
     <string name="fui_next_default">அடுத்து</string>
     <string name="fui_email_hint">மின்னஞ்சல்</string>
     <string name="fui_phone_hint">ஃபோன் எண்</string>

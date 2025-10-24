@@ -52,7 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.compose.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.compose.mfa.toMfaErrorMessage
@@ -72,7 +72,7 @@ internal fun DefaultMfaEnrollmentContent(
     authConfiguration: AuthUIConfiguration,
     user: FirebaseUser
 ) {
-    val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
+    val stringProvider = LocalAuthUIStringProvider.current
     val snackbarHostState = remember { SnackbarHostState() }
     val showReauthDialog = remember { mutableStateOf(false) }
     val reauthErrorMessage = remember { mutableStateOf<String?>(null) }
