@@ -86,9 +86,9 @@ internal enum class Provider(
     EMAIL(EmailAuthProvider.PROVIDER_ID, providerName = "Email"),
     PHONE(PhoneAuthProvider.PROVIDER_ID, providerName = "Phone"),
     ANONYMOUS("anonymous", providerName = "Anonymous"),
-    MICROSOFT("microsoft.com", providerName = "Microsoft"),
-    YAHOO("yahoo.com", providerName = "Yahoo"),
-    APPLE("apple.com", providerName = "Apple"),
+    MICROSOFT("microsoft.com", providerName = "Microsoft", isSocialProvider = true),
+    YAHOO("yahoo.com", providerName = "Yahoo", isSocialProvider = true),
+    APPLE("apple.com", providerName = "Apple", isSocialProvider = true),
     LINE("oidc.line", providerName = "LINE", isSocialProvider = true);
 
     companion object {

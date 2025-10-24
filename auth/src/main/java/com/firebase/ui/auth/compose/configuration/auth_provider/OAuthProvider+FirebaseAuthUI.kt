@@ -68,11 +68,9 @@ fun FirebaseAuthUI.rememberOAuthSignInHandler(
                         provider = provider
                     )
                 } catch (e: AuthException) {
-                    // Log.e("OAuthSignIn", "OAuth sign-in failed for ${provider.providerName}", e)
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
                     val authException = AuthException.from(e)
-                    // Log.e("OAuthSignIn", "OAuth sign-in failed for ${provider.providerName}", e)
                     updateAuthState(AuthState.Error(authException))
                 }
             }
@@ -146,7 +144,6 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
         // Check for pending auth result (e.g., app was killed during OAuth flow)
         val pendingResult = auth.pendingAuthResult
         if (pendingResult != null) {
-            // Log.d("OAuthSignIn", "Found pending auth result, completing sign-in")
             val authResult = pendingResult.await()
             val credential = authResult.credential as? OAuthCredential
 
@@ -166,20 +163,14 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
 
         // Determine if we should upgrade anonymous user or do normal sign-in
         val authResult = if (canUpgradeAnonymous(config, auth)) {
-            // Log.d("OAuthSignIn", "Upgrading anonymous user with ${provider.providerName}")
             auth.currentUser?.startActivityForLinkWithProvider(activity, oauthProvider)?.await()
         } else {
-            // Log.d("OAuthSignIn", "Normal sign-in with ${provider.providerName}")
             auth.startActivityForSignInWithProvider(activity, oauthProvider).await()
         }
 
         // Extract OAuth credential and complete sign-in
         val credential = authResult?.credential as? OAuthCredential
         if (credential != null) {
-            // Log.d(
-            //     "OAuthSignIn",
-            //     "Successfully obtained OAuth credential for ${provider.providerName}"
-            // )
             // The user is already signed in via startActivityForSignInWithProvider/startActivityForLinkWithProvider
             // Just update state to Idle
             updateAuthState(AuthState.Idle)

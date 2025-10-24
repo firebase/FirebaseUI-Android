@@ -63,7 +63,6 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
                 try {
                     signInWithGoogle(context, config, provider)
                 } catch (e: AuthException) {
-                    // Log.d("rememberGoogleSignInHandler", "exception: $e")
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
                     val authException = AuthException.from(e)
@@ -124,9 +123,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
             try {
                 val requestedScopes = provider.scopes.map { Scope(it) }
                 authorizationProvider.authorize(context, requestedScopes)
-                // Log.d("GoogleSignIn", "Successfully authorized scopes: ${provider.scopes}")
             } catch (e: Exception) {
-                // Log.w("GoogleSignIn", "Failed to authorize scopes: ${provider.scopes}", e)
                 // Continue with sign-in even if scope authorization fails
                 val authException = AuthException.from(e)
                 updateAuthState(AuthState.Error(authException))
