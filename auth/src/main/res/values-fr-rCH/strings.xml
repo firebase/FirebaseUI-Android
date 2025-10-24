@@ -161,11 +161,11 @@
     <string name="fui_mfa_choose_method_instruction">Choisissez une méthode de vérification</string>
     <string name="fui_mfa_enrollment_instruction">Ajoutez une couche de sécurité supplémentaire</string>
     <string name="fui_mfa_method_sms">SMS</string>
-    <string name="fui_mfa_method_totp">Application d'authentification</string>
+    <string name="fui_mfa_method_totp">Application d\'authentification</string>
     <string name="fui_mfa_phone_number_already_exists_error">Ce numéro de téléphone est associé à un autre compte</string>
     <string name="fui_mfa_second_factor_required_error">Vérification requise</string>
-    <string name="fui_mfa_setup_instruction">Scannez le code QR avec votre application d'authentification</string>
-    <string name="fui_mfa_totp_already_exists_error">L'application d'authentification est déjà configurée</string>
+    <string name="fui_mfa_setup_instruction">Scannez le code QR avec votre application d\'authentification</string>
+    <string name="fui_mfa_totp_already_exists_error">L\'application d\'authentification est déjà configurée</string>
     <string name="fui_mfa_unenrollment_confirmation_message">Êtes-vous sûr de vouloir supprimer cette méthode ?</string>
     <string name="fui_mfa_unenrollment_error">Impossible de supprimer la méthode</string>
     <string name="fui_mfa_unenrollment_success_message">Méthode supprimée</string>

@@ -139,7 +139,7 @@
     <string name="fui_mfa_enrollment_instruction">Додайте додатковий рівень безпеки</string>
     <string name="fui_mfa_method_sms">SMS</string>
     <string name="fui_mfa_method_totp">Додаток для автентифікації</string>
-    <string name="fui_mfa_phone_number_already_exists_error">Цей номер телефону вже пов'язаний з іншим обліковим записом</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Цей номер телефону вже пов\'язаний з іншим обліковим записом</string>
     <string name="fui_mfa_second_factor_required_error">Потрібне підтвердження</string>
     <string name="fui_mfa_setup_instruction">Скануйте QR-код додатком для автентифікації</string>
     <string name="fui_mfa_totp_already_exists_error">Додаток для автентифікації вже налаштовано</string>
