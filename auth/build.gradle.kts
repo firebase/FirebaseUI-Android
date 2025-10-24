@@ -13,6 +13,7 @@ android {
         minSdk = Config.SdkVersions.min
         targetSdk = Config.SdkVersions.target
 
+        buildConfigField("String", "LIBRARY_NAME", "\"Firebase-UI-Android\"")
         buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
 
         resourcePrefix("fui_")
@@ -68,6 +69,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
