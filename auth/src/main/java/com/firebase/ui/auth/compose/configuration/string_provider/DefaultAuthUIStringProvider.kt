@@ -79,6 +79,8 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_sign_in_with_microsoft)
     override val signInWithYahoo: String
         get() = localizedContext.getString(R.string.fui_sign_in_with_yahoo)
+    override val signInWithLine: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_line)
 
     /**
      * Email Validator Strings
@@ -415,4 +417,13 @@ class DefaultAuthUIStringProvider(
 
     override val reauthGenericError: String
         get() = localizedContext.getString(R.string.fui_reauth_generic_error)
+
+    override val termsOfService: String
+        get() = localizedContext.getString(R.string.fui_terms_of_service)
+
+    override val privacyPolicy: String
+        get() = localizedContext.getString(R.string.fui_privacy_policy)
+
+    override fun tosAndPrivacyPolicy(termsOfServiceLabel: String, privacyPolicyLabel: String): String =
+        localizedContext.getString(R.string.fui_tos_and_pp, termsOfServiceLabel, privacyPolicyLabel)
 }

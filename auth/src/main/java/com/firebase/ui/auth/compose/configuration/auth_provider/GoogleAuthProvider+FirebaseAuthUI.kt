@@ -124,6 +124,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
                 val requestedScopes = provider.scopes.map { Scope(it) }
                 authorizationProvider.authorize(context, requestedScopes)
             } catch (e: Exception) {
+                // Continue with sign-in even if scope authorization fails
                 val authException = AuthException.from(e)
                 updateAuthState(AuthState.Error(authException))
             }

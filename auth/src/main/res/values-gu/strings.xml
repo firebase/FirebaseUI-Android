@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Apple વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_microsoft">Microsoft વડે સાઇન ઇન કરો</string>
     <string name="fui_sign_in_with_yahoo">Yahoo વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_with_line">LINE વડે સાઇન ઇન કરો</string>
     <string name="fui_next_default">આગળ</string>
     <string name="fui_email_hint">ઇમેઇલ</string>
     <string name="fui_phone_hint">ફોન નંબર</string>

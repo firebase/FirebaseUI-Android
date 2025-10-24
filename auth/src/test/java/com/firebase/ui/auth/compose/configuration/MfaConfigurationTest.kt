@@ -117,6 +117,7 @@ class MfaConfigurationTest {
             MfaConfiguration(
                 allowedFactors = emptyList()
             )
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo("At least one MFA factor must be allowed")

@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Kirjaudu sisään Apple-tilillä</string>
     <string name="fui_sign_in_with_microsoft">Kirjaudu sisään Microsoft-tilillä</string>
     <string name="fui_sign_in_with_yahoo">Kirjaudu sisään Yahoo-tilillä</string>
+    <string name="fui_sign_in_with_line">Kirjaudu sisään LINE-tilillä</string>
     <string name="fui_next_default">Seuraava</string>
     <string name="fui_email_hint">Sähköposti</string>
     <string name="fui_phone_hint">Puhelinnumero</string>

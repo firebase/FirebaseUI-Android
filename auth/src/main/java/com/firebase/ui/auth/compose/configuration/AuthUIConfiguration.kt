@@ -62,9 +62,11 @@ class AuthUIConfigurationBuilder {
             "At least one provider must be configured"
         }
 
-        // No unsupported providers
+        // No unsupported providers (allow predefined providers and custom OIDC providers starting with "oidc.")
         val supportedProviderIds = Provider.entries.map { it.id }.toSet()
-        val unknownProviders = providers.filter { it.providerId !in supportedProviderIds }
+        val unknownProviders = providers.filter { provider ->
+            provider.providerId !in supportedProviderIds && !provider.providerId.startsWith("oidc.")
+        }
         require(unknownProviders.isEmpty()) {
             "Unknown providers: ${unknownProviders.joinToString { it.providerId }}"
         }

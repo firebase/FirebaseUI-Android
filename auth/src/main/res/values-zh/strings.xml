@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">使用 Apple 帐号登录</string>
     <string name="fui_sign_in_with_microsoft">使用 Microsoft 帐号登录</string>
     <string name="fui_sign_in_with_yahoo">使用 Yahoo 帐号登录</string>
+    <string name="fui_sign_in_with_line">使用 LINE 帐号登录</string>
     <string name="fui_next_default">继续</string>
     <string name="fui_email_hint">电子邮件地址</string>
     <string name="fui_phone_hint">电话号码</string>

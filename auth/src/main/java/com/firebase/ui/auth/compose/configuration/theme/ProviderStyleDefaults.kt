@@ -50,8 +50,8 @@ internal object ProviderStyleDefaults {
 
                 Provider.TWITTER -> {
                     provider.id to AuthUITheme.ProviderStyle(
-                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_twitter_bird_white_24dp),
-                        backgroundColor = Color(0xFF5BAAF4),
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_twitter_x_white_24dp),
+                        backgroundColor = Color.Black,
                         contentColor = Color.White
                     )
                 }
@@ -108,6 +108,14 @@ internal object ProviderStyleDefaults {
                     provider.id to AuthUITheme.ProviderStyle(
                         icon = AuthUIAsset.Resource(R.drawable.fui_ic_apple_white_24dp),
                         backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                }
+
+                Provider.LINE -> {
+                    provider.id to AuthUITheme.ProviderStyle(
+                        icon = AuthUIAsset.Resource(R.drawable.fui_ic_line_24dp),
+                        backgroundColor = Color(0xFF06C755),
                         contentColor = Color.White
                     )
                 }

@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Apple 계정으로 로그인</string>
     <string name="fui_sign_in_with_microsoft">Microsoft 계정으로 로그인</string>
     <string name="fui_sign_in_with_yahoo">Yahoo 계정으로 로그인</string>
+    <string name="fui_sign_in_with_line">LINE으로 로그인</string>
     <string name="fui_next_default">다음</string>
     <string name="fui_email_hint">이메일</string>
     <string name="fui_phone_hint">전화번호</string>

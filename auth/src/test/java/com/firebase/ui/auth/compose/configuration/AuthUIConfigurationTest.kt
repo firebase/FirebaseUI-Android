@@ -264,7 +264,7 @@ class AuthUIConfigurationTest {
     fun `authUIConfiguration throws when no context configured`() {
         try {
             authUIConfiguration {
-                context = applicationContext
+                // context = applicationContext  // Intentionally not setting context
                 providers {
                     provider(
                         AuthProvider.Google(
@@ -274,7 +274,8 @@ class AuthUIConfigurationTest {
                     )
                 }
             }
-        } catch (e: Exception) {
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: IllegalArgumentException) {
             assertThat(e.message).isEqualTo("Application context is required")
         }
     }
@@ -284,8 +285,10 @@ class AuthUIConfigurationTest {
         try {
             authUIConfiguration {
                 context = applicationContext
+                // providers { ... }  // Intentionally not configuring any providers
             }
-        } catch (e: Exception) {
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: IllegalArgumentException) {
             assertThat(e.message).isEqualTo("At least one provider must be configured")
         }
     }
@@ -321,9 +324,46 @@ class AuthUIConfigurationTest {
     }
 
     @Test
+    fun `validation accepts custom OIDC providers`() {
+        val linkedInProvider = AuthProvider.GenericOAuth(
+            providerName = "LinkedIn",
+            providerId = "oidc.linkedin",
+            scopes = listOf(),
+            customParameters = mapOf(),
+            buttonLabel = "Sign in with LinkedIn",
+            buttonIcon = null,
+            buttonColor = null,
+            contentColor = null,
+        )
+
+        val oktaProvider = AuthProvider.GenericOAuth(
+            providerName = "Okta",
+            providerId = "oidc.okta",
+            scopes = listOf(),
+            customParameters = mapOf(),
+            buttonLabel = "Sign in with Okta",
+            buttonIcon = null,
+            buttonColor = null,
+            contentColor = null,
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(linkedInProvider)
+                provider(oktaProvider)
+            }
+        }
+
+        assertThat(config.providers).hasSize(2)
+        assertThat(config.providers[0].providerId).isEqualTo("oidc.linkedin")
+        assertThat(config.providers[1].providerId).isEqualTo("oidc.okta")
+    }
+
+    @Test
     fun `validation throws for unsupported provider`() {
         val mockProvider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "unsupported.provider",
             scopes = listOf(),
             customParameters = mapOf(),
@@ -340,8 +380,8 @@ class AuthUIConfigurationTest {
                     provider(mockProvider)
                 }
             }
-        } catch (e: Exception) {
-            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: IllegalArgumentException) {
             assertThat(e.message).isEqualTo("Unknown providers: unsupported.provider")
         }
     }
@@ -361,8 +401,8 @@ class AuthUIConfigurationTest {
                     )
                 }
             }
-        } catch (e: Exception) {
-            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: IllegalArgumentException) {
             assertThat(e.message).isEqualTo(
                 "Each provider can only be set once. Duplicates: google.com"
             )

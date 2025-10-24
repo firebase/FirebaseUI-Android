@@ -268,10 +268,33 @@ class AuthProviderButtonTest {
     }
 
     @Test
+    fun `AuthProviderButton displays Apple provider with custom locale correctly`() {
+        val provider = AuthProvider.Apple(
+            locale = "es", // Spanish locale
+            customParameters = emptyMap()
+        )
+
+        composeTestRule.setContent {
+            AuthProviderButton(
+                provider = provider,
+                onClick = { clickedProvider = provider },
+                stringProvider = stringProvider // Default stringProvider (English)
+            )
+        }
+
+        // Should display Spanish text despite English stringProvider
+        composeTestRule
+            .onNodeWithText("Iniciar sesión con Apple")
+            .assertIsDisplayed()
+            .assertHasClickAction()
+            .assertIsEnabled()
+    }
+
+    @Test
     fun `AuthProviderButton displays GenericOAuth provider with custom label`() {
         val customLabel = "Sign in with Custom Provider"
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -376,7 +399,7 @@ class AuthProviderButtonTest {
         val customIcon = AuthUIAsset.Vector(Icons.Default.Star)
 
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -414,7 +437,7 @@ class AuthProviderButtonTest {
     fun `GenericOAuth provider falls back to default style when custom properties are null`() {
         val customLabel = "Custom Provider"
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -450,7 +473,7 @@ class AuthProviderButtonTest {
 
     @Test
     fun `AuthProviderButton provides fallback for unknown provider`() {
-        val provider = object : AuthProvider(providerId = "unknown.provider", name = "Generic Provider",) {}
+        val provider = object : AuthProvider(providerId = "unknown.provider", providerName = "Generic Provider",) {}
 
         composeTestRule.setContent {
             AuthProviderButton(
@@ -473,7 +496,7 @@ class AuthProviderButtonTest {
         val customContentColor = Color.White
 
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "google.com",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -493,7 +516,7 @@ class AuthProviderButtonTest {
     @Test
     fun `resolveProviderStyle handles GenericOAuth without icon`() {
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "custom.provider",
             scopes = emptyList(),
             customParameters = emptyMap(),
@@ -513,7 +536,7 @@ class AuthProviderButtonTest {
 
     @Test
     fun `resolveProviderStyle provides fallback for unknown provider`() {
-        val provider = object : AuthProvider(providerId = "unknown.provider", name = "Generic Provider") {}
+        val provider = object : AuthProvider(providerId = "unknown.provider", providerName = "Generic Provider") {}
 
         val resolvedStyle = resolveProviderStyle(provider, null)
 

@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Prihlásiť sa cez Apple</string>
     <string name="fui_sign_in_with_microsoft">Prihlásiť sa cez Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Prihlásiť sa cez Yahoo</string>
+    <string name="fui_sign_in_with_line">Prihlásiť sa cez LINE</string>
     <string name="fui_next_default">Ďalej</string>
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Telefónne číslo</string>

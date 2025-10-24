@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Über Apple anmelden</string>
     <string name="fui_sign_in_with_microsoft">Über Microsoft anmelden</string>
     <string name="fui_sign_in_with_yahoo">Über Yahoo anmelden</string>
+    <string name="fui_sign_in_with_line">Über LINE anmelden</string>
     <string name="fui_next_default">Weiter</string>
     <string name="fui_email_hint">E-Mail-Adresse</string>
     <string name="fui_phone_hint">Telefonnummer</string>
