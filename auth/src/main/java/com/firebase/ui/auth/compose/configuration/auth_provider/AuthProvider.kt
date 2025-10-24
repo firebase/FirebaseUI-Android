@@ -74,17 +74,22 @@ class AuthProvidersBuilder {
 /**
  * Enum class to represent all possible providers.
  */
-internal enum class Provider(val id: String, val isSocialProvider: Boolean = false) {
-    GOOGLE(GoogleAuthProvider.PROVIDER_ID, isSocialProvider = true),
-    FACEBOOK(FacebookAuthProvider.PROVIDER_ID, isSocialProvider = true),
-    TWITTER(TwitterAuthProvider.PROVIDER_ID, isSocialProvider = true),
-    GITHUB(GithubAuthProvider.PROVIDER_ID, isSocialProvider = true),
-    EMAIL(EmailAuthProvider.PROVIDER_ID),
-    PHONE(PhoneAuthProvider.PROVIDER_ID),
-    ANONYMOUS("anonymous"),
-    MICROSOFT("microsoft.com"),
-    YAHOO("yahoo.com"),
-    APPLE("apple.com");
+internal enum class Provider(
+    val id: String,
+    val providerName: String,
+    val isSocialProvider: Boolean = false,
+) {
+    GOOGLE(GoogleAuthProvider.PROVIDER_ID, providerName = "Google", isSocialProvider = true),
+    FACEBOOK(FacebookAuthProvider.PROVIDER_ID, providerName = "Facebook", isSocialProvider = true),
+    TWITTER(TwitterAuthProvider.PROVIDER_ID, providerName = "Twitter", isSocialProvider = true),
+    GITHUB(GithubAuthProvider.PROVIDER_ID, providerName = "Github", isSocialProvider = true),
+    EMAIL(EmailAuthProvider.PROVIDER_ID, providerName = "Email"),
+    PHONE(PhoneAuthProvider.PROVIDER_ID, providerName = "Phone"),
+    ANONYMOUS("anonymous", providerName = "Anonymous"),
+    MICROSOFT("microsoft.com", providerName = "Microsoft", isSocialProvider = true),
+    YAHOO("yahoo.com", providerName = "Yahoo", isSocialProvider = true),
+    APPLE("apple.com", providerName = "Apple", isSocialProvider = true),
+    LINE("oidc.line", providerName = "LINE", isSocialProvider = true);
 
     companion object {
         fun fromId(id: String): Provider? {
@@ -94,82 +99,19 @@ internal enum class Provider(val id: String, val isSocialProvider: Boolean = fal
 }
 
 /**
- * Base abstract class for OAuth authentication providers with common properties.
- */
-abstract class OAuthProvider(
-    override val providerId: String,
-
-    override val name: String,
-    open val scopes: List<String> = emptyList(),
-    open val customParameters: Map<String, String> = emptyMap(),
-) : AuthProvider(providerId = providerId, name = name)
-
-/**
  * Base abstract class for authentication providers.
  */
-abstract class AuthProvider(open val providerId: String, open val name: String) {
+abstract class AuthProvider(open val providerId: String, open val providerName: String) {
+    /**
+     * Base abstract class for OAuth authentication providers with common properties.
+     */
+    abstract class OAuth(
+        override val providerId: String,
 
-    companion object {
-        internal fun canUpgradeAnonymous(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
-            val currentUser = auth.currentUser
-            return config.isAnonymousUpgradeEnabled
-                    && currentUser != null
-                    && currentUser.isAnonymous
-        }
-
-        /**
-         * Merges profile information (display name and photo URL) with the current user's profile.
-         *
-         * This method updates the user's profile only if the current profile is incomplete
-         * (missing display name or photo URL). This prevents overwriting existing profile data.
-         *
-         * **Use case:**
-         * After creating a new user account or linking credentials, update the profile with
-         * information from the sign-up form or social provider.
-         *
-         * @param auth The [FirebaseAuth] instance
-         * @param displayName The display name to set (if current is empty)
-         * @param photoUri The photo URL to set (if current is null)
-         *
-         * **Note:** This operation always succeeds to minimize login interruptions.
-         * Failures are logged but don't prevent sign-in completion.
-         */
-        internal suspend fun mergeProfile(
-            auth: FirebaseAuth,
-            displayName: String?,
-            photoUri: Uri?,
-        ) {
-            try {
-                val currentUser = auth.currentUser ?: return
-
-                // Only update if current profile is incomplete
-                val currentDisplayName = currentUser.displayName
-                val currentPhotoUrl = currentUser.photoUrl
-
-                if (!currentDisplayName.isNullOrEmpty() && currentPhotoUrl != null) {
-                    // Profile is complete, no need to update
-                    return
-                }
-
-                // Build profile update with provided values
-                val nameToSet =
-                    if (currentDisplayName.isNullOrEmpty()) displayName else currentDisplayName
-                val photoToSet = currentPhotoUrl ?: photoUri
-
-                if (nameToSet != null || photoToSet != null) {
-                    val profileUpdates = UserProfileChangeRequest.Builder()
-                        .setDisplayName(nameToSet)
-                        .setPhotoUri(photoToSet)
-                        .build()
-
-                    currentUser.updateProfile(profileUpdates).await()
-                }
-            } catch (e: Exception) {
-                // Log error but don't throw - profile update failure shouldn't prevent sign-in
-                Log.e("AuthProvider.Email", "Error updating profile", e)
-            }
-        }
-    }
+        override val providerName: String,
+        open val scopes: List<String> = emptyList(),
+        open val customParameters: Map<String, String> = emptyMap(),
+    ) : AuthProvider(providerId = providerId, providerName = providerName)
 
     /**
      * Email/Password authentication provider configuration.
@@ -212,7 +154,7 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A list of custom password validation rules.
          */
         val passwordValidationRules: List<PasswordRule>,
-    ) : AuthProvider(providerId = Provider.EMAIL.id, name = "Email") {
+    ) : AuthProvider(providerId = Provider.EMAIL.id, providerName = Provider.EMAIL.providerName) {
         companion object {
             const val SESSION_ID_LENGTH = 10
             val KEY_EMAIL = stringPreferencesKey("com.firebase.ui.auth.data.client.email")
@@ -338,7 +280,7 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * Enables instant verification of the phone number. Defaults to true.
          */
         val isInstantVerificationEnabled: Boolean = true,
-    ) : AuthProvider(providerId = Provider.PHONE.id, name = "Phone") {
+    ) : AuthProvider(providerId = Provider.PHONE.id, providerName = Provider.PHONE.providerName) {
         /**
          * Sealed class representing the result of phone number verification.
          *
@@ -562,9 +504,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String> = emptyMap(),
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.GOOGLE.id,
-        name = "Google",
+        providerName = Provider.GOOGLE.providerName,
         scopes = scopes,
         customParameters = customParameters
     ) {
@@ -691,9 +633,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String> = emptyMap(),
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.FACEBOOK.id,
-        name = "Facebook",
+        providerName = Provider.FACEBOOK.providerName,
         scopes = scopes,
         customParameters = customParameters
     ) {
@@ -835,9 +777,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String>,
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.TWITTER.id,
-        name = "Twitter",
+        providerName = Provider.TWITTER.providerName,
         customParameters = customParameters
     )
 
@@ -854,9 +796,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String>,
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.GITHUB.id,
-        name = "Github",
+        providerName = Provider.GITHUB.providerName,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -879,9 +821,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String>,
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.MICROSOFT.id,
-        name = "Microsoft",
+        providerName = Provider.MICROSOFT.providerName,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -899,9 +841,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String>,
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.YAHOO.id,
-        name = "Yahoo",
+        providerName = Provider.YAHOO.providerName,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -924,9 +866,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String>,
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = Provider.APPLE.id,
-        name = "Apple",
+        providerName = Provider.APPLE.providerName,
         scopes = scopes,
         customParameters = customParameters
     )
@@ -936,7 +878,7 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
      */
     object Anonymous : AuthProvider(
         providerId = Provider.ANONYMOUS.id,
-        name = "Anonymous"
+        providerName = Provider.ANONYMOUS.providerName
     ) {
         internal fun validate(providers: List<AuthProvider>) {
             if (providers.size == 1 && providers.first() is Anonymous) {
@@ -948,6 +890,18 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
         }
     }
 
+    class Line(
+        override val scopes: List<String>,
+        override val customParameters: Map<String, String>,
+    ) : OAuth(
+        providerId = Provider.LINE.id,
+        providerName = Provider.LINE.providerName,
+        scopes = scopes,
+        customParameters = customParameters
+    ) {
+        internal fun validate() {}
+    }
+
     /**
      * A generic OAuth provider for any unsupported provider.
      */
@@ -955,7 +909,7 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
         /**
          * The provider name.
          */
-        override val name: String,
+        override val providerName: String,
 
         /**
          * The provider ID as configured in the Firebase console.
@@ -991,9 +945,9 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
          * An optional content color for the provider button.
          */
         val contentColor: Color?,
-    ) : OAuthProvider(
+    ) : OAuth(
         providerId = providerId,
-        name = name,
+        providerName = providerName,
         scopes = scopes,
         customParameters = customParameters
     ) {
@@ -1004,6 +958,68 @@ abstract class AuthProvider(open val providerId: String, open val name: String) 
 
             require(buttonLabel.isNotBlank()) {
                 "Button label cannot be null or empty"
+            }
+        }
+    }
+
+    companion object {
+        internal fun canUpgradeAnonymous(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
+            val currentUser = auth.currentUser
+            return config.isAnonymousUpgradeEnabled
+                    && currentUser != null
+                    && currentUser.isAnonymous
+        }
+
+        /**
+         * Merges profile information (display name and photo URL) with the current user's profile.
+         *
+         * This method updates the user's profile only if the current profile is incomplete
+         * (missing display name or photo URL). This prevents overwriting existing profile data.
+         *
+         * **Use case:**
+         * After creating a new user account or linking credentials, update the profile with
+         * information from the sign-up form or social provider.
+         *
+         * @param auth The [FirebaseAuth] instance
+         * @param displayName The display name to set (if current is empty)
+         * @param photoUri The photo URL to set (if current is null)
+         *
+         * **Note:** This operation always succeeds to minimize login interruptions.
+         * Failures are logged but don't prevent sign-in completion.
+         */
+        internal suspend fun mergeProfile(
+            auth: FirebaseAuth,
+            displayName: String?,
+            photoUri: Uri?,
+        ) {
+            try {
+                val currentUser = auth.currentUser ?: return
+
+                // Only update if current profile is incomplete
+                val currentDisplayName = currentUser.displayName
+                val currentPhotoUrl = currentUser.photoUrl
+
+                if (!currentDisplayName.isNullOrEmpty() && currentPhotoUrl != null) {
+                    // Profile is complete, no need to update
+                    return
+                }
+
+                // Build profile update with provided values
+                val nameToSet =
+                    if (currentDisplayName.isNullOrEmpty()) displayName else currentDisplayName
+                val photoToSet = currentPhotoUrl ?: photoUri
+
+                if (nameToSet != null || photoToSet != null) {
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(nameToSet)
+                        .setPhotoUri(photoToSet)
+                        .build()
+
+                    currentUser.updateProfile(profileUpdates).await()
+                }
+            } catch (e: Exception) {
+                // Log error but don't throw - profile update failure shouldn't prevent sign-in
+                Log.e("AuthProvider.Email", "Error updating profile", e)
             }
         }
     }

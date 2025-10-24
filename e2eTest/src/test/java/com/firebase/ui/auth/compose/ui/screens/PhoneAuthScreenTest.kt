@@ -3,6 +3,7 @@ package com.firebase.ui.auth.compose.ui.screens
 import android.content.Context
 import android.os.Looper
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
@@ -27,6 +28,7 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.data.CountryUtils
 import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
@@ -411,41 +413,45 @@ class PhoneAuthScreenTest {
         onCancel: (() -> Unit) = {},
         onStepChange: ((PhoneAuthStep) -> Unit) = {},
     ) {
-        PhoneAuthScreen(
-            context = applicationContext,
-            configuration = configuration,
-            authUI = authUI,
-            onSuccess = onSuccess,
-            onError = onError,
-            onCancel = onCancel,
-        ) { state ->
-            onStepChange(state.step)
+        CompositionLocalProvider(
+            LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+        ) {
+            PhoneAuthScreen(
+                context = applicationContext,
+                configuration = configuration,
+                authUI = authUI,
+                onSuccess = onSuccess,
+                onError = onError,
+                onCancel = onCancel,
+            ) { state ->
+                onStepChange(state.step)
 
-            when (state.step) {
-                PhoneAuthStep.EnterPhoneNumber -> {
-                    EnterPhoneNumberUI(
-                        configuration = configuration,
-                        isLoading = state.isLoading,
-                        phoneNumber = state.phoneNumber,
-                        selectedCountry = state.selectedCountry,
-                        onPhoneNumberChange = state.onPhoneNumberChange,
-                        onCountrySelected = state.onCountrySelected,
-                        onSendCodeClick = state.onSendCodeClick,
-                    )
-                }
+                when (state.step) {
+                    PhoneAuthStep.EnterPhoneNumber -> {
+                        EnterPhoneNumberUI(
+                            configuration = configuration,
+                            isLoading = state.isLoading,
+                            phoneNumber = state.phoneNumber,
+                            selectedCountry = state.selectedCountry,
+                            onPhoneNumberChange = state.onPhoneNumberChange,
+                            onCountrySelected = state.onCountrySelected,
+                            onSendCodeClick = state.onSendCodeClick,
+                        )
+                    }
 
-                PhoneAuthStep.EnterVerificationCode -> {
-                    EnterVerificationCodeUI(
-                        configuration = configuration,
-                        isLoading = state.isLoading,
-                        verificationCode = state.verificationCode,
-                        fullPhoneNumber = state.fullPhoneNumber,
-                        resendTimer = state.resendTimer,
-                        onVerificationCodeChange = state.onVerificationCodeChange,
-                        onVerifyCodeClick = state.onVerifyCodeClick,
-                        onResendCodeClick = state.onResendCodeClick,
-                        onChangeNumberClick = state.onChangeNumberClick,
-                    )
+                    PhoneAuthStep.EnterVerificationCode -> {
+                        EnterVerificationCodeUI(
+                            configuration = configuration,
+                            isLoading = state.isLoading,
+                            verificationCode = state.verificationCode,
+                            fullPhoneNumber = state.fullPhoneNumber,
+                            resendTimer = state.resendTimer,
+                            onVerificationCodeChange = state.onVerificationCodeChange,
+                            onVerifyCodeClick = state.onVerifyCodeClick,
+                            onResendCodeClick = state.onResendCodeClick,
+                            onChangeNumberClick = state.onChangeNumberClick,
+                        )
+                    }
                 }
             }
         }

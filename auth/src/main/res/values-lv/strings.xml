@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Pierakstīties ar Apple kontu</string>
     <string name="fui_sign_in_with_microsoft">Pierakstīties ar Microsoft kontu</string>
     <string name="fui_sign_in_with_yahoo">Pierakstīties ar Yahoo kontu</string>
+    <string name="fui_sign_in_with_line">Pierakstīties ar LINE kontu</string>
     <string name="fui_next_default">Tālāk</string>
     <string name="fui_email_hint">E-pasts</string>
     <string name="fui_phone_hint">Tālruņa numurs</string>

@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Увійти через обліковий запис Apple</string>
     <string name="fui_sign_in_with_microsoft">Увійти через обліковий запис Microsoft</string>
     <string name="fui_sign_in_with_yahoo">Увійти через обліковий запис Yahoo</string>
+    <string name="fui_sign_in_with_line">Увійти через LINE</string>
     <string name="fui_next_default">Далі</string>
     <string name="fui_email_hint">Електронна адреса</string>
     <string name="fui_phone_hint">Номер телефону</string>

@@ -67,6 +67,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo(
@@ -91,6 +92,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo(
@@ -136,6 +138,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo("Invalid phone number: invalid_number")
@@ -163,6 +166,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo("Invalid country iso: invalid")
@@ -190,6 +194,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo(
@@ -233,6 +238,7 @@ class AuthProviderTest {
 
         try {
             provider.validate(applicationContext)
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo("Server client ID cannot be blank.")
@@ -248,6 +254,7 @@ class AuthProviderTest {
 
         try {
             provider.validate(applicationContext)
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo(
@@ -274,6 +281,7 @@ class AuthProviderTest {
 
         try {
             provider.validate(applicationContext)
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo("Facebook application ID cannot be blank")
@@ -286,6 +294,7 @@ class AuthProviderTest {
 
         try {
             provider.validate(applicationContext)
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo(
@@ -305,6 +314,7 @@ class AuthProviderTest {
 
         try {
             AuthProvider.Anonymous.validate(providers)
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo(
@@ -334,7 +344,7 @@ class AuthProviderTest {
     @Test
     fun `generic oauth provider with valid configuration should succeed`() {
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "custom.provider",
             scopes = listOf("read"),
             customParameters = mapOf(),
@@ -350,7 +360,7 @@ class AuthProviderTest {
     @Test
     fun `generic oauth provider with blank provider id should throw`() {
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "",
             scopes = listOf("read"),
             customParameters = mapOf(),
@@ -362,6 +372,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo("Provider ID cannot be null or empty")
@@ -371,7 +382,7 @@ class AuthProviderTest {
     @Test
     fun `generic oauth provider with blank button label should throw`() {
         val provider = AuthProvider.GenericOAuth(
-            name = "Generic Provider",
+            providerName = "Generic Provider",
             providerId = "custom.provider",
             scopes = listOf("read"),
             customParameters = mapOf(),
@@ -383,6 +394,7 @@ class AuthProviderTest {
 
         try {
             provider.validate()
+            assertThat(false).isTrue() // Should not reach here
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo("Button label cannot be null or empty")

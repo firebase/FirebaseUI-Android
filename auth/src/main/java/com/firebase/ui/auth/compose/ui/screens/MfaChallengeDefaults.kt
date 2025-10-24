@@ -37,7 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.compose.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.compose.ui.components.VerificationCodeInputField
@@ -45,7 +45,7 @@ import com.firebase.ui.auth.compose.ui.components.VerificationCodeInputField
 @Composable
 internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
     val isSms = state.factorType == MfaFactor.Sms
-    val stringProvider = DefaultAuthUIStringProvider(LocalContext.current)
+    val stringProvider = LocalAuthUIStringProvider.current
     val verificationCodeValidator = remember {
         VerificationCodeValidator(stringProvider)
     }

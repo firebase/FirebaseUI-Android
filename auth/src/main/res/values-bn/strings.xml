@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Apple-এর সাথে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_microsoft">Microsoft-এর সাথে সাইন-ইন করুন</string>
     <string name="fui_sign_in_with_yahoo">Yahoo-এর সাথে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_line">LINE-এর সাথে সাইন-ইন করুন</string>
     <string name="fui_next_default">পরবর্তী</string>
     <string name="fui_email_hint">ইমেল</string>
     <string name="fui_phone_hint">ফোন নম্বর</string>

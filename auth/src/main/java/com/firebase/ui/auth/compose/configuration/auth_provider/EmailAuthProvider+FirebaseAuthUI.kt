@@ -510,7 +510,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
         val accountLinkingException = AuthException.AccountLinkingRequiredException(
             message = "An account already exists with the email ${email ?: ""}. " +
                     "Please sign in with your existing account to link " +
-                    "your ${provider?.name ?: "this provider"} account.",
+                    "your ${provider?.providerName ?: "this provider"} account.",
             email = email,
             credential = credentialForException,
             cause = e

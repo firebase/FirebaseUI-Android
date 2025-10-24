@@ -21,6 +21,7 @@
     <string name="fui_sign_in_with_apple">Logg på med Apple-ID-en din</string>
     <string name="fui_sign_in_with_microsoft">Logg på med Microsoft-kontoen din</string>
     <string name="fui_sign_in_with_yahoo">Logg på med Yahoo-kontoen din</string>
+    <string name="fui_sign_in_with_line">Logg på med LINE-kontoen din</string>
     <string name="fui_next_default">Neste</string>
     <string name="fui_email_hint">E-post</string>
     <string name="fui_phone_hint">Telefonnummer</string>
