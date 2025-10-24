@@ -105,10 +105,14 @@ class AccessibilityTest {
     @Test
     fun countrySelector_hasDropdownRole() {
         composeTestRule.setContent {
-            CountrySelector(
-                selectedCountry = CountryUtils.getDefaultCountry(),
-                onCountrySelected = {}
-            )
+            androidx.compose.runtime.CompositionLocalProvider(
+                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            ) {
+                CountrySelector(
+                    selectedCountry = CountryUtils.getDefaultCountry(),
+                    onCountrySelected = {}
+                )
+            }
         }
 
         // Verify country selector has content description and dropdown role
@@ -173,18 +177,22 @@ class AccessibilityTest {
         }
 
         composeTestRule.setContent {
-            SignInUI(
-                configuration = configuration,
-                isLoading = false,
-                emailSignInLinkSent = false,
-                email = "",
-                password = "",
-                onEmailChange = {},
-                onPasswordChange = {},
-                onSignInClick = {},
-                onGoToSignUp = {},
-                onGoToResetPassword = {}
-            )
+            androidx.compose.runtime.CompositionLocalProvider(
+                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            ) {
+                SignInUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = "",
+                    password = "",
+                    onEmailChange = {},
+                    onPasswordChange = {},
+                    onSignInClick = {},
+                    onGoToSignUp = {},
+                    onGoToResetPassword = {}
+                )
+            }
         }
 
         // Verify screen title has heading semantic
@@ -212,15 +220,19 @@ class AccessibilityTest {
         }
 
         composeTestRule.setContent {
-            EnterPhoneNumberUI(
-                configuration = configuration,
-                isLoading = false,
-                phoneNumber = "",
-                selectedCountry = CountryUtils.getDefaultCountry(),
-                onPhoneNumberChange = {},
-                onCountrySelected = {},
-                onSendCodeClick = {}
-            )
+            androidx.compose.runtime.CompositionLocalProvider(
+                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            ) {
+                EnterPhoneNumberUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    phoneNumber = "",
+                    selectedCountry = CountryUtils.getDefaultCountry(),
+                    onPhoneNumberChange = {},
+                    onCountrySelected = {},
+                    onSendCodeClick = {}
+                )
+            }
         }
 
         // Verify phone number field exists and screen is displayed
@@ -255,7 +267,8 @@ class AccessibilityTest {
         composeTestRule.setContent {
             // Force RTL layout direction
             androidx.compose.runtime.CompositionLocalProvider(
-                androidx.compose.ui.platform.LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl
+                androidx.compose.ui.platform.LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl,
+                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
             ) {
                 SignInUI(
                     configuration = configuration,
