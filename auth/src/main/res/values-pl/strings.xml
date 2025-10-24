@@ -129,4 +129,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Kod weryfikacyjny jest nieprawidłowy. Spróbuj ponownie.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Wystąpił błąd sieci. Sprawdź połączenie i spróbuj ponownie.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Wystąpił błąd podczas rejestracji. Spróbuj ponownie.</string>
+
+    <string name="fui_back_action">Wstecz</string>
+    <string name="fui_identity_verified_message">Tożsamość zweryfikowana. Spróbuj ponownie wykonać czynność.</string>
+    <string name="fui_manage_mfa_action">Zarządzaj uwierzytelnianiem dwuskładnikowym</string>
+    <string name="fui_incorrect_password_error">Nieprawidłowe hasło</string>
+    <string name="fui_mfa_choose_method_instruction">Wybierz metodę weryfikacji</string>
+    <string name="fui_mfa_enrollment_instruction">Dodaj dodatkową warstwę zabezpieczeń</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Aplikacja uwierzytelniająca</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Ten numer telefonu jest powiązany z innym kontem</string>
+    <string name="fui_mfa_second_factor_required_error">Wymagana weryfikacja</string>
+    <string name="fui_mfa_setup_instruction">Zeskanuj kod QR za pomocą aplikacji uwierzytelniającej</string>
+    <string name="fui_mfa_totp_already_exists_error">Aplikacja uwierzytelniająca jest już skonfigurowana</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Czy na pewno chcesz usunąć tę metodę?</string>
+    <string name="fui_mfa_unenrollment_error">Nie można usunąć metody</string>
+    <string name="fui_mfa_unenrollment_success_message">Metoda usunięta</string>
+    <string name="fui_mfa_verification_instruction">Wprowadź kod weryfikacyjny</string>
+    <string name="fui_profile_update_error">Nie można zaktualizować profilu</string>
+    <string name="fui_profile_update_success_message">Profil zaktualizowany</string>
+    <string name="fui_reauth_instruction">Potwierdź swoją tożsamość, aby kontynuować</string>
+    <string name="fui_reauth_required_error">Wymagane ponowne uwierzytelnienie</string>
+    <string name="fui_reauth_success_message">Ponowne uwierzytelnienie zakończone sukcesem</string>
+    <string name="fui_reauthenticate_action">Uwierzytelnij ponownie</string>
+    <string name="fui_recovery_codes_saved_action">Zapisałem kody odzyskiwania</string>
+    <string name="fui_remove_action">Usuń</string>
+    <string name="fui_resend_verification_email_action">Wyślij ponownie e-mail weryfikacyjny</string>
+    <string name="fui_secret_key_label">Tajny klucz</string>
+    <string name="fui_sign_out_action">Wyloguj się</string>
+    <string name="fui_signed_in_as">Zalogowano jako</string>
+    <string name="fui_skip_action">Pomiń</string>
+    <string name="fui_use_different_method_action">Użyj innej metody</string>
+    <string name="fui_verification_code_label">Kod weryfikacyjny</string>
+    <string name="fui_verified_email_action">E-mail zweryfikowany</string>
+    <string name="fui_verify_action">Zweryfikuj</string>
+    <string name="fui_verify_email_instruction">Wysłaliśmy e-mail weryfikacyjny na adres %1$s</string>
 </resources>

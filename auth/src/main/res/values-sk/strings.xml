@@ -129,4 +129,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Overovací kód je nesprávny. Skúste to znova.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Vyskytla sa sieťová chyba. Skontrolujte pripojenie a skúste to znova.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Počas registrácie sa vyskytla chyba. Skúste to znova.</string>
+
+    <string name="fui_back_action">Späť</string>
+    <string name="fui_identity_verified_message">Identita overená. Skúste akciu znova.</string>
+    <string name="fui_manage_mfa_action">Spravovať dvojfaktorové overenie</string>
+    <string name="fui_incorrect_password_error">Nesprávne heslo</string>
+    <string name="fui_mfa_choose_method_instruction">Vyberte metódu overenia</string>
+    <string name="fui_mfa_enrollment_instruction">Pridajte ďalšiu vrstvu zabezpečenia</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Overovacia aplikácia</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Toto telefónne číslo je spojené s iným účtom</string>
+    <string name="fui_mfa_second_factor_required_error">Vyžaduje sa overenie</string>
+    <string name="fui_mfa_setup_instruction">Naskenujte QR kód pomocou overovacej aplikácie</string>
+    <string name="fui_mfa_totp_already_exists_error">Overovacia aplikácia je už nastavená</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Naozaj chcete odstrániť túto metódu?</string>
+    <string name="fui_mfa_unenrollment_error">Metódu sa nepodarilo odstrániť</string>
+    <string name="fui_mfa_unenrollment_success_message">Metóda odstránená</string>
+    <string name="fui_mfa_verification_instruction">Zadajte overovací kód</string>
+    <string name="fui_profile_update_error">Profil sa nepodarilo aktualizovať</string>
+    <string name="fui_profile_update_success_message">Profil aktualizovaný</string>
+    <string name="fui_reauth_instruction">Potvrďte svoju identitu a pokračujte</string>
+    <string name="fui_reauth_required_error">Vyžaduje sa opätovné overenie</string>
+    <string name="fui_reauth_success_message">Opätovné overenie bolo úspešné</string>
+    <string name="fui_reauthenticate_action">Znova overiť</string>
+    <string name="fui_recovery_codes_saved_action">Uložil som si kódy na obnovenie</string>
+    <string name="fui_remove_action">Odstrániť</string>
+    <string name="fui_resend_verification_email_action">Znova poslať overovací e-mail</string>
+    <string name="fui_secret_key_label">Tajný kľúč</string>
+    <string name="fui_sign_out_action">Odhlásiť sa</string>
+    <string name="fui_signed_in_as">Prihlásený ako</string>
+    <string name="fui_skip_action">Preskočiť</string>
+    <string name="fui_use_different_method_action">Použiť inú metódu</string>
+    <string name="fui_verification_code_label">Overovací kód</string>
+    <string name="fui_verified_email_action">E-mail overený</string>
+    <string name="fui_verify_action">Overiť</string>
+    <string name="fui_verify_email_instruction">Poslali sme overovací e-mail na adresu %1$s</string>
 </resources>

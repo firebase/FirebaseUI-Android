@@ -129,4 +129,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Код подтверждения неверен. Повторите попытку.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Произошла ошибка сети. Проверьте соединение и повторите попытку.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Произошла ошибка при регистрации. Повторите попытку.</string>
+
+    <string name="fui_back_action">Назад</string>
+    <string name="fui_identity_verified_message">Личность подтверждена. Повторите действие.</string>
+    <string name="fui_manage_mfa_action">Управление двухфакторной аутентификацией</string>
+    <string name="fui_incorrect_password_error">Неверный пароль</string>
+    <string name="fui_mfa_choose_method_instruction">Выберите способ подтверждения</string>
+    <string name="fui_mfa_enrollment_instruction">Добавьте дополнительный уровень безопасности</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Приложение для аутентификации</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Этот номер телефона уже привязан к другому аккаунту</string>
+    <string name="fui_mfa_second_factor_required_error">Требуется подтверждение</string>
+    <string name="fui_mfa_setup_instruction">Отсканируйте QR-код приложением для аутентификации</string>
+    <string name="fui_mfa_totp_already_exists_error">Приложение для аутентификации уже настроено</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Вы уверены, что хотите удалить этот способ?</string>
+    <string name="fui_mfa_unenrollment_error">Не удалось удалить способ</string>
+    <string name="fui_mfa_unenrollment_success_message">Способ удален</string>
+    <string name="fui_mfa_verification_instruction">Введите код подтверждения</string>
+    <string name="fui_profile_update_error">Не удалось обновить профиль</string>
+    <string name="fui_profile_update_success_message">Профиль обновлен</string>
+    <string name="fui_reauth_instruction">Подтвердите свою личность, чтобы продолжить</string>
+    <string name="fui_reauth_required_error">Требуется повторная аутентификация</string>
+    <string name="fui_reauth_success_message">Повторная аутентификация выполнена</string>
+    <string name="fui_reauthenticate_action">Повторная аутентификация</string>
+    <string name="fui_recovery_codes_saved_action">Я сохранил коды восстановления</string>
+    <string name="fui_remove_action">Удалить</string>
+    <string name="fui_resend_verification_email_action">Отправить письмо подтверждения повторно</string>
+    <string name="fui_secret_key_label">Секретный ключ</string>
+    <string name="fui_sign_out_action">Выйти</string>
+    <string name="fui_signed_in_as">Вы вошли как</string>
+    <string name="fui_skip_action">Пропустить</string>
+    <string name="fui_use_different_method_action">Использовать другой способ</string>
+    <string name="fui_verification_code_label">Код подтверждения</string>
+    <string name="fui_verified_email_action">Email подтвержден</string>
+    <string name="fui_verify_action">Подтвердить</string>
+    <string name="fui_verify_email_instruction">Мы отправили письмо подтверждения на %1$s</string>
 </resources>

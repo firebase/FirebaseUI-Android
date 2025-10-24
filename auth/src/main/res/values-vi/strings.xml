@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Mã xác minh không chính xác. Vui lòng thử lại.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Đã xảy ra lỗi mạng. Vui lòng kiểm tra kết nối của bạn và thử lại.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại.</string>
+
+    <string name="fui_back_action">Quay lại</string>
+    <string name="fui_identity_verified_message">Đã xác minh danh tính. Thử lại hành động của bạn.</string>
+    <string name="fui_manage_mfa_action">Quản lý xác thực hai yếu tố</string>
+    <string name="fui_incorrect_password_error">Mật khẩu không đúng</string>
+    <string name="fui_mfa_choose_method_instruction">Chọn phương thức xác minh</string>
+    <string name="fui_mfa_enrollment_instruction">Thêm lớp bảo mật bổ sung</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Ứng dụng xác thực</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Số điện thoại này được liên kết với tài khoản khác</string>
+    <string name="fui_mfa_second_factor_required_error">Yêu cầu xác minh</string>
+    <string name="fui_mfa_setup_instruction">Quét mã QR bằng ứng dụng xác thực của bạn</string>
+    <string name="fui_mfa_totp_already_exists_error">Ứng dụng xác thực đã được thiết lập</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Bạn có chắc chắn muốn xóa phương thức này không?</string>
+    <string name="fui_mfa_unenrollment_error">Không thể xóa phương thức</string>
+    <string name="fui_mfa_unenrollment_success_message">Đã xóa phương thức</string>
+    <string name="fui_mfa_verification_instruction">Nhập mã xác minh</string>
+    <string name="fui_profile_update_error">Không thể cập nhật hồ sơ</string>
+    <string name="fui_profile_update_success_message">Đã cập nhật hồ sơ</string>
+    <string name="fui_reauth_instruction">Xác nhận danh tính của bạn để tiếp tục</string>
+    <string name="fui_reauth_required_error">Yêu cầu xác thực lại</string>
+    <string name="fui_reauth_success_message">Xác thực lại thành công</string>
+    <string name="fui_reauthenticate_action">Xác thực lại</string>
+    <string name="fui_recovery_codes_saved_action">Tôi đã lưu mã khôi phục của mình</string>
+    <string name="fui_remove_action">Xóa</string>
+    <string name="fui_resend_verification_email_action">Gửi lại email xác minh</string>
+    <string name="fui_secret_key_label">Khóa bí mật</string>
+    <string name="fui_sign_out_action">Đăng xuất</string>
+    <string name="fui_signed_in_as">Đã đăng nhập với tư cách</string>
+    <string name="fui_skip_action">Bỏ qua</string>
+    <string name="fui_use_different_method_action">Sử dụng phương thức khác</string>
+    <string name="fui_verification_code_label">Mã xác minh</string>
+    <string name="fui_verified_email_action">Email đã xác minh</string>
+    <string name="fui_verify_action">Xác minh</string>
+    <string name="fui_verify_email_instruction">Chúng tôi đã gửi email xác minh đến %1$s</string>
 </resources>

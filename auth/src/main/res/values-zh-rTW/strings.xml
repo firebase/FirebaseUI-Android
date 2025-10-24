@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">驗證碼不正確。請重試。</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">發生網路錯誤。請檢查您的連線並重試。</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">註冊期間發生錯誤。請重試。</string>
+
+    <string name="fui_back_action">返回</string>
+    <string name="fui_identity_verified_message">身分已驗證。請重試您的操作。</string>
+    <string name="fui_manage_mfa_action">管理雙重驗證</string>
+    <string name="fui_incorrect_password_error">密碼不正確</string>
+    <string name="fui_mfa_choose_method_instruction">選擇驗證方式</string>
+    <string name="fui_mfa_enrollment_instruction">新增額外的安全保障</string>
+    <string name="fui_mfa_method_sms">簡訊</string>
+    <string name="fui_mfa_method_totp">驗證器應用程式</string>
+    <string name="fui_mfa_phone_number_already_exists_error">此電話號碼已與其他帳號關聯</string>
+    <string name="fui_mfa_second_factor_required_error">需要驗證</string>
+    <string name="fui_mfa_setup_instruction">使用驗證器應用程式掃描 QR 碼</string>
+    <string name="fui_mfa_totp_already_exists_error">驗證器應用程式已設定</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">確定要移除此驗證方式嗎？</string>
+    <string name="fui_mfa_unenrollment_error">無法移除驗證方式</string>
+    <string name="fui_mfa_unenrollment_success_message">驗證方式已移除</string>
+    <string name="fui_mfa_verification_instruction">輸入驗證碼</string>
+    <string name="fui_profile_update_error">無法更新個人資料</string>
+    <string name="fui_profile_update_success_message">個人資料已更新</string>
+    <string name="fui_reauth_instruction">確認您的身分以繼續</string>
+    <string name="fui_reauth_required_error">需要重新驗證</string>
+    <string name="fui_reauth_success_message">重新驗證成功</string>
+    <string name="fui_reauthenticate_action">重新驗證</string>
+    <string name="fui_recovery_codes_saved_action">我已儲存復原代碼</string>
+    <string name="fui_remove_action">移除</string>
+    <string name="fui_resend_verification_email_action">重新傳送驗證郵件</string>
+    <string name="fui_secret_key_label">密鑰</string>
+    <string name="fui_sign_out_action">登出</string>
+    <string name="fui_signed_in_as">登入身分</string>
+    <string name="fui_skip_action">略過</string>
+    <string name="fui_use_different_method_action">使用其他方式</string>
+    <string name="fui_verification_code_label">驗證碼</string>
+    <string name="fui_verified_email_action">郵件已驗證</string>
+    <string name="fui_verify_action">驗證</string>
+    <string name="fui_verify_email_instruction">我們已傳送驗證郵件至 %1$s</string>
 </resources>

@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Code ya bondimisi ezali mabe. Meka lisusu.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Libunga ya réseau esalemi. Talela boyokani na yo mpe meka lisusu.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Libunga esalemi na ntango ya kokɔtisa. Meka lisusu.</string>
+
+    <string name="fui_back_action">Zonga</string>
+    <string name="fui_identity_verified_message">Identité esalemi. Meka lisusu.</string>
+    <string name="fui_manage_mfa_action">Kotambwisa authentification ya facteur mibale</string>
+    <string name="fui_incorrect_password_error">Mot de passe ezali malamu te</string>
+    <string name="fui_mfa_choose_method_instruction">Pona méthode ya vérification</string>
+    <string name="fui_mfa_enrollment_instruction">Bakisa couche ya sécurité mosusu</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Application ya authentification</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Numéro oyo ya téléphone ezali na compte mosusu</string>
+    <string name="fui_mfa_second_factor_required_error">Vérification esengeli</string>
+    <string name="fui_mfa_setup_instruction">Scanner code QR na application ya authentification na yo</string>
+    <string name="fui_mfa_totp_already_exists_error">Application ya authentification etii nanu</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Ozali na ntembe olinga kolongola méthode oyo?</string>
+    <string name="fui_mfa_unenrollment_error">Ekoki kolongola méthode te</string>
+    <string name="fui_mfa_unenrollment_success_message">Méthode elongwami</string>
+    <string name="fui_mfa_verification_instruction">Kotisa code ya vérification</string>
+    <string name="fui_profile_update_error">Ekoki ko-update profil te</string>
+    <string name="fui_profile_update_success_message">Profil e-update</string>
+    <string name="fui_reauth_instruction">Ndima identité na yo mpo na kokoba</string>
+    <string name="fui_reauth_required_error">Re-authentification esengeli</string>
+    <string name="fui_reauth_success_message">Re-authentification elongi</string>
+    <string name="fui_reauthenticate_action">Re-authentifier</string>
+    <string name="fui_recovery_codes_saved_action">Nabombi ba codes ya récupération na ngai</string>
+    <string name="fui_remove_action">Longola</string>
+    <string name="fui_resend_verification_email_action">Tinda lisusu e-mail ya vérification</string>
+    <string name="fui_secret_key_label">Clé secrète</string>
+    <string name="fui_sign_out_action">Kobima</string>
+    <string name="fui_signed_in_as">Okoti lokola</string>
+    <string name="fui_skip_action">Leka</string>
+    <string name="fui_use_different_method_action">Salelá méthode mosusu</string>
+    <string name="fui_verification_code_label">Code ya vérification</string>
+    <string name="fui_verified_email_action">E-mail esalemi</string>
+    <string name="fui_verify_action">Sala vérification</string>
+    <string name="fui_verify_email_instruction">Totindi e-mail ya vérification na %1$s</string>
 </resources>

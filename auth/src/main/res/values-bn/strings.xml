@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">যাচাইকরণ কোডটি ভুল৷ আবার চেষ্টা করুন৷</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">একটি নেটওয়ার্ক ত্রুটি হয়েছে৷ আপনার সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন৷</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">নথিভুক্তির সময় একটি ত্রুটি ঘটেছে৷ আবার চেষ্টা করুন৷</string>
+
+    <string name="fui_back_action">ফিরে যান</string>
+    <string name="fui_identity_verified_message">পরিচয় যাচাই করা হয়েছে। আপনার কাজ আবার চেষ্টা করুন।</string>
+    <string name="fui_manage_mfa_action">দ্বি-ফ্যাক্টর প্রমাণীকরণ পরিচালনা করুন</string>
+    <string name="fui_incorrect_password_error">ভুল পাসওয়ার্ড</string>
+    <string name="fui_mfa_choose_method_instruction">একটি যাচাইকরণ পদ্ধতি বেছে নিন</string>
+    <string name="fui_mfa_enrollment_instruction">অতিরিক্ত নিরাপত্তা স্তর যোগ করুন</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">প্রমাণীকরণকারী অ্যাপ</string>
+    <string name="fui_mfa_phone_number_already_exists_error">এই ফোন নম্বরটি অন্য অ্যাকাউন্টের সাথে যুক্ত</string>
+    <string name="fui_mfa_second_factor_required_error">যাচাইকরণ প্রয়োজন</string>
+    <string name="fui_mfa_setup_instruction">আপনার প্রমাণীকরণকারী অ্যাপ দিয়ে QR কোড স্ক্যান করুন</string>
+    <string name="fui_mfa_totp_already_exists_error">প্রমাণীকরণকারী অ্যাপ ইতিমধ্যে সেট আপ করা আছে</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">আপনি কি নিশ্চিত যে এই পদ্ধতিটি সরাতে চান?</string>
+    <string name="fui_mfa_unenrollment_error">পদ্ধতি সরাতে অক্ষম</string>
+    <string name="fui_mfa_unenrollment_success_message">পদ্ধতি সরানো হয়েছে</string>
+    <string name="fui_mfa_verification_instruction">যাচাইকরণ কোড লিখুন</string>
+    <string name="fui_profile_update_error">প্রোফাইল আপডেট করতে অক্ষম</string>
+    <string name="fui_profile_update_success_message">প্রোফাইল আপডেট করা হয়েছে</string>
+    <string name="fui_reauth_instruction">চালিয়ে যেতে আপনার পরিচয় নিশ্চিত করুন</string>
+    <string name="fui_reauth_required_error">পুনরায় প্রমাণীকরণ প্রয়োজন</string>
+    <string name="fui_reauth_success_message">পুনরায় প্রমাণীকরণ সফল</string>
+    <string name="fui_reauthenticate_action">পুনরায় প্রমাণীকরণ</string>
+    <string name="fui_recovery_codes_saved_action">আমি আমার পুনরুদ্ধার কোড সংরক্ষণ করেছি</string>
+    <string name="fui_remove_action">সরান</string>
+    <string name="fui_resend_verification_email_action">যাচাইকরণ ইমেল পুনরায় পাঠান</string>
+    <string name="fui_secret_key_label">গোপন কী</string>
+    <string name="fui_sign_out_action">সাইন আউট</string>
+    <string name="fui_signed_in_as">হিসাবে সাইন ইন করা হয়েছে</string>
+    <string name="fui_skip_action">এড়িয়ে যান</string>
+    <string name="fui_use_different_method_action">একটি ভিন্ন পদ্ধতি ব্যবহার করুন</string>
+    <string name="fui_verification_code_label">যাচাইকরণ কোড</string>
+    <string name="fui_verified_email_action">ইমেল যাচাই করা হয়েছে</string>
+    <string name="fui_verify_action">যাচাই করুন</string>
+    <string name="fui_verify_email_instruction">আমরা %1$s-এ একটি যাচাইকরণ ইমেল পাঠিয়েছি</string>
 </resources>

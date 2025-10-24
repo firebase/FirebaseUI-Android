@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">קוד האימות שגוי. יש לנסות שוב.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">אירעה שגיאת רשת. יש לבדוק את החיבור ולנסות שוב.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">אירעה שגיאה במהלך ההרשמה. יש לנסות שוב.</string>
+
+    <string name="fui_back_action">חזור</string>
+    <string name="fui_identity_verified_message">הזהות אומתה. נסה שוב את הפעולה.</string>
+    <string name="fui_manage_mfa_action">ניהול אימות דו-שלבי</string>
+    <string name="fui_incorrect_password_error">סיסמה שגויה</string>
+    <string name="fui_mfa_choose_method_instruction">בחר שיטת אימות</string>
+    <string name="fui_mfa_enrollment_instruction">הוסף שכבת אבטחה נוספת</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">אפליקציית אימות</string>
+    <string name="fui_mfa_phone_number_already_exists_error">מספר הטלפון הזה משויך לחשבון אחר</string>
+    <string name="fui_mfa_second_factor_required_error">נדרש אימות</string>
+    <string name="fui_mfa_setup_instruction">סרוק את קוד ה-QR באפליקציית האימות שלך</string>
+    <string name="fui_mfa_totp_already_exists_error">אפליקציית האימות כבר מוגדרת</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">האם אתה בטוח שברצונך להסיר את שיטת האימות הזו?</string>
+    <string name="fui_mfa_unenrollment_error">לא ניתן להסיר את השיטה</string>
+    <string name="fui_mfa_unenrollment_success_message">השיטה הוסרה</string>
+    <string name="fui_mfa_verification_instruction">הזן את קוד האימות</string>
+    <string name="fui_profile_update_error">לא ניתן לעדכן את הפרופיל</string>
+    <string name="fui_profile_update_success_message">הפרופיל עודכן</string>
+    <string name="fui_reauth_instruction">אמת את זהותך כדי להמשיך</string>
+    <string name="fui_reauth_required_error">נדרש אימות מחדש</string>
+    <string name="fui_reauth_success_message">אימות מחדש בוצע בהצלחה</string>
+    <string name="fui_reauthenticate_action">אמת מחדש</string>
+    <string name="fui_recovery_codes_saved_action">שמרתי את קודי השחזור</string>
+    <string name="fui_remove_action">הסר</string>
+    <string name="fui_resend_verification_email_action">שלח שוב אימייל אימות</string>
+    <string name="fui_secret_key_label">מפתח סודי</string>
+    <string name="fui_sign_out_action">התנתק</string>
+    <string name="fui_signed_in_as">מחובר בתור</string>
+    <string name="fui_skip_action">דלג</string>
+    <string name="fui_use_different_method_action">השתמש בשיטה אחרת</string>
+    <string name="fui_verification_code_label">קוד אימות</string>
+    <string name="fui_verified_email_action">אימייל מאומת</string>
+    <string name="fui_verify_action">אמת</string>
+    <string name="fui_verify_email_instruction">שלחנו אימייל אימות אל %1$s</string>
 </resources>

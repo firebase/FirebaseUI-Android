@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Kode verifikasi salah. Harap coba lagi.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Terjadi error jaringan. Harap periksa koneksi Anda dan coba lagi.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Terjadi error saat pendaftaran. Harap coba lagi.</string>
+
+    <string name="fui_back_action">Kembali</string>
+    <string name="fui_identity_verified_message">Identitas terverifikasi. Coba lagi tindakan Anda.</string>
+    <string name="fui_manage_mfa_action">Kelola autentikasi dua faktor</string>
+    <string name="fui_incorrect_password_error">Kata sandi salah</string>
+    <string name="fui_mfa_choose_method_instruction">Pilih metode verifikasi</string>
+    <string name="fui_mfa_enrollment_instruction">Tambahkan lapisan keamanan ekstra</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Aplikasi autentikator</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Nomor telepon ini terkait dengan akun lain</string>
+    <string name="fui_mfa_second_factor_required_error">Verifikasi diperlukan</string>
+    <string name="fui_mfa_setup_instruction">Pindai kode QR dengan aplikasi autentikator Anda</string>
+    <string name="fui_mfa_totp_already_exists_error">Aplikasi autentikator sudah diatur</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Yakin ingin menghapus metode ini?</string>
+    <string name="fui_mfa_unenrollment_error">Tidak dapat menghapus metode</string>
+    <string name="fui_mfa_unenrollment_success_message">Metode dihapus</string>
+    <string name="fui_mfa_verification_instruction">Masukkan kode verifikasi</string>
+    <string name="fui_profile_update_error">Tidak dapat memperbarui profil</string>
+    <string name="fui_profile_update_success_message">Profil diperbarui</string>
+    <string name="fui_reauth_instruction">Konfirmasi identitas Anda untuk melanjutkan</string>
+    <string name="fui_reauth_required_error">Autentikasi ulang diperlukan</string>
+    <string name="fui_reauth_success_message">Autentikasi ulang berhasil</string>
+    <string name="fui_reauthenticate_action">Autentikasi ulang</string>
+    <string name="fui_recovery_codes_saved_action">Saya telah menyimpan kode pemulihan saya</string>
+    <string name="fui_remove_action">Hapus</string>
+    <string name="fui_resend_verification_email_action">Kirim ulang email verifikasi</string>
+    <string name="fui_secret_key_label">Kunci rahasia</string>
+    <string name="fui_sign_out_action">Keluar</string>
+    <string name="fui_signed_in_as">Masuk sebagai</string>
+    <string name="fui_skip_action">Lewati</string>
+    <string name="fui_use_different_method_action">Gunakan metode lain</string>
+    <string name="fui_verification_code_label">Kode verifikasi</string>
+    <string name="fui_verified_email_action">Email terverifikasi</string>
+    <string name="fui_verify_action">Verifikasi</string>
+    <string name="fui_verify_email_instruction">Kami telah mengirim email verifikasi ke %1$s</string>
 </resources>

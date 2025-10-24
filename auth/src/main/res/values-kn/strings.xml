@@ -130,4 +130,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">ಪರಿಶೀಲನಾ ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">ನೆಟ್‌ವರ್ಕ್ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">ದಾಖಲಾತಿ ಸಮಯದಲ್ಲಿ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+
+    <string name="fui_back_action">ಹಿಂದಕ್ಕೆ</string>
+    <string name="fui_identity_verified_message">ಗುರುತನ್ನು ಪರಿಶೀಲಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ಕ್ರಿಯೆಯನ್ನು ಮರುಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_manage_mfa_action">ಎರಡು-ಅಂಶ ಪ್ರಮಾಣೀಕರಣವನ್ನು ನಿರ್ವಹಿಸಿ</string>
+    <string name="fui_incorrect_password_error">ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್</string>
+    <string name="fui_mfa_choose_method_instruction">ಪರಿಶೀಲನೆ ವಿಧಾನವನ್ನು ಆರಿಸಿ</string>
+    <string name="fui_mfa_enrollment_instruction">ಹೆಚ್ಚುವರಿ ಭದ್ರತಾ ಪದರವನ್ನು ಸೇರಿಸಿ</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್</string>
+    <string name="fui_mfa_phone_number_already_exists_error">ಈ ಫೋನ್ ಸಂಖ್ಯೆ ಮತ್ತೊಂದು ಖಾತೆಯೊಂದಿಗೆ ಸಂಬಂಧ ಹೊಂದಿದೆ</string>
+    <string name="fui_mfa_second_factor_required_error">ಪರಿಶೀಲನೆ ಅಗತ್ಯವಿದೆ</string>
+    <string name="fui_mfa_setup_instruction">ನಿಮ್ಮ ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ QR ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="fui_mfa_totp_already_exists_error">ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಈಗಾಗಲೇ ಸೆಟಪ್ ಆಗಿದೆ</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">ನೀವು ಈ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?</string>
+    <string name="fui_mfa_unenrollment_error">ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
+    <string name="fui_mfa_unenrollment_success_message">ವಿಧಾನ ತೆಗೆದುಹಾಕಲಾಗಿದೆ</string>
+    <string name="fui_mfa_verification_instruction">ಪರಿಶೀಲನೆ ಕೋಡ್ ನಮೂದಿಸಿ</string>
+    <string name="fui_profile_update_error">ಪ್ರೊಫೈಲ್ ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
+    <string name="fui_profile_update_success_message">ಪ್ರೊಫೈಲ್ ಅಪ್‌ಡೇಟ್ ಆಗಿದೆ</string>
+    <string name="fui_reauth_instruction">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಗುರುತನ್ನು ದೃಢೀಕರಿಸಿ</string>
+    <string name="fui_reauth_required_error">ಮರು-ಪ್ರಮಾಣೀಕರಣ ಅಗತ್ಯವಿದೆ</string>
+    <string name="fui_reauth_success_message">ಮರು-ಪ್ರಮಾಣೀಕರಣ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
+    <string name="fui_reauthenticate_action">ಮರು-ಪ್ರಮಾಣೀಕರಣ</string>
+    <string name="fui_recovery_codes_saved_action">ನಾನು ನನ್ನ ಮರುಪಡೆಯುವ ಕೋಡ್‌ಗಳನ್ನು ಉಳಿಸಿದ್ದೇನೆ</string>
+    <string name="fui_remove_action">ತೆಗೆದುಹಾಕಿ</string>
+    <string name="fui_resend_verification_email_action">ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಮರುಕಳುಹಿಸಿ</string>
+    <string name="fui_secret_key_label">ರಹಸ್ಯ ಕೀ</string>
+    <string name="fui_sign_out_action">ಸೈನ್ ಔಟ್</string>
+    <string name="fui_signed_in_as">ಹೀಗೆ ಸೈನ್ ಇನ್ ಆಗಿದ್ದೀರಿ</string>
+    <string name="fui_skip_action">ಸ್ಕಿಪ್ ಮಾಡಿ</string>
+    <string name="fui_use_different_method_action">ವಿಭಿನ್ನ ವಿಧಾನವನ್ನು ಬಳಸಿ</string>
+    <string name="fui_verification_code_label">ಪರಿಶೀಲನೆ ಕೋಡ್</string>
+    <string name="fui_verified_email_action">ಇಮೇಲ್ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
+    <string name="fui_verify_action">ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_verify_email_instruction">ನಾವು %1$s ಗೆ ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಕಳುಹಿಸಿದ್ದೇವೆ</string>
 </resources>

@@ -129,4 +129,39 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">De verificatiecode is onjuist. Probeer het opnieuw.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Er is een netwerkfout opgetreden. Controleer je verbinding en probeer het opnieuw.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Er is een fout opgetreden tijdens de inschrijving. Probeer het opnieuw.</string>
+
+    <string name="fui_back_action">Terug</string>
+    <string name="fui_identity_verified_message">Identiteit geverifieerd. Probeer je actie opnieuw.</string>
+    <string name="fui_manage_mfa_action">Tweefactorauthenticatie beheren</string>
+    <string name="fui_incorrect_password_error">Onjuist wachtwoord</string>
+    <string name="fui_mfa_choose_method_instruction">Kies een verificatiemethode</string>
+    <string name="fui_mfa_enrollment_instruction">Voeg een extra beveiligingslaag toe</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Authenticatie-app</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Dit telefoonnummer is al gekoppeld aan een ander account</string>
+    <string name="fui_mfa_second_factor_required_error">Verificatie vereist</string>
+    <string name="fui_mfa_setup_instruction">Scan de QR-code met je authenticatie-app</string>
+    <string name="fui_mfa_totp_already_exists_error">Authenticatie-app is al ingesteld</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Weet je zeker dat je deze methode wilt verwijderen?</string>
+    <string name="fui_mfa_unenrollment_error">Kan methode niet verwijderen</string>
+    <string name="fui_mfa_unenrollment_success_message">Methode verwijderd</string>
+    <string name="fui_mfa_verification_instruction">Voer de verificatiecode in</string>
+    <string name="fui_profile_update_error">Kan profiel niet bijwerken</string>
+    <string name="fui_profile_update_success_message">Profiel bijgewerkt</string>
+    <string name="fui_reauth_instruction">Bevestig je identiteit om door te gaan</string>
+    <string name="fui_reauth_required_error">Herauthenticatie vereist</string>
+    <string name="fui_reauth_success_message">Herauthenticatie geslaagd</string>
+    <string name="fui_reauthenticate_action">Opnieuw authenticeren</string>
+    <string name="fui_recovery_codes_saved_action">Ik heb mijn herstelcodes opgeslagen</string>
+    <string name="fui_remove_action">Verwijderen</string>
+    <string name="fui_resend_verification_email_action">Verificatie-e-mail opnieuw verzenden</string>
+    <string name="fui_secret_key_label">Geheime sleutel</string>
+    <string name="fui_sign_out_action">Uitloggen</string>
+    <string name="fui_signed_in_as">Ingelogd als</string>
+    <string name="fui_skip_action">Overslaan</string>
+    <string name="fui_use_different_method_action">Gebruik een andere methode</string>
+    <string name="fui_verification_code_label">Verificatiecode</string>
+    <string name="fui_verified_email_action">E-mail geverifieerd</string>
+    <string name="fui_verify_action">Verifiëren</string>
+    <string name="fui_verify_email_instruction">We hebben een verificatie-e-mail verzonden naar %1$s</string>
 </resources>
