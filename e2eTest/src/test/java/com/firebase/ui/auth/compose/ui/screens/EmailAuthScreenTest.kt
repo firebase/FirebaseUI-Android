@@ -3,6 +3,7 @@ package com.firebase.ui.auth.compose.ui.screens
 import android.content.Context
 import android.os.Looper
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
@@ -22,16 +23,11 @@ import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
-import com.firebase.ui.auth.compose.testutil.awaitWithLooper
 import com.firebase.ui.auth.compose.testutil.ensureFreshUser
 import com.firebase.ui.auth.compose.testutil.verifyEmailInEmulator
-import com.firebase.ui.auth.compose.ui.screens.EmailAuthMode
-import com.firebase.ui.auth.compose.ui.screens.EmailAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.ResetPasswordUI
-import com.firebase.ui.auth.compose.ui.screens.SignInUI
-import com.firebase.ui.auth.compose.ui.screens.SignUpUI
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -540,57 +536,61 @@ class EmailAuthScreenTest {
         onError: ((AuthException) -> Unit) = {},
         onCancel: (() -> Unit) = {},
     ) {
-        EmailAuthScreen(
-            context = applicationContext,
-            configuration = configuration,
-            authUI = authUI,
-            onSuccess = onSuccess,
-            onError = onError,
-            onCancel = onCancel,
-        ) { state ->
-            when (state.mode) {
-                EmailAuthMode.SignIn -> {
-                    SignInUI(
-                        configuration = configuration,
-                        email = state.email,
-                        isLoading = state.isLoading,
-                        emailSignInLinkSent = state.emailSignInLinkSent,
-                        password = state.password,
-                        onEmailChange = state.onEmailChange,
-                        onPasswordChange = state.onPasswordChange,
-                        onSignInClick = state.onSignInClick,
-                        onGoToSignUp = state.onGoToSignUp,
-                        onGoToResetPassword = state.onGoToResetPassword,
-                    )
-                }
+        CompositionLocalProvider(
+            LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+        ) {
+            EmailAuthScreen(
+                context = applicationContext,
+                configuration = configuration,
+                authUI = authUI,
+                onSuccess = onSuccess,
+                onError = onError,
+                onCancel = onCancel,
+            ) { state ->
+                when (state.mode) {
+                    EmailAuthMode.SignIn -> {
+                        SignInUI(
+                            configuration = configuration,
+                            email = state.email,
+                            isLoading = state.isLoading,
+                            emailSignInLinkSent = state.emailSignInLinkSent,
+                            password = state.password,
+                            onEmailChange = state.onEmailChange,
+                            onPasswordChange = state.onPasswordChange,
+                            onSignInClick = state.onSignInClick,
+                            onGoToSignUp = state.onGoToSignUp,
+                            onGoToResetPassword = state.onGoToResetPassword,
+                        )
+                    }
 
-                EmailAuthMode.SignUp -> {
-                    SignUpUI(
-                        configuration = configuration,
-                        isLoading = state.isLoading,
-                        displayName = state.displayName,
-                        email = state.email,
-                        password = state.password,
-                        confirmPassword = state.confirmPassword,
-                        onDisplayNameChange = state.onDisplayNameChange,
-                        onEmailChange = state.onEmailChange,
-                        onPasswordChange = state.onPasswordChange,
-                        onConfirmPasswordChange = state.onConfirmPasswordChange,
-                        onSignUpClick = state.onSignUpClick,
-                        onGoToSignIn = state.onGoToSignIn,
-                    )
-                }
+                    EmailAuthMode.SignUp -> {
+                        SignUpUI(
+                            configuration = configuration,
+                            isLoading = state.isLoading,
+                            displayName = state.displayName,
+                            email = state.email,
+                            password = state.password,
+                            confirmPassword = state.confirmPassword,
+                            onDisplayNameChange = state.onDisplayNameChange,
+                            onEmailChange = state.onEmailChange,
+                            onPasswordChange = state.onPasswordChange,
+                            onConfirmPasswordChange = state.onConfirmPasswordChange,
+                            onSignUpClick = state.onSignUpClick,
+                            onGoToSignIn = state.onGoToSignIn,
+                        )
+                    }
 
-                EmailAuthMode.ResetPassword -> {
-                    ResetPasswordUI(
-                        configuration = configuration,
-                        isLoading = state.isLoading,
-                        email = state.email,
-                        resetLinkSent = state.resetLinkSent,
-                        onEmailChange = state.onEmailChange,
-                        onSendResetLink = state.onSendResetLinkClick,
-                        onGoToSignIn = state.onGoToSignIn
-                    )
+                    EmailAuthMode.ResetPassword -> {
+                        ResetPasswordUI(
+                            configuration = configuration,
+                            isLoading = state.isLoading,
+                            email = state.email,
+                            resetLinkSent = state.resetLinkSent,
+                            onEmailChange = state.onEmailChange,
+                            onSendResetLink = state.onSendResetLinkClick,
+                            onGoToSignIn = state.onGoToSignIn
+                        )
+                    }
                 }
             }
         }
