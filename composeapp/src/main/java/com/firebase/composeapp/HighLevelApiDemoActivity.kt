@@ -45,7 +45,6 @@ class HighLevelApiDemoActivity : ComponentActivity() {
 
         val configuration = authUIConfiguration {
             context = applicationContext
-            locale = Locale.GERMANY
             providers {
                 provider(AuthProvider.Anonymous)
                 provider(
@@ -99,8 +98,8 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                 )
                 provider(
                     AuthProvider.Apple(
-                        locale = "DE",
-                        customParameters = emptyMap()
+                        customParameters = emptyMap(),
+                        locale = null
                     )
                 )
                 provider(
