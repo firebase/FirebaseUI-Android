@@ -59,7 +59,8 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailL
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
+import com.firebase.ui.auth.compose.ui.components.LocalTopLevelDialogController
+import com.firebase.ui.auth.compose.ui.components.rememberTopLevelDialogController
 import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
@@ -96,9 +97,9 @@ fun FirebaseAuthScreen(
     val coroutineScope = rememberCoroutineScope()
     val stringProvider = DefaultAuthUIStringProvider(context)
     val navController = rememberNavController()
+    val dialogController = rememberTopLevelDialogController(stringProvider)
 
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
-    val isErrorDialogVisible = remember(authState) { mutableStateOf(authState is AuthState.Error) }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
@@ -191,7 +192,10 @@ fun FirebaseAuthScreen(
         )
     }
 
-    CompositionLocalProvider(LocalAuthUIStringProvider provides configuration.stringProvider) {
+    CompositionLocalProvider(
+        LocalAuthUIStringProvider provides configuration.stringProvider,
+        LocalTopLevelDialogController provides dialogController
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -483,45 +487,47 @@ fun FirebaseAuthScreen(
                 }
             }
 
+            // Handle errors using top-level dialog controller
             val errorState = authState as? AuthState.Error
-            if (isErrorDialogVisible.value && errorState != null) {
-                ErrorRecoveryDialog(
-                    error = when (val throwable = errorState.exception) {
+            if (errorState != null) {
+                LaunchedEffect(errorState) {
+                    val exception = when (val throwable = errorState.exception) {
                         is AuthException -> throwable
                         else -> AuthException.from(throwable)
-                    },
-                    stringProvider = stringProvider,
-                    onRetry = { exception ->
-                        when (exception) {
-                            is AuthException.InvalidCredentialsException -> Unit
-                            else -> Unit
-                        }
-                        isErrorDialogVisible.value = false
-                    },
-                    onRecover = { exception ->
-                        when (exception) {
-                            is AuthException.EmailAlreadyInUseException -> {
-                                navController.navigate(AuthRoute.Email.route) {
-                                    launchSingleTop = true
-                                }
-                            }
-
-                            is AuthException.AccountLinkingRequiredException -> {
-                                pendingLinkingCredential.value = exception.credential
-                                navController.navigate(AuthRoute.Email.route) {
-                                    launchSingleTop = true
-                                }
-                            }
-
-                            else -> Unit
-                        }
-                        isErrorDialogVisible.value = false
-                    },
-                    onDismiss = {
-                        isErrorDialogVisible.value = false
                     }
-                )
+
+                    dialogController.showErrorDialog(
+                        exception = exception,
+                        onRetry = { _ ->
+                            // Child screens handle their own retry logic
+                        },
+                        onRecover = { ex ->
+                            when (ex) {
+                                is AuthException.EmailAlreadyInUseException -> {
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
+                                }
+
+                                is AuthException.AccountLinkingRequiredException -> {
+                                    pendingLinkingCredential.value = ex.credential
+                                navController.navigate(AuthRoute.Email.route) {
+                                    launchSingleTop = true
+                                }
+                            }
+
+                                else -> Unit
+                            }
+                        },
+                        onDismiss = {
+                            // Dialog dismissed
+                        }
+                    )
+                }
             }
+
+            // Render the top-level dialog (only one instance)
+            dialogController.CurrentDialog()
 
             val loadingState = authState as? AuthState.Loading
             if (loadingState != null) {

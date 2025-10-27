@@ -45,6 +45,10 @@ class HighLevelApiDemoActivity : ComponentActivity() {
 
         val configuration = authUIConfiguration {
             context = applicationContext
+            logo = AuthUIAsset.Resource(R.drawable.firebase_auth)
+            tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
+            privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
+            isAnonymousUpgradeEnabled = false
             providers {
                 provider(AuthProvider.Anonymous)
                 provider(
@@ -146,9 +150,6 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                     )
                 )
             }
-            logo = AuthUIAsset.Resource(R.drawable.firebase_auth)
-            tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1"
-            privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
         }
 
         setContent {

@@ -34,7 +34,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordRese
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
 import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
+import com.firebase.ui.auth.compose.ui.components.LocalTopLevelDialogController
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
@@ -127,6 +127,7 @@ fun EmailAuthScreen(
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
+    val dialogController = LocalTopLevelDialogController.current
     val coroutineScope = rememberCoroutineScope()
 
     val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }
@@ -151,9 +152,6 @@ fun EmailAuthScreen(
     val resetLinkSent = authState is AuthState.PasswordResetLinkSent
     val emailSignInLinkSent = authState is AuthState.EmailSignInLinkSent
 
-    val isErrorDialogVisible =
-        remember(authState) { mutableStateOf(authState is AuthState.Error) }
-
     LaunchedEffect(authState) {
         Log.d("EmailAuthScreen", "Current state: $authState")
         when (val state = authState) {
@@ -164,7 +162,34 @@ fun EmailAuthScreen(
             }
 
             is AuthState.Error -> {
-                onError(AuthException.from(state.exception))
+                val exception = AuthException.from(state.exception)
+                onError(exception)
+                
+                // Show dialog for screen-specific errors using top-level controller
+                // Navigation-related errors are handled by FirebaseAuthScreen
+                if (exception !is AuthException.AccountLinkingRequiredException &&
+                    exception !is AuthException.EmailLinkPromptForEmailException &&
+                    exception !is AuthException.EmailLinkCrossDeviceLinkingException
+                ) {
+                    dialogController?.showErrorDialog(
+                        exception = exception,
+                        onRetry = { ex ->
+                            when (ex) {
+                                is AuthException.InvalidCredentialsException -> {
+                                    // User can retry sign in with corrected credentials
+                                }
+                                is AuthException.EmailAlreadyInUseException -> {
+                                    // Switch to sign-in mode
+                                    mode.value = EmailAuthMode.SignIn
+                                }
+                                else -> Unit
+                            }
+                        },
+                        onDismiss = {
+                            // Dialog dismissed
+                        }
+                    )
+                }
             }
 
             is AuthState.Cancelled -> {
@@ -262,29 +287,6 @@ fun EmailAuthScreen(
             mode.value = EmailAuthMode.ResetPassword
         }
     )
-
-    if (isErrorDialogVisible.value &&
-        (authState as AuthState.Error).exception !is AuthException.AccountLinkingRequiredException
-    ) {
-        ErrorRecoveryDialog(
-            error = when ((authState as AuthState.Error).exception) {
-                is AuthException -> (authState as AuthState.Error).exception as AuthException
-                else -> AuthException
-                    .from((authState as AuthState.Error).exception)
-            },
-            stringProvider = stringProvider,
-            onRetry = { exception ->
-                when (exception) {
-                    is AuthException.InvalidCredentialsException -> state.onSignInClick()
-                    is AuthException.EmailAlreadyInUseException -> state.onGoToSignIn()
-                }
-                isErrorDialogVisible.value = false
-            },
-            onDismiss = {
-                isErrorDialogVisible.value = false
-            },
-        )
-    }
 
     if (content != null) {
         content(state)

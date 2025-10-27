@@ -38,7 +38,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.verifyPhoneNumbe
 import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.data.CountryData
 import com.firebase.ui.auth.compose.data.CountryUtils
-import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
+import com.firebase.ui.auth.compose.ui.components.LocalTopLevelDialogController
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.delay
@@ -138,6 +138,7 @@ fun PhoneAuthScreen(
     val activity = LocalActivity.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
     val stringProvider = LocalAuthUIStringProvider.current
+    val dialogController = LocalTopLevelDialogController.current
     val coroutineScope = rememberCoroutineScope()
 
     val step = rememberSaveable { mutableStateOf(PhoneAuthStep.EnterPhoneNumber) }
@@ -162,9 +163,6 @@ fun PhoneAuthScreen(
     val isLoading = authState is AuthState.Loading
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
-
-    val isErrorDialogVisible =
-        remember(authState) { mutableStateOf(authState is AuthState.Error) }
 
     // Handle resend timer countdown
     LaunchedEffect(resendTimerSeconds.intValue) {
@@ -205,7 +203,24 @@ fun PhoneAuthScreen(
             }
 
             is AuthState.Error -> {
-                onError(AuthException.from(state.exception))
+                val exception = AuthException.from(state.exception)
+                onError(exception)
+                
+                // Show dialog for phone-specific errors using top-level controller
+                dialogController?.showErrorDialog(
+                    exception = exception,
+                    onRetry = { ex ->
+                        when (ex) {
+                            is AuthException.InvalidCredentialsException -> {
+                                // User can retry with corrected code or phone number
+                            }
+                            else -> Unit
+                        }
+                    },
+                    onDismiss = {
+                        // Dialog dismissed
+                    }
+                )
             }
 
             is AuthState.Cancelled -> {
@@ -287,33 +302,6 @@ fun PhoneAuthScreen(
             resendTimerSeconds.intValue = 0
         }
     )
-
-    if (isErrorDialogVisible.value) {
-        ErrorRecoveryDialog(
-            error = when ((authState as AuthState.Error).exception) {
-                is AuthException -> (authState as AuthState.Error).exception as AuthException
-                else -> AuthException.from((authState as AuthState.Error).exception)
-            },
-            stringProvider = stringProvider,
-            onRetry = { exception ->
-                when (exception) {
-                    is AuthException.InvalidCredentialsException -> {
-                        if (step.value == PhoneAuthStep.EnterVerificationCode) {
-                            state.onVerifyCodeClick()
-                        } else {
-                            state.onSendCodeClick()
-                        }
-                    }
-
-                    else -> Unit
-                }
-                isErrorDialogVisible.value = false
-            },
-            onDismiss = {
-                isErrorDialogVisible.value = false
-            },
-        )
-    }
 
     if (content != null) {
         content(state)
