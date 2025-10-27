@@ -129,7 +129,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         scopes = emptyList(),
                         customParameters = emptyMap(),
                         buttonLabel = "Sign in with LINE",
-                        buttonIcon = AuthUIAsset.Resource(com.firebase.ui.auth.R.drawable.fui_ic_line_24dp),
+                        buttonIcon = AuthUIAsset.Resource(R.drawable.ic_line_logo_24dp),
                         buttonColor = Color(0xFF06C755),
                         contentColor = Color.White
                     )
