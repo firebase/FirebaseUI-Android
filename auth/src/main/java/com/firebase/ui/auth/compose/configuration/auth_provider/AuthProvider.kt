@@ -190,6 +190,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         internal fun addSessionInfoToActionCodeSettings(
             sessionId: String,
             anonymousUserId: String,
+            credentialForLinking: AuthCredential? = null,
         ): ActionCodeSettings {
             requireNotNull(emailLinkActionCodeSettings) {
                 "ActionCodeSettings is required for email link sign in"
@@ -199,7 +200,10 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 appendSessionId(sessionId)
                 appendAnonymousUserId(anonymousUserId)
                 appendForceSameDeviceBit(isEmailLinkForceSameDeviceEnabled)
-                appendProviderId(providerId)
+                // Only append providerId for linking flows (when credentialForLinking is not null)
+                if (credentialForLinking != null) {
+                    appendProviderId(providerId)
+                }
             }
 
             return actionCodeSettings {

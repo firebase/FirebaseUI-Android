@@ -712,11 +712,6 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
             throw AuthException.InvalidEmailLinkException()
         }
 
-        // Validate email is not empty
-        if (email.isEmpty()) {
-            throw AuthException.EmailMismatchException()
-        }
-
         // Parse email link for session data
         val parser = EmailLinkParser(emailLink)
         val sessionIdFromLink = parser.sessionId
@@ -739,12 +734,16 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
             // Handle cross-device flow
             // Session ID must always be present in the link
             if (sessionIdFromLink.isNullOrEmpty()) {
-                throw AuthException.InvalidEmailLinkException()
+                val exception = AuthException.InvalidEmailLinkException()
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
 
             // These scenarios require same-device flow
             if (isEmailLinkForceSameDeviceEnabled || !anonymousUserIdFromLink.isNullOrEmpty()) {
-                throw AuthException.EmailLinkWrongDeviceException()
+                val exception = AuthException.EmailLinkWrongDeviceException()
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
 
             // Validate the action code
@@ -752,11 +751,24 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
 
             // If there's a provider ID, this is a linking flow which can't be done cross-device
             if (!providerIdFromLink.isNullOrEmpty()) {
-                throw AuthException.EmailLinkCrossDeviceLinkingException()
+                val providerNameForMessage =
+                    Provider.fromId(providerIdFromLink)?.providerName ?: providerIdFromLink
+                val exception = AuthException.EmailLinkCrossDeviceLinkingException(
+                    providerName = providerNameForMessage
+                )
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
 
             // Link is valid but we need the user to provide their email
-            throw AuthException.EmailLinkPromptForEmailException()
+            val exception = AuthException.EmailLinkPromptForEmailException()
+            updateAuthState(AuthState.Error(exception))
+            throw exception
+        }
+
+        // Validate email is not empty (same-device flow only)
+        if (email.isEmpty()) {
+            throw AuthException.EmailMismatchException()
         }
 
         // Validate anonymous user ID matches (same-device flow)
@@ -766,7 +778,9 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                 || !currentUser.isAnonymous
                 || currentUser.uid != anonymousUserIdFromLink
             ) {
-                throw AuthException.EmailLinkDifferentAnonymousUserException()
+                val exception = AuthException.EmailLinkDifferentAnonymousUserException()
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
         }
 

@@ -214,36 +214,28 @@ abstract class AuthException(
 
     class InvalidEmailLinkException(
         cause: Throwable? = null
-    ) : AuthException("You are are attempting to sign in with an invalid email link", cause)
+    ) : AuthException("", cause)
 
     class EmailLinkWrongDeviceException(
         cause: Throwable? = null
-    ) : AuthException("You must open the email link on the same device.", cause)
+    ) : AuthException("", cause)
 
     class EmailLinkCrossDeviceLinkingException(
+        val providerName: String? = null,
         cause: Throwable? = null
-    ) : AuthException(
-        "You must determine if you want to continue linking or " +
-                "complete the sign in", cause
-    )
+    ) : AuthException("", cause)
 
     class EmailLinkPromptForEmailException(
         cause: Throwable? = null
-    ) : AuthException("Please enter your email to continue signing in", cause)
+    ) : AuthException("", cause)
 
     class EmailLinkDifferentAnonymousUserException(
         cause: Throwable? = null
-    ) : AuthException(
-        "The session associated with this sign-in request has either expired or " +
-                "was cleared", cause
-    )
+    ) : AuthException("", cause)
 
     class EmailMismatchException(
         cause: Throwable? = null
-    ) : AuthException(
-        "You are are attempting to sign in a different email than previously " +
-                "provided", cause
-    )
+    ) : AuthException("", cause)
 
     companion object {
         /**

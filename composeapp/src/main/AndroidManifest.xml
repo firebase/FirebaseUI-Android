@@ -34,8 +34,7 @@
                 <data
                     android:scheme="https"
                     android:host="@string/firebase_web_host"
-                    android:pathPattern="/__/auth/links"
-                    tools:ignore="AppLinksAutoVerify,AppLinkUrlError" />
+                    android:pathPattern="/__/auth/links" />
             </intent-filter>
         </activity>
 

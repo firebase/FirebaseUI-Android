@@ -33,6 +33,7 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.createOrLinkUser
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendPasswordResetEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailAndPassword
+import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.ui.components.ErrorRecoveryDialog
 import com.google.firebase.auth.AuthCredential
@@ -120,6 +121,7 @@ fun EmailAuthScreen(
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
     credentialForLinking: AuthCredential? = null,
+    emailLink: String? = null,
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
@@ -200,7 +202,16 @@ fun EmailAuthScreen(
         onSignInClick = {
             coroutineScope.launch {
                 try {
-                    if (provider.isEmailLinkSignInEnabled) {
+                    if (emailLink != null) {
+                        // Complete email link sign-in with user-provided email
+                        authUI.signInWithEmailLink(
+                            context = context,
+                            config = configuration,
+                            provider = provider,
+                            email = emailTextValue.value,
+                            emailLink = emailLink,
+                        )
+                    } else if (provider.isEmailLinkSignInEnabled) {
                         authUI.sendSignInLinkToEmail(
                             context = context,
                             config = configuration,
@@ -217,7 +228,7 @@ fun EmailAuthScreen(
                         )
                     }
                 } catch (e: Exception) {
-
+                    onError(AuthException.from(e))
                 }
             }
         },
