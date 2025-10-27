@@ -16,8 +16,9 @@ package com.firebase.ui.auth.compose
 
 import android.content.Context
 import androidx.annotation.RestrictTo
-import com.firebase.ui.auth.compose.configuration.auth_provider.signOutFromGoogle
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.signOutFromGoogle
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -71,6 +72,9 @@ class FirebaseAuthUI private constructor(
 ) {
 
     private val _authStateFlow = MutableStateFlow<AuthState>(AuthState.Idle)
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    var testCredentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null
 
     /**
      * Checks whether a user is currently signed in.
