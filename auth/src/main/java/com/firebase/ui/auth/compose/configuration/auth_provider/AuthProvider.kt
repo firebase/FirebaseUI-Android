@@ -18,6 +18,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.annotation.RestrictTo
 import androidx.compose.ui.graphics.Color
 import androidx.core.net.toUri
 import androidx.credentials.CredentialManager
@@ -540,7 +541,8 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * Result container for Google Sign-In credential flow.
          * @suppress
          */
-        internal data class GoogleSignInResult(
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        data class GoogleSignInResult(
             val credential: AuthCredential,
             val idToken: String,
             val displayName: String?,
@@ -575,9 +577,11 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * An interface to wrap the Credential Manager flow for Google Sign-In.
          * @suppress
          */
-        internal interface CredentialManagerProvider {
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        interface CredentialManagerProvider {
             suspend fun getGoogleCredential(
                 context: Context,
+                credentialManager: CredentialManager,
                 serverClientId: String,
                 filterByAuthorizedAccounts: Boolean,
                 autoSelectEnabled: Boolean
@@ -588,14 +592,15 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * The default implementation of [CredentialManagerProvider].
          * @suppress
          */
-        internal class DefaultCredentialManagerProvider : CredentialManagerProvider {
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        class DefaultCredentialManagerProvider : CredentialManagerProvider {
             override suspend fun getGoogleCredential(
                 context: Context,
+                credentialManager: CredentialManager,
                 serverClientId: String,
                 filterByAuthorizedAccounts: Boolean,
-                autoSelectEnabled: Boolean
+                autoSelectEnabled: Boolean,
             ): GoogleSignInResult {
-                val credentialManager = CredentialManager.create(context)
                 val googleIdOption = GetGoogleIdOption.Builder()
                     .setServerClientId(serverClientId)
                     .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)

@@ -22,6 +22,7 @@ import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.PasswordRule
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.ui.screens.EmailAuthContentState
@@ -275,22 +276,25 @@ fun EmailAuthDemo(
         }
     } else {
         // Show custom email auth UI using slot API
-        EmailAuthScreen(
-            context = context,
-            configuration = configuration,
-            authUI = authUI,
-            onSuccess = { result: AuthResult ->
-                Log.d("CustomSlotsDemo", "Email auth success: ${result.user?.uid}")
-            },
-            onError = { exception: AuthException ->
-                Log.e("CustomSlotsDemo", "Email auth error", exception)
-            },
-            onCancel = {
-                Log.d("CustomSlotsDemo", "Email auth cancelled")
+        // Provide the string provider required by EmailAuthScreen
+        CompositionLocalProvider(LocalAuthUIStringProvider provides configuration.stringProvider) {
+            EmailAuthScreen(
+                context = context,
+                configuration = configuration,
+                authUI = authUI,
+                onSuccess = { result: AuthResult ->
+                    Log.d("CustomSlotsDemo", "Email auth success: ${result.user?.uid}")
+                },
+                onError = { exception: AuthException ->
+                    Log.e("CustomSlotsDemo", "Email auth error", exception)
+                },
+                onCancel = {
+                    Log.d("CustomSlotsDemo", "Email auth cancelled")
+                }
+            ) { state: EmailAuthContentState ->
+                // Custom UI using the slot API
+                CustomEmailAuthUI(state)
             }
-        ) { state: EmailAuthContentState ->
-            // Custom UI using the slot API
-            CustomEmailAuthUI(state)
         }
     }
 }
@@ -609,22 +613,25 @@ fun PhoneAuthDemo(
         }
     } else {
         // Show custom phone auth UI using slot API
-        PhoneAuthScreen(
-            context = context,
-            configuration = configuration,
-            authUI = authUI,
-            onSuccess = { result: AuthResult ->
-                Log.d("CustomSlotsDemo", "Phone auth success: ${result.user?.uid}")
-            },
-            onError = { exception: AuthException ->
-                Log.e("CustomSlotsDemo", "Phone auth error", exception)
-            },
-            onCancel = {
-                Log.d("CustomSlotsDemo", "Phone auth cancelled")
+        // Provide the string provider required by PhoneAuthScreen
+        CompositionLocalProvider(LocalAuthUIStringProvider provides configuration.stringProvider) {
+            PhoneAuthScreen(
+                context = context,
+                configuration = configuration,
+                authUI = authUI,
+                onSuccess = { result: AuthResult ->
+                    Log.d("CustomSlotsDemo", "Phone auth success: ${result.user?.uid}")
+                },
+                onError = { exception: AuthException ->
+                    Log.e("CustomSlotsDemo", "Phone auth error", exception)
+                },
+                onCancel = {
+                    Log.d("CustomSlotsDemo", "Phone auth cancelled")
+                }
+            ) { state: PhoneAuthContentState ->
+                // Custom UI using the slot API
+                CustomPhoneAuthUI(state)
             }
-        ) { state: PhoneAuthContentState ->
-            // Custom UI using the slot API
-            CustomPhoneAuthUI(state)
         }
     }
 }

@@ -56,6 +56,7 @@ dependencies {
     testImplementation(Config.Libs.Test.mockitoInline)
     testImplementation(Config.Libs.Test.mockitoKotlin)
     testImplementation(Config.Libs.Androidx.credentials)
+    testImplementation(Config.Libs.Misc.googleid)
     testImplementation(Config.Libs.Test.composeUiTestJunit4)
 }
 

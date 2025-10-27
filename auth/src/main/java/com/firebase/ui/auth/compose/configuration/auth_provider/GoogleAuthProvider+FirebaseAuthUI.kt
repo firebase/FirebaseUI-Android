@@ -132,12 +132,14 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
             }
         }
 
-        val result = credentialManagerProvider.getGoogleCredential(
-            context = context,
-            serverClientId = provider.serverClientId!!,
-            filterByAuthorizedAccounts = true,
-            autoSelectEnabled = false
-        )
+        val result =
+            (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
+                context = context,
+                credentialManager = CredentialManager.create(context),
+                serverClientId = provider.serverClientId!!,
+                filterByAuthorizedAccounts = true,
+                autoSelectEnabled = false
+            )
         idTokenFromResult = result.idToken
 
         signInAndLinkWithCredential(

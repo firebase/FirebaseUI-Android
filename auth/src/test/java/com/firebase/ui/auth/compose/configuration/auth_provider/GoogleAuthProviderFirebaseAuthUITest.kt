@@ -16,6 +16,7 @@ package com.firebase.ui.auth.compose.configuration.auth_provider
 
 import android.content.Context
 import androidx.core.net.toUri
+import androidx.credentials.CredentialManager
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
@@ -131,6 +132,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -169,6 +171,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         // Verify credential manager was called
         verify(mockCredentialManagerProvider).getGoogleCredential(
             context = eq(applicationContext),
+            credentialManager = any<CredentialManager>(),
             serverClientId = eq("test-client-id"),
             filterByAuthorizedAccounts = eq(true),
             autoSelectEnabled = eq(false)
@@ -199,6 +202,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -243,6 +247,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         // Verify credential manager was called after authorization
         verify(mockCredentialManagerProvider).getGoogleCredential(
             context = eq(applicationContext),
+            credentialManager = any<CredentialManager>(),
             serverClientId = eq("test-client-id"),
             filterByAuthorizedAccounts = eq(true),
             autoSelectEnabled = eq(false)
@@ -272,6 +277,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -339,6 +345,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -377,6 +384,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         // Verify sign-in continued despite authorization failure
         verify(mockCredentialManagerProvider).getGoogleCredential(
             context = eq(applicationContext),
+            credentialManager = any<CredentialManager>(),
             serverClientId = eq("test-client-id"),
             filterByAuthorizedAccounts = eq(true),
             autoSelectEnabled = eq(false)
@@ -390,6 +398,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -441,6 +450,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -490,6 +500,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -552,6 +563,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)
@@ -611,6 +623,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         `when`(
             mockCredentialManagerProvider.getGoogleCredential(
                 context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
                 serverClientId = eq("test-client-id"),
                 filterByAuthorizedAccounts = eq(true),
                 autoSelectEnabled = eq(false)

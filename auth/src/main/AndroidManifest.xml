@@ -110,6 +110,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".compose.FirebaseAuthActivity"
+            android:label=""
+            android:exported="false" />
+
+        <activity
             android:name="com.facebook.FacebookActivity"
             android:label="@string/app_name"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

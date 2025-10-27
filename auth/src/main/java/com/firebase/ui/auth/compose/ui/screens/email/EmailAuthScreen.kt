@@ -280,7 +280,9 @@ fun EmailAuthScreen(
         }
     )
 
-    if (isErrorDialogVisible.value) {
+    if (isErrorDialogVisible.value &&
+        (authState as AuthState.Error).exception !is AuthException.AccountLinkingRequiredException
+    ) {
         ErrorRecoveryDialog(
             error = when ((authState as AuthState.Error).exception) {
                 is AuthException -> (authState as AuthState.Error).exception as AuthException

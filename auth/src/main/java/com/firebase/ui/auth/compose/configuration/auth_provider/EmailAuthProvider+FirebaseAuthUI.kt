@@ -166,7 +166,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         val accountLinkingException = AuthException.AccountLinkingRequiredException(
             message = "An account already exists with this email. " +
                     "Please sign in with your existing account.",
-            email = e.email,
+            email = e.email ?: email,
             credential = if (canUpgrade) {
                 e.updatedCredential ?: pendingCredential
             } else {
