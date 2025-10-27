@@ -31,8 +31,8 @@ import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.compose.util.EmailLinkConstants
 import com.google.firebase.auth.actionCodeSettings
-import java.util.Locale
 
 class HighLevelApiDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val authUI = FirebaseAuthUI.getInstance()
-        val emailLink = intent.getStringExtra(EmailLinkExtras.EXTRA_EMAIL_LINK)
+        val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -56,7 +56,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                 provider(
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
-                        isEmailLinkForceSameDeviceEnabled = true,
+                        isEmailLinkForceSameDeviceEnabled = false,
                         isEmailLinkSignInEnabled = true,
                         emailLinkActionCodeSettings = actionCodeSettings {
                             url = "https://temp-test-aa342.firebaseapp.com"

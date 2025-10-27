@@ -218,7 +218,7 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.AccountLinkingRequiredException -> true
         is AuthException.AuthCancelledException -> true
         is AuthException.EmailLinkPromptForEmailException -> true
-        is AuthException.EmailLinkCrossDeviceLinkingException -> false
+        is AuthException.EmailLinkCrossDeviceLinkingException -> true
         is AuthException.EmailLinkWrongDeviceException -> true
         is AuthException.EmailLinkDifferentAnonymousUserException -> false
         is AuthException.UnknownException -> true

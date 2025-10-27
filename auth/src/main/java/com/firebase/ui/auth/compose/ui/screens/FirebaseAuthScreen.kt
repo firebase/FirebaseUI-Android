@@ -102,6 +102,7 @@ fun FirebaseAuthScreen(
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
+    val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
 
     val anonymousProvider =
         configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
@@ -255,6 +256,7 @@ fun FirebaseAuthScreen(
                         configuration = configuration,
                         authUI = authUI,
                         credentialForLinking = pendingLinkingCredential.value,
+                        emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
                         onSuccess = {
                             pendingLinkingCredential.value = null
                         },
@@ -389,19 +391,35 @@ fun FirebaseAuthScreen(
             LaunchedEffect(emailLink) {
                 if (emailLink != null && emailProvider != null) {
                     try {
-                        EmailLinkPersistenceManager.retrieveSessionRecord(context)?.email?.let { email ->
+                        // Try to retrieve saved email from DataStore (same-device flow)
+                        val savedEmail = EmailLinkPersistenceManager.default.retrieveSessionRecord(context)?.email
+                        
+                        if (savedEmail != null) {
+                            // Same device - we have the email, sign in automatically
                             authUI.signInWithEmailLink(
                                 context = context,
                                 config = configuration,
                                 provider = emailProvider,
-                                email = email,
+                                email = savedEmail,
+                                emailLink = emailLink
+                            )
+                        } else {
+                            // Different device - no saved email
+                            // Call signInWithEmailLink with empty email to trigger validation
+                            // This will throw EmailLinkPromptForEmailException or EmailLinkWrongDeviceException
+                            authUI.signInWithEmailLink(
+                                context = context,
+                                config = configuration,
+                                provider = emailProvider,
+                                email = "", // Empty email triggers cross-device detection
                                 emailLink = emailLink
                             )
                         }
                     } catch (e: Exception) {
                         Log.e("FirebaseAuthScreen", "Failed to complete email link sign-in", e)
                     }
-
+                    
+                    // Navigate to Email auth screen for cross-device error handling
                     if (navController.currentBackStackEntry?.destination?.route != AuthRoute.Email.route) {
                         navController.navigate(AuthRoute.Email.route)
                     }
@@ -508,6 +526,22 @@ fun FirebaseAuthScreen(
 
                             is AuthException.AccountLinkingRequiredException -> {
                                 pendingLinkingCredential.value = exception.credential
+                                navController.navigate(AuthRoute.Email.route) {
+                                    launchSingleTop = true
+                                }
+                            }
+
+                            is AuthException.EmailLinkPromptForEmailException -> {
+                                // Cross-device flow: User needs to enter their email
+                                emailLinkFromDifferentDevice.value = emailLink
+                                navController.navigate(AuthRoute.Email.route) {
+                                    launchSingleTop = true
+                                }
+                            }
+
+                            is AuthException.EmailLinkCrossDeviceLinkingException -> {
+                                // Cross-device linking flow: User needs to enter email to link provider
+                                emailLinkFromDifferentDevice.value = emailLink
                                 navController.navigate(AuthRoute.Email.route) {
                                     launchSingleTop = true
                                 }

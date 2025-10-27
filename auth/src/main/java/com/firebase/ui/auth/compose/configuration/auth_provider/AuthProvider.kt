@@ -91,7 +91,7 @@ internal enum class Provider(
     APPLE("apple.com", providerName = "Apple", isSocialProvider = true);
 
     companion object {
-        fun fromId(id: String): Provider? {
+        fun fromId(id: String?): Provider? {
             return entries.find { it.id == id }
         }
     }
@@ -202,7 +202,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 appendForceSameDeviceBit(isEmailLinkForceSameDeviceEnabled)
                 // Only append providerId for linking flows (when credentialForLinking is not null)
                 if (credentialForLinking != null) {
-                    appendProviderId(providerId)
+                    appendProviderId(credentialForLinking.provider)
                 }
             }
 
@@ -542,6 +542,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          */
         internal data class GoogleSignInResult(
             val credential: AuthCredential,
+            val idToken: String,
             val displayName: String?,
             val photoUrl: Uri?
         )
@@ -611,8 +612,9 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
 
                 return GoogleSignInResult(
                     credential = credential,
+                    idToken = googleIdTokenCredential.idToken,
                     displayName = googleIdTokenCredential.displayName,
-                    photoUrl = googleIdTokenCredential.profilePictureUri
+                    photoUrl = googleIdTokenCredential.profilePictureUri,
                 )
             }
         }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.FirebaseAuthUI
+import com.firebase.ui.auth.compose.util.EmailLinkConstants
 import com.google.firebase.FirebaseApp
 
 /**
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
             authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
         }
 
-        var pendingEmailLink = intent.getStringExtra(EmailLinkExtras.EXTRA_EMAIL_LINK)
+        var pendingEmailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
 
         if (pendingEmailLink.isNullOrEmpty() && authUI.canHandleIntent(intent)) {
             pendingEmailLink = intent.data?.toString()
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
                 HighLevelApiDemoActivity::class.java
             ).apply {
                 pendingEmailLink?.let { link ->
-                    putExtra(EmailLinkExtras.EXTRA_EMAIL_LINK, link)
+                    putExtra(EmailLinkConstants.EXTRA_EMAIL_LINK, link)
                     pendingEmailLink = null
                 }
             }

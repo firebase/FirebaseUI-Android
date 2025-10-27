@@ -121,7 +121,7 @@ fun EmailAuthScreen(
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
     credentialForLinking: AuthCredential? = null,
-    emailLink: String? = null,
+    emailLinkFromDifferentDevice: String? = null,
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
@@ -202,30 +202,36 @@ fun EmailAuthScreen(
         onSignInClick = {
             coroutineScope.launch {
                 try {
-                    if (emailLink != null) {
-                        // Complete email link sign-in with user-provided email
-                        authUI.signInWithEmailLink(
-                            context = context,
-                            config = configuration,
-                            provider = provider,
-                            email = emailTextValue.value,
-                            emailLink = emailLink,
-                        )
-                    } else if (provider.isEmailLinkSignInEnabled) {
-                        authUI.sendSignInLinkToEmail(
-                            context = context,
-                            config = configuration,
-                            provider = provider,
-                            email = emailTextValue.value,
-                        )
-                    } else {
-                        authUI.signInWithEmailAndPassword(
-                            context = context,
-                            config = configuration,
-                            email = emailTextValue.value,
-                            password = passwordTextValue.value,
-                            credentialForLinking = authCredentialForLinking,
-                        )
+                    when {
+                        emailLinkFromDifferentDevice != null -> {
+                            authUI.signInWithEmailLink(
+                                context = context,
+                                config = configuration,
+                                provider = provider,
+                                email = emailTextValue.value,
+                                emailLink = emailLinkFromDifferentDevice,
+                            )
+                        }
+
+                        provider.isEmailLinkSignInEnabled -> {
+                            authUI.sendSignInLinkToEmail(
+                                context = context,
+                                config = configuration,
+                                provider = provider,
+                                email = emailTextValue.value,
+                                credentialForLinking = authCredentialForLinking,
+                            )
+                        }
+
+                        else -> {
+                            authUI.signInWithEmailAndPassword(
+                                context = context,
+                                config = configuration,
+                                email = emailTextValue.value,
+                                password = passwordTextValue.value,
+                                credentialForLinking = authCredentialForLinking,
+                            )
+                        }
                     }
                 } catch (e: Exception) {
                     onError(AuthException.from(e))

@@ -161,7 +161,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
     } catch (e: AuthException.AccountLinkingRequiredException) {
         // Account collision occurred - save Facebook credential for linking after email link sign-in
         // This happens when a user tries to sign in with Facebook but an email link account exists
-        EmailLinkPersistenceManager.saveCredentialForLinking(
+        EmailLinkPersistenceManager.default.saveCredentialForLinking(
             context = context,
             providerType = provider.providerId,
             idToken = null,
