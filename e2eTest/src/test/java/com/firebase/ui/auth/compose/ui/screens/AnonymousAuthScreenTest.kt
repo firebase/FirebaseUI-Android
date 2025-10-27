@@ -33,6 +33,7 @@ import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringPr
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
+import com.firebase.ui.auth.compose.testutil.ensureFreshUser
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -273,6 +274,133 @@ class AnonymousAuthScreenTest {
         assertThat(authUI.auth.currentUser!!.isAnonymous).isEqualTo(false)
         assertThat(authUI.auth.currentUser!!.email)
             .isEqualTo(email)
+    }
+
+    @Test
+    fun `anonymous upgrade with existing email shows dialog with AccountLinking message`() {
+        val name = "Existing User"
+        val email = "existinguser@example.com"
+        val password = "Password123!"
+
+        // Step 1: Create an email/password account first
+        println("TEST: Creating email/password account...")
+        ensureFreshUser(authUI, email, password)
+        println("TEST: Email/password account created")
+
+        // Step 2: Sign out
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+        assertThat(authUI.auth.currentUser).isNull()
+        println("TEST: Signed out, but email account still exists in emulator")
+
+        // Step 3: Sign in anonymously
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Anonymous)
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isAnonymousUpgradeEnabled = true
+        }
+
+        var currentAuthState: AuthState = AuthState.Idle
+
+        composeTestRule.setContent {
+            TestAuthScreen(configuration = configuration)
+            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+            currentAuthState = authState
+        }
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        println("TEST: Clicking anonymous sign-in button...")
+        composeTestRule.onNodeWithText(stringProvider.signInAnonymously)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Wait for anonymous auth to complete
+        println("TEST: Waiting for anonymous auth...")
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            println("TEST: Auth state: $currentAuthState")
+            currentAuthState is AuthState.Success
+        }
+
+        assertThat(authUI.auth.currentUser!!.isAnonymous).isTrue()
+        val anonymousUserUID = authUI.auth.currentUser!!.uid
+        println("TEST: Anonymous user UID: $anonymousUserUID")
+
+        // Step 4: Try to upgrade with existing email
+        println("TEST: Clicking 'Upgrade with Email' button...")
+        composeTestRule.onNodeWithText("Upgrade with Email")
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Navigate to sign-up
+        println("TEST: Navigating to sign-up...")
+        composeTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .assertIsDisplayed()
+            .performClick()
+
+        // Enter the existing email
+        println("TEST: Entering existing email...")
+        composeTestRule.onNodeWithText(stringProvider.emailHint)
+            .assertIsDisplayed()
+            .performTextInput(email)
+        composeTestRule.onNodeWithText(stringProvider.nameHint)
+            .assertIsDisplayed()
+            .performTextInput(name)
+        composeTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performTextInput(password)
+        composeTestRule.onNodeWithText(stringProvider.confirmPasswordHint)
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performTextInput(password)
+
+        // Click sign-up button
+        println("TEST: Clicking sign-up button...")
+        composeTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 5: Wait for error state (AccountLinkingRequiredException)
+        println("TEST: Waiting for AccountLinkingRequiredException...")
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            println("TEST: Auth state: $currentAuthState")
+            currentAuthState is AuthState.Error
+        }
+
+        // Step 6: Verify ErrorRecoveryDialog is displayed
+        println("TEST: Verifying ErrorRecoveryDialog is displayed...")
+        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle)
+            .assertIsDisplayed()
+
+        // Verify exception
+        assertThat(currentAuthState).isInstanceOf(AuthState.Error::class.java)
+        val errorState = currentAuthState as AuthState.Error
+        assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
+
+        val linkingException = errorState.exception as AuthException.AccountLinkingRequiredException
+        assertThat(linkingException.email).isEqualTo(email)
     }
 
     @Composable
