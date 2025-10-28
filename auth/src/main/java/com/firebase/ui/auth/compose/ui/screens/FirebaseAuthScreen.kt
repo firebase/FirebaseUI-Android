@@ -533,7 +533,7 @@ fun FirebaseAuthScreen(
 
                             is AuthException.EmailLinkPromptForEmailException -> {
                                 // Cross-device flow: User needs to enter their email
-                                emailLinkFromDifferentDevice.value = emailLink
+                                emailLinkFromDifferentDevice.value = exception.emailLink
                                 navController.navigate(AuthRoute.Email.route) {
                                     launchSingleTop = true
                                 }
@@ -541,7 +541,7 @@ fun FirebaseAuthScreen(
 
                             is AuthException.EmailLinkCrossDeviceLinkingException -> {
                                 // Cross-device linking flow: User needs to enter email to link provider
-                                emailLinkFromDifferentDevice.value = emailLink
+                                emailLinkFromDifferentDevice.value = exception.emailLink
                                 navController.navigate(AuthRoute.Email.route) {
                                     launchSingleTop = true
                                 }

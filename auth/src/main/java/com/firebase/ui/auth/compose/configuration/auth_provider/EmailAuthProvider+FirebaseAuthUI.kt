@@ -861,7 +861,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
             // email before continuing the flow. We should only do that after validating the link.
             // However, if email is already provided (cross-device with user input), skip validation
             if (email.isEmpty()) {
-                handleDifferentDeviceErrorFlow(oobCode, providerIdFromLink)
+                handleDifferentDeviceErrorFlow(oobCode, providerIdFromLink, emailLink)
                 return null
             }
             // Email provided - validate it and continue with normal flow
@@ -926,6 +926,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
 private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
     oobCode: String,
     providerIdFromLink: String?,
+    emailLink: String
 ) {
     // Validate the action code
     try {
@@ -942,14 +943,18 @@ private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
         val providerNameForMessage =
             Provider.fromId(providerIdFromLink)?.providerName ?: providerIdFromLink
         val exception = AuthException.EmailLinkCrossDeviceLinkingException(
-            providerName = providerNameForMessage
+            providerName = providerNameForMessage,
+            emailLink = emailLink
         )
         updateAuthState(AuthState.Error(exception))
         throw exception
     }
 
     // Link is valid but we need the user to provide their email
-    val exception = AuthException.EmailLinkPromptForEmailException()
+    val exception = AuthException.EmailLinkPromptForEmailException(
+        cause = null,
+        emailLink = emailLink
+    )
     updateAuthState(AuthState.Error(exception))
     throw exception
 }

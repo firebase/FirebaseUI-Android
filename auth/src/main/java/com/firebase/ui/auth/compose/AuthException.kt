@@ -222,11 +222,13 @@ abstract class AuthException(
 
     class EmailLinkCrossDeviceLinkingException(
         val providerName: String? = null,
+        val emailLink: String? = null,
         cause: Throwable? = null
     ) : AuthException("", cause)
 
     class EmailLinkPromptForEmailException(
-        cause: Throwable? = null
+        cause: Throwable? = null,
+        val emailLink: String? = null,
     ) : AuthException("", cause)
 
     class EmailLinkDifferentAnonymousUserException(
