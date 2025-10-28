@@ -222,7 +222,7 @@ abstract class AuthException(
      */
     class InvalidEmailLinkException(
         cause: Throwable? = null
-    ) : AuthException("", cause)
+    ) : AuthException("You are are attempting to sign in with an invalid email link", cause)
 
     /**
      * The email link is being used on a different device than where it was requested.
@@ -234,7 +234,7 @@ abstract class AuthException(
      */
     class EmailLinkWrongDeviceException(
         cause: Throwable? = null
-    ) : AuthException("", cause)
+    ) : AuthException("You must open the email link on the same device.", cause)
 
     /**
      * Cross-device account linking is required to complete email link sign-in.
@@ -251,7 +251,8 @@ abstract class AuthException(
         val providerName: String? = null,
         val emailLink: String? = null,
         cause: Throwable? = null
-    ) : AuthException("", cause)
+    ) : AuthException("You must determine if you want to continue linking or " +
+            "complete the sign in", cause)
 
     /**
      * User needs to provide their email address to complete email link sign-in.
@@ -265,7 +266,7 @@ abstract class AuthException(
     class EmailLinkPromptForEmailException(
         cause: Throwable? = null,
         val emailLink: String? = null,
-    ) : AuthException("", cause)
+    ) : AuthException("Please enter your email to continue signing in", cause)
 
     /**
      * Email link sign-in attempted with a different anonymous user than expected.
@@ -277,7 +278,8 @@ abstract class AuthException(
      */
     class EmailLinkDifferentAnonymousUserException(
         cause: Throwable? = null
-    ) : AuthException("", cause)
+    ) : AuthException("The session associated with this sign-in request has either " +
+            "expired or was cleared", cause)
 
     /**
      * The email address provided does not match the email link.
@@ -289,7 +291,8 @@ abstract class AuthException(
      */
     class EmailMismatchException(
         cause: Throwable? = null
-    ) : AuthException("", cause)
+    ) : AuthException("You are are attempting to sign in a different email " +
+            "than previously provided", cause)
 
     companion object {
         /**
