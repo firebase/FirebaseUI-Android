@@ -519,8 +519,8 @@ fun FirebaseAuthScreen(
                         onRetry = { _ ->
                             // Child screens handle their own retry logic
                         },
-                        onRecover = { ex ->
-                            when (ex) {
+                        onRecover = { exception ->
+                            when (exception) {
                                 is AuthException.EmailAlreadyInUseException -> {
                                     navController.navigate(AuthRoute.Email.route) {
                                         launchSingleTop = true
@@ -528,7 +528,7 @@ fun FirebaseAuthScreen(
                                 }
 
                                 is AuthException.AccountLinkingRequiredException -> {
-                                    pendingLinkingCredential.value = ex.credential
+                                    pendingLinkingCredential.value = exception.credential
                                 navController.navigate(AuthRoute.Email.route) {
                                     launchSingleTop = true
                                 }
