@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.compose
 
 import android.content.Context
+import android.content.Intent
 import androidx.annotation.RestrictTo
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
@@ -117,6 +118,17 @@ class FirebaseAuthUI private constructor(
      * @return The currently signed-in [FirebaseUser], or `null` if no user is signed in
      */
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
+    /**
+     * Returns true if this instance can handle the provided [Intent].
+     *
+     * This mirrors the classic `AuthUI.canHandleIntent` API but uses the [FirebaseAuth] instance
+     * backing this [FirebaseAuthUI], ensuring custom app/auth configurations are respected.
+     */
+    fun canHandleIntent(intent: Intent?): Boolean {
+        val link = intent?.data ?: return false
+        return auth.isSignInWithEmailLink(link.toString())
+    }
 
     /**
      * Creates a new authentication flow controller with the specified configuration.

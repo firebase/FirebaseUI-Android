@@ -212,38 +212,87 @@ abstract class AuthException(
         cause: Throwable? = null
     ) : AuthException(message, cause)
 
+    /**
+     * The email link used for sign-in is invalid or malformed.
+     *
+     * This exception is thrown when the link is not a valid Firebase email link,
+     * has incorrect format, or is missing required parameters.
+     *
+     * @property cause The underlying [Throwable] that caused this exception
+     */
     class InvalidEmailLinkException(
         cause: Throwable? = null
     ) : AuthException("You are are attempting to sign in with an invalid email link", cause)
 
+    /**
+     * The email link is being used on a different device than where it was requested.
+     *
+     * This exception is thrown when `forceSameDevice = true` and the user opens
+     * the link on a different device than the one used to request it.
+     *
+     * @property cause The underlying [Throwable] that caused this exception
+     */
     class EmailLinkWrongDeviceException(
         cause: Throwable? = null
     ) : AuthException("You must open the email link on the same device.", cause)
 
+    /**
+     * Cross-device account linking is required to complete email link sign-in.
+     *
+     * This exception is thrown when the email link matches an existing account with
+     * a social provider (Google/Facebook), and the user needs to sign in with that
+     * provider to link accounts.
+     *
+     * @property providerName The name of the social provider that needs to be linked
+     * @property emailLink The email link being processed
+     * @property cause The underlying [Throwable] that caused this exception
+     */
     class EmailLinkCrossDeviceLinkingException(
+        val providerName: String? = null,
+        val emailLink: String? = null,
         cause: Throwable? = null
-    ) : AuthException(
-        "You must determine if you want to continue linking or " +
-                "complete the sign in", cause
-    )
+    ) : AuthException("You must determine if you want to continue linking or " +
+            "complete the sign in", cause)
 
+    /**
+     * User needs to provide their email address to complete email link sign-in.
+     *
+     * This exception is thrown when the email link is opened on a different device
+     * and the email address cannot be determined from stored session data.
+     *
+     * @property emailLink The email link to be used after email is provided
+     * @property cause The underlying [Throwable] that caused this exception
+     */
     class EmailLinkPromptForEmailException(
-        cause: Throwable? = null
+        cause: Throwable? = null,
+        val emailLink: String? = null,
     ) : AuthException("Please enter your email to continue signing in", cause)
 
+    /**
+     * Email link sign-in attempted with a different anonymous user than expected.
+     *
+     * This exception is thrown when an email link for anonymous account upgrade is
+     * opened on a device with a different anonymous user session.
+     *
+     * @property cause The underlying [Throwable] that caused this exception
+     */
     class EmailLinkDifferentAnonymousUserException(
         cause: Throwable? = null
-    ) : AuthException(
-        "The session associated with this sign-in request has either expired or " +
-                "was cleared", cause
-    )
+    ) : AuthException("The session associated with this sign-in request has either " +
+            "expired or was cleared", cause)
 
+    /**
+     * The email address provided does not match the email link.
+     *
+     * This exception is thrown when the user enters an email address that doesn't
+     * match the email to which the sign-in link was sent.
+     *
+     * @property cause The underlying [Throwable] that caused this exception
+     */
     class EmailMismatchException(
         cause: Throwable? = null
-    ) : AuthException(
-        "You are are attempting to sign in a different email than previously " +
-                "provided", cause
-    )
+    ) : AuthException("You are are attempting to sign in a different email " +
+            "than previously provided", cause)
 
     companion object {
         /**

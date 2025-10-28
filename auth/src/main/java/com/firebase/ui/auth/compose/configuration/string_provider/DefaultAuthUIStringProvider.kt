@@ -148,6 +148,39 @@ class DefaultAuthUIStringProvider(
     override fun emailSignInLinkSentDialogBody(email: String): String =
         localizedContext.getString(R.string.fui_email_link_email_sent, email)
 
+    override val emailLinkPromptForEmailTitle: String
+        get() = localizedContext.getString(R.string.fui_email_link_confirm_email_header)
+
+    override val emailLinkPromptForEmailMessage: String
+        get() = localizedContext.getString(R.string.fui_email_link_confirm_email_message)
+
+    override val emailLinkWrongDeviceTitle: String
+        get() = localizedContext.getString(R.string.fui_email_link_wrong_device_header)
+
+    override val emailLinkWrongDeviceMessage: String
+        get() = localizedContext.getString(R.string.fui_email_link_wrong_device_message)
+
+    override val emailLinkDifferentAnonymousUserTitle: String
+        get() = localizedContext.getString(R.string.fui_email_link_different_anonymous_user_header)
+
+    override val emailLinkDifferentAnonymousUserMessage: String
+        get() = localizedContext.getString(R.string.fui_email_link_different_anonymous_user_message)
+
+    override fun emailLinkCrossDeviceLinkingMessage(providerName: String): String =
+        localizedContext.getString(
+            R.string.fui_email_link_cross_device_linking_text,
+            providerName
+        )
+
+    override val emailLinkInvalidLinkTitle: String
+        get() = localizedContext.getString(R.string.fui_email_link_invalid_link_header)
+
+    override val emailLinkInvalidLinkMessage: String
+        get() = localizedContext.getString(R.string.fui_email_link_invalid_link_message)
+
+    override val emailMismatchMessage: String
+        get() = localizedContext.getString(R.string.fui_error_unknown)
+
     /**
      * Phone Authentication Strings
      */

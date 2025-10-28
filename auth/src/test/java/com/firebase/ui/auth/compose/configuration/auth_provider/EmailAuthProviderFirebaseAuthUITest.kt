@@ -726,4 +726,733 @@ class EmailAuthProviderFirebaseAuthUITest {
             assertThat(e.cause).isInstanceOf(CancellationException::class.java)
         }
     }
+
+    // =============================================================================================
+    // sendSignInLinkToEmail Tests
+    // =============================================================================================
+
+    @Test
+    fun `sendSignInLinkToEmail - normal flow - successfully sends email link`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("test-uid")
+        `when`(mockUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+
+        val actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl("https://example.com")
+            .setHandleCodeInApp(true)
+            .setAndroidPackageName("com.test", true, null)
+            .build()
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = actionCodeSettings,
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        taskCompletionSource.setResult(null)
+        `when`(mockFirebaseAuth.sendSignInLinkToEmail(anyString(), any()))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        instance.sendSignInLinkToEmail(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            email = "test@example.com",
+            credentialForLinking = null
+        )
+
+        verify(mockFirebaseAuth).sendSignInLinkToEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            any()
+        )
+
+        val finalState = instance.authStateFlow().first { it is AuthState.EmailSignInLinkSent }
+        assertThat(finalState).isInstanceOf(AuthState.EmailSignInLinkSent::class.java)
+    }
+
+    @Test
+    fun `sendSignInLinkToEmail - with anonymous user - includes anonymous user ID in link`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("anonymous-uid-123")
+        `when`(mockUser.isAnonymous).thenReturn(true)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+
+        val actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl("https://example.com")
+            .setHandleCodeInApp(true)
+            .setAndroidPackageName("com.test", true, null)
+            .build()
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = actionCodeSettings,
+            isEmailLinkForceSameDeviceEnabled = true,
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+            isAnonymousUpgradeEnabled = true
+        }
+
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        taskCompletionSource.setResult(null)
+        `when`(mockFirebaseAuth.sendSignInLinkToEmail(anyString(), any()))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        instance.sendSignInLinkToEmail(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            email = "test@example.com",
+            credentialForLinking = null
+        )
+
+        verify(mockFirebaseAuth).sendSignInLinkToEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            any()
+        )
+
+        val finalState = instance.authStateFlow().first { it is AuthState.EmailSignInLinkSent }
+        assertThat(finalState).isInstanceOf(AuthState.EmailSignInLinkSent::class.java)
+    }
+
+    @Test
+    fun `sendSignInLinkToEmail - with credential for linking - includes provider ID in link`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("test-uid")
+        `when`(mockUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+
+        val actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl("https://example.com")
+            .setHandleCodeInApp(true)
+            .setAndroidPackageName("com.test", true, null)
+            .build()
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = actionCodeSettings,
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val googleCredential = GoogleAuthProvider.getCredential("id-token", null)
+
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        taskCompletionSource.setResult(null)
+        `when`(mockFirebaseAuth.sendSignInLinkToEmail(anyString(), any()))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        instance.sendSignInLinkToEmail(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            email = "test@example.com",
+            credentialForLinking = googleCredential
+        )
+
+        verify(mockFirebaseAuth).sendSignInLinkToEmail(
+            ArgumentMatchers.eq("test@example.com"),
+            any()
+        )
+
+        val finalState = instance.authStateFlow().first { it is AuthState.EmailSignInLinkSent }
+        assertThat(finalState).isInstanceOf(AuthState.EmailSignInLinkSent::class.java)
+    }
+
+    @Test
+    fun `sendSignInLinkToEmail - handles network error`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("test-uid")
+        `when`(mockUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+
+        val actionCodeSettings = ActionCodeSettings.newBuilder()
+            .setUrl("https://example.com")
+            .setHandleCodeInApp(true)
+            .setAndroidPackageName("com.test", true, null)
+            .build()
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = actionCodeSettings,
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val networkException = Exception("Network error")
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        taskCompletionSource.setException(networkException)
+        `when`(mockFirebaseAuth.sendSignInLinkToEmail(anyString(), any()))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        try {
+            instance.sendSignInLinkToEmail(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "test@example.com",
+                credentialForLinking = null
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException) {
+            assertThat(e).isNotNull()
+        }
+    }
+
+    // =============================================================================================
+    // signInWithEmailLink Tests - Same Device Flow
+    // =============================================================================================
+
+    @Test
+    fun `signInWithEmailLink - invalid link format - throws InvalidEmailLinkException`() = runTest {
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(false)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "test@example.com",
+                emailLink = "https://invalid-link.com"
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.InvalidEmailLinkException) {
+            assertThat(e).isNotNull()
+        }
+    }
+
+    @Test
+    fun `signInWithEmailLink - same device normal flow - successfully signs in`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.email).thenReturn("test@example.com")
+        `when`(mockUser.displayName).thenReturn("Test User")
+        `when`(mockUser.photoUrl).thenReturn(null)
+        `when`(mockUser.isAnonymous).thenReturn(false)
+
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithCredential(any())).thenReturn(taskCompletionSource.task)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence manager with matching session
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        mockPersistence.setSessionRecord(
+            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+                sessionId = "session123",
+                email = "test@example.com",
+                anonymousUserId = null,
+                credentialForLinking = null
+            )
+        )
+
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123"
+
+        val result = instance.signInWithEmailLink(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            email = "test@example.com",
+            emailLink = emailLink,
+            persistenceManager = mockPersistence
+        )
+
+        assertThat(result).isNotNull()
+        assertThat(result?.user).isEqualTo(mockUser)
+    }
+
+    @Test
+    fun `signInWithEmailLink - anonymous upgrade flow - successfully links credential`() = runTest {
+        val mockAnonUser = mock(FirebaseUser::class.java)
+        `when`(mockAnonUser.uid).thenReturn("anon-uid-123")
+        `when`(mockAnonUser.email).thenReturn(null)
+        `when`(mockAnonUser.isAnonymous).thenReturn(true)
+
+        val mockLinkedUser = mock(FirebaseUser::class.java)
+        `when`(mockLinkedUser.uid).thenReturn("anon-uid-123")
+        `when`(mockLinkedUser.email).thenReturn("test@example.com")
+        `when`(mockLinkedUser.displayName).thenReturn("Test User")
+        `when`(mockLinkedUser.isAnonymous).thenReturn(false)
+
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockLinkedUser)
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonUser)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val linkTaskSource = TaskCompletionSource<AuthResult>()
+        linkTaskSource.setResult(mockAuthResult)
+        `when`(mockAnonUser.linkWithCredential(any())).thenReturn(linkTaskSource.task)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+            isAnonymousUpgradeEnabled = true
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence manager with matching session and anonymous user
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        mockPersistence.setSessionRecord(
+            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+                sessionId = "session123",
+                email = "test@example.com",
+                anonymousUserId = "anon-uid-123",
+                credentialForLinking = null
+            )
+        )
+
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123&ui_auid=anon-uid-123"
+
+        val result = instance.signInWithEmailLink(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            email = "test@example.com",
+            emailLink = emailLink,
+            persistenceManager = mockPersistence
+        )
+
+        assertThat(result).isNotNull()
+        verify(mockAnonUser).linkWithCredential(any())
+    }
+
+    // =============================================================================================
+    // signInWithEmailLink Tests - Cross-Device Flow
+    // =============================================================================================
+
+    @Test
+    fun `signInWithEmailLink - different device with no session - throws EmailLinkPromptForEmailException`() = runTest {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val actionCodeTask = TaskCompletionSource<com.google.firebase.auth.ActionCodeResult>()
+        actionCodeTask.setResult(mock(com.google.firebase.auth.ActionCodeResult::class.java))
+        `when`(mockFirebaseAuth.checkActionCode(anyString())).thenReturn(actionCodeTask.task)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence with no session (cross-device)
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        
+        // Email link with different session ID (cross-device)
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code123&continueUrl=https://example.com?ui_sid=different-session"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "", // Empty email triggers prompt
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.EmailLinkPromptForEmailException) {
+            assertThat(e).isNotNull()
+        }
+
+        verify(mockFirebaseAuth).checkActionCode("code123")
+    }
+
+    @Test
+    fun `signInWithEmailLink - different device with provider linking - throws EmailLinkCrossDeviceLinkingException`() = runTest {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val actionCodeTask = TaskCompletionSource<com.google.firebase.auth.ActionCodeResult>()
+        actionCodeTask.setResult(mock(com.google.firebase.auth.ActionCodeResult::class.java))
+        `when`(mockFirebaseAuth.checkActionCode(anyString())).thenReturn(actionCodeTask.task)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence with no session (cross-device)
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        
+        // Email link with provider ID (cross-device linking)
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code123&continueUrl=https://example.com?ui_sid=different-session&ui_pid=google.com"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "", // Empty email triggers prompt (which detects provider linking)
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.EmailLinkCrossDeviceLinkingException) {
+            assertThat(e).isNotNull()
+            assertThat(e.providerName).isEqualTo("Google")
+        }
+
+        verify(mockFirebaseAuth).checkActionCode("code123")
+    }
+
+    @Test
+    fun `signInWithEmailLink - force same device on different device - throws EmailLinkWrongDeviceException`() = runTest {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            isEmailLinkForceSameDeviceEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Email link with force same device bit
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=different-session&ui_sd=1"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "test@example.com",
+                emailLink = emailLink
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.EmailLinkWrongDeviceException) {
+            assertThat(e).isNotNull()
+        }
+    }
+
+    @Test
+    fun `signInWithEmailLink - different anonymous user - throws EmailLinkDifferentAnonymousUserException`() = runTest {
+        val mockAnonUser = mock(FirebaseUser::class.java)
+        `when`(mockAnonUser.uid).thenReturn("current-anon-uid")
+        `when`(mockAnonUser.isAnonymous).thenReturn(true)
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockAnonUser)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+            isAnonymousUpgradeEnabled = true
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence with session for different anonymous user
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        mockPersistence.setSessionRecord(
+            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+                sessionId = "session123",
+                email = "test@example.com",
+                anonymousUserId = "different-anon-uid",
+                credentialForLinking = null
+            )
+        )
+
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123&ui_auid=different-anon-uid"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "test@example.com",
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.EmailLinkDifferentAnonymousUserException) {
+            assertThat(e).isNotNull()
+        }
+    }
+
+    @Test
+    fun `signInWithEmailLink - empty email on same device - throws EmailMismatchException`() = runTest {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence with session but check email parameter is empty
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        mockPersistence.setSessionRecord(
+            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+                sessionId = "session123",
+                email = "stored@example.com",
+                anonymousUserId = null,
+                credentialForLinking = null
+            )
+        )
+
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "", // Empty email
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.EmailMismatchException) {
+            assertThat(e).isNotNull()
+        }
+    }
+
+    @Test
+    fun `signInWithEmailLink - invalid action code on different device - throws InvalidEmailLinkException`() = runTest {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val actionCodeTask = TaskCompletionSource<com.google.firebase.auth.ActionCodeResult>()
+        actionCodeTask.setException(Exception("Invalid action code"))
+        `when`(mockFirebaseAuth.checkActionCode(anyString())).thenReturn(actionCodeTask.task)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence with different session (cross-device)
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        mockPersistence.setSessionRecord(
+            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+                sessionId = "local-session",
+                email = "test@example.com",
+                anonymousUserId = null,
+                credentialForLinking = null
+            )
+        )
+
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=invalid-code&continueUrl=https://example.com?ui_sid=different-session"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "", // Empty email triggers validation which will fail
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.InvalidEmailLinkException) {
+            assertThat(e).isNotNull()
+        }
+
+        verify(mockFirebaseAuth).checkActionCode("invalid-code")
+    }
+
+    @Test
+    fun `signInWithEmailLink - no session ID in link - throws InvalidEmailLinkException`() = runTest {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Create mock persistence (can be null since we expect validation error)
+        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+
+        val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com"
+
+        try {
+            instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "test@example.com",
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.InvalidEmailLinkException) {
+            assertThat(e).isNotNull()
+        }
+    }
 }

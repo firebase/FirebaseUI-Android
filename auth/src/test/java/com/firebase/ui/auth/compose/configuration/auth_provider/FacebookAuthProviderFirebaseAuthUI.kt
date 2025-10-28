@@ -23,7 +23,6 @@ import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Facebook.FacebookProfileData
 import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -45,12 +44,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.whenever
@@ -179,8 +176,8 @@ class FacebookAuthProviderFirebaseAuthUITest {
 
     @Test
     fun `signInWithFacebook - handles account collision by saving credential and emitting error`() = runTest {
-        EmailLinkPersistenceManager.clear(applicationContext)
-        EmailLinkPersistenceManager.saveEmail(
+        EmailLinkPersistenceManager.default.clear(applicationContext)
+        EmailLinkPersistenceManager.default.saveEmail(
             context = applicationContext,
             email = "link@example.com",
             sessionId = "session-id",
@@ -230,13 +227,13 @@ class FacebookAuthProviderFirebaseAuthUITest {
             val errorState = currentState as AuthState.Error
             assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
 
-            val sessionRecord = EmailLinkPersistenceManager.retrieveSessionRecord(applicationContext)
+            val sessionRecord = EmailLinkPersistenceManager.default.retrieveSessionRecord(applicationContext)
             assertThat(sessionRecord).isNotNull()
             assertThat(sessionRecord?.credentialForLinking).isNotNull()
             assertThat(sessionRecord?.credentialForLinking?.provider)
                 .isEqualTo(provider.providerId)
         } finally {
-            EmailLinkPersistenceManager.clear(applicationContext)
+            EmailLinkPersistenceManager.default.clear(applicationContext)
         }
     }
 

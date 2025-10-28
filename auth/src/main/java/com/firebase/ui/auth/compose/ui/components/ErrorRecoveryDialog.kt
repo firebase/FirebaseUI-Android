@@ -150,6 +150,16 @@ private fun getRecoveryMessage(
             // Use the custom message which includes email and provider details
             error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
+        is AuthException.EmailMismatchException -> stringProvider.emailMismatchMessage
+        is AuthException.InvalidEmailLinkException -> stringProvider.emailLinkInvalidLinkMessage
+        is AuthException.EmailLinkWrongDeviceException -> stringProvider.emailLinkWrongDeviceMessage
+        is AuthException.EmailLinkDifferentAnonymousUserException ->
+            stringProvider.emailLinkDifferentAnonymousUserMessage
+        is AuthException.EmailLinkPromptForEmailException -> stringProvider.emailLinkPromptForEmailMessage
+        is AuthException.EmailLinkCrossDeviceLinkingException -> {
+            val providerName = error.providerName ?: stringProvider.emailProvider
+            stringProvider.emailLinkCrossDeviceLinkingMessage(providerName)
+        }
         is AuthException.AuthCancelledException -> stringProvider.authCancelledRecoveryMessage
         is AuthException.UnknownException -> {
             // Use custom message if available (e.g., for configuration errors)
@@ -175,6 +185,10 @@ private fun getRecoveryActionText(
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
         is AuthException.AccountLinkingRequiredException -> stringProvider.signInDefault // User needs to sign in to link accounts
         is AuthException.MfaRequiredException -> stringProvider.continueText // Use "Continue" for MFA
+        is AuthException.EmailLinkPromptForEmailException -> stringProvider.continueText
+        is AuthException.EmailLinkCrossDeviceLinkingException -> stringProvider.continueText
+        is AuthException.EmailLinkWrongDeviceException -> stringProvider.continueText
+        is AuthException.EmailLinkDifferentAnonymousUserException -> stringProvider.dismissAction
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,
         is AuthException.UserNotFoundException,
@@ -203,6 +217,10 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.MfaRequiredException -> true
         is AuthException.AccountLinkingRequiredException -> true
         is AuthException.AuthCancelledException -> true
+        is AuthException.EmailLinkPromptForEmailException -> true
+        is AuthException.EmailLinkCrossDeviceLinkingException -> true
+        is AuthException.EmailLinkWrongDeviceException -> true
+        is AuthException.EmailLinkDifferentAnonymousUserException -> false
         is AuthException.UnknownException -> true
         else -> true
     }

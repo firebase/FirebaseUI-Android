@@ -20,12 +20,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.compose.configuration.auth_provider.Provider
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.first
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "com.firebase.ui.auth.util.data.EmailLinkPersistenceManager")
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager")
 
 /**
  * Manages saving/retrieving from DataStore for email link sign in.
@@ -39,105 +40,84 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
  * @since 10.0.0
  */
 object EmailLinkPersistenceManager {
-
+    
     /**
-     * Saves email and session information to DataStore for email link sign-in.
-     *
-     * @param context Android context for DataStore access
-     * @param email Email address to save
-     * @param sessionId Unique session identifier for same-device validation
-     * @param anonymousUserId Optional anonymous user ID for upgrade flows
+     * Default instance.
      */
-    suspend fun saveEmail(
-        context: Context,
-        email: String,
-        sessionId: String,
-        anonymousUserId: String?
-    ) {
-        context.dataStore.edit { prefs ->
-            prefs[AuthProvider.Email.KEY_EMAIL] = email
-            prefs[AuthProvider.Email.KEY_SESSION_ID] = sessionId
-            prefs[AuthProvider.Email.KEY_ANONYMOUS_USER_ID] = anonymousUserId ?: ""
-        }
-    }
-
+    internal val default: PersistenceManager = DefaultPersistenceManager()
+    
     /**
-     * Saves social provider credential information to DataStore for linking after email link sign-in.
-     *
-     * This is called when a user attempts to sign in with a social provider (Google/Facebook)
-     * but an email link account with the same email already exists. The credential is saved
-     * and will be linked after the user completes email link authentication.
-     *
-     * @param context Android context for DataStore access
-     * @param providerType Provider ID ("google.com", "facebook.com", etc.)
-     * @param idToken ID token from the provider
-     * @param accessToken Access token from the provider (optional, used by Facebook)
+     * The default implementation of [PersistenceManager] that uses DataStore.
      */
-    suspend fun saveCredentialForLinking(
-        context: Context,
-        providerType: String,
-        idToken: String?,
-        accessToken: String?
-    ) {
-        context.dataStore.edit { prefs ->
-            prefs[AuthProvider.Email.KEY_PROVIDER] = providerType
-            prefs[AuthProvider.Email.KEY_IDP_TOKEN] = idToken ?: ""
-            prefs[AuthProvider.Email.KEY_IDP_SECRET] = accessToken ?: ""
-        }
-    }
-
-    /**
-     * Retrieves session information from DataStore.
-     *
-     * @param context Android context for DataStore access
-     * @return SessionRecord containing saved session data, or null if no session exists
-     */
-    suspend fun retrieveSessionRecord(context: Context): SessionRecord? {
-        val prefs = context.dataStore.data.first()
-        val email = prefs[AuthProvider.Email.KEY_EMAIL]
-        val sessionId = prefs[AuthProvider.Email.KEY_SESSION_ID]
-
-        if (email == null || sessionId == null) {
-            return null
-        }
-
-        val anonymousUserId = prefs[AuthProvider.Email.KEY_ANONYMOUS_USER_ID]
-        val providerType = prefs[AuthProvider.Email.KEY_PROVIDER]
-        val idToken = prefs[AuthProvider.Email.KEY_IDP_TOKEN]
-        val accessToken = prefs[AuthProvider.Email.KEY_IDP_SECRET]
-
-        // Rebuild credential if we have provider data
-        val credentialForLinking = if (providerType != null && idToken != null) {
-            when (providerType) {
-                "google.com" -> GoogleAuthProvider.getCredential(idToken, accessToken)
-                "facebook.com" -> FacebookAuthProvider.getCredential(accessToken ?: "")
-                else -> null
+    private class DefaultPersistenceManager : PersistenceManager {
+        override suspend fun saveEmail(
+            context: Context,
+            email: String,
+            sessionId: String,
+            anonymousUserId: String?
+        ) {
+            context.dataStore.edit { prefs ->
+                prefs[AuthProvider.Email.KEY_EMAIL] = email
+                prefs[AuthProvider.Email.KEY_SESSION_ID] = sessionId
+                prefs[AuthProvider.Email.KEY_ANONYMOUS_USER_ID] = anonymousUserId ?: ""
             }
-        } else {
-            null
         }
+        
+        override suspend fun saveCredentialForLinking(
+            context: Context,
+            providerType: String,
+            idToken: String?,
+            accessToken: String?
+        ) {
+            context.dataStore.edit { prefs ->
+                prefs[AuthProvider.Email.KEY_PROVIDER] = providerType
+                prefs[AuthProvider.Email.KEY_IDP_TOKEN] = idToken ?: ""
+                prefs[AuthProvider.Email.KEY_IDP_SECRET] = accessToken ?: ""
+            }
+        }
+        
+        override suspend fun retrieveSessionRecord(context: Context): SessionRecord? {
+            val prefs = context.dataStore.data.first()
+            val email = prefs[AuthProvider.Email.KEY_EMAIL]
+            val sessionId = prefs[AuthProvider.Email.KEY_SESSION_ID]
 
-        return SessionRecord(
-            sessionId = sessionId,
-            email = email,
-            anonymousUserId = anonymousUserId,
-            credentialForLinking = credentialForLinking
-        )
-    }
+            if (email == null || sessionId == null) {
+                return null
+            }
 
-    /**
-     * Clears all saved data from DataStore.
-     *
-     * @param context Android context for DataStore access
-     */
-    suspend fun clear(context: Context) {
-        context.dataStore.edit { prefs ->
-            prefs.remove(AuthProvider.Email.KEY_SESSION_ID)
-            prefs.remove(AuthProvider.Email.KEY_EMAIL)
-            prefs.remove(AuthProvider.Email.KEY_ANONYMOUS_USER_ID)
-            prefs.remove(AuthProvider.Email.KEY_PROVIDER)
-            prefs.remove(AuthProvider.Email.KEY_IDP_TOKEN)
-            prefs.remove(AuthProvider.Email.KEY_IDP_SECRET)
+            val anonymousUserId = prefs[AuthProvider.Email.KEY_ANONYMOUS_USER_ID]
+            val providerType = Provider.fromId(prefs[AuthProvider.Email.KEY_PROVIDER])
+            val idToken = prefs[AuthProvider.Email.KEY_IDP_TOKEN]
+            val accessToken = prefs[AuthProvider.Email.KEY_IDP_SECRET]
+
+            // Rebuild credential if we have provider data
+            val credentialForLinking = if (providerType != null && idToken != null) {
+                when (providerType) {
+                    Provider.GOOGLE -> GoogleAuthProvider.getCredential(idToken, accessToken)
+                    Provider.FACEBOOK -> FacebookAuthProvider.getCredential(accessToken ?: "")
+                    else -> null
+                }
+            } else {
+                null
+            }
+
+            return SessionRecord(
+                sessionId = sessionId,
+                email = email,
+                anonymousUserId = anonymousUserId,
+                credentialForLinking = credentialForLinking
+            )
+        }
+        
+        override suspend fun clear(context: Context) {
+            context.dataStore.edit { prefs ->
+                prefs.remove(AuthProvider.Email.KEY_SESSION_ID)
+                prefs.remove(AuthProvider.Email.KEY_EMAIL)
+                prefs.remove(AuthProvider.Email.KEY_ANONYMOUS_USER_ID)
+                prefs.remove(AuthProvider.Email.KEY_PROVIDER)
+                prefs.remove(AuthProvider.Email.KEY_IDP_TOKEN)
+                prefs.remove(AuthProvider.Email.KEY_IDP_SECRET)
+            }
         }
     }
 

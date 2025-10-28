@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.compose.configuration.auth_provider
 
 import android.content.Context
-import android.net.Uri
 import androidx.core.net.toUri
 import androidx.credentials.CredentialManager
 import androidx.test.core.app.ApplicationProvider
@@ -125,6 +124,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = "Test User",
             photoUrl = "https://example.com/photo.jpg".toUri()
         )
@@ -194,6 +194,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = "Test User",
             photoUrl = "https://example.com/photo.jpg".toUri()
         )
@@ -268,6 +269,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = expectedDisplayName,
             photoUrl = expectedPhotoUrl
         )
@@ -335,6 +337,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = "Test User",
             photoUrl = null
         )
@@ -439,6 +442,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
         val mockCredential = mock(AuthCredential::class.java)
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = "Test User",
             photoUrl = null
         )
@@ -551,6 +555,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = "Test User",
             photoUrl = null
         )
@@ -610,6 +615,7 @@ class GoogleAuthProviderFirebaseAuthUITest {
 
         val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
             credential = mockCredential,
+            idToken = "test-id-token",
             displayName = "Test User",
             photoUrl = null
         )

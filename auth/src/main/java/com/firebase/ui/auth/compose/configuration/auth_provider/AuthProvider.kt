@@ -92,7 +92,7 @@ internal enum class Provider(
     APPLE("apple.com", providerName = "Apple", isSocialProvider = true);
 
     companion object {
-        fun fromId(id: String): Provider? {
+        fun fromId(id: String?): Provider? {
             return entries.find { it.id == id }
         }
     }
@@ -191,6 +191,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         internal fun addSessionInfoToActionCodeSettings(
             sessionId: String,
             anonymousUserId: String,
+            credentialForLinking: AuthCredential? = null,
         ): ActionCodeSettings {
             requireNotNull(emailLinkActionCodeSettings) {
                 "ActionCodeSettings is required for email link sign in"
@@ -200,7 +201,10 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 appendSessionId(sessionId)
                 appendAnonymousUserId(anonymousUserId)
                 appendForceSameDeviceBit(isEmailLinkForceSameDeviceEnabled)
-                appendProviderId(providerId)
+                // Only append providerId for linking flows (when credentialForLinking is not null)
+                if (credentialForLinking != null) {
+                    appendProviderId(credentialForLinking.provider)
+                }
             }
 
             return actionCodeSettings {
@@ -540,6 +544,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         data class GoogleSignInResult(
             val credential: AuthCredential,
+            val idToken: String,
             val displayName: String?,
             val photoUrl: Uri?
         )
@@ -612,8 +617,9 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
 
                 return GoogleSignInResult(
                     credential = credential,
+                    idToken = googleIdTokenCredential.idToken,
                     displayName = googleIdTokenCredential.displayName,
-                    photoUrl = googleIdTokenCredential.profilePictureUri
+                    photoUrl = googleIdTokenCredential.profilePictureUri,
                 )
             }
         }

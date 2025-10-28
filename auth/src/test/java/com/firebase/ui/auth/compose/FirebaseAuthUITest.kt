@@ -15,6 +15,8 @@
 package com.firebase.ui.auth.compose
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
@@ -31,9 +33,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
@@ -521,5 +525,25 @@ class FirebaseAuthUITest {
             assertThat(e.message).contains("Network error")
             assertThat(e.cause).isEqualTo(networkException)
         }
+    }
+
+    @Test
+    fun `canHandleIntent returns true when auth validates email link`() {
+        val emailLink = "https://example.com/__/auth/action?mode=signIn"
+        val intent = Intent().setData(Uri.parse(emailLink))
+        val authUI = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
+
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(emailLink)).thenReturn(true)
+
+        assertThat(authUI.canHandleIntent(intent)).isTrue()
+    }
+
+    @Test
+    fun `canHandleIntent returns false when intent lacks data`() {
+        val authUI = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
+        val intent = Intent()
+
+        assertThat(authUI.canHandleIntent(intent)).isFalse()
+        verify(mockFirebaseAuth, never()).isSignInWithEmailLink(anyString())
     }
 }

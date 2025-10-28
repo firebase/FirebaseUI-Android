@@ -170,6 +170,36 @@ interface AuthUIStringProvider {
     /** Body for email sign in link sent dialog */
     fun emailSignInLinkSentDialogBody(email: String): String
 
+    /** Title shown when prompting the user to confirm their email for cross-device flows */
+    val emailLinkPromptForEmailTitle: String
+
+    /** Message shown when prompting the user to confirm their email for cross-device flows */
+    val emailLinkPromptForEmailMessage: String
+
+    /** Title shown when email link must be opened on same device */
+    val emailLinkWrongDeviceTitle: String
+
+    /** Message shown when email link must be opened on same device */
+    val emailLinkWrongDeviceMessage: String
+
+    /** Title shown when the anonymous session differs */
+    val emailLinkDifferentAnonymousUserTitle: String
+
+    /** Message shown when the anonymous session differs */
+    val emailLinkDifferentAnonymousUserMessage: String
+
+    /** Message shown for cross-device linking flows with the provider name */
+    fun emailLinkCrossDeviceLinkingMessage(providerName: String): String
+
+    /** Title shown when email link is invalid */
+    val emailLinkInvalidLinkTitle: String
+
+    /** Message shown when email link is invalid */
+    val emailLinkInvalidLinkMessage: String
+
+    /** Message shown when email mismatch occurs */
+    val emailMismatchMessage: String
+
     // Phone Authentication Strings
     /** Phone number entry form title */
     val verifyPhoneNumberTitle: String

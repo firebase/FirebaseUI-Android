@@ -12,6 +12,7 @@ import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.FirebaseAuthUI
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
 import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException
@@ -115,6 +116,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
     authorizationProvider: AuthProvider.Google.AuthorizationProvider = AuthProvider.Google.DefaultAuthorizationProvider(),
     credentialManagerProvider: AuthProvider.Google.CredentialManagerProvider = AuthProvider.Google.DefaultCredentialManagerProvider(),
 ) {
+    var idTokenFromResult: String? = null
     try {
         updateAuthState(AuthState.Loading("Signing in with google..."))
 
@@ -138,6 +140,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
                 filterByAuthorizedAccounts = true,
                 autoSelectEnabled = false
             )
+        idTokenFromResult = result.idToken
 
         signInAndLinkWithCredential(
             config = config,
@@ -146,6 +149,19 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
             displayName = result.displayName,
             photoUrl = result.photoUrl,
         )
+    } catch (e: AuthException.AccountLinkingRequiredException) {
+        // Account collision occurred - save Facebook credential for linking after email link sign-in
+        // This happens when a user tries to sign in with Facebook but an email link account exists
+        EmailLinkPersistenceManager.default.saveCredentialForLinking(
+            context = context,
+            providerType = provider.providerId,
+            idToken = idTokenFromResult,
+            accessToken = null
+        )
+
+        // Re-throw to let UI handle the account linking flow
+        updateAuthState(AuthState.Error(e))
+        throw e
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with google was cancelled",

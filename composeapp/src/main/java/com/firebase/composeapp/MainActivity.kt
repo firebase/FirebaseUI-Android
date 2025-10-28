@@ -2,20 +2,24 @@ package com.firebase.composeapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.compose.FirebaseAuthUI
+import com.firebase.ui.auth.compose.util.EmailLinkConstants
 import com.google.firebase.FirebaseApp
 
 /**
@@ -48,6 +53,33 @@ class MainActivity : ComponentActivity() {
             authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
         }
 
+        var pendingEmailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
+
+        if (pendingEmailLink.isNullOrEmpty() && authUI.canHandleIntent(intent)) {
+            pendingEmailLink = intent.data?.toString()
+        }
+
+        Log.d("MainActivity", "Pending email link: $pendingEmailLink")
+
+        fun launchHighLevelDemo() {
+            val demoIntent = Intent(
+                this,
+                HighLevelApiDemoActivity::class.java
+            ).apply {
+                pendingEmailLink?.let { link ->
+                    putExtra(EmailLinkConstants.EXTRA_EMAIL_LINK, link)
+                    pendingEmailLink = null
+                }
+            }
+            startActivity(demoIntent)
+        }
+
+        if (savedInstanceState == null && !pendingEmailLink.isNullOrEmpty()) {
+            launchHighLevelDemo()
+            finish()
+            return
+        }
+
         setContent {
             MaterialTheme {
                 Surface(
@@ -55,9 +87,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     ChooserScreen(
-                        onHighLevelApiClick = {
-                            startActivity(Intent(this, HighLevelApiDemoActivity::class.java))
-                        },
+                        onHighLevelApiClick = ::launchHighLevelDemo,
                         onLowLevelApiClick = {
                             startActivity(Intent(this, AuthFlowControllerDemoActivity::class.java))
                         },

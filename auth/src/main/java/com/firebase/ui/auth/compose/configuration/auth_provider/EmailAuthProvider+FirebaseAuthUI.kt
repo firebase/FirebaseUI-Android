@@ -554,7 +554,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * If a user tries to sign in with a social provider (Google, Facebook) but an email link
  * account already exists with that email, the social provider implementation should:
  * 1. Catch the [FirebaseAuthUserCollisionException] from the sign-in attempt
- * 2. Call [EmailLinkPersistenceManager.saveCredentialForLinking] with the provider tokens
+ * 2. Call [EmailLinkPersistenceManager.default.saveCredentialForLinking] with the provider tokens
  * 3. Call this method to send the email link
  * 4. When [signInWithEmailLink] completes, it automatically retrieves and links the saved credential
  *
@@ -568,6 +568,9 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Email] configuration with [ActionCodeSettings]
  * @param email The email address to send the sign-in link to
+ * @param credentialForLinking Optional [AuthCredential] from a social provider to link after email sign-in.
+ *                             If provided, the credential is saved to DataStore and automatically linked
+ *                             when [signInWithEmailLink] completes. Used for account linking flows.
  *
  * @throws AuthException.InvalidCredentialsException if email is invalid
  * @throws AuthException.AuthCancelledException if the operation is cancelled
@@ -611,8 +614,38 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * // Session includes anonymous user ID for validation
  * // When user clicks link, anonymous account is upgraded to permanent account
  * ```
+ *
+ * **Example 3: Social provider linking**
+ * ```kotlin
+ * try {
+ *     // Try to sign in with Google
+ *     authUI.signInWithGoogle(...)
+ * } catch (e: FirebaseAuthUserCollisionException) {
+ *     // Email already exists with email-link provider
+ *     val googleCredential = e.updatedCredential
+ *     
+ *     // Save credential for linking
+ *     EmailLinkPersistenceManager.default.saveCredentialForLinking(
+ *         context = context,
+ *         providerType = "google.com",
+ *         idToken = (googleCredential as GoogleAuthCredential).idToken,
+ *         accessToken = null
+ *     )
+ *     
+ *     // Send email link with credential
+ *     firebaseAuthUI.sendSignInLinkToEmail(
+ *         context = context,
+ *         config = authUIConfig,
+ *         provider = emailProvider,
+ *         email = e.email!!,
+ *         credentialForLinking = googleCredential
+ *     )
+ *     // When user clicks link and signs in, Google is automatically linked
+ * }
+ * ```
+ *
  * @see signInWithEmailLink
- * @see EmailLinkPersistenceManager.saveCredentialForLinking
+ * @see EmailLinkPersistenceManager
  * @see com.google.firebase.auth.FirebaseAuth.sendSignInLinkToEmail
  */
 internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
@@ -620,6 +653,8 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
     config: AuthUIConfiguration,
     provider: AuthProvider.Email,
     email: String,
+    credentialForLinking: AuthCredential?,
+    persistenceManager: com.firebase.ui.auth.compose.util.PersistenceManager = EmailLinkPersistenceManager.default,
 ) {
     try {
         updateAuthState(AuthState.Loading("Sending sign in email link..."))
@@ -638,12 +673,16 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         // Modify actionCodeSettings Url to include sessionId, anonymousUserId, force same
         // device flag
         val updatedActionCodeSettings =
-            provider.addSessionInfoToActionCodeSettings(sessionId, anonymousUserId)
+            provider.addSessionInfoToActionCodeSettings(
+                sessionId = sessionId,
+                anonymousUserId = anonymousUserId,
+                credentialForLinking = credentialForLinking
+            )
 
         auth.sendSignInLinkToEmail(email, updatedActionCodeSettings).await()
 
         // Save Email to dataStore for use in signInWithEmailLink
-        EmailLinkPersistenceManager.saveEmail(context, email, sessionId, anonymousUserId)
+        persistenceManager.saveEmail(context, email, sessionId, anonymousUserId)
 
         updateAuthState(AuthState.EmailSignInLinkSent())
     } catch (e: CancellationException) {
@@ -676,26 +715,96 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
  * 3. Activity extracts emailLink from Intent.data
  * 4. This method validates and completes sign-in
  *
+ * **Same-Device Flow:**
+ * - Email is retrieved from DataStore automatically
+ * - Session ID from link matches stored session ID
+ * - User is signed in immediately without additional input
+ *
+ * **Cross-Device Flow:**
+ * - Session ID from link doesn't match (or no local session exists)
+ * - If [email] is empty: throws [AuthException.EmailLinkPromptForEmailException]
+ * - User must provide their email address
+ * - Call this method again with user-provided email to complete sign-in
+ *
+ * @param context Android [Context] for DataStore access
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Email] configuration with email-link settings
- * @param email The email address of the user (retrieved from DataStore or user input)
+ * @param email The email address of the user. On same-device, retrieved from DataStore.
+ *              On cross-device first call, pass empty string to trigger validation.
+ *              On cross-device second call, pass user-provided email.
  * @param emailLink The complete deep link URL received from the Intent.
+ * @param persistenceManager Optional [PersistenceManager] for testing. Defaults to [EmailLinkPersistenceManager.default]
  *
  * This URL contains:
  * - Firebase action code (oobCode) for authentication
  * - Session ID (ui_sid) for same-device validation
  * - Anonymous user ID (ui_auid) if upgrading anonymous account
  * - Force same-device flag (ui_sd) for security enforcement
+ * - Provider ID (ui_pid) if linking social provider credential
  *
  * Example:
- * `https://yourapp.page.link/emailSignIn?oobCode=ABC123&continueUrl=...`
+ * `https://yourapp.page.link/__/auth/action?oobCode=ABC123&continueUrl=https://yourapp.com?ui_sid=123456&ui_auid=anon-uid`
  *
- * @throws AuthException.InvalidCredentialsException if the email link is invalid or expired
+ * @return [AuthResult] containing the signed-in user, or null if cross-device validation is required
+ *
+ * @throws AuthException.InvalidEmailLinkException if the email link is invalid or expired
+ * @throws AuthException.EmailLinkPromptForEmailException if cross-device and email is empty
+ * @throws AuthException.EmailLinkWrongDeviceException if force same-device is enabled on different device
+ * @throws AuthException.EmailLinkCrossDeviceLinkingException if trying to link provider on different device
+ * @throws AuthException.EmailLinkDifferentAnonymousUserException if anonymous user ID doesn't match
+ * @throws AuthException.EmailMismatchException if email is empty on same-device flow
  * @throws AuthException.AuthCancelledException if the operation is cancelled
  * @throws AuthException.NetworkException if a network error occurs
  * @throws AuthException.UnknownException for other errors
  *
+ * **Example 1: Same-device sign-in (automatic)**
+ * ```kotlin
+ * // In your deep link handler Activity:
+ * val emailLink = intent.data.toString()
+ * val savedEmail = EmailLinkPersistenceManager.default.retrieveSessionRecord(context)?.email
+ *
+ * if (savedEmail != null) {
+ *     // Same device - email and session are stored
+ *     val result = firebaseAuthUI.signInWithEmailLink(
+ *         context = context,
+ *         config = authUIConfig,
+ *         provider = emailProvider,
+ *         email = savedEmail,
+ *         emailLink = emailLink
+ *     )
+ *     // User is signed in automatically
+ * }
+ * ```
+ *
+ * **Example 2: Cross-device sign-in (with email prompt)**
+ * ```kotlin
+ * // First call with empty email to validate link
+ * try {
+ *     firebaseAuthUI.signInWithEmailLink(
+ *         context = context,
+ *         config = authUIConfig,
+ *         provider = emailProvider,
+ *         email = "", // Empty email on different device
+ *         emailLink = emailLink
+ *     )
+ * } catch (e: AuthException.EmailLinkPromptForEmailException) {
+ *     // Show dialog asking user to enter their email
+ *     val userEmail = showEmailInputDialog()
+ *     
+ *     // Second call with user-provided email
+ *     val result = firebaseAuthUI.signInWithEmailLink(
+ *         context = context,
+ *         config = authUIConfig,
+ *         provider = emailProvider,
+ *         email = userEmail, // User provided email
+ *         emailLink = emailLink
+ *     )
+ *     // User is now signed in
+ * }
+ * ```
+ *
  * @see sendSignInLinkToEmail for sending the initial email link
+ * @see EmailLinkPersistenceManager for session data management
  */
 internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     context: Context,
@@ -703,6 +812,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     provider: AuthProvider.Email,
     email: String,
     emailLink: String,
+    persistenceManager: com.firebase.ui.auth.compose.util.PersistenceManager = EmailLinkPersistenceManager.default,
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in with email link..."))
@@ -710,11 +820,6 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         // Validate link format
         if (!auth.isSignInWithEmailLink(emailLink)) {
             throw AuthException.InvalidEmailLinkException()
-        }
-
-        // Validate email is not empty
-        if (email.isEmpty()) {
-            throw AuthException.EmailMismatchException()
         }
 
         // Parse email link for session data
@@ -726,37 +831,45 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         val isEmailLinkForceSameDeviceEnabled = parser.forceSameDeviceBit
 
         // Retrieve stored session record from DataStore
-        val sessionRecord = EmailLinkPersistenceManager.retrieveSessionRecord(context)
+        val sessionRecord = persistenceManager.retrieveSessionRecord(context)
         val storedSessionId = sessionRecord?.sessionId
 
         // Check if this is a different device flow
         val isDifferentDevice = provider.isDifferentDevice(
             sessionIdFromLocal = storedSessionId,
-            sessionIdFromLink = sessionIdFromLink
+            sessionIdFromLink = sessionIdFromLink ?: "" // Convert null to empty string to match legacy behavior
         )
 
         if (isDifferentDevice) {
             // Handle cross-device flow
             // Session ID must always be present in the link
             if (sessionIdFromLink.isNullOrEmpty()) {
-                throw AuthException.InvalidEmailLinkException()
+                val exception = AuthException.InvalidEmailLinkException()
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
 
             // These scenarios require same-device flow
             if (isEmailLinkForceSameDeviceEnabled || !anonymousUserIdFromLink.isNullOrEmpty()) {
-                throw AuthException.EmailLinkWrongDeviceException()
+                val exception = AuthException.EmailLinkWrongDeviceException()
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
 
-            // Validate the action code
-            auth.checkActionCode(oobCode).await()
-
-            // If there's a provider ID, this is a linking flow which can't be done cross-device
-            if (!providerIdFromLink.isNullOrEmpty()) {
-                throw AuthException.EmailLinkCrossDeviceLinkingException()
+            // If we have no SessionRecord/there is a session ID mismatch, this means that we were
+            // not the ones to send the link. The only way forward is to prompt the user for their
+            // email before continuing the flow. We should only do that after validating the link.
+            // However, if email is already provided (cross-device with user input), skip validation
+            if (email.isEmpty()) {
+                handleDifferentDeviceErrorFlow(oobCode, providerIdFromLink, emailLink)
+                return null
             }
+            // Email provided - validate it and continue with normal flow
+        }
 
-            // Link is valid but we need the user to provide their email
-            throw AuthException.EmailLinkPromptForEmailException()
+        // Validate email is not empty (same-device flow only)
+        if (email.isEmpty()) {
+            throw AuthException.EmailMismatchException()
         }
 
         // Validate anonymous user ID matches (same-device flow)
@@ -766,7 +879,9 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                 || !currentUser.isAnonymous
                 || currentUser.uid != anonymousUserIdFromLink
             ) {
-                throw AuthException.EmailLinkDifferentAnonymousUserException()
+                val exception = AuthException.EmailLinkDifferentAnonymousUserException()
+                updateAuthState(AuthState.Error(exception))
+                throw exception
             }
         }
 
@@ -776,54 +891,19 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
 
         val result = if (storedCredentialForLink == null) {
             // Normal Flow: Just sign in with email link
-            signInAndLinkWithCredential(config, emailLinkCredential)
+            handleEmailLinkNormalFlow(config, emailLinkCredential)
         } else {
             // Linking Flow: Sign in with email link, then link the social credential
-            if (canUpgradeAnonymous(config, auth)) {
-                // Anonymous upgrade: Use safe link pattern with scratch auth
-                val appExplicitlyForValidation = FirebaseApp.initializeApp(
-                    context,
-                    auth.app.options,
-                    "FUIAuthScratchApp_${System.currentTimeMillis()}"
-                )
-                val authExplicitlyForValidation = FirebaseAuth
-                    .getInstance(appExplicitlyForValidation)
-
-                // Safe link: Validate that both credentials can be linked
-                authExplicitlyForValidation
-                    .signInWithCredential(emailLinkCredential).await()
-                    .user?.linkWithCredential(storedCredentialForLink)?.await()
-                    .also { result ->
-                        // If safe link succeeds, throw AccountLinkingRequiredException for UI to handle
-                        val accountLinkingException = AuthException.AccountLinkingRequiredException(
-                            message = "An account already exists with this email. " +
-                                    "Please sign in with your existing account to upgrade your anonymous account.",
-                            email = email,
-                            credential = storedCredentialForLink,
-                            cause = null
-                        )
-                        updateAuthState(AuthState.Error(accountLinkingException))
-                        throw accountLinkingException
-                    }
-            } else {
-                // Non-upgrade: Sign in with email link, then link social credential
-                auth.signInWithCredential(emailLinkCredential).await()
-                    // Link the social credential
-                    .user?.linkWithCredential(storedCredentialForLink)?.await()
-                    .also { result ->
-                        result?.user?.let { user ->
-                            // Merge profile from the linked social credential
-                            mergeProfile(
-                                auth,
-                                user.displayName,
-                                user.photoUrl
-                            )
-                        }
-                    }
-            }
+            handleEmailLinkCredentialLinkingFlow(
+                context = context,
+                config = config,
+                email = email,
+                emailLinkCredential = emailLinkCredential,
+                storedCredentialForLink = storedCredentialForLink,
+            )
         }
         // Clear DataStore after success
-        EmailLinkPersistenceManager.clear(context)
+        persistenceManager.clear(context)
         updateAuthState(AuthState.Idle)
         return result
     } catch (e: CancellationException) {
@@ -840,6 +920,100 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         val authException = AuthException.from(e)
         updateAuthState(AuthState.Error(authException))
         throw authException
+    }
+}
+
+private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
+    oobCode: String,
+    providerIdFromLink: String?,
+    emailLink: String
+) {
+    // Validate the action code
+    try {
+        auth.checkActionCode(oobCode).await()
+    } catch (e: Exception) {
+        // Invalid action code
+        val exception = AuthException.InvalidEmailLinkException(cause = e)
+        updateAuthState(AuthState.Error(exception))
+        throw exception
+    }
+
+    // If there's a provider ID, this is a linking flow which can't be done cross-device
+    if (!providerIdFromLink.isNullOrEmpty()) {
+        val providerNameForMessage =
+            Provider.fromId(providerIdFromLink)?.providerName ?: providerIdFromLink
+        val exception = AuthException.EmailLinkCrossDeviceLinkingException(
+            providerName = providerNameForMessage,
+            emailLink = emailLink
+        )
+        updateAuthState(AuthState.Error(exception))
+        throw exception
+    }
+
+    // Link is valid but we need the user to provide their email
+    val exception = AuthException.EmailLinkPromptForEmailException(
+        cause = null,
+        emailLink = emailLink
+    )
+    updateAuthState(AuthState.Error(exception))
+    throw exception
+}
+
+private suspend fun FirebaseAuthUI.handleEmailLinkNormalFlow(
+    config: AuthUIConfiguration,
+    emailLinkCredential: AuthCredential,
+): AuthResult? {
+    return signInAndLinkWithCredential(config, emailLinkCredential)
+}
+
+private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
+    context: Context,
+    config: AuthUIConfiguration,
+    email: String,
+    emailLinkCredential: AuthCredential,
+    storedCredentialForLink: AuthCredential,
+): AuthResult? {
+    return if (canUpgradeAnonymous(config, auth)) {
+        // Anonymous upgrade: Use safe link pattern with scratch auth
+        val appExplicitlyForValidation = FirebaseApp.initializeApp(
+            context,
+            auth.app.options,
+            "FUIAuthScratchApp_${System.currentTimeMillis()}"
+        )
+        val authExplicitlyForValidation = FirebaseAuth
+            .getInstance(appExplicitlyForValidation)
+
+        // Safe link: Validate that both credentials can be linked
+        authExplicitlyForValidation
+            .signInWithCredential(emailLinkCredential).await()
+            .user?.linkWithCredential(storedCredentialForLink)?.await()
+            .also { result ->
+                // If safe link succeeds, throw AccountLinkingRequiredException for UI to handle
+                val accountLinkingException = AuthException.AccountLinkingRequiredException(
+                    message = "An account already exists with this email. " +
+                            "Please sign in with your existing account to upgrade your anonymous account.",
+                    email = email,
+                    credential = storedCredentialForLink,
+                    cause = null
+                )
+                updateAuthState(AuthState.Error(accountLinkingException))
+                throw accountLinkingException
+            }
+    } else {
+        // Non-upgrade: Sign in with email link, then link social credential
+        auth.signInWithCredential(emailLinkCredential).await()
+            // Link the social credential
+            .user?.linkWithCredential(storedCredentialForLink)?.await()
+            .also { result ->
+                result?.user?.let { user ->
+                    // Merge profile from the linked social credential
+                    mergeProfile(
+                        auth,
+                        user.displayName,
+                        user.photoUrl
+                    )
+                }
+            }
     }
 }
 
