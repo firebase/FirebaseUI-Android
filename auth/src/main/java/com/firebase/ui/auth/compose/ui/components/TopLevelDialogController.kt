@@ -24,11 +24,17 @@ import com.firebase.ui.auth.compose.AuthException
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 
 /**
+ * CompositionLocal for accessing the top-level dialog controller from any composable.
+ */
+val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?> {
+    null
+}
+
+/**
  * A top-level dialog controller that allows any child composable to show error recovery dialogs.
  * 
- * This is the Compose equivalent of iOS's `windowScene.topViewController` - it provides a single
- * point of control for showing dialogs from anywhere in the composition tree, preventing duplicate
- * dialogs when multiple screens observe the same error state.
+ * It provides a single point of control for showing dialogs from anywhere in the composition tree,
+ * preventing duplicate dialogs when multiple screens observe the same error state.
  *
  * **Usage:**
  * ```kotlin
@@ -147,14 +153,4 @@ fun rememberTopLevelDialogController(
     return remember(stringProvider) {
         TopLevelDialogController(stringProvider)
     }
-}
-
-/**
- * CompositionLocal for accessing the top-level dialog controller from any composable.
- * 
- * Similar to iOS's window scene controller - provides global access to show dialogs
- * from anywhere in the composition tree without causing duplicates.
- */
-val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?> {
-    null
 }
