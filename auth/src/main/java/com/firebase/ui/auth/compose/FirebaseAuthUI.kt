@@ -316,12 +316,12 @@ class FirebaseAuthUI private constructor(
 
     /**
      * Updates the internal authentication state.
-     * This method is intended for internal use by authentication operations.
+     * This method can be used to manually trigger state updates when the Firebase Auth state
+     * listener doesn't automatically detect changes (e.g., after reloading user properties).
      *
      * @param state The new [AuthState] to emit
-     * @suppress This is an internal API
      */
-    internal fun updateAuthState(state: AuthState) {
+    fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
     }
 

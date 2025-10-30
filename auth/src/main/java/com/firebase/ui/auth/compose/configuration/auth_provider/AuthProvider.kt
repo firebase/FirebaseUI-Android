@@ -154,6 +154,12 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * A list of custom password validation rules.
          */
         val passwordValidationRules: List<PasswordRule>,
+
+        /**
+         * Optional custom button label to differentiate between multiple email providers.
+         * If null, uses the default string from stringProvider. Defaults to null.
+         */
+        val buttonLabel: String? = null,
     ) : AuthProvider(providerId = Provider.EMAIL.id, providerName = Provider.EMAIL.providerName) {
         companion object {
             const val SESSION_ID_LENGTH = 10

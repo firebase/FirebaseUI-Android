@@ -310,7 +310,8 @@ fun EmailAuthScreen(
     } else {
         DefaultEmailAuthContent(
             configuration = configuration,
-            state = state
+            state = state,
+            onCancel = onCancel
         )
     }
 }
@@ -318,7 +319,8 @@ fun EmailAuthScreen(
 @Composable
 private fun DefaultEmailAuthContent(
     configuration: AuthUIConfiguration,
-    state: EmailAuthContentState
+    state: EmailAuthContentState,
+    onCancel: () -> Unit
 ) {
     when (state.mode) {
         EmailAuthMode.SignIn -> {
@@ -332,7 +334,8 @@ private fun DefaultEmailAuthContent(
                 onPasswordChange = state.onPasswordChange,
                 onSignInClick = state.onSignInClick,
                 onGoToSignUp = state.onGoToSignUp,
-                onGoToResetPassword = state.onGoToResetPassword
+                onGoToResetPassword = state.onGoToResetPassword,
+                onNavigateBack = onCancel
             )
         }
 

@@ -56,6 +56,23 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         serverClientId = "771411398215-o39fujhds88bs4mb5ai7u6o73g86fspp.apps.googleusercontent.com",
                     )
                 )
+                // Email/Password Sign-in
+                provider(
+                    AuthProvider.Email(
+                        isDisplayNameRequired = true,
+                        isEmailLinkSignInEnabled = false,
+                        isNewAccountsAllowed = true,
+                        minimumPasswordLength = 8,
+                        passwordValidationRules = listOf(
+                            PasswordRule.MinimumLength(8),
+                            PasswordRule.RequireLowercase,
+                            PasswordRule.RequireUppercase,
+                        ),
+                        emailLinkActionCodeSettings = null,
+                        buttonLabel = "Sign in with Email"
+                    )
+                )
+                // Email Link Sign-in (passwordless)
                 provider(
                     AuthProvider.Email(
                         isDisplayNameRequired = true,
@@ -76,7 +93,8 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                             PasswordRule.MinimumLength(8),
                             PasswordRule.RequireLowercase,
                             PasswordRule.RequireUppercase,
-                        )
+                        ),
+                        buttonLabel = "Sign in with Email Link"
                     )
                 )
                 provider(

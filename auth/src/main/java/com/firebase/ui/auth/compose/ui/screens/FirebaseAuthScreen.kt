@@ -322,8 +322,32 @@ fun FirebaseAuthScreen(
                             onReloadUser = {
                                 coroutineScope.launch {
                                     try {
+                                        // Reload user to get fresh data from server
                                         authUI.getCurrentUser()?.reload()
                                         authUI.getCurrentUser()?.getIdToken(true)
+
+                                        // Check the user's email verification status after reload
+                                        val user = authUI.getCurrentUser()
+                                        if (user != null) {
+                                            // If email is now verified, transition to Success state
+                                            if (user.isEmailVerified) {
+                                                authUI.updateAuthState(
+                                                    AuthState.Success(
+                                                        result = null,
+                                                        user = user,
+                                                        isNewUser = false
+                                                    )
+                                                )
+                                            } else {
+                                                // Email still not verified, keep showing verification screen
+                                                authUI.updateAuthState(
+                                                    AuthState.RequiresEmailVerification(
+                                                        user = user,
+                                                        email = user.email ?: ""
+                                                    )
+                                                )
+                                            }
+                                        }
                                     } catch (e: Exception) {
                                         Log.e("FirebaseAuthScreen", "Failed to refresh user", e)
                                     }
