@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
 
 enum class EmailAuthMode {
     SignIn,
+    EmailLinkSignIn,
     SignUp,
     ResetPassword,
 }
@@ -103,6 +104,7 @@ class EmailAuthContentState(
     val onGoToSignUp: () -> Unit,
     val onGoToSignIn: () -> Unit,
     val onGoToResetPassword: () -> Unit,
+    val onGoToEmailLinkSignIn: () -> Unit,
 )
 
 /**
@@ -133,7 +135,13 @@ fun EmailAuthScreen(
     val dialogController = LocalTopLevelDialogController.current
     val coroutineScope = rememberCoroutineScope()
 
-    val mode = rememberSaveable { mutableStateOf(EmailAuthMode.SignIn) }
+    // Start in EmailLinkSignIn mode if coming from cross-device flow
+    val initialMode = if (emailLinkFromDifferentDevice != null && provider.isEmailLinkSignInEnabled) {
+        EmailAuthMode.EmailLinkSignIn
+    } else {
+        EmailAuthMode.SignIn
+    }
+    val mode = rememberSaveable { mutableStateOf(initialMode) }
     val displayNameValue = rememberSaveable { mutableStateOf("") }
     val emailTextValue = rememberSaveable { mutableStateOf("") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
@@ -222,37 +230,13 @@ fun EmailAuthScreen(
         onSignInClick = {
             coroutineScope.launch {
                 try {
-                    when {
-                        emailLinkFromDifferentDevice != null -> {
-                            authUI.signInWithEmailLink(
-                                context = context,
-                                config = configuration,
-                                provider = provider,
-                                email = emailTextValue.value,
-                                emailLink = emailLinkFromDifferentDevice,
-                            )
-                        }
-
-                        provider.isEmailLinkSignInEnabled -> {
-                            authUI.sendSignInLinkToEmail(
-                                context = context,
-                                config = configuration,
-                                provider = provider,
-                                email = emailTextValue.value,
-                                credentialForLinking = authCredentialForLinking,
-                            )
-                        }
-
-                        else -> {
-                            authUI.signInWithEmailAndPassword(
-                                context = context,
-                                config = configuration,
-                                email = emailTextValue.value,
-                                password = passwordTextValue.value,
-                                credentialForLinking = authCredentialForLinking,
-                            )
-                        }
-                    }
+                    authUI.signInWithEmailAndPassword(
+                        context = context,
+                        config = configuration,
+                        email = emailTextValue.value,
+                        password = passwordTextValue.value,
+                        credentialForLinking = authCredentialForLinking,
+                    )
                 } catch (e: Exception) {
                     onError(AuthException.from(e))
                 }
@@ -261,7 +245,15 @@ fun EmailAuthScreen(
         onSignInEmailLinkClick = {
             coroutineScope.launch {
                 try {
-                    if (provider.isEmailLinkSignInEnabled) {
+                    if (emailLinkFromDifferentDevice != null) {
+                        authUI.signInWithEmailLink(
+                            context = context,
+                            config = configuration,
+                            provider = provider,
+                            email = emailTextValue.value,
+                            emailLink = emailLinkFromDifferentDevice,
+                        )
+                    } else {
                         authUI.sendSignInLinkToEmail(
                             context = context,
                             config = configuration,
@@ -315,6 +307,10 @@ fun EmailAuthScreen(
             textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.ResetPassword
         },
+        onGoToEmailLinkSignIn = {
+            textValues.forEach { it.value = "" }
+            mode.value = EmailAuthMode.EmailLinkSignIn
+        },
     )
 
     if (content != null) {
@@ -345,8 +341,22 @@ private fun DefaultEmailAuthContent(
                 onEmailChange = state.onEmailChange,
                 onPasswordChange = state.onPasswordChange,
                 onSignInClick = state.onSignInClick,
-                onSignInWithEmailLink = state.onSignInEmailLinkClick,
                 onGoToSignUp = state.onGoToSignUp,
+                onGoToResetPassword = state.onGoToResetPassword,
+                onGoToEmailLinkSignIn = state.onGoToEmailLinkSignIn,
+                onNavigateBack = onCancel
+            )
+        }
+
+        EmailAuthMode.EmailLinkSignIn -> {
+            SignInEmailLinkUI(
+                configuration = configuration,
+                email = state.email,
+                isLoading = state.isLoading,
+                emailSignInLinkSent = state.emailSignInLinkSent,
+                onEmailChange = state.onEmailChange,
+                onSignInWithEmailLink = state.onSignInEmailLinkClick,
+                onGoToSignIn = state.onGoToSignIn,
                 onGoToResetPassword = state.onGoToResetPassword,
                 onNavigateBack = onCancel
             )

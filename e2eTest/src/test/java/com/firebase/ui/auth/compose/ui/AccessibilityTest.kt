@@ -189,8 +189,9 @@ class AccessibilityTest {
                     onEmailChange = {},
                     onPasswordChange = {},
                     onSignInClick = {},
+                    onGoToEmailLinkSignIn = {},
                     onGoToSignUp = {},
-                    onGoToResetPassword = {}
+                    onGoToResetPassword = {},
                 )
             }
         }
@@ -279,6 +280,7 @@ class AccessibilityTest {
                     onEmailChange = {},
                     onPasswordChange = {},
                     onSignInClick = {},
+                    onGoToEmailLinkSignIn = {},
                     onGoToSignUp = {},
                     onGoToResetPassword = {}
                 )

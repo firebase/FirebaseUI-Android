@@ -446,11 +446,6 @@ fun FirebaseAuthScreen(
                     } catch (e: Exception) {
                         Log.e("FirebaseAuthScreen", "Failed to complete email link sign-in", e)
                     }
-
-                    // Navigate to Email auth screen for cross-device error handling
-                    if (navController.currentBackStackEntry?.destination?.route != AuthRoute.Email.route) {
-                        navController.navigate(AuthRoute.Email.route)
-                    }
                 }
             }
 

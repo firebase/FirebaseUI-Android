@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,7 +46,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -60,40 +58,66 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
-import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
 import com.firebase.ui.auth.compose.ui.components.TermsAndPrivacyForm
+import com.google.firebase.auth.actionCodeSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInUI(
+fun SignInEmailLinkUI(
     modifier: Modifier = Modifier,
     configuration: AuthUIConfiguration,
     isLoading: Boolean,
     emailSignInLinkSent: Boolean,
     email: String,
-    password: String,
     onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onSignInClick: () -> Unit,
-    onGoToSignUp: () -> Unit,
+    onSignInWithEmailLink: () -> Unit,
+    onGoToSignIn: () -> Unit,
     onGoToResetPassword: () -> Unit,
-    onGoToEmailLinkSignIn: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
     val emailValidator = remember { EmailValidator(stringProvider) }
-    val passwordValidator = remember {
-        PasswordValidator(stringProvider = stringProvider, rules = emptyList())
+
+    val isFormValid = remember(email) {
+        derivedStateOf {
+            emailValidator.validate(email)
+        }
     }
 
-    val isFormValid = remember(email, password) {
-        derivedStateOf {
-            listOf(
-                emailValidator.validate(email),
-                passwordValidator.validate(password)
-            ).all { it }
+    if (provider.isEmailLinkSignInEnabled) {
+        val isDialogVisible =
+            remember(emailSignInLinkSent) { mutableStateOf(emailSignInLinkSent) }
+
+        if (isDialogVisible.value) {
+            AlertDialog(
+                title = {
+                    Text(
+                        text = stringProvider.emailSignInLinkSentDialogTitle,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringProvider.emailSignInLinkSentDialogBody(email),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Start
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            isDialogVisible.value = false
+                        }
+                    ) {
+                        Text(stringProvider.dismissAction)
+                    }
+                },
+                onDismissRequest = {
+                    isDialogVisible.value = false
+                },
+            )
         }
     }
 
@@ -140,19 +164,6 @@ fun SignInUI(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            AuthTextField(
-                value = password,
-                validator = passwordValidator,
-                enabled = !isLoading,
-                isSecureTextField = true,
-                label = {
-                    Text(stringProvider.passwordHint)
-                },
-                onValueChange = { text ->
-                    onPasswordChange(text)
-                }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
             TextButton(
                 modifier = Modifier
                     .align(Alignment.Start),
@@ -171,64 +182,45 @@ fun SignInUI(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End),
+            Button(
+                onClick = {
+                    onSignInWithEmailLink()
+                },
+                modifier = Modifier.align(Alignment.End),
+                enabled = !isLoading && isFormValid.value,
             ) {
-                Button(
-                    onClick = {
-                        onGoToSignUp()
-                    },
-                    enabled = !isLoading,
-                ) {
-                    Text(stringProvider.signupPageTitle.uppercase())
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(
-                    onClick = {
-                        // TODO(demolaf): When signIn is fired if Exception is UserNotFound
-                        //  then we check if provider.isNewAccountsAllowed then we show signUp
-                        //  else we show an error dialog stating signup is not allowed
-                        onSignInClick()
-                    },
-                    enabled = !isLoading && isFormValid.value,
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(16.dp)
-                        )
-                    } else {
-                        Text(stringProvider.signInDefault.uppercase())
-                    }
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp)
+                    )
+                } else {
+                    Text(stringProvider.signInDefault.uppercase())
                 }
             }
 
-            // Show toggle to email link sign-in
-            if (provider.isEmailLinkSignInEnabled) {
-                Spacer(modifier = Modifier.height(64.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    HorizontalDivider(modifier = Modifier.weight(1f))
-                    Text(
-                        text = "or Continue with",
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    HorizontalDivider(modifier = Modifier.weight(1f))
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        onGoToEmailLinkSignIn()
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !isLoading
-                ) {
-                    Text("Sign in with email link".uppercase())
-                }
+            // Show toggle to go back to password mode
+            Spacer(modifier = Modifier.height(64.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                HorizontalDivider(modifier = Modifier.weight(1f))
+                Text(
+                    text = "or Continue with",
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                HorizontalDivider(modifier = Modifier.weight(1f))
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = {
+                    onGoToSignIn()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isLoading
+            ) {
+                Text("Sign in with password".uppercase())
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -243,20 +235,28 @@ fun SignInUI(
 
 @Preview
 @Composable
-fun PreviewSignInUI() {
+fun PreviewSignInEmailLinkUI() {
     val applicationContext = LocalContext.current
     val provider = AuthProvider.Email(
         isDisplayNameRequired = true,
-        isEmailLinkSignInEnabled = false,
+        isEmailLinkSignInEnabled = true,
         isEmailLinkForceSameDeviceEnabled = true,
-        emailLinkActionCodeSettings = null,
+        emailLinkActionCodeSettings = actionCodeSettings {
+            url = "https://fake-project-id.firebaseapp.com"
+            handleCodeInApp = true
+            setAndroidPackageName(
+                "fake.project.id",
+                true,
+                null
+            )
+        },
         isNewAccountsAllowed = true,
         minimumPasswordLength = 8,
         passwordValidationRules = listOf()
     )
 
     AuthUITheme {
-        SignInUI(
+        SignInEmailLinkUI(
             configuration = authUIConfiguration {
                 context = applicationContext
                 providers { provider(provider) }
@@ -264,15 +264,12 @@ fun PreviewSignInUI() {
                 privacyPolicyUrl = ""
             },
             email = "",
-            password = "",
             isLoading = false,
             emailSignInLinkSent = false,
             onEmailChange = { email -> },
-            onPasswordChange = { password -> },
-            onSignInClick = {},
-            onGoToSignUp = {},
+            onSignInWithEmailLink = {},
+            onGoToSignIn = {},
             onGoToResetPassword = {},
-            onGoToEmailLinkSignIn = {},
         )
     }
 }

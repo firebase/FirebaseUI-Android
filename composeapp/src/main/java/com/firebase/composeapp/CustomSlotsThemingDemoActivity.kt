@@ -316,7 +316,7 @@ fun CustomEmailAuthUI(state: EmailAuthContentState) {
         // Title based on mode
         Text(
             text = when (state.mode) {
-                EmailAuthMode.SignIn -> "📧 Welcome Back"
+                EmailAuthMode.SignIn, EmailAuthMode.EmailLinkSignIn -> "📧 Welcome Back"
                 EmailAuthMode.SignUp -> "📧 Create Account"
                 EmailAuthMode.ResetPassword -> "📧 Reset Password"
             },
@@ -345,7 +345,7 @@ fun CustomEmailAuthUI(state: EmailAuthContentState) {
 
         // Render UI based on mode
         when (state.mode) {
-            EmailAuthMode.SignIn -> SignInUI(state)
+            EmailAuthMode.SignIn, EmailAuthMode.EmailLinkSignIn -> SignInUI(state)
             EmailAuthMode.SignUp -> SignUpUI(state)
             EmailAuthMode.ResetPassword -> ResetPasswordUI(state)
         }

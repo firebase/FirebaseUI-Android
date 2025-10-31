@@ -487,6 +487,13 @@ class EmailAuthScreenTest {
 
         composeTestRule.onNodeWithText(stringProvider.signInDefault)
             .assertIsDisplayed()
+
+        // Click "Sign in with email link" button to switch to email link mode
+        composeTestRule.onNodeWithText("SIGN IN WITH EMAIL LINK")
+            .performScrollTo()
+            .assertIsDisplayed()
+            .performClick()
+
         composeTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
             .assertIsDisplayed()
@@ -558,8 +565,21 @@ class EmailAuthScreenTest {
                             onEmailChange = state.onEmailChange,
                             onPasswordChange = state.onPasswordChange,
                             onSignInClick = state.onSignInClick,
-                            onSignInWithEmailLink = state.onSignInEmailLinkClick,
                             onGoToSignUp = state.onGoToSignUp,
+                            onGoToResetPassword = state.onGoToResetPassword,
+                            onGoToEmailLinkSignIn = state.onGoToEmailLinkSignIn,
+                        )
+                    }
+
+                    EmailAuthMode.EmailLinkSignIn -> {
+                        SignInEmailLinkUI(
+                            configuration = configuration,
+                            email = state.email,
+                            isLoading = state.isLoading,
+                            emailSignInLinkSent = state.emailSignInLinkSent,
+                            onEmailChange = state.onEmailChange,
+                            onSignInWithEmailLink = state.onSignInEmailLinkClick,
+                            onGoToSignIn = state.onGoToSignIn,
                             onGoToResetPassword = state.onGoToResetPassword,
                         )
                     }
