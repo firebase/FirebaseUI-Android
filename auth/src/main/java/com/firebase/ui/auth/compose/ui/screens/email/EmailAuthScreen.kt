@@ -95,6 +95,7 @@ class EmailAuthContentState(
     val displayName: String,
     val onDisplayNameChange: (String) -> Unit,
     val onSignInClick: () -> Unit,
+    val onSignInEmailLinkClick: () -> Unit,
     val onSignUpClick: () -> Unit,
     val onSendResetLinkClick: () -> Unit,
     val resetLinkSent: Boolean = false,
@@ -166,32 +167,26 @@ fun EmailAuthScreen(
             is AuthState.Error -> {
                 val exception = AuthException.from(state.exception)
                 onError(exception)
-                
-                // Show dialog for screen-specific errors using top-level controller
-                // Navigation-related errors are handled by FirebaseAuthScreen
-                if (exception !is AuthException.AccountLinkingRequiredException &&
-                    exception !is AuthException.EmailLinkPromptForEmailException &&
-                    exception !is AuthException.EmailLinkCrossDeviceLinkingException
-                ) {
-                    dialogController?.showErrorDialog(
-                        exception = exception,
-                        onRetry = { ex ->
-                            when (ex) {
-                                is AuthException.InvalidCredentialsException -> {
-                                    // User can retry sign in with corrected credentials
-                                }
-                                is AuthException.EmailAlreadyInUseException -> {
-                                    // Switch to sign-in mode
-                                    mode.value = EmailAuthMode.SignIn
-                                }
-                                else -> Unit
+                dialogController?.showErrorDialog(
+                    exception = exception,
+                    onRetry = { ex ->
+                        when (ex) {
+                            is AuthException.InvalidCredentialsException -> {
+                                // User can retry sign in with corrected credentials
                             }
-                        },
-                        onDismiss = {
-                            // Dialog dismissed
+
+                            is AuthException.EmailAlreadyInUseException -> {
+                                // Switch to sign-in mode
+                                mode.value = EmailAuthMode.SignIn
+                            }
+
+                            else -> Unit
                         }
-                    )
-                }
+                    },
+                    onDismiss = {
+                        // Dialog dismissed
+                    }
+                )
             }
 
             is AuthState.Cancelled -> {
@@ -263,6 +258,23 @@ fun EmailAuthScreen(
                 }
             }
         },
+        onSignInEmailLinkClick = {
+            coroutineScope.launch {
+                try {
+                    if (provider.isEmailLinkSignInEnabled) {
+                        authUI.sendSignInLinkToEmail(
+                            context = context,
+                            config = configuration,
+                            provider = provider,
+                            email = emailTextValue.value,
+                            credentialForLinking = authCredentialForLinking,
+                        )
+                    }
+                } catch (e: Exception) {
+                    onError(AuthException.from(e))
+                }
+            }
+        },
         onSignUpClick = {
             coroutineScope.launch {
                 try {
@@ -302,7 +314,7 @@ fun EmailAuthScreen(
         onGoToResetPassword = {
             textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.ResetPassword
-        }
+        },
     )
 
     if (content != null) {
@@ -320,7 +332,7 @@ fun EmailAuthScreen(
 private fun DefaultEmailAuthContent(
     configuration: AuthUIConfiguration,
     state: EmailAuthContentState,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     when (state.mode) {
         EmailAuthMode.SignIn -> {
@@ -333,6 +345,7 @@ private fun DefaultEmailAuthContent(
                 onEmailChange = state.onEmailChange,
                 onPasswordChange = state.onPasswordChange,
                 onSignInClick = state.onSignInClick,
+                onSignInWithEmailLink = state.onSignInEmailLinkClick,
                 onGoToSignUp = state.onGoToSignUp,
                 onGoToResetPassword = state.onGoToResetPassword,
                 onNavigateBack = onCancel

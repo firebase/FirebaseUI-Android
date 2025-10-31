@@ -558,6 +558,7 @@ class EmailAuthScreenTest {
                             onEmailChange = state.onEmailChange,
                             onPasswordChange = state.onPasswordChange,
                             onSignInClick = state.onSignInClick,
+                            onSignInWithEmailLink = state.onSignInEmailLinkClick,
                             onGoToSignUp = state.onGoToSignUp,
                             onGoToResetPassword = state.onGoToResetPassword,
                         )

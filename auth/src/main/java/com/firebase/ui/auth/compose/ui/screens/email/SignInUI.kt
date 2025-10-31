@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -31,6 +32,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,22 +77,27 @@ fun SignInUI(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onSignInClick: () -> Unit,
+    onSignInWithEmailLink: () -> Unit,
     onGoToSignUp: () -> Unit,
     onGoToResetPassword: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
+
+    // Local state to track if user chose email link sign-in
+    val isEmailLinkMode = remember { mutableStateOf(false) }
+
     val emailValidator = remember { EmailValidator(stringProvider) }
-    val passwordValidator = remember {
+    val passwordValidator = remember(isEmailLinkMode.value) {
         PasswordValidator(stringProvider = stringProvider, rules = emptyList())
     }
 
-    val isFormValid = remember(email, password) {
+    val isFormValid = remember(email, password, isEmailLinkMode.value) {
         derivedStateOf {
             listOf(
                 emailValidator.validate(email),
-                if (!provider.isEmailLinkSignInEnabled)
+                if (!isEmailLinkMode.value)
                     passwordValidator.validate(password) else true,
             ).all { it }
         }
@@ -176,7 +183,7 @@ fun SignInUI(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            if (!provider.isEmailLinkSignInEnabled) {
+            if (!isEmailLinkMode.value) {
                 AuthTextField(
                     value = password,
                     validator = passwordValidator,
@@ -191,7 +198,7 @@ fun SignInUI(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            if (!provider.isEmailLinkSignInEnabled) {
+            if (!isEmailLinkMode.value) {
                 TextButton(
                     modifier = Modifier
                         .align(Alignment.Start),
@@ -216,7 +223,7 @@ fun SignInUI(
                     .align(Alignment.End),
             ) {
                 // Signup is hidden for email link sign in
-                if (!provider.isEmailLinkSignInEnabled) {
+                if (!isEmailLinkMode.value) {
                     Button(
                         onClick = {
                             onGoToSignUp()
@@ -232,7 +239,11 @@ fun SignInUI(
                         // TODO(demolaf): When signIn is fired if Exception is UserNotFound
                         //  then we check if provider.isNewAccountsAllowed then we show signUp
                         //  else we show an error dialog stating signup is not allowed
-                        onSignInClick()
+                        if (!isEmailLinkMode.value) {
+                            onSignInClick()
+                        } else {
+                            onSignInWithEmailLink()
+                        }
                     },
                     enabled = !isLoading && isFormValid.value,
                 ) {
@@ -246,6 +257,44 @@ fun SignInUI(
                     }
                 }
             }
+
+            // Show toggle between password and email link sign-in
+            if (provider.isEmailLinkSignInEnabled) {
+                Spacer(modifier = Modifier.height(64.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                    Text(
+                        text = "or Continue with",
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    HorizontalDivider(modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        isEmailLinkMode.value = !isEmailLinkMode.value
+                        if (isEmailLinkMode.value) {
+                            // Switching to email link mode: clear password
+                            onPasswordChange("")
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading
+                ) {
+                    Text(
+                        if (isEmailLinkMode.value) {
+                            "Sign in with password".uppercase()
+                        } else {
+                            "Sign in with email link".uppercase()
+                        }
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
             TermsAndPrivacyForm(
                 modifier = Modifier.align(Alignment.End),
@@ -285,6 +334,7 @@ fun PreviewSignInUI() {
             onEmailChange = { email -> },
             onPasswordChange = { password -> },
             onSignInClick = {},
+            onSignInWithEmailLink = {},
             onGoToSignUp = {},
             onGoToResetPassword = {},
         )

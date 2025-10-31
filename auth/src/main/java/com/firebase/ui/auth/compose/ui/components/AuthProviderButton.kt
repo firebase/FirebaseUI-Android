@@ -153,10 +153,6 @@ internal fun resolveProviderLabel(
     context: android.content.Context
 ): String = when (provider) {
     is AuthProvider.GenericOAuth -> provider.buttonLabel
-    is AuthProvider.Email -> {
-        // Use custom button label if provided, otherwise use default
-        provider.buttonLabel ?: stringProvider.signInWithEmail
-    }
     is AuthProvider.Apple -> {
         // Use Apple-specific locale if provided, otherwise use default stringProvider
         if (provider.locale != null) {
