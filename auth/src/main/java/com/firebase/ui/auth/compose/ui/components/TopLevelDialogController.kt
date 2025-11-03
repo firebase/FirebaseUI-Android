@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.firebase.ui.auth.compose.AuthException
+import com.firebase.ui.auth.compose.AuthState
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 
 /**
@@ -66,12 +67,15 @@ val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?
  * @since 10.0.0
  */
 class TopLevelDialogController(
-    private val stringProvider: AuthUIStringProvider
+    private val stringProvider: AuthUIStringProvider,
+    private val authState: AuthState
 ) {
     private var dialogState by mutableStateOf<DialogState?>(null)
+    private val shownErrorStates = mutableSetOf<AuthState.Error>()
 
     /**
      * Shows an error recovery dialog at the top level using [ErrorRecoveryDialog].
+     * Automatically prevents duplicate dialogs for the same AuthState.Error instance.
      *
      * @param exception The auth exception to display
      * @param onRetry Callback when user clicks retry button
@@ -84,6 +88,17 @@ class TopLevelDialogController(
         onRecover: (AuthException) -> Unit = {},
         onDismiss: () -> Unit = {}
     ) {
+        // Get current error state
+        val currentErrorState = authState as? AuthState.Error
+
+        // If this exact error state has already been shown, skip
+        if (currentErrorState != null && currentErrorState in shownErrorStates) {
+            return
+        }
+
+        // Mark this error state as shown
+        currentErrorState?.let { shownErrorStates.add(it) }
+
         dialogState = DialogState.ErrorDialog(
             exception = exception,
             onRetry = onRetry,
@@ -148,9 +163,10 @@ class TopLevelDialogController(
  */
 @Composable
 fun rememberTopLevelDialogController(
-    stringProvider: AuthUIStringProvider
+    stringProvider: AuthUIStringProvider,
+    authState: AuthState
 ): TopLevelDialogController {
-    return remember(stringProvider) {
-        TopLevelDialogController(stringProvider)
+    return remember(stringProvider, authState) {
+        TopLevelDialogController(stringProvider, authState)
     }
 }
