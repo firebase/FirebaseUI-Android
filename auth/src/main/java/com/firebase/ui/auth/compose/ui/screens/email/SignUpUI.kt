@@ -116,18 +116,6 @@ fun SignUpUI(
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            AuthTextField(
-                value = email,
-                validator = emailValidator,
-                enabled = !isLoading,
-                label = {
-                    Text(stringProvider.emailHint)
-                },
-                onValueChange = { text ->
-                    onEmailChange(text)
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
             if (provider.isDisplayNameRequired) {
                 AuthTextField(
                     value = displayName,
@@ -142,6 +130,18 @@ fun SignUpUI(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
+            AuthTextField(
+                value = email,
+                validator = emailValidator,
+                enabled = !isLoading,
+                label = {
+                    Text(stringProvider.emailHint)
+                },
+                onValueChange = { text ->
+                    onEmailChange(text)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
                 value = password,
                 validator = passwordValidator,
