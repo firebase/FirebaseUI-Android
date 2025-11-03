@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Oturum açma işlemine devam etmek için e-posta adresini onaylayın</string>
     <string name="fui_email_link_dismiss_button">Kapat</string>
     <string name="fui_email_link_cross_device_linking_text">Aslında %1$s adlı sağlayıcıyı e-posta hesabınıza bağlamak istediniz ancak bağlantıyı, oturum açmadığınız farklı bir cihazda açtınız.\n\nHâlâ %1$s hesabınızı bağlamak istiyorsanız bağlantıyı oturum açma işlemini başlattığınız cihazda açın. Aksi takdirde bu cihazda oturum açmak için Devam\'a dokunun.</string>
+    <string name="fui_or_continue_with">veya Şununla Devam Et</string>
+    <string name="fui_sign_in_with_email_link">E-posta bağlantısı ile oturum aç</string>
+    <string name="fui_sign_in_with_password">Şifre ile oturum aç</string>
     <string name="fui_verify_phone_number_title">Telefon numaranızı girin</string>
     <string name="fui_invalid_phone_number">Geçerli bir telefon numarası girin</string>
     <string name="fui_enter_confirmation_code">Şu telefon numarasına gönderdiğimiz 6 haneli kodu girin:</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Потвърдете имейл адреса, за да продължите с влизането в профила</string>
     <string name="fui_email_link_dismiss_button">Отхвърляне</string>
     <string name="fui_email_link_cross_device_linking_text">Първоначално искахте да свържете %1$s с имейла на профила си, но отворихте връзката на различно устройство без вход в профила.\n\nАко все още искате да свържете профила си в(ъв) %1$s, отворете връзката на същото устройство, на което започнахте влизането в профила. В противен случай докоснете „Напред“, за да влезете на това устройство.</string>
+    <string name="fui_or_continue_with">или Продължете с</string>
+    <string name="fui_sign_in_with_email_link">Вход чрез имейл връзка</string>
+    <string name="fui_sign_in_with_password">Вход с парола</string>
     <string name="fui_verify_phone_number_title">Въвеждане на телефонния ви номер</string>
     <string name="fui_invalid_phone_number">Въведете валиден телефонен номер</string>
     <string name="fui_enter_confirmation_code">Въведете 6-цифрения код, който изпратихме до</string>

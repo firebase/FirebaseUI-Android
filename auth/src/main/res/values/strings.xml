@@ -168,6 +168,9 @@
 
 
     <!-- Email Link Sign In -->
+    <string name="fui_or_continue_with" translation_description="Divider text for alternate sign-in options">or Continue with</string>
+    <string name="fui_sign_in_with_email_link" translation_description="Button text to sign in with email link">Sign in with email link</string>
+    <string name="fui_sign_in_with_password" translation_description="Button text to sign in with password">Sign in with password</string>
     <string name="fui_email_link_header" translation_description="Email link sign in email sent header">Sign-in email sent\n</string>
     <string name="fui_email_link_email_sent" translation_description="Text to tell the user that the email has been sent">A sign-in email with additional instructions was sent to %1$s. Check your email to complete sign-in.</string>
     <string name="fui_email_link_trouble_getting_email_header" translation_description="Header that is displayed on the trouble signing in activity">Trouble getting email?</string>

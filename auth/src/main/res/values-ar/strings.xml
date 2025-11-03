@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">تأكيد عنوان البريد الإلكتروني لمتابعة تسجيل الدخول</string>
     <string name="fui_email_link_dismiss_button">رفض</string>
     <string name="fui_email_link_cross_device_linking_text">لقد بدأت هذه العملية بهدف ربط %1$s ببريدك الإلكتروني إلّا أنك فتحت الرابط على جهاز آخر لم يتمّ تسجيل الدخول عليه.\n\nلربط حسابك على %1$s، يجب فتح الرابط على الجهاز نفسه حيث سجّلت الدخول في البداية. ولإلغاء عملية الربط، يُرجى النقر على \"متابعة\" لتسجيل الدخول على هذا الجهاز.</string>
+    <string name="fui_or_continue_with">أو المتابعة باستخدام</string>
+    <string name="fui_sign_in_with_email_link">تسجيل الدخول باستخدام رابط البريد الإلكتروني</string>
+    <string name="fui_sign_in_with_password">تسجيل الدخول باستخدام كلمة المرور</string>
     <string name="fui_verify_phone_number_title">أدخل رقم هاتفك</string>
     <string name="fui_invalid_phone_number">يُرجى إدخال رقم هاتف صالح</string>
     <string name="fui_enter_confirmation_code">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Confirm email to continue sign in</string>
     <string name="fui_email_link_dismiss_button">Dismiss</string>
     <string name="fui_email_link_cross_device_linking_text">You originally intended to connect %1$s to your email account, but have opened the link on a different device where you are not signed in.\n\nIf you still want to connect your %1$s account, open the link on the same device on which you started sign-in. Otherwise, tap \'Continue\' to sign in on this device.</string>
+    <string name="fui_or_continue_with">or Continue with</string>
+    <string name="fui_sign_in_with_email_link">Sign in with email link</string>
+    <string name="fui_sign_in_with_password">Sign in with password</string>
     <string name="fui_verify_phone_number_title">Enter your phone number</string>
     <string name="fui_invalid_phone_number">Enter a valid phone number</string>
     <string name="fui_enter_confirmation_code">Enter the 6-digit code that we sent to</string>

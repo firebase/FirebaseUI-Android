@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">계속해서 로그인하려면 이메일을 확인하세요.</string>
     <string name="fui_email_link_dismiss_button">닫기</string>
     <string name="fui_email_link_cross_device_linking_text">원래 이메일 계정에 %1$s을(를) 연결하려고 했지만 로그인되지 않은 다른 기기에서 링크를 열었습니다.\n\n%1$s 계정에 연결하려는 경우 로그인을 시작한 것과 동일한 기기에서 링크를 여세요. 또는 \'계속\'을 탭하여 이 기기에서 로그인하세요.</string>
+    <string name="fui_or_continue_with">또는 계속</string>
+    <string name="fui_sign_in_with_email_link">이메일 링크로 로그인</string>
+    <string name="fui_sign_in_with_password">비밀번호로 로그인</string>
     <string name="fui_verify_phone_number_title">전화번호 입력</string>
     <string name="fui_invalid_phone_number">올바른 전화번호를 입력하세요.</string>
     <string name="fui_enter_confirmation_code">전송된 6자리 코드를 입력하세요.</string>

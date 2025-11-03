@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Vahvista sähköposti jatkaaksesi kirjautumista</string>
     <string name="fui_email_link_dismiss_button">Hylkää</string>
     <string name="fui_email_link_cross_device_linking_text">Tarkoituksesi oli yhdistää palvelu %1$s sähköpostiosoitteeseesi, mutta avasit linkin eri laitteella, johon et ollut kirjautunut.\n\Jos haluat edelleen yhdistää palvelun %1$s tilisi, avaa linkki samalla laitteella, jolla aloitit kirjautumisen. Jos haluat jatkaa kirjautumista tällä laitteella, napauta Jatka.</string>
+    <string name="fui_or_continue_with">tai Jatka käyttäen</string>
+    <string name="fui_sign_in_with_email_link">Kirjaudu sähköpostilinkillä</string>
+    <string name="fui_sign_in_with_password">Kirjaudu salasanalla</string>
     <string name="fui_verify_phone_number_title">Anna puhelinnumerosi</string>
     <string name="fui_invalid_phone_number">Anna voimassa oleva puhelinnumero.</string>
     <string name="fui_enter_confirmation_code">Anna 6 merkin pituinen koodi, jonka lähetimme numeroon</string>

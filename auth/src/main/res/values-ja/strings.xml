@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">ログインを続行するにはメールを確認してください</string>
     <string name="fui_email_link_dismiss_button">閉じる</string>
     <string name="fui_email_link_cross_device_linking_text">元々は %1$s をメール アカウントに接続しようとしましたが、ログインしていないデバイスでリンクが開かれました。%1$s アカウントの接続を続行する場合は、ログインを開始したデバイスでリンクを開いてください。接続しない場合は、[続行] をタップしてこのデバイスでログインします。</string>
+    <string name="fui_or_continue_with">または次で続行</string>
+    <string name="fui_sign_in_with_email_link">メールリンクでログイン</string>
+    <string name="fui_sign_in_with_password">パスワードでログイン</string>
     <string name="fui_verify_phone_number_title">電話番号を入力してください</string>
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>
     <string name="fui_enter_confirmation_code">送信された 6 桁のコードを入力してください</string>

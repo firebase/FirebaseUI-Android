@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Confirme o e-mail para continuar o login</string>
     <string name="fui_email_link_dismiss_button">Dispensar</string>
     <string name="fui_email_link_cross_device_linking_text">Inicialmente, você quis conectar %1$s à sua conta de e-mail, mas abriu o link em outro dispositivo no qual você não está conectado.\n\nSe você ainda quiser conectar sua conta de %1$s, abra o link no mesmo dispositivo em que fez login. Se preferir, toque em \"Continuar\" para fazer login neste dispositivo.</string>
+    <string name="fui_or_continue_with">ou Continuar com</string>
+    <string name="fui_sign_in_with_email_link">Fazer login com link de e-mail</string>
+    <string name="fui_sign_in_with_password">Fazer login com senha</string>
     <string name="fui_verify_phone_number_title">Insira o número do seu telefone</string>
     <string name="fui_invalid_phone_number">Insira um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Insira o código de 6 dígitos enviado para</string>

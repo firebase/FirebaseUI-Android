@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Потврдите имејл адресу да бисте наставили са пријављивањем</string>
     <string name="fui_email_link_dismiss_button">Одбаци</string>
     <string name="fui_email_link_cross_device_linking_text">Првобитна намера вам је била да повежете %1$s налог са имејл налогом, али сте отворили линк на другом уређају, на ком нисте пријављени.\n\nАко и даље желите да повежете %1$s налог, отворите линк на истом уређају на ком сте почели пријављивање. У супротном, додирните Настави да бисте се пријавили на овом уређају.</string>
+    <string name="fui_or_continue_with">или Наставите са</string>
+    <string name="fui_sign_in_with_email_link">Пријавите се помоћу имејл линка</string>
+    <string name="fui_sign_in_with_password">Пријавите се помоћу лозинке</string>
     <string name="fui_verify_phone_number_title">Унесите број телефона</string>
     <string name="fui_invalid_phone_number">Унесите важећи број телефона</string>
     <string name="fui_enter_confirmation_code">Унесите 6-цифрени кôд који смо послали на</string>

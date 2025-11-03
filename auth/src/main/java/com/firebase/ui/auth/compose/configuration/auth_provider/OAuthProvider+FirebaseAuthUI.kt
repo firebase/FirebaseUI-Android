@@ -47,7 +47,7 @@ import kotlinx.coroutines.tasks.await
  * @see signInWithProvider
  */
 @Composable
-fun FirebaseAuthUI.rememberOAuthSignInHandler(
+internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
     activity: Activity?,
     config: AuthUIConfiguration,
     provider: AuthProvider.OAuth,

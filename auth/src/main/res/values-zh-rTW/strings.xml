@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">如要繼續登入，請確認電子郵件地址</string>
     <string name="fui_email_link_dismiss_button">關閉</string>
     <string name="fui_email_link_cross_device_linking_text">您原先想將 %1$s 連結至您的電子郵件帳戶，卻在另一部未登入帳戶的裝置上開啟了連結。\n\n如果您仍想連結您的 %1$s 帳戶，請在開始登入程序的同一部裝置上開啟連結。如不想連結帳戶，請輕觸 [繼續] 以在這部裝置上進行登入程序。</string>
+    <string name="fui_or_continue_with">或繼續使用</string>
+    <string name="fui_sign_in_with_email_link">使用電子郵件連結登入</string>
+    <string name="fui_sign_in_with_password">使用密碼登入</string>
     <string name="fui_verify_phone_number_title">請輸入您的電話號碼</string>
     <string name="fui_invalid_phone_number">請輸入有效的電話號碼</string>
     <string name="fui_enter_confirmation_code">請輸入傳送至以下電話號碼的 6 位數驗證碼</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">உள்நுழைவைத் தொடர, மின்னஞ்சலை உறுதிப்படுத்தவும்</string>
     <string name="fui_email_link_dismiss_button">மூடு</string>
     <string name="fui_email_link_cross_device_linking_text">முதலில் %1$sஐ உங்கள் மின்னஞ்சல் கணக்குடன் இணைப்பதற்காக முயற்சித்தீர்கள், ஆனால் உள்நுழைந்திராத வேறொரு சாதனத்தில் இணைப்பைத் திறந்துள்ளீர்கள்.\n\nஉங்கள் %1$s கணக்கை இணைக்க விரும்பினால், நீங்கள் உள்நுழைய தொடங்கிய அதே சாதனத்தில் இணைப்பைத் திறக்கவும். இல்லையெனில் இந்தச் சாதனத்தில் உள்நுழைய தொடர்க என்பதைத் தட்டவும்.</string>
+    <string name="fui_or_continue_with">அல்லது இதனுடன் தொடரவும்</string>
+    <string name="fui_sign_in_with_email_link">மின்னஞ்சல் இணைப்பு மூலம் உள்நுழைக</string>
+    <string name="fui_sign_in_with_password">கடவுச்சொல் மூலம் உள்நுழைக</string>
     <string name="fui_verify_phone_number_title">ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_invalid_phone_number">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_enter_confirmation_code">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>

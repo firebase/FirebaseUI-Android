@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">确认电子邮件地址以继续登录</string>
     <string name="fui_email_link_dismiss_button">关闭</string>
     <string name="fui_email_link_cross_device_linking_text">您最初是想将%1$s与您的电子邮件帐号关联起来，但是您换用其他未登录的设备打开了此链接。\n\n如果您仍希望关联您的%1$s帐号，请在您最初开始登录时所用的设备上打开此链接。否则，请点按“继续”以在当前设备上登录。</string>
+    <string name="fui_or_continue_with">或继续使用</string>
+    <string name="fui_sign_in_with_email_link">使用电子邮件链接登录</string>
+    <string name="fui_sign_in_with_password">使用密码登录</string>
     <string name="fui_verify_phone_number_title">输入您的电话号码</string>
     <string name="fui_invalid_phone_number">请输入有效的电话号码</string>
     <string name="fui_enter_confirmation_code">输入我们发送至以下电话号码的 6 位数验证码</string>

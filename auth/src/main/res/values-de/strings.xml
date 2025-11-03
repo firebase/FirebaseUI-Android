@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">E-Mail-Adresse bestätigen, um Anmeldung fortzusetzen</string>
     <string name="fui_email_link_dismiss_button">Ablehnen</string>
     <string name="fui_email_link_cross_device_linking_text">Sie haben versucht, %1$s auf einem Gerät, auf dem Sie nicht angemeldet sind, mit Ihrem E-Mail-Konto zu verbinden.\n\nWenn Sie Ihr %1$s-Konto weiterhin verbinden möchten, öffnen Sie den Link bitte auf dem Gerät, auf dem Sie den Anmeldevorgang gestartet haben. Andernfalls tippen Sie auf \"Weiter\", um sich auf diesem Gerät anzumelden.</string>
+    <string name="fui_or_continue_with">oder Fortfahren mit</string>
+    <string name="fui_sign_in_with_email_link">Mit E-Mail-Link anmelden</string>
+    <string name="fui_sign_in_with_password">Mit Passwort anmelden</string>
     <string name="fui_verify_phone_number_title">Telefonnummer eingeben</string>
     <string name="fui_invalid_phone_number">Geben Sie eine gültige Telefonnummer ein</string>
     <string name="fui_enter_confirmation_code">Geben Sie den 6-stelligen Code ein, der gesendet wurde an</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Xác nhận email để tiếp tục đăng nhập</string>
     <string name="fui_email_link_dismiss_button">Bỏ qua</string>
     <string name="fui_email_link_cross_device_linking_text">Ban đầu, bạn có ý định kết nối %1$s với tài khoản email của bạn nhưng đã mở đường liên kết trên một thiết bị khác mà bạn chưa đăng nhập.\n\nNếu bạn vẫn muốn kết nối với tài khoản %1$s của mình, hãy mở đường liên kết này trên cùng một thiết bị mà bạn đã đăng nhập từ đầu. Nếu không, hãy nhấn Tiếp tục để đăng nhập trên thiết bị này.</string>
+    <string name="fui_or_continue_with">hoặc Tiếp tục với</string>
+    <string name="fui_sign_in_with_email_link">Đăng nhập bằng liên kết email</string>
+    <string name="fui_sign_in_with_password">Đăng nhập bằng mật khẩu</string>
     <string name="fui_verify_phone_number_title">Nhập số điện thoại của bạn</string>
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>
     <string name="fui_enter_confirmation_code">Nhập mã 6 chữ số mà chúng tôi đã gửi cho bạn</string>

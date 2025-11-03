@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Confirmez votre adresse e-mail pour vous connecter</string>
     <string name="fui_email_link_dismiss_button">Ignorer</string>
     <string name="fui_email_link_cross_device_linking_text">Vous aviez décidé d\'associer votre compte %1$s à votre adresse e-mail, mais vous avez ouvert le lien sur un appareil différent de celui avec lequel vous vous êtes connecté.\n\nSi vous souhaitez toujours associer votre compte %1$s, ouvrez le lien sur l\'appareil avec lequel vous avez commencé à vous connecter. Sinon, appuyez sur \"Continuer\" pour vous connecter depuis un autre appareil.</string>
+    <string name="fui_or_continue_with">ou Continuer avec</string>
+    <string name="fui_sign_in_with_email_link">Se connecter avec le lien e-mail</string>
+    <string name="fui_sign_in_with_password">Se connecter avec le mot de passe</string>
     <string name="fui_verify_phone_number_title">Saisissez votre numéro de téléphone</string>
     <string name="fui_invalid_phone_number">Saisissez un numéro de téléphone valide</string>
     <string name="fui_enter_confirmation_code">Saisissez le code à six chiffres envoyé au</string>

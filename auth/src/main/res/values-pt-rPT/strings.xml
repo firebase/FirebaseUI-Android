@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Confirme o email para iniciar sessão.</string>
     <string name="fui_email_link_dismiss_button">Ignorar</string>
     <string name="fui_email_link_cross_device_linking_text">Originalmente, pretendia associar %1$s à sua conta de email, mas abriu o link num dispositivo diferente no qual não tem sessão iniciada.\n\nSe ainda pretender associar a sua conta do %1$s, abra o link no mesmo dispositivo em que iniciou sessão. Caso contrário, toque em Continuar para iniciar sessão neste dispositivo.</string>
+    <string name="fui_or_continue_with">ou Continuar com</string>
+    <string name="fui_sign_in_with_email_link">Iniciar sessão com link de e-mail</string>
+    <string name="fui_sign_in_with_password">Iniciar sessão com palavra-passe</string>
     <string name="fui_verify_phone_number_title">Introduza o seu número de telefone</string>
     <string name="fui_invalid_phone_number">Introduza um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Introduza o código de 6 dígitos que enviámos para</string>

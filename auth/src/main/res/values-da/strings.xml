@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Bekræft mailadresse for at fortsætte loginprocessen</string>
     <string name="fui_email_link_dismiss_button">Afvis</string>
     <string name="fui_email_link_cross_device_linking_text">Du ville egentlig knytte %1$s til din mailkonto, men du har åbnet linket på en anden enhed, som du ikke er logget ind på.\n\nHvis du stadig vil tilknytte din %1$s-konto, skal du åbne linket på den enhed, hvor du startede loginprocessen. Ellers kan du klikke på Fortsæt for at fortsætte med at logge ind på denne enhed.</string>
+    <string name="fui_or_continue_with">eller Fortsæt med</string>
+    <string name="fui_sign_in_with_email_link">Log ind med maillink</string>
+    <string name="fui_sign_in_with_password">Log ind med adgangskode</string>
     <string name="fui_verify_phone_number_title">Angiv dit telefonnummer</string>
     <string name="fui_invalid_phone_number">Angiv et gyldigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Angiv den 6-cifrede kode, vi sendte til</string>

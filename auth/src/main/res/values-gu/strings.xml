@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">સાઇન ઇન ચાલુ રાખવા માટે ઇમેઇલ કન્ફર્મ કરો</string>
     <string name="fui_email_link_dismiss_button">છોડી દો</string>
     <string name="fui_email_link_cross_device_linking_text">તમે ઑરિજિનલ રીતે %1$sને તમારા ઇમેઇલ એકાઉન્ટ જોડે કનેક્ટ કરવા માગતા હતા પણ તમે લિંકને કોઈ અલગ ડિવાઇસ પરથી ખોલી છે, જેમાં તમે સાઇન ઇન થયા નથી.\n\nજો તમે હજી પણ તમારા %1$s એકાઉન્ટને કનેક્ટ કરવા માગતા હો, તો તમે જે ડિવાઇસ પરથી સાઇન-ઇન કરવાની પ્રક્રિયા શરૂ કરી હોય એના પરથી જ લિંક ખોલો. અન્યથા, આ ડિવાઇસ પરથી સાઇન-ઇન કરવા માટે આગળ વધો પર ટૅપ કરો.</string>
+    <string name="fui_or_continue_with">અથવા આનાથી ચાલુ રાખો</string>
+    <string name="fui_sign_in_with_email_link">ઇમેઇલ લિંક વડે સાઇન ઇન કરો</string>
+    <string name="fui_sign_in_with_password">પાસવર્ડ વડે સાઇન ઇન કરો</string>
     <string name="fui_verify_phone_number_title">તમારો ફોન નંબર દાખલ કરો</string>
     <string name="fui_invalid_phone_number">એક માન્ય ફોન નંબર દાખલ કરો</string>
     <string name="fui_enter_confirmation_code">અમે આ ફોન નંબર પર મોકલેલ 6-અંકનો કોડ દાખલ કરો</string>

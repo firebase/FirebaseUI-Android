@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Ak chcete pokračovať v prihlasovaní, potvrďte e‑mailovú adresu</string>
     <string name="fui_email_link_dismiss_button">Odmietnuť</string>
     <string name="fui_email_link_cross_device_linking_text">Pôvodne ste chceli prepojiť svoj účet v službe %1$s so svojím e‑mailovým účtom, ale odkaz ste otvorili v inom zariadení, v ktorom ste sa neprihlásili.\n\nAk stále chcete prepojiť svoj účet v službe %1$s, otvorte odkaz v rovnakom zariadení, v ktorom ste sa začali prihlasovať. V opačnom prípade klepnite na tlačidlo Pokračovať a prihláste sa v tomto zariadení.</string>
+    <string name="fui_or_continue_with">alebo Pokračovať s</string>
+    <string name="fui_sign_in_with_email_link">Prihlásiť sa pomocou e-mailového odkazu</string>
+    <string name="fui_sign_in_with_password">Prihlásiť sa pomocou hesla</string>
     <string name="fui_verify_phone_number_title">Zadajte svoje telefónne číslo</string>
     <string name="fui_invalid_phone_number">Zadajte platné telefónne číslo</string>
     <string name="fui_enter_confirmation_code">Zadajte 6-ciferný kód, ktorý sme odoslali na adresu</string>

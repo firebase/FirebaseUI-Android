@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">برای ادامه ورود به سیستم، ایمیل را به‌تأیید برسانید</string>
     <string name="fui_email_link_dismiss_button">نپذیرفتن</string>
     <string name="fui_email_link_cross_device_linking_text">ابتدا قصد داشتید %1$s را به حساب ایمیلتان متصل کنید، اما پیوند را در دستگاه دیگری باز کردید که در آن وارد سیستم نشده‌اید.\n\nاگر همچنان می‌خواهید حساب %1$s را متصل کنید، پیوند را در همان دستگاهی باز کنید که ورود به سیستم را با آن شروع کرده‌اید. درغیراین‌صورت، برای ورود به سیستم با این دستگاه، روی «ادامه» ضربه بزنید.</string>
+    <string name="fui_or_continue_with">یا ادامه با</string>
+    <string name="fui_sign_in_with_email_link">ورود با پیوند ایمیل</string>
+    <string name="fui_sign_in_with_password">ورود با رمز عبور</string>
     <string name="fui_verify_phone_number_title">شماره تلفن خود را وارد کنید</string>
     <string name="fui_invalid_phone_number">شماره تلفن معتبری وارد کنید</string>
     <string name="fui_enter_confirmation_code">وارد کردن کد ۶ رقمی ارسال‌شده به</string>

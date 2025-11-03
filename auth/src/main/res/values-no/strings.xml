@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Bekreft e-postadressen for å fortsette med påloggingen</string>
     <string name="fui_email_link_dismiss_button">Lukk</string>
     <string name="fui_email_link_cross_device_linking_text">Du forsøkte opprinnelig å koble %1$s til e-postkontoen din, men du åpnet linken på en annen enhet enn den du er pålogget med.\n\nHvis du fortsatt ønsker å koble til %1$s-kontoen din, åpner du linken på enheten du er pålogget med. Hvis ikke trykker du på Fortsett for å logge på med denne enheten.</string>
+    <string name="fui_or_continue_with">eller Fortsett med</string>
+    <string name="fui_sign_in_with_email_link">Logg på med e-postlenke</string>
+    <string name="fui_sign_in_with_password">Logg på med passord</string>
     <string name="fui_verify_phone_number_title">Oppgi telefonnummeret ditt</string>
     <string name="fui_invalid_phone_number">Oppgi et gyldig telefonnummer</string>
     <string name="fui_enter_confirmation_code">Oppgi den 6-sifrede koden vi sendte til</string>

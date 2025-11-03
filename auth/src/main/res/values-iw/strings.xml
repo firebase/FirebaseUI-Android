@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">יש לאשר את כתובת האימייל כדי להמשיך בתהליך הכניסה</string>
     <string name="fui_email_link_dismiss_button">סגירה</string>
     <string name="fui_email_link_cross_device_linking_text">כוונתך המקורית הייתה לקשר את חשבון %1$s לחשבון שלך, אבל פתחת את הקישור במכשיר אחר שממנו לא נכנסת לחשבון.\n\nבכל זאת רוצה לקשר את חשבון %1$s לחשבון שלך? אם כן, יש לפתוח את הקישור באותו מכשיר שבו התחלת את תהליך הכניסה. אם לא, יש להקיש על \'המשך\' כדי להיכנס לחשבון במכשיר הזה.</string>
+    <string name="fui_or_continue_with">או המשך עם</string>
+    <string name="fui_sign_in_with_email_link">היכנס באמצעות קישור אימייל</string>
+    <string name="fui_sign_in_with_password">היכנס באמצעות סיסמה</string>
     <string name="fui_verify_phone_number_title">הזן את מספר הטלפון שלך</string>
     <string name="fui_invalid_phone_number">מספר הטלפון שהזנת לא תקין</string>
     <string name="fui_enter_confirmation_code">הזן את הקוד בן 6 הספרות ששלחנו אל</string>

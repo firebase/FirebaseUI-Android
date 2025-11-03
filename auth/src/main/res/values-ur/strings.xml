@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">سائن ان جاری رکھنے کے لیے ای میل کی توثیق کریں</string>
     <string name="fui_email_link_dismiss_button">برخاست کریں</string>
     <string name="fui_email_link_cross_device_linking_text">آپ نے اصل میں اپنے ای میل اکاؤنٹ کو %1$s کے ساتھ منسلک کرنا چاہتے تھے لیکن آپ نے لنک کو دوسرے آلہ پر کھولا ہے جہاں آپ سائن ان نہیں ہیں۔‎\n\nاگر آپ ابھی بھی اپنے %1$s اکاؤنٹ سے منسلک ہونا چاہتے ہیں، تو اسی آلہ پر لنک کو کھولیں جہاں سے آپ نے سائن ان شروع کیا تھا۔ بصورت دیگر، اس آلہ پر مسلسل سائن کرنے کے لیے تھپتھپائيں۔</string>
+    <string name="fui_or_continue_with">یا اس کے ساتھ جاری رکھیں</string>
+    <string name="fui_sign_in_with_email_link">ای میل لنک سے سائن ان کریں</string>
+    <string name="fui_sign_in_with_password">پاس ورڈ سے سائن ان کریں</string>
     <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>

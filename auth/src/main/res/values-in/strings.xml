@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Konfirmasi email untuk melanjutkan login</string>
     <string name="fui_email_link_dismiss_button">Tutup</string>
     <string name="fui_email_link_cross_device_linking_text">Anda sebelumnya ingin menghubungkan %1$s ke akun email Anda, tapi telah membuka link di perangkat berbeda yang tidak digunakan untuk login.\n\nJika Anda masih ingin menghubungkan ke akun %1$s, buka link di perangkat yang sama yang digunakan untuk login. Jika tidak, ketuk Lanjutkan untuk login di perangkat ini.</string>
+    <string name="fui_or_continue_with">atau Lanjutkan dengan</string>
+    <string name="fui_sign_in_with_email_link">Login dengan link email</string>
+    <string name="fui_sign_in_with_password">Login dengan kata sandi</string>
     <string name="fui_verify_phone_number_title">Masukkan nomor telepon Anda</string>
     <string name="fui_invalid_phone_number">Masukkan nomor telepon yang valid</string>
     <string name="fui_enter_confirmation_code">Masukkan kode 6 digit yang kami kirimkan ke</string>

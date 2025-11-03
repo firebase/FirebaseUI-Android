@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Επιβεβαιώστε τη διεύθυνση ηλεκτρονικού ταχυδρομείου για να συνεχίσετε τη σύνδεση</string>
     <string name="fui_email_link_dismiss_button">Παράβλεψη</string>
     <string name="fui_email_link_cross_device_linking_text">Αρχικά, σκοπεύατε να συνδέσετε το %1$s με τον λογαριασμό ηλεκτρονικού ταχυδρομείου, αλλά, για το άνοιγμα του συνδέσμου, χρησιμοποιήσατε άλλη συσκευή στην οποία δεν είστε συνδεδεμένοι.\n\nΑν θέλετε να συνεχίσετε τη σύνδεση του λογαριασμού %1$s, ανοίξτε τον σύνδεσμο στην ίδια συσκευή από την οποία ξεκινήσατε τη σύνδεση. Διαφορετικά, πατήστε Συνέχεια για να συνδεθείτε σε αυτήν τη συσκευή.</string>
+    <string name="fui_or_continue_with">ή Συνέχεια με</string>
+    <string name="fui_sign_in_with_email_link">Σύνδεση με σύνδεσμο email</string>
+    <string name="fui_sign_in_with_password">Σύνδεση με κωδικό πρόσβασης</string>
     <string name="fui_verify_phone_number_title">Εισαγάγετε τον αριθμό τηλεφώνου σας</string>
     <string name="fui_invalid_phone_number">Καταχωρίστε έναν έγκυρο αριθμό τηλεφώνου</string>
     <string name="fui_enter_confirmation_code">Εισαγάγετε τον 6ψήφιο κωδικό που σας στείλαμε στο</string>

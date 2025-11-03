@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Lai turpinātu pierakstīšanos, apstipriniet e-pasta adresi.</string>
     <string name="fui_email_link_dismiss_button">Nerādīt</string>
     <string name="fui_email_link_cross_device_linking_text">Sākotnēji vēlējāties saistīt %1$s ar savu e-pasta kontu, tomēr saiti atvērāt citā ierīcē, kurā neesat pierakstījies.\n\nJa joprojām vēlaties saistīt savu %1$s kontu, atveriet saiti tajā pašā ierīcē, kurā sākāt pierakstīšanos. Pretējā gadījumā pieskarieties vienumam Turpināt, lai pierakstītos šajā ierīcē.</string>
+    <string name="fui_or_continue_with">vai Turpināt ar</string>
+    <string name="fui_sign_in_with_email_link">Pierakstīties ar e-pasta saiti</string>
+    <string name="fui_sign_in_with_password">Pierakstīties ar paroli</string>
     <string name="fui_verify_phone_number_title">Ievadiet savu tālruņa numuru</string>
     <string name="fui_invalid_phone_number">Ievadiet derīgu tālruņa numuru</string>
     <string name="fui_enter_confirmation_code">Ievadiet 6 ciparu kodu, ko nosūtījām</string>

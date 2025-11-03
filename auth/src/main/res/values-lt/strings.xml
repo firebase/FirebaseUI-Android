@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Patvirtinkite el. paštą, kad galėtumėte tęsti prisijungimą</string>
     <string name="fui_email_link_dismiss_button">Atsisakyti</string>
     <string name="fui_email_link_cross_device_linking_text">Iš pradžių ketinote susieti %1$s ir el. pašto paskyras, bet atidarėte nuorodą kitame įrenginyje, kuriame nesate prisijungę.\n\nJei vis tiek norite susieti %1$s paskyrą, atidarykite nuorodą tame pačiame įrenginyje, kuriame pradėjote prisijungimo procesą. Jei nenorite, palieskite „Tęsti“ ir prisijunkite šiame įrenginyje.</string>
+    <string name="fui_or_continue_with">arba Tęsti su</string>
+    <string name="fui_sign_in_with_email_link">Prisijungti el. pašto nuoroda</string>
+    <string name="fui_sign_in_with_password">Prisijungti slaptažodžiu</string>
     <string name="fui_verify_phone_number_title">Įveskite telefono numerį</string>
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>

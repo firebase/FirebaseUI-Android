@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">A bejelentkezés folytatásához erősítse meg az e-mail-címet</string>
     <string name="fui_email_link_dismiss_button">Elvetés</string>
     <string name="fui_email_link_cross_device_linking_text">Eredetileg össze szerette volna kapcsolni %1$s-fiókját az e-mail-fiókjával, a linket azonban olyan eszközön nyitotta meg, amelyen nem jelentkezett be.\n\nHa továbbra is össze kívánja kapcsolni %1$s-fiókját, akkor azon az eszközön nyissa meg a linket, amelyen megkezdte a bejelentkezést. Ha ezen az eszközön kíván bejelentkezni, akkor koppintson a Tovább gombra.</string>
+    <string name="fui_or_continue_with">vagy Tovább ezzel</string>
+    <string name="fui_sign_in_with_email_link">Bejelentkezés e-mail linkkel</string>
+    <string name="fui_sign_in_with_password">Bejelentkezés jelszóval</string>
     <string name="fui_verify_phone_number_title">Adja meg telefonszámát</string>
     <string name="fui_invalid_phone_number">Érvényes telefonszámot adjon meg.</string>
     <string name="fui_enter_confirmation_code">Adja meg a telefonszámra elküldött 6 számjegyű kódot</string>

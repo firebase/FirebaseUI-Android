@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Conferma l\'indirizzo email per proseguire con l\'accesso</string>
     <string name="fui_email_link_dismiss_button">Ignora</string>
     <string name="fui_email_link_cross_device_linking_text">Inizialmente intendevi collegare %1$s al tuo account email, ma hai aperto il link su un altro dispositivo, sul quale non hai eseguito l\'accesso.\n\nSe vuoi continuare a collegare l\'account su %1$s, apri il link sullo stesso dispositivo su cui hai iniziato la procedura di accesso. Altrimenti, tocca Continua per accedere su questo dispositivo.</string>
+    <string name="fui_or_continue_with">o Continua con</string>
+    <string name="fui_sign_in_with_email_link">Accedi con link email</string>
+    <string name="fui_sign_in_with_password">Accedi con password</string>
     <string name="fui_verify_phone_number_title">Inserisci il numero di telefono</string>
     <string name="fui_invalid_phone_number">Inserisci un numero di telefono valido</string>
     <string name="fui_enter_confirmation_code">Inserisci il codice a 6 cifre che abbiamo inviato al numero</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Bevestig uw e-mailadres om door te gaan met inloggen</string>
     <string name="fui_email_link_dismiss_button">Afwijzen</string>
     <string name="fui_email_link_cross_device_linking_text">U wilde aanvankelijk %1$s aan uw e-mailaccount koppelen, maar u heeft de link geopend op een andere apparaat, waarop u niet ingelogd bent.\n\nAls u nog steeds verbinding wilt maken met uw %1$s-account, opent u de link op het apparaat waarop u het inlogproces bent gestart. Tik anders op Doorgaan om in te loggen op dit apparaat.</string>
+    <string name="fui_or_continue_with">of Doorgaan met</string>
+    <string name="fui_sign_in_with_email_link">Inloggen met e-maillink</string>
+    <string name="fui_sign_in_with_password">Inloggen met wachtwoord</string>
     <string name="fui_verify_phone_number_title">Voer uw telefoonnummer in</string>
     <string name="fui_invalid_phone_number">Voer een geldig telefoonnummer in</string>
     <string name="fui_enter_confirmation_code">Voer de zescijferige code in die we hebben verzonden naar</string>

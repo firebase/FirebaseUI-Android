@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Confirmați adresa de e-mail pentru a continua conectarea</string>
     <string name="fui_email_link_dismiss_button">Închideți</string>
     <string name="fui_email_link_cross_device_linking_text">Inițial ați intenționat să conectați %1$s la contul de e-mail, dar ați deschis linkul pe un dispozitiv pe care nu sunteți conectat(ă).\n\nDacă doriți să continuați conectarea contului %1$s, deschideți linkul pe același dispozitiv pe care ați început conectarea. În caz contrar, atingeți Continuați pentru a vă conecta pe acest dispozitiv.</string>
+    <string name="fui_or_continue_with">sau Continuă cu</string>
+    <string name="fui_sign_in_with_email_link">Conectați-vă cu linkul din e-mail</string>
+    <string name="fui_sign_in_with_password">Conectați-vă cu parola</string>
     <string name="fui_verify_phone_number_title">Introduceți numărul de telefon</string>
     <string name="fui_invalid_phone_number">Introduceți un număr valid de telefon</string>
     <string name="fui_enter_confirmation_code">Introduceți codul din 6 cifre pe care l-am trimis la</string>

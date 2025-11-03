@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">ಸೈನ್ ಇನ್ ಮುಂದುವರಿಸಲು ಇಮೇಲ್ ದೃಢೀಕರಿಸಿ</string>
     <string name="fui_email_link_dismiss_button">ವಜಾಗೊಳಿಸಿ</string>
     <string name="fui_email_link_cross_device_linking_text">ನೀವು ಮೂಲತಃ %1$s ಅನ್ನು ನಿಮ್ಮ ಇಮೇಲ್ ಜೊತೆಗೆ ಸಂಪರ್ಕಿಸಲು ಬಯಸಿದ್ದೀರಿ ಆದರೆ ನೀವು ಸೈನ್ ಇನ್ ಮಾಡದಿರುವ ಬೇರೆ ಸಾಧನದಲ್ಲಿ ಲಿಂಕ್ ಅನ್ನು ತೆರೆದಿದ್ದೀರಿ.n\nನಿಮ್ಮ %1$s ಖಾತೆಯನ್ನು ಇನ್ನೂ ನೀವು ಸಂಪರ್ಕಿಸಲು ಬಯಸಿದರೆ, ನೀವು ಸೈನ್ ಇನ್ ಮಾಡದೇ ಇರುವ ಅದೇ ಸಾಧನದಲ್ಲಿ ಲಿಂಕ್ ತೆರೆಯಿರಿ. ಇಲ್ಲದಿದ್ದರೆ ಈ ಸಾಧನದಲ್ಲಿ ಸೈನ್ ಇನ್ ಮಾಡಲು ಮುಂದುವರಿಸಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="fui_or_continue_with">ಅಥವಾ ಇದರೊಂದಿಗೆ ಮುಂದುವರಿಸಿ</string>
+    <string name="fui_sign_in_with_email_link">ಇಮೇಲ್ ಲಿಂಕ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="fui_sign_in_with_password">ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_verify_phone_number_title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>

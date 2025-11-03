@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">साइन इन जारी रखने के लिए ईमेल की पुष्टि करें</string>
     <string name="fui_email_link_dismiss_button">खारिज करें</string>
     <string name="fui_email_link_cross_device_linking_text">आप पहले %1$s को अपने ईमेल खाते से जोड़ना चाहते थे, लेकिन आपने ऐसे किसी अलग डिवाइस से लिंक खोला है, जहां आप साइन-इन नहीं हैं.\n\nअगर आप अब भी अपने %1$s खाते को जोड़ना चाहते हैं, तो उसी डिवाइस पर लिंक खोलें जिस पर आपने साइन-इन करना शुरू किया था. या फिर, इस डिवाइस से साइन इन करने के लिए \'जारी रखें\' पर टैप करें.</string>
+    <string name="fui_or_continue_with">या इसके साथ जारी रखें</string>
+    <string name="fui_sign_in_with_email_link">ईमेल लिंक से साइन इन करें</string>
+    <string name="fui_sign_in_with_password">पासवर्ड से साइन इन करें</string>
     <string name="fui_verify_phone_number_title">अपना फ़ोन नंबर डालें</string>
     <string name="fui_invalid_phone_number">कोई मान्य फ़ोन नंबर डालें</string>
     <string name="fui_enter_confirmation_code">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Kumpirmahin ang email para magpatuloy sa pag-sign in</string>
     <string name="fui_email_link_dismiss_button">I-dismiss</string>
     <string name="fui_email_link_cross_device_linking_text">Orihinal na sinadya mong ikonekta ang %1$s sa iyong email account pero nabuksan ang link sa ibang device kung saan hindi ka naka-sign in.\n\nKung gusto mo pa ring ikonekta ang iyong %1$s account, buksan ang link sa parehong device kung saan ka nagsimulang mag-sign in. Kung hindi, i-tap ang Magpatuloy para makapag-sign in sa device na ito.</string>
+    <string name="fui_or_continue_with">o Magpatuloy gamit ang</string>
+    <string name="fui_sign_in_with_email_link">Mag-sign in gamit ang email link</string>
+    <string name="fui_sign_in_with_password">Mag-sign in gamit ang password</string>
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>

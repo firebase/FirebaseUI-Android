@@ -148,6 +148,15 @@ class DefaultAuthUIStringProvider(
     override fun emailSignInLinkSentDialogBody(email: String): String =
         localizedContext.getString(R.string.fui_email_link_email_sent, email)
 
+    override val orContinueWith: String
+        get() = localizedContext.getString(R.string.fui_or_continue_with)
+
+    override val signInWithEmailLink: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_email_link)
+
+    override val signInWithPassword: String
+        get() = localizedContext.getString(R.string.fui_sign_in_with_password)
+
     override val emailLinkPromptForEmailTitle: String
         get() = localizedContext.getString(R.string.fui_email_link_confirm_email_header)
 

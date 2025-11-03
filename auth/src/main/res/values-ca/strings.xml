@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Confirma l\'adreça electrònica per continuar amb l\'inici de sessió</string>
     <string name="fui_email_link_dismiss_button">Ignora</string>
     <string name="fui_email_link_cross_device_linking_text">Inicialment has intentat connectar %1$s amb el teu compte de correu electrònic, però has obert l\'enllaç amb un dispositiu diferent en què no has iniciat la sessió.\n\nSi encara vols connectar el compte que tens a %1$s, obre l\'enllaç al mateix dispositiu en què has començat a iniciar la sessió. Si no, toca Continua per iniciar la sessió en aquest dispositiu.</string>
+    <string name="fui_or_continue_with">o Continua amb</string>
+    <string name="fui_sign_in_with_email_link">Inicia la sessió amb l\'enllaç de correu electrònic</string>
+    <string name="fui_sign_in_with_password">Inicia la sessió amb la contrasenya</string>
     <string name="fui_verify_phone_number_title">Introdueix el número de telèfon</string>
     <string name="fui_invalid_phone_number">Introdueix un número de telèfon vàlid</string>
     <string name="fui_enter_confirmation_code">Introdueix el codi de 6 dígits que s\'ha enviat al número</string>

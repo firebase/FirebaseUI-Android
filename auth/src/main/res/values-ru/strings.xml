@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Чтобы продолжить вход, подтвердите адрес электронной почты.</string>
     <string name="fui_email_link_dismiss_button">ОК</string>
     <string name="fui_email_link_cross_device_linking_text">Вы пытались связать аккаунт сервиса %1$s со своим адресом электронной почты, однако перешли по ссылке на устройстве, на котором у вас не выполнен вход.\n\nЧтобы пройти авторизацию на текущем компьютере, телефоне или планшете, нажмите \"Продолжить\". Если вы все-таки хотите связать аккаунт сервиса %1$s со своим адресом электронной почты, откройте ссылку на устройстве, на котором начали процесс входа.</string>
+    <string name="fui_or_continue_with">или Продолжить с</string>
+    <string name="fui_sign_in_with_email_link">Войти по ссылке из письма</string>
+    <string name="fui_sign_in_with_password">Войти с паролем</string>
     <string name="fui_verify_phone_number_title">Введите номер телефона</string>
     <string name="fui_invalid_phone_number">Введите действительный номер телефона.</string>
     <string name="fui_enter_confirmation_code">Введите 6-значный код, отправленный на номер</string>

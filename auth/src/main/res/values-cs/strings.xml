@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Pokud chcete pokračovat v přihlášení, potvrďte e-mailovou adresu.</string>
     <string name="fui_email_link_dismiss_button">Zavřít</string>
     <string name="fui_email_link_cross_device_linking_text">Původně jste chtěli propojit %1$s se svým e-mailovým účtem, ale otevřeli jste odkaz na jiném zařízení, na kterém nejste přihlášení.\n\nPokud stále chcete propojit svůj účet %1$s, otevřete odkaz na stejném zařízení, na kterém jste se začali přihlašovat. V opačném případě klepněte na možnost Pokračovat a přihlaste se na tomto zařízení.</string>
+    <string name="fui_or_continue_with">nebo Pokračovat s</string>
+    <string name="fui_sign_in_with_email_link">Přihlásit se pomocí e-mailového odkazu</string>
+    <string name="fui_sign_in_with_password">Přihlásit se pomocí hesla</string>
     <string name="fui_verify_phone_number_title">Zadejte své telefonní číslo</string>
     <string name="fui_invalid_phone_number">Zadejte platné telefonní číslo</string>
     <string name="fui_enter_confirmation_code">Zadejte šestimístný kód, který jsme vám zaslali</string>

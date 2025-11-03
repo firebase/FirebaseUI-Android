@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Potwierdź adres e-mail, aby kontynuować logowanie się</string>
     <string name="fui_email_link_dismiss_button">Odrzuć</string>
     <string name="fui_email_link_cross_device_linking_text">Podjęto próbę połączenia konta %1$s z kontem, na którym używasz podanego adresu e-mail, ale link został otwarty na innym urządzeniu, na którym użytkownik nie był zalogowany.\n\nJeśli nadal chcesz połączyć konto w serwisie %1$s, otwórz link na urządzeniu, na którym rozpoczęto logowanie. W przeciwnym razie wybierz Dalej, by zalogować się na tym urządzeniu.</string>
+    <string name="fui_or_continue_with">lub Kontynuuj z</string>
+    <string name="fui_sign_in_with_email_link">Zaloguj się za pomocą linku e-mail</string>
+    <string name="fui_sign_in_with_password">Zaloguj się za pomocą hasła</string>
     <string name="fui_verify_phone_number_title">Wpisz numer telefonu</string>
     <string name="fui_invalid_phone_number">Wpisz prawidłowy numer telefonu</string>
     <string name="fui_enter_confirmation_code">Wpisz sześciocyfrowy kod, który wysłaliśmy na numer</string>

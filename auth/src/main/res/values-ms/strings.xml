@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Sahkan e-mel untuk meneruskan log masuk</string>
     <string name="fui_email_link_dismiss_button">Ketepikan</string>
     <string name="fui_email_link_cross_device_linking_text">Pada asalnya, anda mahu menyambungkan %1$s kepada akaun e-mel anda tetapi telah membuka pautan pada peranti berbeza yang tidak dilog masuk.\n\nJika anda masih mahu memautkan akaun %1$s anda, buka pautan pada peranti yang anda gunakan untuk log masuk. Jika tidak, ketik Teruskan untuk log masuk pada peranti ini.</string>
+    <string name="fui_or_continue_with">atau Teruskan dengan</string>
+    <string name="fui_sign_in_with_email_link">Log masuk dengan pautan e-mel</string>
+    <string name="fui_sign_in_with_password">Log masuk dengan kata laluan</string>
     <string name="fui_verify_phone_number_title">Masukkan nombor telefon anda</string>
     <string name="fui_invalid_phone_number">Masukkan nombor telefon yang sah</string>
     <string name="fui_enter_confirmation_code">Masukkan kod 6 digit yang kami hantar ke</string>

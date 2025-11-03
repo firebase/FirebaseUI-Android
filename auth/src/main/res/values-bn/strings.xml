@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">সাইন-ইন করতে ইমেল আইডি কনফার্ম করুন</string>
     <string name="fui_email_link_dismiss_button">খারিজ করুন</string>
     <string name="fui_email_link_cross_device_linking_text">আপনি %1$s অ্যাকাউন্ট ইমেল অ্যাকাউন্টের সাথে কানেক্ট করতে চেয়েছিলেন কিন্তু এমন একটি ডিভাইসে লিঙ্কটি খুলেছেন যেখানে সাইন-ইন করেননি।\n\nআপনি যদি এখনও %1$s অ্যাকাউন্টটি কানেক্ট করতে চান, যে ডিভাইসে সাইন-ইন করেছিলেন সেখানেই লিঙ্কটি খুলুন। নাহলে, ডিভাইসের সাইন-ইন বিকল্পে ট্যাপ করুন।</string>
+    <string name="fui_or_continue_with">বা এটি দিয়ে চালিয়ে যান</string>
+    <string name="fui_sign_in_with_email_link">ইমেল লিঙ্ক দিয়ে সাইন ইন করুন</string>
+    <string name="fui_sign_in_with_password">পাসওয়ার্ড দিয়ে সাইন ইন করুন</string>
     <string name="fui_verify_phone_number_title">আপনার ফোন নম্বর লিখুন</string>
     <string name="fui_invalid_phone_number">একটি সঠিক ফোন নম্বর লিখুন</string>
     <string name="fui_enter_confirmation_code">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>

@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Bekräfta e-postadressen om du vill fortsätta med inloggningen</string>
     <string name="fui_email_link_dismiss_button">Stäng</string>
     <string name="fui_email_link_cross_device_linking_text">Du skulle ansluta %1$s till ditt e-postkonto men har öppnat länken på en annan enhet där du inte är inloggad.\n\nOm du fortfarande vill ansluta ditt %1$s-konto ska du öppna länken på den enhet där du påbörjade inloggningen. Annars kan du klicka på Fortsätt för att logga in på den här enheten.</string>
+    <string name="fui_or_continue_with">eller Fortsätt med</string>
+    <string name="fui_sign_in_with_email_link">Logga in med e-postlänk</string>
+    <string name="fui_sign_in_with_password">Logga in med lösenord</string>
     <string name="fui_verify_phone_number_title">Ange ditt telefonnummer</string>
     <string name="fui_invalid_phone_number">Ange ett giltigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Ange den sexsiffriga koden vi skickade till</string>

@@ -206,7 +206,7 @@ fun SignInEmailLinkUI(
             ) {
                 HorizontalDivider(modifier = Modifier.weight(1f))
                 Text(
-                    text = "or Continue with",
+                    text = stringProvider.orContinueWith,
                     modifier = Modifier.padding(horizontal = 8.dp),
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -220,7 +220,7 @@ fun SignInEmailLinkUI(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !isLoading
             ) {
-                Text("Sign in with password".uppercase())
+                Text(stringProvider.signInWithPassword.uppercase())
             }
 
             Spacer(modifier = Modifier.height(16.dp))

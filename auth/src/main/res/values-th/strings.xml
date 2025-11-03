@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">ยืนยันอีเมลเพื่อลงชื่อเข้าใช้ต่อ</string>
     <string name="fui_email_link_dismiss_button">ปิด</string>
     <string name="fui_email_link_cross_device_linking_text">แต่เดิมคุณตั้งใจที่จะเชื่อม %1$s เข้ากับบัญชีอีเมลแต่ได้เปิดลิงก์บนอุปกรณ์อื่นที่ไม่ได้ลงชื่อเข้าใช้\n\nหากยังต้องการเชื่อมบัญชี %1$s ให้เปิดลิงก์บนอุปกรณ์เดียวกันกับที่เริ่มลงชื่อเข้าใช้ หรือแตะ \"ต่อไป\" เพื่อลงชื่อเข้าใช้บนอุปกรณ์นี้</string>
+    <string name="fui_or_continue_with">หรือดำเนินการต่อด้วย</string>
+    <string name="fui_sign_in_with_email_link">ลงชื่อเข้าใช้ด้วยลิงก์อีเมล</string>
+    <string name="fui_sign_in_with_password">ลงชื่อเข้าใช้ด้วยรหัสผ่าน</string>
     <string name="fui_verify_phone_number_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>

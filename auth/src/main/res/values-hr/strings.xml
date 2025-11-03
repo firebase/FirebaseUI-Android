@@ -75,6 +75,9 @@
     <string name="fui_email_link_confirm_email_message">Za nastavak prijave potvrdite e-adresu</string>
     <string name="fui_email_link_dismiss_button">Odbaci</string>
     <string name="fui_email_link_cross_device_linking_text">Izvorno ste namjeravali povezati %1$s račun sa svojim računom e-pošte, no otvorili ste vezu na drugom uređaju na kojem niste prijavljeni.\n\nAko i dalje želite povezati svoj %1$s račun, otvorite vezu na uređaju na kojem ste pokrenuli postupak prijave. U suprotnom dodirnite Nastavi da biste se prijavili na ovom uređaju.</string>
+    <string name="fui_or_continue_with">ili Nastavi s</string>
+    <string name="fui_sign_in_with_email_link">Prijavite se pomoću poveznice e-pošte</string>
+    <string name="fui_sign_in_with_password">Prijavite se pomoću lozinke</string>
     <string name="fui_verify_phone_number_title">Unesite telefonski broj</string>
     <string name="fui_invalid_phone_number">Unesite važeći telefonski broj</string>
     <string name="fui_enter_confirmation_code">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>
