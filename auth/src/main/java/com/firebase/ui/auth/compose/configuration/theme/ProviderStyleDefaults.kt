@@ -43,7 +43,7 @@ internal object ProviderStyleDefaults {
                 Provider.FACEBOOK -> {
                     provider.id to AuthUITheme.ProviderStyle(
                         icon = AuthUIAsset.Resource(R.drawable.fui_ic_facebook_white_22dp),
-                        backgroundColor = Color(0xFF3B5998),
+                        backgroundColor = Color(0xFF1877F2),
                         contentColor = Color.White
                     )
                 }

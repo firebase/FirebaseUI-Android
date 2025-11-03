@@ -27,12 +27,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -70,6 +72,7 @@ fun EnterPhoneNumberUI(
     onCountrySelected: (CountryData) -> Unit,
     onSendCodeClick: () -> Unit,
     title: String? = null,
+    onNavigateBack: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
@@ -90,6 +93,16 @@ fun EnterPhoneNumberUI(
             TopAppBar(
                 title = {
                     Text(title ?: stringProvider.signInWithPhone)
+                },
+                navigationIcon = {
+                    if (onNavigateBack != null) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringProvider.backAction
+                            )
+                        }
+                    }
                 },
                 colors = AuthUITheme.topAppBarColors
             )

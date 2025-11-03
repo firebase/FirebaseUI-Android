@@ -308,7 +308,8 @@ fun PhoneAuthScreen(
     } else {
         DefaultPhoneAuthContent(
             configuration = configuration,
-            state = state
+            state = state,
+            onCancel = onCancel
         )
     }
 }
@@ -316,7 +317,8 @@ fun PhoneAuthScreen(
 @Composable
 private fun DefaultPhoneAuthContent(
     configuration: AuthUIConfiguration,
-    state: PhoneAuthContentState
+    state: PhoneAuthContentState,
+    onCancel: () -> Unit,
 ) {
     when (state.step) {
         PhoneAuthStep.EnterPhoneNumber -> {
@@ -327,7 +329,8 @@ private fun DefaultPhoneAuthContent(
                 selectedCountry = state.selectedCountry,
                 onPhoneNumberChange = state.onPhoneNumberChange,
                 onCountrySelected = state.onCountrySelected,
-                onSendCodeClick = state.onSendCodeClick
+                onSendCodeClick = state.onSendCodeClick,
+                onNavigateBack = onCancel
             )
         }
 
