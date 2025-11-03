@@ -19,15 +19,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -35,7 +26,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            // Only sign with debug keystore if it exists (for local testing)
+            val debugKeystoreFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+            if (debugKeystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("debug")
+            }
         }
     }
     compileOptions {
