@@ -16,6 +16,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+          Test activity for email link deep link handling.
+          This handles ACTION_VIEW intents with email link URLs from the Firebase Auth Emulator.
+        -->
+        <activity
+            android:name="com.firebase.ui.auth.compose.testutil.EmailLinkTestActivity"
+            android:exported="false"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- Handle emulator links (http://127.0.0.1:9099/...) -->
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="127.0.0.1" />
+                <data android:host="fake-project-id.firebaseapp.com" />
+            </intent-filter>
+        </activity>
     </application>
 
     <!-- No runtime permissions needed for unit tests -->
