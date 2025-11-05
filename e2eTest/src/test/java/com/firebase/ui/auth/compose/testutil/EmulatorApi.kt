@@ -52,6 +52,20 @@ class EmulatorAuthApi(
             ?: throw Exception("No VERIFY_EMAIL OOB code found for user email: $email")
     }
 
+    fun fetchEmailSignInLink(email: String): String {
+        val oobCodes = fetchOobCodes()
+        return (0 until oobCodes.length())
+            .asSequence()
+            .mapNotNull { index -> oobCodes.optJSONObject(index) }
+            .lastOrNull { json ->
+                json.optString("email") == email &&
+                        json.optString("requestType") == "EMAIL_SIGNIN"
+            }
+            ?.optString("oobLink")
+            ?.takeIf { it.isNotBlank() }
+            ?: throw Exception("No EMAIL_SIGNIN OOB link found for user email: $email")
+    }
+
     fun fetchVerifyPhoneCode(phone: String): String {
         val payload =
             httpClient.get("/emulator/v1/projects/$projectId/verificationCodes") { connection ->
