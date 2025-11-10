@@ -18,14 +18,14 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.compose.configuration.authUIConfiguration
 import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.data.CountryUtils
 import com.firebase.ui.auth.compose.ui.components.AuthProviderButton
 import com.firebase.ui.auth.compose.ui.components.AuthTextField
 import com.firebase.ui.auth.compose.ui.components.CountrySelector
 import com.firebase.ui.auth.compose.ui.components.QrCodeImage
 import com.firebase.ui.auth.compose.ui.components.VerificationCodeInputField
-import com.firebase.ui.auth.compose.ui.screens.SignInUI
+import com.firebase.ui.auth.compose.ui.screens.email.SignInUI
 import com.firebase.ui.auth.compose.ui.screens.phone.EnterPhoneNumberUI
+import com.firebase.ui.auth.compose.util.CountryUtils
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

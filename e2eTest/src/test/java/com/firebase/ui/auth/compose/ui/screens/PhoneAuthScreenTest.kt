@@ -29,13 +29,13 @@ import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.data.CountryUtils
 import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.compose.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.compose.ui.screens.phone.EnterVerificationCodeUI
 import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthStep
+import com.firebase.ui.auth.compose.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions

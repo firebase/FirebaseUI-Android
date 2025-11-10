@@ -23,7 +23,6 @@ rootProject.buildFileName = 'build.gradle.kts'
 
 include(
         ":app",
-        ":composeapp",
         ":library",
         ":auth",
         ":e2eTest",
