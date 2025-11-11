@@ -26,6 +26,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -207,52 +208,56 @@ fun FirebaseAuthScreen(
                 startDestination = AuthRoute.MethodPicker.route
             ) {
                 composable(AuthRoute.MethodPicker.route) {
-                    AuthMethodPicker(
-                        providers = configuration.providers,
-                        logo = logoAsset,
-                        termsOfServiceUrl = configuration.tosUrl,
-                        privacyPolicyUrl = configuration.privacyPolicyUrl,
-                        onProviderSelected = { provider ->
-                            when (provider) {
-                                is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
+                    Scaffold { innerPadding ->
+                        AuthMethodPicker(
+                            modifier = modifier
+                                .padding(innerPadding),
+                            providers = configuration.providers,
+                            logo = logoAsset,
+                            termsOfServiceUrl = configuration.tosUrl,
+                            privacyPolicyUrl = configuration.privacyPolicyUrl,
+                            onProviderSelected = { provider ->
+                                when (provider) {
+                                    is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
 
-                                is AuthProvider.Email -> {
-                                    navController.navigate(AuthRoute.Email.route)
-                                }
+                                    is AuthProvider.Email -> {
+                                        navController.navigate(AuthRoute.Email.route)
+                                    }
 
-                                is AuthProvider.Phone -> {
-                                    navController.navigate(AuthRoute.Phone.route)
-                                }
+                                    is AuthProvider.Phone -> {
+                                        navController.navigate(AuthRoute.Phone.route)
+                                    }
 
-                                is AuthProvider.Google -> onSignInWithGoogle?.invoke()
+                                    is AuthProvider.Google -> onSignInWithGoogle?.invoke()
 
-                                is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
+                                    is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
 
-                                is AuthProvider.Apple -> onSignInWithApple?.invoke()
+                                    is AuthProvider.Apple -> onSignInWithApple?.invoke()
 
-                                is AuthProvider.Github -> onSignInWithGithub?.invoke()
+                                    is AuthProvider.Github -> onSignInWithGithub?.invoke()
 
-                                is AuthProvider.Microsoft -> onSignInWithMicrosoft?.invoke()
+                                    is AuthProvider.Microsoft -> onSignInWithMicrosoft?.invoke()
 
-                                is AuthProvider.Yahoo -> onSignInWithYahoo?.invoke()
+                                    is AuthProvider.Yahoo -> onSignInWithYahoo?.invoke()
 
-                                is AuthProvider.Twitter -> onSignInWithTwitter?.invoke()
+                                    is AuthProvider.Twitter -> onSignInWithTwitter?.invoke()
 
-                                is AuthProvider.GenericOAuth -> genericOAuthHandlers[provider]?.invoke()
+                                    is AuthProvider.GenericOAuth -> genericOAuthHandlers[provider]?.invoke()
 
-                                else -> {
-                                    onSignInFailure(
-                                        AuthException.UnknownException(
-                                            message = "Provider ${provider.providerId} is not supported in FirebaseAuthScreen",
-                                            cause = IllegalArgumentException(
-                                                "Provider ${provider.providerId} is not supported in FirebaseAuthScreen"
+                                    else -> {
+                                        onSignInFailure(
+                                            AuthException.UnknownException(
+                                                message = "Provider ${provider.providerId} is not supported in FirebaseAuthScreen",
+                                                cause = IllegalArgumentException(
+                                                    "Provider ${provider.providerId} is not supported in FirebaseAuthScreen"
+                                                )
                                             )
                                         )
-                                    )
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
 
                 composable(AuthRoute.Email.route) {
