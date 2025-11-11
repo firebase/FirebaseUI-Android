@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.compose.util.EmailLinkConstants
 import kotlinx.coroutines.launch
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -91,6 +92,9 @@ class FirebaseAuthActivity : ComponentActivity() {
 
         authUI = FirebaseAuthUI.getInstance()
 
+        // Extract email link if present
+        val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
+
         // Observe auth state to automatically finish when done
         lifecycleScope.launch {
             authUI.authStateFlow().collect { state ->
@@ -130,6 +134,7 @@ class FirebaseAuthActivity : ComponentActivity() {
                 FirebaseAuthScreen(
                     authUI = authUI,
                     configuration = configuration,
+                    emailLink = emailLink,
                     onSignInSuccess = { authResult ->
                         // State flow will handle finishing
                     },
