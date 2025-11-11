@@ -487,21 +487,6 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         val serverClientId: String?,
 
         /**
-         * Requests an ID token. Default to true.
-         */
-        val requestIdToken: Boolean = true,
-
-        /**
-         * Requests the user's profile information. Defaults to true.
-         */
-        val requestProfile: Boolean = true,
-
-        /**
-         * Requests the user's email address. Defaults to true.
-         */
-        val requestEmail: Boolean = true,
-
-        /**
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String> = emptyMap(),
