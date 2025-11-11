@@ -61,7 +61,7 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
 
 ## Demo
 
-![FirebaseUI Compose Demo](demo.gif)
+<img src="demo.gif" alt="FirebaseUI Compose Demo" width="300" />
 
 ## Setup
 
