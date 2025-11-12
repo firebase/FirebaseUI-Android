@@ -329,21 +329,6 @@ Some things to keep in mind before publishing the release:
   from people that immediately adopt it, and uncovering and resolving those
   support issues will take more time if you're unavailable.
 
-### Run a release...
-
-1. Switch to `master` branch locally.
-2. Run `git pull origin master`.
-3. Run `git pull --tags` to make sure all tags are fetched.
-4. Create new branch with the signature "release/[year]-[month]-[day]".
-5. Push your branch to git running `git push origin [RELEASE BRANCH NAME]`.
-6. Update version numbers in `gradle.properties`.
-7. Update `CHANGELOG.md` with release notes.
-8. Run `./gradlew assembleRelease` to verify the release builds.
-9. Run `git push origin [RELEASE BRANCH NAME]` & open pull request for review on GitHub.
-10. After successful review and merge of the pull request, switch to `master` branch locally, & run `git pull origin master`.
-11. Create and push a git tag: `git tag -a vX.Y.Z -m "Release X.Y.Z"` and `git push --tags`.
-12. Run `./gradlew publish` to publish to Maven Central.
-
 ## 7. Contributing documentation
 
 We gladly accept contributions to the SDK documentation. As our docs are also part of this repo,
