@@ -12,13 +12,13 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.mfa
+package com.firebase.ui.auth.mfa
 
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException

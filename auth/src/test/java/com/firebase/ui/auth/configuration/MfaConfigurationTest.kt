@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration
+package com.firebase.ui.auth.configuration
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

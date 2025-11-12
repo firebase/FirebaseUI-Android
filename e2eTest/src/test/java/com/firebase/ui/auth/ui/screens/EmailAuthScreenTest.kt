@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
 import android.content.Intent
@@ -26,23 +26,24 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
-import com.firebase.ui.auth.compose.testutil.EmailLinkTestActivity
-import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
-import com.firebase.ui.auth.compose.testutil.ensureFreshUser
-import com.firebase.ui.auth.compose.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
+import com.firebase.ui.auth.testutil.EmailLinkTestActivity
+import com.firebase.ui.auth.testutil.EmulatorAuthApi
+import com.firebase.ui.auth.testutil.ensureFreshUser
+import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.After
 import org.junit.Assume
@@ -237,7 +238,7 @@ class EmailAuthScreenTest {
         } catch (e: Exception) {
             // If we can't fetch OOB codes, the emulator might not be configured correctly
             // or might not be running. Skip this test with a clear message.
-            org.junit.Assume.assumeTrue(
+            Assume.assumeTrue(
                 "Skipping test: Firebase Auth Emulator OOB codes endpoint not available. " +
                         "Ensure emulator is running on localhost:9099. Error: ${e.message}",
                 false

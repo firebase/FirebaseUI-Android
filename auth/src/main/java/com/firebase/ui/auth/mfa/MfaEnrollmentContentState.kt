@@ -12,10 +12,10 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.mfa
+package com.firebase.ui.auth.mfa
 
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.data.CountryData
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.data.CountryData
 import com.google.firebase.auth.MultiFactorInfo
 
 /**
@@ -49,9 +49,9 @@ import com.google.firebase.auth.MultiFactorInfo
  * @property error An optional error message to display to the user. Will be `null` if there's no error.
  * @property onBackClick Callback to navigate to the previous step in the flow. Invoked when the user clicks a back button.
  *
- * @property availableFactors (Step: [MfaEnrollmentStep.SelectFactor]) A list of MFA factors the user can choose from (e.g., SMS, TOTP). Determined by [com.firebase.ui.auth.compose.configuration.MfaConfiguration.allowedFactors].
+ * @property availableFactors (Step: [MfaEnrollmentStep.SelectFactor]) A list of MFA factors the user can choose from (e.g., SMS, TOTP). Determined by [com.firebase.ui.auth.configuration.MfaConfiguration.allowedFactors].
  * @property onFactorSelected (Step: [MfaEnrollmentStep.SelectFactor]) Callback invoked when the user selects an MFA factor. Receives the selected [MfaFactor].
- * @property onSkipClick (Step: [MfaEnrollmentStep.SelectFactor]) Callback for the "Skip" action. Will be `null` if MFA enrollment is required via [com.firebase.ui.auth.compose.configuration.MfaConfiguration.requireEnrollment].
+ * @property onSkipClick (Step: [MfaEnrollmentStep.SelectFactor]) Callback for the "Skip" action. Will be `null` if MFA enrollment is required via [com.firebase.ui.auth.configuration.MfaConfiguration.requireEnrollment].
  *
  * @property phoneNumber (Step: [MfaEnrollmentStep.ConfigureSms]) The current value of the phone number input field. Does not include country code prefix.
  * @property onPhoneNumberChange (Step: [MfaEnrollmentStep.ConfigureSms]) Callback invoked when the phone number input changes. Receives the new phone number string.
@@ -70,7 +70,7 @@ import com.google.firebase.auth.MultiFactorInfo
  * @property resendTimer (Step: [MfaEnrollmentStep.VerifyFactor], SMS only) The number of seconds remaining before the "Resend" action is available. Will be 0 when resend is allowed.
  * @property onResendCodeClick (Step: [MfaEnrollmentStep.VerifyFactor], SMS only) Callback to resend the SMS verification code. Will be `null` for TOTP verification.
  *
- * @property recoveryCodes (Step: [MfaEnrollmentStep.ShowRecoveryCodes]) A list of one-time backup codes the user should save. Only present if [com.firebase.ui.auth.compose.configuration.MfaConfiguration.enableRecoveryCodes] is `true`.
+ * @property recoveryCodes (Step: [MfaEnrollmentStep.ShowRecoveryCodes]) A list of one-time backup codes the user should save. Only present if [com.firebase.ui.auth.configuration.MfaConfiguration.enableRecoveryCodes] is `true`.
  * @property onCodesSavedClick (Step: [MfaEnrollmentStep.ShowRecoveryCodes]) Callback invoked when the user confirms they have saved their recovery codes. Completes the enrollment flow.
  *
  * @since 10.0.0

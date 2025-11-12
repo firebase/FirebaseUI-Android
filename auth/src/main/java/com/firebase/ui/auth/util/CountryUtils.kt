@@ -1,7 +1,7 @@
-package com.firebase.ui.auth.compose.util
+package com.firebase.ui.auth.util
 
-import com.firebase.ui.auth.compose.data.ALL_COUNTRIES
-import com.firebase.ui.auth.compose.data.CountryData
+import com.firebase.ui.auth.data.ALL_COUNTRIES
+import com.firebase.ui.auth.data.CountryData
 import java.text.Normalizer
 import java.util.Locale
 

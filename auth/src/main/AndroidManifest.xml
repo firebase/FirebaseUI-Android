@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +18,7 @@
 
         <service android:name="com.google.firebase.components.ComponentDiscoveryService">
             <meta-data
-                android:name="com.google.firebase.components:com.firebase.ui.auth.compose.FirebaseUIComposeRegistrar"
+                android:name="com.google.firebase.components:com.firebase.ui.auth.FirebaseUIComposeRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
         </service>
 
@@ -37,7 +35,7 @@
             android:value="@string/facebook_client_token"/>
 
         <activity
-            android:name=".compose.FirebaseAuthActivity"
+            android:name=".FirebaseAuthActivity"
             android:label=""
             android:exported="false" />
 

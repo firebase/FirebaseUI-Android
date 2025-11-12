@@ -14,7 +14,7 @@
 package com.firebase.ui.auth.util
 
 import androidx.annotation.RestrictTo
-import com.firebase.ui.auth.compose.util.CountryUtils
+import com.firebase.ui.auth.util.CountryUtils
 
 /**
  * Phone number validation utilities.

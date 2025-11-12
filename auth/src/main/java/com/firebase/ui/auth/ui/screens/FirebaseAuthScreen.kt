@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import android.util.Log
 import androidx.activity.compose.LocalActivity
@@ -46,26 +46,26 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.auth_provider.rememberAnonymousSignInHandler
-import com.firebase.ui.auth.compose.configuration.auth_provider.rememberGoogleSignInHandler
-import com.firebase.ui.auth.compose.configuration.auth_provider.rememberOAuthSignInHandler
-import com.firebase.ui.auth.compose.configuration.auth_provider.rememberSignInWithFacebookLauncher
-import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithEmailLink
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.ui.components.LocalTopLevelDialogController
-import com.firebase.ui.auth.compose.ui.components.rememberTopLevelDialogController
-import com.firebase.ui.auth.compose.ui.method_picker.AuthMethodPicker
-import com.firebase.ui.auth.compose.ui.screens.email.EmailAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.MfaConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.rememberAnonymousSignInHandler
+import com.firebase.ui.auth.configuration.auth_provider.rememberGoogleSignInHandler
+import com.firebase.ui.auth.configuration.auth_provider.rememberOAuthSignInHandler
+import com.firebase.ui.auth.configuration.auth_provider.rememberSignInWithFacebookLauncher
+import com.firebase.ui.auth.configuration.auth_provider.signInWithEmailLink
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
+import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
+import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
+import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver

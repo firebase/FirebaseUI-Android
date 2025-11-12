@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.mfa
+package com.firebase.ui.auth.mfa
 
 import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth

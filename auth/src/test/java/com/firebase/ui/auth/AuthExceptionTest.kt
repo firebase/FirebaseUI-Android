@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseException

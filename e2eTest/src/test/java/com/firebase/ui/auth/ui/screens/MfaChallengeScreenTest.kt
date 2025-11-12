@@ -12,9 +12,13 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
@@ -25,12 +29,12 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -422,34 +426,34 @@ class MfaChallengeScreenTest {
 
     @Composable
     private fun TestMfaChallengeUI(state: MfaChallengeContentState) {
-        androidx.compose.foundation.layout.Column {
-            androidx.compose.material3.Text("MFA Challenge")
+        Column {
+            Text("MFA Challenge")
 
             state.maskedPhoneNumber?.let {
-                androidx.compose.material3.Text(it)
+                Text(it)
             }
 
-            androidx.compose.material3.TextField(
+            TextField(
                 value = state.verificationCode,
                 onValueChange = state.onVerificationCodeChange,
-                label = { androidx.compose.material3.Text("Verification code") }
+                label = { Text("Verification code") }
             )
 
-            androidx.compose.material3.Button(
+            Button(
                 onClick = state.onVerifyClick,
                 enabled = state.isValid && !state.isLoading
             ) {
-                androidx.compose.material3.Text("VERIFY")
+                Text("VERIFY")
             }
 
             state.onResendCodeClick?.let {
-                androidx.compose.material3.Button(onClick = it) {
-                    androidx.compose.material3.Text("RESEND CODE")
+                Button(onClick = it) {
+                    Text("RESEND CODE")
                 }
             }
 
-            androidx.compose.material3.Button(onClick = state.onCancelClick) {
-                androidx.compose.material3.Text("CANCEL")
+            Button(onClick = state.onCancelClick) {
+                Text("CANCEL")
             }
         }
     }

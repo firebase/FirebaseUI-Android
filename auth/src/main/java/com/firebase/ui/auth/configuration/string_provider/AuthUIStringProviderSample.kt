@@ -12,12 +12,12 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.string_provider
+package com.firebase.ui.auth.configuration.string_provider
 
 import android.content.Context
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 
 class AuthUIStringProviderSample {
     /**

@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
 import android.os.Looper
@@ -20,28 +20,30 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
-import com.firebase.ui.auth.compose.testutil.EmulatorAuthApi
-import com.firebase.ui.auth.compose.ui.screens.phone.EnterPhoneNumberUI
-import com.firebase.ui.auth.compose.ui.screens.phone.EnterVerificationCodeUI
-import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthStep
-import com.firebase.ui.auth.compose.util.CountryUtils
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
+import com.firebase.ui.auth.testutil.EmulatorAuthApi
+import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
+import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthStep
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import org.junit.After
+import org.junit.Assume
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -132,7 +134,7 @@ class PhoneAuthScreenTest {
     }
 
     @Test
-    @org.junit.Ignore("Flaky test")
+    @Ignore("Flaky test")
     fun `sign-in and verify SMS emits Success auth state`() {
         val country = CountryUtils.findByCountryCode("DE")!!
         val phone = "151${System.currentTimeMillis() % 100000000}"
@@ -208,7 +210,7 @@ class PhoneAuthScreenTest {
                 if (retries >= maxRetries) {
                     // If we can't fetch verification codes, the emulator might not be configured
                     // correctly or might not be running. Skip this test with a clear message.
-                    org.junit.Assume.assumeTrue(
+                    Assume.assumeTrue(
                         "Skipping test: Firebase Auth Emulator verification codes endpoint not available. " +
                                 "Ensure emulator is running on localhost:9099. Error: ${e.message}",
                         false
@@ -263,7 +265,7 @@ class PhoneAuthScreenTest {
     }
 
     @Test
-    @org.junit.Ignore("Flaky in CI due to timing/scrolling issues - works locally")
+    @Ignore("Flaky in CI due to timing/scrolling issues - works locally")
     fun `change phone number navigates back to EnterPhoneNumber step`() {
         val defaultNumber = "+12025550123"
         val country = CountryUtils.findByCountryCode("US")!!
@@ -339,7 +341,7 @@ class PhoneAuthScreenTest {
     }
 
     @Test
-    @org.junit.Ignore("Flaky in CI due to timing issues with countdown timer")
+    @Ignore("Flaky in CI due to timing issues with countdown timer")
     fun `resend code timer starts at configured timeout`() {
         val phone = "+12025550123"
         val timeout = 120L

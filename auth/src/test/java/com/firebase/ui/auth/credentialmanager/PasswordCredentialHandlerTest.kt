@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.credentialmanager
+package com.firebase.ui.auth.credentialmanager
 
 import android.content.Context
 import androidx.credentials.CreatePasswordRequest

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens.phone
+package com.firebase.ui.auth.ui.screens.phone
 
 import android.content.Context
 import android.util.Log
@@ -27,18 +27,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.auth_provider.signInWithPhoneAuthCredential
-import com.firebase.ui.auth.compose.configuration.auth_provider.submitVerificationCode
-import com.firebase.ui.auth.compose.configuration.auth_provider.verifyPhoneNumber
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.data.CountryData
-import com.firebase.ui.auth.compose.ui.components.LocalTopLevelDialogController
-import com.firebase.ui.auth.compose.util.CountryUtils
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.signInWithPhoneAuthCredential
+import com.firebase.ui.auth.configuration.auth_provider.submitVerificationCode
+import com.firebase.ui.auth.configuration.auth_provider.verifyPhoneNumber
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.data.CountryData
+import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.delay

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
@@ -23,19 +23,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.data.CountryData
-import com.firebase.ui.auth.compose.util.CountryUtils
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentStep
-import com.firebase.ui.auth.compose.mfa.SmsEnrollmentHandler
-import com.firebase.ui.auth.compose.mfa.SmsEnrollmentSession
-import com.firebase.ui.auth.compose.mfa.TotpEnrollmentHandler
-import com.firebase.ui.auth.compose.mfa.TotpSecret
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.MfaConfiguration
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.data.CountryData
+import com.firebase.ui.auth.util.CountryUtils
+import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentStep
+import com.firebase.ui.auth.mfa.SmsEnrollmentHandler
+import com.firebase.ui.auth.mfa.SmsEnrollmentSession
+import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
+import com.firebase.ui.auth.mfa.TotpSecret
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay

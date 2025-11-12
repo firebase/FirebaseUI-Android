@@ -12,16 +12,16 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.firebase.ui.auth.compose.configuration.MfaConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentStep
+import com.firebase.ui.auth.configuration.MfaConfiguration
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.testutil
+package com.firebase.ui.auth.testutil
 
 import android.content.Intent
 import android.os.Bundle

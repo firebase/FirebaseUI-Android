@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.data
+package com.firebase.ui.auth.data
 
 /**
  * Represents country information for phone number authentication.

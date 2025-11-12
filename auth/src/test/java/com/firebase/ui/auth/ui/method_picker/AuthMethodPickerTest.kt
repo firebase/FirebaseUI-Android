@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.ui.method_picker
+package com.firebase.ui.auth.ui.method_picker
 
 import android.content.Context
 import androidx.compose.material3.Button
@@ -17,10 +17,10 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule

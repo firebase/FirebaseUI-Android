@@ -12,10 +12,10 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.util
+package com.firebase.ui.auth.util
 
 import android.content.Context
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager.SessionRecord
 
 /**
  * Mock implementation of [PersistenceManager] for testing.

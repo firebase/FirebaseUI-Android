@@ -397,7 +397,7 @@ class AuthActivity : ComponentActivity() {
 
 **Solution:** Ensure you have the correct import:
 ```kotlin
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.authUIConfiguration
 ```
 
 ### Issue: "ActivityResultLauncher is deprecated"

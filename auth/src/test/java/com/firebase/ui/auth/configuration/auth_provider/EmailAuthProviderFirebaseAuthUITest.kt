@@ -12,16 +12,18 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.util.MockPersistenceManager
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -1010,9 +1012,9 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence manager with matching session
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         mockPersistence.setSessionRecord(
-            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+            EmailLinkPersistenceManager.SessionRecord(
                 sessionId = "session123",
                 email = "test@example.com",
                 anonymousUserId = null,
@@ -1078,9 +1080,9 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence manager with matching session and anonymous user
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         mockPersistence.setSessionRecord(
-            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+            EmailLinkPersistenceManager.SessionRecord(
                 sessionId = "session123",
                 email = "test@example.com",
                 anonymousUserId = "anon-uid-123",
@@ -1135,7 +1137,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence with no session (cross-device)
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         
         // Email link with different session ID (cross-device)
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code123&continueUrl=https://example.com?ui_sid=different-session"
@@ -1185,7 +1187,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence with no session (cross-device)
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         
         // Email link with provider ID (cross-device linking)
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code123&continueUrl=https://example.com?ui_sid=different-session&ui_pid=google.com"
@@ -1278,9 +1280,9 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence with session for different anonymous user
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         mockPersistence.setSessionRecord(
-            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+            EmailLinkPersistenceManager.SessionRecord(
                 sessionId = "session123",
                 email = "test@example.com",
                 anonymousUserId = "different-anon-uid",
@@ -1329,9 +1331,9 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence with session but check email parameter is empty
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         mockPersistence.setSessionRecord(
-            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+            EmailLinkPersistenceManager.SessionRecord(
                 sessionId = "session123",
                 email = "stored@example.com",
                 anonymousUserId = null,
@@ -1384,9 +1386,9 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence with different session (cross-device)
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
         mockPersistence.setSessionRecord(
-            com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager.SessionRecord(
+            EmailLinkPersistenceManager.SessionRecord(
                 sessionId = "local-session",
                 email = "test@example.com",
                 anonymousUserId = null,
@@ -1437,7 +1439,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Create mock persistence (can be null since we expect validation error)
-        val mockPersistence = com.firebase.ui.auth.compose.util.MockPersistenceManager()
+        val mockPersistence = MockPersistenceManager()
 
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com"
 

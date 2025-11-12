@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.app.Activity
 import android.content.Context
@@ -26,10 +26,10 @@ import androidx.credentials.GetCredentialRequest
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.facebook.AccessToken
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.AuthUIConfigurationDsl
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.AuthUIConfigurationDsl
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.util.ContinueUrlBuilder
 import com.firebase.ui.auth.util.PhoneNumberUtils
 import com.firebase.ui.auth.util.Preconditions

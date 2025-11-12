@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.configuration.theme
+package com.firebase.ui.auth.configuration.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme

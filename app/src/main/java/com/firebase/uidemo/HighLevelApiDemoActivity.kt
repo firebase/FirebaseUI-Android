@@ -21,17 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.ui.screens.AuthSuccessUiContext
-import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.compose.util.EmailLinkConstants
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.theme.AuthUIAsset
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
+import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.util.EmailLinkConstants
 import com.google.firebase.auth.actionCodeSettings
 
 class HighLevelApiDemoActivity : ComponentActivity() {

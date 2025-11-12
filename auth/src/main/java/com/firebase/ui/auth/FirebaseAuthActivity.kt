@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
 import android.app.Activity
 import android.content.Context
@@ -22,10 +22,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.compose.util.EmailLinkConstants
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.util.EmailLinkConstants
 import kotlinx.coroutines.launch
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -158,23 +158,23 @@ class FirebaseAuthActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EXTRA_CONFIGURATION_KEY = "com.firebase.ui.auth.compose.CONFIGURATION_KEY"
+        private const val EXTRA_CONFIGURATION_KEY = "com.firebase.ui.auth.CONFIGURATION_KEY"
 
         /**
          * Intent extra key for user ID on successful sign-in.
          * Use [com.google.firebase.auth.FirebaseAuth.getInstance().currentUser] to get the full user object.
          */
-        const val EXTRA_USER_ID = "com.firebase.ui.auth.compose.USER_ID"
+        const val EXTRA_USER_ID = "com.firebase.ui.auth.USER_ID"
 
         /**
          * Intent extra key for isNewUser flag on successful sign-in.
          */
-        const val EXTRA_IS_NEW_USER = "com.firebase.ui.auth.compose.IS_NEW_USER"
+        const val EXTRA_IS_NEW_USER = "com.firebase.ui.auth.IS_NEW_USER"
 
         /**
          * Intent extra key for [AuthException] on error.
          */
-        const val EXTRA_ERROR = "com.firebase.ui.auth.compose.ERROR"
+        const val EXTRA_ERROR = "com.firebase.ui.auth.ERROR"
 
         /**
          * Cache for configurations passed through Intents.

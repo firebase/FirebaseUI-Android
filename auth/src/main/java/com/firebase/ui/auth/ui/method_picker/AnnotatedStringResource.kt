@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.method_picker
+package com.firebase.ui.auth.ui.method_picker
 
 import android.content.Context
 import android.content.Intent

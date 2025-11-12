@@ -12,20 +12,21 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
 import android.os.Looper
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -147,7 +148,7 @@ class FirebaseAuthActivityTest {
         val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
 
         // Intent should contain configuration key
-        val configKey = intent.getStringExtra("com.firebase.ui.auth.compose.CONFIGURATION_KEY")
+        val configKey = intent.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
         assertThat(configKey).isNotNull()
         assertThat(configKey).isNotEmpty()
     }
@@ -381,11 +382,11 @@ class FirebaseAuthActivityTest {
     @Test
     fun `activity exposes correct intent extra constants`() {
         assertThat(FirebaseAuthActivity.EXTRA_USER_ID)
-            .isEqualTo("com.firebase.ui.auth.compose.USER_ID")
+            .isEqualTo("com.firebase.ui.auth.USER_ID")
         assertThat(FirebaseAuthActivity.EXTRA_IS_NEW_USER)
-            .isEqualTo("com.firebase.ui.auth.compose.IS_NEW_USER")
+            .isEqualTo("com.firebase.ui.auth.IS_NEW_USER")
         assertThat(FirebaseAuthActivity.EXTRA_ERROR)
-            .isEqualTo("com.firebase.ui.auth.compose.ERROR")
+            .isEqualTo("com.firebase.ui.auth.ERROR")
     }
 
     // =============================================================================================
@@ -395,7 +396,7 @@ class FirebaseAuthActivityTest {
     @Test
     fun `configuration is removed from cache after onCreate`() {
         val intent1 = FirebaseAuthActivity.createIntent(applicationContext, configuration)
-        val configKey1 = intent1.getStringExtra("com.firebase.ui.auth.compose.CONFIGURATION_KEY")
+        val configKey1 = intent1.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
 
         assertThat(configKey1).isNotNull()
 
@@ -405,7 +406,7 @@ class FirebaseAuthActivityTest {
 
         // Create another intent
         val intent2 = FirebaseAuthActivity.createIntent(applicationContext, configuration)
-        val configKey2 = intent2.getStringExtra("com.firebase.ui.auth.compose.CONFIGURATION_KEY")
+        val configKey2 = intent2.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
 
         // Should be a different key
         assertThat(configKey2).isNotEqualTo(configKey1)
@@ -522,7 +523,7 @@ class FirebaseAuthActivityTest {
                     passwordValidationRules = emptyList()
                 )
             ),
-            theme = com.firebase.ui.auth.compose.configuration.theme.AuthUITheme.Default
+            theme = AuthUITheme.Default
         )
 
         val intent = FirebaseAuthActivity.createIntent(applicationContext, customConfig)

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.mfa
+package com.firebase.ui.auth.mfa
 
 import com.google.firebase.auth.TotpSecret as FirebaseTotpSecret
 import org.junit.Assert.assertEquals

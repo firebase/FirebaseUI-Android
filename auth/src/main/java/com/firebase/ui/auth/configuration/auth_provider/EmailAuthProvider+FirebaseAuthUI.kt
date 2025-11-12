@@ -12,19 +12,20 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import android.net.Uri
 import com.firebase.ui.auth.R
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Companion.mergeProfile
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.mergeProfile
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.EmailLinkParser
+import com.firebase.ui.auth.util.PersistenceManager
 import com.firebase.ui.auth.util.SessionUtils
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ActionCodeSettings
@@ -654,7 +655,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
     provider: AuthProvider.Email,
     email: String,
     credentialForLinking: AuthCredential?,
-    persistenceManager: com.firebase.ui.auth.compose.util.PersistenceManager = EmailLinkPersistenceManager.default,
+    persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ) {
     try {
         updateAuthState(AuthState.Loading("Sending sign in email link..."))
@@ -812,7 +813,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     provider: AuthProvider.Email,
     email: String,
     emailLink: String,
-    persistenceManager: com.firebase.ui.auth.compose.util.PersistenceManager = EmailLinkPersistenceManager.default,
+    persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in with email link..."))

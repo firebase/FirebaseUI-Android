@@ -12,17 +12,17 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration
+package com.firebase.ui.auth.configuration
 
 import android.content.Context
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvidersBuilder
-import com.firebase.ui.auth.compose.configuration.auth_provider.Provider
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvidersBuilder
+import com.firebase.ui.auth.configuration.auth_provider.Provider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.theme.AuthUIAsset
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.google.firebase.auth.ActionCodeSettings
 import java.util.Locale
 

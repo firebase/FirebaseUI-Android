@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.util
+package com.firebase.ui.auth.util
 
 /**
  * Constants for email link authentication.

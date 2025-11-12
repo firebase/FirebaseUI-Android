@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
+import android.util.Log
 import androidx.annotation.Keep
 import com.firebase.ui.auth.BuildConfig
 import com.google.firebase.components.Component
@@ -27,6 +28,7 @@ import com.google.firebase.platforminfo.LibraryVersionComponent
 @Keep
 class FirebaseUIComposeRegistrar : ComponentRegistrar {
     override fun getComponents(): List<Component<*>> {
+        Log.d("FirebaseUIRegistrar", "FirebaseUI Compose Registrar initialized")
         return listOf(
             LibraryVersionComponent.create(BuildConfig.LIBRARY_NAME, BuildConfig.VERSION_NAME)
         )

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration
+package com.firebase.ui.auth.configuration
 
 /**
  * Configuration class for Multi-Factor Authentication (MFA) enrollment and verification behavior.

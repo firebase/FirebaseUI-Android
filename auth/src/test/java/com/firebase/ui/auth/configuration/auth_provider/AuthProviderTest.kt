@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
