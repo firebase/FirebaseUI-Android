@@ -1,6 +1,9 @@
-package com.firebase.ui.auth.compose.ui
+package com.firebase.ui.auth.ui
 
 import android.content.Context
+import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -14,18 +17,20 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.ui.components.AuthProviderButton
-import com.firebase.ui.auth.compose.ui.components.AuthTextField
-import com.firebase.ui.auth.compose.ui.components.CountrySelector
-import com.firebase.ui.auth.compose.ui.components.QrCodeImage
-import com.firebase.ui.auth.compose.ui.components.VerificationCodeInputField
-import com.firebase.ui.auth.compose.ui.screens.email.SignInUI
-import com.firebase.ui.auth.compose.ui.screens.phone.EnterPhoneNumberUI
-import com.firebase.ui.auth.compose.util.CountryUtils
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.ui.components.AuthProviderButton
+import com.firebase.ui.auth.ui.components.AuthTextField
+import com.firebase.ui.auth.ui.components.CountrySelector
+import com.firebase.ui.auth.ui.components.QrCodeImage
+import com.firebase.ui.auth.ui.components.VerificationCodeInputField
+import com.firebase.ui.auth.ui.screens.email.SignInUI
+import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
+import com.firebase.ui.auth.util.CountryUtils
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -75,7 +80,7 @@ class AccessibilityTest {
             AuthTextField(
                 value = "",
                 onValueChange = {},
-                label = { androidx.compose.material3.Text("Email") }
+                label = { Text("Email") }
             )
         }
 
@@ -91,7 +96,7 @@ class AccessibilityTest {
             AuthTextField(
                 value = "",
                 onValueChange = {},
-                label = { androidx.compose.material3.Text("Password") },
+                label = { Text("Password") },
                 isSecureTextField = true
             )
         }
@@ -105,8 +110,8 @@ class AccessibilityTest {
     @Test
     fun countrySelector_hasDropdownRole() {
         composeTestRule.setContent {
-            androidx.compose.runtime.CompositionLocalProvider(
-                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
             ) {
                 CountrySelector(
                     selectedCountry = CountryUtils.getDefaultCountry(),
@@ -177,8 +182,8 @@ class AccessibilityTest {
         }
 
         composeTestRule.setContent {
-            androidx.compose.runtime.CompositionLocalProvider(
-                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
             ) {
                 SignInUI(
                     configuration = configuration,
@@ -221,8 +226,8 @@ class AccessibilityTest {
         }
 
         composeTestRule.setContent {
-            androidx.compose.runtime.CompositionLocalProvider(
-                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
             ) {
                 EnterPhoneNumberUI(
                     configuration = configuration,
@@ -267,9 +272,9 @@ class AccessibilityTest {
 
         composeTestRule.setContent {
             // Force RTL layout direction
-            androidx.compose.runtime.CompositionLocalProvider(
-                androidx.compose.ui.platform.LocalLayoutDirection provides androidx.compose.ui.unit.LayoutDirection.Rtl,
-                com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider provides stringProvider
+            CompositionLocalProvider(
+                LocalLayoutDirection provides LayoutDirection.Rtl,
+                LocalAuthUIStringProvider provides stringProvider
             ) {
                 SignInUI(
                     configuration = configuration,

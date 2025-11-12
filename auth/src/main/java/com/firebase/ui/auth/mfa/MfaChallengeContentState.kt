@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.mfa
+package com.firebase.ui.auth.mfa
 
-import com.firebase.ui.auth.compose.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.MfaFactor
 
 /**
  * State class containing all the necessary information to render a custom UI for the

@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.data
+package com.firebase.ui.auth.data
 
-import com.firebase.ui.auth.compose.util.CountryUtils
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

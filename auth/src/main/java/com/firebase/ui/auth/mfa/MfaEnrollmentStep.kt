@@ -12,10 +12,10 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.mfa
+package com.firebase.ui.auth.mfa
 
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 
 /**
  * Represents the different steps in the Multi-Factor Authentication (MFA) enrollment flow.
@@ -28,7 +28,7 @@ import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringPr
 enum class MfaEnrollmentStep {
     /**
      * The user is presented with a selection of available MFA factors to enroll in.
-     * The available factors are determined by the [com.firebase.ui.auth.compose.configuration.MfaConfiguration].
+     * The available factors are determined by the [com.firebase.ui.auth.configuration.MfaConfiguration].
      */
     SelectFactor,
 

@@ -22,7 +22,7 @@
           This handles ACTION_VIEW intents with email link URLs from the Firebase Auth Emulator.
         -->
         <activity
-            android:name="com.firebase.ui.auth.compose.testutil.EmailLinkTestActivity"
+            android:name="com.firebase.ui.auth.testutil.EmailLinkTestActivity"
             android:exported="false"
             android:launchMode="singleTop">
             <intent-filter>

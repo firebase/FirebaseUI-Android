@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.testutil
+package com.firebase.ui.auth.testutil
 
 import java.net.HttpURLConnection
 import java.net.URL

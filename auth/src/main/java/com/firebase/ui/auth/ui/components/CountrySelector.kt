@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.components
+package com.firebase.ui.auth.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,10 +54,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.data.ALL_COUNTRIES
-import com.firebase.ui.auth.compose.data.CountryData
-import com.firebase.ui.auth.compose.util.CountryUtils
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.data.ALL_COUNTRIES
+import com.firebase.ui.auth.data.CountryData
+import com.firebase.ui.auth.util.CountryUtils
 import kotlinx.coroutines.launch
 
 /**

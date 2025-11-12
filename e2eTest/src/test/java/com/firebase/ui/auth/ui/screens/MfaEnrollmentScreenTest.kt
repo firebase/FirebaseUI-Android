@@ -12,9 +12,13 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
@@ -24,19 +28,20 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.MfaConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentStep
-import com.firebase.ui.auth.compose.mfa.getHelperText
-import com.firebase.ui.auth.compose.mfa.getTitle
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.MfaConfiguration
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentStep
+import com.firebase.ui.auth.mfa.getHelperText
+import com.firebase.ui.auth.mfa.getTitle
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.MultiFactor
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -74,7 +79,7 @@ class MfaEnrollmentScreenTest {
     private lateinit var mockFirebaseUser: FirebaseUser
 
     @Mock
-    private lateinit var mockMultiFactor: com.google.firebase.auth.MultiFactor
+    private lateinit var mockMultiFactor: MultiFactor
 
     @Before
     fun setUp() {
@@ -366,93 +371,93 @@ class MfaEnrollmentScreenTest {
 
     @Composable
     private fun TestMfaEnrollmentUI(state: MfaEnrollmentContentState) {
-        androidx.compose.foundation.layout.Column {
+        Column {
             // Title
-            androidx.compose.material3.Text(state.step.getTitle(stringProvider))
-            androidx.compose.material3.Text(state.step.getHelperText(stringProvider, state.selectedFactor))
+            Text(state.step.getTitle(stringProvider))
+            Text(state.step.getHelperText(stringProvider, state.selectedFactor))
 
             when (state.step) {
                 MfaEnrollmentStep.SelectFactor -> {
                     state.availableFactors.forEach { factor ->
-                        androidx.compose.material3.Button(
+                        Button(
                             onClick = { state.onFactorSelected(factor) }
                         ) {
-                            androidx.compose.material3.Text(factor.name.uppercase())
+                            Text(factor.name.uppercase())
                         }
                     }
                     state.onSkipClick?.let {
-                        androidx.compose.material3.Button(onClick = it) {
-                            androidx.compose.material3.Text("SKIP")
+                        Button(onClick = it) {
+                            Text("SKIP")
                         }
                     }
                 }
 
                 MfaEnrollmentStep.ConfigureSms -> {
-                    androidx.compose.material3.TextField(
+                    TextField(
                         value = state.phoneNumber,
                         onValueChange = state.onPhoneNumberChange,
-                        label = { androidx.compose.material3.Text("Phone number") }
+                        label = { Text("Phone number") }
                     )
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = state.onSendSmsCodeClick,
                         enabled = state.isValid && !state.isLoading
                     ) {
-                        androidx.compose.material3.Text("SEND CODE")
+                        Text("SEND CODE")
                     }
-                    androidx.compose.material3.Button(onClick = state.onBackClick) {
-                        androidx.compose.material3.Text("BACK")
+                    Button(onClick = state.onBackClick) {
+                        Text("BACK")
                     }
                 }
 
                 MfaEnrollmentStep.ConfigureTotp -> {
                     state.totpSecret?.let {
-                        androidx.compose.material3.Text("Secret: ${it.sharedSecretKey}")
+                        Text("Secret: ${it.sharedSecretKey}")
                     }
                     state.totpQrCodeUrl?.let {
-                        androidx.compose.material3.Text("QR: $it")
+                        Text("QR: $it")
                     }
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = state.onContinueToVerifyClick,
                         enabled = state.isValid && !state.isLoading
                     ) {
-                        androidx.compose.material3.Text("CONTINUE")
+                        Text("CONTINUE")
                     }
-                    androidx.compose.material3.Button(onClick = state.onBackClick) {
-                        androidx.compose.material3.Text("BACK")
+                    Button(onClick = state.onBackClick) {
+                        Text("BACK")
                     }
                 }
 
                 MfaEnrollmentStep.VerifyFactor -> {
-                    androidx.compose.material3.TextField(
+                    TextField(
                         value = state.verificationCode,
                         onValueChange = state.onVerificationCodeChange,
-                        label = { androidx.compose.material3.Text("Verification code") }
+                        label = { Text("Verification code") }
                     )
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = state.onVerifyClick,
                         enabled = state.isValid && !state.isLoading
                     ) {
-                        androidx.compose.material3.Text("VERIFY")
+                        Text("VERIFY")
                     }
                     state.onResendCodeClick?.let {
-                        androidx.compose.material3.Button(onClick = it) {
-                            androidx.compose.material3.Text("RESEND")
+                        Button(onClick = it) {
+                            Text("RESEND")
                         }
                     }
-                    androidx.compose.material3.Button(onClick = state.onBackClick) {
-                        androidx.compose.material3.Text("BACK")
+                    Button(onClick = state.onBackClick) {
+                        Text("BACK")
                     }
                 }
 
                 MfaEnrollmentStep.ShowRecoveryCodes -> {
                     state.recoveryCodes?.forEach { code ->
-                        androidx.compose.material3.Text(code)
+                        Text(code)
                     }
-                    androidx.compose.material3.Button(
+                    Button(
                         onClick = state.onCodesSavedClick,
                         enabled = !state.isLoading
                     ) {
-                        androidx.compose.material3.Text("DONE")
+                        Text("DONE")
                     }
                 }
             }

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.components
+package com.firebase.ui.auth.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,11 +46,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
-import com.firebase.ui.auth.compose.configuration.validators.FieldValidator
-import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.validators.EmailValidator
+import com.firebase.ui.auth.configuration.validators.FieldValidator
+import com.firebase.ui.auth.configuration.validators.PasswordValidator
 
 /**
  * A customizable input field with built-in validation display.

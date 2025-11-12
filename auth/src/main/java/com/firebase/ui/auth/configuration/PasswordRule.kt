@@ -12,13 +12,13 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration
+package com.firebase.ui.auth.configuration
 
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 
 /**
  * An abstract class representing a set of validation rules that can be applied to a password field,
- * typically within the [com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider.Email] configuration.
+ * typically within the [com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Email] configuration.
  */
 abstract class PasswordRule {
     /**

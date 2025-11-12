@@ -1,10 +1,10 @@
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.app.Activity
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorSession
 import com.google.firebase.auth.PhoneAuthCredential

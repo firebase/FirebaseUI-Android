@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.testutil
+package com.firebase.ui.auth.testutil
 
 import android.os.Looper
 import com.google.android.gms.tasks.Task

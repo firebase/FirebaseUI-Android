@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.string_provider
+package com.firebase.ui.auth.configuration.string_provider
 
 import androidx.compose.runtime.staticCompositionLocalOf
 

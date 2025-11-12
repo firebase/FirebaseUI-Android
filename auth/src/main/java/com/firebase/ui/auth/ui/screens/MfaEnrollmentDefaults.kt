@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.screens
+package com.firebase.ui.auth.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,20 +46,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.MfaFactor
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentContentState
-import com.firebase.ui.auth.compose.mfa.MfaEnrollmentStep
-import com.firebase.ui.auth.compose.mfa.toMfaErrorMessage
-import com.firebase.ui.auth.compose.ui.components.QrCodeImage
-import com.firebase.ui.auth.compose.ui.components.ReauthenticationDialog
-import com.firebase.ui.auth.compose.ui.screens.phone.EnterPhoneNumberUI
-import com.firebase.ui.auth.compose.ui.screens.phone.EnterVerificationCodeUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentStep
+import com.firebase.ui.auth.mfa.toMfaErrorMessage
+import com.firebase.ui.auth.ui.components.QrCodeImage
+import com.firebase.ui.auth.ui.components.ReauthenticationDialog
+import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
+import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorInfo
@@ -238,7 +238,7 @@ private fun SelectFactorUI(
     onSkipClick: (() -> Unit)?,
     isLoading: Boolean,
     error: String?,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+    stringProvider: AuthUIStringProvider
 ) {
     val enrolledFactorIds = enrolledFactors.mapNotNull {
         when (it) {
@@ -348,7 +348,7 @@ private fun EnrolledFactorItem(
     factorInfo: MultiFactorInfo,
     onRemove: () -> Unit,
     enabled: Boolean,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+    stringProvider: AuthUIStringProvider
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -414,7 +414,7 @@ private fun ConfigureTotpUI(
     isLoading: Boolean,
     isValid: Boolean,
     error: String?,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+    stringProvider: AuthUIStringProvider
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -503,7 +503,7 @@ private fun VerifyTotpUI(
     isLoading: Boolean,
     isValid: Boolean,
     error: String?,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+    stringProvider: AuthUIStringProvider
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -576,7 +576,7 @@ private fun ShowRecoveryCodesUI(
     onDoneClick: () -> Unit,
     isLoading: Boolean,
     error: String?,
-    stringProvider: com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+    stringProvider: AuthUIStringProvider
 ) {
     Scaffold { innerPadding ->
         Column(

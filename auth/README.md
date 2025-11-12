@@ -1136,7 +1136,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 **Low-Level API** - Using `AuthFlowController`:
 
 ```kotlin
-import com.firebase.ui.auth.compose.util.EmailLinkConstants
+import com.firebase.ui.auth.util.EmailLinkConstants
 
 // In your Activity that handles the deep link:
 override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.testutil
+package com.firebase.ui.auth.testutil
 
 import org.json.JSONArray
 import org.json.JSONObject

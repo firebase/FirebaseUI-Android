@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
-import com.firebase.ui.auth.compose.AuthException.Companion.from
+import com.firebase.ui.auth.AuthException.Companion.from
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuthException

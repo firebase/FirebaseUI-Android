@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.ui.components
+package com.firebase.ui.auth.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -57,8 +57,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.core.text.isDigitsOnly
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.configuration.validators.FieldValidator
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.configuration.validators.FieldValidator
 
 @Composable
 fun VerificationCodeInputField(

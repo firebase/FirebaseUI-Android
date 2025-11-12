@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.components
+package com.firebase.ui.auth.ui.components
 
 import android.content.Context
 import androidx.compose.material.icons.Icons
@@ -32,11 +32,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.DefaultAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.validators.EmailValidator
-import com.firebase.ui.auth.compose.configuration.validators.PasswordValidator
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.validators.EmailValidator
+import com.firebase.ui.auth.configuration.validators.PasswordValidator
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

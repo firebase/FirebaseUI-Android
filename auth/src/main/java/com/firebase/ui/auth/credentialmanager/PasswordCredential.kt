@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.credentialmanager
+package com.firebase.ui.auth.credentialmanager
 
 /**
  * Represents a password credential retrieved from the system credential manager.

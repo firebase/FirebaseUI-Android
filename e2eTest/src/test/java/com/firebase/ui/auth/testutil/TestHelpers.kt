@@ -1,7 +1,7 @@
-package com.firebase.ui.auth.compose.testutil
+package com.firebase.ui.auth.testutil
 
 import android.os.Looper
-import com.firebase.ui.auth.compose.FirebaseAuthUI
+import com.firebase.ui.auth.FirebaseAuthUI
 import com.google.firebase.auth.FirebaseUser
 import org.robolectric.Shadows.shadowOf
 

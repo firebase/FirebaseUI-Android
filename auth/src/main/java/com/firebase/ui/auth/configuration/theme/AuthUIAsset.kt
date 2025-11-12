@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.theme
+package com.firebase.ui.auth.configuration.theme
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable

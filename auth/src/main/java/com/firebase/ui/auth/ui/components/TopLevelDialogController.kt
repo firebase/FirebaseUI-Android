@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.ui.components
+package com.firebase.ui.auth.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
@@ -20,9 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 
 /**
  * CompositionLocal for accessing the top-level dialog controller from any composable.

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import android.util.Log
@@ -27,11 +27,11 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 

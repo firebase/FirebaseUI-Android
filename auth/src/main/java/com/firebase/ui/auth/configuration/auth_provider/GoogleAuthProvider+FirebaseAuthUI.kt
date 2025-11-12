@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.compose.configuration.auth_provider
+package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -8,11 +8,11 @@ import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.AuthState
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException

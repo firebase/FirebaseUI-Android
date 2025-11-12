@@ -17,20 +17,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.AuthException
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.configuration.PasswordRule
-import com.firebase.ui.auth.compose.configuration.authUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.compose.configuration.string_provider.LocalAuthUIStringProvider
-import com.firebase.ui.auth.compose.configuration.theme.AuthUIAsset
-import com.firebase.ui.auth.compose.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.compose.ui.screens.email.EmailAuthContentState
-import com.firebase.ui.auth.compose.ui.screens.email.EmailAuthMode
-import com.firebase.ui.auth.compose.ui.screens.email.EmailAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthContentState
-import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthScreen
-import com.firebase.ui.auth.compose.ui.screens.phone.PhoneAuthStep
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.PasswordRule
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
+import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
+import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthStep
 import com.google.firebase.auth.AuthResult
 
 /**
@@ -96,7 +96,7 @@ class CustomSlotsThemingDemoActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var selectedDemo by remember { mutableStateOf<DemoType>(DemoType.Email) }
+                    var selectedDemo by remember { mutableStateOf(DemoType.Email) }
 
                     Column(
                         modifier = Modifier
@@ -226,7 +226,7 @@ fun DemoSelector(
 @Composable
 fun EmailAuthDemo(
     authUI: FirebaseAuthUI,
-    configuration: com.firebase.ui.auth.compose.configuration.AuthUIConfiguration,
+    configuration: AuthUIConfiguration,
     context: android.content.Context
 ) {
     var currentUser by remember { mutableStateOf(authUI.getCurrentUser()) }
@@ -563,7 +563,7 @@ fun ResetPasswordUI(state: EmailAuthContentState) {
 @Composable
 fun PhoneAuthDemo(
     authUI: FirebaseAuthUI,
-    configuration: com.firebase.ui.auth.compose.configuration.AuthUIConfiguration,
+    configuration: AuthUIConfiguration,
     context: android.content.Context
 ) {
     var currentUser by remember { mutableStateOf(authUI.getCurrentUser()) }

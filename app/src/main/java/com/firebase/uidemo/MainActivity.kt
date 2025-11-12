@@ -26,8 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.compose.FirebaseAuthUI
-import com.firebase.ui.auth.compose.util.EmailLinkConstants
+import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.util.EmailLinkConstants
 import com.google.firebase.FirebaseApp
 
 /**

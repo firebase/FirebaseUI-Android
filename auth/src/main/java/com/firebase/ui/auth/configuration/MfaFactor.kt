@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose.configuration
+package com.firebase.ui.auth.configuration
 
 /**
  * Represents the different Multi-Factor Authentication (MFA) factors that can be used

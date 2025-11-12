@@ -12,13 +12,13 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.compose
+package com.firebase.ui.auth
 
 import android.app.Activity
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.compose.configuration.AuthUIConfiguration
-import com.firebase.ui.auth.compose.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -134,7 +134,7 @@ class AuthFlowControllerTest {
         val intent = controller.createIntent(applicationContext)
 
         // Intent should contain a configuration key extra
-        val configKey = intent.getStringExtra("com.firebase.ui.auth.compose.CONFIGURATION_KEY")
+        val configKey = intent.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
         assertThat(configKey).isNotNull()
         assertThat(configKey).isNotEmpty()
     }
