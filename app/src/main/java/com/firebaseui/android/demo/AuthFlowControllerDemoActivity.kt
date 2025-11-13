@@ -1,4 +1,4 @@
-package com.firebase.uidemo
+package com.firebaseui.android.demo
 
 import android.app.Activity
 import android.content.Context
@@ -83,10 +83,10 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
                     isEmailLinkForceSameDeviceEnabled = true,
                     isEmailLinkSignInEnabled = false,
                     emailLinkActionCodeSettings = actionCodeSettings {
-                        url = "https://temp-test-aa342.firebaseapp.com"
+                        url = "https://flutterfire-e2e-tests.firebaseapp.com"
                         handleCodeInApp = true
                         setAndroidPackageName(
-                            "com.firebase.uidemo",
+                            "com.firebaseui.android.demo",
                             true,
                             null
                         )
@@ -107,9 +107,7 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
                     timeout = 120L,
                     isInstantVerificationEnabled = true
                 ),
-                AuthProvider.Facebook(
-                    applicationId = "792556260059222"
-                )
+                AuthProvider.Facebook()
             ),
             tosUrl = "https://policies.google.com/terms?hl=en-NG&fg=1",
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"

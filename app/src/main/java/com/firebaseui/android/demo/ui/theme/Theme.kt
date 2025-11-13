@@ -1,4 +1,4 @@
-package com.firebase.uidemo.ui.theme
+package com.firebaseui.android.demo.ui.theme
 
 import android.app.Activity
 import android.os.Build

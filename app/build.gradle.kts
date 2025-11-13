@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.firebase.uidemo"
+    namespace = "com.firebaseui.android.demo"
     compileSdk = Config.SdkVersions.compile
 
     defaultConfig {
-        applicationId = "com.firebase.uidemo"
+        applicationId = "com.firebaseui.android.demo"
         minSdk = Config.SdkVersions.min
         targetSdk = Config.SdkVersions.target
         versionCode = 1
