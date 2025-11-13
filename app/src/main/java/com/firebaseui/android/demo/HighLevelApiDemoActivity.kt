@@ -1,4 +1,4 @@
-package com.firebase.uidemo
+package com.firebaseui.android.demo
 
 import android.os.Bundle
 import android.util.Log
@@ -53,7 +53,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                 provider(
                     AuthProvider.Google(
                         scopes = listOf("email"),
-                        serverClientId = "771411398215-o39fujhds88bs4mb5ai7u6o73g86fspp.apps.googleusercontent.com",
+                        serverClientId = "406099696497-a12gakvts4epfk5pkio7dphc1anjiggc.apps.googleusercontent.com",
                     )
                 )
                 provider(
@@ -62,10 +62,10 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         isEmailLinkForceSameDeviceEnabled = false,
                         isEmailLinkSignInEnabled = true,
                         emailLinkActionCodeSettings = actionCodeSettings {
-                            url = "https://temp-test-aa342.firebaseapp.com"
+                            url = "https://flutterfire-e2e-tests.firebaseapp.com"
                             handleCodeInApp = true
                             setAndroidPackageName(
-                                "com.firebase.uidemo",
+                                "com.firebaseui.android.demo",
                                 true,
                                 null
                             )
@@ -90,9 +90,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                     )
                 )
                 provider(
-                    AuthProvider.Facebook(
-                        applicationId = "792556260059222"
-                    )
+                    AuthProvider.Facebook()
                 )
                 provider(
                     AuthProvider.Twitter(

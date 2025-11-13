@@ -1,4 +1,4 @@
-package com.firebase.uidemo
+package com.firebaseui.android.demo
 
 import android.os.Bundle
 import android.util.Log
