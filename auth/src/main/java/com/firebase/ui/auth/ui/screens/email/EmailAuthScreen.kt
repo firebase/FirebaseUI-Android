@@ -179,6 +179,16 @@ fun EmailAuthScreen(
                     exception = exception,
                     onRetry = { ex ->
                         when (ex) {
+                            is AuthException.UserNotFoundException -> {
+                                val provider = configuration.providers
+                                    .filterIsInstance<AuthProvider.Email>()
+                                    .first()
+                                if (provider.isNewAccountsAllowed) {
+                                    // User not found, but new accounts are allowed, switch to sign-up
+                                    mode.value = EmailAuthMode.SignUp
+                                }
+                            }
+
                             is AuthException.InvalidCredentialsException -> {
                                 // User can retry sign in with corrected credentials
                             }

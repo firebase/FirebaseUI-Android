@@ -28,7 +28,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,18 +35,22 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -57,11 +60,13 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
 import com.firebase.ui.auth.configuration.validators.PasswordValidator
 import com.firebase.ui.auth.ui.components.AuthTextField
+import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,20 +180,31 @@ fun SignInUI(
                 modifier = Modifier
                     .align(Alignment.End),
             ) {
-                Button(
-                    onClick = {
-                        onGoToSignUp()
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                        TooltipAnchorPosition.Above
+                    ),
+                    tooltip = {
+                        PlainTooltip {
+                            Text(stringProvider.newAccountsDisabledTooltip)
+                        }
                     },
-                    enabled = !isLoading,
+                    state = rememberTooltipState(
+                        initialIsVisible = !provider.isNewAccountsAllowed
+                    )
                 ) {
-                    Text(stringProvider.signupPageTitle.uppercase())
+                    Button(
+                        onClick = {
+                            onGoToSignUp()
+                        },
+                        enabled = provider.isNewAccountsAllowed && !isLoading,
+                    ) {
+                        Text(stringProvider.signupPageTitle.uppercase())
+                    }
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = {
-                        // TODO(demolaf): When signIn is fired if Exception is UserNotFound
-                        //  then we check if provider.isNewAccountsAllowed then we show signUp
-                        //  else we show an error dialog stating signup is not allowed
                         onSignInClick()
                     },
                     enabled = !isLoading && isFormValid.value,
@@ -250,29 +266,34 @@ fun PreviewSignInUI() {
         isEmailLinkSignInEnabled = false,
         isEmailLinkForceSameDeviceEnabled = true,
         emailLinkActionCodeSettings = null,
-        isNewAccountsAllowed = true,
+        isNewAccountsAllowed = false,
         minimumPasswordLength = 8,
         passwordValidationRules = listOf()
     )
+    val stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
     AuthUITheme {
-        SignInUI(
-            configuration = authUIConfiguration {
-                context = applicationContext
-                providers { provider(provider) }
-                tosUrl = ""
-                privacyPolicyUrl = ""
-            },
-            email = "",
-            password = "",
-            isLoading = false,
-            emailSignInLinkSent = false,
-            onEmailChange = { email -> },
-            onPasswordChange = { password -> },
-            onSignInClick = {},
-            onGoToSignUp = {},
-            onGoToResetPassword = {},
-            onGoToEmailLinkSignIn = {},
-        )
+        CompositionLocalProvider(
+            LocalAuthUIStringProvider provides stringProvider
+        ) {
+            SignInUI(
+                configuration = authUIConfiguration {
+                    context = applicationContext
+                    providers { provider(provider) }
+                    tosUrl = ""
+                    privacyPolicyUrl = ""
+                },
+                email = "",
+                password = "",
+                isLoading = false,
+                emailSignInLinkSent = false,
+                onEmailChange = { email -> },
+                onPasswordChange = { password -> },
+                onSignInClick = {},
+                onGoToSignUp = {},
+                onGoToResetPassword = {},
+                onGoToEmailLinkSignIn = {},
+            )
+        }
     }
 }
