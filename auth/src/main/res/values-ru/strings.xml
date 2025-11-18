@@ -167,4 +167,7 @@
     <string name="fui_verified_email_action">Email подтвержден</string>
     <string name="fui_verify_action">Подтвердить</string>
     <string name="fui_verify_email_instruction">Мы отправили письмо подтверждения на %1$s</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>

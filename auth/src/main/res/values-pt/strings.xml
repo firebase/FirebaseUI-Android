@@ -185,4 +185,7 @@
     <string name="fui_reauth_required_error">Reautenticação necessária</string>
     <string name="fui_reauth_success_message">Reautenticação bem-sucedida</string>
     <string name="fui_reauthenticate_action">Reautenticar</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>
