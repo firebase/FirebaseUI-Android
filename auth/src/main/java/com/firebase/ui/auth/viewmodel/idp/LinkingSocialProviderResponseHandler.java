@@ -61,7 +61,7 @@ public class LinkingSocialProviderResponseHandler extends SignInViewModelBase {
         // The Generic IDP flow does not return a credential - it signs us in right away.
         // If the user was prompted to sign-in via Generic IDP, we can link immediately.
         // Example: Existing user with Yahoo provider - signs in with microsoft -
-        // prompted to sign in with yahoo. Sign in with Yahoo will be succesful, it won't
+        // prompted to sign in with yahoo. Sign in with Yahoo will be successful, it won't
         // return a credential.
         if (isGenericIdpLinkingFlow(response.getProviderType())) {
             getAuth().getCurrentUser()
