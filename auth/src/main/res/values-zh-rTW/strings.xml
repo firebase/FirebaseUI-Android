@@ -168,4 +168,7 @@
     <string name="fui_verified_email_action">郵件已驗證</string>
     <string name="fui_verify_action">驗證</string>
     <string name="fui_verify_email_instruction">我們已傳送驗證郵件至 %1$s</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>

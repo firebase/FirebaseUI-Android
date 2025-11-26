@@ -189,9 +189,9 @@ private fun getRecoveryActionText(
         is AuthException.EmailLinkCrossDeviceLinkingException -> stringProvider.continueText
         is AuthException.EmailLinkWrongDeviceException -> stringProvider.continueText
         is AuthException.EmailLinkDifferentAnonymousUserException -> stringProvider.dismissAction
+        is AuthException.UserNotFoundException -> stringProvider.signupPageTitle // Navigate to sign-up when user not found
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,
-        is AuthException.UserNotFoundException,
         is AuthException.WeakPasswordException,
         is AuthException.TooManyRequestsException,
         is AuthException.UnknownException -> stringProvider.retryAction

@@ -237,4 +237,7 @@
     <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">The verification code is incorrect. Please try again.</string>
     <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">A network error occurred. Please check your connection and try again.</string>
     <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">An error occurred during enrollment. Please try again.</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>

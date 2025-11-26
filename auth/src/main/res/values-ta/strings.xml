@@ -168,4 +168,7 @@
     <string name="fui_verified_email_action">மின்னஞ்சல் சரிபார்க்கப்பட்டது</string>
     <string name="fui_verify_action">சரிபார்</string>
     <string name="fui_verify_email_instruction">%1$s க்கு சரிபார்ப்பு மின்னஞ்சலை அனுப்பியுள்ளோம்</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>
