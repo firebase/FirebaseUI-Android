@@ -48,6 +48,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.BuildConfig
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -94,6 +95,11 @@ fun FirebaseAuthScreen(
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
     authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
 ) {
+    // Set FirebaseUI version
+    LaunchedEffect(authUI.auth) {
+        authUI.auth.setFirebaseUIVersion(BuildConfig.VERSION_NAME)
+    }
+
     val activity = LocalActivity.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

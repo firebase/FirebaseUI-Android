@@ -16,7 +16,6 @@ package com.firebase.ui.auth
 
 import android.util.Log
 import androidx.annotation.Keep
-import com.firebase.ui.auth.BuildConfig
 import com.google.firebase.components.Component
 import com.google.firebase.components.ComponentRegistrar
 import com.google.firebase.platforminfo.LibraryVersionComponent
@@ -28,7 +27,9 @@ import com.google.firebase.platforminfo.LibraryVersionComponent
 @Keep
 class FirebaseUIComposeRegistrar : ComponentRegistrar {
     override fun getComponents(): List<Component<*>> {
-        Log.d("FirebaseUIRegistrar", "FirebaseUI Compose Registrar initialized")
+        Log.d("FirebaseUIRegistrar", "FirebaseUI Compose Registrar initialized: " +
+                "LIBRARY_NAME: ${BuildConfig.LIBRARY_NAME}, " +
+                "VERSION_NAME: ${BuildConfig.VERSION_NAME}")
         return listOf(
             LibraryVersionComponent.create(BuildConfig.LIBRARY_NAME, BuildConfig.VERSION_NAME)
         )
