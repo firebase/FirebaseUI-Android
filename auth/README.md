@@ -82,7 +82,7 @@ Add the FirebaseUI Auth library dependency to your `build.gradle.kts` (Module):
 ```kotlin
 dependencies {
     // FirebaseUI for Auth
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta01")
 
     // Required: Firebase Auth
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
@@ -1440,7 +1440,7 @@ FirebaseAuthScreen(
 
 **Migration Checklist:**
 
-- [ ] Update dependency to `firebase-ui-auth:10.0.0`
+- [ ] Update dependency to `firebase-ui-auth:10.0.0-beta01`
 - [ ] Convert Activities to Composables
 - [ ] Replace Intent-based flow with `FirebaseAuthScreen`
 - [ ] Update configuration from builder pattern to DSL
@@ -1449,7 +1449,7 @@ FirebaseAuthScreen(
 - [ ] Remove `ActivityResultLauncher` and use direct callbacks
 - [ ] Update sign-out/delete to use suspend functions
 
-For a complete migration example, see the [migration guide](MIGRATION.md).
+For a complete migration example, see the [migration guide](../docs/upgrade-to-10.0.md).
 
 ---
 
