@@ -192,3 +192,21 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
     }
 }
 
+/**
+ * Signs out the current user from Facebook.
+ *
+ * Invokes Facebook's LoginManager to log out the user from their Facebook session.
+ * This method silently catches and ignores any exceptions that may occur during the
+ * logout process to ensure the sign-out flow continues even if Facebook logout fails.
+ *
+ * This is typically called as part of the overall sign-out flow when a user signs out
+ * from Firebase Authentication.
+ */
+internal fun FirebaseAuthUI.signOutFromFacebook() {
+    try {
+        if (Provider.fromId(getCurrentUser()?.providerId) != Provider.FACEBOOK) return
+        LoginManager.getInstance().logOut()
+    } catch (e: Exception) {
+        Log.e("FacebookAuthProvider", "Error during Facebook sign out", e)
+    }
+}

@@ -19,6 +19,7 @@ import android.content.Intent
 import androidx.annotation.RestrictTo
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -367,6 +368,7 @@ class FirebaseAuthUI private constructor(
             auth.signOut()
                 .also {
                     signOutFromGoogle(context)
+                    signOutFromFacebook()
                 }
 
             // Update state to idle (user signed out)

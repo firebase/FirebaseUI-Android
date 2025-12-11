@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -198,13 +199,12 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
  *
  * @param context Android context for Credential Manager
  */
-internal suspend fun signOutFromGoogle(context: Context) {
+internal suspend fun FirebaseAuthUI.signOutFromGoogle(context: Context) {
     try {
+        if (Provider.fromId(getCurrentUser()?.providerId) != Provider.GOOGLE) return
         val credentialManager = CredentialManager.create(context)
-        credentialManager.clearCredentialState(
-            ClearCredentialStateRequest()
-        )
-    } catch (_: Exception) {
-
+        credentialManager.clearCredentialState(ClearCredentialStateRequest())
+    } catch (e: Exception) {
+        Log.e("GoogleAuthProvider", "Error during Google sign out", e)
     }
 }
