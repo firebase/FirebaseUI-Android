@@ -24,6 +24,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
+import androidx.credentials.CreatePasswordRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
@@ -35,6 +39,8 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.credentialmanager.CredentialManagerProvider
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmailLinkTestActivity
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
@@ -43,18 +49,26 @@ import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.actionCodeSettings
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import androidx.credentials.PasswordCredential as AndroidPasswordCredential
 
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
@@ -68,6 +82,9 @@ class EmailAuthScreenTest {
 
     private lateinit var authUI: FirebaseAuthUI
     private lateinit var emulatorApi: EmulatorAuthApi
+
+    @Mock
+    private lateinit var mockCredentialManager: CredentialManager
 
     @Before
     fun setUp() {
@@ -104,6 +121,14 @@ class EmailAuthScreenTest {
 
         // Clear emulator data
         emulatorApi.clearEmulatorData()
+
+        // Set up test credential manager provider
+        PasswordCredentialHandler.testCredentialManagerProvider =
+            object : CredentialManagerProvider {
+                override fun getCredentialManager(context: Context): CredentialManager {
+                    return mockCredentialManager
+                }
+            }
     }
 
     @After
@@ -113,6 +138,9 @@ class EmailAuthScreenTest {
 
         // Clear emulator data
         emulatorApi.clearEmulatorData()
+
+        // Clear test credential manager provider
+        PasswordCredentialHandler.testCredentialManagerProvider = null
     }
 
     @Test
@@ -127,6 +155,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isCredentialManagerEnabled = false
         }
 
         composeAndroidTestRule.setContent {
@@ -166,6 +195,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isCredentialManagerEnabled = false
         }
 
         // Track auth state changes
@@ -259,6 +289,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isCredentialManagerEnabled = false
         }
 
         // Track auth state changes
@@ -333,6 +364,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isCredentialManagerEnabled = false
         }
 
         // Track auth state changes
@@ -422,6 +454,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isCredentialManagerEnabled = false
         }
 
         // Track auth state changes
@@ -514,6 +547,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isCredentialManagerEnabled = false
         }
 
         // Track auth state changes and email link (lifted state)
@@ -620,25 +654,26 @@ class EmailAuthScreenTest {
         // Use ActivityScenario to launch EmailLinkTestActivity with the deep link intent
         // This properly simulates the Android deep link flow - when a user clicks the email link,
         // Android launches the app with an ACTION_VIEW intent
-        val extractedEmailLink = ActivityScenario.launch<EmailLinkTestActivity>(deepLinkIntent).use { scenario ->
-            var emailLinkFromIntent: String? = null
+        val extractedEmailLink =
+            ActivityScenario.launch<EmailLinkTestActivity>(deepLinkIntent).use { scenario ->
+                var emailLinkFromIntent: String? = null
 
-            scenario.onActivity { activity ->
-                // Verify the intent was received correctly
-                assertThat(activity.intent.action).isEqualTo(Intent.ACTION_VIEW)
-                assertThat(activity.intent.data).isEqualTo(deepLinkUri)
+                scenario.onActivity { activity ->
+                    // Verify the intent was received correctly
+                    assertThat(activity.intent.action).isEqualTo(Intent.ACTION_VIEW)
+                    assertThat(activity.intent.data).isEqualTo(deepLinkUri)
 
-                // Verify the activity extracted the email link
-                assertThat(activity.emailLinkFromIntent).isNotNull()
-                assertThat(activity.emailLinkFromIntent).isEqualTo(emailLinkFromEmulator)
+                    // Verify the activity extracted the email link
+                    assertThat(activity.emailLinkFromIntent).isNotNull()
+                    assertThat(activity.emailLinkFromIntent).isEqualTo(emailLinkFromEmulator)
 
-                emailLinkFromIntent = activity.emailLinkFromIntent
+                    emailLinkFromIntent = activity.emailLinkFromIntent
 
-                println("TEST: Email link extracted by activity: $emailLinkFromIntent")
+                    println("TEST: Email link extracted by activity: $emailLinkFromIntent")
+                }
+
+                emailLinkFromIntent
             }
-
-            emailLinkFromIntent
-        }
 
         requireNotNull(extractedEmailLink) { "Failed to extract email link from intent" }
 
@@ -670,6 +705,216 @@ class EmailAuthScreenTest {
 
         composeAndroidTestRule.onNodeWithText("AUTHENTICATED - $email")
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `sign up saves credential, then sign in retrieves it and auto-signs in`() = runBlocking {
+        val name = "Credential Test User"
+        val email = "credential-test-${System.currentTimeMillis()}@example.com"
+        val password = "Test@1234"
+
+        // Mock credential manager responses
+        val mockPasswordCredential = mock<AndroidPasswordCredential>()
+        whenever(mockPasswordCredential.id).thenReturn(email)
+        whenever(mockPasswordCredential.password).thenReturn(password)
+
+        val mockCredentialResponse = mock<GetCredentialResponse>()
+        whenever(mockCredentialResponse.credential).thenReturn(mockPasswordCredential)
+
+        // Mock successful credential save
+        whenever(mockCredentialManager.createCredential(any(), any<CreatePasswordRequest>()))
+            .thenReturn(mock())
+
+        // Mock successful credential retrieval
+        whenever(mockCredentialManager.getCredential(any(), any<GetCredentialRequest>()))
+            .thenReturn(mockCredentialResponse)
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+        }
+
+        // Track auth state changes
+        var currentAuthState: AuthState = AuthState.Idle
+
+        composeAndroidTestRule.setContent {
+            TestFirebaseAuthScreen(configuration = configuration, authUI = authUI)
+            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+            currentAuthState = authState
+        }
+
+        // STEP 1: Sign up and verify credential saved
+        println("TEST: Starting sign-up flow...")
+
+        // Click on email provider
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.waitForIdle()
+
+        // Click sign-up
+        composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .assertIsDisplayed()
+            .performClick()
+
+        // Fill in sign-up form
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.nameHint)
+            .performTextInput(name)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.confirmPasswordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Wait for sign-up to complete
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.RequiresEmailVerification
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Verify user was created
+        assertThat(authUI.auth.currentUser).isNotNull()
+        assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
+
+        // Verify credentials were saved
+        verify(mockCredentialManager, times(1)).createCredential(
+            any(),
+            any<CreatePasswordRequest>()
+        )
+        println("TEST: Sign-up complete, credentials saved")
+
+        // STEP 2: Sign out to test credential retrieval
+        println("TEST: Signing out to test credential retrieval...")
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitForIdle()
+        assertThat(authUI.auth.currentUser).isNull()
+
+        // STEP 3: Navigate to SignInUI screen to trigger credential retrieval
+        println("TEST: Navigating to sign-in screen to trigger credential retrieval...")
+
+        // Click on email provider to show SignInUI, which will trigger auto-retrieval
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // SignInUI's LaunchedEffect should now trigger credential retrieval and auto-sign-in
+        println("TEST: Waiting for automatic credential retrieval and auto-sign-in...")
+
+        // Wait for auto-sign-in to complete
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.RequiresEmailVerification
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Verify credentials were retrieved
+        verify(mockCredentialManager, times(1)).getCredential(any(), any<GetCredentialRequest>())
+
+        // Verify auto-sign-in succeeded
+        assertThat(authUI.auth.currentUser).isNotNull()
+        assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
+
+        println("TEST: Credential retrieval and auto-sign-in successful")
+    }
+
+    @Test
+    fun `credential manager disabled skips save and retrieve`() = runBlocking {
+        val name = "Disabled Test User"
+        val email = "disabled-cm-${System.currentTimeMillis()}@example.com"
+        val password = "Test@1234"
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false  // DISABLED
+        }
+
+        var currentAuthState: AuthState = AuthState.Idle
+
+        composeAndroidTestRule.setContent {
+            TestFirebaseAuthScreen(configuration = configuration, authUI = authUI)
+            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+            currentAuthState = authState
+        }
+
+        // Sign up
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.waitForIdle()
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.nameHint)
+            .performTextInput(name)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.confirmPasswordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Wait for sign-up
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.RequiresEmailVerification
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Verify credentials were not saved
+        verify(mockCredentialManager, never()).createCredential(
+            any(),
+            any<CreatePasswordRequest>()
+        )
+
+        // Verify user created
+        assertThat(authUI.auth.currentUser).isNotNull()
+        assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
+
+        // With isCredentialManagerEnabled=false, PasswordCredentialHandler won't be invoked
+        // Test passes if sign-up works without credential manager
+        println("TEST: With credential manager disabled, sign-up works correctly")
     }
 
     @Composable
