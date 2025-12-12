@@ -58,6 +58,7 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
    - [Inheriting from Material Theme](#inheriting-from-material-theme)
    - [Creating a Completely Custom Theme](#creating-a-completely-custom-theme)
    - [Provider Button Styling](#provider-button-styling)
+   - [Screen Transitions](#screen-transitions)
 
 ### Advanced
 9. [Advanced Features](#advanced-features)
@@ -1201,6 +1202,84 @@ val configuration = authUIConfiguration {
     theme = customTheme
 }
 ```
+
+### Screen Transitions
+
+Customize the animations when navigating between screens using the `AuthUITransitions` object:
+
+**Slide animations:**
+
+```kotlin
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+    transitions = AuthUITransitions(
+        enterTransition = { slideInHorizontally { it } },  // Slide in from right
+        exitTransition = { slideOutHorizontally { -it } },  // Slide out to left
+        popEnterTransition = { slideInHorizontally { -it } },  // Slide in from left
+        popExitTransition = { slideOutHorizontally { it } }  // Slide out to right
+    )
+}
+```
+
+**Fade animations (default):**
+
+```kotlin
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Phone())
+    transitions = AuthUITransitions(
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { fadeOut() }
+    )
+}
+```
+
+**Scale animations:**
+
+```kotlin
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Facebook())
+    transitions = AuthUITransitions(
+        enterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
+        exitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) },
+        popEnterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
+        popExitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) }
+    )
+}
+```
+
+**Vertical slide:**
+
+```kotlin
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email())
+    transitions = AuthUITransitions(
+        enterTransition = { slideInVertically { it } },  // Slide up
+        exitTransition = { slideOutVertically { -it } }  // Slide down
+    )
+}
+```
+
+> **Note:** If not specified, default fade in/out transitions with 700ms duration are used.
 
 ## Advanced Features
 

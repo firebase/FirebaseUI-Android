@@ -49,6 +49,7 @@ class AuthUIConfigurationBuilder {
     var isNewEmailAccountsAllowed: Boolean = true
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
+    var transitions: AuthUITransitions? = null
 
     fun providers(block: AuthProvidersBuilder.() -> Unit) =
         providers.addAll(AuthProvidersBuilder().apply(block).build())
@@ -112,7 +113,8 @@ class AuthUIConfigurationBuilder {
             passwordResetActionCodeSettings = passwordResetActionCodeSettings,
             isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
             isDisplayNameRequired = isDisplayNameRequired,
-            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown
+            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown,
+            transitions = transitions
         )
     }
 }
@@ -195,4 +197,10 @@ class AuthUIConfiguration(
      * Always shows the provider selection screen, even if only one is enabled.
      */
     val isProviderChoiceAlwaysShown: Boolean = false,
+
+    /**
+     * Custom screen transition animations.
+     * If null, uses default fade in/out transitions.
+     */
+    val transitions: AuthUITransitions? = null,
 )

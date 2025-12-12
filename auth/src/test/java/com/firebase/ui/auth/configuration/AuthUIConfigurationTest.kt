@@ -463,7 +463,8 @@ class AuthUIConfigurationTest {
             "passwordResetActionCodeSettings",
             "isNewEmailAccountsAllowed",
             "isDisplayNameRequired",
-            "isProviderChoiceAlwaysShown"
+            "isProviderChoiceAlwaysShown",
+            "transitions"
         )
 
         val actualProperties = allProperties.map { it.name }.toSet()

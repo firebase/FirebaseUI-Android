@@ -16,6 +16,9 @@ package com.firebase.ui.auth.ui.screens
 
 import android.util.Log
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -114,7 +117,8 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
-    val lastSignInPreference = remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
+    val lastSignInPreference =
+        remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
 
     // Load last sign-in preference on launch
     LaunchedEffect(authState) {
@@ -226,7 +230,19 @@ fun FirebaseAuthScreen(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = AuthRoute.MethodPicker.route
+                startDestination = AuthRoute.MethodPicker.route,
+                enterTransition = configuration.transitions?.enterTransition ?: {
+                    fadeIn(animationSpec = tween(700))
+                },
+                exitTransition = configuration.transitions?.exitTransition ?: {
+                    fadeOut(animationSpec = tween(700))
+                },
+                popEnterTransition = configuration.transitions?.popEnterTransition ?: {
+                    fadeIn(animationSpec = tween(700))
+                },
+                popExitTransition = configuration.transitions?.popExitTransition ?: {
+                    fadeOut(animationSpec = tween(700))
+                }
             ) {
                 composable(AuthRoute.MethodPicker.route) {
                     Scaffold { innerPadding ->
@@ -449,7 +465,8 @@ fun FirebaseAuthScreen(
                 if (emailLink != null && emailProvider != null) {
                     try {
                         // Try to retrieve saved email from DataStore (same-device flow)
-                        val savedEmail = EmailLinkPersistenceManager.default.retrieveSessionRecord(context)?.email
+                        val savedEmail =
+                            EmailLinkPersistenceManager.default.retrieveSessionRecord(context)?.email
 
                         if (savedEmail != null) {
                             // Same device - we have the email, sign in automatically
@@ -494,7 +511,8 @@ fun FirebaseAuthScreen(
 
                                 // Reload sign-in preference (may have been updated by provider)
                                 coroutineScope.launch {
-                                    lastSignInPreference.value = SignInPreferenceManager.getLastSignIn(context)
+                                    lastSignInPreference.value =
+                                        SignInPreferenceManager.getLastSignIn(context)
                                 }
                             }
                         }
@@ -582,26 +600,26 @@ fun FirebaseAuthScreen(
 
                                 is AuthException.AccountLinkingRequiredException -> {
                                     pendingLinkingCredential.value = exception.credential
-                                navController.navigate(AuthRoute.Email.route) {
-                                    launchSingleTop = true
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                            }
 
-                            is AuthException.EmailLinkPromptForEmailException -> {
-                                // Cross-device flow: User needs to enter their email
-                                emailLinkFromDifferentDevice.value = exception.emailLink
-                                navController.navigate(AuthRoute.Email.route) {
-                                    launchSingleTop = true
+                                is AuthException.EmailLinkPromptForEmailException -> {
+                                    // Cross-device flow: User needs to enter their email
+                                    emailLinkFromDifferentDevice.value = exception.emailLink
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                            }
 
-                            is AuthException.EmailLinkCrossDeviceLinkingException -> {
-                                // Cross-device linking flow: User needs to enter email to link provider
-                                emailLinkFromDifferentDevice.value = exception.emailLink
-                                navController.navigate(AuthRoute.Email.route) {
-                                    launchSingleTop = true
+                                is AuthException.EmailLinkCrossDeviceLinkingException -> {
+                                    // Cross-device linking flow: User needs to enter email to link provider
+                                    emailLinkFromDifferentDevice.value = exception.emailLink
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
                                 }
-                            }
 
                                 else -> Unit
                             }
@@ -646,7 +664,7 @@ data class AuthSuccessUiContext(
 private fun SuccessDestination(
     authState: AuthState,
     stringProvider: AuthUIStringProvider,
-    uiContext: AuthSuccessUiContext
+    uiContext: AuthSuccessUiContext,
 ) {
     when (authState) {
         is AuthState.Success -> {
@@ -691,7 +709,7 @@ private fun AuthSuccessContent(
     authUI: FirebaseAuthUI,
     stringProvider: AuthUIStringProvider,
     onSignOut: () -> Unit,
-    onManageMfa: () -> Unit
+    onManageMfa: () -> Unit,
 ) {
     val user = authUI.getCurrentUser()
     val userIdentifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
@@ -724,7 +742,7 @@ private fun EmailVerificationContent(
     authUI: FirebaseAuthUI,
     stringProvider: AuthUIStringProvider,
     onCheckStatus: () -> Unit,
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
 ) {
     val user = authUI.getCurrentUser()
     val emailLabel = user?.email ?: stringProvider.emailProvider
@@ -756,7 +774,7 @@ private fun EmailVerificationContent(
 @Composable
 private fun ProfileCompletionContent(
     missingFields: List<String>,
-    stringProvider: AuthUIStringProvider
+    stringProvider: AuthUIStringProvider,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
