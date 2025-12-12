@@ -16,6 +16,7 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -23,10 +24,14 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.mergeProfile
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledException
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.EmailLinkParser
 import com.firebase.ui.auth.util.PersistenceManager
 import com.firebase.ui.auth.util.SessionUtils
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.AuthCredential
@@ -38,6 +43,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
+private const val TAG = "EmailAuthProvider"
 
 /**
  * Creates an email/password account or links the credential to an anonymous user.
@@ -160,6 +166,37 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
                 mergeProfile(auth, name, null)
             }
         }
+
+        // Save credentials to Credential Manager if enabled
+        if (config.isCredentialManagerEnabled) {
+            try {
+                val credentialHandler = PasswordCredentialHandler(context)
+                credentialHandler.savePassword(email, password)
+                Log.d(TAG, "Password credential saved successfully for: $email")
+            } catch (e: PasswordCredentialCancelledException) {
+                // User cancelled - this is fine, don't break the auth flow
+                Log.d(TAG, "User cancelled credential save for: $email")
+            } catch (e: PasswordCredentialException) {
+                // Failed to save - log but don't break the auth flow
+                Log.w(TAG, "Failed to save password credential for: $email", e)
+            }
+        }
+
+        // Save sign-in preference for "Continue as..." feature
+        if (result != null) {
+            try {
+                SignInPreferenceManager.saveLastSignIn(
+                    context = context,
+                    providerId = "password",
+                    identifier = email
+                )
+                Log.d(TAG, "Sign-in preference saved for: $email")
+            } catch (e: Exception) {
+                // Failed to save preference - log but don't break auth flow
+                Log.w(TAG, "Failed to save sign-in preference for: $email", e)
+            }
+        }
+
         updateAuthState(AuthState.Idle)
         return result
     } catch (e: FirebaseAuthUserCollisionException) {
@@ -281,6 +318,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
     email: String,
     password: String,
     credentialForLinking: AuthCredential? = null,
+    skipCredentialSave: Boolean = false,
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in..."))
@@ -361,7 +399,38 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                         result
                     }
                 }
-        }.also {
+        }.also { result ->
+            // Save credentials to Credential Manager if enabled
+            // Skip if user signed in with a retrieved credential (already saved)
+            if (config.isCredentialManagerEnabled && result != null && !skipCredentialSave) {
+                try {
+                    val credentialHandler = PasswordCredentialHandler(context)
+                    credentialHandler.savePassword(email, password)
+                    Log.d(TAG, "Password credential saved successfully for: $email")
+                } catch (e: PasswordCredentialCancelledException) {
+                    // User cancelled - this is fine, don't break the auth flow
+                    Log.d(TAG, "User cancelled credential save for: $email")
+                } catch (e: PasswordCredentialException) {
+                    // Failed to save - log but don't break the auth flow
+                    Log.w(TAG, "Failed to save password credential for: $email", e)
+                }
+            }
+
+            // Save sign-in preference for "Continue as..." feature
+            if (result != null) {
+                try {
+                    SignInPreferenceManager.saveLastSignIn(
+                        context = context,
+                        providerId = "password",
+                        identifier = email
+                    )
+                    Log.d(TAG, "Sign-in preference saved for: $email")
+                } catch (e: Exception) {
+                    // Failed to save preference - log but don't break auth flow
+                    Log.w(TAG, "Failed to save sign-in preference for: $email", e)
+                }
+            }
+
             updateAuthState(AuthState.Idle)
         }
     } catch (e: FirebaseAuthMultiFactorException) {

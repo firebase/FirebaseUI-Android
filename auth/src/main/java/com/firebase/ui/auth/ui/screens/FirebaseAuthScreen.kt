@@ -68,6 +68,7 @@ import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
@@ -113,6 +114,12 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
+    val lastSignInPreference = remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
+
+    // Load last sign-in preference on launch
+    LaunchedEffect(authState) {
+        lastSignInPreference.value = SignInPreferenceManager.getLastSignIn(context)
+    }
 
     val anonymousProvider =
         configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
@@ -156,6 +163,7 @@ fun FirebaseAuthScreen(
 
     val onSignInWithApple = appleProvider?.let {
         authUI.rememberOAuthSignInHandler(
+            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -164,6 +172,7 @@ fun FirebaseAuthScreen(
 
     val onSignInWithGithub = githubProvider?.let {
         authUI.rememberOAuthSignInHandler(
+            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -172,6 +181,7 @@ fun FirebaseAuthScreen(
 
     val onSignInWithMicrosoft = microsoftProvider?.let {
         authUI.rememberOAuthSignInHandler(
+            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -180,6 +190,7 @@ fun FirebaseAuthScreen(
 
     val onSignInWithYahoo = yahooProvider?.let {
         authUI.rememberOAuthSignInHandler(
+            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -188,6 +199,7 @@ fun FirebaseAuthScreen(
 
     val onSignInWithTwitter = twitterProvider?.let {
         authUI.rememberOAuthSignInHandler(
+            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -196,6 +208,7 @@ fun FirebaseAuthScreen(
 
     val genericOAuthHandlers = genericOAuthProviders.associateWith {
         authUI.rememberOAuthSignInHandler(
+            context = context,
             activity = activity,
             config = configuration,
             provider = it
@@ -224,6 +237,7 @@ fun FirebaseAuthScreen(
                             logo = logoAsset,
                             termsOfServiceUrl = configuration.tosUrl,
                             privacyPolicyUrl = configuration.privacyPolicyUrl,
+                            lastSignInPreference = lastSignInPreference.value,
                             onProviderSelected = { provider ->
                                 when (provider) {
                                     is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
@@ -322,6 +336,7 @@ fun FirebaseAuthScreen(
                                 coroutineScope.launch {
                                     try {
                                         authUI.signOut(context)
+                                        // Keep sign-in preference for "Continue as..." on next launch
                                     } catch (e: Exception) {
                                         onSignInFailure(AuthException.from(e))
                                     } finally {
@@ -476,6 +491,11 @@ fun FirebaseAuthScreen(
                             if (state.user.uid != lastSuccessfulUserId.value) {
                                 onSignInSuccess(result)
                                 lastSuccessfulUserId.value = state.user.uid
+
+                                // Reload sign-in preference (may have been updated by provider)
+                                coroutineScope.launch {
+                                    lastSignInPreference.value = SignInPreferenceManager.getLastSignIn(context)
+                                }
                             }
                         }
 

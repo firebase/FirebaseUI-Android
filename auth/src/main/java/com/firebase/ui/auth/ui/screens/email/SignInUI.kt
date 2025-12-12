@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.email
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +68,10 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
 import com.firebase.ui.auth.configuration.validators.PasswordValidator
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledException
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundException
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
@@ -80,12 +87,14 @@ fun SignInUI(
     password: String,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
+    onRetrievedCredential: (Pair<String, String>) -> Unit,
     onSignInClick: () -> Unit,
     onGoToSignUp: () -> Unit,
     onGoToResetPassword: () -> Unit,
     onGoToEmailLinkSignIn: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
 ) {
+    val context = LocalContext.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
     val emailValidator = remember { EmailValidator(stringProvider) }
@@ -99,6 +108,45 @@ fun SignInUI(
                 emailValidator.validate(email),
                 passwordValidator.validate(password)
             ).all { it }
+        }
+    }
+
+    // Retrieve saved credentials when in SignIn mode
+    val credentialRetrievalAttempted = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (configuration.isCredentialManagerEnabled &&
+            !credentialRetrievalAttempted.value &&
+            PasswordCredentialHandler.hasSavedCredentials(context)) {
+            credentialRetrievalAttempted.value = true
+
+            try {
+                val credentialHandler = PasswordCredentialHandler(context)
+                val credential = credentialHandler.getPassword()
+
+                Log.d("EmailAuthScreen", "Retrieved credential for: ${credential.username}")
+
+                // Auto-fill the email and password fields
+                onEmailChange(credential.username)
+                onPasswordChange(credential.password)
+
+                emailValidator.validate(credential.username)
+                passwordValidator.validate(credential.password)
+
+                // Store retrieved credential to compare later
+                onRetrievedCredential(Pair(credential.username, credential.password))
+
+                onSignInClick()
+            } catch (e: PasswordCredentialNotFoundException) {
+                Log.d("EmailAuthScreen", "No saved credentials found")
+                // No credentials saved - user will enter manually
+            } catch (e: PasswordCredentialCancelledException) {
+                Log.d("EmailAuthScreen", "User cancelled credential selection")
+                // User cancelled - let them enter manually
+            } catch (e: PasswordCredentialException) {
+                Log.w("EmailAuthScreen", "Failed to retrieve credentials", e)
+                // Failed to retrieve - let them enter manually
+            }
         }
     }
 
@@ -289,6 +337,7 @@ fun PreviewSignInUI() {
                 emailSignInLinkSent = false,
                 onEmailChange = { email -> },
                 onPasswordChange = { password -> },
+                onRetrievedCredential = { credential -> },
                 onSignInClick = {},
                 onGoToSignUp = {},
                 onGoToResetPassword = {},

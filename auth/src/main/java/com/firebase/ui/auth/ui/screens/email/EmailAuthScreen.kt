@@ -35,6 +35,10 @@ import com.firebase.ui.auth.configuration.auth_provider.sendSignInLinkToEmail
 import com.firebase.ui.auth.configuration.auth_provider.signInWithEmailAndPassword
 import com.firebase.ui.auth.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledException
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
+import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundException
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -95,6 +99,7 @@ class EmailAuthContentState(
     val onConfirmPasswordChange: (String) -> Unit,
     val displayName: String,
     val onDisplayNameChange: (String) -> Unit,
+    val onRetrievedCredential: (Pair<String, String>) -> Unit,
     val onSignInClick: () -> Unit,
     val onSignInEmailLinkClick: () -> Unit,
     val onSignUpClick: () -> Unit,
@@ -162,6 +167,9 @@ fun EmailAuthScreen(
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
     val resetLinkSent = authState is AuthState.PasswordResetLinkSent
     val emailSignInLinkSent = authState is AuthState.EmailSignInLinkSent
+
+    // Track if credentials were retrieved from Credential Manager
+    val retrievedCredential = remember { mutableStateOf<Pair<String, String>?>(null) }
 
     LaunchedEffect(authState) {
         Log.d("EmailAuthScreen", "Current state: $authState")
@@ -237,15 +245,24 @@ fun EmailAuthScreen(
         onDisplayNameChange = { displayName ->
             displayNameValue.value = displayName
         },
+        onRetrievedCredential = { credential ->
+            retrievedCredential.value = credential
+        },
         onSignInClick = {
             coroutineScope.launch {
                 try {
+                    // Check if user is signing in with retrieved credentials
+                    val isUsingRetrievedCredential = retrievedCredential.value?.let { (email, password) ->
+                        email == emailTextValue.value && password == passwordTextValue.value
+                    } ?: false
+
                     authUI.signInWithEmailAndPassword(
                         context = context,
                         config = configuration,
                         email = emailTextValue.value,
                         password = passwordTextValue.value,
                         credentialForLinking = authCredentialForLinking,
+                        skipCredentialSave = isUsingRetrievedCredential
                     )
                 } catch (e: Exception) {
                     onError(AuthException.from(e))
@@ -350,6 +367,7 @@ private fun DefaultEmailAuthContent(
                 password = state.password,
                 onEmailChange = state.onEmailChange,
                 onPasswordChange = state.onPasswordChange,
+                onRetrievedCredential = state.onRetrievedCredential,
                 onSignInClick = state.onSignInClick,
                 onGoToSignUp = state.onGoToSignUp,
                 onGoToResetPassword = state.onGoToResetPassword,

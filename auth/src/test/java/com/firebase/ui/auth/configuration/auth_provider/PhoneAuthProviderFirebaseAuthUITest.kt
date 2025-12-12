@@ -317,6 +317,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
         }
 
         val result = instance.submitVerificationCode(
+            applicationContext,
             config = config,
             verificationId = "test-verification-id",
             code = "123456",
@@ -359,6 +360,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
         }
 
         val result = instance.signInWithPhoneAuthCredential(
+            applicationContext,
             config = config,
             credential = mockCredential
         )
@@ -399,6 +401,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
         }
 
         val result = instance.signInWithPhoneAuthCredential(
+            applicationContext,
             config = config,
             credential = mockCredential
         )

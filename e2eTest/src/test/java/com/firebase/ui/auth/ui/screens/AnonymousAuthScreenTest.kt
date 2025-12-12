@@ -181,6 +181,7 @@ class AnonymousAuthScreenTest {
                 )
             }
             isAnonymousUpgradeEnabled = true
+            isCredentialManagerEnabled = false
         }
 
         // Track auth state changes
