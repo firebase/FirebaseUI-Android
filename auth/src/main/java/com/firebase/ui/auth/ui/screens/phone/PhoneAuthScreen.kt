@@ -344,7 +344,8 @@ private fun DefaultPhoneAuthContent(
                 onVerificationCodeChange = state.onVerificationCodeChange,
                 onVerifyCodeClick = state.onVerifyCodeClick,
                 onResendCodeClick = state.onResendCodeClick,
-                onChangeNumberClick = state.onChangeNumberClick
+                onChangeNumberClick = state.onChangeNumberClick,
+                onNavigateBack = onCancel
             )
         }
     }
