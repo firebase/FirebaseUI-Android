@@ -61,6 +61,7 @@ import com.firebase.ui.auth.configuration.auth_provider.signInWithEmailLink
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.configuration.theme.LocalAuthUITheme
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
@@ -203,7 +204,8 @@ fun FirebaseAuthScreen(
 
     CompositionLocalProvider(
         LocalAuthUIStringProvider provides configuration.stringProvider,
-        LocalTopLevelDialogController provides dialogController
+        LocalTopLevelDialogController provides dialogController,
+        LocalAuthUITheme provides configuration.theme
     ) {
         Surface(
             modifier = Modifier

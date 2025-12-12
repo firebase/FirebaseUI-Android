@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.AuthException
@@ -42,8 +45,13 @@ class HighLevelApiDemoActivity : ComponentActivity() {
         val authUI = FirebaseAuthUI.getInstance()
         val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
 
+        val customTheme = AuthUITheme.Default.copy(
+            providerButtonShape = ShapeDefaults.ExtraLarge
+        )
+
         val configuration = authUIConfiguration {
             context = applicationContext
+            theme = customTheme
             logo = AuthUIAsset.Resource(R.drawable.firebase_auth)
             tosUrl = "https://policies.google.com/terms"
             privacyPolicyUrl = "https://policies.google.com/privacy"
