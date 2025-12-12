@@ -31,6 +31,7 @@ import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.EmailLinkParser
 import com.firebase.ui.auth.util.PersistenceManager
 import com.firebase.ui.auth.util.SessionUtils
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.AuthCredential
@@ -178,6 +179,21 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             } catch (e: PasswordCredentialException) {
                 // Failed to save - log but don't break the auth flow
                 Log.w(TAG, "Failed to save password credential for: $email", e)
+            }
+        }
+
+        // Save sign-in preference for "Continue as..." feature
+        if (result != null) {
+            try {
+                SignInPreferenceManager.saveLastSignIn(
+                    context = context,
+                    providerId = "password",
+                    identifier = email
+                )
+                Log.d(TAG, "Sign-in preference saved for: $email")
+            } catch (e: Exception) {
+                // Failed to save preference - log but don't break auth flow
+                Log.w(TAG, "Failed to save sign-in preference for: $email", e)
             }
         }
 
@@ -397,6 +413,21 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                 } catch (e: PasswordCredentialException) {
                     // Failed to save - log but don't break the auth flow
                     Log.w(TAG, "Failed to save password credential for: $email", e)
+                }
+            }
+
+            // Save sign-in preference for "Continue as..." feature
+            if (result != null) {
+                try {
+                    SignInPreferenceManager.saveLastSignIn(
+                        context = context,
+                        providerId = "password",
+                        identifier = email
+                    )
+                    Log.d(TAG, "Sign-in preference saved for: $email")
+                } catch (e: Exception) {
+                    // Failed to save preference - log but don't break auth flow
+                    Log.w(TAG, "Failed to save sign-in preference for: $email", e)
                 }
             }
 

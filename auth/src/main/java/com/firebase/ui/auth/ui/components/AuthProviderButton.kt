@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -67,6 +68,8 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
  * @param enabled If the button is enabled. Defaults to true.
  * @param style Optional custom styling for the button.
  * @param stringProvider The [AuthUIStringProvider] for localized strings
+ * @param subtitle Optional subtitle text to display below the provider label (e.g., user email)
+ * @param label Optional custom label to override the default provider label
  *
  * @since 10.0.0
  */
@@ -78,14 +81,21 @@ fun AuthProviderButton(
     enabled: Boolean = true,
     style: AuthUITheme.ProviderStyle? = null,
     stringProvider: AuthUIStringProvider,
+    subtitle: String? = null,
+    label: String? = null,
+    showAsContinue: Boolean = false,
 ) {
     val context = LocalContext.current
     val providerStyle = resolveProviderStyle(provider, style)
-    val providerLabel = resolveProviderLabel(provider, stringProvider, context)
+    val providerLabel =
+        label ?: resolveProviderLabel(provider, stringProvider, context, showAsContinue)
 
     Button(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp),
+        contentPadding = PaddingValues(
+            horizontal = 12.dp,
+            vertical = if (subtitle != null) 12.dp else 8.dp
+        ),
         colors = ButtonDefaults.buttonColors(
             containerColor = providerStyle.backgroundColor,
             contentColor = providerStyle.contentColor,
@@ -123,11 +133,30 @@ fun AuthProviderButton(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
             }
-            Text(
-                text = providerLabel,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-            )
+
+            if (subtitle != null) {
+                Column(
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = providerLabel,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                    )
+                    Text(
+                        text = subtitle,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            } else {
+                Text(
+                    text = providerLabel,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                )
+            }
         }
     }
 }
@@ -155,7 +184,8 @@ internal fun resolveProviderStyle(
 internal fun resolveProviderLabel(
     provider: AuthProvider,
     stringProvider: AuthUIStringProvider,
-    context: android.content.Context
+    context: android.content.Context,
+    showAsContinue: Boolean = false,
 ): String = when (provider) {
     is AuthProvider.GenericOAuth -> provider.buttonLabel
     is AuthProvider.Apple -> {
@@ -163,22 +193,23 @@ internal fun resolveProviderLabel(
         if (provider.locale != null) {
             val appleLocale = java.util.Locale.forLanguageTag(provider.locale)
             val appleStringProvider = DefaultAuthUIStringProvider(context, appleLocale)
-            appleStringProvider.signInWithApple
+            if (showAsContinue) appleStringProvider.continueWithApple else appleStringProvider.signInWithApple
         } else {
-            stringProvider.signInWithApple
+            if (showAsContinue) stringProvider.continueWithApple else stringProvider.signInWithApple
         }
     }
+
     else -> when (Provider.fromId(provider.providerId)) {
-        Provider.GOOGLE -> stringProvider.signInWithGoogle
-        Provider.FACEBOOK -> stringProvider.signInWithFacebook
-        Provider.TWITTER -> stringProvider.signInWithTwitter
-        Provider.GITHUB -> stringProvider.signInWithGithub
-        Provider.EMAIL -> stringProvider.signInWithEmail
-        Provider.PHONE -> stringProvider.signInWithPhone
+        Provider.GOOGLE -> if (showAsContinue) stringProvider.continueWithGoogle else stringProvider.signInWithGoogle
+        Provider.FACEBOOK -> if (showAsContinue) stringProvider.continueWithFacebook else stringProvider.signInWithFacebook
+        Provider.TWITTER -> if (showAsContinue) stringProvider.continueWithTwitter else stringProvider.signInWithTwitter
+        Provider.GITHUB -> if (showAsContinue) stringProvider.continueWithGithub else stringProvider.signInWithGithub
+        Provider.EMAIL -> if (showAsContinue) stringProvider.continueWithEmail else stringProvider.signInWithEmail
+        Provider.PHONE -> if (showAsContinue) stringProvider.continueWithPhone else stringProvider.signInWithPhone
         Provider.ANONYMOUS -> stringProvider.signInAnonymously
-        Provider.MICROSOFT -> stringProvider.signInWithMicrosoft
-        Provider.YAHOO -> stringProvider.signInWithYahoo
-        Provider.APPLE -> stringProvider.signInWithApple
+        Provider.MICROSOFT -> if (showAsContinue) stringProvider.continueWithMicrosoft else stringProvider.signInWithMicrosoft
+        Provider.YAHOO -> if (showAsContinue) stringProvider.continueWithYahoo else stringProvider.signInWithYahoo
+        Provider.APPLE -> if (showAsContinue) stringProvider.continueWithApple else stringProvider.signInWithApple
         null -> "Unknown Provider"
     }
 }

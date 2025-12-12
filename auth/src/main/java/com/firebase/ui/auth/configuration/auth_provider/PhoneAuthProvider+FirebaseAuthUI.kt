@@ -1,10 +1,12 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import android.app.Activity
+import android.content.Context
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorSession
 import com.google.firebase.auth.PhoneAuthCredential
@@ -197,6 +199,7 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
  * @throws AuthException.NetworkException if a network error occurs
  */
 internal suspend fun FirebaseAuthUI.submitVerificationCode(
+    context: Context,
     config: AuthUIConfiguration,
     verificationId: String,
     code: String,
@@ -206,6 +209,7 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
         updateAuthState(AuthState.Loading("Submitting verification code..."))
         val credential = credentialProvider.getCredential(verificationId, code)
         return signInWithPhoneAuthCredential(
+            context = context,
             config = config,
             credential = credential
         )
@@ -288,15 +292,37 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
  * @throws AuthException.NetworkException if a network error occurs
  */
 internal suspend fun FirebaseAuthUI.signInWithPhoneAuthCredential(
+    context: Context,
     config: AuthUIConfiguration,
     credential: PhoneAuthCredential,
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in with phone..."))
-        return signInAndLinkWithCredential(
+        val result = signInAndLinkWithCredential(
             config = config,
             credential = credential,
         )
+
+        // Save sign-in preference for "Continue as..." feature
+        if (result != null) {
+            try {
+                val user = auth.currentUser
+                val identifier = user?.phoneNumber
+                if (identifier != null) {
+                    SignInPreferenceManager.saveLastSignIn(
+                        context = context,
+                        providerId = "phone",
+                        identifier = identifier
+                    )
+                    android.util.Log.d("PhoneAuthProvider", "Sign-in preference saved for: $identifier")
+                }
+            } catch (e: Exception) {
+                // Failed to save preference - log but don't break auth flow
+                android.util.Log.w("PhoneAuthProvider", "Failed to save sign-in preference", e)
+            }
+        }
+
+        return result
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with phone was cancelled",

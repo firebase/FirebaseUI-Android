@@ -60,6 +60,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
@@ -86,9 +87,11 @@ class EmailAuthScreenTest {
     @Mock
     private lateinit var mockCredentialManager: CredentialManager
 
+    private lateinit var closeable: AutoCloseable
+
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
+        closeable = MockitoAnnotations.openMocks(this)
 
         applicationContext = ApplicationProvider.getApplicationContext()
 
@@ -133,6 +136,8 @@ class EmailAuthScreenTest {
 
     @After
     fun tearDown() {
+        closeable.close()
+
         // Clean up after each test to prevent test pollution
         FirebaseAuthUI.clearInstanceCache()
 
@@ -838,6 +843,130 @@ class EmailAuthScreenTest {
         assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
 
         println("TEST: Credential retrieval and auto-sign-in successful")
+    }
+
+    @Test
+    fun `sign in with retrieved credential does not prompt to save again`() = runBlocking {
+        val name = "No Duplicate Save Test User"
+        val email = "no-duplicate-${System.currentTimeMillis()}@example.com"
+        val password = "Test@1234"
+
+        // Mock credential manager responses
+        val mockPasswordCredential = mock<AndroidPasswordCredential>()
+        whenever(mockPasswordCredential.id).thenReturn(email)
+        whenever(mockPasswordCredential.password).thenReturn(password)
+
+        val mockCredentialResponse = mock<GetCredentialResponse>()
+        whenever(mockCredentialResponse.credential).thenReturn(mockPasswordCredential)
+
+        // Mock successful credential save (should only be called once during sign-up)
+        whenever(mockCredentialManager.createCredential(any(), any<CreatePasswordRequest>()))
+            .thenReturn(mock())
+
+        // Mock successful credential retrieval
+        whenever(mockCredentialManager.getCredential(any(), any<GetCredentialRequest>()))
+            .thenReturn(mockCredentialResponse)
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+        }
+
+        var currentAuthState: AuthState = AuthState.Idle
+
+        composeAndroidTestRule.setContent {
+            TestFirebaseAuthScreen(configuration = configuration, authUI = authUI)
+            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+            currentAuthState = authState
+        }
+
+        // STEP 1: Sign up and save credential
+        println("TEST: Starting sign-up flow...")
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.waitForIdle()
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.nameHint)
+            .performTextInput(name)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.confirmPasswordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.RequiresEmailVerification
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(authUI.auth.currentUser).isNotNull()
+        assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
+
+        // Verify credentials were saved during sign-up (first call)
+        verify(mockCredentialManager, times(1)).createCredential(any(), any<CreatePasswordRequest>())
+        println("TEST: Sign-up complete, credentials saved (createCredential called once)")
+
+        // STEP 2: Sign out
+        println("TEST: Signing out...")
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitForIdle()
+        assertThat(authUI.auth.currentUser).isNull()
+
+        // STEP 3: Navigate to SignInUI to trigger credential retrieval
+        println("TEST: Navigating to sign-in screen...")
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
+            .assertIsDisplayed()
+            .performClick()
+
+        composeAndroidTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        println("TEST: Waiting for automatic credential retrieval and auto-sign-in...")
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.RequiresEmailVerification
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Verify credentials were retrieved (may be called multiple times due to navigation/remounting)
+        verify(mockCredentialManager, atLeast(1)).getCredential(any(), any<GetCredentialRequest>())
+
+        // Verify auto-sign-in succeeded
+        assertThat(authUI.auth.currentUser).isNotNull()
+        assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
+
+        // CRITICAL: Verify createCredential was NOT called again (still only 1 time from sign-up)
+        // This is the main point of this test - verifying skipCredentialSave logic works
+        verify(mockCredentialManager, times(1)).createCredential(any(), any<CreatePasswordRequest>())
+        println("TEST: Verified no duplicate save prompt (createCredential still called only once)")
     }
 
     @Test
