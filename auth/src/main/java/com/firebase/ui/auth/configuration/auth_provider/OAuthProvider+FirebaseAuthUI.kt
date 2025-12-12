@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import android.app.Activity
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -9,6 +10,7 @@ import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.OAuthProvider
@@ -48,6 +50,7 @@ import kotlinx.coroutines.tasks.await
  */
 @Composable
 internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
+    context: Context,
     activity: Activity?,
     config: AuthUIConfiguration,
     provider: AuthProvider.OAuth,
@@ -63,6 +66,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
             coroutineScope.launch {
                 try {
                     signInWithProvider(
+                        context = context,
                         config = config,
                         activity = activity,
                         provider = provider
@@ -119,6 +123,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
  * @see signInAndLinkWithCredential
  */
 internal suspend fun FirebaseAuthUI.signInWithProvider(
+    context: Context,
     config: AuthUIConfiguration,
     activity: Activity,
     provider: AuthProvider.OAuth,
@@ -172,6 +177,24 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
         val credential = authResult?.credential as? OAuthCredential
         if (credential != null) {
             // The user is already signed in via startActivityForSignInWithProvider/startActivityForLinkWithProvider
+
+            // Save sign-in preference for "Continue as..." feature
+            try {
+                val user = auth.currentUser
+                val identifier = user?.email
+                if (identifier != null) {
+                    SignInPreferenceManager.saveLastSignIn(
+                        context = context,
+                        providerId = provider.providerId,
+                        identifier = identifier
+                    )
+                    android.util.Log.d("OAuthProvider", "Sign-in preference saved for: $identifier (${provider.providerId})")
+                }
+            } catch (e: Exception) {
+                // Failed to save preference - log but don't break auth flow
+                android.util.Log.w("OAuthProvider", "Failed to save sign-in preference", e)
+            }
+
             // Just update state to Idle
             updateAuthState(AuthState.Idle)
         } else {
