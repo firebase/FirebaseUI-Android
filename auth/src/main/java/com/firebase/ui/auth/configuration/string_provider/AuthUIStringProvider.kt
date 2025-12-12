@@ -97,6 +97,33 @@ interface AuthUIStringProvider {
     /** Button text for Yahoo sign-in option */
     val signInWithYahoo: String
 
+    /** Button text for Google continue option */
+    val continueWithGoogle: String
+
+    /** Button text for Facebook continue option */
+    val continueWithFacebook: String
+
+    /** Button text for Twitter continue option */
+    val continueWithTwitter: String
+
+    /** Button text for Github continue option */
+    val continueWithGithub: String
+
+    /** Button text for Email continue option */
+    val continueWithEmail: String
+
+    /** Button text for Phone continue option */
+    val continueWithPhone: String
+
+    /** Button text for Apple continue option */
+    val continueWithApple: String
+
+    /** Button text for Microsoft continue option */
+    val continueWithMicrosoft: String
+
+    /** Button text for Yahoo continue option */
+    val continueWithYahoo: String
+
     /** Error message when email address field is empty */
     val missingEmailAddress: String
 

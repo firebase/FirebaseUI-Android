@@ -25,6 +25,24 @@ import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
+import com.firebase.ui.auth.util.CredentialPersistenceManager
+
+/**
+ * Provider interface for obtaining CredentialManager instances.
+ * This allows test code to inject mock CredentialManager instances.
+ */
+interface CredentialManagerProvider {
+    fun getCredentialManager(context: Context): CredentialManager
+}
+
+/**
+ * Default implementation that creates a real CredentialManager instance.
+ */
+class DefaultCredentialManagerProvider : CredentialManagerProvider {
+    override fun getCredentialManager(context: Context): CredentialManager {
+        return CredentialManager.create(context)
+    }
+}
 
 /**
  * Handler for password credential operations using Android's Credential Manager.
@@ -33,11 +51,53 @@ import androidx.credentials.exceptions.NoCredentialException
  * the system credential manager, which displays native UI prompts to the user.
  *
  * @property context The Android context used for credential operations
+ * @property provider Optional provider for testing purposes
  */
 class PasswordCredentialHandler(
-    private val context: Context
+    private val context: Context,
+    provider: CredentialManagerProvider? = null
 ) {
-    private val credentialManager: CredentialManager = CredentialManager.create(context)
+    companion object {
+        /**
+         * Test-only provider for injecting mock CredentialManager instances.
+         * Set this in your test setup to override the default CredentialManager.
+         *
+         * Example:
+         * ```
+         * PasswordCredentialHandler.testCredentialManagerProvider = object : CredentialManagerProvider {
+         *     override fun getCredentialManager(context: Context) = mockCredentialManager
+         * }
+         * ```
+         */
+        @Volatile
+        var testCredentialManagerProvider: CredentialManagerProvider? = null
+
+        /**
+         * Checks if credentials have been saved at least once.
+         * This prevents unnecessary credential retrieval attempts.
+         *
+         * @param context The Android context
+         * @return true if credentials have been saved, false otherwise
+         */
+        suspend fun hasSavedCredentials(context: Context): Boolean {
+            return CredentialPersistenceManager.hasSavedCredentials(context)
+        }
+
+        /**
+         * Clears the saved credentials flag.
+         * Useful for testing or when user signs out permanently.
+         *
+         * @param context The Android context
+         */
+        suspend fun clearSavedCredentialsFlag(context: Context) {
+            CredentialPersistenceManager.clearSavedCredentialsFlag(context)
+        }
+    }
+
+    private val credentialManager: CredentialManager =
+        provider?.getCredentialManager(context)
+            ?: testCredentialManagerProvider?.getCredentialManager(context)
+            ?: CredentialManager.create(context)
 
     /**
      * Saves a password credential to the system credential manager.
@@ -62,6 +122,8 @@ class PasswordCredentialHandler(
 
         try {
             credentialManager.createCredential(context, request)
+            // Mark that credentials have been saved successfully
+            CredentialPersistenceManager.setCredentialsSaved(context)
         } catch (e: CreateCredentialCancellationException) {
             // User cancelled the save operation
             throw PasswordCredentialCancelledException("User cancelled password save operation", e)
