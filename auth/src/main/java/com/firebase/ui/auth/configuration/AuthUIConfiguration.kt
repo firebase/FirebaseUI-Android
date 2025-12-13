@@ -36,7 +36,7 @@ annotation class AuthUIConfigurationDsl
 class AuthUIConfigurationBuilder {
     var context: Context? = null
     private val providers = mutableListOf<AuthProvider>()
-    var theme: AuthUITheme = AuthUITheme.Default
+    var theme: AuthUITheme? = null
     var locale: Locale? = null
     var stringProvider: AuthUIStringProvider? = null
     var isCredentialManagerEnabled: Boolean = true
@@ -134,9 +134,10 @@ class AuthUIConfiguration(
     val providers: List<AuthProvider> = emptyList(),
 
     /**
-     * The theming configuration for the UI. Default to [AuthUITheme.Default].
+     * The theming configuration for the UI. If null, inherits from the outer AuthUITheme wrapper
+     * or defaults to [AuthUITheme.Default] if no wrapper is present.
      */
-    val theme: AuthUITheme = AuthUITheme.Default,
+    val theme: AuthUITheme? = null,
 
     /**
      * The locale for internationalization.

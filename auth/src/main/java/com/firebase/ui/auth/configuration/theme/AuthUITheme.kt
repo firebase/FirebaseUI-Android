@@ -40,7 +40,7 @@ val LocalAuthUITheme = staticCompositionLocalOf { AuthUITheme.Default }
 /**
  * Theming configuration for the entire Auth UI.
  */
-data class AuthUITheme(
+class AuthUITheme(
     /**
      * The color scheme to use.
      */
@@ -82,6 +82,59 @@ data class AuthUITheme(
      */
     val providerButtonShape: Shape? = null,
 ) {
+
+    /**
+     * Creates a copy of this AuthUITheme, optionally overriding specific properties.
+     *
+     * @param colorScheme The color scheme to use. Defaults to this theme's color scheme.
+     * @param typography The typography to use. Defaults to this theme's typography.
+     * @param shapes The shapes to use. Defaults to this theme's shapes.
+     * @param providerStyles Custom styling for individual providers. Defaults to this theme's provider styles.
+     * @param providerButtonShape Default shape for provider buttons. Defaults to this theme's provider button shape.
+     * @return A new AuthUITheme instance with the specified properties.
+     */
+    fun copy(
+        colorScheme: ColorScheme = this.colorScheme,
+        typography: Typography = this.typography,
+        shapes: Shapes = this.shapes,
+        providerStyles: Map<String, ProviderStyle> = this.providerStyles,
+        providerButtonShape: Shape? = this.providerButtonShape,
+    ): AuthUITheme {
+        return AuthUITheme(
+            colorScheme = colorScheme,
+            typography = typography,
+            shapes = shapes,
+            providerStyles = providerStyles,
+            providerButtonShape = providerButtonShape
+        )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is AuthUITheme) return false
+
+        if (colorScheme != other.colorScheme) return false
+        if (typography != other.typography) return false
+        if (shapes != other.shapes) return false
+        if (providerStyles != other.providerStyles) return false
+        if (providerButtonShape != other.providerButtonShape) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = colorScheme.hashCode()
+        result = 31 * result + typography.hashCode()
+        result = 31 * result + shapes.hashCode()
+        result = 31 * result + providerStyles.hashCode()
+        result = 31 * result + (providerButtonShape?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "AuthUITheme(colorScheme=$colorScheme, typography=$typography, shapes=$shapes, " +
+                "providerStyles=$providerStyles, providerButtonShape=$providerButtonShape)"
+    }
 
     /**
      * A class nested within AuthUITheme that defines the visual appearance of a specific
@@ -152,6 +205,9 @@ data class AuthUITheme(
             providerStyles = ProviderStyleDefaults.default
         )
 
+        val Adaptive: AuthUITheme
+            @Composable get() = if (isSystemInDarkTheme()) DefaultDark else Default
+
         /**
          * Creates a theme inheriting the app's current Material Theme settings.
          *
@@ -185,8 +241,7 @@ data class AuthUITheme(
 
 @Composable
 fun AuthUITheme(
-    theme: AuthUITheme = if (isSystemInDarkTheme())
-        AuthUITheme.DefaultDark else AuthUITheme.Default,
+    theme: AuthUITheme = AuthUITheme.Adaptive,
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(

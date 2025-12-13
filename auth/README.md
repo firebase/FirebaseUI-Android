@@ -54,7 +54,9 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
    - [Custom UI with Slots](#custom-ui-with-slots)
 8. [Theming & Customization](#theming--customization)
    - [Using Default Themes](#using-default-themes)
+   - [Using Adaptive Theme](#using-adaptive-theme-recommended)
    - [Customizing Default Theme](#customizing-default-theme)
+   - [Theme Behavior & Patterns](#theme-behavior--patterns)
    - [Inheriting from Material Theme](#inheriting-from-material-theme)
    - [Creating a Completely Custom Theme](#creating-a-completely-custom-theme)
    - [Provider Button Styling](#provider-button-styling)
@@ -984,7 +986,7 @@ fun ManualMfaChallenge(resolver: MultiFactorResolver) {
 
 FirebaseUI Auth provides flexible theming options to match your app's design:
 
-- **`AuthUITheme.Default`** / **`AuthUITheme.DefaultDark`** - Pre-configured Material Design 3 themes
+- **`AuthUITheme.Default`** / **`AuthUITheme.DefaultDark`** / **`AuthUITheme.Adaptive`** - Pre-configured Material Design 3 themes
 - **`.copy()`** - Customize specific properties of the default themes (data class)
 - **`fromMaterialTheme()`** - Inherit from your app's existing Material Theme
 - **Custom theme** - Full control over colors, typography, shapes, and provider button styles
@@ -996,24 +998,138 @@ FirebaseUI provides pre-configured themes for light and dark modes:
 ```kotlin
 val configuration = authUIConfiguration {
     providers = listOf(AuthProvider.Email(), AuthProvider.Google())
-    theme = AuthUITheme.Default  // or AuthUITheme.DefaultDark
+    theme = AuthUITheme.Default  // Light theme
+    // or
+    theme = AuthUITheme.DefaultDark  // Dark theme
 }
 ```
+
+### Using Adaptive Theme (Recommended)
+
+`AuthUITheme.Adaptive` automatically switches between light and dark themes based on the system setting:
+
+```kotlin
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+    theme = AuthUITheme.Adaptive  // Adapts to system dark mode
+}
+```
+
+This is the recommended approach for most apps as it provides a seamless experience that respects the user's system preferences.
+
+**Note:** `Adaptive` is a `@Composable` property that evaluates to `Default` (light) or `DefaultDark` (dark) based on `isSystemInDarkTheme()` at composition time.
 
 ### Customizing Default Theme
 
 Use `.copy()` to customize specific properties of the default theme:
 
 ```kotlin
-val customTheme = AuthUITheme.Default.copy(
-    providerButtonShape = MaterialTheme.shapes.extraLarge  // Pill-shaped buttons
-)
+@Composable
+fun AuthScreen() {
+    val customTheme = AuthUITheme.Adaptive.copy(
+        providerButtonShape = MaterialTheme.shapes.extraLarge  // Pill-shaped buttons
+    )
 
-val configuration = authUIConfiguration {
-    providers = listOf(AuthProvider.Google(), AuthProvider.Email())
-    theme = customTheme
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers = listOf(AuthProvider.Google(), AuthProvider.Email())
+        theme = customTheme
+    }
+
+    FirebaseAuthScreen(
+        configuration = configuration,
+        onSignInSuccess = { /* ... */ },
+        onSignInFailure = { /* ... */ },
+        onSignInCancelled = { /* ... */ }
+    )
 }
 ```
+
+### Theme Behavior & Patterns
+
+FirebaseUI Auth supports two theming patterns with clear precedence rules:
+
+#### Pattern 1: Theme in Configuration Only (Recommended)
+
+The simplest approach is to set the theme only in `authUIConfiguration`:
+
+```kotlin
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers = listOf(AuthProvider.Email())
+    theme = AuthUITheme.Adaptive  // Set theme here
+}
+
+FirebaseAuthScreen(
+    configuration = configuration,
+    onSignInSuccess = { /* ... */ }
+)
+```
+
+**When to use:** This is the recommended pattern for most use cases. It's simple and explicit.
+
+#### Pattern 2: Theme in Wrapper (Optional)
+
+You can also wrap `FirebaseAuthScreen` with `AuthUITheme`:
+
+```kotlin
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers = listOf(AuthProvider.Email())
+    theme = AuthUITheme.Adaptive  // Theme in configuration
+}
+
+AuthUITheme(theme = AuthUITheme.Adaptive) {  // Optional wrapper
+    Surface(color = MaterialTheme.colorScheme.background) {
+        FirebaseAuthScreen(
+            configuration = configuration,
+            onSignInSuccess = { /* ... */ }
+        )
+    }
+}
+```
+
+**When to use:** Use this pattern when you have UI elements **outside** of `FirebaseAuthScreen` that need to share the same theme.
+
+#### Theme Precedence Rules
+
+Understanding which theme applies is important:
+
+1. **Configuration theme takes precedence:**
+   ```kotlin
+   val configuration = authUIConfiguration {
+       theme = AuthUITheme.Default  // LIGHT theme
+   }
+
+   AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
+       FirebaseAuthScreen(configuration, ...)
+   }
+   // Result: FirebaseAuthScreen uses LIGHT theme (from configuration)
+   ```
+
+2. **Wrapper as fallback:**
+   ```kotlin
+   val configuration = authUIConfiguration {
+       // theme not specified (null)
+   }
+
+   AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
+       FirebaseAuthScreen(configuration, ...)
+   }
+   // Result: FirebaseAuthScreen inherits DARK theme from wrapper
+   ```
+
+3. **Ultimate fallback:**
+   ```kotlin
+   val configuration = authUIConfiguration {
+       // theme not specified (null)
+   }
+
+   FirebaseAuthScreen(configuration, ...)  // No wrapper
+   // Result: Uses AuthUITheme.Default (light theme)
+   ```
+
+**Best Practice:** For clarity and consistency, always set `theme` in `authUIConfiguration`. Use the wrapper only if you have additional UI outside `FirebaseAuthScreen`.
 
 ### Inheriting from Material Theme
 

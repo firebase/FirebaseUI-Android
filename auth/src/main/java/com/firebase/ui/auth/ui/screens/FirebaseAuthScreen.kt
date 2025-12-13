@@ -222,7 +222,7 @@ fun FirebaseAuthScreen(
     CompositionLocalProvider(
         LocalAuthUIStringProvider provides configuration.stringProvider,
         LocalTopLevelDialogController provides dialogController,
-        LocalAuthUITheme provides configuration.theme
+        LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current)
     ) {
         Surface(
             modifier = Modifier
