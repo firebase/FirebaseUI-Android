@@ -25,6 +25,9 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.ui.components.AuthProviderButton
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
@@ -37,6 +40,7 @@ import com.google.firebase.auth.AuthResult
  * Demo activity showcasing custom slots and theming capabilities:
  * - EmailAuthScreen with custom slot UI
  * - PhoneAuthScreen with custom slot UI
+ * - Provider button shape customization with global and per-provider overrides
  * - AuthUITheme.fromMaterialTheme() with custom ProviderStyle overrides
  */
 class CustomSlotsThemingDemoActivity : ComponentActivity() {
@@ -121,6 +125,7 @@ class CustomSlotsThemingDemoActivity : ComponentActivity() {
                                 configuration = phoneConfiguration,
                                 context = appContext
                             )
+                            DemoType.ShapeCustomization -> ShapeCustomizationDemo()
                         }
                     }
                 }
@@ -131,42 +136,19 @@ class CustomSlotsThemingDemoActivity : ComponentActivity() {
 
 enum class DemoType {
     Email,
-    Phone
+    Phone,
+    ShapeCustomization
 }
 
 @Composable
 fun CustomAuthUITheme(content: @Composable () -> Unit) {
     // Use Material Theme colors
     MaterialTheme {
-        val customProviderStyles = mapOf(
-            "google.com" to AuthUITheme.ProviderStyle(
-                icon = null, // Would use actual Google icon in production
-                backgroundColor = Color(0xFFFFFFFF),
-                contentColor = Color(0xFF757575),
-                iconTint = null,
-                shape = RoundedCornerShape(8.dp),
-                elevation = 1.dp
-            ),
-            "facebook.com" to AuthUITheme.ProviderStyle(
-                icon = null, // Would use actual Facebook icon in production
-                backgroundColor = Color(0xFF1877F2),
-                contentColor = Color.White,
-                iconTint = null,
-                shape = RoundedCornerShape(8.dp),
-                elevation = 2.dp
-            ),
-            "password" to AuthUITheme.ProviderStyle(
-                icon = null,
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                iconTint = null,
-                shape = RoundedCornerShape(12.dp),
-                elevation = 3.dp
-            )
+        // UPDATED: Now uses ProviderStyleDefaults and the new providerButtonShape API
+        // Apply custom theme using fromMaterialTheme with global button shape
+        val authTheme = AuthUITheme.fromMaterialTheme(
+            providerButtonShape = RoundedCornerShape(12.dp)  // Global shape for all buttons
         )
-
-        // Apply custom theme using fromMaterialTheme
-        val authTheme = AuthUITheme.fromMaterialTheme(providerStyles = customProviderStyles)
 
         AuthUITheme(theme = authTheme) {
             content()
@@ -202,21 +184,32 @@ fun DemoSelector(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = selectedDemo == DemoType.Email,
+                        onClick = { onDemoSelected(DemoType.Email) },
+                        label = { Text("Email Auth") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    FilterChip(
+                        selected = selectedDemo == DemoType.Phone,
+                        onClick = { onDemoSelected(DemoType.Phone) },
+                        label = { Text("Phone Auth") },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
                 FilterChip(
-                    selected = selectedDemo == DemoType.Email,
-                    onClick = { onDemoSelected(DemoType.Email) },
-                    label = { Text("Email Auth") },
-                    modifier = Modifier.weight(1f)
-                )
-                FilterChip(
-                    selected = selectedDemo == DemoType.Phone,
-                    onClick = { onDemoSelected(DemoType.Phone) },
-                    label = { Text("Phone Auth") },
-                    modifier = Modifier.weight(1f)
+                    selected = selectedDemo == DemoType.ShapeCustomization,
+                    onClick = { onDemoSelected(DemoType.ShapeCustomization) },
+                    label = { Text("Shape Customization") },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -821,5 +814,292 @@ fun EnterVerificationCodeUI(state: PhoneAuthContentState) {
                 )
             }
         }
+    }
+}
+
+/**
+ * Demo showcasing provider button shape customization capabilities.
+ * Demonstrates:
+ * - Global shape configuration for all buttons
+ * - Per-provider shape overrides
+ * - Using ProviderStyleDefaults with .copy()
+ */
+@Composable
+fun ShapeCustomizationDemo() {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val stringProvider = DefaultAuthUIStringProvider(context)
+    var selectedPreset by remember { mutableStateOf(ShapePreset.DEFAULT) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Title and description
+        Text(
+            text = "Provider Button Shape Customization",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Text(
+            text = "This demo showcases the new shape customization API for provider buttons. " +
+                    "You can set a global shape for all buttons or customize individual providers.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        HorizontalDivider()
+
+        // Preset selector
+        Text(
+            text = "Select Shape Preset:",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        ShapePreset.entries.forEach { preset ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = selectedPreset == preset,
+                    onClick = { selectedPreset = preset }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Column {
+                    Text(
+                        text = preset.displayName,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = preset.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
+        HorizontalDivider()
+
+        // Preview section
+        Text(
+            text = "Preview:",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        // Render buttons with the selected preset
+        when (selectedPreset) {
+            ShapePreset.DEFAULT -> DefaultShapeButtons(stringProvider)
+            ShapePreset.DEFAULT_COPY -> DefaultCopyShapeButtons(stringProvider)
+            ShapePreset.DARK_COPY -> DarkCopyShapeButtons(stringProvider)
+            ShapePreset.FROM_MATERIAL -> FromMaterialThemeButtons(stringProvider)
+            ShapePreset.PILL -> PillShapeButtons(stringProvider)
+            ShapePreset.MIXED -> MixedShapeButtons(stringProvider)
+        }
+
+        // Code example
+        HorizontalDivider()
+
+        Text(
+            text = "Code Example:",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text(
+                text = selectedPreset.codeExample,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                ),
+                modifier = Modifier.padding(12.dp)
+            )
+        }
+    }
+}
+
+enum class ShapePreset(
+    val displayName: String,
+    val description: String,
+    val codeExample: String
+) {
+    DEFAULT(
+        "Default Shapes",
+        "Uses the standard 4dp rounded corners",
+        """
+// No customization needed
+val theme = AuthUITheme.Default
+        """.trimIndent()
+    ),
+    DEFAULT_COPY(
+        "Default.copy()",
+        "Customize default light theme with .copy()",
+        """
+val theme = AuthUITheme.Default.copy(
+    providerButtonShape = RoundedCornerShape(12.dp)
+)
+        """.trimIndent()
+    ),
+    DARK_COPY(
+        "DefaultDark.copy()",
+        "Customize default dark theme with .copy()",
+        """
+val theme = AuthUITheme.DefaultDark.copy(
+    providerButtonShape = RoundedCornerShape(16.dp)
+)
+        """.trimIndent()
+    ),
+    FROM_MATERIAL(
+        "fromMaterialTheme()",
+        "Inherit from Material Theme",
+        """
+val theme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(12.dp)
+)
+        """.trimIndent()
+    ),
+    PILL(
+        "Pill Shape",
+        "Creates pill-shaped buttons (Default.copy)",
+        """
+val theme = AuthUITheme.Default.copy(
+    providerButtonShape = RoundedCornerShape(28.dp)
+)
+        """.trimIndent()
+    ),
+    MIXED(
+        "Mixed Shapes",
+        "Different shapes per provider (Default.copy)",
+        """
+val customStyles = mapOf(
+    "google.com" to ProviderStyleDefaults.Google.copy(
+        shape = RoundedCornerShape(24.dp)
+    ),
+    "facebook.com" to ProviderStyleDefaults.Facebook.copy(
+        shape = RoundedCornerShape(8.dp)
+    )
+)
+
+val theme = AuthUITheme.Default.copy(
+    providerButtonShape = RoundedCornerShape(12.dp),
+    providerStyles = customStyles
+)
+        """.trimIndent()
+    )
+}
+
+@Composable
+fun DefaultShapeButtons(stringProvider: DefaultAuthUIStringProvider) {
+    // Default theme - no customization
+    AuthUITheme {
+        ButtonPreviewColumn(stringProvider)
+    }
+}
+
+@Composable
+fun DefaultCopyShapeButtons(stringProvider: DefaultAuthUIStringProvider) {
+    // Using AuthUITheme.Default.copy() to customize the light theme
+    val theme = AuthUITheme.Default.copy(
+        providerButtonShape = RoundedCornerShape(12.dp)
+    )
+    AuthUITheme(theme = theme) {
+        ButtonPreviewColumn(stringProvider)
+    }
+}
+
+@Composable
+fun DarkCopyShapeButtons(stringProvider: DefaultAuthUIStringProvider) {
+    // Using AuthUITheme.DefaultDark.copy() to customize the dark theme
+    val theme = AuthUITheme.DefaultDark.copy(
+        providerButtonShape = RoundedCornerShape(16.dp)
+    )
+    AuthUITheme(theme = theme) {
+        ButtonPreviewColumn(stringProvider)
+    }
+}
+
+@Composable
+fun FromMaterialThemeButtons(stringProvider: DefaultAuthUIStringProvider) {
+    // Using AuthUITheme.fromMaterialTheme() to inherit from Material Theme
+    val theme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(12.dp)
+    )
+    AuthUITheme(theme = theme) {
+        ButtonPreviewColumn(stringProvider)
+    }
+}
+
+@Composable
+fun PillShapeButtons(stringProvider: DefaultAuthUIStringProvider) {
+    // Pill-shaped buttons using Default.copy()
+    val theme = AuthUITheme.Default.copy(
+        providerButtonShape = RoundedCornerShape(28.dp)
+    )
+    AuthUITheme(theme = theme) {
+        ButtonPreviewColumn(stringProvider)
+    }
+}
+
+@Composable
+fun MixedShapeButtons(stringProvider: DefaultAuthUIStringProvider) {
+    // Mixed shapes per provider using Default.copy()
+    val customStyles = mapOf(
+        "google.com" to ProviderStyleDefaults.Google.copy(
+            shape = RoundedCornerShape(24.dp) // Pill shape for Google
+        ),
+        "facebook.com" to ProviderStyleDefaults.Facebook.copy(
+            shape = RoundedCornerShape(8.dp) // Medium rounded for Facebook
+        )
+        // Email uses global default (12dp)
+    )
+
+    val theme = AuthUITheme.Default.copy(
+        providerButtonShape = RoundedCornerShape(12.dp),
+        providerStyles = customStyles
+    )
+
+    AuthUITheme(theme = theme) {
+        ButtonPreviewColumn(stringProvider)
+    }
+}
+
+@Composable
+fun ButtonPreviewColumn(stringProvider: DefaultAuthUIStringProvider) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        AuthProviderButton(
+            provider = AuthProvider.Google(scopes = emptyList(), serverClientId = null),
+            onClick = { },
+            stringProvider = stringProvider,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        AuthProviderButton(
+            provider = AuthProvider.Facebook(),
+            onClick = { },
+            stringProvider = stringProvider,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        AuthProviderButton(
+            provider = AuthProvider.Email(
+                emailLinkActionCodeSettings = null,
+                passwordValidationRules = emptyList()
+            ),
+            onClick = { },
+            stringProvider = stringProvider,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

@@ -104,7 +104,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    api("androidx.navigation:navigation-compose:2.8.3")
     implementation("com.google.zxing:core:3.5.3")
     annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
 
