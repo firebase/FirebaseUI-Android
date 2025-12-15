@@ -34,6 +34,7 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -370,7 +371,7 @@ class AuthProviderButtonTest {
     @Test
     fun `AuthProviderButton uses custom style when provided`() {
         val provider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
-        val customStyle = AuthUITheme.Default.providerStyles[Provider.FACEBOOK.id]
+        val customStyle = ProviderStyleDefaults.Facebook
 
         composeTestRule.setContent {
             AuthProviderButton(
@@ -385,10 +386,12 @@ class AuthProviderButtonTest {
             .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
             .assertIsDisplayed()
 
-        val resolvedStyle = resolveProviderStyle(provider, customStyle)
-        assertThat(resolvedStyle).isEqualTo(customStyle)
-        assertThat(resolvedStyle)
-            .isNotEqualTo(AuthUITheme.Default.providerStyles[Provider.GOOGLE.id])
+        val resolvedStyle = resolveProviderStyle(provider, customStyle, ProviderStyleDefaults.default, null)
+        assertThat(resolvedStyle.backgroundColor).isEqualTo(customStyle.backgroundColor)
+        assertThat(resolvedStyle.contentColor).isEqualTo(customStyle.contentColor)
+        assertThat(resolvedStyle.icon).isEqualTo(customStyle.icon)
+        assertThat(resolvedStyle.backgroundColor)
+            .isNotEqualTo(ProviderStyleDefaults.Google.backgroundColor)
     }
 
     @Test
@@ -423,14 +426,14 @@ class AuthProviderButtonTest {
         composeTestRule.onNodeWithContentDescription(customLabel)
             .assertIsDisplayed()
 
-        val resolvedStyle = resolveProviderStyle(provider, null)
+        val resolvedStyle = resolveProviderStyle(provider, null, ProviderStyleDefaults.default, null)
         assertThat(resolvedStyle).isNotNull()
         assertThat(resolvedStyle.backgroundColor).isEqualTo(customColor)
         assertThat(resolvedStyle.contentColor).isEqualTo(customContentColor)
         assertThat(resolvedStyle.icon).isEqualTo(customIcon)
 
-        val googleDefaultStyle = AuthUITheme.Default.providerStyles["google.com"]
-        assertThat(resolvedStyle).isNotEqualTo(googleDefaultStyle)
+        val googleDefaultStyle = ProviderStyleDefaults.Google
+        assertThat(resolvedStyle.backgroundColor).isNotEqualTo(googleDefaultStyle.backgroundColor)
     }
 
     @Test
@@ -458,11 +461,10 @@ class AuthProviderButtonTest {
         composeTestRule.onNodeWithText(customLabel)
             .assertIsDisplayed()
 
-        val resolvedStyle = resolveProviderStyle(provider, null)
-        val googleDefaultStyle = AuthUITheme.Default.providerStyles["google.com"]
+        val resolvedStyle = resolveProviderStyle(provider, null, ProviderStyleDefaults.default, null)
+        val googleDefaultStyle = ProviderStyleDefaults.Google
 
-        assertThat(googleDefaultStyle).isNotNull()
-        assertThat(resolvedStyle.backgroundColor).isEqualTo(googleDefaultStyle!!.backgroundColor)
+        assertThat(resolvedStyle.backgroundColor).isEqualTo(googleDefaultStyle.backgroundColor)
         assertThat(resolvedStyle.contentColor).isEqualTo(googleDefaultStyle.contentColor)
         assertThat(resolvedStyle.icon).isEqualTo(googleDefaultStyle.icon)
     }
@@ -506,7 +508,7 @@ class AuthProviderButtonTest {
             contentColor = customContentColor
         )
 
-        val resolvedStyle = resolveProviderStyle(provider, null)
+        val resolvedStyle = resolveProviderStyle(provider, null, ProviderStyleDefaults.default, null)
 
         assertThat(resolvedStyle).isNotNull()
         assertThat(resolvedStyle.backgroundColor).isEqualTo(customColor)
@@ -526,7 +528,7 @@ class AuthProviderButtonTest {
             contentColor = Color.White
         )
 
-        val resolvedStyle = resolveProviderStyle(provider, null)
+        val resolvedStyle = resolveProviderStyle(provider, null, ProviderStyleDefaults.default, null)
 
         assertThat(resolvedStyle).isNotNull()
         assertThat(resolvedStyle.icon).isNull()
@@ -538,9 +540,10 @@ class AuthProviderButtonTest {
     fun `resolveProviderStyle provides fallback for unknown provider`() {
         val provider = object : AuthProvider(providerId = "unknown.provider", providerName = "Generic Provider") {}
 
-        val resolvedStyle = resolveProviderStyle(provider, null)
+        val resolvedStyle = resolveProviderStyle(provider, null, ProviderStyleDefaults.default, null)
 
         assertThat(resolvedStyle).isNotNull()
-        assertThat(resolvedStyle).isEqualTo(AuthUITheme.ProviderStyle.Empty)
+        assertThat(resolvedStyle.backgroundColor).isEqualTo(AuthUITheme.ProviderStyle.Empty.backgroundColor)
+        assertThat(resolvedStyle.contentColor).isEqualTo(AuthUITheme.ProviderStyle.Empty.contentColor)
     }
 }

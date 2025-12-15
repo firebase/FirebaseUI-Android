@@ -18,11 +18,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +40,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.Provider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.ui.components.AuthProviderButton
+import com.firebase.ui.auth.util.SignInPreferenceManager
 
 /**
  * Renders the provider selection screen.
@@ -59,6 +67,7 @@ import com.firebase.ui.auth.ui.components.AuthProviderButton
  * @param customLayout An optional custom layout composable for the provider buttons.
  * @param termsOfServiceUrl The URL for the Terms of Service.
  * @param privacyPolicyUrl The URL for the Privacy Policy.
+ * @param lastSignInPreference The last sign-in preference to show a "Continue as..." button.
  *
  * @since 10.0.0
  */
@@ -71,6 +80,7 @@ fun AuthMethodPicker(
     customLayout: @Composable ((List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     termsOfServiceUrl: String? = null,
     privacyPolicyUrl: String? = null,
+    lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
@@ -103,6 +113,37 @@ fun AuthMethodPicker(
                         .testTag("AuthMethodPicker LazyColumn"),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    // Show "Continue as..." button if last sign-in preference exists
+                    lastSignInPreference?.let { preference ->
+                        val lastProvider = providers.find { it.providerId == preference.providerId }
+                        if (lastProvider != null) {
+                            item {
+                                ContinueAsButton(
+                                    provider = lastProvider,
+                                    identifier = preference.identifier,
+                                    onClick = { onProviderSelected(lastProvider) }
+                                )
+                                Spacer(modifier = Modifier.height(24.dp))
+
+                                // Divider with "or"
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    HorizontalDivider(modifier = Modifier.weight(1f))
+                                    Text(
+                                        text = stringProvider.orContinueWith,
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                    HorizontalDivider(modifier = Modifier.weight(1f))
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
+                            }
+                        }
+                    }
+
+                    // Show all providers
                     itemsIndexed(providers) { index, provider ->
                         Box(
                             modifier = Modifier
@@ -137,6 +178,33 @@ fun AuthMethodPicker(
             )
         )
     }
+}
+
+/**
+ * A prominent "Continue as..." button that shows the last-used provider and identifier.
+ *
+ * @param provider The authentication provider
+ * @param identifier The user identifier (email, phone number, etc.)
+ * @param onClick Callback when the button is clicked
+ */
+@Composable
+private fun ContinueAsButton(
+    provider: AuthProvider,
+    identifier: String?,
+    onClick: () -> Unit
+) {
+    val stringProvider = LocalAuthUIStringProvider.current
+
+    AuthProviderButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("ContinueAsButton"),
+        onClick = onClick,
+        provider = provider,
+        stringProvider = stringProvider,
+        subtitle = identifier,
+        showAsContinue = true
+    )
 }
 
 @Preview(showBackground = true)

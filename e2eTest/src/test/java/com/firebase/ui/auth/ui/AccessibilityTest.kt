@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
@@ -28,6 +29,7 @@ import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.components.QrCodeImage
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
+import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebase.ui.auth.ui.screens.email.SignInUI
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.util.CountryUtils
@@ -194,6 +196,7 @@ class AccessibilityTest {
                     onEmailChange = {},
                     onPasswordChange = {},
                     onSignInClick = {},
+                    onRetrievedCredential = {},
                     onGoToEmailLinkSignIn = {},
                     onGoToSignUp = {},
                     onGoToResetPassword = {},
@@ -284,6 +287,7 @@ class AccessibilityTest {
                     password = "",
                     onEmailChange = {},
                     onPasswordChange = {},
+                    onRetrievedCredential = {},
                     onSignInClick = {},
                     onGoToEmailLinkSignIn = {},
                     onGoToSignUp = {},

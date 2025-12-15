@@ -14,6 +14,7 @@ import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException
@@ -150,6 +151,23 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
             displayName = result.displayName,
             photoUrl = result.photoUrl,
         )
+
+        // Save sign-in preference for "Continue as..." feature
+        try {
+            val user = auth.currentUser
+            val identifier = user?.email
+            if (identifier != null) {
+                SignInPreferenceManager.saveLastSignIn(
+                    context = context,
+                    providerId = provider.providerId,
+                    identifier = identifier
+                )
+                android.util.Log.d("GoogleAuthProvider", "Sign-in preference saved for: $identifier")
+            }
+        } catch (e: Exception) {
+            // Failed to save preference - log but don't break auth flow
+            android.util.Log.w("GoogleAuthProvider", "Failed to save sign-in preference", e)
+        }
     } catch (e: AuthException.AccountLinkingRequiredException) {
         // Account collision occurred - save Facebook credential for linking after email link sign-in
         // This happens when a user tries to sign in with Facebook but an email link account exists

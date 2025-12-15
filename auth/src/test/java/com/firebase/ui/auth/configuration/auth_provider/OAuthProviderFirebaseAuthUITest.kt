@@ -131,9 +131,10 @@ class OAuthProviderFirebaseAuthUITest {
         }
 
         instance.signInWithProvider(
+            applicationContext,
             config = config,
             activity = mockActivity,
-            provider = githubProvider
+            provider = githubProvider,
         )
 
         // Verify OAuth provider was built and used
@@ -186,6 +187,7 @@ class OAuthProviderFirebaseAuthUITest {
         }
 
         instance.signInWithProvider(
+            applicationContext,
             config = config,
             activity = mockActivity,
             provider = yahooProvider
@@ -231,6 +233,7 @@ class OAuthProviderFirebaseAuthUITest {
 
         try {
             instance.signInWithProvider(
+                applicationContext,
                 config = config,
                 activity = mockActivity,
                 provider = githubProvider
@@ -271,6 +274,7 @@ class OAuthProviderFirebaseAuthUITest {
 
         try {
             instance.signInWithProvider(
+                applicationContext,
                 config = config,
                 activity = mockActivity,
                 provider = microsoftProvider

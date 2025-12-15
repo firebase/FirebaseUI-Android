@@ -193,6 +193,7 @@ fun PhoneAuthScreen(
                 coroutineScope.launch {
                     try {
                         authUI.signInWithPhoneAuthCredential(
+                            context = context,
                             config = configuration,
                             credential = state.credential
                         )
@@ -265,6 +266,7 @@ fun PhoneAuthScreen(
                 try {
                     verificationId.value?.let { id ->
                         authUI.submitVerificationCode(
+                            context = context,
                             config = configuration,
                             verificationId = id,
                             code = verificationCodeValue.value
@@ -344,7 +346,8 @@ private fun DefaultPhoneAuthContent(
                 onVerificationCodeChange = state.onVerificationCodeChange,
                 onVerifyCodeClick = state.onVerifyCodeClick,
                 onResendCodeClick = state.onResendCodeClick,
-                onChangeNumberClick = state.onChangeNumberClick
+                onChangeNumberClick = state.onChangeNumberClick,
+                onNavigateBack = onCancel
             )
         }
     }

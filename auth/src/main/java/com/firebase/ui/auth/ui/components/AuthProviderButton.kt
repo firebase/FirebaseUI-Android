@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,11 +30,13 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +47,8 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.configuration.theme.LocalAuthUITheme
+import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 
 /**
  * A customizable button for an authentication provider.
@@ -67,6 +72,8 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
  * @param enabled If the button is enabled. Defaults to true.
  * @param style Optional custom styling for the button.
  * @param stringProvider The [AuthUIStringProvider] for localized strings
+ * @param subtitle Optional subtitle text to display below the provider label (e.g., user email)
+ * @param label Optional custom label to override the default provider label
  *
  * @since 10.0.0
  */
@@ -78,19 +85,32 @@ fun AuthProviderButton(
     enabled: Boolean = true,
     style: AuthUITheme.ProviderStyle? = null,
     stringProvider: AuthUIStringProvider,
+    subtitle: String? = null,
+    label: String? = null,
+    showAsContinue: Boolean = false,
 ) {
     val context = LocalContext.current
-    val providerStyle = resolveProviderStyle(provider, style)
-    val providerLabel = resolveProviderLabel(provider, stringProvider, context)
+    val authTheme = LocalAuthUITheme.current
+    val providerLabel =
+        label ?: resolveProviderLabel(provider, stringProvider, context, showAsContinue)
+    val providerStyle = resolveProviderStyle(
+        provider = provider,
+        style = style,
+        providerStyles = authTheme.providerStyles,
+        defaultButtonShape = authTheme.providerButtonShape
+    )
 
     Button(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 12.dp),
+        contentPadding = PaddingValues(
+            horizontal = 12.dp,
+            vertical = if (subtitle != null) 12.dp else 8.dp
+        ),
         colors = ButtonDefaults.buttonColors(
             containerColor = providerStyle.backgroundColor,
             contentColor = providerStyle.contentColor,
         ),
-        shape = providerStyle.shape,
+        shape = providerStyle.shape ?: RoundedCornerShape(4.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = providerStyle.elevation
         ),
@@ -123,11 +143,30 @@ fun AuthProviderButton(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
             }
-            Text(
-                text = providerLabel,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-            )
+
+            if (subtitle != null) {
+                Column(
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = providerLabel,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                    )
+                    Text(
+                        text = subtitle,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            } else {
+                Text(
+                    text = providerLabel,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                )
+            }
         }
     }
 }
@@ -135,27 +174,47 @@ fun AuthProviderButton(
 internal fun resolveProviderStyle(
     provider: AuthProvider,
     style: AuthUITheme.ProviderStyle?,
+    providerStyles: Map<String, AuthUITheme.ProviderStyle>,
+    defaultButtonShape: Shape?,
 ): AuthUITheme.ProviderStyle {
-    if (style != null) return style
+    // If explicit style is provided, use it but apply default shape if needed
+    if (style != null) {
+        return if (style.shape == null) {
+            style.copy(shape = defaultButtonShape ?: RoundedCornerShape(4.dp))
+        } else {
+            style
+        }
+    }
 
-    val defaultStyle =
-        AuthUITheme.Default.providerStyles[provider.providerId] ?: AuthUITheme.ProviderStyle.Empty
+    // Get the configured style from the theme or fall back to defaults
+    val configuredStyle = providerStyles[provider.providerId]
+        ?: ProviderStyleDefaults.default[provider.providerId]
+        ?: AuthUITheme.ProviderStyle.Empty
 
-    return if (provider is AuthProvider.GenericOAuth) {
-        AuthUITheme.ProviderStyle(
-            icon = provider.buttonIcon ?: defaultStyle.icon,
-            backgroundColor = provider.buttonColor ?: defaultStyle.backgroundColor,
-            contentColor = provider.contentColor ?: defaultStyle.contentColor,
+    // Handle GenericOAuth providers with custom properties
+    val resolvedStyle = if (provider is AuthProvider.GenericOAuth) {
+        configuredStyle.copy(
+            icon = provider.buttonIcon ?: configuredStyle.icon,
+            backgroundColor = provider.buttonColor ?: configuredStyle.backgroundColor,
+            contentColor = provider.contentColor ?: configuredStyle.contentColor,
         )
     } else {
-        defaultStyle
+        configuredStyle
+    }
+
+    // Apply default button shape if no shape is explicitly set
+    return if (resolvedStyle.shape == null) {
+        resolvedStyle.copy(shape = defaultButtonShape ?: RoundedCornerShape(4.dp))
+    } else {
+        resolvedStyle
     }
 }
 
 internal fun resolveProviderLabel(
     provider: AuthProvider,
     stringProvider: AuthUIStringProvider,
-    context: android.content.Context
+    context: Context,
+    showAsContinue: Boolean = false,
 ): String = when (provider) {
     is AuthProvider.GenericOAuth -> provider.buttonLabel
     is AuthProvider.Apple -> {
@@ -163,22 +222,23 @@ internal fun resolveProviderLabel(
         if (provider.locale != null) {
             val appleLocale = java.util.Locale.forLanguageTag(provider.locale)
             val appleStringProvider = DefaultAuthUIStringProvider(context, appleLocale)
-            appleStringProvider.signInWithApple
+            if (showAsContinue) appleStringProvider.continueWithApple else appleStringProvider.signInWithApple
         } else {
-            stringProvider.signInWithApple
+            if (showAsContinue) stringProvider.continueWithApple else stringProvider.signInWithApple
         }
     }
+
     else -> when (Provider.fromId(provider.providerId)) {
-        Provider.GOOGLE -> stringProvider.signInWithGoogle
-        Provider.FACEBOOK -> stringProvider.signInWithFacebook
-        Provider.TWITTER -> stringProvider.signInWithTwitter
-        Provider.GITHUB -> stringProvider.signInWithGithub
-        Provider.EMAIL -> stringProvider.signInWithEmail
-        Provider.PHONE -> stringProvider.signInWithPhone
+        Provider.GOOGLE -> if (showAsContinue) stringProvider.continueWithGoogle else stringProvider.signInWithGoogle
+        Provider.FACEBOOK -> if (showAsContinue) stringProvider.continueWithFacebook else stringProvider.signInWithFacebook
+        Provider.TWITTER -> if (showAsContinue) stringProvider.continueWithTwitter else stringProvider.signInWithTwitter
+        Provider.GITHUB -> if (showAsContinue) stringProvider.continueWithGithub else stringProvider.signInWithGithub
+        Provider.EMAIL -> if (showAsContinue) stringProvider.continueWithEmail else stringProvider.signInWithEmail
+        Provider.PHONE -> if (showAsContinue) stringProvider.continueWithPhone else stringProvider.signInWithPhone
         Provider.ANONYMOUS -> stringProvider.signInAnonymously
-        Provider.MICROSOFT -> stringProvider.signInWithMicrosoft
-        Provider.YAHOO -> stringProvider.signInWithYahoo
-        Provider.APPLE -> stringProvider.signInWithApple
+        Provider.MICROSOFT -> if (showAsContinue) stringProvider.continueWithMicrosoft else stringProvider.signInWithMicrosoft
+        Provider.YAHOO -> if (showAsContinue) stringProvider.continueWithYahoo else stringProvider.signInWithYahoo
+        Provider.APPLE -> if (showAsContinue) stringProvider.continueWithApple else stringProvider.signInWithApple
         null -> "Unknown Provider"
     }
 }

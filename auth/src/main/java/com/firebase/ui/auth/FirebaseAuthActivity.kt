@@ -130,7 +130,7 @@ class FirebaseAuthActivity : ComponentActivity() {
 
         // Set up Compose UI
         setContent {
-            AuthUITheme(theme = configuration.theme) {
+            AuthUITheme {
                 FirebaseAuthScreen(
                     authUI = authUI,
                     configuration = configuration,

@@ -36,7 +36,7 @@ annotation class AuthUIConfigurationDsl
 class AuthUIConfigurationBuilder {
     var context: Context? = null
     private val providers = mutableListOf<AuthProvider>()
-    var theme: AuthUITheme = AuthUITheme.Default
+    var theme: AuthUITheme? = null
     var locale: Locale? = null
     var stringProvider: AuthUIStringProvider? = null
     var isCredentialManagerEnabled: Boolean = true
@@ -49,6 +49,7 @@ class AuthUIConfigurationBuilder {
     var isNewEmailAccountsAllowed: Boolean = true
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
+    var transitions: AuthUITransitions? = null
 
     fun providers(block: AuthProvidersBuilder.() -> Unit) =
         providers.addAll(AuthProvidersBuilder().apply(block).build())
@@ -112,7 +113,8 @@ class AuthUIConfigurationBuilder {
             passwordResetActionCodeSettings = passwordResetActionCodeSettings,
             isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
             isDisplayNameRequired = isDisplayNameRequired,
-            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown
+            isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown,
+            transitions = transitions
         )
     }
 }
@@ -132,9 +134,10 @@ class AuthUIConfiguration(
     val providers: List<AuthProvider> = emptyList(),
 
     /**
-     * The theming configuration for the UI. Default to [AuthUITheme.Default].
+     * The theming configuration for the UI. If null, inherits from the outer AuthUITheme wrapper
+     * or defaults to [AuthUITheme.Default] if no wrapper is present.
      */
-    val theme: AuthUITheme = AuthUITheme.Default,
+    val theme: AuthUITheme? = null,
 
     /**
      * The locale for internationalization.
@@ -195,4 +198,10 @@ class AuthUIConfiguration(
      * Always shows the provider selection screen, even if only one is enabled.
      */
     val isProviderChoiceAlwaysShown: Boolean = false,
+
+    /**
+     * Custom screen transition animations.
+     * If null, uses default fade in/out transitions.
+     */
+    val transitions: AuthUITransitions? = null,
 )

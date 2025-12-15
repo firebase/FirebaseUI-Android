@@ -24,9 +24,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -65,6 +69,7 @@ fun SignUpUI(
     onConfirmPasswordChange: (String) -> Unit,
     onGoToSignIn: () -> Unit,
     onSignUpClick: () -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val context = LocalContext.current
@@ -104,6 +109,16 @@ fun SignUpUI(
             TopAppBar(
                 title = {
                     Text(stringProvider.signupPageTitle)
+                },
+                navigationIcon = {
+                    if (onNavigateBack != null) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringProvider.backAction
+                            )
+                        }
+                    }
                 },
                 colors = AuthUITheme.topAppBarColors
             )

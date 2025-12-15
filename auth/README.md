@@ -16,48 +16,62 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
 
 ## Table of Contents
 
+### Getting Started
 1. [Demo](#demo)
-1. [Setup](#setup)
-   1. [Prerequisites](#prerequisites)
-   1. [Installation](#installation)
-   1. [Provider Configuration](#provider-configuration)
-1. [Quick Start](#quick-start)
-   1. [Minimal Example](#minimal-example)
-   1. [Check Authentication State](#check-authentication-state)
-1. [Core Concepts](#core-concepts)
-   1. [FirebaseAuthUI](#firebaseauthui)
-   1. [AuthUIConfiguration](#authuiconfiguration)
-   1. [AuthFlowController](#authflowcontroller)
-   1. [AuthState](#authstate)
-1. [Authentication Methods](#authentication-methods)
-   1. [Email & Password](#email--password)
-   1. [Phone Number](#phone-number)
-   1. [Google Sign-In](#google-sign-in)
-   1. [Facebook Login](#facebook-login)
-   1. [Other OAuth Providers](#other-oauth-providers)
-   1. [Anonymous Authentication](#anonymous-authentication)
-   1. [Custom OAuth Provider](#custom-oauth-provider)
-1. [Usage Patterns](#usage-patterns)
-   1. [High-Level API (Recommended)](#high-level-api-recommended)
-   1. [Low-Level API (Advanced)](#low-level-api-advanced)
-   1. [Custom UI with Slots](#custom-ui-with-slots)
-1. [Multi-Factor Authentication](#multi-factor-authentication)
-   1. [MFA Configuration](#mfa-configuration)
-   1. [MFA Enrollment](#mfa-enrollment)
-   1. [MFA Challenge](#mfa-challenge)
-1. [Theming & Customization](#theming--customization)
-   1. [Material Theme Integration](#material-theme-integration)
-   1. [Custom Theme](#custom-theme)
-   1. [Provider Button Styling](#provider-button-styling)
-1. [Advanced Features](#advanced-features)
-   1. [Anonymous User Upgrade](#anonymous-user-upgrade)
-   1. [Email Link Sign-In](#email-link-sign-in)
-   1. [Password Validation Rules](#password-validation-rules)
-   1. [Credential Manager Integration](#credential-manager-integration)
-   1. [Sign Out & Account Deletion](#sign-out--account-deletion)
-1. [Localization](#localization)
-1. [Error Handling](#error-handling)
-1. [Migration Guide](#migration-guide)
+2. [Setup](#setup)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+   - [Provider Configuration](#provider-configuration)
+3. [Quick Start](#quick-start)
+   - [Minimal Example](#minimal-example)
+   - [Check Authentication State](#check-authentication-state)
+
+### Core Concepts
+4. [Core Concepts](#core-concepts)
+   - [FirebaseAuthUI](#firebaseauthui)
+   - [AuthUIConfiguration](#authuiconfiguration)
+   - [AuthFlowController](#authflowcontroller)
+   - [AuthState](#authstate)
+
+### Authentication
+5. [Authentication Methods](#authentication-methods)
+   - [Email & Password](#email--password)
+   - [Phone Number](#phone-number)
+   - [Google Sign-In](#google-sign-in)
+   - [Facebook Login](#facebook-login)
+   - [Other OAuth Providers](#other-oauth-providers)
+   - [Anonymous Authentication](#anonymous-authentication)
+   - [Custom OAuth Provider](#custom-oauth-provider)
+6. [Multi-Factor Authentication](#multi-factor-authentication)
+   - [MFA Configuration](#mfa-configuration)
+   - [MFA Enrollment](#mfa-enrollment)
+   - [MFA Challenge](#mfa-challenge)
+
+### Implementation
+7. [Usage Patterns](#usage-patterns)
+   - [High-Level API (Recommended)](#high-level-api-recommended)
+   - [Low-Level API (Advanced)](#low-level-api-advanced)
+   - [Custom UI with Slots](#custom-ui-with-slots)
+8. [Theming & Customization](#theming--customization)
+   - [Using Default Themes](#using-default-themes)
+   - [Using Adaptive Theme](#using-adaptive-theme-recommended)
+   - [Customizing Default Theme](#customizing-default-theme)
+   - [Theme Behavior & Patterns](#theme-behavior--patterns)
+   - [Inheriting from Material Theme](#inheriting-from-material-theme)
+   - [Creating a Completely Custom Theme](#creating-a-completely-custom-theme)
+   - [Provider Button Styling](#provider-button-styling)
+   - [Screen Transitions](#screen-transitions)
+
+### Advanced
+9. [Advanced Features](#advanced-features)
+   - [Anonymous User Upgrade](#anonymous-user-upgrade)
+   - [Email Link Sign-In](#email-link-sign-in)
+   - [Password Validation Rules](#password-validation-rules)
+   - [Credential Manager Integration](#credential-manager-integration)
+   - [Sign Out & Account Deletion](#sign-out--account-deletion)
+10. [Localization](#localization)
+11. [Error Handling](#error-handling)
+12. [Migration Guide](#migration-guide)
 
 ## Demo
 
@@ -970,9 +984,156 @@ fun ManualMfaChallenge(resolver: MultiFactorResolver) {
 
 ## Theming & Customization
 
-### Material Theme Integration
+FirebaseUI Auth provides flexible theming options to match your app's design:
 
-FirebaseUI automatically inherits your app's Material Theme:
+- **`AuthUITheme.Default`** / **`AuthUITheme.DefaultDark`** / **`AuthUITheme.Adaptive`** - Pre-configured Material Design 3 themes
+- **`.copy()`** - Customize specific properties of the default themes (data class)
+- **`fromMaterialTheme()`** - Inherit from your app's existing Material Theme
+- **Custom theme** - Full control over colors, typography, shapes, and provider button styles
+
+### Using Default Themes
+
+FirebaseUI provides pre-configured themes for light and dark modes:
+
+```kotlin
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+    theme = AuthUITheme.Default  // Light theme
+    // or
+    theme = AuthUITheme.DefaultDark  // Dark theme
+}
+```
+
+### Using Adaptive Theme (Recommended)
+
+`AuthUITheme.Adaptive` automatically switches between light and dark themes based on the system setting:
+
+```kotlin
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+    theme = AuthUITheme.Adaptive  // Adapts to system dark mode
+}
+```
+
+This is the recommended approach for most apps as it provides a seamless experience that respects the user's system preferences.
+
+**Note:** `Adaptive` is a `@Composable` property that evaluates to `Default` (light) or `DefaultDark` (dark) based on `isSystemInDarkTheme()` at composition time.
+
+### Customizing Default Theme
+
+Use `.copy()` to customize specific properties of the default theme:
+
+```kotlin
+@Composable
+fun AuthScreen() {
+    val customTheme = AuthUITheme.Adaptive.copy(
+        providerButtonShape = MaterialTheme.shapes.extraLarge  // Pill-shaped buttons
+    )
+
+    val configuration = authUIConfiguration {
+        context = applicationContext
+        providers = listOf(AuthProvider.Google(), AuthProvider.Email())
+        theme = customTheme
+    }
+
+    FirebaseAuthScreen(
+        configuration = configuration,
+        onSignInSuccess = { /* ... */ },
+        onSignInFailure = { /* ... */ },
+        onSignInCancelled = { /* ... */ }
+    )
+}
+```
+
+### Theme Behavior & Patterns
+
+FirebaseUI Auth supports two theming patterns with clear precedence rules:
+
+#### Pattern 1: Theme in Configuration Only (Recommended)
+
+The simplest approach is to set the theme only in `authUIConfiguration`:
+
+```kotlin
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers = listOf(AuthProvider.Email())
+    theme = AuthUITheme.Adaptive  // Set theme here
+}
+
+FirebaseAuthScreen(
+    configuration = configuration,
+    onSignInSuccess = { /* ... */ }
+)
+```
+
+**When to use:** This is the recommended pattern for most use cases. It's simple and explicit.
+
+#### Pattern 2: Theme in Wrapper (Optional)
+
+You can also wrap `FirebaseAuthScreen` with `AuthUITheme`:
+
+```kotlin
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers = listOf(AuthProvider.Email())
+    theme = AuthUITheme.Adaptive  // Theme in configuration
+}
+
+AuthUITheme(theme = AuthUITheme.Adaptive) {  // Optional wrapper
+    Surface(color = MaterialTheme.colorScheme.background) {
+        FirebaseAuthScreen(
+            configuration = configuration,
+            onSignInSuccess = { /* ... */ }
+        )
+    }
+}
+```
+
+**When to use:** Use this pattern when you have UI elements **outside** of `FirebaseAuthScreen` that need to share the same theme.
+
+#### Theme Precedence Rules
+
+Understanding which theme applies is important:
+
+1. **Configuration theme takes precedence:**
+   ```kotlin
+   val configuration = authUIConfiguration {
+       theme = AuthUITheme.Default  // LIGHT theme
+   }
+
+   AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
+       FirebaseAuthScreen(configuration, ...)
+   }
+   // Result: FirebaseAuthScreen uses LIGHT theme (from configuration)
+   ```
+
+2. **Wrapper as fallback:**
+   ```kotlin
+   val configuration = authUIConfiguration {
+       // theme not specified (null)
+   }
+
+   AuthUITheme(theme = AuthUITheme.DefaultDark) {  // DARK wrapper
+       FirebaseAuthScreen(configuration, ...)
+   }
+   // Result: FirebaseAuthScreen inherits DARK theme from wrapper
+   ```
+
+3. **Ultimate fallback:**
+   ```kotlin
+   val configuration = authUIConfiguration {
+       // theme not specified (null)
+   }
+
+   FirebaseAuthScreen(configuration, ...)  // No wrapper
+   // Result: Uses AuthUITheme.Default (light theme)
+   ```
+
+**Best Practice:** For clarity and consistency, always set `theme` in `authUIConfiguration`. Use the wrapper only if you have additional UI outside `FirebaseAuthScreen`.
+
+### Inheriting from Material Theme
+
+Use `fromMaterialTheme()` to automatically inherit your app's Material Design theme:
 
 ```kotlin
 @Composable
@@ -980,7 +1141,7 @@ fun App() {
     MyAppTheme {  // Your existing Material3 theme
         val configuration = authUIConfiguration {
             providers = listOf(AuthProvider.Email())
-            theme = AuthUITheme.fromMaterialTheme()  // Inherits MyAppTheme
+            theme = AuthUITheme.fromMaterialTheme()  // Inherits colors, typography, shapes
         }
 
         FirebaseAuthScreen(
@@ -991,9 +1152,20 @@ fun App() {
 }
 ```
 
-### Custom Theme
+You can also customize while inheriting:
 
-Create a completely custom theme:
+```kotlin
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Google(), AuthProvider.Facebook())
+    theme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
+    )
+}
+```
+
+### Creating a Completely Custom Theme
+
+Build a theme from scratch with full control:
 
 ```kotlin
 val customTheme = AuthUITheme(
@@ -1011,7 +1183,8 @@ val customTheme = AuthUITheme(
         small = RoundedCornerShape(4.dp),
         medium = RoundedCornerShape(8.dp),
         large = RoundedCornerShape(16.dp)
-    )
+    ),
+    providerButtonShape = RoundedCornerShape(12.dp)
 )
 
 val configuration = authUIConfiguration {
@@ -1022,27 +1195,69 @@ val configuration = authUIConfiguration {
 
 ### Provider Button Styling
 
-Customize individual provider button styling:
+#### Setting shapes for all provider buttons
+
+**Option 1: Using `.copy()` on default theme:**
+
+```kotlin
+val customTheme = AuthUITheme.Default.copy(
+    providerButtonShape = RoundedCornerShape(12.dp)  // Applies to all provider buttons
+)
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Google(), AuthProvider.Facebook(), AuthProvider.Email())
+    theme = customTheme
+}
+```
+
+**Option 2: Using `fromMaterialTheme()`:**
+
+```kotlin
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Google(), AuthProvider.Facebook())
+    theme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(16.dp)
+    )
+}
+```
+
+**Option 3: Creating custom theme:**
+
+```kotlin
+val customTheme = AuthUITheme(
+    colorScheme = MaterialTheme.colorScheme,
+    typography = MaterialTheme.typography,
+    shapes = MaterialTheme.shapes,
+    providerButtonShape = RoundedCornerShape(12.dp)
+)
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Google(), AuthProvider.Facebook(), AuthProvider.Email())
+    theme = customTheme
+}
+```
+
+#### Customizing individual provider buttons
+
+Customize specific provider buttons using the pre-defined `ProviderStyleDefaults` constants:
+
+**Using `.copy()` with default theme:**
 
 ```kotlin
 val customProviderStyles = mapOf(
-    "google.com" to AuthUITheme.ProviderStyle(
-        backgroundColor = Color.White,
-        contentColor = Color(0xFF757575),
-        iconTint = null,  // Use original colors
+    "google.com" to ProviderStyleDefaults.Google.copy(
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
     ),
-    "facebook.com" to AuthUITheme.ProviderStyle(
-        backgroundColor = Color(0xFF1877F2),
-        contentColor = Color.White,
-        shape = RoundedCornerShape(12.dp),
+    "facebook.com" to ProviderStyleDefaults.Facebook.copy(
+        shape = RoundedCornerShape(24.dp),
         elevation = 0.dp
     )
 )
 
 val customTheme = AuthUITheme.Default.copy(
-    providerStyles = customProviderStyles
+    providerButtonShape = RoundedCornerShape(12.dp),  // Default for all
+    providerStyles = customProviderStyles  // Specific overrides
 )
 
 val configuration = authUIConfiguration {
@@ -1050,6 +1265,137 @@ val configuration = authUIConfiguration {
     theme = customTheme
 }
 ```
+
+**Using `fromMaterialTheme()`:**
+
+```kotlin
+val customProviderStyles = mapOf(
+    "google.com" to ProviderStyleDefaults.Google.copy(
+        shape = RoundedCornerShape(8.dp),
+        elevation = 4.dp
+    )
+)
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Google(), AuthProvider.Facebook())
+    theme = AuthUITheme.fromMaterialTheme(
+        providerButtonShape = RoundedCornerShape(12.dp),
+        providerStyles = customProviderStyles
+    )
+}
+```
+
+#### Complete customization example
+
+Real-world example combining global and per-provider customizations:
+
+```kotlin
+// Define custom styles for specific providers
+val customProviderStyles = mapOf(
+    "google.com" to ProviderStyleDefaults.Google.copy(
+        shape = RoundedCornerShape(24.dp),  // Pill-shaped Google button
+        elevation = 6.dp
+    ),
+    "facebook.com" to ProviderStyleDefaults.Facebook.copy(
+        shape = RoundedCornerShape(8.dp),  // Medium rounded Facebook button
+        elevation = 0.dp  // Flat design
+    )
+    // Email provider will use the global providerButtonShape
+)
+
+// Customize default theme with global button shape and per-provider styles
+val customTheme = AuthUITheme.Default.copy(
+    providerButtonShape = RoundedCornerShape(12.dp),  // Global default for all buttons
+    providerStyles = customProviderStyles  // Specific overrides
+)
+
+val configuration = authUIConfiguration {
+    providers = listOf(
+        AuthProvider.Google(),      // Uses custom shape (24.dp)
+        AuthProvider.Facebook(),    // Uses custom shape (8.dp)
+        AuthProvider.Email()        // Uses global shape (12.dp)
+    )
+    theme = customTheme
+}
+```
+
+### Screen Transitions
+
+Customize the animations when navigating between screens using the `AuthUITransitions` object:
+
+**Slide animations:**
+
+```kotlin
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+    transitions = AuthUITransitions(
+        enterTransition = { slideInHorizontally { it } },  // Slide in from right
+        exitTransition = { slideOutHorizontally { -it } },  // Slide out to left
+        popEnterTransition = { slideInHorizontally { -it } },  // Slide in from left
+        popExitTransition = { slideOutHorizontally { it } }  // Slide out to right
+    )
+}
+```
+
+**Fade animations (default):**
+
+```kotlin
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Phone())
+    transitions = AuthUITransitions(
+        enterTransition = { fadeIn() },
+        exitTransition = { fadeOut() },
+        popEnterTransition = { fadeIn() },
+        popExitTransition = { fadeOut() }
+    )
+}
+```
+
+**Scale animations:**
+
+```kotlin
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Facebook())
+    transitions = AuthUITransitions(
+        enterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
+        exitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) },
+        popEnterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
+        popExitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) }
+    )
+}
+```
+
+**Vertical slide:**
+
+```kotlin
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import com.firebase.ui.auth.configuration.AuthUITransitions
+
+val configuration = authUIConfiguration {
+    providers = listOf(AuthProvider.Email())
+    transitions = AuthUITransitions(
+        enterTransition = { slideInVertically { it } },  // Slide up
+        exitTransition = { slideOutVertically { -it } }  // Slide down
+    )
+}
+```
+
+> **Note:** If not specified, default fade in/out transitions with 700ms duration are used.
 
 ## Advanced Features
 
