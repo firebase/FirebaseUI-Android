@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +47,8 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
+import com.firebase.ui.auth.configuration.theme.LocalAuthUITheme
+import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 
 /**
  * A customizable button for an authentication provider.
@@ -86,9 +90,15 @@ fun AuthProviderButton(
     showAsContinue: Boolean = false,
 ) {
     val context = LocalContext.current
-    val providerStyle = resolveProviderStyle(provider, style)
+    val authTheme = LocalAuthUITheme.current
     val providerLabel =
         label ?: resolveProviderLabel(provider, stringProvider, context, showAsContinue)
+    val providerStyle = resolveProviderStyle(
+        provider = provider,
+        style = style,
+        providerStyles = authTheme.providerStyles,
+        defaultButtonShape = authTheme.providerButtonShape
+    )
 
     Button(
         modifier = modifier,
@@ -100,7 +110,7 @@ fun AuthProviderButton(
             containerColor = providerStyle.backgroundColor,
             contentColor = providerStyle.contentColor,
         ),
-        shape = providerStyle.shape,
+        shape = providerStyle.shape ?: RoundedCornerShape(4.dp),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = providerStyle.elevation
         ),
@@ -164,27 +174,46 @@ fun AuthProviderButton(
 internal fun resolveProviderStyle(
     provider: AuthProvider,
     style: AuthUITheme.ProviderStyle?,
+    providerStyles: Map<String, AuthUITheme.ProviderStyle>,
+    defaultButtonShape: Shape?,
 ): AuthUITheme.ProviderStyle {
-    if (style != null) return style
+    // If explicit style is provided, use it but apply default shape if needed
+    if (style != null) {
+        return if (style.shape == null) {
+            style.copy(shape = defaultButtonShape ?: RoundedCornerShape(4.dp))
+        } else {
+            style
+        }
+    }
 
-    val defaultStyle =
-        AuthUITheme.Default.providerStyles[provider.providerId] ?: AuthUITheme.ProviderStyle.Empty
+    // Get the configured style from the theme or fall back to defaults
+    val configuredStyle = providerStyles[provider.providerId]
+        ?: ProviderStyleDefaults.default[provider.providerId]
+        ?: AuthUITheme.ProviderStyle.Empty
 
-    return if (provider is AuthProvider.GenericOAuth) {
-        AuthUITheme.ProviderStyle(
-            icon = provider.buttonIcon ?: defaultStyle.icon,
-            backgroundColor = provider.buttonColor ?: defaultStyle.backgroundColor,
-            contentColor = provider.contentColor ?: defaultStyle.contentColor,
+    // Handle GenericOAuth providers with custom properties
+    val resolvedStyle = if (provider is AuthProvider.GenericOAuth) {
+        configuredStyle.copy(
+            icon = provider.buttonIcon ?: configuredStyle.icon,
+            backgroundColor = provider.buttonColor ?: configuredStyle.backgroundColor,
+            contentColor = provider.contentColor ?: configuredStyle.contentColor,
         )
     } else {
-        defaultStyle
+        configuredStyle
+    }
+
+    // Apply default button shape if no shape is explicitly set
+    return if (resolvedStyle.shape == null) {
+        resolvedStyle.copy(shape = defaultButtonShape ?: RoundedCornerShape(4.dp))
+    } else {
+        resolvedStyle
     }
 }
 
 internal fun resolveProviderLabel(
     provider: AuthProvider,
     stringProvider: AuthUIStringProvider,
-    context: android.content.Context,
+    context: Context,
     showAsContinue: Boolean = false,
 ): String = when (provider) {
     is AuthProvider.GenericOAuth -> provider.buttonLabel

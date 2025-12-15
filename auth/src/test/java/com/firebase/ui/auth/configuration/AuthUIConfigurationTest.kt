@@ -75,7 +75,7 @@ class AuthUIConfigurationTest {
 
         assertThat(config.context).isEqualTo(applicationContext)
         assertThat(config.providers).hasSize(1)
-        assertThat(config.theme).isEqualTo(AuthUITheme.Default)
+        assertThat(config.theme).isNull()
         assertThat(config.stringProvider).isInstanceOf(DefaultAuthUIStringProvider::class.java)
         assertThat(config.locale).isNull()
         assertThat(config.isCredentialManagerEnabled).isTrue()
@@ -463,7 +463,8 @@ class AuthUIConfigurationTest {
             "passwordResetActionCodeSettings",
             "isNewEmailAccountsAllowed",
             "isDisplayNameRequired",
-            "isProviderChoiceAlwaysShown"
+            "isProviderChoiceAlwaysShown",
+            "transitions"
         )
 
         val actualProperties = allProperties.map { it.name }.toSet()
