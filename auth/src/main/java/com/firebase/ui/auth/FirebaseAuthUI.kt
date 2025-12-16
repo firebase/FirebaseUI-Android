@@ -78,6 +78,9 @@ class FirebaseAuthUI private constructor(
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     var testCredentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    var testLoginManagerProvider: AuthProvider.Facebook.LoginManagerProvider? = null
+
     /**
      * Checks whether a user is currently signed in.
      *

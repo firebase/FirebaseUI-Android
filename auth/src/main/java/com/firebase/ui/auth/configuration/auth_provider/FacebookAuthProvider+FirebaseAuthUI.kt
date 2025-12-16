@@ -144,7 +144,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     accessToken: AccessToken,
-    credentialProvider: AuthProvider.Facebook.CredentialProvider = AuthProvider.Facebook.DefaultCredentialProvider(),
+    credentialProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ) {
     try {
         updateAuthState(
@@ -220,10 +220,12 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
  * This is typically called as part of the overall sign-out flow when a user signs out
  * from Firebase Authentication.
  */
-internal fun FirebaseAuthUI.signOutFromFacebook() {
+internal fun FirebaseAuthUI.signOutFromFacebook(
+    loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
+) {
     try {
         if (Provider.fromId(getCurrentUser()?.providerId) != Provider.FACEBOOK) return
-        LoginManager.getInstance().logOut()
+        (testLoginManagerProvider ?: loginManagerProvider).logOut()
     } catch (e: Exception) {
         Log.e("FacebookAuthProvider", "Error during Facebook sign out", e)
     }

@@ -21,6 +21,7 @@ import android.util.Log
 import androidx.annotation.RestrictTo
 import androidx.compose.ui.graphics.Color
 import androidx.core.net.toUri
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -568,6 +569,11 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 filterByAuthorizedAccounts: Boolean,
                 autoSelectEnabled: Boolean
             ): GoogleSignInResult
+
+            suspend fun clearCredentialState(
+                context: Context,
+                credentialManager: CredentialManager,
+            )
         }
 
         /**
@@ -603,6 +609,13 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                     displayName = googleIdTokenCredential.displayName,
                     photoUrl = googleIdTokenCredential.profilePictureUri,
                 )
+            }
+
+            override suspend fun clearCredentialState(
+                context: Context,
+                credentialManager: CredentialManager,
+            ) {
+                credentialManager.clearCredentialState(ClearCredentialStateRequest())
             }
         }
     }
@@ -655,20 +668,27 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         }
 
         /**
-         * An interface to wrap the static `FacebookAuthProvider.getCredential` method to make it testable.
+         * An interface to wrap Facebook LoginManager and credential operations to make them testable.
          * @suppress
          */
-        internal interface CredentialProvider {
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        interface LoginManagerProvider {
             fun getCredential(token: String): AuthCredential
+            fun logOut()
         }
 
         /**
-         * The default implementation of [CredentialProvider] that calls the static method.
+         * The default implementation of [LoginManagerProvider].
          * @suppress
          */
-        internal class DefaultCredentialProvider : CredentialProvider {
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        class DefaultLoginManagerProvider : LoginManagerProvider {
             override fun getCredential(token: String): AuthCredential {
                 return FacebookAuthProvider.getCredential(token)
+            }
+
+            override fun logOut() {
+                com.facebook.login.LoginManager.getInstance().logOut()
             }
         }
 
