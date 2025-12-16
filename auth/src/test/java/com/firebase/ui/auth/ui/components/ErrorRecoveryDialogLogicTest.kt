@@ -56,7 +56,43 @@ class ErrorRecoveryDialogLogicTest {
         // Act
         val message = getRecoveryMessage(error, mockStringProvider)
 
-        // Assert
+        // Assert - Should show the actual error message since it's not the generic fallback
+        Truth.assertThat(message).isEqualTo("Invalid credentials")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns actual Firebase error message for InvalidCredentialsException`() {
+        // Arrange - Simulate a real Firebase error message
+        val error = AuthException.InvalidCredentialsException("The email address is badly formatted.")
+
+        // Act
+        val message = getRecoveryMessage(error, mockStringProvider)
+
+        // Assert - Should show the actual Firebase error, not the generic message
+        Truth.assertThat(message).isEqualTo("The email address is badly formatted.")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns generic message for InvalidCredentialsException with generic error text`() {
+        // Arrange - When error message is the generic fallback
+        val error = AuthException.InvalidCredentialsException("Invalid credentials provided")
+
+        // Act
+        val message = getRecoveryMessage(error, mockStringProvider)
+
+        // Assert - Should show the localized generic message
+        Truth.assertThat(message).isEqualTo("Incorrect password.")
+    }
+
+    @Test
+    fun `getRecoveryMessage returns generic message for InvalidCredentialsException with blank message`() {
+        // Arrange
+        val error = AuthException.InvalidCredentialsException("")
+
+        // Act
+        val message = getRecoveryMessage(error, mockStringProvider)
+
+        // Assert - Should show the localized generic message
         Truth.assertThat(message).isEqualTo("Incorrect password.")
     }
 
@@ -245,7 +281,11 @@ class ErrorRecoveryDialogLogicTest {
     private fun getRecoveryMessage(error: AuthException, stringProvider: AuthUIStringProvider): String {
         return when (error) {
             is AuthException.NetworkException -> stringProvider.networkErrorRecoveryMessage
-            is AuthException.InvalidCredentialsException -> stringProvider.invalidCredentialsRecoveryMessage
+            is AuthException.InvalidCredentialsException -> {
+                // Use the actual error message from Firebase if available, otherwise fallback to generic message
+                error.message?.takeIf { it.isNotBlank() && it != "Invalid credentials provided" }
+                    ?: stringProvider.invalidCredentialsRecoveryMessage
+            }
             is AuthException.UserNotFoundException -> stringProvider.userNotFoundRecoveryMessage
             is AuthException.WeakPasswordException -> {
                 val baseMessage = stringProvider.weakPasswordRecoveryMessage
