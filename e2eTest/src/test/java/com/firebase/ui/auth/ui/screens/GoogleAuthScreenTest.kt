@@ -119,6 +119,11 @@ class GoogleAuthScreenTest {
                     autoSelectEnabled = autoSelectEnabled
                 )
             }
+
+            override suspend fun clearCredentialState(
+                context: Context,
+                credentialManager: CredentialManager,
+            ) {}
         }
         authUI.testCredentialManagerProvider = testCredentialManagerProvider
 

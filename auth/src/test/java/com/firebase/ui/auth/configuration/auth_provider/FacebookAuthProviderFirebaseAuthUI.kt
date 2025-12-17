@@ -65,7 +65,7 @@ class FacebookAuthProviderFirebaseAuthUITest {
     private lateinit var mockFirebaseAuth: FirebaseAuth
 
     @Mock
-    private lateinit var mockFBAuthCredentialProvider: AuthProvider.Facebook.CredentialProvider
+    private lateinit var mockFBAuthCredentialProvider: AuthProvider.Facebook.LoginManagerProvider
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
