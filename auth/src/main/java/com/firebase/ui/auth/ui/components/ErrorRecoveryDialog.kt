@@ -126,7 +126,11 @@ private fun getRecoveryMessage(
 ): String {
     return when (error) {
         is AuthException.NetworkException -> stringProvider.networkErrorRecoveryMessage
-        is AuthException.InvalidCredentialsException -> stringProvider.invalidCredentialsRecoveryMessage
+        is AuthException.InvalidCredentialsException -> {
+            // Use the actual error message from Firebase if available, otherwise fallback to generic message
+            error.message?.takeIf { it.isNotBlank() && it != "Invalid credentials provided" }
+                ?: stringProvider.invalidCredentialsRecoveryMessage
+        }
         is AuthException.UserNotFoundException -> stringProvider.userNotFoundRecoveryMessage
         is AuthException.WeakPasswordException -> {
             // Include specific reason if available

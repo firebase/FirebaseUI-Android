@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">FirebaseUI Demo</string>
 
-    <string name="firebase_web_host" translatable="false">flutterfire-e2e-tests.firebaseapp.com</string>
+    <string name="firebase_web_host" translatable="false">CHANGE-HERE</string>
 
     <!-- Facebook SDK Configuration -->
-    <string name="facebook_application_id" translatable="false">128693022464535</string>
-    <string name="facebook_login_protocol_scheme" translatable="false">fb128693022464535</string>
-    <string name="facebook_client_token" translatable="false">16dbbdf0cfb309034a6ad98ac2a21688</string>
+    <string name="facebook_application_id" translatable="false">APP-ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbAPP-ID</string>
+    <string name="facebook_client_token" translatable="false">CHANGE-HERE</string>
 </resources>
