@@ -21,12 +21,12 @@ import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
