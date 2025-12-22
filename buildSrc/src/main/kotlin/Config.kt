@@ -69,7 +69,7 @@ object Config {
         }
 
         object Firebase {
-            const val bom = "com.google.firebase:firebase-bom:33.9.0"
+            const val bom = "com.google.firebase:firebase-bom:34.7.0"
             const val auth = "com.google.firebase:firebase-auth"
             const val database = "com.google.firebase:firebase-database"
             const val firestore = "com.google.firebase:firebase-firestore"
