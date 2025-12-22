@@ -294,12 +294,13 @@ class AuthUIConfigurationTest {
     }
 
     @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `validation accepts all supported providers`() {
         val config = authUIConfiguration {
             context = applicationContext
             providers {
                 provider(AuthProvider.Google(scopes = listOf(), serverClientId = "test_client_id"))
-                provider(AuthProvider.Facebook(applicationId = "test_app_id"))
+                provider(AuthProvider.Facebook())
                 provider(AuthProvider.Twitter(customParameters = mapOf()))
                 provider(AuthProvider.Github(customParameters = mapOf()))
                 provider(AuthProvider.Microsoft(customParameters = mapOf(), tenant = null))

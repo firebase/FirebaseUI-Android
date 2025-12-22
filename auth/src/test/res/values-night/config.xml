@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">test_client_id</string>
+    <string name="facebook_application_id" translatable="false">test_app_id</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">test_login_scheme</string>
+    <string name="facebook_client_token" translatable="false">test_client_token</string>
+</resources>

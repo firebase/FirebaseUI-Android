@@ -138,6 +138,7 @@ If using Facebook Login, add your Facebook App ID to `strings.xml`:
 <resources>
     <string name="facebook_application_id" translatable="false">YOUR_FACEBOOK_APP_ID</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token" translatable="false">CHANGE-ME</string>
 </resources>
 ```
 
@@ -489,9 +490,6 @@ Configure Facebook Login with optional permissions:
 
 ```kotlin
 val facebookProvider = AuthProvider.Facebook(
-    // Optional: Facebook application ID (reads from strings.xml if not provided)
-    applicationId = "YOUR_FACEBOOK_APP_ID",
-
     // Optional: Permissions to request (default: ["email", "public_profile"])
     scopes = listOf("email", "public_profile", "user_friends"),
 
