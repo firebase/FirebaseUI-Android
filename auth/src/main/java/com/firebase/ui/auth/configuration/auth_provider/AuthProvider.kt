@@ -488,6 +488,20 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         var serverClientId: String?,
 
         /**
+         * Whether to filter by authorized accounts.
+         * When true, only shows Google accounts that have previously authorized this app.
+         * Defaults to true, with automatic fallback to false if no authorized accounts found.
+         */
+        val filterByAuthorizedAccounts: Boolean = true,
+
+        /**
+         * Whether to enable auto-select for single account scenarios.
+         * When true, automatically selects the account if only one is available.
+         * Defaults to false for better user control.
+         */
+        val autoSelectEnabled: Boolean = false,
+
+        /**
          * A map of custom OAuth parameters.
          */
         override val customParameters: Map<String, String> = emptyMap(),
