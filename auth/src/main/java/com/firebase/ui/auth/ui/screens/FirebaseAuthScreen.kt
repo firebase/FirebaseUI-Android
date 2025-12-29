@@ -354,6 +354,7 @@ fun FirebaseAuthScreen(
                         AuthSuccessUiContext(
                             authUI = authUI,
                             stringProvider = stringProvider,
+                            configuration = configuration,
                             onSignOut = {
                                 coroutineScope.launch {
                                     try {
@@ -669,6 +670,7 @@ sealed class AuthRoute(val route: String) {
 data class AuthSuccessUiContext(
     val authUI: FirebaseAuthUI,
     val stringProvider: AuthUIStringProvider,
+    val configuration: AuthUIConfiguration,
     val onSignOut: () -> Unit,
     val onManageMfa: () -> Unit,
     val onReloadUser: () -> Unit,

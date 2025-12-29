@@ -14,10 +14,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +63,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
             tosUrl = "https://policies.google.com/terms"
             privacyPolicyUrl = "https://policies.google.com/privacy"
             isAnonymousUpgradeEnabled = false
+            isMfaEnabled = false
             transitions = AuthUITransitions(
                 enterTransition = { slideInHorizontally { it } },
                 exitTransition = { slideOutHorizontally { -it } },
@@ -193,12 +200,14 @@ class HighLevelApiDemoActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppAuthenticatedContent(
     state: AuthState,
     uiContext: AuthSuccessUiContext
 ) {
     val stringProvider = uiContext.stringProvider
+    val configuration = uiContext.configuration
     when (state) {
         is AuthState.Success -> {
             val user = uiContext.authUI.getCurrentUser()
@@ -226,8 +235,25 @@ private fun AppAuthenticatedContent(
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = uiContext.onManageMfa) {
-                    Text(stringProvider.manageMfaAction)
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                        TooltipAnchorPosition.Above
+                    ),
+                    tooltip = {
+                        PlainTooltip {
+                            Text(stringProvider.mfaDisabledTooltip)
+                        }
+                    },
+                    state = rememberTooltipState(
+                        initialIsVisible = !configuration.isMfaEnabled
+                    )
+                ) {
+                    Button(
+                        onClick = uiContext.onManageMfa,
+                        enabled = configuration.isMfaEnabled
+                    ) {
+                        Text(stringProvider.manageMfaAction)
+                    }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = uiContext.onSignOut) {

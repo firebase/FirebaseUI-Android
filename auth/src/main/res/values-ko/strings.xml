@@ -178,4 +178,5 @@
 
     <!-- Tooltips -->
     <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
+    <string name="fui_mfa_disabled_tooltip" translation_description="Tooltip shown when manage MFA button is disabled because MFA is not enabled">다단계 인증이 현재 비활성화되어 있습니다</string>
 </resources>
