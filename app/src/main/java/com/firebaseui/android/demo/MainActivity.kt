@@ -93,7 +93,8 @@ class MainActivity : ComponentActivity() {
                         },
                         onCustomSlotsClick = {
                             startActivity(Intent(this, CustomSlotsThemingDemoActivity::class.java))
-                        }
+                        },
+                        isEmulatorMode = USE_AUTH_EMULATOR
                     )
                 }
             }
@@ -105,7 +106,8 @@ class MainActivity : ComponentActivity() {
 fun ChooserScreen(
     onHighLevelApiClick: () -> Unit,
     onLowLevelApiClick: () -> Unit,
-    onCustomSlotsClick: () -> Unit
+    onCustomSlotsClick: () -> Unit,
+    isEmulatorMode: Boolean = false
 ) {
     val scrollState = rememberScrollState()
 
@@ -133,7 +135,34 @@ fun ChooserScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        // Emulator Mode Warning
+        if (isEmulatorMode) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "⚠️ Emulator Mode",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                    Text(
+                        text = "Running with Firebase Auth Emulator. Some features like third-party" +
+                                " OAuth providers (Facebook, Twitter, LINE etc.) may not work correctly." +
+                                " Disable Firebase Auth Emulator using" +
+                                " MainActivity.USE_AUTH_EMULATOR = false",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            }
+        }
 
         // High-Level API Card
         Card(
