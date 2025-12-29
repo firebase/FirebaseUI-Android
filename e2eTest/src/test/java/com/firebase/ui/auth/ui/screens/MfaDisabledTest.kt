@@ -2,6 +2,7 @@ package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
 import android.os.Looper
+import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
@@ -180,6 +181,7 @@ class MfaDisabledTest {
                 authenticatedContent = { _, uiContext ->
                     // Custom content that captures the uiContext
                     capturedUiContext = uiContext
+                    Text("Custom authenticated content")
                 }
             )
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
