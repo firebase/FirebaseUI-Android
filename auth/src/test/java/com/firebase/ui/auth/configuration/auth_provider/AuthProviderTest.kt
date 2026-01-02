@@ -2,6 +2,7 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.R
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.Before
@@ -264,32 +265,34 @@ class AuthProviderTest {
         }
     }
 
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `google provider assigns default_web_client_id to serverClientId when null`() {
+        val provider = AuthProvider.Google(
+            scopes = listOf("email"),
+            serverClientId = null
+        )
+
+        provider.validate(applicationContext)
+
+        assertThat(provider.serverClientId)
+            .isEqualTo(applicationContext.getString(R.string.default_web_client_id))
+    }
+
     // =============================================================================================
     // Facebook Provider Tests
     // =============================================================================================
 
     @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `facebook provider with valid configuration should succeed`() {
-        val provider = AuthProvider.Facebook(applicationId = "application_id")
+        val provider = AuthProvider.Facebook()
 
         provider.validate(applicationContext)
     }
 
     @Test
-    fun `facebook provider with empty application id throws`() {
-        val provider = AuthProvider.Facebook(applicationId = "")
-
-        try {
-            provider.validate(applicationContext)
-            assertThat(false).isTrue() // Should not reach here
-        } catch (e: Exception) {
-            assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
-            assertThat(e.message).isEqualTo("Facebook application ID cannot be blank")
-        }
-    }
-
-    @Test
-    fun `facebook provider validates facebook_application_id when applicationId is null`() {
+    fun `facebook provider validates facebook_application_id`() {
         val provider = AuthProvider.Facebook()
 
         try {
@@ -299,7 +302,7 @@ class AuthProviderTest {
             assertThat(e).isInstanceOf(IllegalStateException::class.java)
             assertThat(e.message).isEqualTo(
                 "Facebook provider unconfigured. Make sure to " +
-                        "add a `facebook_application_id` string or provide applicationId parameter."
+                        "add a `facebook_application_id` string to your strings.xml"
             )
         }
     }

@@ -603,6 +603,200 @@ class GoogleAuthProviderFirebaseAuthUITest {
     }
 
     // =============================================================================================
+    // signInWithGoogle - Configuration Properties
+    // =============================================================================================
+
+    @Test
+    fun `Sign in with Google with default settings passes filterByAuthorizedAccounts=true`() = runTest {
+        val mockCredential = mock(AuthCredential::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+
+        val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
+            credential = mockCredential,
+            idToken = "test-id-token",
+            displayName = "Test User",
+            photoUrl = null
+        )
+
+        `when`(
+            mockCredentialManagerProvider.getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(true),
+                autoSelectEnabled = eq(false)
+            )
+        ).thenReturn(googleSignInResult)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithCredential(mockCredential))
+            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList()
+            // filterByAuthorizedAccounts defaults to true
+            // autoSelectEnabled defaults to false
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        instance.signInWithGoogle(
+            context = applicationContext,
+            config = config,
+            provider = googleProvider,
+            authorizationProvider = mockAuthorizationProvider,
+            credentialManagerProvider = mockCredentialManagerProvider
+        )
+
+        // Verify correct parameters were passed
+        verify(mockCredentialManagerProvider).getGoogleCredential(
+            context = eq(applicationContext),
+            credentialManager = any<CredentialManager>(),
+            serverClientId = eq("test-client-id"),
+            filterByAuthorizedAccounts = eq(true),
+            autoSelectEnabled = eq(false)
+        )
+
+        verify(mockFirebaseAuth).signInWithCredential(mockCredential)
+    }
+
+    @Test
+    fun `Sign in with Google with filterByAuthorizedAccounts=false passes correct parameter`() = runTest {
+        val mockCredential = mock(AuthCredential::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+
+        val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
+            credential = mockCredential,
+            idToken = "test-id-token",
+            displayName = "Test User",
+            photoUrl = null
+        )
+
+        `when`(
+            mockCredentialManagerProvider.getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(false),
+                autoSelectEnabled = eq(false)
+            )
+        ).thenReturn(googleSignInResult)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithCredential(mockCredential))
+            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList(),
+            filterByAuthorizedAccounts = false
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        instance.signInWithGoogle(
+            context = applicationContext,
+            config = config,
+            provider = googleProvider,
+            authorizationProvider = mockAuthorizationProvider,
+            credentialManagerProvider = mockCredentialManagerProvider
+        )
+
+        // Verify filterByAuthorizedAccounts=false was passed
+        verify(mockCredentialManagerProvider).getGoogleCredential(
+            context = eq(applicationContext),
+            credentialManager = any<CredentialManager>(),
+            serverClientId = eq("test-client-id"),
+            filterByAuthorizedAccounts = eq(false),
+            autoSelectEnabled = eq(false)
+        )
+
+        verify(mockFirebaseAuth).signInWithCredential(mockCredential)
+    }
+
+    @Test
+    fun `Sign in with Google with autoSelectEnabled=true passes correct parameter`() = runTest {
+        val mockCredential = mock(AuthCredential::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+
+        val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
+            credential = mockCredential,
+            idToken = "test-id-token",
+            displayName = "Test User",
+            photoUrl = null
+        )
+
+        `when`(
+            mockCredentialManagerProvider.getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(true),
+                autoSelectEnabled = eq(true)
+            )
+        ).thenReturn(googleSignInResult)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithCredential(mockCredential))
+            .thenReturn(taskCompletionSource.task)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList(),
+            autoSelectEnabled = true
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        instance.signInWithGoogle(
+            context = applicationContext,
+            config = config,
+            provider = googleProvider,
+            authorizationProvider = mockAuthorizationProvider,
+            credentialManagerProvider = mockCredentialManagerProvider
+        )
+
+        // Verify autoSelectEnabled=true was passed
+        verify(mockCredentialManagerProvider).getGoogleCredential(
+            context = eq(applicationContext),
+            credentialManager = any<CredentialManager>(),
+            serverClientId = eq("test-client-id"),
+            filterByAuthorizedAccounts = eq(true),
+            autoSelectEnabled = eq(true)
+        )
+
+        verify(mockFirebaseAuth).signInWithCredential(mockCredential)
+    }
+
+    // =============================================================================================
     // signInWithGoogle - State Management
     // =============================================================================================
 

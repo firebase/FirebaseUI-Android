@@ -133,14 +133,48 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
             }
         }
 
-        val result =
+        // Try with configured filterByAuthorizedAccounts setting
+        // If default (true), fallback to false if no authorized accounts found
+        // See: https://developer.android.com/identity/sign-in/credential-manager-siwg#siwg-button
+        val result = if (provider.filterByAuthorizedAccounts) {
+            // Default behavior: Try authorized accounts first, fallback to all accounts
+            try {
+                (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
+                    context = context,
+                    credentialManager = CredentialManager.create(context),
+                    serverClientId = provider.serverClientId!!,
+                    filterByAuthorizedAccounts = true,
+                    autoSelectEnabled = provider.autoSelectEnabled
+                )
+            } catch (e: NoCredentialException) {
+                // No authorized accounts found, try again with all accounts for sign-up flow
+                Log.d("GoogleAuthProvider", "No authorized accounts found, showing all Google accounts for sign-up")
+                try {
+                    (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
+                        context = context,
+                        credentialManager = CredentialManager.create(context),
+                        serverClientId = provider.serverClientId!!,
+                        filterByAuthorizedAccounts = false,
+                        autoSelectEnabled = provider.autoSelectEnabled
+                    )
+                } catch (fallbackException: NoCredentialException) {
+                    // No Google accounts available on device at all
+                    throw AuthException.UnknownException(
+                        message = "No Google accounts available.\n\nPlease add a Google account to your device and try again.",
+                        cause = fallbackException
+                    )
+                }
+            }
+        } else {
+            // Developer explicitly wants to show all accounts (no fallback needed)
             (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
                 context = context,
                 credentialManager = CredentialManager.create(context),
                 serverClientId = provider.serverClientId!!,
-                filterByAuthorizedAccounts = true,
-                autoSelectEnabled = false
+                filterByAuthorizedAccounts = false,
+                autoSelectEnabled = provider.autoSelectEnabled
             )
+        }
         idTokenFromResult = result.idToken
 
         signInAndLinkWithCredential(

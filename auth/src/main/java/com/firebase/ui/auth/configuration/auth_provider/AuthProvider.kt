@@ -485,7 +485,21 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         /**
          * The OAuth 2.0 client ID for your server.
          */
-        val serverClientId: String?,
+        var serverClientId: String?,
+
+        /**
+         * Whether to filter by authorized accounts.
+         * When true, only shows Google accounts that have previously authorized this app.
+         * Defaults to true, with automatic fallback to false if no authorized accounts found.
+         */
+        val filterByAuthorizedAccounts: Boolean = true,
+
+        /**
+         * Whether to enable auto-select for single account scenarios.
+         * When true, automatically selects the account if only one is available.
+         * Defaults to false for better user control.
+         */
+        val autoSelectEnabled: Boolean = false,
 
         /**
          * A map of custom OAuth parameters.
@@ -505,8 +519,9 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                             " default_web_client_id string wasn't populated.",
                     R.string.default_web_client_id
                 )
+                serverClientId = context.getString(R.string.default_web_client_id)
             } else {
-                require(serverClientId.isNotBlank()) {
+                require(serverClientId!!.isNotBlank()) {
                     "Server client ID cannot be blank."
                 }
             }
@@ -529,7 +544,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
             val credential: AuthCredential,
             val idToken: String,
             val displayName: String?,
-            val photoUrl: Uri?
+            val photoUrl: Uri?,
         )
 
         /**
@@ -567,7 +582,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 credentialManager: CredentialManager,
                 serverClientId: String,
                 filterByAuthorizedAccounts: Boolean,
-                autoSelectEnabled: Boolean
+                autoSelectEnabled: Boolean,
             ): GoogleSignInResult
 
             suspend fun clearCredentialState(
@@ -600,8 +615,10 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                     .build()
 
                 val result = credentialManager.getCredential(context, request)
-                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(result.credential.data)
-                val credential = GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
+                val googleIdTokenCredential =
+                    GoogleIdTokenCredential.createFrom(result.credential.data)
+                val credential =
+                    GoogleAuthProvider.getCredential(googleIdTokenCredential.idToken, null)
 
                 return GoogleSignInResult(
                     credential = credential,
@@ -624,11 +641,6 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
      * Facebook Login provider configuration.
      */
     class Facebook(
-        /**
-         * The Facebook application ID.
-         */
-        val applicationId: String? = null,
-
         /**
          * The list of scopes (permissions) to request. Defaults to email and public_profile.
          */
@@ -653,18 +665,26 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 )
             }
 
-            if (applicationId == null) {
-                Preconditions.checkConfigured(
-                    context,
-                    "Facebook provider unconfigured. Make sure to " +
-                            "add a `facebook_application_id` string or provide applicationId parameter.",
-                    R.string.facebook_application_id
-                )
-            } else {
-                require(applicationId.isNotBlank()) {
-                    "Facebook application ID cannot be blank"
-                }
-            }
+            Preconditions.checkConfigured(
+                context,
+                "Facebook provider unconfigured. Make sure to " +
+                        "add a `facebook_application_id` string to your strings.xml",
+                R.string.facebook_application_id
+            )
+
+            Preconditions.checkConfigured(
+                context,
+                "Facebook provider unconfigured. Make sure to " +
+                        "add a `facebook_login_protocol_scheme` string to your strings.xml",
+                R.string.facebook_login_protocol_scheme
+            )
+
+            Preconditions.checkConfigured(
+                context,
+                "Facebook provider unconfigured. Make sure to " +
+                        "add a `facebook_client_token` string to your strings.xml",
+                R.string.facebook_client_token
+            )
         }
 
         /**

@@ -103,6 +103,7 @@ class FacebookAuthProviderFirebaseAuthUITest {
     }
 
     @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `signInWithFacebook - successful sign in signs user in and emits Success authState`() = runTest {
         val authStateListeners = mutableListOf<AuthStateListener>()
         doAnswer { invocation ->
@@ -118,9 +119,7 @@ class FacebookAuthProviderFirebaseAuthUITest {
         whenever(mockFirebaseAuth.currentUser).thenReturn(null)
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-        val provider = spy(AuthProvider.Facebook(
-            applicationId = "000000000000"
-        ))
+        val provider = spy(AuthProvider.Facebook())
         val config = authUIConfiguration {
             context = applicationContext
             providers {
@@ -175,6 +174,7 @@ class FacebookAuthProviderFirebaseAuthUITest {
     }
 
     @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `signInWithFacebook - handles account collision by saving credential and emitting error`() = runTest {
         EmailLinkPersistenceManager.default.clear(applicationContext)
         EmailLinkPersistenceManager.default.saveEmail(
@@ -185,9 +185,7 @@ class FacebookAuthProviderFirebaseAuthUITest {
         )
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-        val provider = spy(AuthProvider.Facebook(
-            applicationId = "000000000000"
-        ))
+        val provider = spy(AuthProvider.Facebook())
         val config = authUIConfiguration {
             context = applicationContext
             providers {
@@ -238,11 +236,10 @@ class FacebookAuthProviderFirebaseAuthUITest {
     }
 
     @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `signInWithFacebook - converts FacebookException into AuthException`() = runTest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-        val provider = spy(AuthProvider.Facebook(
-            applicationId = "000000000000"
-        ))
+        val provider = spy(AuthProvider.Facebook())
         val config = authUIConfiguration {
             context = applicationContext
             providers {
