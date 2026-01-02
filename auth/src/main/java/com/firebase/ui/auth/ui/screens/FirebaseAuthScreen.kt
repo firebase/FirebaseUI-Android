@@ -28,10 +28,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -348,6 +354,7 @@ fun FirebaseAuthScreen(
                         AuthSuccessUiContext(
                             authUI = authUI,
                             stringProvider = stringProvider,
+                            configuration = configuration,
                             onSignOut = {
                                 coroutineScope.launch {
                                     try {
@@ -362,7 +369,15 @@ fun FirebaseAuthScreen(
                                 }
                             },
                             onManageMfa = {
-                                navController.navigate(AuthRoute.MfaEnrollment.route)
+                                if (configuration.isMfaEnabled) {
+                                    navController.navigate(AuthRoute.MfaEnrollment.route)
+                                } else {
+                                    val exception = AuthException.AuthCancelledException(
+                                        message = "Multi-factor authentication is disabled in the configuration. " +
+                                                "Enable MFA in AuthUIConfiguration to use this feature."
+                                    )
+                                    authUI.updateAuthState(AuthState.Error(exception))
+                                }
                             },
                             onReloadUser = {
                                 coroutineScope.launch {
@@ -410,6 +425,7 @@ fun FirebaseAuthScreen(
                         SuccessDestination(
                             authState = authState,
                             stringProvider = stringProvider,
+                            configuration = configuration,
                             uiContext = uiContext
                         )
                     }
@@ -654,6 +670,7 @@ sealed class AuthRoute(val route: String) {
 data class AuthSuccessUiContext(
     val authUI: FirebaseAuthUI,
     val stringProvider: AuthUIStringProvider,
+    val configuration: AuthUIConfiguration,
     val onSignOut: () -> Unit,
     val onManageMfa: () -> Unit,
     val onReloadUser: () -> Unit,
@@ -664,6 +681,7 @@ data class AuthSuccessUiContext(
 private fun SuccessDestination(
     authState: AuthState,
     stringProvider: AuthUIStringProvider,
+    configuration: AuthUIConfiguration,
     uiContext: AuthSuccessUiContext,
 ) {
     when (authState) {
@@ -671,6 +689,7 @@ private fun SuccessDestination(
             AuthSuccessContent(
                 authUI = uiContext.authUI,
                 stringProvider = stringProvider,
+                configuration = configuration,
                 onSignOut = uiContext.onSignOut,
                 onManageMfa = uiContext.onManageMfa
             )
@@ -704,10 +723,12 @@ private fun SuccessDestination(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AuthSuccessContent(
     authUI: FirebaseAuthUI,
     stringProvider: AuthUIStringProvider,
+    configuration: AuthUIConfiguration,
     onSignOut: () -> Unit,
     onManageMfa: () -> Unit,
 ) {
@@ -726,8 +747,25 @@ private fun AuthSuccessContent(
             Spacer(modifier = Modifier.height(16.dp))
         }
         if (user != null && authUI.auth.app.options.projectId != null) {
-            Button(onClick = onManageMfa) {
-                Text(stringProvider.manageMfaAction)
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                    TooltipAnchorPosition.Above
+                ),
+                tooltip = {
+                    PlainTooltip {
+                        Text(stringProvider.mfaDisabledTooltip)
+                    }
+                },
+                state = rememberTooltipState(
+                    initialIsVisible = !configuration.isMfaEnabled
+                )
+            ) {
+                Button(
+                    onClick = onManageMfa,
+                    enabled = configuration.isMfaEnabled
+                ) {
+                    Text(stringProvider.manageMfaAction)
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
         }

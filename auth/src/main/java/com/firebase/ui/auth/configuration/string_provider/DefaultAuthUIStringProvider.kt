@@ -491,4 +491,7 @@ class DefaultAuthUIStringProvider(
 
     override val newAccountsDisabledTooltip: String
         get() = localizedContext.getString(R.string.fui_new_accounts_disabled_tooltip)
+
+    override val mfaDisabledTooltip: String
+        get() = localizedContext.getString(R.string.fui_mfa_disabled_tooltip)
 }
