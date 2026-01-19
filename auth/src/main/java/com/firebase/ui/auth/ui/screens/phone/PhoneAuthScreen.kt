@@ -158,6 +158,8 @@ fun PhoneAuthScreen(
     val forceResendingToken =
         rememberSaveable { mutableStateOf<PhoneAuthProvider.ForceResendingToken?>(null) }
     val resendTimerSeconds = rememberSaveable { mutableIntStateOf(0) }
+    val pendingVerificationPhoneNumber = remember { mutableStateOf<String?>(null) }
+    val verificationStartTime = remember { mutableStateOf<Long?>(null) }
 
     val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
@@ -190,6 +192,10 @@ fun PhoneAuthScreen(
 
             is AuthState.SMSAutoVerified -> {
                 // Auto-verification succeeded, sign in with the credential
+                // and clear pending verification tracking
+                pendingVerificationPhoneNumber.value = null
+                verificationStartTime.value = null
+
                 coroutineScope.launch {
                     try {
                         authUI.signInWithPhoneAuthCredential(
@@ -247,6 +253,33 @@ fun PhoneAuthScreen(
         onSendCodeClick = {
             coroutineScope.launch {
                 try {
+                    val currentTime = System.currentTimeMillis()
+                    val timeoutMs = provider.timeout * 1000
+                    val timeSinceLastVerification = verificationStartTime.value?.let { 
+                        currentTime - it 
+                    } ?: Long.MAX_VALUE
+                    
+                    // Check if the same phone number is being verified again within the cooldown period
+                    val storedNumber = pendingVerificationPhoneNumber.value
+                    val isSameNumber = storedNumber != null && fullPhoneNumber == storedNumber
+                    
+                    // Check cooldown: same number and still within timeout period
+                    if (isSameNumber && timeSinceLastVerification < timeoutMs) {
+                        // Calculate remaining cooldown time in seconds
+                        val remainingCooldownSeconds = ((timeoutMs - timeSinceLastVerification) / 1000).coerceAtLeast(1)
+                        val cooldownException = AuthException.PhoneVerificationCooldownException(
+                            message = "Please wait ${remainingCooldownSeconds} second${if (remainingCooldownSeconds != 1L) "s" else ""} before verifying the same phone number again. The cooldown period is ${provider.timeout} seconds.",
+                            cooldownSeconds = remainingCooldownSeconds
+                        )
+                        // Update auth state to show the error
+                        authUI.updateAuthState(AuthState.Error(cooldownException))
+                        throw cooldownException
+                    }
+                    
+                    // Track the phone number and start time for cooldown checking
+                    pendingVerificationPhoneNumber.value = fullPhoneNumber
+                    verificationStartTime.value = currentTime
+
                     authUI.verifyPhoneNumber(
                         provider = provider,
                         activity = activity,
