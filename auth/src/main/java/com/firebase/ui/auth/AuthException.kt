@@ -151,6 +151,22 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * Phone verification is in cooldown period for the same phone number.
+     *
+     * This exception is thrown when attempting to verify the same phone number
+     * again before the cooldown period (timeout) has expired.
+     *
+     * @property message The detailed error message
+     * @property cooldownSeconds The number of seconds remaining in the cooldown period
+     * @property cause The underlying [Throwable] that caused this exception
+     */
+    class PhoneVerificationCooldownException(
+        message: String,
+        val cooldownSeconds: Long,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * Multi-Factor Authentication is required to proceed.
      *
      * This exception is thrown when a user has MFA enabled and needs to
