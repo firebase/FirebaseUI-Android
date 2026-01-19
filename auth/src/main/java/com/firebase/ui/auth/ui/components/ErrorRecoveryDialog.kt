@@ -149,6 +149,10 @@ private fun getRecoveryMessage(
         }
 
         is AuthException.TooManyRequestsException -> stringProvider.tooManyRequestsRecoveryMessage
+        is AuthException.PhoneVerificationCooldownException -> {
+            // Use the custom message which includes remaining cooldown time
+            error.message ?: stringProvider.unknownErrorRecoveryMessage
+        }
         is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
         is AuthException.AccountLinkingRequiredException -> {
             // Use the custom message which includes email and provider details
@@ -198,6 +202,7 @@ private fun getRecoveryActionText(
         is AuthException.InvalidCredentialsException,
         is AuthException.WeakPasswordException,
         is AuthException.TooManyRequestsException,
+        is AuthException.PhoneVerificationCooldownException -> stringProvider.retryAction
         is AuthException.UnknownException -> stringProvider.retryAction
 
         else -> stringProvider.retryAction
@@ -218,6 +223,7 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.WeakPasswordException -> true
         is AuthException.EmailAlreadyInUseException -> true
         is AuthException.TooManyRequestsException -> false // User must wait
+        is AuthException.PhoneVerificationCooldownException -> false // User must wait for cooldown
         is AuthException.MfaRequiredException -> true
         is AuthException.AccountLinkingRequiredException -> true
         is AuthException.AuthCancelledException -> true
