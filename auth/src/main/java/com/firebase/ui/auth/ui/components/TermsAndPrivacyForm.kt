@@ -24,9 +24,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.R
 
 @Composable
 fun TermsAndPrivacyForm(
@@ -47,7 +49,7 @@ fun TermsAndPrivacyForm(
             contentPadding = PaddingValues.Zero,
         ) {
             Text(
-                text = "Terms of Service",
+                text = stringResource(R.string.fui_terms_of_service),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 textDecoration = TextDecoration.Underline
@@ -63,7 +65,7 @@ fun TermsAndPrivacyForm(
             contentPadding = PaddingValues.Zero,
         ) {
             Text(
-                text = "Privacy Policy",
+                text = stringResource(R.string.fui_privacy_policy),
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 textDecoration = TextDecoration.Underline
