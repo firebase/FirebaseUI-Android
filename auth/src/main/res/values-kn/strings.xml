@@ -25,6 +25,8 @@
     <string name="fui_email_hint">ಇಮೇಲ್</string>
     <string name="fui_phone_hint">ಫೋನ್ ಸಂಖ್ಯೆ</string>
     <string name="fui_country_hint">ದೇಶ</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">ದೇಶವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">ದೇಶವನ್ನು ಹುಡುಕಿ ಉದಾ. +1, "US"</string>
     <string name="fui_password_hint">ಪಾಸ್‌ವರ್ಡ್</string>
     <string name="fui_new_password_hint">ಹೊಸ ಪಾಸ್‌ವರ್ಡ್</string>
     <string name="fui_required_field">ನೀವು ಇದನ್ನು ಖಾಲಿ ಬಿಡುವಂತಿಲ್ಲ.</string>
@@ -73,10 +75,13 @@
     <string name="fui_email_link_confirm_email_message">ಸೈನ್ ಇನ್ ಮುಂದುವರಿಸಲು ಇಮೇಲ್ ದೃಢೀಕರಿಸಿ</string>
     <string name="fui_email_link_dismiss_button">ವಜಾಗೊಳಿಸಿ</string>
     <string name="fui_email_link_cross_device_linking_text">ನೀವು ಮೂಲತಃ %1$s ಅನ್ನು ನಿಮ್ಮ ಇಮೇಲ್ ಜೊತೆಗೆ ಸಂಪರ್ಕಿಸಲು ಬಯಸಿದ್ದೀರಿ ಆದರೆ ನೀವು ಸೈನ್ ಇನ್ ಮಾಡದಿರುವ ಬೇರೆ ಸಾಧನದಲ್ಲಿ ಲಿಂಕ್ ಅನ್ನು ತೆರೆದಿದ್ದೀರಿ.n\nನಿಮ್ಮ %1$s ಖಾತೆಯನ್ನು ಇನ್ನೂ ನೀವು ಸಂಪರ್ಕಿಸಲು ಬಯಸಿದರೆ, ನೀವು ಸೈನ್ ಇನ್ ಮಾಡದೇ ಇರುವ ಅದೇ ಸಾಧನದಲ್ಲಿ ಲಿಂಕ್ ತೆರೆಯಿರಿ. ಇಲ್ಲದಿದ್ದರೆ ಈ ಸಾಧನದಲ್ಲಿ ಸೈನ್ ಇನ್ ಮಾಡಲು ಮುಂದುವರಿಸಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="fui_or_continue_with">ಅಥವಾ ಇದರೊಂದಿಗೆ ಮುಂದುವರಿಸಿ</string>
+    <string name="fui_sign_in_with_email_link">ಇಮೇಲ್ ಲಿಂಕ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="fui_sign_in_with_password">ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="fui_verify_phone_number_title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>
-    <string name="fui_resend_code_in">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ 0:%02d</string>
+    <string name="fui_resend_code_in">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ %1$s</string>
     <string name="fui_verify_your_phone_title">ನಿಮ್ಮ ಪೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="fui_verifying">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_incorrect_code_dialog_body">ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -87,6 +92,83 @@
     <string name="fui_auto_verified">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
     <string name="fui_resend_code">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
     <string name="fui_verify_phone_number">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ %2$s ಮತ್ತು %3$s ಸ್ವೀಕರಿಸುತ್ತೀರಿ ಎಂದು ನೀವು ಸೂಚಿಸುತ್ತಿರುವಿರಿ. ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">ದೃಢೀಕರಣ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS ಪರಿಶೀಲನೆಯನ್ನು ಹೊಂದಿಸಿ</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಹೊಂದಿಸಿ</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">ನಿಮ್ಮ ಕೋಡ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">ನಿಮ್ಮ ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳನ್ನು ಉಳಿಸಿ</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ಎರಡನೇ ದೃಢೀಕರಣ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ಪರಿಶೀಲನೆ ಕೋಡ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">ನಿಮ್ಮ ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನೊಂದಿಗೆ QR ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಕಳುಹಿಸಿದ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">ನಿಮ್ಮ ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನಿಂದ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">ನಿಮ್ಮ ಪರಿಶೀಲನೆ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">ಈ ಕೋಡ್‌ಗಳನ್ನು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿ ಸಂಗ್ರಹಿಸಿ. ನಿಮ್ಮ ದೃಢೀಕರಣ ವಿಧಾನಕ್ಕೆ ಪ್ರವೇಶವನ್ನು ಕಳೆದುಕೊಂಡರೆ ಸೈನ್ ಇನ್ ಮಾಡಲು ಅವುಗಳನ್ನು ಬಳಸಬಹುದು.</string>
+
+    <string name="fui_confirm_password_hint">ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ</string>
+    <string name="fui_passwords_do_not_match">ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ</string>
+    <string name="fui_error_password_too_short">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಷ್ಟು ಉದ್ದವಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_uppercase">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ದೊಡ್ಡಕ್ಷರವನ್ನು ಹೊಂದಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_lowercase">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ಸಣ್ಣಕ್ಷರವನ್ನು ಹೊಂದಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_digit">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ಸಂಖ್ಯೆಯನ್ನು ಹೊಂದಿರಬೇಕು</string>
+    <string name="fui_error_password_missing_special_character">ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ ಒಂದು ವಿಶೇಷ ಅಕ್ಷರವನ್ನು ಹೊಂದಿರಬೇಕು</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS ದೃಢೀಕರಣವನ್ನು ಹೊಂದಿಸಿ</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS ಕೋಡ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">ಈ ಕಾರ್ಯಕ್ಕೆ ಇತ್ತೀಚಿನ ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">ಪರಿಶೀಲನಾ ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">ನೆಟ್‌ವರ್ಕ್ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">ದಾಖಲಾತಿ ಸಮಯದಲ್ಲಿ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+
+    <string name="fui_back_action">ಹಿಂದಕ್ಕೆ</string>
+    <string name="fui_identity_verified_message">ಗುರುತನ್ನು ಪರಿಶೀಲಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ಕ್ರಿಯೆಯನ್ನು ಮರುಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="fui_manage_mfa_action">ಎರಡು-ಅಂಶ ಪ್ರಮಾಣೀಕರಣವನ್ನು ನಿರ್ವಹಿಸಿ</string>
+    <string name="fui_incorrect_password_error">ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್</string>
+    <string name="fui_mfa_choose_method_instruction">ಪರಿಶೀಲನೆ ವಿಧಾನವನ್ನು ಆರಿಸಿ</string>
+    <string name="fui_mfa_enrollment_instruction">ಹೆಚ್ಚುವರಿ ಭದ್ರತಾ ಪದರವನ್ನು ಸೇರಿಸಿ</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್</string>
+    <string name="fui_mfa_phone_number_already_exists_error">ಈ ಫೋನ್ ಸಂಖ್ಯೆ ಮತ್ತೊಂದು ಖಾತೆಯೊಂದಿಗೆ ಸಂಬಂಧ ಹೊಂದಿದೆ</string>
+    <string name="fui_mfa_second_factor_required_error">ಪರಿಶೀಲನೆ ಅಗತ್ಯವಿದೆ</string>
+    <string name="fui_mfa_setup_instruction">ನಿಮ್ಮ ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ QR ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="fui_mfa_totp_already_exists_error">ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಈಗಾಗಲೇ ಸೆಟಪ್ ಆಗಿದೆ</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">ನೀವು ಈ ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?</string>
+    <string name="fui_mfa_unenrollment_error">ವಿಧಾನವನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
+    <string name="fui_mfa_unenrollment_success_message">ವಿಧಾನ ತೆಗೆದುಹಾಕಲಾಗಿದೆ</string>
+    <string name="fui_mfa_verification_instruction">ಪರಿಶೀಲನೆ ಕೋಡ್ ನಮೂದಿಸಿ</string>
+    <string name="fui_profile_update_error">ಪ್ರೊಫೈಲ್ ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
+    <string name="fui_profile_update_success_message">ಪ್ರೊಫೈಲ್ ಅಪ್‌ಡೇಟ್ ಆಗಿದೆ</string>
+    <string name="fui_reauth_instruction">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಗುರುತನ್ನು ದೃಢೀಕರಿಸಿ</string>
+    <string name="fui_reauth_required_error">ಮರು-ಪ್ರಮಾಣೀಕರಣ ಅಗತ್ಯವಿದೆ</string>
+    <string name="fui_reauth_success_message">ಮರು-ಪ್ರಮಾಣೀಕರಣ ಯಶಸ್ವಿಯಾಗಿದೆ</string>
+    <string name="fui_reauthenticate_action">ಮರು-ಪ್ರಮಾಣೀಕರಣ</string>
+    <string name="fui_recovery_codes_saved_action">ನಾನು ನನ್ನ ಮರುಪಡೆಯುವ ಕೋಡ್‌ಗಳನ್ನು ಉಳಿಸಿದ್ದೇನೆ</string>
+    <string name="fui_remove_action">ತೆಗೆದುಹಾಕಿ</string>
+    <string name="fui_resend_verification_email_action">ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಮರುಕಳುಹಿಸಿ</string>
+    <string name="fui_secret_key_label">ರಹಸ್ಯ ಕೀ</string>
+    <string name="fui_sign_out_action">ಸೈನ್ ಔಟ್</string>
+    <string name="fui_signed_in_as">ಹೀಗೆ ಸೈನ್ ಇನ್ ಆಗಿದ್ದೀರಿ</string>
+    <string name="fui_skip_action">ಸ್ಕಿಪ್ ಮಾಡಿ</string>
+    <string name="fui_use_different_method_action">ವಿಭಿನ್ನ ವಿಧಾನವನ್ನು ಬಳಸಿ</string>
+    <string name="fui_verification_code_label">ಪರಿಶೀಲನೆ ಕೋಡ್</string>
+    <string name="fui_verified_email_action">ಇಮೇಲ್ ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
+    <string name="fui_verify_action">ಪರಿಶೀಲಿಸಿ</string>
+    <string name="fui_verify_email_instruction">ನಾವು %1$s ಗೆ ಪರಿಶೀಲನೆ ಇಮೇಲ್ ಕಳುಹಿಸಿದ್ದೇವೆ</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>

@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-posta</string>
     <string name="fui_phone_hint">Telefon Numarası</string>
     <string name="fui_country_hint">Ülke</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Ülke seçin</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Ülke arayın ör. +1, "US"</string>
     <string name="fui_password_hint">Şifre</string>
     <string name="fui_new_password_hint">Yeni şifre</string>
     <string name="fui_required_field">Bu alanı boş bırakamazsınız.</string>
@@ -73,10 +75,13 @@
     <string name="fui_email_link_confirm_email_message">Oturum açma işlemine devam etmek için e-posta adresini onaylayın</string>
     <string name="fui_email_link_dismiss_button">Kapat</string>
     <string name="fui_email_link_cross_device_linking_text">Aslında %1$s adlı sağlayıcıyı e-posta hesabınıza bağlamak istediniz ancak bağlantıyı, oturum açmadığınız farklı bir cihazda açtınız.\n\nHâlâ %1$s hesabınızı bağlamak istiyorsanız bağlantıyı oturum açma işlemini başlattığınız cihazda açın. Aksi takdirde bu cihazda oturum açmak için Devam\'a dokunun.</string>
+    <string name="fui_or_continue_with">veya Şununla Devam Et</string>
+    <string name="fui_sign_in_with_email_link">E-posta bağlantısı ile oturum aç</string>
+    <string name="fui_sign_in_with_password">Şifre ile oturum aç</string>
     <string name="fui_verify_phone_number_title">Telefon numaranızı girin</string>
     <string name="fui_invalid_phone_number">Geçerli bir telefon numarası girin</string>
     <string name="fui_enter_confirmation_code">Şu telefon numarasına gönderdiğimiz 6 haneli kodu girin:</string>
-    <string name="fui_resend_code_in">0:%02d içinde kodu yeniden gönder</string>
+    <string name="fui_resend_code_in">%1$s içinde kodu yeniden gönder</string>
     <string name="fui_verify_your_phone_title">Telefon numaranızı doğrulayın</string>
     <string name="fui_verifying">Doğrulanıyor…</string>
     <string name="fui_incorrect_code_dialog_body">Yanlış kod. Tekrar deneyin.</string>
@@ -87,6 +92,83 @@
     <string name="fui_auto_verified">Telefon numarası otomatik olarak doğrulandı</string>
     <string name="fui_resend_code">Kodu Yeniden Gönder</string>
     <string name="fui_verify_phone_number">Telefon Numarasını Doğrula</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">“%1$s” öğesine dokunarak SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">“%1$s” öğesine dokunarak %2$s ve %3$s hükümlerimizi kabul ettiğinizi bildirirsiniz. SMS gönderilebilir. Mesaj ve veri ücretleri uygulanabilir.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Kimlik Doğrulama Yöntemini Seçin</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS Doğrulamasını Ayarlayın</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Kimlik Doğrulayıcı Uygulamayı Ayarlayın</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Kodunuzu Doğrulayın</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Kurtarma Kodlarınızı Kaydedin</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Hesabınızı güvence altına almak için ikinci bir kimlik doğrulama yöntemi seçin</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Doğrulama kodları almak için telefon numaranızı girin</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Kimlik doğrulayıcı uygulamanızla QR kodunu tarayın</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Telefonunuza gönderilen kodu girin</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Kimlik doğrulayıcı uygulamanızdaki kodu girin</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Doğrulama kodunuzu girin</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bu kodları güvenli bir yerde saklayın. Kimlik doğrulama yönteminize erişimi kaybederseniz oturum açmak için bunları kullanabilirsiniz.</string>
+
+    <string name="fui_confirm_password_hint">Şifreyi onayla</string>
+    <string name="fui_passwords_do_not_match">Şifreler eşleşmiyor</string>
+    <string name="fui_error_password_too_short">Şifre en az %1$d karakter uzunluğunda olmalıdır</string>
+    <string name="fui_error_password_missing_uppercase">Şifre en az bir büyük harf içermelidir</string>
+    <string name="fui_error_password_missing_lowercase">Şifre en az bir küçük harf içermelidir</string>
+    <string name="fui_error_password_missing_digit">Şifre en az bir rakam içermelidir</string>
+    <string name="fui_error_password_missing_special_character">Şifre en az bir özel karakter içermelidir</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">SMS Kimlik Doğrulaması Kur</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">SMS Kodunu Doğrula</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Bu işlem için yakın zamanda kimlik doğrulama gerekiyor. Lütfen tekrar oturum açın ve tekrar deneyin.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Doğrulama kodu yanlış. Lütfen tekrar deneyin.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Bir ağ hatası oluştu. Lütfen bağlantınızı kontrol edin ve tekrar deneyin.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.</string>
+
+    <string name="fui_back_action">Geri</string>
+    <string name="fui_identity_verified_message">Kimlik doğrulandı. İşleminizi tekrar deneyin.</string>
+    <string name="fui_manage_mfa_action">İki faktörlü kimlik doğrulamayı yönet</string>
+    <string name="fui_incorrect_password_error">Yanlış şifre</string>
+    <string name="fui_mfa_choose_method_instruction">Bir doğrulama yöntemi seçin</string>
+    <string name="fui_mfa_enrollment_instruction">Ekstra bir güvenlik katmanı ekleyin</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Kimlik doğrulama uygulaması</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Bu telefon numarası başka bir hesapla ilişkilendirilmiş</string>
+    <string name="fui_mfa_second_factor_required_error">Doğrulama gerekli</string>
+    <string name="fui_mfa_setup_instruction">QR kodunu kimlik doğrulama uygulamanızla tarayın</string>
+    <string name="fui_mfa_totp_already_exists_error">Kimlik doğrulama uygulaması zaten ayarlanmış</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Bu yöntemi kaldırmak istediğinizden emin misiniz?</string>
+    <string name="fui_mfa_unenrollment_error">Yöntem kaldırılamıyor</string>
+    <string name="fui_mfa_unenrollment_success_message">Yöntem kaldırıldı</string>
+    <string name="fui_mfa_verification_instruction">Doğrulama kodunu girin</string>
+    <string name="fui_profile_update_error">Profil güncellenemiyor</string>
+    <string name="fui_profile_update_success_message">Profil güncellendi</string>
+    <string name="fui_reauth_instruction">Devam etmek için kimliğinizi onaylayın</string>
+    <string name="fui_reauth_required_error">Yeniden kimlik doğrulama gerekli</string>
+    <string name="fui_reauth_success_message">Yeniden kimlik doğrulama başarılı</string>
+    <string name="fui_reauthenticate_action">Yeniden kimlik doğrula</string>
+    <string name="fui_recovery_codes_saved_action">Kurtarma kodlarımı kaydettim</string>
+    <string name="fui_remove_action">Kaldır</string>
+    <string name="fui_resend_verification_email_action">Doğrulama e-postasını tekrar gönder</string>
+    <string name="fui_secret_key_label">Gizli anahtar</string>
+    <string name="fui_sign_out_action">Çıkış yap</string>
+    <string name="fui_signed_in_as">Şu kullanıcı olarak oturum açıldı</string>
+    <string name="fui_skip_action">Atla</string>
+    <string name="fui_use_different_method_action">Farklı bir yöntem kullan</string>
+    <string name="fui_verification_code_label">Doğrulama kodu</string>
+    <string name="fui_verified_email_action">E-posta doğrulandı</string>
+    <string name="fui_verify_action">Doğrula</string>
+    <string name="fui_verify_email_instruction">%1$s adresine bir doğrulama e-postası gönderdik</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>

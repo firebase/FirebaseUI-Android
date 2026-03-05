@@ -1,77 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".FirebaseUIDemo"
         android:label="@string/app_name"
         android:allowBackup="true"
-        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
+        android:theme="@style/Theme.FirebaseUIAndroid"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".ChooserActivity"
-            android:exported="true">
+        <activity
+            android:name="com.firebaseui.android.demo.MainActivity"
+            android:label="@string/app_name"
+            android:exported="true"
+            android:theme="@style/Theme.FirebaseUIAndroid">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+            <!-- Email Link Sign-In Handler Activity for Compose -->
+            <!-- This activity handles deep links for passwordless email authentication -->
+            <!-- The host is automatically read from firebase_web_host in config.xml -->
+            <!-- NOTE: firebase_web_host must be lowercase (e.g., project-id.firebaseapp.com) -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="@string/firebase_web_host"
+                    android:pathPattern="/__/auth/links" />
+            </intent-filter>
         </activity>
 
-        <!-- Auth UI demo -->
         <activity
-            android:name=".auth.AuthUiActivity"
-            android:label="@string/title_auth_activity" />
-        <activity
-            android:name=".auth.SignedInActivity"
-            android:label="@string/title_auth_activity" />
-        <activity
-            android:name=".auth.AnonymousUpgradeActivity"
-            android:label="@string/title_anonymous_upgrade" />
-
-        <!-- Firestore demo -->
-        <activity
-            android:name=".database.firestore.FirestoreChatActivity"
-            android:label="@string/title_firestore_activity" />
-
-        <!-- Firestore paging demo -->
-        <activity
-            android:name=".database.firestore.FirestorePagingActivity"
-            android:label="@string/title_firestore_paging_activity" />
-
-        <!-- Realtime database demo -->
-        <activity
-            android:name=".database.realtime.RealtimeDbChatActivity"
-            android:label="@string/title_realtime_database_activity" />
-
-        <!-- Realtime database paging demo -->
-        <activity
-            android:name=".database.realtime.FirebaseDbPagingActivity"
-            android:label="@string/title_realtime_database_paging_activity" />
+            android:name=".HighLevelApiDemoActivity"
+            android:label="High-Level API Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".database.realtime.RealtimeDbChatIndexActivity"
-            android:label="@string/title_realtime_database_activity" />
+            android:name=".AuthFlowControllerDemoActivity"
+            android:label="Low-Level API Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
 
-        <!-- Storage UI demo -->
         <activity
-            android:name=".storage.ImageActivity"
-            android:label="@string/title_storage_activity" />
-
+            android:name=".CustomSlotsThemingDemoActivity"
+            android:label="Custom Slots &amp; Theming Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
     </application>
 
 </manifest>

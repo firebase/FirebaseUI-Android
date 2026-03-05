@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.firebase.ui.auth.test">
+
+    <application>
+        <!--
+          Declare ComponentActivity as a launcher activity for Robolectric.
+          ActivityScenario (used by Compose's test rule) launches with ACTION_MAIN
+          and CATEGORY_LAUNCHER, which requires a resolvable activity in the manifest.
+        -->
+        <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+    <!-- No runtime permissions needed for unit tests -->
+
+</manifest>
+

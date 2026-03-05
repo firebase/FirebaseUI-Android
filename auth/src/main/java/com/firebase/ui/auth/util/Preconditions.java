@@ -18,7 +18,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
-import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.FirebaseAuthUI;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -91,7 +91,7 @@ public final class Preconditions {
                                        @Nullable String message,
                                        @StringRes int... ids) {
         for (int id : ids) {
-            if (context.getString(id).equals(AuthUI.UNCONFIGURED_CONFIG_VALUE)) {
+            if (context.getString(id).equals(FirebaseAuthUI.UNCONFIGURED_CONFIG_VALUE)) {
                 throw new IllegalStateException(message);
             }
         }

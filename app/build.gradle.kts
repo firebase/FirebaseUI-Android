@@ -1,102 +1,72 @@
-// NOTE: this project uses Gradle Kotlin DSL. More common build.gradle instructions can be found in
-// the main README.
 plugins {
-  id("com.android.application")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services")
 }
 
 android {
+    namespace = "com.firebaseui.android.demo"
     compileSdk = Config.SdkVersions.compile
 
-    namespace = "com.firebase.uidemo"
-
     defaultConfig {
+        applicationId = "com.firebaseui.android.demo"
         minSdk = Config.SdkVersions.min
         targetSdk = Config.SdkVersions.target
-
-        versionName = Config.version
         versionCode = 1
+        versionName = "1.0"
 
-        resourcePrefix("fui_")
-        vectorDrawables.useSupportLibrary = true
-    }
-
-    defaultConfig {
-        multiDexEnabled = true
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        named("release").configure {
-            // For the purposes of the sample, allow testing of a proguarded release build
-            // using the debug key
-            signingConfig = signingConfigs["debug"]
-
-            postprocessing {
-                isRemoveUnusedCode = true
-                isRemoveUnusedResources = true
-                isObfuscate = true
-                isOptimizeCode = true
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            // Only sign with debug keystore if it exists (for local testing)
+            val debugKeystoreFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+            if (debugKeystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("debug")
             }
         }
     }
-
-    lint {
-        // Common lint options across all modules
-
-        disable += mutableSetOf(
-            "IconExpectedSize",
-            "InvalidPackage", // Firestore uses GRPC which makes lint mad
-            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
-            "SelectableText", "SyntheticAccessor", // We almost never care about this
-            "UnusedIds", "MediaCapabilities" // TODO(rosariopfernandes): remove this once we confirm
-            // it builds successfully
-        )
-
-        // Module-specific
-        disable += mutableSetOf("ResourceName", "MissingTranslation", "DuplicateStrings")
-
-        checkAllWarnings = true
-        warningsAsErrors = true
-        abortOnError = true
-
-        baseline = file("$rootDir/library/quality/lint-baseline.xml")
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     buildFeatures {
-        viewBinding = true
+        compose = true
     }
 }
 
 dependencies {
-    implementation(Config.Libs.Androidx.materialDesign)
-    implementation(Config.Libs.Androidx.multidex)
-
     implementation(project(":auth"))
-    implementation(project(":firestore"))
-    implementation(project(":database"))
-    implementation(project(":storage"))
 
+    implementation(Config.Libs.Kotlin.jvm)
+    implementation(Config.Libs.Androidx.lifecycleRuntime)
+    implementation(Config.Libs.Androidx.Compose.activityCompose)
+    implementation(platform(Config.Libs.Androidx.Compose.bom))
+    implementation(Config.Libs.Androidx.Compose.ui)
+    implementation(Config.Libs.Androidx.Compose.uiGraphics)
+    implementation(Config.Libs.Androidx.Compose.toolingPreview)
+    implementation(Config.Libs.Androidx.Compose.material3)
+
+
+    // Facebook
     implementation(Config.Libs.Provider.facebook)
-    // Needed to override Facebook
-    implementation(Config.Libs.Androidx.cardView)
-    implementation(Config.Libs.Androidx.customTabs)
 
-    implementation(Config.Libs.Misc.glide)
-    annotationProcessor(Config.Libs.Misc.glideCompiler)
+    testImplementation(Config.Libs.Test.junit)
+    androidTestImplementation(Config.Libs.Test.junitExt)
+    androidTestImplementation(platform(Config.Libs.Androidx.Compose.bom))
+    androidTestImplementation(Config.Libs.Test.composeUiTestJunit4)
 
-    // Used for FirestorePagingActivity
-    implementation(Config.Libs.Androidx.paging)
+    debugImplementation(Config.Libs.Androidx.Compose.tooling)
 
-    // The following dependencies are not required to use the Firebase UI library.
-    // They are used to make some aspects of the demo app implementation simpler for
-    // demonstrative purposes, and you may find them useful in your own apps; YMMV.
-    implementation(Config.Libs.Misc.permissions)
-    implementation(Config.Libs.Androidx.constraint)
-    debugImplementation(Config.Libs.Misc.leakCanary)
+    implementation(platform(Config.Libs.Firebase.bom))
 }
-
-apply(plugin = "com.google.gms.google-services")

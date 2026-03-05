@@ -25,6 +25,8 @@
     <string name="fui_email_hint">E-mail</string>
     <string name="fui_phone_hint">Numéro de téléphone</string>
     <string name="fui_country_hint">Pays</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Sélectionnez un pays</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Rechercher un pays p. ex. +1, "US"</string>
     <string name="fui_password_hint">Mot de passe</string>
     <string name="fui_new_password_hint">Nouveau mot de passe</string>
     <string name="fui_required_field">Ce champ est obligatoire.</string>
@@ -73,10 +75,13 @@
     <string name="fui_email_link_confirm_email_message">Confirmez votre adresse e-mail pour vous connecter</string>
     <string name="fui_email_link_dismiss_button">Ignorer</string>
     <string name="fui_email_link_cross_device_linking_text">Vous aviez décidé d\'associer votre compte %1$s à votre adresse e-mail, mais vous avez ouvert le lien sur un appareil différent de celui avec lequel vous vous êtes connecté.\n\nSi vous souhaitez toujours associer votre compte %1$s, ouvrez le lien sur l\'appareil avec lequel vous avez commencé à vous connecter. Sinon, appuyez sur \"Continuer\" pour vous connecter depuis un autre appareil.</string>
+    <string name="fui_or_continue_with">ou Continuer avec</string>
+    <string name="fui_sign_in_with_email_link">Se connecter avec un lien e-mail</string>
+    <string name="fui_sign_in_with_password">Se connecter avec un mot de passe</string>
     <string name="fui_verify_phone_number_title">Saisissez votre numéro de téléphone</string>
     <string name="fui_invalid_phone_number">Saisissez un numéro de téléphone valide</string>
     <string name="fui_enter_confirmation_code">Saisissez le code à six chiffres envoyé au</string>
-    <string name="fui_resend_code_in">Renvoyer le code dans 0:%02d</string>
+    <string name="fui_resend_code_in">Renvoyer le code dans %1$s</string>
     <string name="fui_verify_your_phone_title">Valider votre numéro de téléphone</string>
     <string name="fui_verifying">Validation…</string>
     <string name="fui_incorrect_code_dialog_body">Code erroné. Veuillez réessayer.</string>
@@ -87,6 +92,100 @@
     <string name="fui_auto_verified">Numéro de téléphone validé automatiquement</string>
     <string name="fui_resend_code">Renvoyer le code</string>
     <string name="fui_verify_phone_number">Valider le numéro de téléphone</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
-    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En appuyant sur “%1$s”, vous acceptez les %2$s et les %3$s. Vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En appuyant sur "%1$s", vous acceptez les %2$s et les %3$s. Vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Erreur d\'authentification</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Réessayer</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Vérification supplémentaire requise. Veuillez compléter l\'authentification à plusieurs facteurs.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Le compte doit être lié. Veuillez essayer une méthode de connexion différente.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">L\'authentification a été annulée. Veuillez réessayer quand vous serez prêt.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Choisir la méthode d\'authentification</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configurer la vérification par SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configurer l\'application d\'authentification</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Vérifiez votre code</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Enregistrez vos codes de récupération</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Sélectionnez une deuxième méthode d\'authentification pour sécuriser votre compte</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Saisissez votre numéro de téléphone pour recevoir les codes de vérification</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Scannez le code QR avec votre application d\'authentification</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Saisissez le code envoyé à votre téléphone</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Saisissez le code de votre application d\'authentification</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Saisissez votre code de vérification</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Conservez ces codes en lieu sûr. Vous pouvez les utiliser pour vous connecter si vous perdez l\'accès à votre méthode d\'authentification.</string>
+
+    <string name="fui_confirm_password_hint">Confirmer le mot de passe</string>
+    <string name="fui_passwords_do_not_match">Les mots de passe ne correspondent pas</string>
+    <string name="fui_error_password_too_short">Le mot de passe doit contenir au moins %1$d caractères</string>
+    <string name="fui_error_password_missing_uppercase">Le mot de passe doit contenir au moins une lettre majuscule</string>
+    <string name="fui_error_password_missing_lowercase">Le mot de passe doit contenir au moins une lettre minuscule</string>
+    <string name="fui_error_password_missing_digit">Le mot de passe doit contenir au moins un chiffre</string>
+    <string name="fui_error_password_missing_special_character">Le mot de passe doit contenir au moins un caractère spécial</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Configurer l\'authentification par SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Vérifier le code SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Cette opération nécessite une authentification récente. Veuillez vous reconnecter et réessayer.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">Le code de vérification est incorrect. Veuillez réessayer.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">Une erreur réseau s\'est produite. Veuillez vérifier votre connexion et réessayer.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer.</string>
+
+    <!-- MFA and Account Management - Added for v10 -->
+    <string name="fui_back_action">Retour</string>
+    <string name="fui_identity_verified_message">Identité vérifiée. Veuillez réessayer votre action.</string>
+    <string name="fui_incorrect_password_error">Mot de passe incorrect. Veuillez réessayer.</string>
+    <string name="fui_manage_mfa_action">Gérer l\'authentification multifacteur</string>
+    <string name="fui_mfa_active_methods_title">Méthodes actives</string>
+    <string name="fui_mfa_add_new_method_title">Ajouter une nouvelle méthode</string>
+    <string name="fui_mfa_all_methods_enrolled_message">Toutes les méthodes d\'authentification disponibles sont enregistrées</string>
+    <string name="fui_mfa_enrolled_on">Enregistré le %1$s</string>
+    <string name="fui_mfa_label_sms_authentication">Authentification par SMS</string>
+    <string name="fui_mfa_label_totp_authentication">Application d\'authentification</string>
+    <string name="fui_mfa_label_unknown_method">Méthode inconnue</string>
+    <string name="fui_mfa_manage_factors_description">Ajouter ou supprimer des méthodes d\'authentification pour votre compte</string>
+    <string name="fui_mfa_manage_factors_title">Gérer l\'authentification à deux facteurs</string>
+    <string name="fui_mfa_setup_authenticator_description">Scannez le code QR ou saisissez la clé secrète dans votre application d\'authentification</string>
+    <string name="fui_profile_completion_message">Veuillez compléter les informations de votre profil pour continuer.</string>
+    <string name="fui_profile_missing_fields_message">Champs manquants: %1$s</string>
+    <string name="fui_reauth_account_label">Compte: %1$s</string>
+    <string name="fui_reauth_dialog_message">Pour votre sécurité, veuillez saisir à nouveau votre mot de passe pour continuer.</string>
+    <string name="fui_reauth_dialog_title">Vérifiez votre identité</string>
+    <string name="fui_reauth_generic_error">Échec de l\'authentification. Veuillez réessayer.</string>
+    <string name="fui_recovery_codes_saved_action">J\'ai sauvegardé ces codes</string>
+    <string name="fui_remove_action">Supprimer</string>
+    <string name="fui_resend_verification_email_action">Renvoyer l\'e-mail de vérification</string>
+    <string name="fui_secret_key_label">Clé secrète</string>
+    <string name="fui_sign_out_action">Se déconnecter</string>
+    <string name="fui_signed_in_as">Connecté en tant que %1$s</string>
+    <string name="fui_skip_action">Ignorer pour le moment</string>
+    <string name="fui_use_different_method_action">Utiliser une méthode différente</string>
+    <string name="fui_verification_code_label">Code de vérification</string>
+    <string name="fui_verified_email_action">J\'ai vérifié mon e-mail</string>
+    <string name="fui_verify_action">Vérifier</string>
+    <string name="fui_verify_email_instruction">Veuillez vérifier %1$s pour continuer.</string>
+
+    <string name="fui_mfa_choose_method_instruction">Choisissez une méthode de vérification</string>
+    <string name="fui_mfa_enrollment_instruction">Ajoutez une couche de sécurité supplémentaire</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Application d\'authentification</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Ce numéro de téléphone est associé à un autre compte</string>
+    <string name="fui_mfa_second_factor_required_error">Vérification requise</string>
+    <string name="fui_mfa_setup_instruction">Scannez le code QR avec votre application d\'authentification</string>
+    <string name="fui_mfa_totp_already_exists_error">L\'application d\'authentification est déjà configurée</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Êtes-vous sûr de vouloir supprimer cette méthode ?</string>
+    <string name="fui_mfa_unenrollment_error">Impossible de supprimer la méthode</string>
+    <string name="fui_mfa_unenrollment_success_message">Méthode supprimée</string>
+    <string name="fui_mfa_verification_instruction">Entrez le code de vérification</string>
+    <string name="fui_profile_update_error">Impossible de mettre à jour le profil</string>
+    <string name="fui_profile_update_success_message">Profil mis à jour</string>
+    <string name="fui_reauth_instruction">Confirmez votre identité pour continuer</string>
+    <string name="fui_reauth_required_error">Réauthentification requise</string>
+    <string name="fui_reauth_success_message">Réauthentification réussie</string>
+    <string name="fui_reauthenticate_action">Se réauthentifier</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>

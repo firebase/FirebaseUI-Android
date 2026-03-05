@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" package="com.firebase.ui.auth">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Used to check if a browser is available before launching phone auth -->
-    <!-- See ui/phone/PhoneNumberVerificationHandler.isBrowserAvailable() -->
+    <!-- Used to check if a browser is available -->
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -19,6 +16,12 @@
 
     <application>
 
+        <service android:name="com.google.firebase.components.ComponentDiscoveryService">
+            <meta-data
+                android:name="com.google.firebase.components:com.firebase.ui.auth.FirebaseUIComposeRegistrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
+        </service>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -27,76 +30,13 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id" />
 
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"/>
+
         <activity
-            android:name=".KickoffActivity"
+            android:name=".FirebaseAuthActivity"
             android:label=""
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent" />
-
-        <activity
-            android:name=".ui.idp.SingleSignInActivity"
-            android:label=""
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent" />
-
-        <activity
-            android:name=".ui.credentials.CredentialSaveActivity"
-            android:label=""
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent" />
-
-        <activity
-            android:name=".ui.email.RecoverPasswordActivity"
-            android:label="@string/fui_title_recover_password_activity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.email.EmailActivity"
-            android:label="@string/fui_sign_in_default"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.phone.PhoneActivity"
-            android:label="@string/fui_sign_in_with_phone_number"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
-
-        <activity
-            android:name=".ui.idp.WelcomeBackIdpPrompt"
-            android:label="@string/fui_title_welcome_back_idp_prompt"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.email.WelcomeBackPasswordPrompt"
-            android:label="@string/fui_title_welcome_back_password_prompt"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.email.WelcomeBackEmailLinkPrompt"
-            android:label="@string/fui_title_welcome_back_password_prompt"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.email.EmailLinkCatcherActivity"
-            android:exported="false"
-            android:label=""
-            android:theme="@style/FirebaseUI.Transparent"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.email.EmailLinkErrorRecoveryActivity"
-            android:label="@string/fui_sign_in_default"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".ui.idp.AuthMethodPickerActivity"
-            android:label="@string/fui_default_toolbar_title"
             android:exported="false" />
 
         <activity
@@ -118,12 +58,6 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-        <provider
-            android:name=".data.client.AuthUiInitProvider"
-            android:authorities="${applicationId}.authuiinitprovider"
-            android:exported="false"
-            android:initOrder="90" />
 
     </application>
 

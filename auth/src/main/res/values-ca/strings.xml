@@ -25,6 +25,8 @@
     <string name="fui_email_hint">Adreça electrònica</string>
     <string name="fui_phone_hint">Número de telèfon</string>
     <string name="fui_country_hint">País</string>
+    <string name="fui_country_selector_title" translation_description="Country selector modal title">Selecciona un país</string>
+    <string name="fui_search_country_field_hint" translation_description="Hint for search for country input field">Cerca país p. ex. +1, "US"</string>
     <string name="fui_password_hint">Contrasenya</string>
     <string name="fui_new_password_hint">Contrasenya nova</string>
     <string name="fui_required_field">Aquest camp no es pot deixar en blanc.</string>
@@ -73,10 +75,13 @@
     <string name="fui_email_link_confirm_email_message">Confirma l\'adreça electrònica per continuar amb l\'inici de sessió</string>
     <string name="fui_email_link_dismiss_button">Ignora</string>
     <string name="fui_email_link_cross_device_linking_text">Inicialment has intentat connectar %1$s amb el teu compte de correu electrònic, però has obert l\'enllaç amb un dispositiu diferent en què no has iniciat la sessió.\n\nSi encara vols connectar el compte que tens a %1$s, obre l\'enllaç al mateix dispositiu en què has començat a iniciar la sessió. Si no, toca Continua per iniciar la sessió en aquest dispositiu.</string>
+    <string name="fui_or_continue_with">o Continua amb</string>
+    <string name="fui_sign_in_with_email_link">Inicia la sessió amb l\'enllaç de correu electrònic</string>
+    <string name="fui_sign_in_with_password">Inicia la sessió amb la contrasenya</string>
     <string name="fui_verify_phone_number_title">Introdueix el número de telèfon</string>
     <string name="fui_invalid_phone_number">Introdueix un número de telèfon vàlid</string>
     <string name="fui_enter_confirmation_code">Introdueix el codi de 6 dígits que s\'ha enviat al número</string>
-    <string name="fui_resend_code_in">Torna a enviar el codi d\'aquí a 0:%02d</string>
+    <string name="fui_resend_code_in">Torna a enviar el codi d\'aquí a %1$s</string>
     <string name="fui_verify_your_phone_title">Verifica el número de telèfon</string>
     <string name="fui_verifying">S\'està verificant…</string>
     <string name="fui_incorrect_code_dialog_body">El codi no és correcte. Torna-ho a provar.</string>
@@ -87,6 +92,83 @@
     <string name="fui_auto_verified">El número de telèfon s\'ha verificat automàticament</string>
     <string name="fui_resend_code">Torna a enviar el codi</string>
     <string name="fui_verify_phone_number">Verifica el número de telèfon</string>
+    <string name="fui_change_phone_number">Use a different phone number</string>
     <string name="fui_sms_terms_of_service">En tocar %1$s, és possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
     <string name="fui_sms_terms_of_service_and_privacy_policy_extended">En tocar %1$s, acceptes les nostres %2$s i la nostra %3$s. És possible que s\'enviï un SMS. Es poden aplicar tarifes de dades i missatges.</string>
+
+    <string name="fui_error_dialog_title" translation_description="Title for error recovery dialog">Authentication Error</string>
+    <string name="fui_error_retry_action" translation_description="Retry button text in error dialog">Try again</string>
+    <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
+    <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
+    <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+
+    <!-- MFA Enrollment -->
+    <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Trieu el mètode d\'autenticació</string>
+    <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configureu la verificació per SMS</string>
+    <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configureu l\'aplicació d\'autenticació</string>
+    <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiqueu el codi</string>
+    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Deseu els codis de recuperació</string>
+
+    <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleccioneu un segon mètode d\'autenticació per protegir el vostre compte</string>
+    <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Introduïu el vostre número de telèfon per rebre codis de verificació</string>
+    <string name="fui_mfa_step_configure_totp_helper" translation_description="Helper text for TOTP configuration">Escanegeu el codi QR amb la vostra aplicació d\'autenticació</string>
+    <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Introduïu el codi enviat al vostre telèfon</string>
+    <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Introduïu el codi de la vostra aplicació d\'autenticació</string>
+    <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Introduïu el vostre codi de verificació</string>
+    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Deseu aquests codis en un lloc segur. Podeu utilitzar-los per iniciar sessió si perdeu l\'accés al vostre mètode d\'autenticació.</string>
+
+    <string name="fui_confirm_password_hint">Confirma la contrasenya</string>
+    <string name="fui_passwords_do_not_match">Les contrasenyes no coincideixen</string>
+    <string name="fui_error_password_too_short">La contrasenya ha de tenir almenys %1$d caràcters</string>
+    <string name="fui_error_password_missing_uppercase">La contrasenya ha de contenir almenys una lletra majúscula</string>
+    <string name="fui_error_password_missing_lowercase">La contrasenya ha de contenir almenys una lletra minúscula</string>
+    <string name="fui_error_password_missing_digit">La contrasenya ha de contenir almenys un número</string>
+    <string name="fui_error_password_missing_special_character">La contrasenya ha de contenir almenys un caràcter especial</string>
+
+
+    <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Configura l\'autenticació per SMS</string>
+    <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Verifica el codi SMS</string>
+    <!-- MFA Error Messages -->
+    <string name="fui_mfa_error_recent_login_required" translation_description="Error message when MFA enrollment requires recent authentication">Aquesta operació requereix autenticació recent. Torna a iniciar la sessió i torna-ho a provar.</string>
+    <string name="fui_mfa_error_invalid_verification_code" translation_description="Error message when MFA enrollment fails due to invalid verification code">El codi de verificació és incorrecte. Torna-ho a provar.</string>
+    <string name="fui_mfa_error_network" translation_description="Error message when MFA enrollment fails due to network issues">S\'ha produït un error de xarxa. Comprova la connexió i torna-ho a provar.</string>
+    <string name="fui_mfa_error_generic" translation_description="Generic error message for MFA enrollment failures">S\'ha produït un error durant la inscripció. Torna-ho a provar.</string>
+
+    <string name="fui_back_action">Enrere</string>
+    <string name="fui_identity_verified_message">Identitat verificada. Torna a provar la teva acció.</string>
+    <string name="fui_manage_mfa_action">Gestiona l\'autenticació de dos factors</string>
+    <string name="fui_incorrect_password_error">Contrasenya incorrecta</string>
+    <string name="fui_mfa_choose_method_instruction">Tria un mètode de verificació</string>
+    <string name="fui_mfa_enrollment_instruction">Afegeix una capa de seguretat addicional</string>
+    <string name="fui_mfa_method_sms">SMS</string>
+    <string name="fui_mfa_method_totp">Aplicació d\'autenticació</string>
+    <string name="fui_mfa_phone_number_already_exists_error">Aquest número de telèfon està associat a un altre compte</string>
+    <string name="fui_mfa_second_factor_required_error">Verificació necessària</string>
+    <string name="fui_mfa_setup_instruction">Escaneja el codi QR amb la teva aplicació d\'autenticació</string>
+    <string name="fui_mfa_totp_already_exists_error">L\'aplicació d\'autenticació ja està configurada</string>
+    <string name="fui_mfa_unenrollment_confirmation_message">Estàs segur que vols eliminar aquest mètode?</string>
+    <string name="fui_mfa_unenrollment_error">No es pot eliminar el mètode</string>
+    <string name="fui_mfa_unenrollment_success_message">Mètode eliminat</string>
+    <string name="fui_mfa_verification_instruction">Introdueix el codi de verificació</string>
+    <string name="fui_profile_update_error">No es pot actualitzar el perfil</string>
+    <string name="fui_profile_update_success_message">Perfil actualitzat</string>
+    <string name="fui_reauth_instruction">Confirma la teva identitat per continuar</string>
+    <string name="fui_reauth_required_error">Es requereix reautenticació</string>
+    <string name="fui_reauth_success_message">Reautenticació correcta</string>
+    <string name="fui_reauthenticate_action">Reautentica</string>
+    <string name="fui_recovery_codes_saved_action">He desat els meus codis de recuperació</string>
+    <string name="fui_remove_action">Elimina</string>
+    <string name="fui_resend_verification_email_action">Torna a enviar el correu de verificació</string>
+    <string name="fui_secret_key_label">Clau secreta</string>
+    <string name="fui_sign_out_action">Tanca la sessió</string>
+    <string name="fui_signed_in_as">Has iniciat sessió com a</string>
+    <string name="fui_skip_action">Omet</string>
+    <string name="fui_use_different_method_action">Utilitza un mètode diferent</string>
+    <string name="fui_verification_code_label">Codi de verificació</string>
+    <string name="fui_verified_email_action">Correu verificat</string>
+    <string name="fui_verify_action">Verifica</string>
+    <string name="fui_verify_email_instruction">Hem enviat un correu de verificació a %1$s</string>
+
+    <!-- Tooltips -->
+    <string name="fui_new_accounts_disabled_tooltip" translation_description="Tooltip shown when sign-up button is disabled because new accounts are not allowed">This button is currently disabled because new accounts are not allowed</string>
 </resources>
