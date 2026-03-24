@@ -24,17 +24,17 @@ Add FirebaseUI Auth to your app module:
 
 ```kotlin
 dependencies {
+    // Check Maven Central for the latest version:
+    // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
     implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
 
-    // Most apps also declare Firebase and Compose dependencies directly.
-    implementation(platform("com.google.firebase:firebase-bom:<latest-version>"))
-    implementation("com.google.firebase:firebase-auth")
-
+    // Required: Jetpack Compose
     implementation(platform("androidx.compose:compose-bom:<latest-version>"))
     implementation("androidx.compose.material3:material3")
 
-    // Required only if Facebook Login support is needed
-    implementation("com.facebook.android:facebook-login:<latest-version>")
+    // Required only if Facebook login support is required
+    // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
+    implementation("com.facebook.android:facebook-android-sdk:8.x")
 }
 ```
 
