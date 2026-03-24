@@ -4,7 +4,7 @@ FirebaseUI Auth is a modern, Compose-based authentication library for Firebase A
 
 `10.x` is currently a beta release.
 
-If you used the older FirebaseUI Auth guides, the biggest change in `10.x` is that the recommended sign-in flow now uses Compose screens instead of `Intent` builders and `ActivityResultLauncher` callbacks.
+If you used the older FirebaseUI Auth guides, the biggest change in `10.x` is that the recommended sign-in flow now uses Compose screens instead of `Intent` builders and `ActivityResultLauncher` callbacks. For apps that still use Activities, see [Existing Activity-based apps](#existing-activity-based-apps).
 
 FirebaseUI Auth provides the following benefits:
 
