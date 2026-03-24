@@ -29,7 +29,9 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
 
     // Required: Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:<latest-version>"))
+    // Find the latest Compose BOM version here:
+    // https://developer.android.com/develop/ui/compose/bom
+    implementation(platform("androidx.compose:compose-bom:2026.03.00"))
     implementation("androidx.compose.material3:material3")
 
     // Required only if Facebook login support is required
