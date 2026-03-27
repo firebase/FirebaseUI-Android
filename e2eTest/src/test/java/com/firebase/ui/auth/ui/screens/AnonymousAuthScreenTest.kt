@@ -167,7 +167,7 @@ class AnonymousAuthScreenTest {
     @Test
     fun `anonymous upgrade enabled links new user sign-up and emits RequiresEmailVerification auth state`() {
         val name = "Anonymous Upgrade User"
-        val email = "anonymousupgrade@example.com"
+        val email = "anonymous-upgrade-${System.currentTimeMillis()}@example.com"
         val password = "Test@123"
         val configuration = authUIConfiguration {
             context = applicationContext
