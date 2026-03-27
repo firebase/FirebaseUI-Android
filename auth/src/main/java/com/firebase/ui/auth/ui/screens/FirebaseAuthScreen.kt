@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -543,7 +544,7 @@ fun FirebaseAuthScreen(
 
                         if (currentRoute != AuthRoute.Success.route) {
                             navController.navigate(AuthRoute.Success.route) {
-                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                                 launchSingleTop = true
                             }
                         }
@@ -556,7 +557,7 @@ fun FirebaseAuthScreen(
                         pendingLinkingCredential.value = null
                         if (currentRoute != AuthRoute.Success.route) {
                             navController.navigate(AuthRoute.Success.route) {
-                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                                 launchSingleTop = true
                             }
                         }
@@ -575,9 +576,9 @@ fun FirebaseAuthScreen(
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
-                        if (currentRoute != AuthRoute.MethodPicker.route) {
-                            navController.navigate(AuthRoute.MethodPicker.route) {
-                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                        if (currentRoute != startRoute.route) {
+                            navController.navigate(startRoute.route) {
+                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                                 launchSingleTop = true
                             }
                         }
@@ -588,9 +589,9 @@ fun FirebaseAuthScreen(
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
-                        if (currentRoute != AuthRoute.MethodPicker.route) {
-                            navController.navigate(AuthRoute.MethodPicker.route) {
-                                popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
+                        if (currentRoute != startRoute.route) {
+                            navController.navigate(startRoute.route) {
+                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                                 launchSingleTop = true
                             }
                         }
