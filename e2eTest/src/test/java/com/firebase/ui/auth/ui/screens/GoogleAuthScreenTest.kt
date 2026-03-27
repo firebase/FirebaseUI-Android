@@ -149,13 +149,15 @@ class GoogleAuthScreenTest {
 
     @Test
     fun `anonymous upgrade with google links anonymous user and emits Success auth state`() = runTest {
-        val email = "anonymousupgrade@example.com"
+        val email = "anonymous-google-upgrade-${System.currentTimeMillis()}@example.com"
+        val sub = "anonymous-google-upgrade-${System.nanoTime()}"
         val name = "Anonymous Upgrade User"
         val photoUrl = "https://example.com/avatar.jpg"
 
         // Generate a JWT token for the Google account
         val mockIdToken = generateMockGoogleIdToken(
             email = email,
+            sub = sub,
             name = name,
             photoUrl = photoUrl
         )
