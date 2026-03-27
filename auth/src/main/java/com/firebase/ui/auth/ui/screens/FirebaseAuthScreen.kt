@@ -125,6 +125,10 @@ fun FirebaseAuthScreen(
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
+    val startRoute = remember(configuration.providers, configuration.isProviderChoiceAlwaysShown) {
+        getStartRoute(configuration)
+    }
+    val skipsMethodPicker = startRoute != AuthRoute.MethodPicker
 
     // Load last sign-in preference on launch
     LaunchedEffect(authState) {
@@ -236,7 +240,7 @@ fun FirebaseAuthScreen(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = AuthRoute.MethodPicker.route,
+                startDestination = startRoute.route,
                 enterTransition = configuration.transitions?.enterTransition ?: {
                     fadeIn(animationSpec = tween(700))
                 },
@@ -319,7 +323,9 @@ fun FirebaseAuthScreen(
                         },
                         onCancel = {
                             pendingLinkingCredential.value = null
-                            if (!navController.popBackStack()) {
+                            if (skipsMethodPicker) {
+                                onSignInCancelled()
+                            } else if (!navController.popBackStack()) {
                                 navController.navigate(AuthRoute.MethodPicker.route) {
                                     popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
                                     launchSingleTop = true
@@ -339,7 +345,9 @@ fun FirebaseAuthScreen(
                             onSignInFailure(exception)
                         },
                         onCancel = {
-                            if (!navController.popBackStack()) {
+                            if (skipsMethodPicker) {
+                                onSignInCancelled()
+                            } else if (!navController.popBackStack()) {
                                 navController.navigate(AuthRoute.MethodPicker.route) {
                                     popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
                                     launchSingleTop = true
@@ -665,6 +673,18 @@ sealed class AuthRoute(val route: String) {
     object Success : AuthRoute("auth_success")
     object MfaEnrollment : AuthRoute("auth_mfa_enrollment")
     object MfaChallenge : AuthRoute("auth_mfa_challenge")
+}
+
+internal fun getStartRoute(configuration: AuthUIConfiguration): AuthRoute {
+    if (configuration.isProviderChoiceAlwaysShown || configuration.providers.size != 1) {
+        return AuthRoute.MethodPicker
+    }
+
+    return when (configuration.providers.single()) {
+        is AuthProvider.Email -> AuthRoute.Email
+        is AuthProvider.Phone -> AuthRoute.Phone
+        else -> AuthRoute.MethodPicker
+    }
 }
 
 data class AuthSuccessUiContext(
