@@ -77,10 +77,10 @@ class FirebaseAuthActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Extract configuration from cache using UUID key
-        val configKey = intent.getStringExtra(EXTRA_CONFIGURATION_KEY)
-        configuration = if (configKey != null) {
-            configurationCache.remove(configKey)
+        // Extract configuration and auth instance from cache using UUID key
+        val launchKey = intent.getStringExtra(EXTRA_CONFIGURATION_KEY)
+        configuration = if (launchKey != null) {
+            configurationCache.remove(launchKey)
         } else {
             null
         } ?: run {
@@ -90,7 +90,16 @@ class FirebaseAuthActivity : ComponentActivity() {
             return
         }
 
-        authUI = FirebaseAuthUI.getInstance()
+        authUI = if (launchKey != null) {
+            authUICache.remove(launchKey)
+        } else {
+            null
+        } ?: run {
+            // Missing auth instance, finish with error
+            setResult(RESULT_CANCELED)
+            finish()
+            return
+        }
 
         // Extract email link if present
         val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
@@ -191,14 +200,18 @@ class FirebaseAuthActivity : ComponentActivity() {
          */
         internal fun createIntent(
             context: Context,
-            configuration: AuthUIConfiguration
+            configuration: AuthUIConfiguration,
+            authUI: FirebaseAuthUI = FirebaseAuthUI.getInstance()
         ): Intent {
             val configKey = UUID.randomUUID().toString()
             configurationCache[configKey] = configuration
+            authUICache[configKey] = authUI
 
             return Intent(context, FirebaseAuthActivity::class.java).apply {
                 putExtra(EXTRA_CONFIGURATION_KEY, configKey)
             }
         }
+
+        private val authUICache = ConcurrentHashMap<String, FirebaseAuthUI>()
     }
 }
