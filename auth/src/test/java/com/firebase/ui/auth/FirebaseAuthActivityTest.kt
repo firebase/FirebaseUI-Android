@@ -447,22 +447,28 @@ class FirebaseAuthActivityTest {
     // =============================================================================================
 
     @Test
-    fun `configuration is removed from cache after onCreate`() {
-        val intent1 = FirebaseAuthActivity.createIntent(applicationContext, configuration)
-        val configKey1 = intent1.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
+    fun `launch state survives recreation and is cleared when activity finishes`() {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
 
-        assertThat(configKey1).isNotNull()
+        val firstController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+        val firstActivity = firstController.create().start().resume().get()
+        assertThat(firstActivity.isFinishing).isFalse()
 
-        // Create activity - this should consume the configuration from cache
-        val controller1 = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent1)
-        controller1.create().get()
+        // Simulate recreation: the first activity is destroyed without finishing.
+        firstController.pause().stop().destroy()
 
-        // Create another intent
-        val intent2 = FirebaseAuthActivity.createIntent(applicationContext, configuration)
-        val configKey2 = intent2.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
+        val recreatedController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+        val recreatedActivity = recreatedController.create().start().resume().get()
+        assertThat(recreatedActivity.isFinishing).isFalse()
 
-        // Should be a different key
-        assertThat(configKey2).isNotEqualTo(configKey1)
+        // Once the recreated activity actually finishes, the cached launch state should be released.
+        recreatedActivity.finish()
+        recreatedController.pause().stop().destroy()
+
+        val postFinishController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+        val postFinishActivity = postFinishController.create().get()
+        assertThat(postFinishActivity.isFinishing).isTrue()
+        assertThat(shadowOf(postFinishActivity).resultCode).isEqualTo(Activity.RESULT_CANCELED)
     }
 
     @Test
