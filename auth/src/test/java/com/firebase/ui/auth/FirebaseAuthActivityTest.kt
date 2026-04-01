@@ -50,6 +50,7 @@ class FirebaseAuthActivityTest {
 
     private lateinit var applicationContext: Context
     private lateinit var authUI: FirebaseAuthUI
+    private lateinit var secondaryAuthUI: FirebaseAuthUI
     private lateinit var configuration: AuthUIConfiguration
 
     @Mock
@@ -79,8 +80,20 @@ class FirebaseAuthActivityTest {
                 .build()
         )
 
+        val secondaryApp = FirebaseApp.initializeApp(
+            applicationContext,
+            FirebaseOptions.Builder()
+                .setApiKey("fake-api-key-2")
+                .setApplicationId("fake-app-id-2")
+                .setProjectId("fake-project-id-2")
+                .build(),
+            "secondary"
+        )
+
         authUI = FirebaseAuthUI.getInstance()
         authUI.auth.useEmulator("127.0.0.1", 9099)
+        secondaryAuthUI = FirebaseAuthUI.getInstance(secondaryApp)
+        secondaryAuthUI.auth.useEmulator("127.0.0.1", 9099)
 
         configuration = AuthUIConfiguration(
             context = applicationContext,
@@ -179,6 +192,46 @@ class FirebaseAuthActivityTest {
         // Activity should have been created successfully (not finished)
         assertThat(activity.isFinishing).isFalse()
     }
+
+    @Test
+    fun `activity launched from secondary auth flow observes supplied authUI instead of default app`() =
+        runTest {
+            val controller = secondaryAuthUI.createAuthFlow(configuration)
+            val intent = controller.createIntent(applicationContext)
+            val activity = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+                .create()
+                .start()
+                .resume()
+                .get()
+
+            `when`(mockFirebaseUser.uid).thenReturn("secondary-user-id")
+
+            authUI.updateAuthState(
+                AuthState.Success(
+                    result = null,
+                    user = mockFirebaseUser,
+                    isNewUser = false
+                )
+            )
+            shadowOf(Looper.getMainLooper()).idle()
+
+            assertThat(activity.isFinishing).isFalse()
+
+            secondaryAuthUI.updateAuthState(
+                AuthState.Success(
+                    result = null,
+                    user = mockFirebaseUser,
+                    isNewUser = false
+                )
+            )
+            shadowOf(Looper.getMainLooper()).idle()
+
+            assertThat(activity.isFinishing).isTrue()
+            val shadowActivity = shadowOf(activity)
+            assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_OK)
+            assertThat(shadowActivity.resultIntent.getStringExtra(FirebaseAuthActivity.EXTRA_USER_ID))
+                .isEqualTo("secondary-user-id")
+        }
 
     // =============================================================================================
     // Auth State Success Tests
