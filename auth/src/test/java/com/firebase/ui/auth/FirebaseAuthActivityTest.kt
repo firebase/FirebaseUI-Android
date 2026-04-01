@@ -111,6 +111,7 @@ class FirebaseAuthActivityTest {
 
     @After
     fun tearDown() {
+        FirebaseAuthActivity.clearLaunchStateCache()
         FirebaseAuthUI.clearInstanceCache()
         FirebaseApp.getApps(applicationContext).forEach { app ->
             try {

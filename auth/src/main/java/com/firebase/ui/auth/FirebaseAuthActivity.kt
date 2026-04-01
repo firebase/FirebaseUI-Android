@@ -18,6 +18,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.RestrictTo
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -217,6 +218,19 @@ class FirebaseAuthActivity : ComponentActivity() {
             return Intent(context, FirebaseAuthActivity::class.java).apply {
                 putExtra(EXTRA_CONFIGURATION_KEY, configKey)
             }
+        }
+
+        /**
+         * Clears cached launch state. This method is intended for testing purposes only.
+         *
+         * @suppress This is an internal API and should not be used in production code.
+         * @RestrictTo RestrictTo.Scope.TESTS
+         */
+        @JvmStatic
+        @RestrictTo(RestrictTo.Scope.TESTS)
+        fun clearLaunchStateCache() {
+            configurationCache.clear()
+            authUICache.clear()
         }
 
         private val authUICache = ConcurrentHashMap<String, FirebaseAuthUI>()
