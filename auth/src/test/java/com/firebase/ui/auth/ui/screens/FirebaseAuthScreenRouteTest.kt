@@ -58,6 +58,23 @@ class FirebaseAuthScreenRouteTest {
     }
 
     @Test
+    fun `single google provider starts at method picker`() {
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Google(
+                        scopes = emptyList(),
+                        serverClientId = "test-client-id"
+                    )
+                )
+            }
+        }
+
+        assertThat(getStartRoute(configuration)).isEqualTo(AuthRoute.MethodPicker)
+    }
+
+    @Test
     fun `single email provider shows picker when always shown is enabled`() {
         val configuration = authUIConfiguration {
             context = applicationContext
