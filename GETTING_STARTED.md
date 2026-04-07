@@ -34,8 +34,6 @@ dependencies {
 }
 ```
 
-The high-level FirebaseUI Auth API is Compose-based, so if your app is not already using Compose you will need to enable it first.
-
 ## Provider configuration
 
 Some providers need additional setup before you can sign users in.
