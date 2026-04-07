@@ -28,12 +28,6 @@ dependencies {
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
     implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
 
-    // Required: Jetpack Compose
-    // Find the latest Compose BOM version here:
-    // https://developer.android.com/develop/ui/compose/bom
-    implementation(platform("androidx.compose:compose-bom:2026.03.00"))
-    implementation("androidx.compose.material3:material3")
-
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
     implementation("com.facebook.android:facebook-android-sdk:8.x")
