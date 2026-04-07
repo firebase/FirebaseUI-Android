@@ -17,8 +17,8 @@ FirebaseUI Auth provides the following benefits:
 ## Before you begin
 
 1. If you haven't already, [add Firebase to your Android project](https://firebase.google.com/docs/android/setup).
-2. Make sure your app is set up for Jetpack Compose.
-3. In the [Firebase console](https://console.firebase.google.com/), enable the sign-in methods you want to support.
+2. In the [Firebase console](https://console.firebase.google.com/), enable the sign-in methods you want to support.
+3. Add FirebaseUI Auth to your app module
 
 Add FirebaseUI Auth to your app module:
 
