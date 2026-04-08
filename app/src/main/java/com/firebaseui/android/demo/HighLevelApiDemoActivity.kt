@@ -42,6 +42,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebase.ui.auth.util.EmailLinkConstants
+import com.firebase.ui.auth.util.displayIdentifier
 import com.google.firebase.auth.actionCodeSettings
 
 class HighLevelApiDemoActivity : ComponentActivity() {
@@ -211,7 +212,7 @@ private fun AppAuthenticatedContent(
     when (state) {
         is AuthState.Success -> {
             val user = uiContext.authUI.getCurrentUser()
-            val identifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
+            val identifier = user?.displayIdentifier().orEmpty()
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -263,7 +264,7 @@ private fun AppAuthenticatedContent(
         }
 
         is AuthState.RequiresEmailVerification -> {
-            val email = uiContext.authUI.getCurrentUser()?.email ?: stringProvider.emailProvider
+            val email = uiContext.authUI.getCurrentUser()?.email?.takeIf { it.isNotBlank() } ?: stringProvider.emailProvider
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,

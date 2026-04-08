@@ -78,6 +78,7 @@ import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
+import com.firebase.ui.auth.util.displayIdentifier
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
@@ -733,7 +734,7 @@ private fun AuthSuccessContent(
     onManageMfa: () -> Unit,
 ) {
     val user = authUI.getCurrentUser()
-    val userIdentifier = user?.email ?: user?.phoneNumber ?: user?.uid.orEmpty()
+    val userIdentifier = user?.displayIdentifier().orEmpty()
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -783,7 +784,7 @@ private fun EmailVerificationContent(
     onSignOut: () -> Unit,
 ) {
     val user = authUI.getCurrentUser()
-    val emailLabel = user?.email ?: stringProvider.emailProvider
+    val emailLabel = user?.email?.takeIf { it.isNotBlank() } ?: stringProvider.emailProvider
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
