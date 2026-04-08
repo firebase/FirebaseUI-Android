@@ -22,11 +22,17 @@ import com.google.firebase.auth.FirebaseUser
  *
  * Each field is checked for blank (not just null) so that an empty string returned by the
  * Firebase SDK falls through to the next candidate rather than being displayed as-is.
- * [FirebaseUser.uid] is always non-null and non-blank for a signed-in user, so the result
- * is guaranteed to be non-blank.
+ * Returns an empty string if the user is null.
  */
-fun FirebaseUser.displayIdentifier(): String =
-    email?.takeIf { it.isNotBlank() }
-        ?: phoneNumber?.takeIf { it.isNotBlank() }
-        ?: displayName?.takeIf { it.isNotBlank() }
-        ?: uid
+fun FirebaseUser?.displayIdentifier(): String =
+    this?.email?.takeIf { it.isNotBlank() }
+        ?: this?.phoneNumber?.takeIf { it.isNotBlank() }
+        ?: this?.displayName?.takeIf { it.isNotBlank() }
+        ?: this?.uid
+        ?: ""
+
+/**
+ * Returns the user's email if it is non-blank, otherwise returns the provided [fallback].
+ */
+fun FirebaseUser?.getDisplayEmail(fallback: String): String =
+    this?.email?.takeIf { it.isNotBlank() } ?: fallback
