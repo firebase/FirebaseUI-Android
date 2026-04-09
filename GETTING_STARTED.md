@@ -34,7 +34,7 @@ dependencies {
 }
 ```
 
-## Provider configuration
+## Set up sign-in methods
 
 Some providers need additional setup before you can sign users in:
 - [Sign in with Google](https://firebase.google.com/docs/auth/android/google-signin)
@@ -45,9 +45,60 @@ Some providers need additional setup before you can sign users in:
 - [Sign in with Microsoft](https://firebase.google.com/docs/auth/android/microsoft-oauth)
 - [Sign in with Yahoo](https://firebase.google.com/docs/auth/android/yahoo-oauth)
 
-### Providers
+### Other OAuth providers
 
 Apple, GitHub, Microsoft, Yahoo, Twitter and custom OAuth providers are configured in Firebase Authentication. Most of them do not require extra Android-specific resources.
+
+Choose the providers you want inside `authUIConfiguration`:
+
+```kotlin
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers {
+        provider(AuthProvider.Email())
+        provider(
+            AuthProvider.Phone(
+                defaultCountryCode = "US",
+            )
+        )
+        provider(
+            AuthProvider.Google(
+                scopes = listOf("email"),
+                serverClientId = null,
+            )
+        )
+        provider(AuthProvider.Facebook())
+    }
+}
+```
+
+### Email link sign-in
+
+Email link sign-in now lives in the email provider configuration:
+
+```kotlin
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers {
+        provider(
+            AuthProvider.Email(
+                isEmailLinkSignInEnabled = true,
+                emailLinkActionCodeSettings = actionCodeSettings {
+                    url = "https://example.com/auth"
+                    handleCodeInApp = true
+                    setAndroidPackageName(
+                        "com.example.app",
+                        true,
+                        null,
+                    )
+                },
+            )
+        )
+    }
+}
+```
+
+For the full deep-link handling flow, see `auth/README.md`.
 
 ## Sign in
 
@@ -107,59 +158,6 @@ This gives you a complete authentication flow with:
 - Material 3 styling.
 - Credential Manager support.
 - Error handling through direct callbacks.
-
-## Configure providers
-
-Choose the providers you want inside `authUIConfiguration`:
-
-```kotlin
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(AuthProvider.Email())
-        provider(
-            AuthProvider.Phone(
-                defaultCountryCode = "US",
-            )
-        )
-        provider(
-            AuthProvider.Google(
-                scopes = listOf("email"),
-                serverClientId = null,
-            )
-        )
-        provider(AuthProvider.Facebook())
-    }
-}
-```
-
-### Email link sign-in
-
-Email link sign-in now lives in the email provider configuration:
-
-```kotlin
-val configuration = authUIConfiguration {
-    context = applicationContext
-    providers {
-        provider(
-            AuthProvider.Email(
-                isEmailLinkSignInEnabled = true,
-                emailLinkActionCodeSettings = actionCodeSettings {
-                    url = "https://example.com/auth"
-                    handleCodeInApp = true
-                    setAndroidPackageName(
-                        "com.example.app",
-                        true,
-                        null,
-                    )
-                },
-            )
-        )
-    }
-}
-```
-
-For the full deep-link handling flow, see `auth/README.md`.
 
 ## Sign out
 
