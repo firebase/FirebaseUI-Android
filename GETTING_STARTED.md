@@ -4,7 +4,7 @@
 
 Caution: Version 10.x is currently a **beta release**. This means that the functionality might change in backward-incompatible ways or have limited support. A beta release is not subject to any SLA or deprecation policy.
 
-If you used the older FirebaseUI Auth guides, the biggest change in `10.x` is that the recommended sign-in flow now uses Compose screens instead of `Intent` builders and `ActivityResultLauncher` callbacks. For apps that still use Activities, see the [Existing Activity-based apps](#existing-activity-based-apps) section.
+The recommended sign-in flow uses Compose screens. For apps that still use Activities, see the [Existing Activity-based apps](#existing-activity-based-apps) section.
 
 FirebaseUI Auth provides the following benefits:
 
@@ -179,7 +179,7 @@ lifecycleScope.launch {
 
 ## Customization
 
-FirebaseUI Auth is much more customizable in `10.x`, but the simplest way to get started is to set a theme directly in `authUIConfiguration`:
+FirebaseUI Auth is customizable, and the simplest way to get started is to set a theme directly in `authUIConfiguration`:
 
 ```kotlin
 val configuration = authUIConfiguration {
@@ -234,17 +234,3 @@ val configuration = authUIConfiguration {
 val controller = FirebaseAuthUI.getInstance().createAuthFlow(configuration)
 authLauncher.launch(controller.createIntent(this))
 ```
-
-This is the closest match to the old FirebaseUI Auth mental model, but the Compose `FirebaseAuthScreen` API is the recommended starting point for new integrations.
-
-## Migrating from the old FirebaseUI Auth flow
-
-If you are coming from `9.x` or the older Firebase documentation:
-
-- `AuthUI.getInstance().createSignInIntentBuilder()` becomes `authUIConfiguration {}` plus `FirebaseAuthScreen`.
-- `AuthUI.IdpConfig.*Builder()` becomes `AuthProvider.*`.
-- XML-based FirebaseUI theme resources become `AuthUITheme`.
-- `ActivityResultLauncher` result parsing becomes direct success, failure, and cancel callbacks.
-- Activity-based flows are still possible through `AuthFlowController`.
-
-For a complete migration guide, see `auth/README.md` and `docs/upgrade-to-10.0.md`.
