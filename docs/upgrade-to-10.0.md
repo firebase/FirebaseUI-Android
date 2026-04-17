@@ -48,7 +48,9 @@ dependencies {
 ```kotlin
 dependencies {
     // FirebaseUI Auth
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta01")
+    // Check Maven Central for the latest version:
+    // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
 
     // Required: Jetpack Compose
     implementation(platform("androidx.compose:compose-bom:2024.01.00"))
