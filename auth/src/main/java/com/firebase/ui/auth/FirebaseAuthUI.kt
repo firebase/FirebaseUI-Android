@@ -25,6 +25,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseAuth.IdTokenListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.CancellationException
@@ -255,29 +256,8 @@ class FirebaseAuthUI private constructor(
     fun authStateFlow(): Flow<AuthState> {
         // Create a flow from FirebaseAuth state listener
         val firebaseAuthFlow = callbackFlow {
-            // Set initial state based on current auth state
-            val initialState = auth.currentUser?.let { user ->
-                // Check if email verification is required
-                if (!user.isEmailVerified &&
-                    user.email != null &&
-                    user.providerData.any { it.providerId == "password" }
-                ) {
-                    AuthState.RequiresEmailVerification(
-                        user = user,
-                        email = user.email!!
-                    )
-                } else {
-                    AuthState.Success(result = null, user = user, isNewUser = false)
-                }
-            } ?: AuthState.Idle
-
-            trySend(initialState)
-
-            // Create auth state listener
-            val authStateListener = AuthStateListener { firebaseAuth ->
-                val currentUser = firebaseAuth.currentUser
-                val state = if (currentUser != null) {
-                    // Check if email verification is required
+            fun buildState(currentUser: FirebaseUser?): AuthState {
+                return if (currentUser != null) {
                     if (!currentUser.isEmailVerified &&
                         currentUser.email != null &&
                         currentUser.providerData.any { it.providerId == "password" }
@@ -296,15 +276,31 @@ class FirebaseAuthUI private constructor(
                 } else {
                     AuthState.Idle
                 }
-                trySend(state)
+            }
+
+            // Set initial state based on current auth state
+            val initialState = buildState(auth.currentUser)
+
+            trySend(initialState)
+
+            // Create auth state listener
+            val authStateListener = AuthStateListener { firebaseAuth ->
+                trySend(buildState(firebaseAuth.currentUser))
+            }
+
+            // AuthStateListener does not reliably fire for account linking, but IdTokenListener does.
+            val idTokenListener = IdTokenListener { firebaseAuth ->
+                trySend(buildState(firebaseAuth.currentUser))
             }
 
             // Add listener
             auth.addAuthStateListener(authStateListener)
+            auth.addIdTokenListener(idTokenListener)
 
             // Remove listener when flow collection is cancelled
             awaitClose {
                 auth.removeAuthStateListener(authStateListener)
+                auth.removeIdTokenListener(idTokenListener)
             }
         }
 
