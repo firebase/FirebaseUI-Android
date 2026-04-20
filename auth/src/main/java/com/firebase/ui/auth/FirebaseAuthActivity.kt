@@ -92,11 +92,7 @@ class FirebaseAuthActivity : ComponentActivity() {
             return
         }
 
-        authUI = if (launchKey != null) {
-            authUICache[launchKey]
-        } else {
-            null
-        } ?: run {
+        authUI = launchKey?.let { authUICache[it] } ?: run {
             // Missing auth instance, finish with error
             setResult(RESULT_CANCELED)
             finish()
