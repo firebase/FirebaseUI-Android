@@ -318,6 +318,17 @@ fun FirebaseAuthScreen(
                         authUI = authUI,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
+                        onContinueWithProvider = { providerId ->
+                            when (providerId) {
+                                googleProvider?.providerId -> onSignInWithGoogle?.invoke()
+                                facebookProvider?.providerId -> onSignInWithFacebook?.invoke()
+                                appleProvider?.providerId -> onSignInWithApple?.invoke()
+                                githubProvider?.providerId -> onSignInWithGithub?.invoke()
+                                microsoftProvider?.providerId -> onSignInWithMicrosoft?.invoke()
+                                yahooProvider?.providerId -> onSignInWithYahoo?.invoke()
+                                twitterProvider?.providerId -> onSignInWithTwitter?.invoke()
+                            }
+                        },
                         onSuccess = {
                             pendingLinkingCredential.value = null
                         },
@@ -617,39 +628,43 @@ fun FirebaseAuthScreen(
                         onRetry = { _ ->
                             // Child screens handle their own retry logic
                         },
-                        onRecover = { exception ->
-                            when (exception) {
-                                is AuthException.EmailAlreadyInUseException -> {
+                        onRecover = when (exception) {
+                            is AuthException.EmailAlreadyInUseException -> {
+                                {
                                     navController.navigate(AuthRoute.Email.route) {
                                         launchSingleTop = true
                                     }
                                 }
+                            }
 
-                                is AuthException.AccountLinkingRequiredException -> {
+                            is AuthException.AccountLinkingRequiredException -> {
+                                {
                                     pendingLinkingCredential.value = exception.credential
                                     navController.navigate(AuthRoute.Email.route) {
                                         launchSingleTop = true
                                     }
                                 }
-
-                                is AuthException.EmailLinkPromptForEmailException -> {
-                                    // Cross-device flow: User needs to enter their email
-                                    emailLinkFromDifferentDevice.value = exception.emailLink
-                                    navController.navigate(AuthRoute.Email.route) {
-                                        launchSingleTop = true
-                                    }
-                                }
-
-                                is AuthException.EmailLinkCrossDeviceLinkingException -> {
-                                    // Cross-device linking flow: User needs to enter email to link provider
-                                    emailLinkFromDifferentDevice.value = exception.emailLink
-                                    navController.navigate(AuthRoute.Email.route) {
-                                        launchSingleTop = true
-                                    }
-                                }
-
-                                else -> Unit
                             }
+
+                            is AuthException.EmailLinkPromptForEmailException -> {
+                                {
+                                    emailLinkFromDifferentDevice.value = exception.emailLink
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+
+                            is AuthException.EmailLinkCrossDeviceLinkingException -> {
+                                {
+                                    emailLinkFromDifferentDevice.value = exception.emailLink
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+
+                            else -> null
                         },
                         onDismiss = {
                             // Dialog dismissed

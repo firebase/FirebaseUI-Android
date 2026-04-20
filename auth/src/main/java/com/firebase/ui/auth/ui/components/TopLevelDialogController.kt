@@ -85,7 +85,7 @@ class TopLevelDialogController(
     fun showErrorDialog(
         exception: AuthException,
         onRetry: (AuthException) -> Unit = {},
-        onRecover: (AuthException) -> Unit = {},
+        onRecover: ((AuthException) -> Unit)? = null,
         onDismiss: () -> Unit = {}
     ) {
         // Get current error state
@@ -135,9 +135,11 @@ class TopLevelDialogController(
                         state.onRetry(exception)
                         state.onDismiss()
                     },
-                    onRecover = { exception ->
-                        state.onRecover(exception)
-                        state.onDismiss()
+                    onRecover = state.onRecover?.let { onRecover ->
+                        { exception ->
+                            onRecover(exception)
+                            state.onDismiss()
+                        }
                     },
                     onDismiss = state.onDismiss
                 )
@@ -152,7 +154,7 @@ class TopLevelDialogController(
         data class ErrorDialog(
             val exception: AuthException,
             val onRetry: (AuthException) -> Unit,
-            val onRecover: (AuthException) -> Unit,
+            val onRecover: ((AuthException) -> Unit)?,
             val onDismiss: () -> Unit
         ) : DialogState()
     }
