@@ -475,9 +475,6 @@ private suspend fun FirebaseAuthUI.recoverLegacyDifferentSignInMethod(
 
     val signInMethods = fetchLegacySignInMethods(email)
     val suggestedSignInMethod = selectSuggestedLegacySignInMethod(config, signInMethods) ?: return null
-    if (signInMethods.isEmpty()) {
-        return null
-    }
 
     return AuthException.DifferentSignInMethodRequiredException(
         message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
