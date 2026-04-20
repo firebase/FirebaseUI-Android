@@ -82,6 +82,7 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
 import kotlinx.coroutines.launch
@@ -231,6 +232,21 @@ fun FirebaseAuthScreen(
             provider = it
         )
     }
+    val continueWithProvider: (String) -> Unit = { providerId ->
+        when (providerId) {
+            googleProvider?.providerId -> onSignInWithGoogle?.invoke()
+            facebookProvider?.providerId -> onSignInWithFacebook?.invoke()
+            appleProvider?.providerId -> onSignInWithApple?.invoke()
+            githubProvider?.providerId -> onSignInWithGithub?.invoke()
+            microsoftProvider?.providerId -> onSignInWithMicrosoft?.invoke()
+            yahooProvider?.providerId -> onSignInWithYahoo?.invoke()
+            twitterProvider?.providerId -> onSignInWithTwitter?.invoke()
+            else -> genericOAuthHandlers.entries
+                .find { it.key.providerId == providerId }
+                ?.value
+                ?.invoke()
+        }
+    }
 
     CompositionLocalProvider(
         LocalAuthUIStringProvider provides configuration.stringProvider,
@@ -318,17 +334,7 @@ fun FirebaseAuthScreen(
                         authUI = authUI,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
-                        onContinueWithProvider = { providerId ->
-                            when (providerId) {
-                                googleProvider?.providerId -> onSignInWithGoogle?.invoke()
-                                facebookProvider?.providerId -> onSignInWithFacebook?.invoke()
-                                appleProvider?.providerId -> onSignInWithApple?.invoke()
-                                githubProvider?.providerId -> onSignInWithGithub?.invoke()
-                                microsoftProvider?.providerId -> onSignInWithMicrosoft?.invoke()
-                                yahooProvider?.providerId -> onSignInWithYahoo?.invoke()
-                                twitterProvider?.providerId -> onSignInWithTwitter?.invoke()
-                            }
-                        },
+                        onContinueWithProvider = continueWithProvider,
                         onSuccess = {
                             pendingLinkingCredential.value = null
                         },
@@ -660,6 +666,19 @@ fun FirebaseAuthScreen(
                                     emailLinkFromDifferentDevice.value = exception.emailLink
                                     navController.navigate(AuthRoute.Email.route) {
                                         launchSingleTop = true
+                                    }
+                                }
+                            }
+
+                            is AuthException.DifferentSignInMethodRequiredException -> {
+                                {
+                                    val providerId = exception.suggestedSignInMethod
+                                    if (providerId == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) {
+                                        navController.navigate(AuthRoute.Email.route) {
+                                            launchSingleTop = true
+                                        }
+                                    } else {
+                                        continueWithProvider(providerId)
                                     }
                                 }
                             }
