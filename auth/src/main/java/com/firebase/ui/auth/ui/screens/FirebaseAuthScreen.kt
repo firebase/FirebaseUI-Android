@@ -343,9 +343,7 @@ fun FirebaseAuthScreen(
                         },
                         onCancel = {
                             pendingLinkingCredential.value = null
-                            if (skipsMethodPicker) {
-                                onSignInCancelled()
-                            } else if (!navController.popBackStack()) {
+                            if (!skipsMethodPicker && !navController.popBackStack()) {
                                 navController.navigate(AuthRoute.MethodPicker.route) {
                                     popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
                                     launchSingleTop = true
@@ -365,9 +363,7 @@ fun FirebaseAuthScreen(
                             onSignInFailure(exception)
                         },
                         onCancel = {
-                            if (skipsMethodPicker) {
-                                onSignInCancelled()
-                            } else if (!navController.popBackStack()) {
+                            if (!skipsMethodPicker && !navController.popBackStack()) {
                                 navController.navigate(AuthRoute.MethodPicker.route) {
                                     popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
                                     launchSingleTop = true
@@ -601,6 +597,8 @@ fun FirebaseAuthScreen(
                                 launchSingleTop = true
                             }
                         }
+                        // Keep external cancellation reporting centralized here so child screens
+                        // can handle local navigation without triggering duplicate callbacks.
                         onSignInCancelled()
                     }
 
