@@ -40,6 +40,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.SignInMethodQueryResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -450,11 +451,78 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = recoverLegacyDifferentSignInMethod(config, email, e)
+            ?: AuthException.from(e)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }
+
+private suspend fun FirebaseAuthUI.recoverLegacyDifferentSignInMethod(
+    config: AuthUIConfiguration,
+    email: String,
+    cause: Exception,
+): AuthException.DifferentSignInMethodRequiredException? {
+    if (!config.legacyFetchSignInWithEmail) {
+        return null
+    }
+
+    val authException = AuthException.from(cause)
+    if (authException !is AuthException.InvalidCredentialsException &&
+        authException !is AuthException.UserNotFoundException) {
+        return null
+    }
+
+    val signInMethods = fetchLegacySignInMethods(email)
+    val suggestedSignInMethod = selectSuggestedLegacySignInMethod(config, signInMethods) ?: return null
+
+    return AuthException.DifferentSignInMethodRequiredException(
+        message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
+        email = email,
+        signInMethods = signInMethods,
+        suggestedSignInMethod = suggestedSignInMethod,
+        cause = cause
+    )
+}
+
+private fun selectSuggestedLegacySignInMethod(
+    config: AuthUIConfiguration,
+    signInMethods: List<String>,
+): String? {
+    if (signInMethods.isEmpty() ||
+        EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD in signInMethods) {
+        return null
+    }
+
+    val emailProvider = config.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
+    val configuredProviderIds = config.providers.map { it.providerId }.toSet()
+
+    return signInMethods.firstOrNull { signInMethod ->
+        when {
+            signInMethod == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD -> {
+                emailProvider?.isEmailLinkSignInEnabled == true
+            }
+
+            signInMethod == EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD -> false
+            else -> signInMethod in configuredProviderIds
+        }
+    }
+}
+
+private suspend fun FirebaseAuthUI.fetchLegacySignInMethods(email: String): List<String> {
+    return try {
+        @Suppress("DEPRECATION")
+        auth.fetchSignInMethodsForEmail(email)
+            .await()
+            .toSignInMethods()
+    } catch (fetchException: Exception) {
+        Log.w(TAG, "Legacy fetchSignInMethodsForEmail failed for: $email", fetchException)
+        emptyList()
+    }
+}
+
+private fun SignInMethodQueryResult?.toSignInMethods(): List<String> =
+    this?.signInMethods?.filter { it.isNotBlank() } ?: emptyList()
 
 /**
  * Signs in with a credential or links it to an existing anonymous user.

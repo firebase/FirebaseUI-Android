@@ -201,6 +201,26 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * A different sign-in method should be used for this email address.
+     *
+     * This exception is used for the opt-in legacy recovery path backed by
+     * `fetchSignInMethodsForEmail`, allowing the UI to guide users toward a previously
+     * used provider when email enumeration protection has been disabled.
+     *
+     * @property email The email address being recovered
+     * @property signInMethods The sign-in methods returned by Firebase Auth
+     * @property suggestedSignInMethod The preferred method the UI should direct the user toward
+     * @property cause The underlying authentication failure that triggered the lookup
+     */
+    class DifferentSignInMethodRequiredException(
+        message: String,
+        val email: String,
+        val signInMethods: List<String>,
+        val suggestedSignInMethod: String,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * Authentication was cancelled by the user.
      *
      * This exception is thrown when the user cancels an authentication flow,

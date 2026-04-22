@@ -49,6 +49,7 @@ class AuthUIConfigurationBuilder {
     var isNewEmailAccountsAllowed: Boolean = true
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
+    var legacyFetchSignInWithEmail: Boolean = false
     var transitions: AuthUITransitions? = null
 
     fun providers(block: AuthProvidersBuilder.() -> Unit) =
@@ -114,6 +115,7 @@ class AuthUIConfigurationBuilder {
             isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
             isDisplayNameRequired = isDisplayNameRequired,
             isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown,
+            legacyFetchSignInWithEmail = legacyFetchSignInWithEmail,
             transitions = transitions
         )
     }
@@ -198,6 +200,15 @@ class AuthUIConfiguration(
      * Always shows the provider selection screen, even if only one is enabled.
      */
     val isProviderChoiceAlwaysShown: Boolean = false,
+
+    /**
+     * Enables legacy provider recovery via `fetchSignInMethodsForEmail`.
+     *
+     * This should only be enabled when email enumeration protection is disabled for the
+     * Firebase project and the application explicitly wants to use the legacy API to
+     * recover from email/password attempts made with the wrong provider.
+     */
+    val legacyFetchSignInWithEmail: Boolean = false,
 
     /**
      * Custom screen transition animations.
