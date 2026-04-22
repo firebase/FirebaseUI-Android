@@ -158,7 +158,11 @@ class AuthFlowController internal constructor(
      */
     fun createIntent(context: Context): Intent {
         checkNotDisposed()
-        return FirebaseAuthActivity.createIntent(context, configuration)
+        return FirebaseAuthActivity.createIntent(
+            context = context,
+            configuration = configuration,
+            authUI = authUI
+        )
     }
 
     /**
