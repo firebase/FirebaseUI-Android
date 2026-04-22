@@ -50,6 +50,7 @@ class FirebaseAuthActivityTest {
 
     private lateinit var applicationContext: Context
     private lateinit var authUI: FirebaseAuthUI
+    private lateinit var secondaryAuthUI: FirebaseAuthUI
     private lateinit var configuration: AuthUIConfiguration
 
     @Mock
@@ -79,8 +80,20 @@ class FirebaseAuthActivityTest {
                 .build()
         )
 
+        val secondaryApp = FirebaseApp.initializeApp(
+            applicationContext,
+            FirebaseOptions.Builder()
+                .setApiKey("fake-api-key-2")
+                .setApplicationId("fake-app-id-2")
+                .setProjectId("fake-project-id-2")
+                .build(),
+            "secondary"
+        )
+
         authUI = FirebaseAuthUI.getInstance()
         authUI.auth.useEmulator("127.0.0.1", 9099)
+        secondaryAuthUI = FirebaseAuthUI.getInstance(secondaryApp)
+        secondaryAuthUI.auth.useEmulator("127.0.0.1", 9099)
 
         configuration = AuthUIConfiguration(
             context = applicationContext,
@@ -98,6 +111,7 @@ class FirebaseAuthActivityTest {
 
     @After
     fun tearDown() {
+        FirebaseAuthActivity.clearLaunchStateCache()
         FirebaseAuthUI.clearInstanceCache()
         FirebaseApp.getApps(applicationContext).forEach { app ->
             try {
@@ -179,6 +193,46 @@ class FirebaseAuthActivityTest {
         // Activity should have been created successfully (not finished)
         assertThat(activity.isFinishing).isFalse()
     }
+
+    @Test
+    fun `activity launched from secondary auth flow observes supplied authUI instead of default app`() =
+        runTest {
+            val controller = secondaryAuthUI.createAuthFlow(configuration)
+            val intent = controller.createIntent(applicationContext)
+            val activity = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+                .create()
+                .start()
+                .resume()
+                .get()
+
+            `when`(mockFirebaseUser.uid).thenReturn("secondary-user-id")
+
+            authUI.updateAuthState(
+                AuthState.Success(
+                    result = null,
+                    user = mockFirebaseUser,
+                    isNewUser = false
+                )
+            )
+            shadowOf(Looper.getMainLooper()).idle()
+
+            assertThat(activity.isFinishing).isFalse()
+
+            secondaryAuthUI.updateAuthState(
+                AuthState.Success(
+                    result = null,
+                    user = mockFirebaseUser,
+                    isNewUser = false
+                )
+            )
+            shadowOf(Looper.getMainLooper()).idle()
+
+            assertThat(activity.isFinishing).isTrue()
+            val shadowActivity = shadowOf(activity)
+            assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_OK)
+            assertThat(shadowActivity.resultIntent.getStringExtra(FirebaseAuthActivity.EXTRA_USER_ID))
+                .isEqualTo("secondary-user-id")
+        }
 
     // =============================================================================================
     // Auth State Success Tests
@@ -394,22 +448,28 @@ class FirebaseAuthActivityTest {
     // =============================================================================================
 
     @Test
-    fun `configuration is removed from cache after onCreate`() {
-        val intent1 = FirebaseAuthActivity.createIntent(applicationContext, configuration)
-        val configKey1 = intent1.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
+    fun `launch state survives recreation and is cleared when activity finishes`() {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
 
-        assertThat(configKey1).isNotNull()
+        val firstController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+        val firstActivity = firstController.create().start().resume().get()
+        assertThat(firstActivity.isFinishing).isFalse()
 
-        // Create activity - this should consume the configuration from cache
-        val controller1 = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent1)
-        controller1.create().get()
+        // Simulate recreation: the first activity is destroyed without finishing.
+        firstController.pause().stop().destroy()
 
-        // Create another intent
-        val intent2 = FirebaseAuthActivity.createIntent(applicationContext, configuration)
-        val configKey2 = intent2.getStringExtra("com.firebase.ui.auth.CONFIGURATION_KEY")
+        val recreatedController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+        val recreatedActivity = recreatedController.create().start().resume().get()
+        assertThat(recreatedActivity.isFinishing).isFalse()
 
-        // Should be a different key
-        assertThat(configKey2).isNotEqualTo(configKey1)
+        // Once the recreated activity actually finishes, the cached launch state should be released.
+        recreatedActivity.finish()
+        recreatedController.pause().stop().destroy()
+
+        val postFinishController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+        val postFinishActivity = postFinishController.create().get()
+        assertThat(postFinishActivity.isFinishing).isTrue()
+        assertThat(shadowOf(postFinishActivity).resultCode).isEqualTo(Activity.RESULT_CANCELED)
     }
 
     @Test
