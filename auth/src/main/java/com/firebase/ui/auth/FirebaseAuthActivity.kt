@@ -18,6 +18,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.RestrictTo
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -72,15 +73,16 @@ class FirebaseAuthActivity : ComponentActivity() {
 
     private lateinit var authUI: FirebaseAuthUI
     private lateinit var configuration: AuthUIConfiguration
+    private var launchKey: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Extract configuration from cache using UUID key
-        val configKey = intent.getStringExtra(EXTRA_CONFIGURATION_KEY)
-        configuration = if (configKey != null) {
-            configurationCache.remove(configKey)
+        // Extract configuration and auth instance from cache using UUID key
+        launchKey = intent.getStringExtra(EXTRA_CONFIGURATION_KEY)
+        configuration = if (launchKey != null) {
+            configurationCache[launchKey]
         } else {
             null
         } ?: run {
@@ -90,7 +92,12 @@ class FirebaseAuthActivity : ComponentActivity() {
             return
         }
 
-        authUI = FirebaseAuthUI.getInstance()
+        authUI = launchKey?.let { authUICache[it] } ?: run {
+            // Missing auth instance, finish with error
+            setResult(RESULT_CANCELED)
+            finish()
+            return
+        }
 
         // Extract email link if present
         val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
@@ -150,11 +157,17 @@ class FirebaseAuthActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        // Reset auth state when activity is destroyed
-        if (!isFinishing) {
+        if (isFinishing) {
+            launchKey?.let { key ->
+                configurationCache.remove(key)
+                authUICache.remove(key)
+            }
+        } else {
+            // Preserve cached launch state so the recreated activity can recover it.
             authUI.updateAuthState(AuthState.Idle)
         }
+
+        super.onDestroy()
     }
 
     companion object {
@@ -191,14 +204,31 @@ class FirebaseAuthActivity : ComponentActivity() {
          */
         internal fun createIntent(
             context: Context,
-            configuration: AuthUIConfiguration
+            configuration: AuthUIConfiguration,
+            authUI: FirebaseAuthUI = FirebaseAuthUI.getInstance()
         ): Intent {
             val configKey = UUID.randomUUID().toString()
             configurationCache[configKey] = configuration
+            authUICache[configKey] = authUI
 
             return Intent(context, FirebaseAuthActivity::class.java).apply {
                 putExtra(EXTRA_CONFIGURATION_KEY, configKey)
             }
         }
+
+        /**
+         * Clears cached launch state. This method is intended for testing purposes only.
+         *
+         * @suppress This is an internal API and should not be used in production code.
+         * @RestrictTo RestrictTo.Scope.TESTS
+         */
+        @JvmStatic
+        @RestrictTo(RestrictTo.Scope.TESTS)
+        fun clearLaunchStateCache() {
+            configurationCache.clear()
+            authUICache.clear()
+        }
+
+        private val authUICache = ConcurrentHashMap<String, FirebaseAuthUI>()
     }
 }
