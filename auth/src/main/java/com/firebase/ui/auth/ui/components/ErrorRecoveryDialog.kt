@@ -23,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.configuration.auth_provider.Provider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.google.firebase.auth.EmailAuthProvider
 
 /**
  * A composable dialog for displaying authentication errors with recovery options.
@@ -158,6 +160,9 @@ private fun getRecoveryMessage(
             // Use the custom message which includes email and provider details
             error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
+        is AuthException.DifferentSignInMethodRequiredException -> {
+            error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
+        }
         is AuthException.EmailMismatchException -> stringProvider.emailMismatchMessage
         is AuthException.InvalidEmailLinkException -> stringProvider.emailLinkInvalidLinkMessage
         is AuthException.EmailLinkWrongDeviceException -> stringProvider.emailLinkWrongDeviceMessage
@@ -192,6 +197,8 @@ private fun getRecoveryActionText(
         is AuthException.AuthCancelledException -> error.message ?: stringProvider.continueText
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
         is AuthException.AccountLinkingRequiredException -> stringProvider.signInDefault // User needs to sign in to link accounts
+        is AuthException.DifferentSignInMethodRequiredException ->
+            getDifferentSignInMethodActionText(error.suggestedSignInMethod, stringProvider)
         is AuthException.MfaRequiredException -> stringProvider.continueText // Use "Continue" for MFA
         is AuthException.EmailLinkPromptForEmailException -> stringProvider.continueText
         is AuthException.EmailLinkCrossDeviceLinkingException -> stringProvider.continueText
@@ -226,6 +233,7 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.PhoneVerificationCooldownException -> false // User must wait for cooldown
         is AuthException.MfaRequiredException -> true
         is AuthException.AccountLinkingRequiredException -> true
+        is AuthException.DifferentSignInMethodRequiredException -> true
         is AuthException.AuthCancelledException -> true
         is AuthException.EmailLinkPromptForEmailException -> true
         is AuthException.EmailLinkCrossDeviceLinkingException -> true
@@ -233,5 +241,28 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.EmailLinkDifferentAnonymousUserException -> false
         is AuthException.UnknownException -> true
         else -> true
+    }
+}
+
+private fun getDifferentSignInMethodActionText(
+    signInMethod: String,
+    stringProvider: AuthUIStringProvider,
+): String {
+    return when (Provider.fromId(signInMethod)) {
+        Provider.GOOGLE -> stringProvider.continueWithGoogle
+        Provider.FACEBOOK -> stringProvider.continueWithFacebook
+        Provider.TWITTER -> stringProvider.continueWithTwitter
+        Provider.GITHUB -> stringProvider.continueWithGithub
+        Provider.PHONE -> stringProvider.continueWithPhone
+        Provider.APPLE -> stringProvider.continueWithApple
+        Provider.MICROSOFT -> stringProvider.continueWithMicrosoft
+        Provider.YAHOO -> stringProvider.continueWithYahoo
+        null -> if (signInMethod == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) {
+            stringProvider.signInWithEmailLink
+        } else {
+            stringProvider.continueText
+        }
+
+        else -> stringProvider.continueText
     }
 }

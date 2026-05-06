@@ -88,6 +88,7 @@ class AuthUIConfigurationTest {
         assertThat(config.isNewEmailAccountsAllowed).isTrue()
         assertThat(config.isDisplayNameRequired).isTrue()
         assertThat(config.isProviderChoiceAlwaysShown).isFalse()
+        assertThat(config.legacyFetchSignInWithEmail).isFalse()
     }
 
     @Test
@@ -129,6 +130,7 @@ class AuthUIConfigurationTest {
             isNewEmailAccountsAllowed = false
             isDisplayNameRequired = false
             isProviderChoiceAlwaysShown = true
+            legacyFetchSignInWithEmail = true
         }
 
         assertThat(config.context).isEqualTo(applicationContext)
@@ -147,6 +149,7 @@ class AuthUIConfigurationTest {
         assertThat(config.isNewEmailAccountsAllowed).isFalse()
         assertThat(config.isDisplayNameRequired).isFalse()
         assertThat(config.isProviderChoiceAlwaysShown).isTrue()
+        assertThat(config.legacyFetchSignInWithEmail).isTrue()
     }
 
     @Test
@@ -465,6 +468,7 @@ class AuthUIConfigurationTest {
             "isNewEmailAccountsAllowed",
             "isDisplayNameRequired",
             "isProviderChoiceAlwaysShown",
+            "legacyFetchSignInWithEmail",
             "transitions"
         )
 
