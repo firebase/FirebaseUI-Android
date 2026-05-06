@@ -235,7 +235,7 @@ main() {
   choose_target_device
 
   echo "Building debug APK..."
-  "$repo_root/gradlew" :app:assembleDebug
+  "$repo_root/gradlew" -p "$repo_root" :app:assembleDebug
 
   if [[ ! -f "$apk_path" ]]; then
     echo "APK not found at $apk_path" >&2
