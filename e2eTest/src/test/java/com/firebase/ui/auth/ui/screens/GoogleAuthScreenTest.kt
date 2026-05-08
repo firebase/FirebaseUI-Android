@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
-import android.util.Base64
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +39,7 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
+import com.firebase.ui.auth.testutil.generateMockGoogleIdToken
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -449,45 +449,4 @@ class GoogleAuthScreenTest {
         )
     }
 
-    /**
-     * Generates a mock Google ID token (JWT) with the specified email.
-     * This is useful for testing so that the token payload matches the test data.
-     */
-    private fun generateMockGoogleIdToken(
-        email: String,
-        sub: String = "test-user-id",
-        name: String? = null,
-        photoUrl: String? = null
-    ): String {
-        // JWT Header
-        val header = """{"alg":"RS256","kid":"test"}"""
-
-        // JWT Payload with dynamic email
-        val payload = buildString {
-            append("{")
-            append("\"iss\":\"https://accounts.google.com\",")
-            append("\"aud\":\"test-client-id\",")
-            append("\"sub\":\"$sub\",")
-            append("\"email\":\"$email\",")
-            append("\"email_verified\":true")
-            name?.let { append(",\"name\":\"$it\"") }
-            photoUrl?.let { append(",\"picture\":\"$it\"") }
-            append(",\"iat\":1689600000,\"exp\":1689603600")
-            append("}")
-        }
-
-        // Base64 encode header and payload (URL-safe, no padding, no wrap)
-        val encodedHeader = Base64.encodeToString(
-            header.toByteArray(),
-            Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
-        )
-        val encodedPayload = Base64.encodeToString(
-            payload.toByteArray(),
-            Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
-        )
-
-        // Return JWT format: header.payload.signature
-        // Signature doesn't need to be valid for testing
-        return "$encodedHeader.$encodedPayload.mock-signature"
-    }
 }

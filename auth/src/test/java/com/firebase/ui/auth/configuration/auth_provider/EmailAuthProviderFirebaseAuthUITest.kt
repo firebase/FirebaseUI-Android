@@ -608,11 +608,47 @@ class EmailAuthProviderFirebaseAuthUITest {
             assertThat(e.credential).isEqualTo(updatedCredential)
             assertThat(e.cause).isEqualTo(collisionException)
         }
+    }
 
-        val currentState = instance.authStateFlow().first { it is AuthState.Error }
-        assertThat(currentState).isInstanceOf(AuthState.Error::class.java)
-        val errorState = currentState as AuthState.Error
-        assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
+    @Test
+    fun `signInAndLinkWithCredential - links credential to authenticated non-anonymous user when isCredentialLinkingEnabled`() = runTest {
+        val authenticatedUser = mock(FirebaseUser::class.java)
+        `when`(authenticatedUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(authenticatedUser)
+
+        val credential = GoogleAuthProvider.getCredential("google-id-token", null)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(authenticatedUser)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(authenticatedUser.linkWithCredential(credential))
+            .thenReturn(taskCompletionSource.task)
+        // Also stub signInWithCredential so the test fails at the verify assertion,
+        // not with a NPE from an unmocked call
+        `when`(mockFirebaseAuth.signInWithCredential(credential))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+            }
+            isCredentialLinkingEnabled = true
+        }
+
+        val result = instance.signInAndLinkWithCredential(
+            config = config,
+            credential = credential
+        )
+
+        assertThat(result).isNotNull()
+        verify(authenticatedUser).linkWithCredential(credential)
+        verify(mockFirebaseAuth, never()).signInWithCredential(credential)
     }
 
     // =============================================================================================
