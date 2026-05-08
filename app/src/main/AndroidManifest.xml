@@ -57,6 +57,12 @@
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
+            android:name=".CredentialLinkingDemoActivity"
+            android:label="Credential Linking Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
             android:name=".EmailAuthSlotDemoActivity"
             android:label="Email Auth — Custom Slot"
             android:exported="false"
