@@ -361,7 +361,7 @@ fun FirebaseAuthScreen(
                                         authUI.signOut(context)
                                         // Keep sign-in preference for "Continue as..." on next launch
                                     } catch (e: Exception) {
-                                        onSignInFailure(AuthException.from(e))
+                                        onSignInFailure(AuthException.from(e, stringProvider))
                                     } finally {
                                         pendingLinkingCredential.value = null
                                         pendingResolver.value = null
@@ -442,7 +442,7 @@ fun FirebaseAuthScreen(
                             onComplete = { navController.popBackStack() },
                             onSkip = { navController.popBackStack() },
                             onError = { exception ->
-                                onSignInFailure(AuthException.from(exception))
+                                onSignInFailure(AuthException.from(exception, stringProvider))
                             }
                         )
                     } else {
@@ -467,7 +467,7 @@ fun FirebaseAuthScreen(
                                 navController.popBackStack()
                             },
                             onError = { exception ->
-                                onSignInFailure(AuthException.from(exception))
+                                onSignInFailure(AuthException.from(exception, stringProvider))
                             }
                         )
                     } else {
@@ -598,7 +598,7 @@ fun FirebaseAuthScreen(
                 LaunchedEffect(errorState) {
                     val exception = when (val throwable = errorState.exception) {
                         is AuthException -> throwable
-                        else -> AuthException.from(throwable)
+                        else -> AuthException.from(throwable, stringProvider)
                     }
 
                     dialogController.showErrorDialog(

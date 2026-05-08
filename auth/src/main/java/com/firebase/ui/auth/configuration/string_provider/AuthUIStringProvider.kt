@@ -542,4 +542,53 @@ interface AuthUIStringProvider {
 
     /** Tooltip message shown when MFA is disabled */
     val mfaDisabledTooltip: String
+
+    // =============================================================================================
+    // AuthException error messages
+    // =============================================================================================
+
+    /** Error when a user account has been disabled by an administrator. */
+    val errorUserDisabled: String
+
+    /** Error when provided credentials are invalid. Return empty to use the Firebase SDK message. */
+    val errorInvalidCredentials: String
+
+    /** Error when the user account does not exist. Return empty to use the Firebase SDK message. */
+    val errorUserNotFound: String
+
+    /** Generic error for unexpected user account issues. Return empty to use the Firebase SDK message. */
+    val errorUserAccountGeneric: String
+
+    /** Error when the password is too weak. Return empty to use the Firebase SDK message. */
+    val errorWeakPasswordGeneric: String
+
+    /** Error when the email address is already registered. Return empty to use the Firebase SDK message. */
+    val errorEmailAlreadyInUse: String
+
+    /** Error when an account already exists with a different sign-in method. Return empty to use the Firebase SDK message. */
+    val errorAccountExistsDifferentCredential: String
+
+    /** Error when a credential is already linked to another account. Return empty to use the Firebase SDK message. */
+    val errorCredentialAlreadyInUse: String
+
+    /** Generic error for account collision issues. Return empty to use the Firebase SDK message. */
+    val errorAccountCollisionGeneric: String
+
+    /** Error when multi-factor authentication is required. Return empty to use the Firebase SDK message. */
+    val errorMfaRequiredFallback: String
+
+    /** Error when the operation requires a recent sign-in. Return empty to use the Firebase SDK message. */
+    val errorRecentLoginRequired: String
+
+    /** Error when sign-in is blocked due to too many attempts. Return empty to use the Firebase SDK message. */
+    val errorTooManyRequests: String
+
+    /** Generic unknown authentication error. Return empty to use the Firebase SDK message. */
+    val errorUnknownAuth: String
+
+    /** Error for network failures during authentication. Return empty to use the Firebase SDK message. */
+    val errorNetworkGeneric: String
+
+    /** Error when authentication is cancelled. Return empty to use the Firebase SDK message. */
+    val errorAuthCancelled: String
 }
