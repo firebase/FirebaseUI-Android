@@ -603,6 +603,69 @@ class GoogleAuthProviderFirebaseAuthUITest {
     }
 
     // =============================================================================================
+    // signInWithGoogle - Credential Linking for Authenticated (Non-Anonymous) Users
+    // =============================================================================================
+
+    @Test
+    fun `Sign in with Google with authenticated non-anonymous user and isCredentialLinkingEnabled should link credentials`() = runTest {
+        val mockCredential = mock(AuthCredential::class.java)
+        val mockAuthenticatedUser = mock(FirebaseUser::class.java)
+        `when`(mockAuthenticatedUser.isAnonymous).thenReturn(false)
+        `when`(mockAuthenticatedUser.uid).thenReturn("authenticated-uid")
+
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockAuthenticatedUser)
+
+        val googleSignInResult = AuthProvider.Google.GoogleSignInResult(
+            credential = mockCredential,
+            idToken = "test-id-token",
+            displayName = "Test User",
+            photoUrl = null
+        )
+
+        `when`(
+            mockCredentialManagerProvider.getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(true),
+                autoSelectEnabled = eq(false)
+            )
+        ).thenReturn(googleSignInResult)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockAuthenticatedUser)
+        `when`(mockAuthenticatedUser.linkWithCredential(mockCredential))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            isCredentialLinkingEnabled = true
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        instance.signInWithGoogle(
+            context = applicationContext,
+            config = config,
+            provider = googleProvider,
+            authorizationProvider = mockAuthorizationProvider,
+            credentialManagerProvider = mockCredentialManagerProvider
+        )
+
+        // Verify link was called instead of sign-in
+        verify(mockAuthenticatedUser).linkWithCredential(mockCredential)
+        verify(mockFirebaseAuth, never()).signInWithCredential(any())
+    }
+
+    // =============================================================================================
     // signInWithGoogle - Configuration Properties
     // =============================================================================================
 
