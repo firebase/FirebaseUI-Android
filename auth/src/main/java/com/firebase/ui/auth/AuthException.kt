@@ -375,7 +375,8 @@ abstract class AuthException(
 
                         "ERROR_USER_DISABLED" -> InvalidCredentialsException(
                             message = stringProvider?.errorUserDisabled.nonEmpty()
-                                ?: firebaseException.message.orEmpty(),
+                                ?: firebaseException.message
+                                ?: "User account has been disabled",
                             cause = firebaseException
                         )
 
@@ -488,8 +489,8 @@ abstract class AuthException(
                         )
                     } else {
                         UnknownException(
-                            message = firebaseException.message
-                                ?: stringProvider?.errorUnknownAuth.nonEmpty()
+                            message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "An unknown error occurred",
                             cause = firebaseException
                         )
