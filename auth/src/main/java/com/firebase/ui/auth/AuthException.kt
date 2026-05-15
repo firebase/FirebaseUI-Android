@@ -14,7 +14,10 @@
 
 package com.firebase.ui.auth
 
+import android.content.Context
 import com.firebase.ui.auth.AuthException.Companion.from
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuthException
@@ -341,15 +344,22 @@ abstract class AuthException(
          * @return An appropriate [AuthException] subtype
          */
         @JvmStatic
-        fun from(firebaseException: Exception): AuthException {
+        fun from(firebaseException: Exception, context: Context): AuthException =
+            from(firebaseException, DefaultAuthUIStringProvider(context))
+
+        @JvmStatic
+        @JvmOverloads
+        fun from(firebaseException: Exception, stringProvider: AuthUIStringProvider? = null): AuthException {
             return when (firebaseException) {
                 // If already an AuthException, return it directly
                 is AuthException -> firebaseException
-                
+
                 // Handle specific Firebase Auth exceptions first (before general FirebaseException)
                 is FirebaseAuthInvalidCredentialsException -> {
                     InvalidCredentialsException(
-                        message = firebaseException.message ?: "Invalid credentials provided",
+                        message = stringProvider?.errorInvalidCredentials.nonEmpty()
+                            ?: firebaseException.message
+                            ?: "Invalid credentials provided",
                         cause = firebaseException
                     )
                 }
@@ -357,17 +367,23 @@ abstract class AuthException(
                 is FirebaseAuthInvalidUserException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_USER_NOT_FOUND" -> UserNotFoundException(
-                            message = firebaseException.message ?: "User not found",
+                            message = stringProvider?.errorUserNotFound.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "User not found",
                             cause = firebaseException
                         )
 
                         "ERROR_USER_DISABLED" -> InvalidCredentialsException(
-                            message = firebaseException.message ?: "User account has been disabled",
+                            message = stringProvider?.errorUserDisabled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "User account has been disabled",
                             cause = firebaseException
                         )
 
                         else -> UserNotFoundException(
-                            message = firebaseException.message ?: "User account error",
+                            message = stringProvider?.errorUserAccountGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "User account error",
                             cause = firebaseException
                         )
                     }
@@ -375,7 +391,9 @@ abstract class AuthException(
 
                 is FirebaseAuthWeakPasswordException -> {
                     WeakPasswordException(
-                        message = firebaseException.message ?: "Password is too weak",
+                        message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                            ?: firebaseException.message
+                            ?: "Password is too weak",
                         cause = firebaseException,
                         reason = firebaseException.reason
                     )
@@ -384,26 +402,31 @@ abstract class AuthException(
                 is FirebaseAuthUserCollisionException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_EMAIL_ALREADY_IN_USE" -> EmailAlreadyInUseException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorEmailAlreadyInUse.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Email address is already in use",
                             cause = firebaseException,
                             email = firebaseException.email
                         )
 
                         "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> AccountLinkingRequiredException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorAccountExistsDifferentCredential.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Account already exists with different credentials",
                             cause = firebaseException
                         )
 
                         "ERROR_CREDENTIAL_ALREADY_IN_USE" -> AccountLinkingRequiredException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorCredentialAlreadyInUse.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Credential is already associated with a different user account",
                             cause = firebaseException
                         )
 
                         else -> AccountLinkingRequiredException(
-                            message = firebaseException.message ?: "Account collision error",
+                            message = stringProvider?.errorAccountCollisionGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Account collision error",
                             cause = firebaseException
                         )
                     }
@@ -411,7 +434,8 @@ abstract class AuthException(
 
                 is FirebaseAuthMultiFactorException -> {
                     MfaRequiredException(
-                        message = firebaseException.message
+                        message = stringProvider?.errorMfaRequiredFallback.nonEmpty()
+                            ?: firebaseException.message
                             ?: "Multi-factor authentication required",
                         cause = firebaseException
                     )
@@ -419,23 +443,25 @@ abstract class AuthException(
 
                 is FirebaseAuthRecentLoginRequiredException -> {
                     InvalidCredentialsException(
-                        message = firebaseException.message
+                        message = stringProvider?.errorRecentLoginRequired.nonEmpty()
+                            ?: firebaseException.message
                             ?: "Recent login required for this operation",
                         cause = firebaseException
                     )
                 }
 
                 is FirebaseAuthException -> {
-                    // Handle FirebaseAuthException and check for specific error codes
                     when (firebaseException.errorCode) {
                         "ERROR_TOO_MANY_REQUESTS" -> TooManyRequestsException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorTooManyRequests.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Too many requests. Please try again later",
                             cause = firebaseException
                         )
 
                         else -> UnknownException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "An unknown authentication error occurred",
                             cause = firebaseException
                         )
@@ -443,33 +469,36 @@ abstract class AuthException(
                 }
 
                 is FirebaseException -> {
-                    // Handle general Firebase exceptions, which include network errors
                     NetworkException(
-                        message = firebaseException.message ?: "Network error occurred",
+                        message = stringProvider?.errorNetworkGeneric.nonEmpty()
+                            ?: firebaseException.message
+                            ?: "Network error occurred",
                         cause = firebaseException
                     )
                 }
 
                 else -> {
-                    // Check for common cancellation patterns
-                    if (firebaseException.message?.contains(
-                            "cancelled",
-                            ignoreCase = true
-                        ) == true ||
+                    if (firebaseException.message?.contains("cancelled", ignoreCase = true) == true ||
                         firebaseException.message?.contains("canceled", ignoreCase = true) == true
                     ) {
                         AuthCancelledException(
-                            message = firebaseException.message ?: "Authentication was cancelled",
+                            message = stringProvider?.errorAuthCancelled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Authentication was cancelled",
                             cause = firebaseException
                         )
                     } else {
                         UnknownException(
-                            message = firebaseException.message ?: "An unknown error occurred",
+                            message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "An unknown error occurred",
                             cause = firebaseException
                         )
                     }
                 }
             }
         }
+
+        private fun String?.nonEmpty(): String? = this?.ifEmpty { null }
     }
 }

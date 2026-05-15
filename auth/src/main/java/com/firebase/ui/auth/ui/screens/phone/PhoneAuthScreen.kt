@@ -210,7 +210,7 @@ fun PhoneAuthScreen(
             }
 
             is AuthState.Error -> {
-                val exception = AuthException.from(state.exception)
+                val exception = AuthException.from(state.exception, stringProvider)
                 onError(exception)
                 
                 // Show dialog for phone-specific errors using top-level controller
