@@ -226,7 +226,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -452,7 +452,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
         throw e
     } catch (e: Exception) {
         val authException = recoverLegacyDifferentSignInMethod(config, email, e)
-            ?: AuthException.from(e)
+            ?: AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -834,7 +834,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -1055,7 +1055,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }

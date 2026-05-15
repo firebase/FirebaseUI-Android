@@ -183,7 +183,7 @@ fun EmailAuthScreen(
             }
 
             is AuthState.Error -> {
-                val exception = AuthException.from(state.exception)
+                val exception = AuthException.from(state.exception, stringProvider)
                 onError(exception)
                 dialogController?.showErrorDialog(
                     exception = exception,
@@ -281,7 +281,7 @@ fun EmailAuthScreen(
                         skipCredentialSave = isUsingRetrievedCredential
                     )
                 } catch (e: Exception) {
-                    onError(AuthException.from(e))
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },
@@ -306,7 +306,7 @@ fun EmailAuthScreen(
                         )
                     }
                 } catch (e: Exception) {
-                    onError(AuthException.from(e))
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },
