@@ -56,6 +56,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
+    loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
     val callbackManager = remember { CallbackManager.Factory.create() }
@@ -114,6 +115,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
         updateAuthState(
             AuthState.Loading("Signing in with facebook...")
         )
+        (testLoginManagerProvider ?: loginManagerProvider).logOut()
         launcher.launch(provider.scopes)
     }
 }
@@ -150,7 +152,6 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
         updateAuthState(
             AuthState.Loading("Signing in with facebook...")
         )
-        (testLoginManagerProvider ?: credentialProvider).logOut()
         val profileData = provider.fetchFacebookProfile(accessToken)
         val credential = credentialProvider.getCredential(accessToken.token)
         signInAndLinkWithCredential(
