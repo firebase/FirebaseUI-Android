@@ -387,7 +387,7 @@ class FirebaseAuthUI private constructor(
             throw e
         } catch (e: Exception) {
             // Map to appropriate AuthException
-            val authException = AuthException.from(e)
+            val authException = AuthException.from(e, context)
             updateAuthState(AuthState.Error(authException))
             throw authException
         }
@@ -453,7 +453,7 @@ class FirebaseAuthUI private constructor(
             throw e
         } catch (e: Exception) {
             // Map to appropriate AuthException
-            val authException = AuthException.from(e)
+            val authException = AuthException.from(e, context)
             updateAuthState(AuthState.Error(authException))
             throw authException
         }

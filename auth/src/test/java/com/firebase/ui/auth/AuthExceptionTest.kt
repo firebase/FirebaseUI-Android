@@ -14,11 +14,15 @@
 
 package com.firebase.ui.auth
 
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -135,5 +139,48 @@ class AuthExceptionTest {
 
         // Assert
         assertThat(exception.email).isEqualTo(email)
+    }
+
+    // =============================================================================================
+    // AuthUIStringProvider message customisation
+    // =============================================================================================
+
+    @Test
+    fun `from() uses string provider message when non-empty`() {
+        val firebaseException = mock(FirebaseAuthInvalidUserException::class.java)
+        whenever(firebaseException.errorCode).thenReturn("ERROR_USER_DISABLED")
+        whenever(firebaseException.message).thenReturn("Firebase: user disabled")
+
+        val stringProvider = mock(AuthUIStringProvider::class.java)
+        whenever(stringProvider.errorUserDisabled).thenReturn("Custom: account disabled")
+
+        val result = AuthException.from(firebaseException, stringProvider)
+
+        assertThat(result.message).isEqualTo("Custom: account disabled")
+    }
+
+    @Test
+    fun `from() falls back to Firebase message when string provider returns empty`() {
+        val firebaseException = mock(FirebaseAuthInvalidUserException::class.java)
+        whenever(firebaseException.errorCode).thenReturn("ERROR_USER_DISABLED")
+        whenever(firebaseException.message).thenReturn("Firebase: user disabled")
+
+        val stringProvider = mock(AuthUIStringProvider::class.java)
+        whenever(stringProvider.errorUserDisabled).thenReturn("")
+
+        val result = AuthException.from(firebaseException, stringProvider)
+
+        assertThat(result.message).isEqualTo("Firebase: user disabled")
+    }
+
+    @Test
+    fun `from() falls back to Firebase message when no string provider given`() {
+        val firebaseException = mock(FirebaseAuthInvalidUserException::class.java)
+        whenever(firebaseException.errorCode).thenReturn("ERROR_USER_DISABLED")
+        whenever(firebaseException.message).thenReturn("Firebase: user disabled")
+
+        val result = AuthException.from(firebaseException)
+
+        assertThat(result.message).isEqualTo("Firebase: user disabled")
     }
 }

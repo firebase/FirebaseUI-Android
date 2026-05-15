@@ -20,6 +20,7 @@ import kotlinx.coroutines.tasks.await
  */
 @Composable
 internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     return remember(this) {
         {
@@ -30,7 +31,7 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
                     // Already an AuthException, don't re-wrap it
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
-                    val authException = AuthException.from(e)
+                    val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
                 }
             }
