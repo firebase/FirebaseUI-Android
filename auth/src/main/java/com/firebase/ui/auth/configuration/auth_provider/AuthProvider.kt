@@ -211,6 +211,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
             return actionCodeSettings {
                 url = continueUrl
                 handleCodeInApp = emailLinkActionCodeSettings.canHandleCodeInApp()
+                linkDomain = emailLinkActionCodeSettings.linkDomain
                 iosBundleId = emailLinkActionCodeSettings.iosBundle
                 setAndroidPackageName(
                     emailLinkActionCodeSettings.androidPackageName ?: "",
