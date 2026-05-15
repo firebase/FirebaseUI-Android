@@ -150,6 +150,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
         updateAuthState(
             AuthState.Loading("Signing in with facebook...")
         )
+        (testLoginManagerProvider ?: credentialProvider).logOut()
         val profileData = provider.fetchFacebookProfile(accessToken)
         val credential = credentialProvider.getCredential(accessToken.token)
         signInAndLinkWithCredential(

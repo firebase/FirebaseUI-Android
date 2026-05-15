@@ -104,6 +104,46 @@ class FacebookAuthProviderFirebaseAuthUITest {
 
     @Test
     @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `signInWithFacebook - calls logOut before sign in to clear stale cached token`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val provider = spy(AuthProvider.Facebook())
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        val mockAccessToken = mock<AccessToken> {
+            on { token } doReturn "random-token"
+        }
+        val mockCredential = mock<AuthCredential>()
+        val mockUser = mock<FirebaseUser>()
+        val mockAuthResult = mock<AuthResult>()
+        whenever(mockAuthResult.user).thenReturn(mockUser)
+        whenever(mockUser.isEmailVerified).thenReturn(true)
+        whenever(mockUser.providerData).thenReturn(emptyList())
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        whenever(mockFirebaseAuth.signInWithCredential(mockCredential))
+            .thenReturn(taskCompletionSource.task)
+        doReturn(null).whenever(provider).fetchFacebookProfile(any())
+        whenever(mockFBAuthCredentialProvider.getCredential("random-token"))
+            .thenReturn(mockCredential)
+
+        instance.signInWithFacebook(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            accessToken = mockAccessToken,
+            credentialProvider = mockFBAuthCredentialProvider
+        )
+
+        verify(mockFBAuthCredentialProvider).logOut()
+    }
+
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `signInWithFacebook - successful sign in signs user in and emits Success authState`() = runTest {
         val authStateListeners = mutableListOf<AuthStateListener>()
         doAnswer { invocation ->
