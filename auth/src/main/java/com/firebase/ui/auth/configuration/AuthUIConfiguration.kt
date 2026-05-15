@@ -207,6 +207,10 @@ class AuthUIConfiguration(
      * This should only be enabled when email enumeration protection is disabled for the
      * Firebase project and the application explicitly wants to use the legacy API to
      * recover from email/password attempts made with the wrong provider.
+     *
+     * See the Identity Platform documentation for details on disabling email enumeration
+     * protection:
+     * https://cloud.google.com/identity-platform/docs/admin/email-enumeration-protection#disable
      */
     val legacyFetchSignInWithEmail: Boolean = false,
 
