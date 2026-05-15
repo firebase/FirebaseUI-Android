@@ -494,4 +494,49 @@ class DefaultAuthUIStringProvider(
 
     override val mfaDisabledTooltip: String
         get() = localizedContext.getString(R.string.fui_mfa_disabled_tooltip)
+
+    override val errorUserDisabled: String
+        get() = localizedContext.getString(R.string.fui_error_user_disabled)
+
+    override val errorInvalidCredentials: String
+        get() = localizedContext.getString(R.string.fui_error_invalid_credentials)
+
+    override val errorUserNotFound: String
+        get() = localizedContext.getString(R.string.fui_error_user_not_found)
+
+    override val errorUserAccountGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_user_account_generic)
+
+    override val errorWeakPasswordGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_weak_password_generic)
+
+    override val errorEmailAlreadyInUse: String
+        get() = localizedContext.getString(R.string.fui_error_email_already_in_use)
+
+    override val errorAccountExistsDifferentCredential: String
+        get() = localizedContext.getString(R.string.fui_error_account_exists_different_credential)
+
+    override val errorCredentialAlreadyInUse: String
+        get() = localizedContext.getString(R.string.fui_error_credential_already_in_use)
+
+    override val errorAccountCollisionGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_account_collision_generic)
+
+    override val errorMfaRequiredFallback: String
+        get() = localizedContext.getString(R.string.fui_error_mfa_required_fallback)
+
+    override val errorRecentLoginRequired: String
+        get() = localizedContext.getString(R.string.fui_error_recent_login_required)
+
+    override val errorTooManyRequests: String
+        get() = localizedContext.getString(R.string.fui_error_too_many_requests)
+
+    override val errorUnknownAuth: String
+        get() = localizedContext.getString(R.string.fui_error_unknown_auth)
+
+    override val errorNetworkGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_network_generic)
+
+    override val errorAuthCancelled: String
+        get() = localizedContext.getString(R.string.fui_error_auth_cancelled)
 }
