@@ -33,6 +33,29 @@ class AuthProviderTest {
     // =============================================================================================
 
     @Test
+    fun `addSessionInfoToActionCodeSettings preserves linkDomain`() {
+        val actionCodeSettings = actionCodeSettings {
+            url = "https://example.com"
+            handleCodeInApp = true
+            linkDomain = "myapp.page.link"
+            setAndroidPackageName("com.example", true, null)
+        }
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = actionCodeSettings,
+            passwordValidationRules = emptyList()
+        )
+
+        val result = provider.addSessionInfoToActionCodeSettings(
+            sessionId = "abc123",
+            anonymousUserId = ""
+        )
+
+        assertThat(result.linkDomain).isEqualTo("myapp.page.link")
+    }
+
+    @Test
     fun `email provider with valid configuration should succeed`() {
         val provider = AuthProvider.Email(
             emailLinkActionCodeSettings = null,
