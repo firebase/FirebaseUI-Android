@@ -222,6 +222,23 @@
     <string name="fui_error_mfa_required_message" translation_description="Error message when MFA is required">Additional verification required. Please complete multi-factor authentication.</string>
     <string name="fui_error_account_linking_required_message" translation_description="Error message when account linking is required">Account needs to be linked. Please try a different sign-in method.</string>
     <string name="fui_error_auth_cancelled_message" translation_description="Error message when authentication is cancelled">Authentication was cancelled. Please try again when ready.</string>
+    <!-- AuthException messages — override in your app's strings.xml to customise.
+         Strings left empty fall back to the Firebase SDK error message. -->
+    <string name="fui_error_user_disabled" translation_description="Error when a user account has been disabled by an administrator. Override to show a custom message.">User account has been disabled</string>
+    <string name="fui_error_invalid_credentials" translation_description="Error when provided credentials are invalid. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_user_not_found" translation_description="Error when the user account does not exist. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_user_account_generic" translation_description="Generic error for unexpected user account issues. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_weak_password_generic" translation_description="Error when the password is too weak. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_email_already_in_use" translation_description="Error when the email address is already registered. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_account_exists_different_credential" translation_description="Error when an account already exists with a different sign-in method. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_credential_already_in_use" translation_description="Error when a credential is already linked to another account. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_account_collision_generic" translation_description="Generic error for account collision issues. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_mfa_required_fallback" translation_description="Error when multi-factor authentication is required. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_recent_login_required" translation_description="Error when the operation requires a recent sign-in. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_too_many_requests" translation_description="Error when sign-in is blocked due to too many attempts. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_unknown_auth" translation_description="Generic unknown authentication error. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_network_generic" translation_description="Error for network failures during authentication. Leave empty to use the Firebase SDK message."></string>
+    <string name="fui_error_auth_cancelled" translation_description="Error when authentication is cancelled. Leave empty to use the Firebase SDK message."></string>
 
     <!-- MFA Enrollment -->
     <string name="fui_mfa_step_select_factor_title" translation_description="Title for MFA factor selection step">Choose Authentication Method</string>

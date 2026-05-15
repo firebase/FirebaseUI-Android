@@ -74,7 +74,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
                 } catch (e: AuthException) {
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
-                    val authException = AuthException.from(e)
+                    val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
                 }
             }
@@ -231,7 +231,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
         throw e
 
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
