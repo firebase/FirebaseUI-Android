@@ -224,7 +224,7 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -334,7 +334,7 @@ internal suspend fun FirebaseAuthUI.signInWithPhoneAuthCredential(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }

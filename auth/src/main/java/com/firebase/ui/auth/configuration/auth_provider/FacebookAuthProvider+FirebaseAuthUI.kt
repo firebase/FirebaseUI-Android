@@ -86,7 +86,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                             // Already an AuthException, don't re-wrap it
                             updateAuthState(AuthState.Error(e))
                         } catch (e: Exception) {
-                            val authException = AuthException.from(e)
+                            val authException = AuthException.from(e, context)
                             updateAuthState(AuthState.Error(authException))
                         }
                     }
@@ -98,7 +98,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
 
                 override fun onError(error: FacebookException) {
                     Log.e("FacebookAuthProvider", "Error during Facebook sign in", error)
-                    val authException = AuthException.from(error)
+                    val authException = AuthException.from(error, context)
                     updateAuthState(
                         AuthState.Error(
                             authException
@@ -190,7 +190,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: FacebookException) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     } catch (e: CancellationException) {
@@ -204,7 +204,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
