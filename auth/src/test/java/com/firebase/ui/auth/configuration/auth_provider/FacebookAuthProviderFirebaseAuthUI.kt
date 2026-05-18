@@ -149,6 +149,50 @@ class FacebookAuthProviderFirebaseAuthUITest {
 
     @Test
     @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `rememberSignInWithFacebookLauncher - does not propagate stale token logout failure`() {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val provider = AuthProvider.Facebook()
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+        val logoutException = RuntimeException("logout failed")
+        doAnswer {
+            throw logoutException
+        }.whenever(mockFBAuthCredentialProvider).logOut()
+
+        var launcher: (() -> Unit)? = null
+        var thrownException: Exception? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberSignInWithFacebookLauncher(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                loginManagerProvider = mockFBAuthCredentialProvider,
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            try {
+                launcher?.invoke()
+            } catch (e: Exception) {
+                thrownException = e
+            }
+        }
+
+        var exceptionInChain: Throwable? = thrownException
+        while (exceptionInChain != null) {
+            assertThat(exceptionInChain).isNotEqualTo(logoutException)
+            exceptionInChain = exceptionInChain.cause
+        }
+        verify(mockFBAuthCredentialProvider).logOut()
+    }
+
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
     fun `signInWithFacebook - successful sign in signs user in and emits Success authState`() = runTest {
         val authStateListeners = mutableListOf<AuthStateListener>()
         doAnswer { invocation ->
