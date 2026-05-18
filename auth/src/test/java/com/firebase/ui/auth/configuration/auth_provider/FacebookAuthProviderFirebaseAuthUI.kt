@@ -16,9 +16,11 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.facebook.AccessToken
 import com.facebook.FacebookException
+import com.facebook.FacebookSdk
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -40,6 +42,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -61,6 +64,9 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class FacebookAuthProviderFirebaseAuthUITest {
 
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
     @Mock
     private lateinit var mockFirebaseAuth: FirebaseAuth
 
@@ -77,6 +83,11 @@ class FacebookAuthProviderFirebaseAuthUITest {
         FirebaseAuthUI.clearInstanceCache()
 
         applicationContext = ApplicationProvider.getApplicationContext()
+
+        FacebookSdk.setApplicationId("fake-app-id")
+        FacebookSdk.setClientToken("fake-client-token")
+        @Suppress("DEPRECATION")
+        FacebookSdk.sdkInitialize(applicationContext)
 
         FirebaseApp.getApps(applicationContext).forEach { app ->
             app.delete()
@@ -100,6 +111,84 @@ class FacebookAuthProviderFirebaseAuthUITest {
         } catch (_: Exception) {
             // Ignore if already deleted
         }
+    }
+
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `rememberSignInWithFacebookLauncher - calls logOut before launching to clear stale token`() {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val provider = AuthProvider.Facebook()
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+
+        var launcher: (() -> Unit)? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberSignInWithFacebookLauncher(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                loginManagerProvider = mockFBAuthCredentialProvider,
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            try {
+                launcher?.invoke()
+            } catch (_: Exception) {
+                // launcher.launch() may throw in test environment — that's expected
+            }
+        }
+
+        verify(mockFBAuthCredentialProvider).logOut()
+    }
+
+    @Test
+    @Config(manifest = Config.NONE, qualifiers = "night")
+    fun `rememberSignInWithFacebookLauncher - does not propagate stale token logout failure`() {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val provider = AuthProvider.Facebook()
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(provider)
+            }
+        }
+        val logoutException = RuntimeException("logout failed")
+        doAnswer {
+            throw logoutException
+        }.whenever(mockFBAuthCredentialProvider).logOut()
+
+        var launcher: (() -> Unit)? = null
+        var thrownException: Exception? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberSignInWithFacebookLauncher(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                loginManagerProvider = mockFBAuthCredentialProvider,
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            try {
+                launcher?.invoke()
+            } catch (e: Exception) {
+                thrownException = e
+            }
+        }
+
+        var exceptionInChain: Throwable? = thrownException
+        while (exceptionInChain != null) {
+            assertThat(exceptionInChain).isNotEqualTo(logoutException)
+            exceptionInChain = exceptionInChain.cause
+        }
+        verify(mockFBAuthCredentialProvider).logOut()
     }
 
     @Test
