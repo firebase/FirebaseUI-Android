@@ -91,6 +91,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.remember
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
@@ -112,12 +113,25 @@ class AuthActivity : ComponentActivity() {
 
         setContent {
             AppTheme {
-                val configuration = authUIConfiguration {
-                    context = applicationContext
-                    theme = AuthUITheme.fromMaterialTheme()
-                    providers {
-                        provider(AuthProvider.Email())
-                        provider(AuthProvider.Google())
+                val authTheme = AuthUITheme.fromMaterialTheme()
+                val configuration = remember(authTheme) {
+                    authUIConfiguration {
+                        context = applicationContext
+                        theme = authTheme
+                        providers {
+                            provider(
+                                AuthProvider.Email(
+                                    emailLinkActionCodeSettings = null,
+                                    passwordValidationRules = emptyList(),
+                                )
+                            )
+                            provider(
+                                AuthProvider.Google(
+                                    scopes = emptyList(),
+                                    serverClientId = null,
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -166,6 +180,9 @@ If the project uses Navigation Compose, prefer making `FirebaseAuthScreen` a des
 
 - Never commit a real `google-services.json` unless the user's repo already treats Firebase config as committable and they explicitly want it included.
 - Do not hard-code demo package names, server client IDs, OAuth IDs, policy URLs, or Firebase project values from FirebaseUI samples.
+- FirebaseUI Auth releases may be built with newer Kotlin metadata than the app. If compilation reports incompatible Kotlin metadata, update the app's Kotlin plugin or choose a FirebaseUI version compatible with the app's Kotlin version.
+- If provider constructors fail because optional parameters have no defaults, pass explicit values such as `AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList())` and `AuthProvider.Google(scopes = emptyList(), serverClientId = null)`.
+- Remember the `authUIConfiguration` object in Compose so recomposition does not recreate or restart the auth flow.
 - Google Sign-In failures are often Firebase Console or SHA certificate issues, not Kotlin code issues.
 - Keep the provider list small at first. Add only providers the user has configured and can test.
 - Set `theme` in `authUIConfiguration` for clarity. Use an `AuthUITheme` wrapper only if surrounding UI must share that theme.
