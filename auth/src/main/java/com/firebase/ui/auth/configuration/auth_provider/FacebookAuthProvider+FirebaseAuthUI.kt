@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
  * @param context Android context for DataStore access when saving credentials for linking
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Facebook] configuration with scopes and credential provider
+ * @param loginManagerProvider Provides logout operations to clear stale Facebook sessions
  *
  * @return A launcher function that starts the Facebook sign-in flow when invoked
  *
@@ -56,6 +57,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
+    loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
     val callbackManager = remember { CallbackManager.Factory.create() }
@@ -114,6 +116,11 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
         updateAuthState(
             AuthState.Loading("Signing in with facebook...")
         )
+        try {
+            (testLoginManagerProvider ?: loginManagerProvider).logOut()
+        } catch (e: Exception) {
+            Log.w("FacebookAuthProvider", "Failed to clear Facebook session before sign in", e)
+        }
         launcher.launch(provider.scopes)
     }
 }
