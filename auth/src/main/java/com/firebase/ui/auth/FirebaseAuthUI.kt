@@ -23,6 +23,7 @@ import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseAuth.IdTokenListener
@@ -323,6 +324,18 @@ class FirebaseAuthUI private constructor(
      */
     fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
+    }
+
+    internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
+        if (result?.user != null) {
+            updateAuthState(AuthState.Success(
+                result = result,
+                user = result.user!!,
+                isNewUser = result.additionalUserInfo?.isNewUser ?: defaultIsNewUser
+            ))
+        } else {
+            updateAuthState(AuthState.Idle)
+        }
     }
 
     /**

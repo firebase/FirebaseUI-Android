@@ -180,9 +180,9 @@ class GoogleAuthProviderFirebaseAuthUITest {
         // Verify Firebase sign-in was called
         verify(mockFirebaseAuth).signInWithCredential(mockCredential)
 
-        // Verify state is Idle after success
-        val finalState = instance.authStateFlow().first()
-        assertThat(finalState).isEqualTo(AuthState.Idle)
+        // Verify state is Success (with the real AuthResult) after sign-in
+        val finalState = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
     }
 
     @Test
@@ -853,8 +853,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             credentialManagerProvider = mockCredentialManagerProvider
         )
 
-        // Verify final state
-        val finalState = instance.authStateFlow().first()
-        assertThat(finalState).isEqualTo(AuthState.Idle)
+        // Verify final state is Success (with the real AuthResult)
+        val finalState = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
     }
 }
