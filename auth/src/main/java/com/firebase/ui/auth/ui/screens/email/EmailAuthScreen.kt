@@ -42,6 +42,7 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundExceptio
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.coroutines.launch
 
 enum class EmailAuthMode {
@@ -130,6 +131,7 @@ fun EmailAuthScreen(
     authUI: FirebaseAuthUI,
     credentialForLinking: AuthCredential? = null,
     emailLinkFromDifferentDevice: String? = null,
+    onContinueWithProvider: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
@@ -208,6 +210,20 @@ fun EmailAuthScreen(
 
                             else -> Unit
                         }
+                    },
+                    onRecover = if (exception is AuthException.DifferentSignInMethodRequiredException) {
+                        { ex ->
+                            val differentProviderException =
+                                ex as AuthException.DifferentSignInMethodRequiredException
+                            if (differentProviderException.suggestedSignInMethod ==
+                                EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) {
+                                mode.value = EmailAuthMode.EmailLinkSignIn
+                            } else {
+                                onContinueWithProvider(differentProviderException.suggestedSignInMethod)
+                            }
+                        }
+                    } else {
+                        null
                     },
                     onDismiss = {
                         // Dialog dismissed

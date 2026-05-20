@@ -82,6 +82,7 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
 import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
 import kotlinx.coroutines.launch
@@ -231,6 +232,21 @@ fun FirebaseAuthScreen(
             provider = it
         )
     }
+    val continueWithProvider: (String) -> Unit = { providerId ->
+        when (providerId) {
+            googleProvider?.providerId -> onSignInWithGoogle?.invoke()
+            facebookProvider?.providerId -> onSignInWithFacebook?.invoke()
+            appleProvider?.providerId -> onSignInWithApple?.invoke()
+            githubProvider?.providerId -> onSignInWithGithub?.invoke()
+            microsoftProvider?.providerId -> onSignInWithMicrosoft?.invoke()
+            yahooProvider?.providerId -> onSignInWithYahoo?.invoke()
+            twitterProvider?.providerId -> onSignInWithTwitter?.invoke()
+            else -> genericOAuthHandlers.entries
+                .find { it.key.providerId == providerId }
+                ?.value
+                ?.invoke()
+        }
+    }
 
     CompositionLocalProvider(
         LocalAuthUIStringProvider provides configuration.stringProvider,
@@ -318,6 +334,7 @@ fun FirebaseAuthScreen(
                         authUI = authUI,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
+                        onContinueWithProvider = continueWithProvider,
                         onSuccess = {
                             pendingLinkingCredential.value = null
                         },
@@ -326,9 +343,7 @@ fun FirebaseAuthScreen(
                         },
                         onCancel = {
                             pendingLinkingCredential.value = null
-                            if (skipsMethodPicker) {
-                                onSignInCancelled()
-                            } else if (!navController.popBackStack()) {
+                            if (!skipsMethodPicker && !navController.popBackStack()) {
                                 navController.navigate(AuthRoute.MethodPicker.route) {
                                     popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
                                     launchSingleTop = true
@@ -348,9 +363,7 @@ fun FirebaseAuthScreen(
                             onSignInFailure(exception)
                         },
                         onCancel = {
-                            if (skipsMethodPicker) {
-                                onSignInCancelled()
-                            } else if (!navController.popBackStack()) {
+                            if (!skipsMethodPicker && !navController.popBackStack()) {
                                 navController.navigate(AuthRoute.MethodPicker.route) {
                                     popUpTo(AuthRoute.MethodPicker.route) { inclusive = true }
                                     launchSingleTop = true
@@ -584,6 +597,8 @@ fun FirebaseAuthScreen(
                                 launchSingleTop = true
                             }
                         }
+                        // Keep external cancellation reporting centralized here so child screens
+                        // can handle local navigation without triggering duplicate callbacks.
                         onSignInCancelled()
                     }
 
@@ -617,39 +632,56 @@ fun FirebaseAuthScreen(
                         onRetry = { _ ->
                             // Child screens handle their own retry logic
                         },
-                        onRecover = { exception ->
-                            when (exception) {
-                                is AuthException.EmailAlreadyInUseException -> {
+                        onRecover = when (exception) {
+                            is AuthException.EmailAlreadyInUseException -> {
+                                {
                                     navController.navigate(AuthRoute.Email.route) {
                                         launchSingleTop = true
                                     }
                                 }
+                            }
 
-                                is AuthException.AccountLinkingRequiredException -> {
+                            is AuthException.AccountLinkingRequiredException -> {
+                                {
                                     pendingLinkingCredential.value = exception.credential
                                     navController.navigate(AuthRoute.Email.route) {
                                         launchSingleTop = true
                                     }
                                 }
-
-                                is AuthException.EmailLinkPromptForEmailException -> {
-                                    // Cross-device flow: User needs to enter their email
-                                    emailLinkFromDifferentDevice.value = exception.emailLink
-                                    navController.navigate(AuthRoute.Email.route) {
-                                        launchSingleTop = true
-                                    }
-                                }
-
-                                is AuthException.EmailLinkCrossDeviceLinkingException -> {
-                                    // Cross-device linking flow: User needs to enter email to link provider
-                                    emailLinkFromDifferentDevice.value = exception.emailLink
-                                    navController.navigate(AuthRoute.Email.route) {
-                                        launchSingleTop = true
-                                    }
-                                }
-
-                                else -> Unit
                             }
+
+                            is AuthException.EmailLinkPromptForEmailException -> {
+                                {
+                                    emailLinkFromDifferentDevice.value = exception.emailLink
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+
+                            is AuthException.EmailLinkCrossDeviceLinkingException -> {
+                                {
+                                    emailLinkFromDifferentDevice.value = exception.emailLink
+                                    navController.navigate(AuthRoute.Email.route) {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+
+                            is AuthException.DifferentSignInMethodRequiredException -> {
+                                {
+                                    val providerId = exception.suggestedSignInMethod
+                                    if (providerId == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) {
+                                        navController.navigate(AuthRoute.Email.route) {
+                                            launchSingleTop = true
+                                        }
+                                    } else {
+                                        continueWithProvider(providerId)
+                                    }
+                                }
+                            }
+
+                            else -> null
                         },
                         onDismiss = {
                             // Dialog dismissed
