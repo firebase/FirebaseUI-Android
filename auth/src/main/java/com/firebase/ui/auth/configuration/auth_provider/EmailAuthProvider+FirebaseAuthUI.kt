@@ -197,7 +197,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             }
         }
 
-        updateAuthState(AuthState.Idle)
+        updateAuthStateWithResult(result, defaultIsNewUser = true)
         return result
     } catch (e: FirebaseAuthUserCollisionException) {
         // Account collision: email already exists
@@ -431,7 +431,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                 }
             }
 
-            updateAuthState(AuthState.Idle)
+            updateAuthStateWithResult(result)
         }
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
@@ -557,7 +557,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             result?.user?.let {
                 mergeProfile(auth, displayName, photoUrl)
             }
-            updateAuthState(AuthState.Idle)
+            updateAuthStateWithResult(result)
         }
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
@@ -974,7 +974,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         }
         // Clear DataStore after success
         persistenceManager.clear(context)
-        updateAuthState(AuthState.Idle)
+        updateAuthStateWithResult(result)
         return result
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
