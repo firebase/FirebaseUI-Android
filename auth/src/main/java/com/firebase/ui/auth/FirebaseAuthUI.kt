@@ -259,7 +259,7 @@ class FirebaseAuthUI private constructor(
         val firebaseAuthFlow = callbackFlow {
             fun buildState(currentUser: FirebaseUser?): AuthState {
                 return if (currentUser != null) {
-                    stateForUser(currentUser, result = null, isNewUser = false)
+                    handleAuthUserState(currentUser, result = null, isNewUser = false)
                 } else {
                     AuthState.Idle
                 }
@@ -323,22 +323,11 @@ class FirebaseAuthUI private constructor(
         _authStateFlow.value = state
     }
 
-    private fun stateForUser(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
-        return if (!user.isEmailVerified &&
-            user.email != null &&
-            user.providerData.any { it.providerId == "password" }
-        ) {
-            AuthState.RequiresEmailVerification(user = user, email = user.email!!)
-        } else {
-            AuthState.Success(result = result, user = user, isNewUser = isNewUser)
-        }
-    }
-
     internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
         val user = result?.user
         if (user != null) {
             updateAuthState(
-                stateForUser(
+                handleAuthUserState(
                     user = user,
                     result = result,
                     isNewUser = result.additionalUserInfo?.isNewUser ?: defaultIsNewUser
@@ -346,6 +335,17 @@ class FirebaseAuthUI private constructor(
             )
         } else {
             updateAuthState(AuthState.Idle)
+        }
+    }
+
+    private fun handleAuthUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
+        return if (!user.isEmailVerified &&
+            user.email != null &&
+            user.providerData.any { it.providerId == "password" }
+        ) {
+            AuthState.RequiresEmailVerification(user = user, email = user.email!!)
+        } else {
+            AuthState.Success(result = result, user = user, isNewUser = isNewUser)
         }
     }
 
