@@ -41,6 +41,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
@@ -312,5 +313,54 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         assertThat(result).isNotNull()
         verify(mockAnonymousUser).linkWithCredential(credential)
+    }
+
+    // =============================================================================================
+    // Credential Linking for Authenticated (Non-Anonymous) Users Tests
+    // =============================================================================================
+
+    @Test
+    fun `createOrLinkUserWithEmailAndPassword - links email credential to authenticated non-anonymous user when isCredentialLinkingEnabled`() = runTest {
+        val authenticatedUser = mock(FirebaseUser::class.java)
+        `when`(authenticatedUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(authenticatedUser)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mock(AuthResult::class.java))
+        `when`(authenticatedUser.linkWithCredential(ArgumentMatchers.any(AuthCredential::class.java)))
+            .thenReturn(taskCompletionSource.task)
+        // Stub createUserWithEmailAndPassword so the test fails at verify, not with NPE
+        `when`(mockFirebaseAuth.createUserWithEmailAndPassword(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString()
+        )).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+            }
+            isCredentialLinkingEnabled = true
+        }
+
+        instance.createOrLinkUserWithEmailAndPassword(
+            context = applicationContext,
+            config = config,
+            provider = emailProvider,
+            name = null,
+            email = "test@example.com",
+            password = "Pass@123"
+        )
+
+        verify(authenticatedUser).linkWithCredential(ArgumentMatchers.any(AuthCredential::class.java))
+        verify(mockFirebaseAuth, never()).createUserWithEmailAndPassword(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString()
+        )
     }
 }

@@ -55,6 +55,12 @@
             android:label="Custom Slots &amp; Theming Demo"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name=".CredentialLinkingDemoActivity"
+            android:label="Credential Linking Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
     </application>
 
 </manifest>

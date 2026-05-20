@@ -458,6 +458,7 @@ class AuthUIConfigurationTest {
             "isCredentialManagerEnabled",
             "isMfaEnabled",
             "isAnonymousUpgradeEnabled",
+            "isCredentialLinkingEnabled",
             "tosUrl",
             "privacyPolicyUrl",
             "logo",
