@@ -110,8 +110,8 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
 internal suspend fun FirebaseAuthUI.signInAnonymously() {
     try {
         updateAuthState(AuthState.Loading("Signing in anonymously..."))
-        auth.signInAnonymously().await()
-        updateAuthState(AuthState.Idle)
+        val result = auth.signInAnonymously().await()
+        updateAuthStateWithResult(result, defaultIsNewUser = true)
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in anonymously was cancelled",

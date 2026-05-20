@@ -780,7 +780,7 @@ private fun AuthSuccessContent(
                     }
                 },
                 state = rememberTooltipState(
-                    initialIsVisible = !configuration.isMfaEnabled
+                    initialIsVisible = false
                 )
             ) {
                 Button(

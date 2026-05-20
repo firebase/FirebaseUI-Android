@@ -162,7 +162,6 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                     photoUrl = authResult.user?.photoUrl,
                 )
             }
-            updateAuthState(AuthState.Idle)
             return
         }
 
@@ -195,8 +194,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                 android.util.Log.w("OAuthProvider", "Failed to save sign-in preference", e)
             }
 
-            // Just update state to Idle
-            updateAuthState(AuthState.Idle)
+            updateAuthStateWithResult(authResult)
         } else {
             throw AuthException.UnknownException(
                 message = "OAuth sign-in did not return a valid credential"
