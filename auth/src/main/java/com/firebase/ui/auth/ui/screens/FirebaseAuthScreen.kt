@@ -111,12 +111,12 @@ fun FirebaseAuthScreen(
     authUI: FirebaseAuthUI = FirebaseAuthUI.getInstance(),
     emailLink: String? = null,
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
-    authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
     customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     emailContent: (@Composable (EmailAuthContentState) -> Unit)? = null,
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)? = null,
     mfaEnrollmentContent: (@Composable (MfaEnrollmentContentState) -> Unit)? = null,
     mfaChallengeContent: (@Composable (MfaChallengeContentState) -> Unit)? = null,
+    authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
 ) {
     // Set FirebaseUI version
     LaunchedEffect(authUI.auth) {
