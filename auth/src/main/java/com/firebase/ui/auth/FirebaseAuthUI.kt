@@ -23,6 +23,7 @@ import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseAuth.IdTokenListener
@@ -258,21 +259,7 @@ class FirebaseAuthUI private constructor(
         val firebaseAuthFlow = callbackFlow {
             fun buildState(currentUser: FirebaseUser?): AuthState {
                 return if (currentUser != null) {
-                    if (!currentUser.isEmailVerified &&
-                        currentUser.email != null &&
-                        currentUser.providerData.any { it.providerId == "password" }
-                    ) {
-                        AuthState.RequiresEmailVerification(
-                            user = currentUser,
-                            email = currentUser.email!!
-                        )
-                    } else {
-                        AuthState.Success(
-                            result = null,
-                            user = currentUser,
-                            isNewUser = false
-                        )
-                    }
+                    handleAuthUserState(currentUser, result = null, isNewUser = false)
                 } else {
                     AuthState.Idle
                 }
@@ -285,6 +272,17 @@ class FirebaseAuthUI private constructor(
 
             // Create auth state listener
             val authStateListener = AuthStateListener { firebaseAuth ->
+                // When user signs out, clear stale user-presence internal states so the combine
+                // doesn't return Success/RequiresEmailVerification after the user is gone.
+                if (firebaseAuth.currentUser == null) {
+                    val current = _authStateFlow.value
+                    if (current is AuthState.Success ||
+                        current is AuthState.RequiresEmailVerification ||
+                        current is AuthState.RequiresProfileCompletion
+                    ) {
+                        _authStateFlow.value = AuthState.Idle
+                    }
+                }
                 trySend(buildState(firebaseAuth.currentUser))
             }
 
@@ -323,6 +321,32 @@ class FirebaseAuthUI private constructor(
      */
     fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
+    }
+
+    internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
+        val user = result?.user
+        if (user != null) {
+            updateAuthState(
+                handleAuthUserState(
+                    user = user,
+                    result = result,
+                    isNewUser = result.additionalUserInfo?.isNewUser ?: defaultIsNewUser
+                )
+            )
+        } else {
+            updateAuthState(AuthState.Idle)
+        }
+    }
+
+    private fun handleAuthUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
+        return if (!user.isEmailVerified &&
+            user.email != null &&
+            user.providerData.any { it.providerId == "password" }
+        ) {
+            AuthState.RequiresEmailVerification(user = user, email = user.email!!)
+        } else {
+            AuthState.Success(result = result, user = user, isNewUser = isNewUser)
+        }
     }
 
     /**

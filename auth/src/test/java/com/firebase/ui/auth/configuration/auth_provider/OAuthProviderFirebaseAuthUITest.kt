@@ -143,9 +143,9 @@ class OAuthProviderFirebaseAuthUITest {
             any<OAuthProvider>()
         )
 
-        // Verify state is Idle after success
-        val finalState = instance.authStateFlow().first()
-        assertThat(finalState).isEqualTo(AuthState.Idle)
+        // Verify state is Success after sign-in
+        val finalState = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
     }
 
     // =============================================================================================

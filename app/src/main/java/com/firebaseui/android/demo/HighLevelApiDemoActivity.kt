@@ -247,7 +247,7 @@ private fun AppAuthenticatedContent(
                         }
                     },
                     state = rememberTooltipState(
-                        initialIsVisible = !configuration.isMfaEnabled
+                        initialIsVisible = false
                     )
                 ) {
                     Button(
