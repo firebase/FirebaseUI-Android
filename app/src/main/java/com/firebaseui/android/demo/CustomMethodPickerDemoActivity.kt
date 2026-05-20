@@ -151,14 +151,18 @@ fun SpotlightMethodPicker(
 ) {
     val stringProvider = LocalAuthUIStringProvider.current
 
-    val featured = providers.filter { it is AuthProvider.Google || it is AuthProvider.Apple }
-    val social = providers.filter {
-        it !is AuthProvider.Google && it !is AuthProvider.Apple &&
-        it !is AuthProvider.Email && it !is AuthProvider.Phone &&
-        it !is AuthProvider.Anonymous
+    val groups = providers.groupBy {
+        when (it) {
+            is AuthProvider.Google, is AuthProvider.Apple -> "featured"
+            is AuthProvider.Email, is AuthProvider.Phone -> "credential"
+            is AuthProvider.Anonymous -> "anonymous"
+            else -> "social"
+        }
     }
-    val credential = providers.filter { it is AuthProvider.Email || it is AuthProvider.Phone }
-    val anonymous = providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
+    val featured = groups.getOrElse("featured") { emptyList() }
+    val social = groups.getOrElse("social") { emptyList() }
+    val credential = groups.getOrElse("credential") { emptyList() }
+    val anonymous = groups["anonymous"]?.firstOrNull()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

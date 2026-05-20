@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -256,9 +257,7 @@ fun EnterPhoneNumberUI(state: PhoneAuthContentState) {
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .padding(horizontal = 4.dp),
+                    modifier = Modifier.size(20.dp),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
@@ -309,9 +308,7 @@ fun EnterVerificationCodeUI(state: PhoneAuthContentState) {
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .padding(horizontal = 4.dp),
+                    modifier = Modifier.size(20.dp),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {

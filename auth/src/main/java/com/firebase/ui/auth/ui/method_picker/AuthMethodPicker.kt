@@ -80,7 +80,7 @@ fun AuthMethodPicker(
     termsOfServiceUrl: String? = null,
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
-    customLayout: @Composable ((List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
+    customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current

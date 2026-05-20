@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -270,9 +271,7 @@ fun SignInUI(state: EmailAuthContentState) {
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .padding(horizontal = 4.dp),
+                    modifier = Modifier.size(20.dp),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
@@ -351,9 +350,7 @@ fun SignUpUI(state: EmailAuthContentState) {
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .padding(horizontal = 4.dp),
+                    modifier = Modifier.size(20.dp),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
@@ -420,9 +417,7 @@ fun ResetPasswordUI(state: EmailAuthContentState) {
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .height(20.dp)
-                        .padding(horizontal = 4.dp),
+                    modifier = Modifier.size(20.dp),
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
