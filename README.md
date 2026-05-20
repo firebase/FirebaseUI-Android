@@ -197,7 +197,7 @@ Then you can depend on snapshot versions:
 implementation 'com.firebaseui:firebase-ui-auth:$X.Y.Z-SNAPSHOT'
 ```
 
-You can see which `SNAPSHOT` builds are avaiable here:
+You can see which `SNAPSHOT` builds are available here:
 https://oss.jfrog.org/webapp/#/artifacts/browse/tree/General/oss-snapshot-local/com/firebaseui
 
 Snapshot builds come with absolutely no guarantees and we will close any issues asking to troubleshoot

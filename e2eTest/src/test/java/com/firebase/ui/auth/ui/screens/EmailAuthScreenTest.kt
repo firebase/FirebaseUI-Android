@@ -149,7 +149,7 @@ class EmailAuthScreenTest {
     }
 
     @Test
-    fun `initial EmailAuthMode is SignIn`() {
+    fun `single email provider starts on email screen when provider choice always shown is false`() {
         val configuration = authUIConfiguration {
             context = applicationContext
             providers {
@@ -167,15 +167,30 @@ class EmailAuthScreenTest {
             TestFirebaseAuthScreen(configuration = configuration, authUI = authUI)
         }
 
-        // Click on email provider in AuthMethodPicker
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
+        assertDirectEmailStart()
+    }
 
-        composeAndroidTestRule.waitForIdle()
+    @Test
+    fun `single email provider shows method picker when provider choice always shown is true`() {
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false
+            isProviderChoiceAlwaysShown = true
+        }
 
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault)
-            .assertIsDisplayed()
+        composeAndroidTestRule.setContent {
+            TestFirebaseAuthScreen(configuration = configuration, authUI = authUI)
+        }
+
+        openEmailProviderFromMethodPicker()
     }
 
     @Test
@@ -212,12 +227,7 @@ class EmailAuthScreenTest {
             currentAuthState = authState
         }
 
-        // Click on email provider in AuthMethodPicker
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        assertDirectEmailStart()
 
         composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
@@ -306,12 +316,7 @@ class EmailAuthScreenTest {
             currentAuthState = authState
         }
 
-        // Click on email provider in AuthMethodPicker
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        assertDirectEmailStart()
 
         composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
@@ -381,12 +386,7 @@ class EmailAuthScreenTest {
             currentAuthState = authState
         }
 
-        // Click on email provider in AuthMethodPicker
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        assertDirectEmailStart()
 
         composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault)
             .assertIsDisplayed()
@@ -471,12 +471,7 @@ class EmailAuthScreenTest {
             currentAuthState = authState
         }
 
-        // Click on email provider in AuthMethodPicker
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        assertDirectEmailStart()
 
         composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault)
             .assertIsDisplayed()
@@ -569,15 +564,7 @@ class EmailAuthScreenTest {
             currentAuthState = authState
         }
 
-        // Click on email provider in AuthMethodPicker
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
-
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault)
-            .assertIsDisplayed()
+        assertDirectEmailStart()
 
         // Click "Sign in with email link" button to switch to email link mode
         composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmailLink.uppercase())
@@ -744,6 +731,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isProviderChoiceAlwaysShown = true
         }
 
         // Track auth state changes
@@ -758,12 +746,7 @@ class EmailAuthScreenTest {
         // STEP 1: Sign up and verify credential saved
         println("TEST: Starting sign-up flow...")
 
-        // Click on email provider
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        openEmailProviderFromMethodPicker()
 
         // Click sign-up
         composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
@@ -816,13 +799,9 @@ class EmailAuthScreenTest {
         // STEP 3: Navigate to SignInUI screen to trigger credential retrieval
         println("TEST: Navigating to sign-in screen to trigger credential retrieval...")
 
-        // Click on email provider to show SignInUI, which will trigger auto-retrieval
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
         composeAndroidTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
+        clickEmailProviderFromMethodPicker()
 
         // SignInUI's LaunchedEffect should now trigger credential retrieval and auto-sign-in
         println("TEST: Waiting for automatic credential retrieval and auto-sign-in...")
@@ -877,6 +856,7 @@ class EmailAuthScreenTest {
                     )
                 )
             }
+            isProviderChoiceAlwaysShown = true
         }
 
         var currentAuthState: AuthState = AuthState.Idle
@@ -890,11 +870,7 @@ class EmailAuthScreenTest {
         // STEP 1: Sign up and save credential
         println("TEST: Starting sign-up flow...")
 
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        openEmailProviderFromMethodPicker()
 
         composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
             .assertIsDisplayed()
@@ -940,12 +916,9 @@ class EmailAuthScreenTest {
         // STEP 3: Navigate to SignInUI to trigger credential retrieval
         println("TEST: Navigating to sign-in screen...")
 
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
         composeAndroidTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
+        clickEmailProviderFromMethodPicker()
 
         println("TEST: Waiting for automatic credential retrieval and auto-sign-in...")
 
@@ -997,11 +970,7 @@ class EmailAuthScreenTest {
         }
 
         // Sign up
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.waitForIdle()
+        assertDirectEmailStart()
 
         composeAndroidTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
             .assertIsDisplayed()
@@ -1077,5 +1046,22 @@ class EmailAuthScreenTest {
                 }
             }
         }
+    }
+
+    private fun assertDirectEmailStart() {
+        composeAndroidTestRule.waitForIdle()
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault)
+            .assertIsDisplayed()
+    }
+
+    private fun openEmailProviderFromMethodPicker() {
+        clickEmailProviderFromMethodPicker()
+        assertDirectEmailStart()
+    }
+
+    private fun clickEmailProviderFromMethodPicker() {
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmail)
+            .assertIsDisplayed()
+            .performClick()
     }
 }

@@ -110,8 +110,8 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         verify(mockFirebaseAuth).signInAnonymously()
 
-        val finalState = instance.authStateFlow().first { it is AuthState.Idle }
-        assertThat(finalState).isInstanceOf(AuthState.Idle::class.java)
+        val finalState = instance.authStateFlow().first { it is AuthState.Success }
+        assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = true))
     }
 
     @Test

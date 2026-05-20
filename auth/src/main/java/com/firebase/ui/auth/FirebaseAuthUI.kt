@@ -23,8 +23,10 @@ import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseAuth.IdTokenListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.CancellationException
@@ -255,56 +257,48 @@ class FirebaseAuthUI private constructor(
     fun authStateFlow(): Flow<AuthState> {
         // Create a flow from FirebaseAuth state listener
         val firebaseAuthFlow = callbackFlow {
-            // Set initial state based on current auth state
-            val initialState = auth.currentUser?.let { user ->
-                // Check if email verification is required
-                if (!user.isEmailVerified &&
-                    user.email != null &&
-                    user.providerData.any { it.providerId == "password" }
-                ) {
-                    AuthState.RequiresEmailVerification(
-                        user = user,
-                        email = user.email!!
-                    )
+            fun buildState(currentUser: FirebaseUser?): AuthState {
+                return if (currentUser != null) {
+                    handleAuthUserState(currentUser, result = null, isNewUser = false)
                 } else {
-                    AuthState.Success(result = null, user = user, isNewUser = false)
+                    AuthState.Idle
                 }
-            } ?: AuthState.Idle
+            }
+
+            // Set initial state based on current auth state
+            val initialState = buildState(auth.currentUser)
 
             trySend(initialState)
 
             // Create auth state listener
             val authStateListener = AuthStateListener { firebaseAuth ->
-                val currentUser = firebaseAuth.currentUser
-                val state = if (currentUser != null) {
-                    // Check if email verification is required
-                    if (!currentUser.isEmailVerified &&
-                        currentUser.email != null &&
-                        currentUser.providerData.any { it.providerId == "password" }
+                // When user signs out, clear stale user-presence internal states so the combine
+                // doesn't return Success/RequiresEmailVerification after the user is gone.
+                if (firebaseAuth.currentUser == null) {
+                    val current = _authStateFlow.value
+                    if (current is AuthState.Success ||
+                        current is AuthState.RequiresEmailVerification ||
+                        current is AuthState.RequiresProfileCompletion
                     ) {
-                        AuthState.RequiresEmailVerification(
-                            user = currentUser,
-                            email = currentUser.email!!
-                        )
-                    } else {
-                        AuthState.Success(
-                            result = null,
-                            user = currentUser,
-                            isNewUser = false
-                        )
+                        _authStateFlow.value = AuthState.Idle
                     }
-                } else {
-                    AuthState.Idle
                 }
-                trySend(state)
+                trySend(buildState(firebaseAuth.currentUser))
+            }
+
+            // AuthStateListener does not reliably fire for account linking, but IdTokenListener does.
+            val idTokenListener = IdTokenListener { firebaseAuth ->
+                trySend(buildState(firebaseAuth.currentUser))
             }
 
             // Add listener
             auth.addAuthStateListener(authStateListener)
+            auth.addIdTokenListener(idTokenListener)
 
             // Remove listener when flow collection is cancelled
             awaitClose {
                 auth.removeAuthStateListener(authStateListener)
+                auth.removeIdTokenListener(idTokenListener)
             }
         }
 
@@ -327,6 +321,32 @@ class FirebaseAuthUI private constructor(
      */
     fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
+    }
+
+    internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
+        val user = result?.user
+        if (user != null) {
+            updateAuthState(
+                handleAuthUserState(
+                    user = user,
+                    result = result,
+                    isNewUser = result.additionalUserInfo?.isNewUser ?: defaultIsNewUser
+                )
+            )
+        } else {
+            updateAuthState(AuthState.Idle)
+        }
+    }
+
+    private fun handleAuthUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
+        return if (!user.isEmailVerified &&
+            user.email != null &&
+            user.providerData.any { it.providerId == "password" }
+        ) {
+            AuthState.RequiresEmailVerification(user = user, email = user.email!!)
+        } else {
+            AuthState.Success(result = result, user = user, isNewUser = isNewUser)
+        }
     }
 
     /**
@@ -391,7 +411,7 @@ class FirebaseAuthUI private constructor(
             throw e
         } catch (e: Exception) {
             // Map to appropriate AuthException
-            val authException = AuthException.from(e)
+            val authException = AuthException.from(e, context)
             updateAuthState(AuthState.Error(authException))
             throw authException
         }
@@ -457,7 +477,7 @@ class FirebaseAuthUI private constructor(
             throw e
         } catch (e: Exception) {
             // Map to appropriate AuthException
-            val authException = AuthException.from(e)
+            val authException = AuthException.from(e, context)
             updateAuthState(AuthState.Error(authException))
             throw authException
         }

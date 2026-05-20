@@ -74,7 +74,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
                 } catch (e: AuthException) {
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
-                    val authException = AuthException.from(e)
+                    val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
                 }
             }
@@ -162,7 +162,6 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                     photoUrl = authResult.user?.photoUrl,
                 )
             }
-            updateAuthState(AuthState.Idle)
             return
         }
 
@@ -195,8 +194,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                 android.util.Log.w("OAuthProvider", "Failed to save sign-in preference", e)
             }
 
-            // Just update state to Idle
-            updateAuthState(AuthState.Idle)
+            updateAuthStateWithResult(authResult)
         } else {
             throw AuthException.UnknownException(
                 message = "OAuth sign-in did not return a valid credential"
@@ -231,7 +229,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
         throw e
 
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
