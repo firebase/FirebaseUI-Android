@@ -74,8 +74,12 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.configuration.theme.LocalAuthUITheme
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
+import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
+import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -107,6 +111,11 @@ fun FirebaseAuthScreen(
     authUI: FirebaseAuthUI = FirebaseAuthUI.getInstance(),
     emailLink: String? = null,
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
+    customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
+    emailContent: (@Composable (EmailAuthContentState) -> Unit)? = null,
+    phoneContent: (@Composable (PhoneAuthContentState) -> Unit)? = null,
+    mfaEnrollmentContent: (@Composable (MfaEnrollmentContentState) -> Unit)? = null,
+    mfaChallengeContent: (@Composable (MfaChallengeContentState) -> Unit)? = null,
     authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
 ) {
     // Set FirebaseUI version
@@ -267,6 +276,7 @@ fun FirebaseAuthScreen(
                             termsOfServiceUrl = configuration.tosUrl,
                             privacyPolicyUrl = configuration.privacyPolicyUrl,
                             lastSignInPreference = lastSignInPreference.value,
+                            customLayout = customMethodPickerLayout,
                             onProviderSelected = { provider ->
                                 when (provider) {
                                     is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
@@ -318,6 +328,7 @@ fun FirebaseAuthScreen(
                         authUI = authUI,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
+                        content = emailContent,
                         onSuccess = {
                             pendingLinkingCredential.value = null
                         },
@@ -343,6 +354,7 @@ fun FirebaseAuthScreen(
                         context = context,
                         configuration = configuration,
                         authUI = authUI,
+                        content = phoneContent,
                         onSuccess = {},
                         onError = { exception ->
                             onSignInFailure(exception)
@@ -450,6 +462,7 @@ fun FirebaseAuthScreen(
                             auth = authUI.auth,
                             configuration = mfaConfiguration,
                             authConfiguration = configuration,
+                            content = mfaEnrollmentContent,
                             onComplete = { navController.popBackStack() },
                             onSkip = { navController.popBackStack() },
                             onError = { exception ->
@@ -467,6 +480,7 @@ fun FirebaseAuthScreen(
                         MfaChallengeScreen(
                             resolver = resolver,
                             auth = authUI.auth,
+                            content = mfaChallengeContent,
                             onSuccess = {
                                 pendingResolver.value = null
                                 // Reset auth state to Idle so the firebaseAuthFlow Success state takes over
