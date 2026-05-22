@@ -77,10 +77,10 @@ fun AuthMethodPicker(
     providers: List<AuthProvider>,
     logo: AuthUIAsset? = null,
     onProviderSelected: (AuthProvider) -> Unit,
-    customLayout: @Composable ((List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     termsOfServiceUrl: String? = null,
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
+    customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
