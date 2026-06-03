@@ -30,7 +30,7 @@ jobs:
           stale-pr-message: |
             Hello, this PR has been open for more than 2 months with no activity.
 
-            If you think this is a mistake, please comment and ping a maintainer to get this merged ASAP. Thanks for contributing!
+            If you think this is a mistake, please comment and ping a maintainer so we can focus some attention on this PR. Thanks for contributing!
 
             You have 15 days until this gets closed automatically.
           exempt-issue-labels: 'keep open'
