@@ -79,6 +79,7 @@
             android:label="Custom Method Picker Layout"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
+
     </application>
 
 </manifest>

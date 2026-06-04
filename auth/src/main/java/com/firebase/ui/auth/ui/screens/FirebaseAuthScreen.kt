@@ -112,6 +112,7 @@ fun FirebaseAuthScreen(
     emailLink: String? = null,
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
     customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
+    customMethodPickerTermsContent: (@Composable () -> Unit)? = null,
     emailContent: (@Composable (EmailAuthContentState) -> Unit)? = null,
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)? = null,
     mfaEnrollmentContent: (@Composable (MfaEnrollmentContentState) -> Unit)? = null,
@@ -277,6 +278,7 @@ fun FirebaseAuthScreen(
                             privacyPolicyUrl = configuration.privacyPolicyUrl,
                             lastSignInPreference = lastSignInPreference.value,
                             customLayout = customMethodPickerLayout,
+                            termsContent = customMethodPickerTermsContent,
                             onProviderSelected = { provider ->
                                 when (provider) {
                                     is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()

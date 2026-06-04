@@ -280,6 +280,75 @@ class AuthMethodPickerTest {
         Truth.assertThat(selectedProvider).isEqualTo(googleProvider)
     }
 
+    @Test
+    fun `AuthMethodPicker does not render default ToS text when customLayout is provided`() {
+        val links = arrayOf("Terms of Service" to "", "Privacy Policy" to "")
+        val labels = links.map { it.first }.toTypedArray()
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = providers,
+                onProviderSelected = { selectedProvider = it },
+                customLayout = { _, _ -> Text("Custom Layout") }
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_tos_and_pp, *labels))
+            .assertDoesNotExist()
+    }
+
+    // =============================================================================================
+    // Custom Terms Content Tests
+    // =============================================================================================
+
+    @Test
+    fun `AuthMethodPicker renders termsContent instead of default ToS when provided`() {
+        val links = arrayOf("Terms of Service" to "", "Privacy Policy" to "")
+        val labels = links.map { it.first }.toTypedArray()
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = providers,
+                onProviderSelected = { selectedProvider = it },
+                termsContent = { Text("Custom ToS checkbox") }
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText("Custom ToS checkbox")
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_tos_and_pp, *labels))
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `AuthMethodPicker still renders providers when termsContent is provided`() {
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = providers,
+                onProviderSelected = { selectedProvider = it },
+                termsContent = { Text("Custom ToS checkbox") }
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsDisplayed()
+    }
+
     // =============================================================================================
     // Scrolling Tests
     // =============================================================================================

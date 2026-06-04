@@ -68,6 +68,9 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
  * @param termsOfServiceUrl The URL for the Terms of Service.
  * @param privacyPolicyUrl The URL for the Privacy Policy.
  * @param lastSignInPreference The last sign-in preference to show a "Continue as..." button.
+ * @param termsContent An optional composable to replace the default ToS/Privacy Policy footer.
+ * When provided, the default "By continuing..." text is not rendered. Use this to supply a
+ * checkbox or custom consent UI without having to reimplement the full provider list.
  *
  * @since 10.0.0
  */
@@ -81,6 +84,7 @@ fun AuthMethodPicker(
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
+    termsContent: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
@@ -100,7 +104,9 @@ fun AuthMethodPicker(
             )
         }
         if (customLayout != null) {
-            customLayout(providers, onProviderSelected)
+            Box(modifier = Modifier.weight(1f)) {
+                customLayout(providers, onProviderSelected)
+            }
         } else {
             BoxWithConstraints(
                 modifier = Modifier
@@ -163,20 +169,24 @@ fun AuthMethodPicker(
                 }
             }
         }
-        AnnotatedStringResource(
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
-            context = context,
-            inPreview = inPreview,
-            previewText = "By continuing, you accept our Terms of Service and Privacy Policy.",
-            text = stringProvider.tosAndPrivacyPolicy(
-                termsOfServiceLabel = stringProvider.termsOfService,
-                privacyPolicyLabel = stringProvider.privacyPolicy
-            ),
-            links = arrayOf(
-                stringProvider.termsOfService to (termsOfServiceUrl ?: ""),
-                stringProvider.privacyPolicy to (privacyPolicyUrl ?: "")
+        if (termsContent != null) {
+            termsContent()
+        } else if (customLayout == null) {
+            AnnotatedStringResource(
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
+                context = context,
+                inPreview = inPreview,
+                previewText = "By continuing, you accept our Terms of Service and Privacy Policy.",
+                text = stringProvider.tosAndPrivacyPolicy(
+                    termsOfServiceLabel = stringProvider.termsOfService,
+                    privacyPolicyLabel = stringProvider.privacyPolicy
+                ),
+                links = arrayOf(
+                    stringProvider.termsOfService to (termsOfServiceUrl ?: ""),
+                    stringProvider.privacyPolicy to (privacyPolicyUrl ?: "")
+                )
             )
-        )
+        }
     }
 }
 
