@@ -247,6 +247,7 @@ fun SpotlightMethodPicker(
                         ProviderIconButton(
                             style = style,
                             contentDescription = provider.providerId,
+                            enabled = enabled,
                             onClick = { onProviderSelected(provider) }
                         )
                     }
@@ -292,9 +293,11 @@ private fun ProviderIconButton(
     style: AuthUITheme.ProviderStyle,
     contentDescription: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.size(52.dp),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(containerColor = style.backgroundColor),
