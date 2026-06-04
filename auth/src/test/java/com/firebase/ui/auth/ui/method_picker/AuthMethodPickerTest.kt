@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -281,7 +283,7 @@ class AuthMethodPickerTest {
     }
 
     @Test
-    fun `AuthMethodPicker does not render default ToS text when customLayout is provided`() {
+    fun `AuthMethodPicker still renders default ToS text when customLayout is provided`() {
         val links = arrayOf("Terms of Service" to "", "Privacy Policy" to "")
         val labels = links.map { it.first }.toTypedArray()
         val providers = listOf(
@@ -298,7 +300,7 @@ class AuthMethodPickerTest {
 
         composeTestRule
             .onNodeWithText(context.getString(R.string.fui_tos_and_pp, *labels))
-            .assertDoesNotExist()
+            .assertIsDisplayed()
     }
 
     // =============================================================================================
@@ -347,6 +349,62 @@ class AuthMethodPickerTest {
         composeTestRule
             .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
             .assertIsDisplayed()
+    }
+
+    // =============================================================================================
+    // Terms Accepted / Gating Tests
+    // =============================================================================================
+
+    @Test
+    fun `AuthMethodPicker disables provider buttons when termsContent provided and termsAccepted is false`() {
+        val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(googleProvider),
+                onProviderSelected = { selectedProvider = it },
+                termsContent = { Text("Checkbox") },
+                termsAccepted = false
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsNotEnabled()
+    }
+
+    @Test
+    fun `AuthMethodPicker ignores termsAccepted when no termsContent is provided`() {
+        val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(googleProvider),
+                onProviderSelected = { selectedProvider = it },
+                termsAccepted = false // should have no effect without termsContent
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsEnabled()
+    }
+
+    @Test
+    fun `AuthMethodPicker enables provider buttons when termsAccepted is true`() {
+        val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(googleProvider),
+                onProviderSelected = { selectedProvider = it },
+                termsAccepted = true
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsEnabled()
     }
 
     // =============================================================================================

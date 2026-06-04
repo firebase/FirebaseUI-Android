@@ -142,7 +142,8 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                         customMethodPickerLayout = { providers, onProviderSelected ->
                             SpotlightMethodPicker(
                                 providers = providers,
-                                onProviderSelected = onProviderSelected
+                                onProviderSelected = onProviderSelected,
+                                enabled = termsAccepted
                             )
                         },
                         customMethodPickerTermsContent = {
@@ -160,7 +161,8 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
                             }
-                        }
+                        },
+                        customMethodPickerTermsAccepted = termsAccepted,
                     )
                 }
             }
@@ -172,6 +174,7 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
 fun SpotlightMethodPicker(
     providers: List<AuthProvider>,
     onProviderSelected: (AuthProvider) -> Unit,
+    enabled: Boolean = true,
 ) {
     val stringProvider = LocalAuthUIStringProvider.current
 
@@ -219,6 +222,7 @@ fun SpotlightMethodPicker(
                     .padding(horizontal = 32.dp),
                 provider = provider,
                 onClick = { onProviderSelected(provider) },
+                enabled = enabled,
                 stringProvider = stringProvider
             )
         }
@@ -266,6 +270,7 @@ fun SpotlightMethodPicker(
                         .padding(horizontal = 32.dp),
                     provider = provider,
                     onClick = { onProviderSelected(provider) },
+                    enabled = enabled,
                     stringProvider = stringProvider
                 )
             }

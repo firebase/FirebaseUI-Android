@@ -71,6 +71,9 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
  * @param termsContent An optional composable to replace the default ToS/Privacy Policy footer.
  * When provided, the default "By continuing..." text is not rendered. Use this to supply a
  * checkbox or custom consent UI without having to reimplement the full provider list.
+ * @param termsAccepted Controls whether provider buttons are enabled. Set to false when
+ * [termsContent] contains an acceptance checkbox that the user has not yet checked. Defaults
+ * to true so existing callers are unaffected.
  *
  * @since 10.0.0
  */
@@ -85,10 +88,12 @@ fun AuthMethodPicker(
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     termsContent: (@Composable () -> Unit)? = null,
+    termsAccepted: Boolean = true,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
     val stringProvider = LocalAuthUIStringProvider.current
+    val providerButtonsEnabled = termsContent == null || termsAccepted
 
     Column(
         modifier = modifier
@@ -127,6 +132,7 @@ fun AuthMethodPicker(
                                 ContinueAsButton(
                                     provider = lastProvider,
                                     identifier = preference.identifier,
+                                    enabled = providerButtonsEnabled,
                                     onClick = { onProviderSelected(lastProvider) }
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
@@ -161,6 +167,7 @@ fun AuthMethodPicker(
                                 onClick = {
                                     onProviderSelected(provider)
                                 },
+                                enabled = providerButtonsEnabled,
                                 provider = provider,
                                 stringProvider = LocalAuthUIStringProvider.current
                             )
@@ -171,7 +178,7 @@ fun AuthMethodPicker(
         }
         if (termsContent != null) {
             termsContent()
-        } else if (customLayout == null) {
+        } else {
             AnnotatedStringResource(
                 modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
                 context = context,
@@ -201,6 +208,7 @@ fun AuthMethodPicker(
 private fun ContinueAsButton(
     provider: AuthProvider,
     identifier: String?,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val stringProvider = LocalAuthUIStringProvider.current
@@ -210,6 +218,7 @@ private fun ContinueAsButton(
             .fillMaxWidth()
             .testTag("ContinueAsButton"),
         onClick = onClick,
+        enabled = enabled,
         provider = provider,
         stringProvider = stringProvider,
         subtitle = identifier,
