@@ -51,6 +51,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 import com.firebase.ui.auth.ui.components.AuthProviderButton
+import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 
 class CustomMethodPickerDemoActivity : ComponentActivity() {
@@ -146,23 +147,26 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                                 enabled = termsAccepted
                             )
                         },
-                        customMethodPickerTermsContent = {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Checkbox(
-                                    checked = termsAccepted,
-                                    onCheckedChange = { termsAccepted = it }
-                                )
-                                Text(
-                                    text = "I have read and accept the Terms of Service and Privacy Policy",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    modifier = Modifier.padding(start = 8.dp)
-                                )
-                            }
-                        },
-                        customMethodPickerTermsAccepted = termsAccepted,
+                        customMethodPickerTermsConfiguration = MethodPickerTermsConfiguration(
+                            content = {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Checkbox(
+                                        checked = termsAccepted,
+                                        onCheckedChange = { termsAccepted = it }
+                                    )
+                                    Text(
+                                        text = "I have read and accept the Terms of Service and Privacy Policy",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    )
+                                }
+                            },
+                            accepted = termsAccepted,
+                            disableProvidersUntilAccepted = true,
+                        ),
                     )
                 }
             }

@@ -20,6 +20,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
@@ -308,7 +309,7 @@ class AuthMethodPickerTest {
     // =============================================================================================
 
     @Test
-    fun `AuthMethodPicker renders termsContent instead of default ToS when provided`() {
+    fun `AuthMethodPicker renders termsConfiguration content instead of default ToS when provided`() {
         val links = arrayOf("Terms of Service" to "", "Privacy Policy" to "")
         val labels = links.map { it.first }.toTypedArray()
         val providers = listOf(
@@ -319,7 +320,9 @@ class AuthMethodPickerTest {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it },
-                termsContent = { Text("Custom ToS checkbox") }
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Custom ToS checkbox") }
+                )
             )
         }
 
@@ -333,7 +336,7 @@ class AuthMethodPickerTest {
     }
 
     @Test
-    fun `AuthMethodPicker still renders providers when termsContent is provided`() {
+    fun `AuthMethodPicker still renders providers when termsConfiguration is provided`() {
         val providers = listOf(
             AuthProvider.Google(scopes = emptyList(), serverClientId = null)
         )
@@ -342,7 +345,9 @@ class AuthMethodPickerTest {
             AuthMethodPicker(
                 providers = providers,
                 onProviderSelected = { selectedProvider = it },
-                termsContent = { Text("Custom ToS checkbox") }
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Custom ToS checkbox") }
+                )
             )
         }
 
@@ -356,15 +361,18 @@ class AuthMethodPickerTest {
     // =============================================================================================
 
     @Test
-    fun `AuthMethodPicker disables provider buttons when termsContent provided and termsAccepted is false`() {
+    fun `AuthMethodPicker disables provider buttons when disableProvidersUntilAccepted is true and accepted is false`() {
         val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
 
         setContentWithStringProvider {
             AuthMethodPicker(
                 providers = listOf(googleProvider),
                 onProviderSelected = { selectedProvider = it },
-                termsContent = { Text("Checkbox") },
-                termsAccepted = false
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Checkbox") },
+                    accepted = false,
+                    disableProvidersUntilAccepted = true
+                )
             )
         }
 
@@ -374,14 +382,18 @@ class AuthMethodPickerTest {
     }
 
     @Test
-    fun `AuthMethodPicker ignores termsAccepted when no termsContent is provided`() {
+    fun `AuthMethodPicker enables provider buttons when disableProvidersUntilAccepted is true and accepted is true`() {
         val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
 
         setContentWithStringProvider {
             AuthMethodPicker(
                 providers = listOf(googleProvider),
                 onProviderSelected = { selectedProvider = it },
-                termsAccepted = false // should have no effect without termsContent
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Checkbox") },
+                    accepted = true,
+                    disableProvidersUntilAccepted = true
+                )
             )
         }
 
@@ -391,14 +403,18 @@ class AuthMethodPickerTest {
     }
 
     @Test
-    fun `AuthMethodPicker enables provider buttons when termsAccepted is true`() {
+    fun `AuthMethodPicker ignores accepted when disableProvidersUntilAccepted is false`() {
         val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
 
         setContentWithStringProvider {
             AuthMethodPicker(
                 providers = listOf(googleProvider),
                 onProviderSelected = { selectedProvider = it },
-                termsAccepted = true
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Checkbox") },
+                    accepted = false,
+                    disableProvidersUntilAccepted = false
+                )
             )
         }
 

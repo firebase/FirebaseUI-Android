@@ -68,12 +68,8 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
  * @param termsOfServiceUrl The URL for the Terms of Service.
  * @param privacyPolicyUrl The URL for the Privacy Policy.
  * @param lastSignInPreference The last sign-in preference to show a "Continue as..." button.
- * @param termsContent An optional composable to replace the default ToS/Privacy Policy footer.
- * When provided, the default "By continuing..." text is not rendered. Use this to supply a
- * checkbox or custom consent UI without having to reimplement the full provider list.
- * @param termsAccepted Controls whether provider buttons are enabled. Set to false when
- * [termsContent] contains an acceptance checkbox that the user has not yet checked. Defaults
- * to true so existing callers are unaffected.
+ * @param termsConfiguration Optional configuration for a custom ToS/Privacy Policy footer.
+ * When provided, replaces the default "By continuing..." text. See [MethodPickerTermsConfiguration].
  *
  * @since 10.0.0
  */
@@ -87,13 +83,14 @@ fun AuthMethodPicker(
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
-    termsContent: (@Composable () -> Unit)? = null,
-    termsAccepted: Boolean = true,
+    termsConfiguration: MethodPickerTermsConfiguration? = null,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
     val stringProvider = LocalAuthUIStringProvider.current
-    val providerButtonsEnabled = termsContent == null || termsAccepted
+    val providerButtonsEnabled = termsConfiguration == null ||
+            !termsConfiguration.disableProvidersUntilAccepted ||
+            termsConfiguration.accepted
 
     Column(
         modifier = modifier
@@ -176,8 +173,8 @@ fun AuthMethodPicker(
                 }
             }
         }
-        if (termsContent != null) {
-            termsContent()
+        if (termsConfiguration != null) {
+            termsConfiguration.content()
         } else {
             AnnotatedStringResource(
                 modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
