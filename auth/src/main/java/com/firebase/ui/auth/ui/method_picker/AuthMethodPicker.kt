@@ -47,6 +47,24 @@ import com.firebase.ui.auth.ui.components.AuthProviderButton
 import com.firebase.ui.auth.util.SignInPreferenceManager
 
 /**
+ * Configuration for a custom Terms of Service/Privacy Policy footer in [AuthMethodPicker].
+ *
+ * @param content A composable that replaces the default "By continuing..." footer. Use this to
+ * supply a checkbox or any custom consent UI.
+ * @param accepted The current acceptance state. Only used when [disableProvidersUntilAccepted]
+ * is true.
+ * @param disableProvidersUntilAccepted When true, provider buttons are disabled until [accepted]
+ * is true. Defaults to false — buttons remain enabled unless explicitly opted in.
+ *
+ * @since 10.0.0
+ */
+class MethodPickerTermsConfiguration(
+    val content: @Composable () -> Unit,
+    val accepted: Boolean = true,
+    val disableProvidersUntilAccepted: Boolean = false,
+)
+
+/**
  * Renders the provider selection screen.
  *
  * **Example usage:**
