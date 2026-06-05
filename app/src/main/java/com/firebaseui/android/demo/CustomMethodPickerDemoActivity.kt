@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +29,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +51,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 import com.firebase.ui.auth.ui.components.AuthProviderButton
+import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 
 class CustomMethodPickerDemoActivity : ComponentActivity() {
@@ -119,6 +126,8 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    var termsAccepted by remember { mutableStateOf(false) }
+
                     FirebaseAuthScreen(
                         configuration = configuration,
                         authUI = authUI,
@@ -134,9 +143,30 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                         customMethodPickerLayout = { providers, onProviderSelected ->
                             SpotlightMethodPicker(
                                 providers = providers,
-                                onProviderSelected = onProviderSelected
+                                onProviderSelected = onProviderSelected,
+                                enabled = termsAccepted
                             )
-                        }
+                        },
+                        customMethodPickerTermsConfiguration = MethodPickerTermsConfiguration(
+                            content = {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Checkbox(
+                                        checked = termsAccepted,
+                                        onCheckedChange = { termsAccepted = it }
+                                    )
+                                    Text(
+                                        text = "I have read and accept the Terms of Service and Privacy Policy",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    )
+                                }
+                            },
+                            accepted = termsAccepted,
+                            disableProvidersUntilAccepted = true,
+                        ),
                     )
                 }
             }
@@ -148,6 +178,7 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
 fun SpotlightMethodPicker(
     providers: List<AuthProvider>,
     onProviderSelected: (AuthProvider) -> Unit,
+    enabled: Boolean = true,
 ) {
     val stringProvider = LocalAuthUIStringProvider.current
 
@@ -195,6 +226,7 @@ fun SpotlightMethodPicker(
                     .padding(horizontal = 32.dp),
                 provider = provider,
                 onClick = { onProviderSelected(provider) },
+                enabled = enabled,
                 stringProvider = stringProvider
             )
         }
@@ -219,6 +251,7 @@ fun SpotlightMethodPicker(
                         ProviderIconButton(
                             style = style,
                             contentDescription = provider.providerId,
+                            enabled = enabled,
                             onClick = { onProviderSelected(provider) }
                         )
                     }
@@ -242,6 +275,7 @@ fun SpotlightMethodPicker(
                         .padding(horizontal = 32.dp),
                     provider = provider,
                     onClick = { onProviderSelected(provider) },
+                    enabled = enabled,
                     stringProvider = stringProvider
                 )
             }
@@ -250,7 +284,7 @@ fun SpotlightMethodPicker(
         anonymous?.let {
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                TextButton(onClick = { onProviderSelected(it) }) {
+                TextButton(onClick = { onProviderSelected(it) }, enabled = enabled) {
                     Text("Continue as guest")
                 }
             }
@@ -263,9 +297,11 @@ private fun ProviderIconButton(
     style: AuthUITheme.ProviderStyle,
     contentDescription: String,
     onClick: () -> Unit,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.size(52.dp),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(containerColor = style.backgroundColor),

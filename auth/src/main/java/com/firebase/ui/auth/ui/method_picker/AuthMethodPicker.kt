@@ -47,6 +47,24 @@ import com.firebase.ui.auth.ui.components.AuthProviderButton
 import com.firebase.ui.auth.util.SignInPreferenceManager
 
 /**
+ * Configuration for a custom Terms of Service/Privacy Policy footer in [AuthMethodPicker].
+ *
+ * @param content A composable that replaces the default "By continuing..." footer. Use this to
+ * supply a checkbox or any custom consent UI.
+ * @param accepted The current acceptance state. Only used when [disableProvidersUntilAccepted]
+ * is true.
+ * @param disableProvidersUntilAccepted When true, provider buttons are disabled until [accepted]
+ * is true. Defaults to false — buttons remain enabled unless explicitly opted in.
+ *
+ * @since 10.0.0
+ */
+class MethodPickerTermsConfiguration(
+    val content: @Composable () -> Unit,
+    val accepted: Boolean = true,
+    val disableProvidersUntilAccepted: Boolean = false,
+)
+
+/**
  * Renders the provider selection screen.
  *
  * **Example usage:**
@@ -68,6 +86,8 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
  * @param termsOfServiceUrl The URL for the Terms of Service.
  * @param privacyPolicyUrl The URL for the Privacy Policy.
  * @param lastSignInPreference The last sign-in preference to show a "Continue as..." button.
+ * @param termsConfiguration Optional configuration for a custom ToS/Privacy Policy footer.
+ * When provided, replaces the default "By continuing..." text. See [MethodPickerTermsConfiguration].
  *
  * @since 10.0.0
  */
@@ -81,10 +101,14 @@ fun AuthMethodPicker(
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
+    termsConfiguration: MethodPickerTermsConfiguration? = null,
 ) {
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
     val stringProvider = LocalAuthUIStringProvider.current
+    val providerButtonsEnabled = termsConfiguration == null ||
+            !termsConfiguration.disableProvidersUntilAccepted ||
+            termsConfiguration.accepted
 
     Column(
         modifier = modifier
@@ -100,7 +124,9 @@ fun AuthMethodPicker(
             )
         }
         if (customLayout != null) {
-            customLayout(providers, onProviderSelected)
+            Box(modifier = Modifier.weight(1f)) {
+                customLayout(providers, onProviderSelected)
+            }
         } else {
             BoxWithConstraints(
                 modifier = Modifier
@@ -121,6 +147,7 @@ fun AuthMethodPicker(
                                 ContinueAsButton(
                                     provider = lastProvider,
                                     identifier = preference.identifier,
+                                    enabled = providerButtonsEnabled,
                                     onClick = { onProviderSelected(lastProvider) }
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
@@ -155,6 +182,7 @@ fun AuthMethodPicker(
                                 onClick = {
                                     onProviderSelected(provider)
                                 },
+                                enabled = providerButtonsEnabled,
                                 provider = provider,
                                 stringProvider = LocalAuthUIStringProvider.current
                             )
@@ -163,20 +191,24 @@ fun AuthMethodPicker(
                 }
             }
         }
-        AnnotatedStringResource(
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
-            context = context,
-            inPreview = inPreview,
-            previewText = "By continuing, you accept our Terms of Service and Privacy Policy.",
-            text = stringProvider.tosAndPrivacyPolicy(
-                termsOfServiceLabel = stringProvider.termsOfService,
-                privacyPolicyLabel = stringProvider.privacyPolicy
-            ),
-            links = arrayOf(
-                stringProvider.termsOfService to (termsOfServiceUrl ?: ""),
-                stringProvider.privacyPolicy to (privacyPolicyUrl ?: "")
+        if (termsConfiguration != null) {
+            termsConfiguration.content()
+        } else {
+            AnnotatedStringResource(
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp),
+                context = context,
+                inPreview = inPreview,
+                previewText = "By continuing, you accept our Terms of Service and Privacy Policy.",
+                text = stringProvider.tosAndPrivacyPolicy(
+                    termsOfServiceLabel = stringProvider.termsOfService,
+                    privacyPolicyLabel = stringProvider.privacyPolicy
+                ),
+                links = arrayOf(
+                    stringProvider.termsOfService to (termsOfServiceUrl ?: ""),
+                    stringProvider.privacyPolicy to (privacyPolicyUrl ?: "")
+                )
             )
-        )
+        }
     }
 }
 
@@ -191,6 +223,7 @@ fun AuthMethodPicker(
 private fun ContinueAsButton(
     provider: AuthProvider,
     identifier: String?,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     val stringProvider = LocalAuthUIStringProvider.current
@@ -200,6 +233,7 @@ private fun ContinueAsButton(
             .fillMaxWidth()
             .testTag("ContinueAsButton"),
         onClick = onClick,
+        enabled = enabled,
         provider = provider,
         stringProvider = stringProvider,
         subtitle = identifier,
