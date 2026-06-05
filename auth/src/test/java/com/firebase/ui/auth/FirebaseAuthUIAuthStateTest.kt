@@ -18,12 +18,16 @@ import androidx.test.core.app.ApplicationProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import android.content.Context
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
 import com.google.firebase.auth.UserInfo
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
@@ -37,6 +41,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mock
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
@@ -380,5 +385,82 @@ class FirebaseAuthUIAuthStateTest {
         // Verify properties
         assertThat(state.user).isEqualTo(mockFirebaseUser)
         assertThat(state.missingFields).containsExactly("displayName", "photoUrl")
+    }
+
+    // =============================================================================================
+    // delete() ReauthenticationRequired state Tests
+    // =============================================================================================
+
+    @Test
+    fun `delete() emits ReauthenticationRequired state when recent login required`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        val tcs = TaskCompletionSource<Void>()
+        tcs.setException(
+            FirebaseAuthRecentLoginRequiredException(
+                "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+            )
+        )
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete()).thenReturn(tcs.task)
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        try {
+            authUI.delete(context)
+        } catch (_: AuthException.InvalidCredentialsException) {
+            // expected — existing contract preserved
+        }
+
+        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.ReauthenticationRequired::class.java)
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        assertThat(state.user).isEqualTo(mockUser)
+    }
+
+    @Test
+    fun `delete() attaches retryOperation to ReauthenticationRequired state`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        val tcs = TaskCompletionSource<Void>()
+        tcs.setException(
+            FirebaseAuthRecentLoginRequiredException(
+                "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+            )
+        )
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete()).thenReturn(tcs.task)
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        try { authUI.delete(context) } catch (_: AuthException.InvalidCredentialsException) {}
+
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        // Fails until delete() passes retryOperation into the state
+        assertThat(state.retryOperation).isNotNull()
+    }
+
+    @Test
+    fun `delete() retryOperation re-invokes delete on execution`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+
+        val failTcs = TaskCompletionSource<Void>()
+        failTcs.setException(
+            FirebaseAuthRecentLoginRequiredException(
+                "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+            )
+        )
+        val successTcs = TaskCompletionSource<Void>()
+        successTcs.setResult(null)
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+        `when`(mockUser.delete())
+            .thenReturn(failTcs.task)
+            .thenReturn(successTcs.task)
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        try { authUI.delete(context) } catch (_: AuthException.InvalidCredentialsException) {}
+
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        // Fails until delete() passes retryOperation into the state
+        state.retryOperation!!(context)
+
+        verify(mockUser, times(2)).delete()
     }
 }

@@ -59,7 +59,7 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
     provider: AuthProvider.Google,
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
-    return remember(this) {
+    return remember(this, config) {
         {
             coroutineScope.launch {
                 try {

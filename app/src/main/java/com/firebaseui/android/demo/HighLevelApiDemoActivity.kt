@@ -25,11 +25,19 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -212,6 +220,9 @@ private fun AppAuthenticatedContent(
     val configuration = uiContext.configuration
     when (state) {
         is AuthState.Success -> {
+            val context = LocalContext.current
+            val lifecycleOwner = LocalLifecycleOwner.current
+            var isDeletingAccount by remember { mutableStateOf(false) }
             val user = uiContext.authUI.getCurrentUser()
             val identifier = user.displayIdentifier()
             Column(
@@ -260,6 +271,28 @@ private fun AppAuthenticatedContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = uiContext.onSignOut) {
                     Text(stringProvider.signOutAction)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        lifecycleOwner.lifecycleScope.launch {
+                            isDeletingAccount = true
+                            try {
+                                uiContext.authUI.delete(context)
+                            } catch (e: AuthException.InvalidCredentialsException) {
+                                // ReauthenticationRequired state was emitted —
+                                // FirebaseAuthScreen navigates to the reauth flow automatically.
+                                Log.d("HighLevelApiDemoActivity", "Reauth required before delete")
+                            } catch (e: AuthException) {
+                                Log.e("HighLevelApiDemoActivity", "Delete failed", e)
+                            } finally {
+                                isDeletingAccount = false
+                            }
+                        }
+                    },
+                    enabled = !isDeletingAccount
+                ) {
+                    if (isDeletingAccount) CircularProgressIndicator() else Text("Delete account")
                 }
             }
         }
