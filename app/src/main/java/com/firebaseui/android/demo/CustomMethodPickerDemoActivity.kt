@@ -284,7 +284,7 @@ fun SpotlightMethodPicker(
         anonymous?.let {
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                TextButton(onClick = { onProviderSelected(it) }) {
+                TextButton(onClick = { onProviderSelected(it) }, enabled = enabled) {
                     Text("Continue as guest")
                 }
             }

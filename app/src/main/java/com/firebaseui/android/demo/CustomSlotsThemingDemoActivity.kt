@@ -103,7 +103,7 @@ fun CustomSlotsDemoChooser(
 
         DemoCard(
             title = "Custom Method Picker Layout & Terms",
-            description = "Replace the default provider list with a custom layout, and swap the 'By continuing...' footer with a checkbox using customMethodPickerLayout and customMethodPickerTermsContent on FirebaseAuthScreen.",
+            description = "Replace the default provider list with a custom layout, and swap the 'By continuing...' footer with a checkbox using customMethodPickerLayout and customMethodPickerTermsConfiguration on FirebaseAuthScreen.",
             onClick = onCustomMethodPickerClick
         )
     }
