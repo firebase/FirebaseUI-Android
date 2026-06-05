@@ -124,6 +124,27 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * The password violates one or more Google Identity Platform password policy requirements.
+     *
+     * This exception is thrown when GIdP password policy enforcement is enabled and the supplied
+     * password fails one or more configured constraints (e.g. missing uppercase, missing digit).
+     * [failingRequirements] contains the raw server-side constraint identifiers such as
+     * `MISSING_UPPERCASE_CHARACTER` or `MISSING_NON_ALPHANUMERIC_CHARACTER`.
+     *
+     * [message] is a newline-separated, human-readable description of each failing constraint,
+     * suitable for direct display in the UI.
+     *
+     * @property message Human-readable description of the failing constraints
+     * @property failingRequirements Raw server-side constraint identifiers
+     * @property cause The underlying [Throwable] that caused this exception
+     */
+    class PasswordPolicyViolationException(
+        message: String,
+        val failingRequirements: List<String>,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * An account with the given email already exists.
      *
      * This exception is thrown when attempting to create a new account with
@@ -354,7 +375,34 @@ abstract class AuthException(
                 // If already an AuthException, return it directly
                 is AuthException -> firebaseException
 
-                // Handle specific Firebase Auth exceptions first (before general FirebaseException)
+                // Handle specific Firebase Auth exceptions first (before general FirebaseException).
+                // FirebaseAuthWeakPasswordException extends FirebaseAuthInvalidCredentialsException,
+                // so it must be checked before the parent type.
+                is FirebaseAuthWeakPasswordException -> {
+                    val sourceText = firebaseException.reason ?: firebaseException.message ?: ""
+                    if (sourceText.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
+                        val requirements = parsePasswordPolicyRequirements(sourceText)
+                        val humanReadable = requirements
+                            .joinToString("\n") { mapRequirementToString(it, stringProvider) }
+                        PasswordPolicyViolationException(
+                            message = humanReadable.ifEmpty {
+                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                    ?: "Password does not meet policy requirements"
+                            },
+                            failingRequirements = requirements,
+                            cause = firebaseException
+                        )
+                    } else {
+                        WeakPasswordException(
+                            message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Password is too weak",
+                            cause = firebaseException,
+                            reason = firebaseException.reason
+                        )
+                    }
+                }
+
                 is FirebaseAuthInvalidCredentialsException -> {
                     InvalidCredentialsException(
                         message = stringProvider?.errorInvalidCredentials.nonEmpty()
@@ -387,16 +435,6 @@ abstract class AuthException(
                             cause = firebaseException
                         )
                     }
-                }
-
-                is FirebaseAuthWeakPasswordException -> {
-                    WeakPasswordException(
-                        message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
-                            ?: firebaseException.message
-                            ?: "Password is too weak",
-                        cause = firebaseException,
-                        reason = firebaseException.reason
-                    )
                 }
 
                 is FirebaseAuthUserCollisionException -> {
@@ -500,5 +538,29 @@ abstract class AuthException(
         }
 
         private fun String?.nonEmpty(): String? = this?.ifEmpty { null }
+
+        private fun parsePasswordPolicyRequirements(message: String): List<String> {
+            val start = message.indexOf('[')
+            val end = message.indexOf(']')
+            if (start == -1 || end == -1 || end <= start) return emptyList()
+            return message.substring(start + 1, end)
+                .split(',')
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+        }
+
+        private fun mapRequirementToString(code: String, stringProvider: AuthUIStringProvider?): String {
+            return when (code.uppercase()) {
+                "MISSING_UPPERCASE_CHARACTER" ->
+                    stringProvider?.passwordMissingUppercase ?: "Password must contain at least one uppercase letter"
+                "MISSING_LOWERCASE_CHARACTER" ->
+                    stringProvider?.passwordMissingLowercase ?: "Password must contain at least one lowercase letter"
+                "MISSING_NUMERIC_CHARACTER" ->
+                    stringProvider?.passwordMissingDigit ?: "Password must contain at least one number"
+                "MISSING_NON_ALPHANUMERIC_CHARACTER" ->
+                    stringProvider?.passwordMissingSpecialCharacter ?: "Password must contain at least one special character"
+                else -> code
+            }
+        }
     }
 }
