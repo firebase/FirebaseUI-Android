@@ -77,6 +77,7 @@ import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
+import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
@@ -112,6 +113,7 @@ fun FirebaseAuthScreen(
     emailLink: String? = null,
     mfaConfiguration: MfaConfiguration = MfaConfiguration(),
     customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
+    customMethodPickerTermsConfiguration: MethodPickerTermsConfiguration? = null,
     emailContent: (@Composable (EmailAuthContentState) -> Unit)? = null,
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)? = null,
     mfaEnrollmentContent: (@Composable (MfaEnrollmentContentState) -> Unit)? = null,
@@ -277,6 +279,7 @@ fun FirebaseAuthScreen(
                             privacyPolicyUrl = configuration.privacyPolicyUrl,
                             lastSignInPreference = lastSignInPreference.value,
                             customLayout = customMethodPickerLayout,
+                            termsConfiguration = customMethodPickerTermsConfiguration,
                             onProviderSelected = { provider ->
                                 when (provider) {
                                     is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
