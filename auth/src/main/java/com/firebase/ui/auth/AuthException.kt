@@ -127,15 +127,13 @@ abstract class AuthException(
      * The password violates one or more Google Identity Platform password policy requirements.
      *
      * This exception is thrown when GIdP password policy enforcement is enabled and the supplied
-     * password fails one or more configured constraints (e.g. missing uppercase, missing digit).
-     * [failingRequirements] contains the raw server-side constraint identifiers such as
-     * `MISSING_UPPERCASE_CHARACTER` or `MISSING_NON_ALPHANUMERIC_CHARACTER`.
+     * password fails one or more configured constraints (e.g. minimum length, missing uppercase).
      *
-     * [message] is a newline-separated, human-readable description of each failing constraint,
-     * suitable for direct display in the UI.
+     * [message] is a newline-separated, human-readable description of each failing constraint
+     * as returned by the server, suitable for direct display in the UI.
      *
      * @property message Human-readable description of the failing constraints
-     * @property failingRequirements Raw server-side constraint identifiers
+     * @property failingRequirements The individual constraint strings from the server
      * @property cause The underlying [Throwable] that caused this exception
      */
     class PasswordPolicyViolationException(
@@ -382,10 +380,8 @@ abstract class AuthException(
                     val sourceText = firebaseException.reason ?: firebaseException.message ?: ""
                     if (sourceText.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
                         val requirements = parsePasswordPolicyRequirements(sourceText)
-                        val humanReadable = requirements
-                            .joinToString("\n") { mapRequirementToString(it, stringProvider) }
                         PasswordPolicyViolationException(
-                            message = humanReadable.ifEmpty {
+                            message = requirements.joinToString("\n").ifEmpty {
                                 stringProvider?.errorWeakPasswordGeneric.nonEmpty()
                                     ?: "Password does not meet policy requirements"
                             },
@@ -510,10 +506,8 @@ abstract class AuthException(
                     val msg = firebaseException.message ?: ""
                     if (msg.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
                         val requirements = parsePasswordPolicyRequirements(msg)
-                        val humanReadable = requirements
-                            .joinToString("\n") { mapRequirementToString(it, stringProvider) }
                         PasswordPolicyViolationException(
-                            message = humanReadable.ifEmpty {
+                            message = requirements.joinToString("\n").ifEmpty {
                                 stringProvider?.errorWeakPasswordGeneric.nonEmpty()
                                     ?: "Password does not meet policy requirements"
                             },
@@ -567,23 +561,6 @@ abstract class AuthException(
                 .split(',')
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
-        }
-
-        // GIdP already returns human-readable requirement strings, so this is a pass-through
-        // for those. For older SDK versions that may surface short error codes instead
-        // (e.g. MISSING_UPPERCASE_CHARACTER), map those to localised strings.
-        private fun mapRequirementToString(code: String, stringProvider: AuthUIStringProvider?): String {
-            return when (code.uppercase(java.util.Locale.US)) {
-                "MISSING_UPPERCASE_CHARACTER" ->
-                    stringProvider?.passwordMissingUppercase ?: "Password must contain at least one uppercase letter"
-                "MISSING_LOWERCASE_CHARACTER" ->
-                    stringProvider?.passwordMissingLowercase ?: "Password must contain at least one lowercase letter"
-                "MISSING_NUMERIC_CHARACTER" ->
-                    stringProvider?.passwordMissingDigit ?: "Password must contain at least one number"
-                "MISSING_NON_ALPHANUMERIC_CHARACTER" ->
-                    stringProvider?.passwordMissingSpecialCharacter ?: "Password must contain at least one special character"
-                else -> code
-            }
         }
     }
 }

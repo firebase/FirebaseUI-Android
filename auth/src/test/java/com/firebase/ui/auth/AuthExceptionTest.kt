@@ -232,7 +232,7 @@ class AuthExceptionTest {
         val firebaseException = FirebaseAuthWeakPasswordException(
             "ERROR_WEAK_PASSWORD",
             "weak",
-            "PASSWORD_DOES_NOT_MEET_REQUIREMENTS : [MISSING_UPPERCASE_CHARACTER, MISSING_NUMERIC_CHARACTER]"
+            "PASSWORD_DOES_NOT_MEET_REQUIREMENTS : [Password must contain uppercase, Password must contain a number]"
         )
 
         val result = AuthException.from(firebaseException)
@@ -240,26 +240,10 @@ class AuthExceptionTest {
         assertThat(result).isInstanceOf(AuthException.PasswordPolicyViolationException::class.java)
         val policyEx = result as AuthException.PasswordPolicyViolationException
         assertThat(policyEx.failingRequirements).containsExactly(
-            "MISSING_UPPERCASE_CHARACTER",
-            "MISSING_NUMERIC_CHARACTER"
+            "Password must contain uppercase",
+            "Password must contain a number"
         ).inOrder()
-    }
-
-    @Test
-    fun `from() maps policy violation short codes via string provider`() {
-        val firebaseException = FirebaseAuthWeakPasswordException(
-            "ERROR_WEAK_PASSWORD",
-            "weak",
-            "PASSWORD_DOES_NOT_MEET_REQUIREMENTS : [MISSING_UPPERCASE_CHARACTER, MISSING_NUMERIC_CHARACTER]"
-        )
-        val stringProvider = mock(AuthUIStringProvider::class.java)
-        whenever(stringProvider.passwordMissingUppercase).thenReturn("Needs uppercase")
-        whenever(stringProvider.passwordMissingDigit).thenReturn("Needs a number")
-
-        val result = AuthException.from(firebaseException, stringProvider)
-
-        assertThat(result).isInstanceOf(AuthException.PasswordPolicyViolationException::class.java)
-        assertThat(result.message).isEqualTo("Needs uppercase\nNeeds a number")
+        assertThat(policyEx.message).isEqualTo("Password must contain uppercase\nPassword must contain a number")
     }
 
     @Test
