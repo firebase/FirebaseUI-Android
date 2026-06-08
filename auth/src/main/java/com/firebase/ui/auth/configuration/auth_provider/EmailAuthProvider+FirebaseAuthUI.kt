@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canLinkCredential
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.mergeProfile
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledException
@@ -126,12 +127,14 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     credentialProvider: AuthProvider.Email.CredentialProvider = AuthProvider.Email.DefaultCredentialProvider(),
 ): AuthResult? {
     val canUpgrade = canUpgradeAnonymous(config, auth)
+    val canLink = canLinkCredential(config, auth)
+    val shouldLinkCredential = canUpgrade || canLink
     val pendingCredential =
-        if (canUpgrade) credentialProvider.getCredential(email, password) else null
+        if (shouldLinkCredential) credentialProvider.getCredential(email, password) else null
 
     try {
-        // Check if new accounts are allowed (only for non-upgrade flows)
-        if (!canUpgrade && !provider.isNewAccountsAllowed) {
+        // Check if new accounts are allowed (only for non-upgrade/non-linking flows)
+        if (!shouldLinkCredential && !provider.isNewAccountsAllowed) {
             throw AuthException.UserNotFoundException(
                 message = context.getString(R.string.fui_error_email_does_not_exist)
             )
@@ -156,7 +159,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         }
 
         updateAuthState(AuthState.Loading("Creating user..."))
-        val result = if (canUpgrade) {
+        val result = if (shouldLinkCredential) {
             auth.currentUser?.linkWithCredential(requireNotNull(pendingCredential))?.await()
         } else {
             auth.createUserWithEmailAndPassword(email, password).await()
@@ -205,10 +208,10 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             message = "An account already exists with this email. " +
                     "Please sign in with your existing account.",
             email = e.email ?: email,
-            credential = if (canUpgrade) {
-                e.updatedCredential ?: pendingCredential
-            } else {
-                null
+            credential = when {
+                canUpgrade -> e.updatedCredential ?: pendingCredential
+                canLink -> pendingCredential
+                else -> null
             },
             cause = e
         )
@@ -548,7 +551,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in user..."))
-        return if (canUpgradeAnonymous(config, auth)) {
+        return if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
             auth.signInWithCredential(credential).await()
