@@ -446,7 +446,15 @@ fun FirebaseAuthScreen(
                             // Lock the state to Loading before launching the retry so no
                             // intermediate Success emission can navigate to AuthRoute.Success.
                             authUI.updateAuthState(AuthState.Loading())
-                            coroutineScope.launch { retry(context) }
+                            coroutineScope.launch {
+                                try {
+                                    retry(context)
+                                } catch (e: kotlinx.coroutines.CancellationException) {
+                                    throw e
+                                } catch (e: Exception) {
+                                    authUI.updateAuthState(AuthState.Error(e))
+                                }
+                            }
                             return@LaunchedEffect
                         }
 

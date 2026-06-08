@@ -57,7 +57,9 @@ internal suspend fun FirebaseAuthUI.signInOrReauth(
     credential: AuthCredential,
     config: AuthUIConfiguration,
 ): AuthResult? = if (config.isReauthenticationMode) {
-    auth.currentUser!!.reauthenticate(credential).await()
+    val currentUser = auth.currentUser
+        ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in for reauthentication")
+    currentUser.reauthenticate(credential).await()
     null
 } else {
     auth.signInWithCredential(credential).await()

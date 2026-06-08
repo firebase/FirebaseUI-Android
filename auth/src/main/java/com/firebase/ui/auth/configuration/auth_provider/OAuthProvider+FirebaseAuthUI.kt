@@ -169,8 +169,11 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
         val authResult = when {
             canUpgradeAnonymous(config, auth) ->
                 auth.currentUser?.startActivityForLinkWithProvider(activity, oauthProvider)?.await()
-            config.isReauthenticationMode ->
-                auth.currentUser!!.startActivityForReauthenticateWithProvider(activity, oauthProvider).await()
+            config.isReauthenticationMode -> {
+                val currentUser = auth.currentUser
+                    ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in for reauthentication")
+                currentUser.startActivityForReauthenticateWithProvider(activity, oauthProvider).await()
+            }
             else ->
                 auth.startActivityForSignInWithProvider(activity, oauthProvider).await()
         }
