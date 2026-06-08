@@ -123,6 +123,7 @@ fun FirebaseAuthScreen(
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)? = null,
     mfaEnrollmentContent: (@Composable (MfaEnrollmentContentState) -> Unit)? = null,
     mfaChallengeContent: (@Composable (MfaChallengeContentState) -> Unit)? = null,
+    reauthContent: (@Composable (state: AuthState.ReauthenticationRequired, onDismiss: () -> Unit) -> Unit)? = null,
     authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
 ) {
     // Set FirebaseUI version
@@ -142,6 +143,7 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
     val pendingReauthConfig = remember { mutableStateOf<AuthUIConfiguration?>(null) }
+    val pendingReauthState = remember { mutableStateOf<AuthState.ReauthenticationRequired?>(null) }
     val pendingReauthOperation = remember { mutableStateOf<(suspend (android.content.Context) -> Unit)?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
     val lastSignInPreference =
@@ -440,6 +442,7 @@ fun FirebaseAuthScreen(
                         pendingReauthOperation.value?.let { retry ->
                             pendingReauthOperation.value = null
                             pendingReauthConfig.value = null
+                            pendingReauthState.value = null
                             // Lock the state to Loading before launching the retry so no
                             // intermediate Success emission can navigate to AuthRoute.Success.
                             authUI.updateAuthState(AuthState.Loading())
@@ -481,12 +484,15 @@ fun FirebaseAuthScreen(
                             )
                             return@LaunchedEffect
                         }
-                        pendingReauthConfig.value = configuration.copy(
-                            providers = linked,
-                            isNewEmailAccountsAllowed = false,
-                            isReauthenticationMode = true,
-                        )
-                        // ModalBottomSheet appears automatically when pendingReauthConfig is set.
+                        if (reauthContent != null) {
+                            pendingReauthState.value = state
+                        } else {
+                            pendingReauthConfig.value = configuration.copy(
+                                providers = linked,
+                                isNewEmailAccountsAllowed = false,
+                                isReauthenticationMode = true,
+                            )
+                        }
                     }
 
                     is AuthState.RequiresEmailVerification,
@@ -514,6 +520,7 @@ fun FirebaseAuthScreen(
                     is AuthState.Cancelled -> {
                         pendingReauthOperation.value = null
                         pendingReauthConfig.value = null
+                        pendingReauthState.value = null
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
@@ -529,6 +536,7 @@ fun FirebaseAuthScreen(
                     is AuthState.Idle -> {
                         pendingReauthOperation.value = null
                         pendingReauthConfig.value = null
+                        pendingReauthState.value = null
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
@@ -607,7 +615,17 @@ fun FirebaseAuthScreen(
                 LoadingDialog(loadingState.message ?: stringProvider.progressDialogLoading)
             }
 
-            // Reauth bottom sheet — appears over the current screen without navigating away.
+            // Custom reauth UI — rendered when the caller provides reauthContent.
+            val pendingReauth = pendingReauthState.value
+            if (pendingReauth != null && reauthContent != null) {
+                reauthContent(pendingReauth) {
+                    pendingReauthOperation.value = null
+                    pendingReauthState.value = null
+                    authUI.updateAuthState(AuthState.Idle)
+                }
+            }
+
+            // Default reauth bottom sheet — used when reauthContent is not provided.
             val reauthConfig = pendingReauthConfig.value
             if (reauthConfig != null) {
                 ModalBottomSheet(
