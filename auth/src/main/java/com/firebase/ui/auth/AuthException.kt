@@ -561,8 +561,8 @@ abstract class AuthException(
             val policyIndex = message.indexOf("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)
             if (policyIndex == -1) return emptyList()
             val start = message.indexOf('[', policyIndex)
-            val end = message.indexOf(']', start)
-            if (start == -1 || end == -1) return emptyList()
+            val end = message.indexOf(']', policyIndex)
+            if (start == -1 || end == -1 || end <= start) return emptyList()
             return message.substring(start + 1, end)
                 .split(',')
                 .map { it.trim() }
@@ -573,7 +573,7 @@ abstract class AuthException(
         // for those. For older SDK versions that may surface short error codes instead
         // (e.g. MISSING_UPPERCASE_CHARACTER), map those to localised strings.
         private fun mapRequirementToString(code: String, stringProvider: AuthUIStringProvider?): String {
-            return when (code.uppercase()) {
+            return when (code.uppercase(java.util.Locale.US)) {
                 "MISSING_UPPERCASE_CHARACTER" ->
                     stringProvider?.passwordMissingUppercase ?: "Password must contain at least one uppercase letter"
                 "MISSING_LOWERCASE_CHARACTER" ->
