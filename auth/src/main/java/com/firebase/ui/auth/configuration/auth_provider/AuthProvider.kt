@@ -991,6 +991,13 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                     && currentUser.isAnonymous
         }
 
+        internal fun canLinkCredential(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
+            val currentUser = auth.currentUser
+            return config.isCredentialLinkingEnabled
+                    && currentUser != null
+                    && !currentUser.isAnonymous
+        }
+
         /**
          * Merges profile information (display name and photo URL) with the current user's profile.
          *
