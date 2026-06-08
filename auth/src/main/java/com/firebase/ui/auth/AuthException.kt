@@ -124,6 +124,25 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * The password violates one or more Google Identity Platform password policy requirements.
+     *
+     * This exception is thrown when GIdP password policy enforcement is enabled and the supplied
+     * password fails one or more configured constraints (e.g. minimum length, missing uppercase).
+     *
+     * [message] is a newline-separated, human-readable description of each failing constraint
+     * as returned by the server, suitable for direct display in the UI.
+     *
+     * @property message Human-readable description of the failing constraints
+     * @property failingRequirements The individual constraint strings from the server
+     * @property cause The underlying [Throwable] that caused this exception
+     */
+    class PasswordPolicyViolationException(
+        message: String,
+        val failingRequirements: List<String>,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * An account with the given email already exists.
      *
      * This exception is thrown when attempting to create a new account with
@@ -354,7 +373,32 @@ abstract class AuthException(
                 // If already an AuthException, return it directly
                 is AuthException -> firebaseException
 
-                // Handle specific Firebase Auth exceptions first (before general FirebaseException)
+                // Handle specific Firebase Auth exceptions first (before general FirebaseException).
+                // FirebaseAuthWeakPasswordException extends FirebaseAuthInvalidCredentialsException,
+                // so it must be checked before the parent type.
+                is FirebaseAuthWeakPasswordException -> {
+                    val sourceText = firebaseException.reason ?: firebaseException.message ?: ""
+                    if (sourceText.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
+                        val requirements = parsePasswordPolicyRequirements(sourceText)
+                        PasswordPolicyViolationException(
+                            message = requirements.joinToString("\n").ifEmpty {
+                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                    ?: "Password does not meet policy requirements"
+                            },
+                            failingRequirements = requirements,
+                            cause = firebaseException
+                        )
+                    } else {
+                        WeakPasswordException(
+                            message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Password is too weak",
+                            cause = firebaseException,
+                            reason = firebaseException.reason
+                        )
+                    }
+                }
+
                 is FirebaseAuthInvalidCredentialsException -> {
                     InvalidCredentialsException(
                         message = stringProvider?.errorInvalidCredentials.nonEmpty()
@@ -387,16 +431,6 @@ abstract class AuthException(
                             cause = firebaseException
                         )
                     }
-                }
-
-                is FirebaseAuthWeakPasswordException -> {
-                    WeakPasswordException(
-                        message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
-                            ?: firebaseException.message
-                            ?: "Password is too weak",
-                        cause = firebaseException,
-                        reason = firebaseException.reason
-                    )
                 }
 
                 is FirebaseAuthUserCollisionException -> {
@@ -469,12 +503,24 @@ abstract class AuthException(
                 }
 
                 is FirebaseException -> {
-                    NetworkException(
-                        message = stringProvider?.errorNetworkGeneric.nonEmpty()
-                            ?: firebaseException.message
-                            ?: "Network error occurred",
-                        cause = firebaseException
-                    )
+                    val msg = firebaseException.message ?: ""
+                    if (msg.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
+                        val requirements = parsePasswordPolicyRequirements(msg)
+                        PasswordPolicyViolationException(
+                            message = requirements.joinToString("\n").ifEmpty {
+                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                    ?: "Password does not meet policy requirements"
+                            },
+                            failingRequirements = requirements,
+                            cause = firebaseException
+                        )
+                    } else {
+                        NetworkException(
+                            message = stringProvider?.errorNetworkGeneric.nonEmpty()
+                                ?: msg.ifEmpty { "Network error occurred" },
+                            cause = firebaseException
+                        )
+                    }
                 }
 
                 else -> {
@@ -500,5 +546,21 @@ abstract class AuthException(
         }
 
         private fun String?.nonEmpty(): String? = this?.ifEmpty { null }
+
+        // Finds the [...] content that immediately follows PASSWORD_DOES_NOT_MEET_REQUIREMENTS
+        // in both FirebaseException and FirebaseAuthWeakPasswordException messages.
+        // GIdP returns human-readable requirement strings inside those brackets, e.g.
+        // "...PASSWORD_DOES_NOT_MEET_REQUIREMENTS:Missing password requirements: [Password must contain at least 10 characters]"
+        private fun parsePasswordPolicyRequirements(message: String): List<String> {
+            val policyIndex = message.indexOf("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)
+            if (policyIndex == -1) return emptyList()
+            val start = message.indexOf('[', policyIndex)
+            val end = message.indexOf(']', policyIndex)
+            if (start == -1 || end == -1 || end <= start) return emptyList()
+            return message.substring(start + 1, end)
+                .split(',')
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+        }
     }
 }

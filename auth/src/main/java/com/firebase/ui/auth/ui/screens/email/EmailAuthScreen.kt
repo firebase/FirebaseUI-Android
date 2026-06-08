@@ -306,7 +306,7 @@ fun EmailAuthScreen(
                         password = passwordTextValue.value,
                     )
                 } catch (e: Exception) {
-
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },
@@ -318,7 +318,7 @@ fun EmailAuthScreen(
                         actionCodeSettings = configuration.passwordResetActionCodeSettings,
                     )
                 } catch (e: Exception) {
-
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },

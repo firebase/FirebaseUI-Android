@@ -140,6 +140,11 @@ private fun getRecoveryMessage(
             } ?: baseMessage
         }
 
+        is AuthException.PasswordPolicyViolationException -> {
+            error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.weakPasswordRecoveryMessage
+        }
+
         is AuthException.EmailAlreadyInUseException -> {
             // Include email if available
             val baseMessage = stringProvider.emailAlreadyInUseRecoveryMessage
@@ -201,6 +206,7 @@ private fun getRecoveryActionText(
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,
         is AuthException.WeakPasswordException,
+        is AuthException.PasswordPolicyViolationException,
         is AuthException.TooManyRequestsException,
         is AuthException.PhoneVerificationCooldownException -> stringProvider.retryAction
         is AuthException.UnknownException -> stringProvider.retryAction
@@ -221,6 +227,7 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.InvalidCredentialsException -> true
         is AuthException.UserNotFoundException -> true
         is AuthException.WeakPasswordException -> true
+        is AuthException.PasswordPolicyViolationException -> true
         is AuthException.EmailAlreadyInUseException -> true
         is AuthException.TooManyRequestsException -> false // User must wait
         is AuthException.PhoneVerificationCooldownException -> false // User must wait for cooldown
