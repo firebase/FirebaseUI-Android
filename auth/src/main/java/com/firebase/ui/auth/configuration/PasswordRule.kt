@@ -111,7 +111,7 @@ abstract class PasswordRule {
      * @param password The password to validate
      * @return true if the password meets this rule's requirements, false otherwise
      */
-    internal abstract fun isValid(password: String): Boolean
+    abstract fun isValid(password: String): Boolean
 
     /**
      * Returns the appropriate error message for this rule when validation fails.
@@ -119,5 +119,5 @@ abstract class PasswordRule {
      * @param stringProvider The string provider for localized error messages
      * @return The localized error message for this rule
      */
-    internal abstract fun getErrorMessage(stringProvider: AuthUIStringProvider): String
+    abstract fun getErrorMessage(stringProvider: AuthUIStringProvider): String
 }

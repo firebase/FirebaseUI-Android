@@ -498,6 +498,31 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     @Test
+    fun `withReauth() retryOperation restores auth state after successful retry`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        var callCount = 0
+
+        authUI.withReauth(context) {
+            callCount++
+            if (callCount == 1) throw FirebaseAuthRecentLoginRequiredException(
+                "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+            )
+        }
+
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+
+        // Simulate FirebaseAuthScreen: set Loading, then invoke the retry
+        authUI.updateAuthState(AuthState.Loading())
+        state.retryOperation!!(context)
+
+        // Auth state must not be stuck on Loading — withReauth owns the state lifecycle
+        val authState = authUI.authStateFlow().first()
+        assertThat(authState).isNotInstanceOf(AuthState.Loading::class.java)
+        assertThat(authState).isInstanceOf(AuthState.Success::class.java)
+    }
+
+    @Test
     fun `withReauth() does not throw when reauth is needed`() = runTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)

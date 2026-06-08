@@ -526,7 +526,22 @@ class FirebaseAuthUI private constructor(
                 AuthState.ReauthenticationRequired(
                     user = user,
                     reason = reason,
-                    retryOperation = { operation() },
+                    retryOperation = {
+                        try {
+                            operation()
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            updateAuthState(AuthState.Error(e))
+                            return@ReauthenticationRequired
+                        }
+                        val currentUser = auth.currentUser
+                        if (currentUser != null) {
+                            updateAuthState(AuthState.Success(result = null, user = currentUser))
+                        } else {
+                            updateAuthState(AuthState.Idle)
+                        }
+                    },
                 )
             )
         }
