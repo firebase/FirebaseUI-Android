@@ -94,6 +94,9 @@ class MainActivity : ComponentActivity() {
                         onCustomSlotsClick = {
                             startActivity(Intent(this, CustomSlotsThemingDemoActivity::class.java))
                         },
+                        onCredentialLinkingClick = {
+                            startActivity(Intent(this, CredentialLinkingDemoActivity::class.java))
+                        },
                         isEmulatorMode = USE_AUTH_EMULATOR
                     )
                 }
@@ -107,6 +110,7 @@ fun ChooserScreen(
     onHighLevelApiClick: () -> Unit,
     onLowLevelApiClick: () -> Unit,
     onCustomSlotsClick: () -> Unit,
+    onCredentialLinkingClick: () -> Unit = {},
     isEmulatorMode: Boolean = false
 ) {
     val scrollState = rememberScrollState()
@@ -267,6 +271,32 @@ fun ChooserScreen(
                 Text(
                     text = "• Custom email auth UI via slots\n• Custom phone auth UI via slots\n• AuthUITheme.fromMaterialTheme()\n• Custom ProviderStyle examples",
                     style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Credential Linking Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onCredentialLinkingClick
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = "🔗 Credential Linking",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "isCredentialLinkingEnabled",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Sign in with one provider, then add another to the same account without losing your UID.",
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

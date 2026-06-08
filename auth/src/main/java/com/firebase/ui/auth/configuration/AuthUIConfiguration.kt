@@ -42,6 +42,7 @@ class AuthUIConfigurationBuilder {
     var isCredentialManagerEnabled: Boolean = true
     var isMfaEnabled: Boolean = true
     var isAnonymousUpgradeEnabled: Boolean = false
+    var isCredentialLinkingEnabled: Boolean = false
     var tosUrl: String? = null
     var privacyPolicyUrl: String? = null
     var logo: AuthUIAsset? = null
@@ -107,6 +108,7 @@ class AuthUIConfigurationBuilder {
             isCredentialManagerEnabled = isCredentialManagerEnabled,
             isMfaEnabled = isMfaEnabled,
             isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled,
+            isCredentialLinkingEnabled = isCredentialLinkingEnabled,
             tosUrl = tosUrl,
             privacyPolicyUrl = privacyPolicyUrl,
             logo = logo,
@@ -163,6 +165,13 @@ class AuthUIConfiguration(
      * Allows upgrading an anonymous user to a new credential.
      */
     val isAnonymousUpgradeEnabled: Boolean = false,
+
+    /**
+     * Allows linking a new credential to an already authenticated (non-anonymous) user.
+     * When enabled, signing in via FirebaseUI while a user is already signed in will link
+     * the new credential to the existing account instead of creating a new one.
+     */
+    val isCredentialLinkingEnabled: Boolean = false,
 
     /**
      * The URL for the terms of service.
