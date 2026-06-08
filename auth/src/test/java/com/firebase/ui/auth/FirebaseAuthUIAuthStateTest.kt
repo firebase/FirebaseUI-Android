@@ -436,6 +436,94 @@ class FirebaseAuthUIAuthStateTest {
         assertThat(state.retryOperation).isNotNull()
     }
 
+    // =============================================================================================
+    // withReauth() Tests
+    // =============================================================================================
+
+    @Test
+    fun `withReauth() executes operation normally when no reauth needed`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        var callCount = 0
+
+        authUI.withReauth(context) { callCount++ }
+
+        assertThat(callCount).isEqualTo(1)
+    }
+
+    @Test
+    fun `withReauth() emits ReauthenticationRequired when FirebaseAuthRecentLoginRequiredException thrown`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+
+        authUI.withReauth(context) {
+            throw FirebaseAuthRecentLoginRequiredException("ERROR_REQUIRES_RECENT_LOGIN", "Recent login required")
+        }
+
+        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.ReauthenticationRequired::class.java)
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        assertThat(state.user).isEqualTo(mockFirebaseUser)
+    }
+
+    @Test
+    fun `withReauth() forwards reason to ReauthenticationRequired state`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+
+        authUI.withReauth(context, reason = "Verify identity to change email") {
+            throw FirebaseAuthRecentLoginRequiredException("ERROR_REQUIRES_RECENT_LOGIN", "Recent login required")
+        }
+
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        assertThat(state.reason).isEqualTo("Verify identity to change email")
+    }
+
+    @Test
+    fun `withReauth() attaches retryOperation that re-invokes the original operation`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        var callCount = 0
+
+        authUI.withReauth(context) {
+            callCount++
+            if (callCount == 1) throw FirebaseAuthRecentLoginRequiredException(
+                "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+            )
+        }
+
+        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        assertThat(state.retryOperation).isNotNull()
+        state.retryOperation!!(context)
+        assertThat(callCount).isEqualTo(2)
+    }
+
+    @Test
+    fun `withReauth() does not throw when reauth is needed`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+
+        // Should complete without throwing
+        authUI.withReauth(context) {
+            throw FirebaseAuthRecentLoginRequiredException("ERROR_REQUIRES_RECENT_LOGIN", "Recent login required")
+        }
+    }
+
+    @Test
+    fun `withReauth() propagates non-reauth exceptions`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        val cause = RuntimeException("Network error")
+        var thrown: Exception? = null
+
+        try {
+            authUI.withReauth(context) { throw cause }
+        } catch (e: Exception) {
+            thrown = e
+        }
+
+        assertThat(thrown).isEqualTo(cause)
+    }
+
     @Test
     fun `delete() retryOperation re-invokes delete on execution`() = runTest {
         val mockUser = mock(FirebaseUser::class.java)

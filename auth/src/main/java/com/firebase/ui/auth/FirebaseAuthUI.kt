@@ -488,6 +488,50 @@ class FirebaseAuthUI private constructor(
      * @throws AuthException.UnknownException for other errors
      * @since 10.0.0
      */
+    /**
+     * Executes a sensitive operation, automatically handling reauthentication if required.
+     *
+     * If the [operation] throws [FirebaseAuthRecentLoginRequiredException], this method emits
+     * [AuthState.ReauthenticationRequired] with the operation attached as [AuthState.ReauthenticationRequired.retryOperation].
+     * [FirebaseAuthScreen] observes this state and presents a reauthentication sheet; on success
+     * the operation is retried automatically without any further action from the caller.
+     *
+     * All other exceptions propagate normally.
+     *
+     * **Example:**
+     * ```kotlin
+     * lifecycleScope.launch {
+     *     authUI.withReauth(context, reason = "Verify your identity to change email") {
+     *         user.updateEmail(newEmail).await()
+     *     }
+     * }
+     * ```
+     *
+     * @param context Android [Context]
+     * @param reason Optional message shown to the user explaining why reauthentication is needed
+     * @param operation The sensitive operation to attempt
+     * @since 10.0.0
+     */
+    suspend fun withReauth(
+        context: Context,
+        reason: String? = null,
+        operation: suspend () -> Unit,
+    ) {
+        try {
+            operation()
+        } catch (e: FirebaseAuthRecentLoginRequiredException) {
+            val user = auth.currentUser
+                ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in")
+            updateAuthState(
+                AuthState.ReauthenticationRequired(
+                    user = user,
+                    reason = reason,
+                    retryOperation = { operation() },
+                )
+            )
+        }
+    }
+
     suspend fun delete(context: Context) {
         try {
             val currentUser = auth.currentUser
