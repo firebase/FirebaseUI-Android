@@ -191,7 +191,44 @@ class AuthExceptionTest {
     // =============================================================================================
 
     @Test
-    fun `from() maps GIdP policy violation in reason to PasswordPolicyViolationException`() {
+    fun `from() maps GIdP policy violation FirebaseException to PasswordPolicyViolationException`() {
+        val msg = "An internal error has occurred. [ PASSWORD_DOES_NOT_MEET_REQUIREMENTS:" +
+                "Missing password requirements: [Password must contain at least 10 characters] ]"
+        val firebaseException = object : com.google.firebase.FirebaseException(msg) {}
+
+        val result = AuthException.from(firebaseException)
+
+        assertThat(result).isInstanceOf(AuthException.PasswordPolicyViolationException::class.java)
+        val policyEx = result as AuthException.PasswordPolicyViolationException
+        assertThat(policyEx.failingRequirements).containsExactly(
+            "Password must contain at least 10 characters"
+        )
+        assertThat(policyEx.message).isEqualTo("Password must contain at least 10 characters")
+        assertThat(policyEx.cause).isEqualTo(firebaseException)
+    }
+
+    @Test
+    fun `from() maps GIdP policy violation with multiple requirements`() {
+        val msg = "An internal error has occurred. [ PASSWORD_DOES_NOT_MEET_REQUIREMENTS:" +
+                "Missing password requirements: [Password must contain at least 10 characters, " +
+                "Password must contain at least one uppercase letter] ]"
+        val firebaseException = object : com.google.firebase.FirebaseException(msg) {}
+
+        val result = AuthException.from(firebaseException)
+
+        assertThat(result).isInstanceOf(AuthException.PasswordPolicyViolationException::class.java)
+        val policyEx = result as AuthException.PasswordPolicyViolationException
+        assertThat(policyEx.failingRequirements).containsExactly(
+            "Password must contain at least 10 characters",
+            "Password must contain at least one uppercase letter"
+        ).inOrder()
+        assertThat(policyEx.message).isEqualTo(
+            "Password must contain at least 10 characters\nPassword must contain at least one uppercase letter"
+        )
+    }
+
+    @Test
+    fun `from() maps GIdP policy violation in FirebaseAuthWeakPasswordException reason`() {
         val firebaseException = FirebaseAuthWeakPasswordException(
             "ERROR_WEAK_PASSWORD",
             "weak",
@@ -206,35 +243,15 @@ class AuthExceptionTest {
             "MISSING_UPPERCASE_CHARACTER",
             "MISSING_NUMERIC_CHARACTER"
         ).inOrder()
-        assertThat(policyEx.cause).isEqualTo(firebaseException)
     }
 
     @Test
-    fun `from() maps GIdP policy violation in message when reason is null to PasswordPolicyViolationException`() {
-        val firebaseException = FirebaseAuthWeakPasswordException(
-            "ERROR_WEAK_PASSWORD",
-            "PASSWORD_DOES_NOT_MEET_REQUIREMENTS : [MISSING_LOWERCASE_CHARACTER, MISSING_NON_ALPHANUMERIC_CHARACTER]",
-            null
-        )
-
-        val result = AuthException.from(firebaseException)
-
-        assertThat(result).isInstanceOf(AuthException.PasswordPolicyViolationException::class.java)
-        val policyEx = result as AuthException.PasswordPolicyViolationException
-        assertThat(policyEx.failingRequirements).containsExactly(
-            "MISSING_LOWERCASE_CHARACTER",
-            "MISSING_NON_ALPHANUMERIC_CHARACTER"
-        ).inOrder()
-    }
-
-    @Test
-    fun `from() maps policy violation with string provider to human-readable message`() {
+    fun `from() maps policy violation short codes via string provider`() {
         val firebaseException = FirebaseAuthWeakPasswordException(
             "ERROR_WEAK_PASSWORD",
             "weak",
             "PASSWORD_DOES_NOT_MEET_REQUIREMENTS : [MISSING_UPPERCASE_CHARACTER, MISSING_NUMERIC_CHARACTER]"
         )
-
         val stringProvider = mock(AuthUIStringProvider::class.java)
         whenever(stringProvider.passwordMissingUppercase).thenReturn("Needs uppercase")
         whenever(stringProvider.passwordMissingDigit).thenReturn("Needs a number")
@@ -246,19 +263,17 @@ class AuthExceptionTest {
     }
 
     @Test
-    fun `from() maps unknown requirement code to raw code string`() {
-        val firebaseException = FirebaseAuthWeakPasswordException(
-            "ERROR_WEAK_PASSWORD",
-            "weak",
-            "PASSWORD_DOES_NOT_MEET_REQUIREMENTS : [SOME_FUTURE_REQUIREMENT]"
-        )
+    fun `from() passes through unknown requirement strings as-is`() {
+        val msg = "An internal error has occurred. [ PASSWORD_DOES_NOT_MEET_REQUIREMENTS:" +
+                "Missing password requirements: [Some future requirement] ]"
+        val firebaseException = object : com.google.firebase.FirebaseException(msg) {}
 
         val result = AuthException.from(firebaseException)
 
         assertThat(result).isInstanceOf(AuthException.PasswordPolicyViolationException::class.java)
         val policyEx = result as AuthException.PasswordPolicyViolationException
-        assertThat(policyEx.failingRequirements).containsExactly("SOME_FUTURE_REQUIREMENT")
-        assertThat(policyEx.message).isEqualTo("SOME_FUTURE_REQUIREMENT")
+        assertThat(policyEx.failingRequirements).containsExactly("Some future requirement")
+        assertThat(policyEx.message).isEqualTo("Some future requirement")
     }
 
     @Test
@@ -272,6 +287,15 @@ class AuthExceptionTest {
         val result = AuthException.from(firebaseException)
 
         assertThat(result).isInstanceOf(AuthException.WeakPasswordException::class.java)
+    }
+
+    @Test
+    fun `from() maps plain FirebaseException without policy to NetworkException`() {
+        val firebaseException = object : com.google.firebase.FirebaseException("Network timeout") {}
+
+        val result = AuthException.from(firebaseException)
+
+        assertThat(result).isInstanceOf(AuthException.NetworkException::class.java)
     }
 
     @Test

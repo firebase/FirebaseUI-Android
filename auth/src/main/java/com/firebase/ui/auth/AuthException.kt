@@ -507,12 +507,26 @@ abstract class AuthException(
                 }
 
                 is FirebaseException -> {
-                    NetworkException(
-                        message = stringProvider?.errorNetworkGeneric.nonEmpty()
-                            ?: firebaseException.message
-                            ?: "Network error occurred",
-                        cause = firebaseException
-                    )
+                    val msg = firebaseException.message ?: ""
+                    if (msg.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
+                        val requirements = parsePasswordPolicyRequirements(msg)
+                        val humanReadable = requirements
+                            .joinToString("\n") { mapRequirementToString(it, stringProvider) }
+                        PasswordPolicyViolationException(
+                            message = humanReadable.ifEmpty {
+                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                    ?: "Password does not meet policy requirements"
+                            },
+                            failingRequirements = requirements,
+                            cause = firebaseException
+                        )
+                    } else {
+                        NetworkException(
+                            message = stringProvider?.errorNetworkGeneric.nonEmpty()
+                                ?: msg.ifEmpty { "Network error occurred" },
+                            cause = firebaseException
+                        )
+                    }
                 }
 
                 else -> {
@@ -539,16 +553,25 @@ abstract class AuthException(
 
         private fun String?.nonEmpty(): String? = this?.ifEmpty { null }
 
+        // Finds the [...] content that immediately follows PASSWORD_DOES_NOT_MEET_REQUIREMENTS
+        // in both FirebaseException and FirebaseAuthWeakPasswordException messages.
+        // GIdP returns human-readable requirement strings inside those brackets, e.g.
+        // "...PASSWORD_DOES_NOT_MEET_REQUIREMENTS:Missing password requirements: [Password must contain at least 10 characters]"
         private fun parsePasswordPolicyRequirements(message: String): List<String> {
-            val start = message.indexOf('[')
-            val end = message.indexOf(']')
-            if (start == -1 || end == -1 || end <= start) return emptyList()
+            val policyIndex = message.indexOf("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)
+            if (policyIndex == -1) return emptyList()
+            val start = message.indexOf('[', policyIndex)
+            val end = message.indexOf(']', start)
+            if (start == -1 || end == -1) return emptyList()
             return message.substring(start + 1, end)
                 .split(',')
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
         }
 
+        // GIdP already returns human-readable requirement strings, so this is a pass-through
+        // for those. For older SDK versions that may surface short error codes instead
+        // (e.g. MISSING_UPPERCASE_CHARACTER), map those to localised strings.
         private fun mapRequirementToString(code: String, stringProvider: AuthUIStringProvider?): String {
             return when (code.uppercase()) {
                 "MISSING_UPPERCASE_CHARACTER" ->
