@@ -90,6 +90,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 /**
  * High-level authentication screen that wires together provider selection, individual provider
@@ -409,27 +410,22 @@ fun FirebaseAuthScreen(
                                 coroutineScope.launch {
                                     try {
                                         // Reload user to get fresh data from server
-                                        authUI.getCurrentUser()?.reload()
-                                        authUI.getCurrentUser()?.getIdToken(true)
-
-                                        // Check the user's email verification status after reload
-                                        val user = authUI.getCurrentUser()
-                                        if (user != null) {
-                                            // If email is now verified, transition to Success state
-                                            if (user.isEmailVerified) {
+                                        authUI.getCurrentUser()?.let {
+                                            it.reload().await()
+                                            it.getIdToken(true).await()
+                                            if (it.isEmailVerified) {
                                                 authUI.updateAuthState(
                                                     AuthState.Success(
                                                         result = null,
-                                                        user = user,
+                                                        user = it,
                                                         isNewUser = false
                                                     )
                                                 )
                                             } else {
-                                                // Email still not verified, keep showing verification screen
                                                 authUI.updateAuthState(
                                                     AuthState.RequiresEmailVerification(
-                                                        user = user,
-                                                        email = user.email ?: ""
+                                                        user = it,
+                                                        email = it.email ?: ""
                                                     )
                                                 )
                                             }
