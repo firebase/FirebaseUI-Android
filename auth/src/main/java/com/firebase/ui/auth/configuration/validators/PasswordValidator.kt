@@ -17,7 +17,7 @@ package com.firebase.ui.auth.configuration.validators
 import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 
-internal class PasswordValidator(
+class PasswordValidator(
     override val stringProvider: AuthUIStringProvider,
     private val rules: List<PasswordRule>
 ) : FieldValidator {

@@ -4,10 +4,14 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.auth.actionCodeSettings
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -403,6 +407,77 @@ class AuthProviderTest {
             assertThat(e).isInstanceOf(IllegalArgumentException::class.java)
             assertThat(e.message).isEqualTo("Provider ID cannot be null or empty")
         }
+    }
+
+    // =============================================================================================
+    // filterToLinkedProviders Tests
+    // =============================================================================================
+
+    private fun mockUser(vararg providerIds: String): FirebaseUser {
+        val user = mock(FirebaseUser::class.java)
+        val infos = providerIds.map { id ->
+            mock(UserInfo::class.java).also { `when`(it.providerId).thenReturn(id) }
+        }
+        `when`(user.providerData).thenReturn(infos)
+        return user
+    }
+
+    @Test
+    fun `filterToLinkedProviders keeps only providers matching user providerData`() {
+        val user = mockUser("password", "google.com")
+        val providers = listOf(
+            AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()),
+            AuthProvider.Google(scopes = emptyList(), serverClientId = "id"),
+            AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null),
+        )
+
+        val result = providers.filterToLinkedProviders(user)
+
+        assertThat(result.map { it.providerId }).containsExactly("password", "google.com")
+    }
+
+    @Test
+    fun `filterToLinkedProviders returns empty list when no providers match`() {
+        val user = mockUser("password")
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = "id"),
+        )
+
+        val result = providers.filterToLinkedProviders(user)
+
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `filterToLinkedProviders returns all providers when all are linked`() {
+        val user = mockUser("password", "phone")
+        val email = AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList())
+        val phone = AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null)
+
+        val result = listOf(email, phone).filterToLinkedProviders(user)
+
+        assertThat(result).containsExactly(email, phone)
+    }
+
+    @Test
+    fun `filterToLinkedProviders on empty list returns empty list`() {
+        val user = mockUser("password")
+
+        val result = emptyList<AuthProvider>().filterToLinkedProviders(user)
+
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `filterToLinkedProviders ignores providers linked to user but absent from list`() {
+        val user = mockUser("password", "google.com", "facebook.com")
+        val providers = listOf(
+            AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()),
+        )
+
+        val result = providers.filterToLinkedProviders(user)
+
+        assertThat(result.map { it.providerId }).containsExactly("password")
     }
 
     @Test

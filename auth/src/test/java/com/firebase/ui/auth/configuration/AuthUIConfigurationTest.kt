@@ -479,7 +479,8 @@ class AuthUIConfigurationTest {
             "isNewEmailAccountsAllowed",
             "isDisplayNameRequired",
             "isProviderChoiceAlwaysShown",
-            "transitions"
+            "transitions",
+            "isReauthenticationMode"
         )
 
         val actualProperties = allProperties.map { it.name }.toSet()
