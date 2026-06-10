@@ -19,6 +19,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
@@ -678,6 +679,96 @@ class FirebaseAuthUITest {
             assertThat(e.cause).isEqualTo(networkException)
         }
     }
+
+    // =============================================================================================
+    // createReauthFlow Tests
+    // =============================================================================================
+
+    private fun baseConfig(vararg providers: AuthProvider): com.firebase.ui.auth.configuration.AuthUIConfiguration {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        return authUIConfiguration {
+            this.context = context
+            providers.forEach { p -> this.providers { provider(p) } }
+        }
+    }
+
+    @Test
+    fun `createReauthFlow throws UserNotFoundException when no user is signed in`() {
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(null)
+        val authUI = FirebaseAuthUI.create(defaultApp, mockAuth)
+
+        try {
+            authUI.createReauthFlow(baseConfig(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList())))
+            assertThat(false).isTrue()
+        } catch (e: AuthException.UserNotFoundException) {
+            assertThat(e.message).contains("No user is currently signed in")
+        }
+    }
+
+    @Test
+    fun `createReauthFlow throws when no configured provider is linked to the current user`() {
+        val mockUser = mock(FirebaseUser::class.java)
+        val info = mock(UserInfo::class.java)
+        `when`(info.providerId).thenReturn("password")
+        `when`(mockUser.providerData).thenReturn(listOf(info))
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        val authUI = FirebaseAuthUI.create(defaultApp, mockAuth)
+
+        // Config only has Google; user only has email linked
+        val config = baseConfig(AuthProvider.Google(scopes = emptyList(), serverClientId = "id"))
+
+        try {
+            authUI.createReauthFlow(config)
+            assertThat(false).isTrue()
+        } catch (e: IllegalStateException) {
+            assertThat(e.message).contains("No configured providers are linked")
+        }
+    }
+
+    @Test
+    fun `createReauthFlow returns a controller whose config has only linked providers`() {
+        val mockUser = mock(FirebaseUser::class.java)
+        val emailInfo = mock(UserInfo::class.java)
+        val googleInfo = mock(UserInfo::class.java)
+        `when`(emailInfo.providerId).thenReturn("password")
+        `when`(googleInfo.providerId).thenReturn("google.com")
+        `when`(mockUser.providerData).thenReturn(listOf(emailInfo, googleInfo))
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        val authUI = FirebaseAuthUI.create(defaultApp, mockAuth)
+
+        // Three providers configured; only Email and Google are linked — Phone should be stripped
+        val config = baseConfig(
+            AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()),
+            AuthProvider.Google(scopes = emptyList(), serverClientId = "id"),
+            AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null),
+        )
+
+        val controller = authUI.createReauthFlow(config)
+
+        assertThat(controller.configuration.providers.map { it.providerId })
+            .containsExactly("password", "google.com")
+    }
+
+    @Test
+    fun `createReauthFlow resulting config disables new account creation and enables reauth mode`() {
+        val mockUser = mock(FirebaseUser::class.java)
+        val info = mock(UserInfo::class.java)
+        `when`(info.providerId).thenReturn("password")
+        `when`(mockUser.providerData).thenReturn(listOf(info))
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        val authUI = FirebaseAuthUI.create(defaultApp, mockAuth)
+
+        val config = baseConfig(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+        val controller = authUI.createReauthFlow(config)
+
+        assertThat(controller.configuration.isNewEmailAccountsAllowed).isFalse()
+        assertThat(controller.configuration.isReauthenticationMode).isTrue()
+    }
+
 
     @Test
     fun `canHandleIntent returns true when auth validates email link`() {

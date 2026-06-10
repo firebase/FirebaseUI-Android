@@ -19,6 +19,8 @@ import android.content.Intent
 import androidx.annotation.RestrictTo
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.filterToLinkedProviders
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromFacebook
 import com.firebase.ui.auth.configuration.auth_provider.signOutFromGoogle
 import com.google.firebase.Firebase
@@ -209,6 +211,45 @@ class FirebaseAuthUI private constructor(
      */
     fun createAuthFlow(configuration: AuthUIConfiguration): AuthFlowController {
         return AuthFlowController(this, configuration)
+    }
+
+    /**
+     * Creates a reauthentication flow scoped to the current user's linked providers.
+     *
+     * This method builds a sign-in flow where:
+     * - Only providers already linked to the current [FirebaseUser] are offered
+     * - Account creation is disabled
+     * - The credential path calls [FirebaseUser.reauthenticateWithCredential] instead of
+     *   [FirebaseAuth.signInWithCredential]
+     *
+     * Use this before sensitive operations (delete account, change email, etc.) that require
+     * a recent sign-in.
+     *
+     * @param configuration Base [AuthUIConfiguration] whose provider list is filtered to
+     *   the user's linked providers. All other settings are preserved.
+     * @param reason Optional human-readable string shown to the user explaining why
+     *   reauthentication is needed (e.g. "To delete your account we need to verify it's you").
+     * @return An [AuthFlowController] configured for reauthentication
+     * @throws AuthException.UserNotFoundException if no user is currently signed in
+     * @throws IllegalStateException if none of the configured providers are linked to the
+     *   current user
+     * @since 10.0.0
+     */
+    fun createReauthFlow(configuration: AuthUIConfiguration): AuthFlowController {
+        val currentUser = auth.currentUser
+            ?: throw AuthException.UserNotFoundException(
+                message = "No user is currently signed in"
+            )
+        val linked = configuration.providers.filterToLinkedProviders(currentUser)
+        check(linked.isNotEmpty()) {
+            "No configured providers are linked to the current user"
+        }
+        val reauthConfig = configuration.copy(
+            providers = linked,
+            isNewEmailAccountsAllowed = false,
+            isReauthenticationMode = true,
+        )
+        return AuthFlowController(this, reauthConfig)
     }
 
     /**
@@ -447,6 +488,65 @@ class FirebaseAuthUI private constructor(
      * @throws AuthException.UnknownException for other errors
      * @since 10.0.0
      */
+    /**
+     * Executes a sensitive operation, automatically handling reauthentication if required.
+     *
+     * If the [operation] throws [FirebaseAuthRecentLoginRequiredException], this method emits
+     * [AuthState.ReauthenticationRequired] with the operation attached as [AuthState.ReauthenticationRequired.retryOperation].
+     * [FirebaseAuthScreen] observes this state and presents a reauthentication sheet; on success
+     * the operation is retried automatically without any further action from the caller.
+     *
+     * All other exceptions propagate normally.
+     *
+     * **Example:**
+     * ```kotlin
+     * lifecycleScope.launch {
+     *     authUI.withReauth(context, reason = "Verify your identity to change email") {
+     *         user.updateEmail(newEmail).await()
+     *     }
+     * }
+     * ```
+     *
+     * @param context Android [Context]
+     * @param reason Optional message shown to the user explaining why reauthentication is needed
+     * @param operation The sensitive operation to attempt
+     * @since 10.0.0
+     */
+    suspend fun withReauth(
+        context: Context,
+        reason: String? = null,
+        operation: suspend () -> Unit,
+    ) {
+        try {
+            operation()
+        } catch (e: FirebaseAuthRecentLoginRequiredException) {
+            val user = auth.currentUser
+                ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in")
+            updateAuthState(
+                AuthState.ReauthenticationRequired(
+                    user = user,
+                    reason = reason,
+                    retryOperation = {
+                        try {
+                            operation()
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            updateAuthState(AuthState.Error(e))
+                            return@ReauthenticationRequired
+                        }
+                        val currentUser = auth.currentUser
+                        if (currentUser != null) {
+                            updateAuthState(AuthState.Success(result = null, user = currentUser))
+                        } else {
+                            updateAuthState(AuthState.Idle)
+                        }
+                    },
+                )
+            )
+        }
+    }
+
     suspend fun delete(context: Context) {
         try {
             val currentUser = auth.currentUser
@@ -463,6 +563,19 @@ class FirebaseAuthUI private constructor(
             // Update state to idle (user deleted and signed out)
             updateAuthState(AuthState.Idle)
 
+        } catch (e: FirebaseAuthRecentLoginRequiredException) {
+            auth.currentUser?.let {
+                updateAuthState(
+                    AuthState.ReauthenticationRequired(
+                        user = it,
+                        retryOperation = { ctx -> delete(ctx) },
+                    )
+                )
+            }
+            throw AuthException.InvalidCredentialsException(
+                message = e.message ?: "Recent login required for this operation",
+                cause = e
+            )
         } catch (e: CancellationException) {
             // Handle coroutine cancellation
             val cancelledException = AuthException.AuthCancelledException(

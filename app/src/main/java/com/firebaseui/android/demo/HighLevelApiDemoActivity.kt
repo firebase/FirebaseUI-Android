@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,16 +22,27 @@ import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -192,6 +205,13 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         onSignInCancelled = {
                             Log.d("HighLevelApiDemoActivity", "Authentication cancelled")
                         },
+                        reauthContent = { state, onDismiss ->
+                            ReauthDialog(
+                                authUI = authUI,
+                                state = state,
+                                onDismiss = onDismiss,
+                            )
+                        },
                         authenticatedContent = { state, uiContext ->
                             AppAuthenticatedContent(state, uiContext)
                         }
@@ -212,8 +232,24 @@ private fun AppAuthenticatedContent(
     val configuration = uiContext.configuration
     when (state) {
         is AuthState.Success -> {
+            val context = LocalContext.current
+            val lifecycleOwner = LocalLifecycleOwner.current
+            var isDeletingAccount by remember { mutableStateOf(false) }
             val user = uiContext.authUI.getCurrentUser()
             val identifier = user.displayIdentifier()
+            var showChangePasswordDialog by remember { mutableStateOf(false) }
+
+            if (showChangePasswordDialog) {
+                ChangePasswordDialog(
+                    authUI = uiContext.authUI,
+                    configuration = uiContext.configuration,
+                    stringProvider = uiContext.stringProvider,
+                    context = context,
+                    lifecycleOwner = lifecycleOwner,
+                    onDismiss = { showChangePasswordDialog = false },
+                )
+            }
+
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -260,6 +296,32 @@ private fun AppAuthenticatedContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = uiContext.onSignOut) {
                     Text(stringProvider.signOutAction)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { showChangePasswordDialog = true }) {
+                    Text("Change password (withReauth)")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        lifecycleOwner.lifecycleScope.launch {
+                            isDeletingAccount = true
+                            try {
+                                uiContext.authUI.delete(context)
+                            } catch (e: AuthException.InvalidCredentialsException) {
+                                // ReauthenticationRequired state was emitted —
+                                // FirebaseAuthScreen navigates to the reauth flow automatically.
+                                Log.d("HighLevelApiDemoActivity", "Reauth required before delete")
+                            } catch (e: AuthException) {
+                                Log.e("HighLevelApiDemoActivity", "Delete failed", e)
+                            } finally {
+                                isDeletingAccount = false
+                            }
+                        }
+                    },
+                    enabled = !isDeletingAccount
+                ) {
+                    if (isDeletingAccount) CircularProgressIndicator() else Text("Delete account")
                 }
             }
         }
@@ -325,4 +387,199 @@ private fun AppAuthenticatedContent(
             }
         }
     }
+}
+
+@Composable
+private fun ReauthDialog(
+    authUI: FirebaseAuthUI,
+    state: AuthState.ReauthenticationRequired,
+    onDismiss: () -> Unit,
+) {
+    var password by remember { mutableStateOf("") }
+    var isVerifying by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+    val email = state.user.email.orEmpty()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        title = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("Verify your identity")
+                state.reason?.let { reason ->
+                    Text(
+                        reason,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    "Signing in as $email",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                com.firebase.ui.auth.ui.components.AuthTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
+                    label = { Text("Password") },
+                    isSecureTextField = true,
+                    isError = errorMessage != null,
+                    errorMessage = errorMessage,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        isVerifying = true
+                        errorMessage = null
+                        try {
+                            val result = authUI.auth
+                                .signInWithEmailAndPassword(email, password)
+                                .await()
+                            result.user?.let { user ->
+                                authUI.updateAuthState(AuthState.Success(result, user))
+                            }
+                        } catch (e: Exception) {
+                            errorMessage = "Incorrect password. Please try again."
+                        } finally {
+                            isVerifying = false
+                        }
+                    }
+                },
+                enabled = password.isNotBlank() && !isVerifying,
+            ) {
+                if (isVerifying) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    Text("Verify")
+                }
+            }
+        },
+    )
+}
+
+@Composable
+private fun ChangePasswordDialog(
+    authUI: FirebaseAuthUI,
+    configuration: com.firebase.ui.auth.configuration.AuthUIConfiguration,
+    stringProvider: com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider,
+    context: android.content.Context,
+    lifecycleOwner: androidx.lifecycle.LifecycleOwner,
+    onDismiss: () -> Unit,
+) {
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var isUpdating by remember { mutableStateOf(false) }
+    var updateError by remember { mutableStateOf<String?>(null) }
+
+    val emailProvider = remember(configuration) {
+        configuration.providers.filterIsInstance<com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Email>().firstOrNull()
+    }
+    val passwordValidator = remember(emailProvider, stringProvider) {
+        com.firebase.ui.auth.configuration.validators.PasswordValidator(
+            stringProvider = stringProvider,
+            rules = emailProvider?.passwordValidationRules ?: emptyList(),
+        )
+    }
+    val confirmValidator = remember(stringProvider) {
+        com.firebase.ui.auth.configuration.validators.PasswordValidator(
+            stringProvider = stringProvider,
+            rules = emptyList(),
+        )
+    }
+
+    val passwordsMatch = newPassword == confirmPassword
+    val isValid = !passwordValidator.hasError && newPassword.isNotBlank() &&
+            passwordsMatch && confirmPassword.isNotBlank()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Change password") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                com.firebase.ui.auth.ui.components.AuthTextField(
+                    value = newPassword,
+                    onValueChange = {
+                        newPassword = it
+                        updateError = null
+                    },
+                    label = { Text("New password") },
+                    isSecureTextField = true,
+                    validator = passwordValidator,
+                )
+                com.firebase.ui.auth.ui.components.AuthTextField(
+                    value = confirmPassword,
+                    onValueChange = {
+                        confirmPassword = it
+                        updateError = null
+                    },
+                    label = { Text("Confirm password") },
+                    isSecureTextField = true,
+                    isError = confirmPassword.isNotEmpty() && !passwordsMatch,
+                    errorMessage = if (confirmPassword.isNotEmpty() && !passwordsMatch) "Passwords do not match" else null,
+                    validator = confirmValidator,
+                )
+                if (updateError != null) {
+                    Text(
+                        updateError!!,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    lifecycleOwner.lifecycleScope.launch {
+                        isUpdating = true
+                        updateError = null
+                        try {
+                            authUI.withReauth(
+                                context,
+                                reason = "Verify your identity to change your password",
+                            ) {
+                                authUI.getCurrentUser()?.updatePassword(newPassword)?.await()
+                                Log.d("HighLevelApiDemoActivity", "Password changed successfully")
+                                onDismiss()
+                            }
+                        } catch (e: Exception) {
+                            updateError = "Failed to update password. Please try again."
+                        } finally {
+                            isUpdating = false
+                        }
+                    }
+                },
+                enabled = isValid && !isUpdating,
+            ) {
+                if (isUpdating) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                    )
+                } else {
+                    Text("Update")
+                }
+            }
+        },
+    )
 }

@@ -209,6 +209,35 @@ abstract class AuthState private constructor() {
     }
 
     /**
+     * Reauthentication is required before a sensitive operation (e.g. delete account, change email)
+     * can proceed. Use [FirebaseAuthUI.createReauthFlow] to launch the reauthentication flow.
+     *
+     * @property user The [FirebaseUser] that needs to reauthenticate
+     * @property reason Optional human-readable reason to show the user
+     */
+    class ReauthenticationRequired(
+        val user: FirebaseUser,
+        val reason: String? = null,
+        // Not included in equals/hashCode — lambdas have no meaningful equality.
+        val retryOperation: (suspend (android.content.Context) -> Unit)? = null,
+    ) : AuthState() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ReauthenticationRequired) return false
+            return user == other.user && reason == other.reason
+        }
+
+        override fun hashCode(): Int {
+            var result = user.hashCode()
+            result = 31 * result + (reason?.hashCode() ?: 0)
+            return result
+        }
+
+        override fun toString(): String =
+            "AuthState.ReauthenticationRequired(user=$user, reason=$reason)"
+    }
+
+    /**
      * Password reset link has been sent to the user's email.
      */
     class PasswordResetLinkSent : AuthState() {

@@ -1052,3 +1052,17 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         }
     }
 }
+
+/**
+ * Filters this provider list to only those whose [AuthProvider.providerId] matches a provider
+ * already linked to [user], as reported by [com.google.firebase.auth.FirebaseUser.providerData].
+ *
+ * Used by [com.firebase.ui.auth.FirebaseAuthUI.createReauthFlow] to restrict the reauthentication
+ * UI to methods the user has actually registered.
+ */
+internal fun List<AuthProvider>.filterToLinkedProviders(
+    user: com.google.firebase.auth.FirebaseUser,
+): List<AuthProvider> {
+    val linkedIds = user.providerData.map { it.providerId }.toSet()
+    return filter { it.providerId in linkedIds }
+}
