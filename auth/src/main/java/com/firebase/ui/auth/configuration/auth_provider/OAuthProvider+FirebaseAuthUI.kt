@@ -61,7 +61,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
                 "Ensure FirebaseAuthScreen is used within an Activity."
     )
 
-    return remember(this, provider.providerId) {
+    return remember(this, provider.providerId, config) {
         {
             coroutineScope.launch {
                 try {
@@ -165,11 +165,17 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
             return
         }
 
-        // Determine if we should upgrade anonymous user or do normal sign-in
-        val authResult = if (canUpgradeAnonymous(config, auth)) {
-            auth.currentUser?.startActivityForLinkWithProvider(activity, oauthProvider)?.await()
-        } else {
-            auth.startActivityForSignInWithProvider(activity, oauthProvider).await()
+        // Determine if we should upgrade anonymous user, reauthenticate, or do normal sign-in
+        val authResult = when {
+            canUpgradeAnonymous(config, auth) ->
+                auth.currentUser?.startActivityForLinkWithProvider(activity, oauthProvider)?.await()
+            config.isReauthenticationMode -> {
+                val currentUser = auth.currentUser
+                    ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in for reauthentication")
+                currentUser.startActivityForReauthenticateWithProvider(activity, oauthProvider).await()
+            }
+            else ->
+                auth.startActivityForSignInWithProvider(activity, oauthProvider).await()
         }
 
         // Extract OAuth credential and complete sign-in

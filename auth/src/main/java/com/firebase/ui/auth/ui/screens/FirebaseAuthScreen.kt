@@ -30,6 +30,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -37,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -63,6 +65,7 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.auth_provider.filterToLinkedProviders
 import com.firebase.ui.auth.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberGoogleSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberOAuthSignInHandler
@@ -103,6 +106,7 @@ import kotlinx.coroutines.tasks.await
  *
  * @since 10.0.0
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FirebaseAuthScreen(
     configuration: AuthUIConfiguration,
@@ -119,6 +123,7 @@ fun FirebaseAuthScreen(
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)? = null,
     mfaEnrollmentContent: (@Composable (MfaEnrollmentContentState) -> Unit)? = null,
     mfaChallengeContent: (@Composable (MfaChallengeContentState) -> Unit)? = null,
+    reauthContent: (@Composable (state: AuthState.ReauthenticationRequired, onDismiss: () -> Unit) -> Unit)? = null,
     authenticatedContent: (@Composable (state: AuthState, uiContext: AuthSuccessUiContext) -> Unit)? = null,
 ) {
     // Set FirebaseUI version
@@ -137,6 +142,9 @@ fun FirebaseAuthScreen(
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
+    val pendingReauthConfig = remember { mutableStateOf<AuthUIConfiguration?>(null) }
+    val pendingReauthState = remember { mutableStateOf<AuthState.ReauthenticationRequired?>(null) }
+    val pendingReauthOperation = remember { mutableStateOf<(suspend (android.content.Context) -> Unit)?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
@@ -150,99 +158,24 @@ fun FirebaseAuthScreen(
         lastSignInPreference.value = SignInPreferenceManager.getLastSignIn(context)
     }
 
-    val anonymousProvider =
-        configuration.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
-    val googleProvider =
-        configuration.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
-    val facebookProvider =
-        configuration.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
-    val appleProvider = configuration.providers.filterIsInstance<AuthProvider.Apple>().firstOrNull()
-    val githubProvider =
-        configuration.providers.filterIsInstance<AuthProvider.Github>().firstOrNull()
-    val microsoftProvider =
-        configuration.providers.filterIsInstance<AuthProvider.Microsoft>().firstOrNull()
-    val yahooProvider = configuration.providers.filterIsInstance<AuthProvider.Yahoo>().firstOrNull()
-    val twitterProvider =
-        configuration.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
-    val genericOAuthProviders =
-        configuration.providers.filterIsInstance<AuthProvider.GenericOAuth>()
-
     val logoAsset = configuration.logo
-
-    val onSignInAnonymously = anonymousProvider?.let {
-        authUI.rememberAnonymousSignInHandler()
-    }
-
-    val onSignInWithGoogle = googleProvider?.let {
-        authUI.rememberGoogleSignInHandler(
-            context = context,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val onSignInWithFacebook = facebookProvider?.let {
-        authUI.rememberSignInWithFacebookLauncher(
-            context = context,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val onSignInWithApple = appleProvider?.let {
-        authUI.rememberOAuthSignInHandler(
-            context = context,
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val onSignInWithGithub = githubProvider?.let {
-        authUI.rememberOAuthSignInHandler(
-            context = context,
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val onSignInWithMicrosoft = microsoftProvider?.let {
-        authUI.rememberOAuthSignInHandler(
-            context = context,
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val onSignInWithYahoo = yahooProvider?.let {
-        authUI.rememberOAuthSignInHandler(
-            context = context,
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val onSignInWithTwitter = twitterProvider?.let {
-        authUI.rememberOAuthSignInHandler(
-            context = context,
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
-
-    val genericOAuthHandlers = genericOAuthProviders.associateWith {
-        authUI.rememberOAuthSignInHandler(
-            context = context,
-            activity = activity,
-            config = configuration,
-            provider = it
-        )
-    }
+    val onProviderSelected = authUI.rememberOnProviderSelected(
+        context = context,
+        activity = activity,
+        config = configuration,
+        onNavigate = { route -> navController.navigate(route.route) },
+        onUnknownProvider = { provider ->
+            onSignInFailure(
+                AuthException.UnknownException(
+                    message = "Provider ${provider.providerId} is not supported in FirebaseAuthScreen",
+                    cause = IllegalArgumentException(
+                        "Provider ${provider.providerId} is not supported in FirebaseAuthScreen"
+                    )
+                )
+            )
+        },
+    )
 
     CompositionLocalProvider(
         LocalAuthUIStringProvider provides configuration.stringProvider,
@@ -281,46 +214,7 @@ fun FirebaseAuthScreen(
                             lastSignInPreference = lastSignInPreference.value,
                             customLayout = customMethodPickerLayout,
                             termsConfiguration = customMethodPickerTermsConfiguration,
-                            onProviderSelected = { provider ->
-                                when (provider) {
-                                    is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
-
-                                    is AuthProvider.Email -> {
-                                        navController.navigate(AuthRoute.Email.route)
-                                    }
-
-                                    is AuthProvider.Phone -> {
-                                        navController.navigate(AuthRoute.Phone.route)
-                                    }
-
-                                    is AuthProvider.Google -> onSignInWithGoogle?.invoke()
-
-                                    is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
-
-                                    is AuthProvider.Apple -> onSignInWithApple?.invoke()
-
-                                    is AuthProvider.Github -> onSignInWithGithub?.invoke()
-
-                                    is AuthProvider.Microsoft -> onSignInWithMicrosoft?.invoke()
-
-                                    is AuthProvider.Yahoo -> onSignInWithYahoo?.invoke()
-
-                                    is AuthProvider.Twitter -> onSignInWithTwitter?.invoke()
-
-                                    is AuthProvider.GenericOAuth -> genericOAuthHandlers[provider]?.invoke()
-
-                                    else -> {
-                                        onSignInFailure(
-                                            AuthException.UnknownException(
-                                                message = "Provider ${provider.providerId} is not supported in FirebaseAuthScreen",
-                                                cause = IllegalArgumentException(
-                                                    "Provider ${provider.providerId} is not supported in FirebaseAuthScreen"
-                                                )
-                                            )
-                                        )
-                                    }
-                                }
-                            }
+                            onProviderSelected = onProviderSelected,
                         )
                     }
                 }
@@ -544,6 +438,26 @@ fun FirebaseAuthScreen(
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
 
+                        // If reauth just completed, execute the pending retry and skip normal success handling
+                        pendingReauthOperation.value?.let { retry ->
+                            pendingReauthOperation.value = null
+                            pendingReauthConfig.value = null
+                            pendingReauthState.value = null
+                            // Lock the state to Loading before launching the retry so no
+                            // intermediate Success emission can navigate to AuthRoute.Success.
+                            authUI.updateAuthState(AuthState.Loading())
+                            coroutineScope.launch {
+                                try {
+                                    retry(context)
+                                } catch (e: kotlinx.coroutines.CancellationException) {
+                                    throw e
+                                } catch (e: Exception) {
+                                    authUI.updateAuthState(AuthState.Error(e))
+                                }
+                            }
+                            return@LaunchedEffect
+                        }
+
                         state.result?.let { result ->
                             if (state.user.uid != lastSuccessfulUserId.value) {
                                 onSignInSuccess(result)
@@ -562,6 +476,30 @@ fun FirebaseAuthScreen(
                                 popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                                 launchSingleTop = true
                             }
+                        }
+                    }
+
+                    is AuthState.ReauthenticationRequired -> {
+                        pendingReauthOperation.value = state.retryOperation
+                        val linked = configuration.providers.filterToLinkedProviders(state.user)
+                        if (linked.isEmpty()) {
+                            authUI.updateAuthState(
+                                AuthState.Error(
+                                    AuthException.UnknownException(
+                                        "No configured providers are linked to the current user"
+                                    )
+                                )
+                            )
+                            return@LaunchedEffect
+                        }
+                        if (reauthContent != null) {
+                            pendingReauthState.value = state
+                        } else {
+                            pendingReauthConfig.value = configuration.copy(
+                                providers = linked,
+                                isNewEmailAccountsAllowed = false,
+                                isReauthenticationMode = true,
+                            )
                         }
                     }
 
@@ -588,6 +526,9 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Cancelled -> {
+                        pendingReauthOperation.value = null
+                        pendingReauthConfig.value = null
+                        pendingReauthState.value = null
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
@@ -601,6 +542,9 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Idle -> {
+                        pendingReauthOperation.value = null
+                        pendingReauthConfig.value = null
+                        pendingReauthState.value = null
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
@@ -677,6 +621,44 @@ fun FirebaseAuthScreen(
             val loadingState = authState as? AuthState.Loading
             if (loadingState != null) {
                 LoadingDialog(loadingState.message ?: stringProvider.progressDialogLoading)
+            }
+
+            // Custom reauth UI — rendered when the caller provides reauthContent.
+            val pendingReauth = pendingReauthState.value
+            if (pendingReauth != null && reauthContent != null) {
+                reauthContent(pendingReauth) {
+                    pendingReauthOperation.value = null
+                    pendingReauthState.value = null
+                    authUI.updateAuthState(AuthState.Idle)
+                }
+            }
+
+            // Default reauth bottom sheet — used when reauthContent is not provided.
+            val reauthConfig = pendingReauthConfig.value
+            if (reauthConfig != null) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        pendingReauthOperation.value = null
+                        pendingReauthConfig.value = null
+                        authUI.updateAuthState(AuthState.Idle)
+                    },
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                ) {
+                    ReauthSheetContent(
+                        authUI = authUI,
+                        reauthConfig = reauthConfig,
+                        activity = activity,
+                        context = context,
+                        emailContent = emailContent,
+                        phoneContent = phoneContent,
+                        customMethodPickerLayout = customMethodPickerLayout,
+                        onDismiss = {
+                            pendingReauthOperation.value = null
+                            pendingReauthConfig.value = null
+                            authUI.updateAuthState(AuthState.Idle)
+                        },
+                    )
+                }
             }
         }
     }
@@ -894,4 +876,122 @@ private fun LoadingDialog(message: String) {
             }
         }
     )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReauthSheetContent(
+    authUI: FirebaseAuthUI,
+    reauthConfig: AuthUIConfiguration,
+    activity: android.app.Activity?,
+    context: android.content.Context,
+    emailContent: (@Composable (EmailAuthContentState) -> Unit)?,
+    phoneContent: (@Composable (PhoneAuthContentState) -> Unit)?,
+    customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)?,
+    onDismiss: () -> Unit,
+) {
+    val sheetNavController = rememberNavController()
+    val startRoute = remember(reauthConfig) { getStartRoute(reauthConfig) }
+    val skipsMethodPicker = startRoute != AuthRoute.MethodPicker
+    val onProviderSelected = authUI.rememberOnProviderSelected(
+        context = context,
+        activity = activity,
+        config = reauthConfig,
+        onNavigate = { route -> sheetNavController.navigate(route.route) },
+    )
+
+    NavHost(
+        navController = sheetNavController,
+        startDestination = startRoute.route,
+        enterTransition = { fadeIn(animationSpec = tween(700)) },
+        exitTransition = { fadeOut(animationSpec = tween(700)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(700)) },
+        popExitTransition = { fadeOut(animationSpec = tween(700)) },
+    ) {
+        composable(AuthRoute.MethodPicker.route) {
+            Scaffold { innerPadding ->
+                AuthMethodPicker(
+                    modifier = Modifier.padding(innerPadding),
+                    providers = reauthConfig.providers,
+                    customLayout = customMethodPickerLayout,
+                    onProviderSelected = onProviderSelected,
+                )
+            }
+        }
+
+        composable(AuthRoute.Email.route) {
+            com.firebase.ui.auth.ui.screens.email.EmailAuthScreen(
+                context = context,
+                configuration = reauthConfig,
+                authUI = authUI,
+                content = emailContent,
+                onSuccess = {},
+                onError = {},
+                onCancel = {
+                    if (skipsMethodPicker || !sheetNavController.popBackStack()) onDismiss()
+                }
+            )
+        }
+
+        composable(AuthRoute.Phone.route) {
+            com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen(
+                context = context,
+                configuration = reauthConfig,
+                authUI = authUI,
+                content = phoneContent,
+                onSuccess = {},
+                onError = {},
+                onCancel = {
+                    if (skipsMethodPicker || !sheetNavController.popBackStack()) onDismiss()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun FirebaseAuthUI.rememberOnProviderSelected(
+    context: android.content.Context,
+    activity: android.app.Activity?,
+    config: AuthUIConfiguration,
+    onNavigate: (AuthRoute) -> Unit,
+    onUnknownProvider: ((AuthProvider) -> Unit)? = null,
+): (AuthProvider) -> Unit {
+    val anonymousProvider = config.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
+    val googleProvider = config.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
+    val facebookProvider = config.providers.filterIsInstance<AuthProvider.Facebook>().firstOrNull()
+    val appleProvider = config.providers.filterIsInstance<AuthProvider.Apple>().firstOrNull()
+    val githubProvider = config.providers.filterIsInstance<AuthProvider.Github>().firstOrNull()
+    val microsoftProvider = config.providers.filterIsInstance<AuthProvider.Microsoft>().firstOrNull()
+    val yahooProvider = config.providers.filterIsInstance<AuthProvider.Yahoo>().firstOrNull()
+    val twitterProvider = config.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
+    val genericOAuthProviders = config.providers.filterIsInstance<AuthProvider.GenericOAuth>()
+
+    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler() }
+    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it) }
+    val onSignInWithFacebook = facebookProvider?.let { rememberSignInWithFacebookLauncher(context, config, it) }
+    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val genericOAuthHandlers = genericOAuthProviders.associateWith {
+        rememberOAuthSignInHandler(context, activity, config, it)
+    }
+
+    return { provider ->
+        when (provider) {
+            is AuthProvider.Anonymous -> onSignInAnonymously?.invoke()
+            is AuthProvider.Email -> onNavigate(AuthRoute.Email)
+            is AuthProvider.Phone -> onNavigate(AuthRoute.Phone)
+            is AuthProvider.Google -> onSignInWithGoogle?.invoke()
+            is AuthProvider.Facebook -> onSignInWithFacebook?.invoke()
+            is AuthProvider.Apple -> onSignInWithApple?.invoke()
+            is AuthProvider.Github -> onSignInWithGithub?.invoke()
+            is AuthProvider.Microsoft -> onSignInWithMicrosoft?.invoke()
+            is AuthProvider.Yahoo -> onSignInWithYahoo?.invoke()
+            is AuthProvider.Twitter -> onSignInWithTwitter?.invoke()
+            is AuthProvider.GenericOAuth -> genericOAuthHandlers[provider]?.invoke()
+            else -> onUnknownProvider?.invoke(provider)
+        }
+    }
 }
