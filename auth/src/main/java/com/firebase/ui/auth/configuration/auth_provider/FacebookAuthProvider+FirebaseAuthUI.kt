@@ -71,7 +71,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
         onResult = {},
     )
 
-    DisposableEffect(Unit) {
+    DisposableEffect(config) {
         loginManager.registerCallback(
             callbackManager,
             object : FacebookCallback<LoginResult> {

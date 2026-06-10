@@ -47,6 +47,25 @@ import kotlinx.coroutines.tasks.await
 private const val TAG = "EmailAuthProvider"
 
 /**
+ * Signs in or reauthenticates with [credential] depending on [AuthUIConfiguration.isReauthenticationMode].
+ *
+ * - Normal mode: [com.google.firebase.auth.FirebaseAuth.signInWithCredential], returns [AuthResult].
+ * - Reauth mode: [com.google.firebase.auth.FirebaseUser.reauthenticate] (Task<Void>), returns null.
+ *   Callers must reconstruct auth state from [com.google.firebase.auth.FirebaseAuth.currentUser].
+ */
+internal suspend fun FirebaseAuthUI.signInOrReauth(
+    credential: AuthCredential,
+    config: AuthUIConfiguration,
+): AuthResult? = if (config.isReauthenticationMode) {
+    val currentUser = auth.currentUser
+        ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in for reauthentication")
+    currentUser.reauthenticate(credential).await()
+    null
+} else {
+    auth.signInWithCredential(credential).await()
+}
+
+/**
  * Creates an email/password account or links the credential to an anonymous user.
  *
  * Mirrors the legacy email sign-up handler: validates password strength, validates custom
@@ -325,6 +344,14 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in..."))
+        // In reauth mode build a credential and go through signInAndLinkWithCredential so
+        // signInOrReauth routes to FirebaseUser.reauthenticate() instead of signInWithCredential().
+        if (config.isReauthenticationMode) {
+            return signInAndLinkWithCredential(
+                config = config,
+                credential = EmailAuthProvider.getCredential(email, password),
+            )
+        }
         return if (canUpgradeAnonymous(config, auth)) {
             // Anonymous upgrade flow: validate credential in scratch auth
             val credentialToValidate = EmailAuthProvider.getCredential(email, password)
@@ -551,17 +578,22 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
 ): AuthResult? {
     try {
         updateAuthState(AuthState.Loading("Signing in user..."))
-        return if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
+        val result = if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
-            auth.signInWithCredential(credential).await()
-        }.also { result ->
-            // Merge profile information from the provider
-            result?.user?.let {
-                mergeProfile(auth, displayName, photoUrl)
-            }
-            updateAuthStateWithResult(result)
+            signInOrReauth(credential, config)
         }
+        // signInOrReauth returns null in reauth mode (Task<Void> has no AuthResult).
+        // Reconstruct success state from the now-reauthenticated current user.
+        if (result == null && config.isReauthenticationMode) {
+            auth.currentUser?.let {
+                updateAuthState(AuthState.Success(result = null, user = it, isNewUser = false))
+            }
+            return null
+        }
+        result?.user?.let { mergeProfile(auth, displayName, photoUrl) }
+        updateAuthStateWithResult(result)
+        return result
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
         val resolver = e.resolver

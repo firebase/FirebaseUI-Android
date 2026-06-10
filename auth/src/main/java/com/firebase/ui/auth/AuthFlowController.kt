@@ -103,7 +103,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 class AuthFlowController internal constructor(
     private val authUI: FirebaseAuthUI,
-    private val configuration: AuthUIConfiguration
+    internal val configuration: AuthUIConfiguration
 ) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
