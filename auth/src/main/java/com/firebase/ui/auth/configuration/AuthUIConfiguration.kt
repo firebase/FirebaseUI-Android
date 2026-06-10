@@ -51,6 +51,7 @@ class AuthUIConfigurationBuilder {
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
     var transitions: AuthUITransitions? = null
+    internal var isReauthenticationMode: Boolean = false
 
     fun providers(block: AuthProvidersBuilder.() -> Unit) =
         providers.addAll(AuthProvidersBuilder().apply(block).build())
@@ -118,7 +119,8 @@ class AuthUIConfigurationBuilder {
             isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
             isDisplayNameRequired = isDisplayNameRequired,
             isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown,
-            transitions = transitions
+            transitions = transitions,
+            isReauthenticationMode = isReauthenticationMode,
         )
     }
 }
@@ -215,4 +217,34 @@ class AuthUIConfiguration(
      * If null, uses default fade in/out transitions.
      */
     val transitions: AuthUITransitions? = null,
-)
+
+    /**
+     * When true, the flow operates as a reauthentication flow: account creation is disabled and
+     * only providers already linked to the current user are shown. Set by [FirebaseAuthUI.createReauthFlow].
+     */
+    internal val isReauthenticationMode: Boolean = false,
+) {
+    internal fun copy(
+        providers: List<AuthProvider> = this.providers,
+        isNewEmailAccountsAllowed: Boolean = this.isNewEmailAccountsAllowed,
+        isReauthenticationMode: Boolean = this.isReauthenticationMode,
+    ): AuthUIConfiguration = AuthUIConfiguration(
+        context = this.context,
+        providers = providers,
+        theme = this.theme,
+        locale = this.locale,
+        stringProvider = this.stringProvider,
+        isCredentialManagerEnabled = this.isCredentialManagerEnabled,
+        isMfaEnabled = this.isMfaEnabled,
+        isAnonymousUpgradeEnabled = this.isAnonymousUpgradeEnabled,
+        tosUrl = this.tosUrl,
+        privacyPolicyUrl = this.privacyPolicyUrl,
+        logo = this.logo,
+        passwordResetActionCodeSettings = this.passwordResetActionCodeSettings,
+        isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
+        isDisplayNameRequired = this.isDisplayNameRequired,
+        isProviderChoiceAlwaysShown = this.isProviderChoiceAlwaysShown,
+        transitions = this.transitions,
+        isReauthenticationMode = isReauthenticationMode,
+    )
+}
