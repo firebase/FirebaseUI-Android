@@ -3,6 +3,8 @@ package com.firebase.ui.auth.ui.components
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.google.common.truth.Truth
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.GoogleAuthProvider
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -20,6 +22,8 @@ class ErrorRecoveryDialogLogicTest {
         Mockito.`when`(retryAction).thenReturn("Try again")
         Mockito.`when`(continueText).thenReturn("Continue")
         Mockito.`when`(signInDefault).thenReturn("Sign in")
+        Mockito.`when`(continueWithGoogle).thenReturn("Continue with Google")
+        Mockito.`when`(signInWithEmailLink).thenReturn("Sign in with email link")
         Mockito.`when`(networkErrorRecoveryMessage).thenReturn("Network error, check your internet connection.")
         Mockito.`when`(invalidCredentialsRecoveryMessage).thenReturn("Incorrect password.")
         Mockito.`when`(userNotFoundRecoveryMessage).thenReturn("That email address doesn't match an existing account")
@@ -217,6 +221,34 @@ class ErrorRecoveryDialogLogicTest {
     }
 
     @Test
+    fun `getRecoveryActionText returns provider specific action for DifferentSignInMethodRequiredException`() {
+        val error = AuthException.DifferentSignInMethodRequiredException(
+            message = "Use a different sign-in method",
+            email = "test@example.com",
+            signInMethods = listOf(GoogleAuthProvider.PROVIDER_ID),
+            suggestedSignInMethod = GoogleAuthProvider.PROVIDER_ID
+        )
+
+        val actionText = getRecoveryActionText(error, mockStringProvider)
+
+        Truth.assertThat(actionText).isEqualTo("Continue with Google")
+    }
+
+    @Test
+    fun `getRecoveryActionText returns email link action for DifferentSignInMethodRequiredException`() {
+        val error = AuthException.DifferentSignInMethodRequiredException(
+            message = "Use a different sign-in method",
+            email = "test@example.com",
+            signInMethods = listOf(EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD),
+            suggestedSignInMethod = EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD
+        )
+
+        val actionText = getRecoveryActionText(error, mockStringProvider)
+
+        Truth.assertThat(actionText).isEqualTo("Sign in with email link")
+    }
+
+    @Test
     fun `getRecoveryActionText returns continue for MfaRequiredException`() {
         // Arrange
         val error = AuthException.MfaRequiredException("MFA required")
@@ -302,6 +334,8 @@ class ErrorRecoveryDialogLogicTest {
             is AuthException.TooManyRequestsException -> stringProvider.tooManyRequestsRecoveryMessage
             is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
             is AuthException.AccountLinkingRequiredException -> stringProvider.accountLinkingRequiredRecoveryMessage
+            is AuthException.DifferentSignInMethodRequiredException ->
+                error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
             is AuthException.AuthCancelledException -> stringProvider.authCancelledRecoveryMessage
             is AuthException.UnknownException -> stringProvider.unknownErrorRecoveryMessage
             else -> stringProvider.unknownErrorRecoveryMessage
@@ -313,6 +347,11 @@ class ErrorRecoveryDialogLogicTest {
             is AuthException.AuthCancelledException -> stringProvider.continueText
             is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault
             is AuthException.AccountLinkingRequiredException -> stringProvider.continueText
+            is AuthException.DifferentSignInMethodRequiredException -> when (error.suggestedSignInMethod) {
+                GoogleAuthProvider.PROVIDER_ID -> stringProvider.continueWithGoogle
+                EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD -> stringProvider.signInWithEmailLink
+                else -> stringProvider.continueText
+            }
             is AuthException.MfaRequiredException -> stringProvider.continueText
             is AuthException.NetworkException,
             is AuthException.InvalidCredentialsException,
@@ -334,6 +373,7 @@ class ErrorRecoveryDialogLogicTest {
             is AuthException.TooManyRequestsException -> false
             is AuthException.MfaRequiredException -> true
             is AuthException.AccountLinkingRequiredException -> true
+            is AuthException.DifferentSignInMethodRequiredException -> true
             is AuthException.AuthCancelledException -> true
             is AuthException.UnknownException -> true
             else -> true
