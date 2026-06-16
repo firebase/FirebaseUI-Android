@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -18,6 +20,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
@@ -278,6 +281,146 @@ class AuthMethodPickerTest {
             .performClick()
 
         Truth.assertThat(selectedProvider).isEqualTo(googleProvider)
+    }
+
+    @Test
+    fun `AuthMethodPicker still renders default ToS text when customLayout is provided`() {
+        val links = arrayOf("Terms of Service" to "", "Privacy Policy" to "")
+        val labels = links.map { it.first }.toTypedArray()
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = providers,
+                onProviderSelected = { selectedProvider = it },
+                customLayout = { _, _ -> Text("Custom Layout") }
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_tos_and_pp, *labels))
+            .assertIsDisplayed()
+    }
+
+    // =============================================================================================
+    // Custom Terms Content Tests
+    // =============================================================================================
+
+    @Test
+    fun `AuthMethodPicker renders termsConfiguration content instead of default ToS when provided`() {
+        val links = arrayOf("Terms of Service" to "", "Privacy Policy" to "")
+        val labels = links.map { it.first }.toTypedArray()
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = providers,
+                onProviderSelected = { selectedProvider = it },
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Custom ToS checkbox") }
+                )
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText("Custom ToS checkbox")
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_tos_and_pp, *labels))
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `AuthMethodPicker still renders providers when termsConfiguration is provided`() {
+        val providers = listOf(
+            AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = providers,
+                onProviderSelected = { selectedProvider = it },
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Custom ToS checkbox") }
+                )
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsDisplayed()
+    }
+
+    // =============================================================================================
+    // Terms Accepted / Gating Tests
+    // =============================================================================================
+
+    @Test
+    fun `AuthMethodPicker disables provider buttons when disableProvidersUntilAccepted is true and accepted is false`() {
+        val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(googleProvider),
+                onProviderSelected = { selectedProvider = it },
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Checkbox") },
+                    accepted = false,
+                    disableProvidersUntilAccepted = true
+                )
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsNotEnabled()
+    }
+
+    @Test
+    fun `AuthMethodPicker enables provider buttons when disableProvidersUntilAccepted is true and accepted is true`() {
+        val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(googleProvider),
+                onProviderSelected = { selectedProvider = it },
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Checkbox") },
+                    accepted = true,
+                    disableProvidersUntilAccepted = true
+                )
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsEnabled()
+    }
+
+    @Test
+    fun `AuthMethodPicker ignores accepted when disableProvidersUntilAccepted is false`() {
+        val googleProvider = AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(googleProvider),
+                onProviderSelected = { selectedProvider = it },
+                termsConfiguration = MethodPickerTermsConfiguration(
+                    content = { Text("Checkbox") },
+                    accepted = false,
+                    disableProvidersUntilAccepted = false
+                )
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.fui_sign_in_with_google))
+            .assertIsEnabled()
     }
 
     // =============================================================================================

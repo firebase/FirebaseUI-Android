@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.testutil
 
 import android.os.Looper
+import android.util.Base64
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.google.firebase.auth.FirebaseUser
 import org.robolectric.Shadows.shadowOf
@@ -98,4 +99,28 @@ fun verifyEmailInEmulator(authUI: FirebaseAuthUI, emulatorApi: EmulatorAuthApi, 
 
     println("TEST: Email verified successfully for user ${user.uid}")
     println("TEST: User isEmailVerified: ${authUI.auth.currentUser?.isEmailVerified}")
+}
+
+fun generateMockGoogleIdToken(
+    email: String,
+    sub: String = "test-user-id",
+    name: String? = null,
+    photoUrl: String? = null,
+): String {
+    val header = """{"alg":"RS256","kid":"test"}"""
+    val payload = buildString {
+        append("{")
+        append("\"iss\":\"https://accounts.google.com\",")
+        append("\"aud\":\"test-client-id\",")
+        append("\"sub\":\"$sub\",")
+        append("\"email\":\"$email\",")
+        append("\"email_verified\":true")
+        name?.let { append(",\"name\":\"$it\"") }
+        photoUrl?.let { append(",\"picture\":\"$it\"") }
+        append(",\"iat\":1689600000,\"exp\":1689603600")
+        append("}")
+    }
+    val encodedHeader = Base64.encodeToString(header.toByteArray(), Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+    val encodedPayload = Base64.encodeToString(payload.toByteArray(), Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP)
+    return "$encodedHeader.$encodedPayload.mock-signature"
 }

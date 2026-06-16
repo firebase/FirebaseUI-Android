@@ -52,6 +52,7 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
    - [High-Level API (Recommended)](#high-level-api-recommended)
    - [Low-Level API (Advanced)](#low-level-api-advanced)
    - [Custom UI with Slots](#custom-ui-with-slots)
+   - [Reauthentication](#reauthentication)
 8. [Theming & Customization](#theming--customization)
    - [Using Default Themes](#using-default-themes)
    - [Using Adaptive Theme](#using-adaptive-theme-recommended)
@@ -794,129 +795,256 @@ class AuthActivity : ComponentActivity() {
 
 ### Custom UI with Slots
 
-For complete UI control while keeping authentication logic, use content slots:
+`FirebaseAuthScreen` accepts optional slot parameters that let you replace individual screens with your own UI while keeping all authentication logic intact. Each slot receives a state object with the data and callbacks needed to drive your UI.
 
 ```kotlin
-@Composable
-fun CustomEmailAuth() {
-    val emailConfig = AuthProvider.Email(
-        passwordValidationRules = listOf(
-            PasswordRule.MinimumLength(8),
-            PasswordRule.RequireDigit
-        )
-    )
-
-    EmailAuthScreen(
-        configuration = emailConfig,
-        onSuccess = { /* ... */ },
-        onError = { /* ... */ },
-        onCancel = { /* ... */ }
-    ) { state ->
-        // Custom UI with full control
-        when (state.mode) {
-            EmailAuthMode.SignIn -> {
-                CustomSignInUI(state)
-            }
-            EmailAuthMode.SignUp -> {
-                CustomSignUpUI(state)
-            }
-            EmailAuthMode.ResetPassword -> {
-                CustomResetPasswordUI(state)
-            }
-        }
-    }
+FirebaseAuthScreen(
+    configuration = configuration,
+    onSignInSuccess = { /* ... */ },
+    onSignInFailure = { /* ... */ },
+    onSignInCancelled = { /* ... */ },
+    customMethodPickerLayout = { providers, onProviderSelected -> /* ... */ },
+    customMethodPickerTermsConfiguration = MethodPickerTermsConfiguration(
+        content = { Text("By continuing you agree to our Terms") },
+        accepted = termsAccepted,
+        disableProvidersUntilAccepted = true,
+    ),
+    emailContent = { state -> /* ... */ },
+    phoneContent = { state -> /* ... */ },
+    mfaEnrollmentContent = { state -> /* ... */ },
+    mfaChallengeContent = { state -> /* ... */ },
+    reauthContent = { state, onDismiss -> /* ... */ },
+) { authState, uiContext ->
+    // authenticated content
 }
+```
 
-@Composable
-fun CustomSignInUI(state: EmailAuthContentState) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Welcome Back!",
-            style = MaterialTheme.typography.headlineLarge
-        )
+#### Method picker (`customMethodPickerLayout`)
 
-        Spacer(modifier = Modifier.height(32.dp))
+Replaces the default provider selection screen. Receives the configured providers and a callback to invoke when the user selects one.
 
-        OutlinedTextField(
-            value = state.email,
-            onValueChange = state.onEmailChange,
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = state.password,
-            onValueChange = state.onPasswordChange,
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        if (state.error != null) {
-            Text(
-                text = state.error!!,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = state.onSignInClick,
-            enabled = !state.isLoading,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            } else {
-                Text("Sign In")
+```kotlin
+customMethodPickerLayout = { providers, onProviderSelected ->
+    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        providers.forEach { provider ->
+            OutlinedButton(
+                onClick = { onProviderSelected(provider) },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            ) {
+                Text("Continue with ${provider.providerName}")
             }
-        }
-
-        TextButton(onClick = state.onGoToResetPassword) {
-            Text("Forgot Password?")
-        }
-
-        TextButton(onClick = state.onGoToSignUp) {
-            Text("Create Account")
         }
     }
 }
 ```
 
-Similarly, create custom phone authentication UI:
+Use `customMethodPickerTermsConfiguration` alongside it to add a terms-of-service checkbox that can optionally gate provider selection until accepted.
 
 ```kotlin
-@Composable
-fun CustomPhoneAuth() {
-    val phoneConfig = AuthProvider.Phone(defaultCountryCode = "US")
+customMethodPickerTermsConfiguration = MethodPickerTermsConfiguration(
+    content = { Text("I agree to the Terms of Service") },
+    accepted = termsAccepted,
+    disableProvidersUntilAccepted = true,
+)
+```
 
-    PhoneAuthScreen(
-        configuration = phoneConfig,
-        onSuccess = { /* ... */ },
-        onError = { /* ... */ },
-        onCancel = { /* ... */ }
-    ) { state ->
-        when (state.step) {
-            PhoneAuthStep.EnterPhoneNumber -> {
-                CustomPhoneNumberInput(state)
+#### Email (`emailContent`)
+
+Replaces the default email sign-in / sign-up / password reset screens. The `EmailAuthContentState` carries the current `mode` (`SignIn`, `SignUp`, `ResetPassword`, `EmailLinkSignIn`), field values, and callbacks for every action.
+
+```kotlin
+emailContent = { state ->
+    when (state.mode) {
+        EmailAuthMode.SignIn -> {
+            Column {
+                OutlinedTextField(
+                    value = state.email,
+                    onValueChange = state.onEmailChange,
+                    label = { Text("Email") },
+                )
+                OutlinedTextField(
+                    value = state.password,
+                    onValueChange = state.onPasswordChange,
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                )
+                state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                Button(onClick = state.onSignInClick, enabled = !state.isLoading) {
+                    Text("Sign in")
+                }
+                TextButton(onClick = state.onGoToSignUp) { Text("Create account") }
+                TextButton(onClick = state.onGoToResetPassword) { Text("Forgot password?") }
             }
-            PhoneAuthStep.EnterVerificationCode -> {
-                CustomVerificationCodeInput(state)
+        }
+        EmailAuthMode.SignUp -> { /* ... */ }
+        EmailAuthMode.ResetPassword -> { /* ... */ }
+        EmailAuthMode.EmailLinkSignIn -> { /* ... */ }
+    }
+}
+```
+
+#### Phone (`phoneContent`)
+
+Replaces the default phone number entry and SMS code verification screens. The `PhoneAuthContentState` carries the current `step` (`EnterPhoneNumber`, `EnterVerificationCode`), field values, and callbacks.
+
+```kotlin
+phoneContent = { state ->
+    when (state.step) {
+        PhoneAuthStep.EnterPhoneNumber -> {
+            Column {
+                OutlinedTextField(
+                    value = state.phoneNumber,
+                    onValueChange = state.onPhoneNumberChange,
+                    label = { Text("Phone number") },
+                )
+                state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                Button(onClick = state.onSendCodeClick, enabled = !state.isLoading) {
+                    Text("Send code")
+                }
+            }
+        }
+        PhoneAuthStep.EnterVerificationCode -> {
+            Column {
+                OutlinedTextField(
+                    value = state.verificationCode,
+                    onValueChange = state.onVerificationCodeChange,
+                    label = { Text("Verification code") },
+                )
+                Button(onClick = state.onVerifyCodeClick, enabled = !state.isLoading) {
+                    Text("Verify")
+                }
+                if (state.resendTimer == 0) {
+                    TextButton(onClick = state.onResendCodeClick) { Text("Resend code") }
+                }
             }
         }
     }
 }
+```
+
+#### MFA enrollment (`mfaEnrollmentContent`)
+
+Replaces the default MFA enrollment screens. The `MfaEnrollmentContentState` carries the current `step`, `availableFactors`, `enrolledFactors`, and callbacks for factor selection, unenrollment, and navigation.
+
+```kotlin
+mfaEnrollmentContent = { state ->
+    when (state.step) {
+        MfaEnrollmentStep.SelectFactor -> {
+            Column {
+                state.availableFactors.forEach { factor ->
+                    Button(onClick = { state.onFactorSelected(factor) }) {
+                        Text("Enroll ${factor.name}")
+                    }
+                }
+                state.onSkipClick?.let { skip ->
+                    TextButton(onClick = skip) { Text("Skip") }
+                }
+            }
+        }
+        // Handle other steps...
+        else -> { /* ... */ }
+    }
+}
+```
+
+#### MFA challenge (`mfaChallengeContent`)
+
+Replaces the default MFA verification screen shown during sign-in. The `MfaChallengeContentState` carries `factorType`, `verificationCode`, `resendTimer`, and callbacks to verify or resend.
+
+```kotlin
+mfaChallengeContent = { state ->
+    Column {
+        state.maskedPhoneNumber?.let { Text("Code sent to $it") }
+        OutlinedTextField(
+            value = state.verificationCode,
+            onValueChange = state.onVerificationCodeChange,
+            label = { Text("Verification code") },
+        )
+        state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+        Button(onClick = state.onVerifyClick, enabled = !state.isLoading) {
+            Text("Verify")
+        }
+        if (state.resendTimer == 0) {
+            state.onResendCodeClick?.let { resend ->
+                TextButton(onClick = resend) { Text("Resend code") }
+            }
+        } else {
+            Text("Resend available in ${state.resendTimer}s")
+        }
+        TextButton(onClick = state.onCancelClick) { Text("Cancel") }
+    }
+}
+```
+
+#### Reauthentication (`reauthContent`)
+
+Replaces the default reauthentication bottom sheet shown when a sensitive operation requires the user to re-verify their identity. Receives the `AuthState.ReauthenticationRequired` state (including an optional `reason` string and the signed-in `user`) and an `onDismiss` callback that resets auth state to `Idle`.
+
+```kotlin
+reauthContent = { state, onDismiss ->
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Verify your identity") },
+        text = {
+            Column {
+                state.reason?.let { Text(it) }
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                // Re-authenticate then update auth state on success
+            }) { Text("Confirm") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        },
+    )
+}
+```
+
+For most cases, use [`withReauth`](#reauthentication) instead — it handles the full reauth cycle automatically and only shows the default bottom sheet. Use `reauthContent` when you need a custom design for the reauth UI.
+
+### Reauthentication
+
+Firebase requires the user to have signed in recently before performing sensitive operations like deleting their account or changing their password. If the session is too old, Firebase throws `FirebaseAuthRecentLoginRequiredException`.
+
+`withReauth` wraps any sensitive operation. If the exception is thrown, it automatically emits `AuthState.ReauthenticationRequired` and — once the user reauthenticates via the default bottom sheet or your `reauthContent` slot — retries the original operation.
+
+```kotlin
+lifecycleScope.launch {
+    authUI.withReauth(
+        context = context,
+        reason = "Verify your identity to delete your account",
+    ) {
+        auth.currentUser?.delete()?.await()
+    }
+}
+```
+
+`withReauth` handles the full cycle:
+
+1. Runs the operation.
+2. If `FirebaseAuthRecentLoginRequiredException` is thrown, emits `AuthState.ReauthenticationRequired` with the retry attached.
+3. `FirebaseAuthScreen` shows the reauth UI scoped to the user's linked providers.
+4. On successful reauthentication, retries the operation automatically and emits `AuthState.Success` or `AuthState.Error`.
+
+**Activity-based alternative:** use `createReauthFlow` to start a standalone reauthentication activity scoped to the current user's linked providers, returning an `AuthFlowController`.
+
+```kotlin
+val reauth = authUI.createReauthFlow(
+    context = context,
+    configuration = authUIConfiguration {
+        // Providers are automatically filtered to those linked to the current user
+    },
+)
+val intent = reauth.createIntent(context)
+launcher.launch(intent)
 ```
 
 ## Multi-Factor Authentication
