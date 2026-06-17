@@ -17,23 +17,19 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.util.EmailLinkConstants
+import com.firebaseui.android.demo.auth.AuthChooserActivity
+import com.firebaseui.android.demo.auth.HighLevelApiDemoActivity
+import com.firebaseui.android.demo.storage.StorageDemoActivity
 import com.google.firebase.FirebaseApp
 
-/**
- * Main launcher activity that allows users to choose between different
- * authentication API demonstrations.
- */
 class MainActivity : ComponentActivity() {
     companion object {
         private const val USE_AUTH_EMULATOR = false
@@ -45,7 +41,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Initialize Firebase and configure emulator if needed
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
 
@@ -54,7 +49,6 @@ class MainActivity : ComponentActivity() {
         }
 
         var pendingEmailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
-
         if (pendingEmailLink.isNullOrEmpty() && authUI.canHandleIntent(intent)) {
             pendingEmailLink = intent.data?.toString()
         }
@@ -62,10 +56,7 @@ class MainActivity : ComponentActivity() {
         Log.d("MainActivity", "Pending email link: $pendingEmailLink")
 
         fun launchHighLevelDemo() {
-            val demoIntent = Intent(
-                this,
-                HighLevelApiDemoActivity::class.java
-            ).apply {
+            val demoIntent = Intent(this, HighLevelApiDemoActivity::class.java).apply {
                 pendingEmailLink?.let { link ->
                     putExtra(EmailLinkConstants.EXTRA_EMAIL_LINK, link)
                     pendingEmailLink = null
@@ -87,14 +78,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     ChooserScreen(
-                        onHighLevelApiClick = ::launchHighLevelDemo,
-                        onLowLevelApiClick = {
-                            startActivity(Intent(this, AuthFlowControllerDemoActivity::class.java))
+                        onAuthClick = {
+                            startActivity(Intent(this, AuthChooserActivity::class.java))
                         },
-                        onCustomSlotsClick = {
-                            startActivity(Intent(this, CustomSlotsThemingDemoActivity::class.java))
-                        },
-                        isEmulatorMode = USE_AUTH_EMULATOR
+                        onStorageClick = {
+                            startActivity(Intent(this, StorageDemoActivity::class.java))
+                        }
                     )
                 }
             }
@@ -104,199 +93,62 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ChooserScreen(
-    onHighLevelApiClick: () -> Unit,
-    onLowLevelApiClick: () -> Unit,
-    onCustomSlotsClick: () -> Unit,
-    isEmulatorMode: Boolean = false
+    onAuthClick: () -> Unit,
+    onStorageClick: () -> Unit,
 ) {
-    val scrollState = rememberScrollState()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .verticalScroll(rememberScrollState())
             .systemBarsPadding()
             .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        // Header
-        Text(
-            text = "Firebase Auth UI Compose",
-            style = MaterialTheme.typography.headlineLarge,
-            textAlign = TextAlign.Center
-        )
+        Spacer(modifier = Modifier.height(8.dp))
 
+        Text("FirebaseUI Android", style = MaterialTheme.typography.headlineLarge)
         Text(
-            text = "Choose a demo to explore different authentication APIs",
+            "Choose a module to explore its demos",
             style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Emulator Mode Warning
-        if (isEmulatorMode) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "⚠️ Emulator Mode",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                    Text(
-                        text = "Running with Firebase Auth Emulator. Some features like third-party" +
-                                " OAuth providers (Facebook, Twitter, LINE etc.) may not work correctly." +
-                                " Disable Firebase Auth Emulator using" +
-                                " MainActivity.USE_AUTH_EMULATOR = false",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                }
-            }
-        }
-
-        // High-Level API Card
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onHighLevelApiClick
-        ) {
+        Card(modifier = Modifier.fillMaxWidth(), onClick = onAuthClick) {
             Column(
                 modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "🎨 High-Level API",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "FirebaseAuthScreen Composable",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = "Best for: Pure Compose applications that want a complete, ready-to-use authentication UI with minimal setup.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Features:",
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = "• Drop-in Composable\n• Automatic navigation\n• State management included\n• Customizable content",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        // Low-Level API Card
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onLowLevelApiClick
-        ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "⚙️ Low-Level API",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "AuthFlowController",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = "Best for: Applications that need fine-grained control over the authentication flow with ActivityResultLauncher integration.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Features:",
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = "• Lifecycle-safe controller\n• ActivityResultLauncher\n• Observable state with Flow\n• Manual flow control",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        // Custom Slots & Theming Card
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = onCustomSlotsClick
-        ) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = "🎨 Custom Slots & Theming",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Slot APIs & Theme Customization",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = "Best for: Applications that need fully custom UI while leveraging the authentication logic and state management.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Features:",
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = "• Custom email auth UI via slots\n• Custom phone auth UI via slots\n• AuthUITheme.fromMaterialTheme()\n• Custom ProviderStyle examples",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Info card
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "💡 Tip",
-                    style = MaterialTheme.typography.labelLarge
+                    text = "Auth",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Both APIs provide the same authentication capabilities. Choose based on your app's architecture and control requirements.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                    text = "High-Level API, Low-Level API, Custom Slots & Theming",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Card(modifier = Modifier.fillMaxWidth(), onClick = onStorageClick) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Storage",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Loading images from Firebase Storage with Glide",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }

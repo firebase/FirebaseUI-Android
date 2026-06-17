@@ -1,4 +1,4 @@
-package com.firebaseui.android.demo
+package com.firebaseui.android.demo.auth
 
 import android.os.Bundle
 import android.util.Log
@@ -42,6 +42,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebase.ui.auth.util.EmailLinkConstants
+import com.firebaseui.android.demo.R
 import com.google.firebase.auth.actionCodeSettings
 
 class HighLevelApiDemoActivity : ComponentActivity() {

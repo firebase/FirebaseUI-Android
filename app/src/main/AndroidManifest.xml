@@ -19,14 +19,9 @@
             android:theme="@style/Theme.FirebaseUIAndroid">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Email Link Sign-In Handler Activity for Compose -->
-            <!-- This activity handles deep links for passwordless email authentication -->
-            <!-- The host is automatically read from firebase_web_host in config.xml -->
-            <!-- NOTE: firebase_web_host must be lowercase (e.g., project-id.firebaseapp.com) -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -38,21 +33,35 @@
             </intent-filter>
         </activity>
 
+        <!-- Auth -->
         <activity
-            android:name=".HighLevelApiDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.AuthChooserActivity"
+            android:label="Auth Demos"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name="com.firebaseui.android.demo.auth.HighLevelApiDemoActivity"
             android:label="High-Level API Demo"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".AuthFlowControllerDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.AuthFlowControllerDemoActivity"
             android:label="Low-Level API Demo"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".CustomSlotsThemingDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.CustomSlotsThemingDemoActivity"
             android:label="Custom Slots &amp; Theming Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <!-- Storage -->
+        <activity
+            android:name="com.firebaseui.android.demo.storage.StorageDemoActivity"
+            android:label="Storage Demo"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
     </application>
