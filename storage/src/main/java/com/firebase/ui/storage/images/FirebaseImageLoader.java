@@ -12,6 +12,7 @@ import com.bumptech.glide.load.model.ModelLoaderFactory;
 import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StreamDownloadTask;
 
@@ -84,6 +85,45 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
     @Override
     public boolean handles(@NonNull StorageReference reference) {
         return true;
+    }
+
+    /**
+     * ModelLoader that accepts a {@code gs://} URL string and delegates to
+     * {@link FirebaseStorageFetcher}, so callers can pass a plain gs:// string instead of a
+     * {@link StorageReference}.
+     */
+    public static class StringLoader implements ModelLoader<String, InputStream> {
+
+        @Nullable
+        @Override
+        public LoadData<InputStream> buildLoadData(@NonNull String gsUrl,
+                                                   int width,
+                                                   int height,
+                                                   @NonNull Options options) {
+            try {
+                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(gsUrl);
+                return new LoadData<>(new FirebaseStorageKey(ref), new FirebaseStorageFetcher(ref));
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+
+        @Override
+        public boolean handles(@NonNull String gsUrl) {
+            return gsUrl.startsWith("gs://");
+        }
+
+        public static class Factory implements ModelLoaderFactory<String, InputStream> {
+
+            @NonNull
+            @Override
+            public ModelLoader<String, InputStream> build(@NonNull MultiModelLoaderFactory factory) {
+                return new StringLoader();
+            }
+
+            @Override
+            public void teardown() {}
+        }
     }
 
     private static class FirebaseStorageKey implements Key {
