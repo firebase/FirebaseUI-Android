@@ -1,6 +1,7 @@
 package com.firebase.ui.database.paging;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -33,6 +34,8 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
     public DatabasePagingSource(Query query) {
         this.mQuery = query;
     }
+
+    private static final String TAG = "DatabasePagingSource";
 
     /**
      * DatabaseError.fromStatus() and PathIndex are not meant to be public.
@@ -103,8 +106,14 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
                     throw (Exception) e.getCause();
                 }
                 throw new Exception(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return new LoadResult.Error<DatabasePagingKey, DataSnapshot>(e);
             }
-        }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
+        }).subscribeOn(Schedulers.io()).onErrorReturn(e -> {
+            Log.e(TAG, "DatabasePagingSource load failed", e);
+            return new LoadResult.Error<>(e);
+        });
     }
 
     @SuppressLint("RestrictedApi")
