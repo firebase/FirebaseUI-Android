@@ -124,10 +124,8 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
             return mQuery.startAt((String) childValue, nodeKey);
         } else if (childValue instanceof Boolean) {
             return mQuery.startAt((Boolean) childValue, nodeKey);
-        } else if (childValue instanceof Double) {
-            return mQuery.startAt((Double) childValue, nodeKey);
-        } else if (childValue instanceof Long) {
-            return mQuery.startAt(((Long) childValue).doubleValue(), nodeKey);
+        } else if (childValue instanceof Number) {
+            return mQuery.startAt(((Number) childValue).doubleValue(), nodeKey);
         }
         return mQuery.startAt(null, nodeKey);
     }
