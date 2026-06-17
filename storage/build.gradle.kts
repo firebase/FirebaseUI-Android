@@ -51,4 +51,7 @@ dependencies {
     api(Config.Libs.Firebase.storage)
     // Override Play Services
     implementation(Config.Libs.Androidx.legacySupportv4)
+
+    testImplementation(Config.Libs.Test.junit)
+    testImplementation(Config.Libs.Test.mockitoCore)
 }
