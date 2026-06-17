@@ -27,6 +27,7 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebaseui.android.demo.auth.AuthChooserActivity
 import com.firebaseui.android.demo.auth.HighLevelApiDemoActivity
+import com.firebaseui.android.demo.database.DatabaseDemoActivity
 import com.firebaseui.android.demo.storage.StorageDemoActivity
 import com.google.firebase.FirebaseApp
 
@@ -81,6 +82,9 @@ class MainActivity : ComponentActivity() {
                         onAuthClick = {
                             startActivity(Intent(this, AuthChooserActivity::class.java))
                         },
+                        onDatabaseClick = {
+                            startActivity(Intent(this, DatabaseDemoActivity::class.java))
+                        },
                         onStorageClick = {
                             startActivity(Intent(this, StorageDemoActivity::class.java))
                         }
@@ -94,6 +98,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ChooserScreen(
     onAuthClick: () -> Unit,
+    onDatabaseClick: () -> Unit,
     onStorageClick: () -> Unit,
 ) {
     Column(
@@ -125,6 +130,24 @@ fun ChooserScreen(
                 )
                 Text(
                     text = "High-Level API, Low-Level API, Custom Slots & Theming",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Card(modifier = Modifier.fillMaxWidth(), onClick = onDatabaseClick) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Database",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Paginated list with FirebaseRecyclerPagingAdapter and orderByChild",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

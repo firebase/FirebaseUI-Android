@@ -54,7 +54,9 @@ kotlin {
 
 dependencies {
     implementation(project(":auth"))
+    implementation(project(":database"))
     implementation(project(":storage"))
+    implementation(Config.Libs.Androidx.paging)
     kapt(Config.Libs.Misc.glideCompiler)
 
     implementation(libs.kotlin.stdlib)
