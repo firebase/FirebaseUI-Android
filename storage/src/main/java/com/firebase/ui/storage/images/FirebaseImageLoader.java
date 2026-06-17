@@ -95,15 +95,27 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
     public static class StringLoader implements ModelLoader<String, InputStream> {
 
         @Nullable
+        private final FirebaseStorage mStorage;
+
+        public StringLoader() {
+            mStorage = null;
+        }
+
+        public StringLoader(@NonNull FirebaseStorage storage) {
+            mStorage = storage;
+        }
+
+        @Nullable
         @Override
         public LoadData<InputStream> buildLoadData(@NonNull String gsUrl,
                                                    int width,
                                                    int height,
                                                    @NonNull Options options) {
             try {
-                StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(gsUrl);
+                FirebaseStorage storage = mStorage != null ? mStorage : FirebaseStorage.getInstance();
+                StorageReference ref = storage.getReferenceFromUrl(gsUrl);
                 return new LoadData<>(new FirebaseStorageKey(ref), new FirebaseStorageFetcher(ref));
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | IllegalStateException e) {
                 return null;
             }
         }
@@ -115,10 +127,21 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
 
         public static class Factory implements ModelLoaderFactory<String, InputStream> {
 
+            @Nullable
+            private final FirebaseStorage mStorage;
+
+            public Factory() {
+                mStorage = null;
+            }
+
+            public Factory(@NonNull FirebaseStorage storage) {
+                mStorage = storage;
+            }
+
             @NonNull
             @Override
             public ModelLoader<String, InputStream> build(@NonNull MultiModelLoaderFactory factory) {
-                return new StringLoader();
+                return mStorage != null ? new StringLoader(mStorage) : new StringLoader();
             }
 
             @Override
