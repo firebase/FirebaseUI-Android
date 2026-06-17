@@ -52,7 +52,7 @@ class StorageDemoActivity : ComponentActivity() {
 
 @Composable
 fun StorageDemoScreen() {
-    var gsUrl by remember { mutableStateOf("gs://your-project.appspot.com/path/to/image.png") }
+    var gsUrl by remember { mutableStateOf("") }
     var stringStatus by remember { mutableStateOf("Not loaded") }
     var stringLoadKey by remember { mutableIntStateOf(0) }
     var refStatus by remember { mutableStateOf("Not loaded") }
@@ -77,6 +77,7 @@ fun StorageDemoScreen() {
             value = gsUrl,
             onValueChange = { gsUrl = it },
             label = { Text("gs:// URL") },
+            placeholder = { Text("gs://your-project.appspot.com/path/to/image.png") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
