@@ -72,6 +72,39 @@ GlideApp.with(this /* context */)
         .into(imageView);
 ```
 
+#### Loading from a gs:// URL string
+
+If your image paths are stored as `gs://` URL strings (e.g. retrieved from Firestore) rather
+than as `StorageReference` objects, register `FirebaseImageLoader.StringLoader.Factory` in your
+`AppGlideModule` alongside the default loader:
+
+```java
+@GlideModule
+public class MyAppGlideModule extends AppGlideModule {
+
+    @Override
+    public void registerComponents(Context context, Glide glide, Registry registry) {
+        registry.append(StorageReference.class, InputStream.class,
+                new FirebaseImageLoader.Factory());
+        registry.append(String.class, InputStream.class,
+                new FirebaseImageLoader.StringLoader.Factory());
+    }
+}
+```
+
+You can then pass a `gs://` string directly to Glide:
+
+```java
+String gsUrl = "gs://my-bucket.appspot.com/images/photo.png";
+
+GlideApp.with(this /* context */)
+        .load(gsUrl)
+        .into(imageView);
+```
+
+`StringLoader` only intercepts strings that start with `gs://`, so Glide's built-in loaders
+for `http://`, `https://`, and other schemes continue to work as normal.
+
 ### Troubleshooting
 
 If GlideApp is not an importable class, build your application first before trying to use.
