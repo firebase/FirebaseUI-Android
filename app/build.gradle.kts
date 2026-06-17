@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -53,6 +54,8 @@ kotlin {
 
 dependencies {
     implementation(project(":auth"))
+    implementation(project(":storage"))
+    kapt(Config.Libs.Misc.glideCompiler)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.lifecycle.runtime)

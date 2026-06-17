@@ -1,4 +1,4 @@
-package com.firebaseui.android.demo
+package com.firebaseui.android.demo.auth
 
 import android.app.Activity
 import android.content.Context

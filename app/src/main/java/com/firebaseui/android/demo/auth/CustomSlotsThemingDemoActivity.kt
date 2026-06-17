@@ -1,4 +1,4 @@
-package com.firebaseui.android.demo
+package com.firebaseui.android.demo.auth
 
 import android.content.Intent
 import android.os.Bundle
