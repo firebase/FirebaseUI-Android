@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.snapshot.Index;
 import com.google.firebase.database.snapshot.PathIndex;
+import com.google.firebase.database.snapshot.ValueIndex;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -45,17 +46,20 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
     @Override
     public Single<LoadResult<DatabasePagingKey, DataSnapshot>> loadSingle(
             @NonNull LoadParams<DatabasePagingKey> params) {
-        PathIndex pathIndex = getPathIndex();
+        final Index index = mQuery.getSpec().getIndex();
+        final boolean needsIndexedCursor =
+                index instanceof PathIndex || index instanceof ValueIndex;
         Task<DataSnapshot> task;
 
         if (params.getKey() == null) {
             task = mQuery.limitToFirst(params.getLoadSize()).get();
         } else {
             DatabasePagingKey key = params.getKey();
-            if (pathIndex != null) {
+            if (needsIndexedCursor) {
                 task = startAtChildValue(key.getChildValue(), key.getNodeKey())
                         .limitToFirst(params.getLoadSize() + 1).get();
             } else {
+                // orderByKey() — the node key alone is a sufficient cursor
                 task = mQuery.startAt(null, key.getNodeKey())
                         .limitToFirst(params.getLoadSize() + 1).get();
             }
@@ -89,9 +93,9 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
                     //Detect End of Data
                     if (!data.isEmpty()) {
                         DataSnapshot last = data.get(data.size() - 1);
-                        Object childValue = pathIndex != null
-                                ? getChildValue(last, pathIndex) : null;
-                        lastKey = new DatabasePagingKey(childValue, last.getKey());
+                        Object cursorValue = needsIndexedCursor
+                                ? getIndexedValue(last, index) : null;
+                        lastKey = new DatabasePagingKey(cursorValue, last.getKey());
                     }
                     return toLoadResult(data, lastKey);
                 } else {
@@ -117,14 +121,13 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
     }
 
     @SuppressLint("RestrictedApi")
-    private PathIndex getPathIndex() {
-        Index index = mQuery.getSpec().getIndex();
-        return index instanceof PathIndex ? (PathIndex) index : null;
-    }
-
-    @SuppressLint("RestrictedApi")
-    private Object getChildValue(DataSnapshot snapshot, PathIndex pathIndex) {
-        return snapshot.child(pathIndex.getQueryDefinition()).getValue();
+    private Object getIndexedValue(DataSnapshot snapshot, Index index) {
+        if (index instanceof PathIndex) {
+            return snapshot.child(((PathIndex) index).getQueryDefinition()).getValue();
+        } else if (index instanceof ValueIndex) {
+            return snapshot.getValue();
+        }
+        return null;
     }
 
     @SuppressLint("RestrictedApi")
@@ -136,6 +139,7 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
         } else if (childValue instanceof Number) {
             return mQuery.startAt(((Number) childValue).doubleValue(), nodeKey);
         }
+        // childValue is null when a node lacks the ordered child field; key alone keeps the cursor correct
         return mQuery.startAt(null, nodeKey);
     }
 

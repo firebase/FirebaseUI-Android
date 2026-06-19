@@ -1,14 +1,12 @@
 package com.firebase.ui.database.paging;
 
-import android.content.Context;
-
 import androidx.paging.PagingSource;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.firebase.ui.database.Bean;
+import com.firebase.ui.database.TestUtils;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class DatabasePagingSourceTest {
-    private static final String APP_NAME = "firebaseui-paging-tests";
     private static final int PAGE_SIZE = 3;
     private static final int TOTAL_ITEMS = 6;
 
@@ -40,17 +37,7 @@ public class DatabasePagingSourceTest {
 
     @Before
     public void setUp() throws InterruptedException {
-        FirebaseApp app;
-        try {
-            app = FirebaseApp.getInstance(APP_NAME);
-        } catch (IllegalStateException e) {
-            Context context = ApplicationProvider.getApplicationContext();
-            app = FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
-                    .setApplicationId("fir-ui-tests")
-                    .setDatabaseUrl("https://fir-ui-tests.firebaseio.com/")
-                    .build(), APP_NAME);
-        }
-
+        FirebaseApp app = TestUtils.getAppInstance(ApplicationProvider.getApplicationContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("paging_test");
 
         mRef.removeValue();
