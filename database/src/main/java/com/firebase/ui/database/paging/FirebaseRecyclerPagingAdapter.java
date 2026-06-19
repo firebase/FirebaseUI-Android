@@ -7,10 +7,10 @@ import com.google.firebase.database.DatabaseReference;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.paging.PagingData;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.ViewHolder>
         extends PagingDataAdapter<DataSnapshot, VH>
-        implements LifecycleObserver {
+        implements LifecycleEventObserver {
 
     private DatabasePagingOptions<T> mOptions;
     private SnapshotParser<T> mParser;
@@ -88,7 +88,6 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
     /**
      * Start listening to paging / scrolling events and populating adapter data.
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         mPagingData.observeForever(mDataObserver);
     }
@@ -97,9 +96,17 @@ public abstract class FirebaseRecyclerPagingAdapter<T, VH extends RecyclerView.V
      * Unsubscribe from paging / scrolling events, no more data will be populated, but the existing
      * data will remain.
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mPagingData.removeObserver(mDataObserver);
+    }
+
+    @Override
+    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
+        if (event == Lifecycle.Event.ON_START) {
+            startListening();
+        } else if (event == Lifecycle.Event.ON_STOP) {
+            stopListening();
+        }
     }
 
     @Override
