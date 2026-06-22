@@ -8,19 +8,19 @@ The recommended sign-in flow uses Compose screens. For apps that still use Activ
 
 FirebaseUI Auth provides the following benefits:
 
-- Credential Manager integration for faster sign-in on Android.
-- Material 3 UI that can inherit your app theme.
-- Multiple authentication providers, including email/password, phone, Google, Facebook, Apple, GitHub, Microsoft, Yahoo, Twitter, anonymous auth, and custom OAuth.
-- Multi-factor authentication support, including SMS and TOTP.
-- Built-in flows for account management, account linking, and anonymous user upgrade.
+- **Multiple Providers** — sign-in flows for email/password, phone, Google, Facebook, Apple, GitHub, Microsoft, Yahoo, Twitter, anonymous auth, and custom OAuth.
+- **Account Management** — flows to handle account management tasks, such as account creation and password resets.
+- **Account Linking** — flows to safely link user accounts across identity providers.
+- **Anonymous User Upgrading** — flows to safely upgrade anonymous users.
+- **Custom Themes** — Material 3 UI support that can inherit your app theme. Also, because FirebaseUI is open source, you can fork the project and customize it exactly to your needs.
+- **Credential Manager** — automatic integration with [Credential Manager](https://developer.android.com/identity/sign-in/credential-manager) for fast cross-device sign-in.
+- **Multi-Factor Authentication** — SMS and TOTP support for additional security.
 
 ## Before you begin
 
 1. If you haven't already, [add Firebase to your Android project](https://firebase.google.com/docs/android/setup).
 2. In the [Firebase console](https://console.firebase.google.com/), enable the sign-in methods you want to support.
-3. Add FirebaseUI Auth to your app module
-
-Add FirebaseUI Auth to your app module:
+3. Add FirebaseUI Auth to your app module:
 
 ```kotlin
 dependencies {
@@ -36,18 +36,27 @@ dependencies {
 
 ## Set up sign-in methods
 
-Some providers need additional setup before you can sign users in:
-- [Sign in with Google](https://firebase.google.com/docs/auth/android/google-signin)
-- [Facebook Login](https://firebase.google.com/docs/auth/android/facebook-login)
-- [Sign in with Apple](https://firebase.google.com/docs/auth/android/apple)
-- [Sign in with Twitter](https://firebase.google.com/docs/auth/android/twitter-login)
-- [Sign in with Github](https://firebase.google.com/docs/auth/android/github-auth)
-- [Sign in with Microsoft](https://firebase.google.com/docs/auth/android/microsoft-oauth)
-- [Sign in with Yahoo](https://firebase.google.com/docs/auth/android/yahoo-oauth)
+### Google Sign-In
 
-### Other OAuth providers
+Google Sign-In configuration is automatically provided by the [google-services Gradle plugin](https://developers.google.com/android/guides/google-services-plugin). Ensure you have enabled Google Sign-In in the [Firebase Console](https://console.firebase.google.com/project/_/authentication/providers).
 
-Apple, GitHub, Microsoft, Yahoo, Twitter and custom OAuth providers are configured in Firebase Authentication. Most of them do not require extra Android-specific resources.
+### Facebook Login
+
+If using Facebook Login, add your Facebook App ID to `strings.xml`:
+
+```xml
+<resources>
+    <string name="facebook_application_id" translatable="false">YOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token" translatable="false">CHANGE-ME</string>
+</resources>
+```
+
+See the [Facebook for Developers](https://developers.facebook.com/) documentation for setup instructions.
+
+### Other Providers
+
+Twitter, GitHub, Microsoft, Yahoo, and Apple providers require configuration in the Firebase Console but no additional Android-specific setup. See the [Firebase Auth documentation](https://firebase.google.com/docs/auth) for provider-specific instructions.
 
 Choose the providers you want inside `authUIConfiguration`:
 
@@ -74,7 +83,7 @@ val configuration = authUIConfiguration {
 
 ### Email link sign-in
 
-Email link sign-in now lives in the email provider configuration:
+Email link sign-in lives in the email provider configuration:
 
 ```kotlin
 val configuration = authUIConfiguration {
@@ -98,7 +107,7 @@ val configuration = authUIConfiguration {
 }
 ```
 
-For the full deep-link handling flow, see `auth/README.md`.
+For the full deep-link handling flow, see [the Email Link Sign-In section of the README in GitHub](https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#email-link-sign-in).
 
 ## Sign in
 
@@ -198,9 +207,9 @@ You can also:
 - Build a fully custom `AuthUITheme`.
 - Set a logo, Terms of Service URL, and Privacy Policy URL in `authUIConfiguration`.
 
-For full theming and customization details, including theme precedence, provider button styling, and custom themes, see `auth/README.md`.
+For full theming and customization details, including theme precedence, provider button styling, and custom themes, see [the Theming and Customization section of the readme in GitHub](https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#theming--customization).
 
-## Existing Activity-based apps
+## Existing Activity-based apps {#existing-activity-based-apps}
 
 If your app still uses Activities and the Activity Result API, you can keep an Activity-based launch flow by using `AuthFlowController`:
 
