@@ -209,7 +209,7 @@ You can also:
 
 For full theming and customization details, including theme precedence, provider button styling, and custom themes, see [the Theming and Customization section of the readme in GitHub](https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#theming--customization).
 
-## Existing Activity-based apps {#existing-activity-based-apps}
+## Existing Activity-based apps
 
 If your app still uses Activities and the Activity Result API, you can keep an Activity-based launch flow by using `AuthFlowController`:
 
