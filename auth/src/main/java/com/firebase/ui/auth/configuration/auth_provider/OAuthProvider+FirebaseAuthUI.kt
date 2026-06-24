@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -129,7 +130,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
     provider: AuthProvider.OAuth,
 ) {
     try {
-        updateAuthState(AuthState.Loading("Signing in with ${provider.providerName}..."))
+        updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_signing_in_with_provider, provider.providerName)))
 
         // Build OAuth provider with scopes and custom parameters
         val oauthProvider = OAuthProvider

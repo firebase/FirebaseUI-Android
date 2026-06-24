@@ -49,6 +49,51 @@ interface AuthUIStringProvider {
     /** Loading text displayed during initialization or processing states */
     val initializing: String
 
+    /** Progress dialog message shown while signing in anonymously */
+    val loadingSigningInAnonymously: String
+
+    /** Progress dialog message shown while signing in with Google */
+    val loadingSigningInWithGoogle: String
+
+    /** Progress dialog message shown while signing in with Facebook */
+    val loadingSigningInWithFacebook: String
+
+    /** Progress dialog message shown while signing in with a named OAuth provider. [providerName] is the display name of the provider. */
+    fun loadingSigningInWithProvider(providerName: String): String
+
+    /** Progress dialog message shown while verifying a phone number */
+    val loadingVerifyingPhoneNumber: String
+
+    /** Progress dialog message shown while submitting an SMS verification code */
+    val loadingSubmittingVerificationCode: String
+
+    /** Progress dialog message shown while completing phone number sign-in */
+    val loadingSigningInWithPhone: String
+
+    /** Progress dialog message shown while creating a new user account */
+    val loadingCreatingUser: String
+
+    /** Progress dialog message shown while signing in with email and password */
+    val loadingSigningIn: String
+
+    /** Progress dialog message shown while linking a credential to the current account */
+    val loadingLinkingCredential: String
+
+    /** Progress dialog message shown while sending the sign-in email link */
+    val loadingSendingEmailLink: String
+
+    /** Progress dialog message shown while completing an email link sign-in */
+    val loadingSigningInWithEmailLink: String
+
+    /** Progress dialog message shown while sending the password reset email */
+    val loadingSendingPasswordResetEmail: String
+
+    /** Progress dialog message shown while signing the user out */
+    val loadingSigningOut: String
+
+    /** Progress dialog message shown while deleting the user's account */
+    val loadingDeletingAccount: String
+
     /** Text for Google Provider */
     val googleProvider: String
 

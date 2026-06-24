@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -113,6 +114,23 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         val finalState = instance.authStateFlow().first { it is AuthState.Success }
         assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = true))
+    }
+
+    @Test
+    fun `signInAnonymously - emits Loading state with translated message`() = runTest {
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        `when`(mockFirebaseAuth.signInAnonymously()).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Queue signInAnonymously first; first{} suspends and lets the scheduler run it
+        val job = launch { runCatching { instance.signInAnonymously() } }
+        val loadingState = instance.authStateFlow().first { it is AuthState.Loading }
+
+        assertThat((loadingState as AuthState.Loading).message)
+            .isEqualTo("test_loading_signing_in_anonymously")
+
+        job.cancel()
     }
 
     @Test

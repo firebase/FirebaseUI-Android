@@ -5,6 +5,7 @@ import android.content.Context
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthResult
@@ -111,7 +112,7 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     verifier: AuthProvider.Phone.Verifier = AuthProvider.Phone.DefaultVerifier(),
 ) {
     try {
-        updateAuthState(AuthState.Loading("Verifying phone number..."))
+        updateAuthState(AuthState.Loading((activity ?: app.applicationContext).getString(R.string.fui_loading_verifying_phone_number)))
         val result = provider.verifyPhoneNumberAwait(
             auth = auth,
             activity = activity,
@@ -206,7 +207,7 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
     credentialProvider: AuthProvider.Phone.CredentialProvider = AuthProvider.Phone.DefaultCredentialProvider(),
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Submitting verification code..."))
+        updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_submitting_verification_code)))
         val credential = credentialProvider.getCredential(verificationId, code)
         return signInWithPhoneAuthCredential(
             context = context,
@@ -297,7 +298,7 @@ internal suspend fun FirebaseAuthUI.signInWithPhoneAuthCredential(
     credential: PhoneAuthCredential,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in with phone..."))
+        updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_signing_in_with_phone)))
         val result = signInAndLinkWithCredential(
             config = config,
             credential = credential,

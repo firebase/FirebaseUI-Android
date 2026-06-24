@@ -4,6 +4,24 @@
     <!-- Common -->
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
+    <string name="fui_initializing" translation_description="Text shown while the auth UI is initializing">Initializing</string>
+
+    <!-- Loading state messages shown in the progress dialog during auth operations -->
+    <string name="fui_loading_signing_in_anonymously" translation_description="Progress message while signing in as a guest">Signing in as guest…</string>
+    <string name="fui_loading_signing_in_with_google" translation_description="Progress message while signing in with Google">Signing in with Google…</string>
+    <string name="fui_loading_signing_in_with_facebook" translation_description="Progress message while signing in with Facebook">Signing in with Facebook…</string>
+    <string name="fui_loading_signing_in_with_provider" translation_description="Progress message while signing in with a named provider. %1$s is the provider name.">Signing in with <xliff:g example="Twitter" id="provider_name">%1$s</xliff:g>…</string>
+    <string name="fui_loading_verifying_phone_number" translation_description="Progress message while verifying the user\'s phone number">Verifying phone number…</string>
+    <string name="fui_loading_submitting_verification_code" translation_description="Progress message while submitting the SMS verification code">Submitting verification code…</string>
+    <string name="fui_loading_signing_in_with_phone" translation_description="Progress message while completing phone number sign-in">Signing in with phone…</string>
+    <string name="fui_loading_creating_user" translation_description="Progress message while creating a new user account">Creating account…</string>
+    <string name="fui_loading_signing_in" translation_description="Progress message while signing in with email and password">Signing in…</string>
+    <string name="fui_loading_linking_credential" translation_description="Progress message while linking a credential to the current account">Signing in…</string>
+    <string name="fui_loading_sending_email_link" translation_description="Progress message while sending the sign-in email link">Sending sign-in link…</string>
+    <string name="fui_loading_signing_in_with_email_link" translation_description="Progress message while completing email link sign-in">Signing in with email link…</string>
+    <string name="fui_loading_sending_password_reset" translation_description="Progress message while sending the password reset email">Sending password reset email…</string>
+    <string name="fui_loading_signing_out" translation_description="Progress message while signing the user out">Signing out…</string>
+    <string name="fui_loading_deleting_account" translation_description="Progress message while deleting the user\'s account">Deleting account…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="fui_continue" translation_description="Button text to continue">Continue</string>
     <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
@@ -69,6 +87,7 @@
     <string name="fui_mfa_label_totp_authentication" translation_description="Label for the authenticator app MFA factor.">Authenticator app</string>
     <string name="fui_mfa_label_unknown_method" translation_description="Label for an unknown MFA factor.">Unknown method</string>
     <string name="fui_mfa_enrolled_on" translation_description="Label indicating the enrollment date of an MFA factor.">Enrolled on %1$s</string>
+    <string name="fui_enter_totp_code" translation_description="Prompt asking the user to enter a TOTP verification code">Enter TOTP code</string>
     <string name="fui_mfa_setup_authenticator_description" translation_description="Description displayed during authenticator app setup.">Scan the QR code or enter the secret key in your authenticator app</string>
     <string name="fui_mfa_choose_method_instruction" translation_description="Instruction to choose an MFA verification method.">Choose a verification method</string>
     <string name="fui_mfa_enrollment_instruction" translation_description="Instruction to enroll in MFA.">Add an extra layer of security</string>

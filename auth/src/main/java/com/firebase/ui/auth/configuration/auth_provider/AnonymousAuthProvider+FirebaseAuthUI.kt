@@ -6,6 +6,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.R
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -109,7 +110,7 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
  */
 internal suspend fun FirebaseAuthUI.signInAnonymously() {
     try {
-        updateAuthState(AuthState.Loading("Signing in anonymously..."))
+        updateAuthState(AuthState.Loading(app.applicationContext.getString(R.string.fui_loading_signing_in_anonymously)))
         val result = auth.signInAnonymously().await()
         updateAuthStateWithResult(result, defaultIsNewUser = true)
     } catch (e: CancellationException) {
