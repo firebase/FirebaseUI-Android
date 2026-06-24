@@ -207,7 +207,7 @@ internal suspend fun FirebaseAuthUI.submitVerificationCode(
     credentialProvider: AuthProvider.Phone.CredentialProvider = AuthProvider.Phone.DefaultCredentialProvider(),
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_submitting_verification_code)))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSubmittingVerificationCode))
         val credential = credentialProvider.getCredential(verificationId, code)
         return signInWithPhoneAuthCredential(
             context = context,
@@ -298,7 +298,7 @@ internal suspend fun FirebaseAuthUI.signInWithPhoneAuthCredential(
     credential: PhoneAuthCredential,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_signing_in_with_phone)))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithPhone))
         val result = signInAndLinkWithCredential(
             config = config,
             credential = credential,

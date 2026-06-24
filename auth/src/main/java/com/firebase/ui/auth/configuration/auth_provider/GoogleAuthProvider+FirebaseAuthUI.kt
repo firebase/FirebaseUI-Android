@@ -11,7 +11,6 @@ import androidx.credentials.exceptions.NoCredentialException
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
-import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -120,7 +119,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
 ) {
     var idTokenFromResult: String? = null
     try {
-        updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_signing_in_with_google)))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithGoogle))
 
         // Request OAuth scopes if specified (before sign-in)
         if (provider.scopes.isNotEmpty()) {

@@ -30,7 +30,6 @@ import com.facebook.login.LoginResult
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
-import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -115,7 +114,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
 
     return {
         updateAuthState(
-            AuthState.Loading(context.getString(R.string.fui_loading_signing_in_with_facebook))
+            AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         try {
             (testLoginManagerProvider ?: loginManagerProvider).logOut()
@@ -156,7 +155,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
 ) {
     try {
         updateAuthState(
-            AuthState.Loading(context.getString(R.string.fui_loading_signing_in_with_facebook))
+            AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         val profileData = provider.fetchFacebookProfile(accessToken)
         val credential = credentialProvider.getCredential(accessToken.token)
