@@ -20,6 +20,7 @@ import com.firebase.ui.auth.R
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
@@ -82,6 +83,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
+    private lateinit var emailConfig: AuthUIConfiguration
 
     @Before
     fun setUp() {
@@ -103,6 +105,13 @@ class EmailAuthProviderFirebaseAuthUITest {
                 .setProjectId("fake-project-id")
                 .build()
         )
+
+        emailConfig = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+            }
+        }
     }
 
     @After
@@ -817,7 +826,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendPasswordResetEmail("test@example.com")
+        instance.sendPasswordResetEmail("test@example.com", emailConfig)
 
         verify(mockFirebaseAuth).sendPasswordResetEmail(
             ArgumentMatchers.eq("test@example.com"),
@@ -841,7 +850,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendPasswordResetEmail("test@example.com", actionCodeSettings)
+        instance.sendPasswordResetEmail("test@example.com", emailConfig, actionCodeSettings)
 
         verify(mockFirebaseAuth).sendPasswordResetEmail("test@example.com", actionCodeSettings)
 
@@ -865,7 +874,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com")
+            instance.sendPasswordResetEmail("test@example.com", emailConfig)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.UserNotFoundException) {
             assertThat(e.cause).isEqualTo(userNotFoundException)
@@ -888,7 +897,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com")
+            instance.sendPasswordResetEmail("test@example.com", emailConfig)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.InvalidCredentialsException) {
             assertThat(e.cause).isEqualTo(invalidEmailException)
@@ -908,7 +917,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com")
+            instance.sendPasswordResetEmail("test@example.com", emailConfig)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.AuthCancelledException) {
             assertThat(e.message).contains("cancelled")

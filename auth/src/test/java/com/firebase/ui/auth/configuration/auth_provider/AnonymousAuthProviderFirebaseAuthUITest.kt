@@ -19,6 +19,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
@@ -58,6 +59,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
+    private lateinit var config: AuthUIConfiguration
 
     @Before
     fun setUp() {
@@ -79,6 +81,14 @@ class AnonymousAuthProviderFirebaseAuthUITest {
                 .setProjectId("fake-project-id")
                 .build()
         )
+
+        config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Anonymous)
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+            }
+        }
     }
 
     @After
@@ -108,7 +118,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.signInAnonymously()
+        instance.signInAnonymously(config)
 
         verify(mockFirebaseAuth).signInAnonymously()
 
@@ -124,7 +134,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Queue signInAnonymously first; first{} suspends and lets the scheduler run it
-        val job = launch { runCatching { instance.signInAnonymously() } }
+        val job = launch { runCatching { instance.signInAnonymously(config) } }
         val loadingState = instance.authStateFlow().first { it is AuthState.Loading }
 
         assertThat((loadingState as AuthState.Loading).message)
@@ -144,7 +154,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.NetworkException) {
             assertThat(e.cause).isEqualTo(networkException)
@@ -167,7 +177,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.AuthCancelledException) {
             assertThat(e.message).contains("cancelled")
@@ -191,7 +201,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.UnknownException) {
             assertThat(e.cause).isEqualTo(genericException)

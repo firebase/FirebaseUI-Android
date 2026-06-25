@@ -5,7 +5,6 @@ import android.content.Context
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
-import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthResult
@@ -107,12 +106,13 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     provider: AuthProvider.Phone,
     activity: Activity?,
     phoneNumber: String,
+    config: AuthUIConfiguration,
     multiFactorSession: MultiFactorSession? = null,
     forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null,
     verifier: AuthProvider.Phone.Verifier = AuthProvider.Phone.DefaultVerifier(),
 ) {
     try {
-        updateAuthState(AuthState.Loading((activity ?: app.applicationContext).getString(R.string.fui_loading_verifying_phone_number)))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingVerifyingPhoneNumber))
         val result = provider.verifyPhoneNumberAwait(
             auth = auth,
             activity = activity,

@@ -331,6 +331,7 @@ fun EmailAuthScreen(
                 try {
                     authUI.sendPasswordResetEmail(
                         email = emailTextValue.value,
+                        config = configuration,
                         actionCodeSettings = configuration.passwordResetActionCodeSettings,
                     )
                 } catch (e: Exception) {

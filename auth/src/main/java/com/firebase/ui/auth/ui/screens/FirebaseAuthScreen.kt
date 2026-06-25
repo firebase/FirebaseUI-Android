@@ -986,7 +986,7 @@ private fun FirebaseAuthUI.rememberOnProviderSelected(
     val twitterProvider = config.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
     val genericOAuthProviders = config.providers.filterIsInstance<AuthProvider.GenericOAuth>()
 
-    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler() }
+    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(config) }
     val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it) }
     val onSignInWithFacebook = facebookProvider?.let { rememberSignInWithFacebookLauncher(context, config, it) }
     val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }

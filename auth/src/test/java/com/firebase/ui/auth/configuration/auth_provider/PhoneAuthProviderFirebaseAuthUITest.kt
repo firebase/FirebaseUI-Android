@@ -18,6 +18,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
@@ -71,6 +72,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
+    private lateinit var phoneConfig: AuthUIConfiguration
 
     @Before
     fun setUp() {
@@ -92,6 +94,13 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 .setProjectId("fake-project-id")
                 .build()
         )
+
+        phoneConfig = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null))
+            }
+        }
     }
 
     @After
@@ -136,6 +145,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
             provider = phoneProvider,
             activity = null,
             phoneNumber = "+1234567890",
+            config = phoneConfig,
             verifier = mockPhoneAuthVerifier
         )
 
@@ -179,6 +189,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 provider = phoneProvider,
                 activity = null,
                 phoneNumber = "+1234567890",
+                config = phoneConfig,
                 verifier = mockPhoneAuthVerifier
             )
 
@@ -224,6 +235,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
             provider = phoneProvider,
             activity = null,
             phoneNumber = "+1234567890",
+            config = phoneConfig,
             forceResendingToken = mockToken,
             verifier = mockPhoneAuthVerifier
         )
@@ -268,6 +280,7 @@ class PhoneAuthProviderFirebaseAuthUITest {
             provider = phoneProvider,
             activity = null,
             phoneNumber = "+1234567890",
+            config = phoneConfig,
             verifier = mockPhoneAuthVerifier
         )
 

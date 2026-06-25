@@ -1256,10 +1256,11 @@ private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
  */
 internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
     email: String,
+    config: AuthUIConfiguration,
     actionCodeSettings: ActionCodeSettings? = null,
 ) {
     try {
-        updateAuthState(AuthState.Loading(app.applicationContext.getString(R.string.fui_loading_sending_password_reset)))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingPasswordResetEmail))
         auth.sendPasswordResetEmail(email, actionCodeSettings).await()
         updateAuthState(AuthState.PasswordResetLinkSent())
     } catch (e: CancellationException) {
