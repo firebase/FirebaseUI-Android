@@ -114,7 +114,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
 
     return {
         updateAuthState(
-            AuthState.Loading("Signing in with facebook...")
+            AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         try {
             (testLoginManagerProvider ?: loginManagerProvider).logOut()
@@ -155,7 +155,7 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
 ) {
     try {
         updateAuthState(
-            AuthState.Loading("Signing in with facebook...")
+            AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         val profileData = provider.fetchFacebookProfile(accessToken)
         val credential = credentialProvider.getCredential(accessToken.token)

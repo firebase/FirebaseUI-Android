@@ -129,7 +129,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
     provider: AuthProvider.OAuth,
 ) {
     try {
-        updateAuthState(AuthState.Loading("Signing in with ${provider.providerName}..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithProvider(provider.providerName)))
 
         // Build OAuth provider with scopes and custom parameters
         val oauthProvider = OAuthProvider

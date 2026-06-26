@@ -119,7 +119,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
 ) {
     var idTokenFromResult: String? = null
     try {
-        updateAuthState(AuthState.Loading("Signing in with google..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithGoogle))
 
         // Request OAuth scopes if specified (before sign-in)
         if (provider.scopes.isNotEmpty()) {

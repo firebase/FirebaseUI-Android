@@ -426,7 +426,7 @@ class FirebaseAuthUI private constructor(
     suspend fun signOut(context: Context) {
         try {
             // Update state to loading
-            updateAuthState(AuthState.Loading("Signing out..."))
+            updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_signing_out)))
 
             // Sign out from Firebase Auth
             auth.signOut()
@@ -555,7 +555,7 @@ class FirebaseAuthUI private constructor(
                 )
 
             // Update state to loading
-            updateAuthState(AuthState.Loading("Deleting account..."))
+            updateAuthState(AuthState.Loading(context.getString(R.string.fui_loading_deleting_account)))
 
             // Delete the user account
             currentUser.delete().await()

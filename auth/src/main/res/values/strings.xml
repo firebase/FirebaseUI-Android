@@ -3,7 +3,25 @@
 
     <!-- Common -->
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading...</string>
+    <string name="fui_initializing" translation_description="Text shown while the auth UI is initializing">Initializing</string>
+
+    <!-- Loading state messages shown in the progress dialog during auth operations -->
+    <string name="fui_loading_signing_in_anonymously" translation_description="Progress message while signing in as a guest">Signing in as guest...</string>
+    <string name="fui_loading_signing_in_with_google" translation_description="Progress message while signing in with Google">Signing in with Google...</string>
+    <string name="fui_loading_signing_in_with_facebook" translation_description="Progress message while signing in with Facebook">Signing in with Facebook...</string>
+    <string name="fui_loading_signing_in_with_provider" translation_description="Progress message while signing in with a named provider. %1$s is the provider name.">Signing in with <xliff:g example="Twitter" id="provider_name">%1$s</xliff:g>...</string>
+    <string name="fui_loading_verifying_phone_number" translation_description="Progress message while verifying the user\'s phone number">Verifying phone number...</string>
+    <string name="fui_loading_submitting_verification_code" translation_description="Progress message while submitting the SMS verification code">Submitting verification code...</string>
+    <string name="fui_loading_signing_in_with_phone" translation_description="Progress message while completing phone number sign-in">Signing in with phone...</string>
+    <string name="fui_loading_creating_user" translation_description="Progress message while creating a new user account">Creating account...</string>
+    <string name="fui_loading_signing_in" translation_description="Progress message while signing in with email and password">Signing in...</string>
+    <string name="fui_loading_linking_credential" translation_description="Progress message while linking a credential to the current account">Signing in...</string>
+    <string name="fui_loading_sending_email_link" translation_description="Progress message while sending the sign-in email link">Sending sign-in link...</string>
+    <string name="fui_loading_signing_in_with_email_link" translation_description="Progress message while completing email link sign-in">Signing in with email link...</string>
+    <string name="fui_loading_sending_password_reset" translation_description="Progress message while sending the password reset email">Sending password reset email...</string>
+    <string name="fui_loading_signing_out" translation_description="Progress message while signing the user out">Signing out...</string>
+    <string name="fui_loading_deleting_account" translation_description="Progress message while deleting the user\'s account">Deleting account...</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="fui_continue" translation_description="Button text to continue">Continue</string>
     <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
@@ -69,6 +87,7 @@
     <string name="fui_mfa_label_totp_authentication" translation_description="Label for the authenticator app MFA factor.">Authenticator app</string>
     <string name="fui_mfa_label_unknown_method" translation_description="Label for an unknown MFA factor.">Unknown method</string>
     <string name="fui_mfa_enrolled_on" translation_description="Label indicating the enrollment date of an MFA factor.">Enrolled on %1$s</string>
+    <string name="fui_enter_totp_code" translation_description="Prompt asking the user to enter a TOTP verification code">Enter TOTP code</string>
     <string name="fui_mfa_setup_authenticator_description" translation_description="Description displayed during authenticator app setup.">Scan the QR code or enter the secret key in your authenticator app</string>
     <string name="fui_mfa_choose_method_instruction" translation_description="Instruction to choose an MFA verification method.">Choose a verification method</string>
     <string name="fui_mfa_enrollment_instruction" translation_description="Instruction to enroll in MFA.">Add an extra layer of security</string>
@@ -112,13 +131,13 @@
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Enter your email address to continue</string>
     <string name="fui_missing_first_and_last_name" translation_description="Inline error for empty email address in input field. [CHAR_LIMIT=60]">Please enter a first and last name.</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts…</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts...</string>
 
     <!-- Email sign up -->
     <string name="fui_title_register_email" translation_description="Title for signup form">Sign up</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">First &amp; last name</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Save</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Signing up…</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Signing up...</string>
     <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
         <item quantity="other" translation_description="Inline error for weak password">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
@@ -147,7 +166,7 @@
         You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
         You can connect your %2$s account with %1$s by signing in with email link below.\n\nFor this flow to successfully connect your %2$s account with this email, you have to open the link on the same device or browser.
     </string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in...</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Trouble signing in?</string>
 
     <!-- Password recovery -->
@@ -157,7 +176,7 @@
         reset your password.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Follow the instructions sent to %1$s to recover your password.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending…</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending...</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">That email address doesn\'t match an existing account</string>
 
     <!-- Other error messages -->
@@ -203,7 +222,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Enter the 6-digit code we sent to</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in %1$s</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying...</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">This phone number has been used too many times</string>
     <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">There was a problem verifying your phone number</string>
