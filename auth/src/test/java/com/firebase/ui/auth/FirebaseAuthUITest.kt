@@ -366,6 +366,7 @@ class FirebaseAuthUITest {
     }
 
     @Test
+    @Config(qualifiers = "es")
     fun `delete() emits Loading state with translated message`() = runTest {
         val mockAuth = mock(FirebaseAuth::class.java)
         val mockUser = mock(FirebaseUser::class.java)

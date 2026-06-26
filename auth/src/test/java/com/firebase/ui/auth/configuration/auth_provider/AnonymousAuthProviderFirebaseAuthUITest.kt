@@ -127,6 +127,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
     }
 
     @Test
+    @Config(qualifiers = "es")
     fun `signInAnonymously - emits Loading state with translated message`() = runTest {
         val taskCompletionSource = TaskCompletionSource<AuthResult>()
         `when`(mockFirebaseAuth.signInAnonymously()).thenReturn(taskCompletionSource.task)
