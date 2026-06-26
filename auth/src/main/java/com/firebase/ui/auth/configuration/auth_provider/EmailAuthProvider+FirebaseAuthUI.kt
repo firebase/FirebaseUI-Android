@@ -178,7 +178,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             }
         }
 
-        updateAuthState(AuthState.Loading("Creating user..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingCreatingUser))
         val result = if (shouldLinkCredential) {
             auth.currentUser?.linkWithCredential(requireNotNull(pendingCredential))?.await()
         } else {
@@ -344,7 +344,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
     skipCredentialSave: Boolean = false,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningIn))
         // In reauth mode build a credential and go through signInAndLinkWithCredential so
         // signInOrReauth routes to FirebaseUser.reauthenticate() instead of signInWithCredential().
         if (config.isReauthenticationMode) {
@@ -645,7 +645,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
     photoUrl: Uri? = null,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in user..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingLinkingCredential))
         val result = if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
@@ -830,7 +830,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
     persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ) {
     try {
-        updateAuthState(AuthState.Loading("Sending sign in email link..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingEmailLink))
 
         // Get anonymousUserId if can upgrade anonymously else default to empty string.
         // NOTE: check for empty string instead of null to validate anonymous user ID matches
@@ -988,7 +988,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in with email link..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithEmailLink))
 
         // Validate link format
         if (!auth.isSignInWithEmailLink(emailLink)) {
@@ -1256,10 +1256,11 @@ private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
  */
 internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
     email: String,
+    config: AuthUIConfiguration,
     actionCodeSettings: ActionCodeSettings? = null,
 ) {
     try {
-        updateAuthState(AuthState.Loading("Sending password reset email..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingPasswordResetEmail))
         auth.sendPasswordResetEmail(email, actionCodeSettings).await()
         updateAuthState(AuthState.PasswordResetLinkSent())
     } catch (e: CancellationException) {

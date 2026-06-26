@@ -38,7 +38,41 @@ class DefaultAuthUIStringProvider(
      * Common Strings
      */
     override val initializing: String
-        get() = "Initializing"
+        get() = localizedContext.getString(R.string.fui_initializing)
+
+    /**
+     * Loading State Strings
+     */
+    override val loadingSigningInAnonymously: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_anonymously)
+    override val loadingSigningInWithGoogle: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_google)
+    override val loadingSigningInWithFacebook: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_facebook)
+    override fun loadingSigningInWithProvider(providerName: String): String =
+        localizedContext.getString(R.string.fui_loading_signing_in_with_provider, providerName)
+    override val loadingVerifyingPhoneNumber: String
+        get() = localizedContext.getString(R.string.fui_loading_verifying_phone_number)
+    override val loadingSubmittingVerificationCode: String
+        get() = localizedContext.getString(R.string.fui_loading_submitting_verification_code)
+    override val loadingSigningInWithPhone: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_phone)
+    override val loadingCreatingUser: String
+        get() = localizedContext.getString(R.string.fui_loading_creating_user)
+    override val loadingSigningIn: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in)
+    override val loadingLinkingCredential: String
+        get() = localizedContext.getString(R.string.fui_loading_linking_credential)
+    override val loadingSendingEmailLink: String
+        get() = localizedContext.getString(R.string.fui_loading_sending_email_link)
+    override val loadingSigningInWithEmailLink: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_email_link)
+    override val loadingSendingPasswordResetEmail: String
+        get() = localizedContext.getString(R.string.fui_loading_sending_password_reset)
+    override val loadingSigningOut: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_out)
+    override val loadingDeletingAccount: String
+        get() = localizedContext.getString(R.string.fui_loading_deleting_account)
 
     /**
      * Auth Provider strings
@@ -278,7 +312,7 @@ class DefaultAuthUIStringProvider(
      * Multi-Factor Authentication Strings
      */
     override val enterTOTPCode: String
-        get() = "Enter TOTP Code"
+        get() = localizedContext.getString(R.string.fui_enter_totp_code)
 
     /**
      * Provider Picker Strings

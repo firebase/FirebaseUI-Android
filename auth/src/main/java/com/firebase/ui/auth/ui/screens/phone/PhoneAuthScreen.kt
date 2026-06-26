@@ -284,6 +284,7 @@ fun PhoneAuthScreen(
                         provider = provider,
                         activity = activity,
                         phoneNumber = fullPhoneNumber,
+                        config = configuration,
                     )
                 } catch (e: Exception) {
                     // Error will be handled by authState flow
@@ -319,6 +320,7 @@ fun PhoneAuthScreen(
                             activity = activity,
                             provider = provider,
                             phoneNumber = fullPhoneNumber,
+                            config = configuration,
                             forceResendingToken = forceResendingToken.value,
                         )
                         resendTimerSeconds.intValue = provider.timeout.toInt() // Restart timer
