@@ -18,6 +18,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -30,6 +31,8 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -360,6 +363,28 @@ class FirebaseAuthUITest {
 
         // Verify signOut was called on Firebase Auth
         verify(mockAuth).signOut()
+    }
+
+    @Test
+    @Config(qualifiers = "es")
+    fun `delete() emits Loading state with translated message`() = runTest {
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        val taskCompletionSource = TaskCompletionSource<Void>()
+        `when`(mockUser.delete()).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
+        val context = ApplicationProvider.getApplicationContext<Context>()
+
+        // Queue delete first; first{} suspends and lets the scheduler run it
+        val job = launch { runCatching { instance.delete(context) } }
+        val loadingState = instance.authStateFlow().first { it is AuthState.Loading }
+
+        assertThat((loadingState as AuthState.Loading).message)
+            .isEqualTo("test_loading_deleting_account")
+
+        job.cancel()
     }
 
     @Test

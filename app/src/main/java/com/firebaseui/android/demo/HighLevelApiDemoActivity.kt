@@ -50,6 +50,9 @@ import com.firebase.ui.auth.configuration.AuthUITransitions
 import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProviderSample.CustomAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
@@ -71,6 +74,17 @@ class HighLevelApiDemoActivity : ComponentActivity() {
             providerButtonShape = ShapeDefaults.ExtraLarge
         )
 
+        class CustomAuthUIStringProvider(
+            private val defaultProvider: AuthUIStringProvider
+        ) : AuthUIStringProvider by defaultProvider {
+
+            override val loadingSigningInAnonymously: String
+                get() = "Overriding signing in anonymously loading message..."
+        }
+
+        val customStringProvider =
+            CustomAuthUIStringProvider(DefaultAuthUIStringProvider(applicationContext))
+
         val configuration = authUIConfiguration {
             context = applicationContext
             theme = customTheme
@@ -79,6 +93,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
             privacyPolicyUrl = "https://policies.google.com/privacy"
             isAnonymousUpgradeEnabled = false
             isMfaEnabled = false
+            stringProvider = customStringProvider
             transitions = AuthUITransitions(
                 enterTransition = { slideInHorizontally { it } },
                 exitTransition = { slideOutHorizontally { -it } },
@@ -197,7 +212,10 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         authUI = authUI,
                         emailLink = emailLink,
                         onSignInSuccess = { result ->
-                            Log.d("HighLevelApiDemoActivity", "Authentication success: ${result.user?.uid}")
+                            Log.d(
+                                "HighLevelApiDemoActivity",
+                                "Authentication success: ${result.user?.uid}"
+                            )
                         },
                         onSignInFailure = { exception: AuthException ->
                             Log.e("HighLevelApiDemoActivity", "Authentication failed", exception)
@@ -327,7 +345,8 @@ private fun AppAuthenticatedContent(
         }
 
         is AuthState.RequiresEmailVerification -> {
-            val email = uiContext.authUI.getCurrentUser().getDisplayEmail(stringProvider.emailProvider)
+            val email =
+                uiContext.authUI.getCurrentUser().getDisplayEmail(stringProvider.emailProvider)
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -489,7 +508,8 @@ private fun ChangePasswordDialog(
     var updateError by remember { mutableStateOf<String?>(null) }
 
     val emailProvider = remember(configuration) {
-        configuration.providers.filterIsInstance<com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Email>().firstOrNull()
+        configuration.providers.filterIsInstance<com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Email>()
+            .firstOrNull()
     }
     val passwordValidator = remember(emailProvider, stringProvider) {
         com.firebase.ui.auth.configuration.validators.PasswordValidator(
