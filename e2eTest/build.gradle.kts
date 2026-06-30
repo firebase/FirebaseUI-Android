@@ -51,7 +51,6 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.kotlin.reflect)
     testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.androidx.credentials)
     testImplementation(libs.googleid)

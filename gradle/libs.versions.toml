@@ -13,7 +13,7 @@ compose-bom = "2025.10.00"
 activity-compose = "1.11.0"
 navigation-compose = "2.8.3"
 core-ktx = "1.13.1"
-lifecycle-viewmodel-ktx = "2.2.0"
+lifecycle-viewmodel-ktx = "2.3.1"
 coroutines = "1.7.3"
 zxing = "3.5.3"
 
@@ -25,7 +25,6 @@ junit-ext = "1.1.5"
 truth = "0.42"
 mockito-android = "2.21.0"
 mockito-core = "5.19.0"
-mockito-inline = "5.2.0"
 mockito-kotlin = "6.0.0"
 robolectric = "4.15.1"
 test-core = "1.5.0"
@@ -100,7 +99,6 @@ junit-ext = { module = "androidx.test.ext:junit", version.ref = "junit-ext" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockito-android" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
-mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito-inline" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 test-core = { module = "androidx.test:core", version.ref = "test-core" }

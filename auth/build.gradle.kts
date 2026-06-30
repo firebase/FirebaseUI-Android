@@ -123,7 +123,6 @@ dependencies {
     testImplementation(libs.kotlin.reflect)
     testImplementation(libs.facebook.login)
     testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.androidx.credentials)
     testImplementation(libs.compose.ui.test.junit4)
