@@ -1,8 +1,10 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version Config.kotlinVersion
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -11,7 +13,6 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
 
         buildConfigField("String", "LIBRARY_NAME", "\"firebase-ui-android\"")
         buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
@@ -60,12 +61,10 @@ android {
     }
 
     testOptions {
+        targetSdk = Config.SdkVersions.target
         unitTests {
             isIncludeAndroidResources = true
         }
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -74,69 +73,74 @@ android {
 }
 
 dependencies {
-    implementation(platform(Config.Libs.Androidx.Compose.bom))
-    implementation(Config.Libs.Androidx.Compose.ui)
-    implementation(Config.Libs.Androidx.Compose.uiGraphics)
-    implementation(Config.Libs.Androidx.Compose.material3)
-    implementation(Config.Libs.Androidx.Compose.foundation)
-    implementation(Config.Libs.Androidx.Compose.tooling)
-    implementation(Config.Libs.Androidx.Compose.toolingPreview)
-    implementation(Config.Libs.Androidx.Compose.activityCompose)
-    implementation(Config.Libs.Androidx.activity)
-    implementation(Config.Libs.Androidx.materialDesign)
-    implementation(Config.Libs.Androidx.Compose.materialIconsExtended)
-    implementation(Config.Libs.Androidx.datastorePreferences)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.activity)
+    implementation(libs.androidx.activity)
+    implementation(libs.material)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.androidx.datastore.preferences)
     // The new activity result APIs force us to include Fragment 1.3.0
     // See https://issuetracker.google.com/issues/152554847
-    implementation(Config.Libs.Androidx.fragment)
-    implementation(Config.Libs.Androidx.customTabs)
-    implementation(Config.Libs.Androidx.constraint)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.constraintlayout)
 
     // Google Authentication
-    implementation(Config.Libs.Androidx.credentials)
-    implementation(Config.Libs.Androidx.credentialsPlayServices)
-    implementation(Config.Libs.Misc.googleid)
-    implementation(Config.Libs.PlayServices.auth)
-    //api(Config.Libs.PlayServices.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth)
 
-    implementation(Config.Libs.Androidx.lifecycleExtensions)
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    api("androidx.navigation:navigation-compose:2.8.3")
-    implementation("com.google.zxing:core:3.5.3")
-    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    api(libs.compose.navigation)
+    implementation(libs.zxing.core)
+    annotationProcessor(libs.androidx.lifecycle.compiler)
 
-    implementation(platform(Config.Libs.Firebase.bom))
-    api(Config.Libs.Firebase.auth)
+    implementation(platform(libs.firebase.bom))
+    api(libs.firebase.auth)
 
     // Phone number validation
-    implementation(Config.Libs.Misc.libphonenumber)
+    implementation(libs.libphonenumber)
 
-    compileOnly(Config.Libs.Provider.facebook)
-    implementation(Config.Libs.Androidx.legacySupportv4) // Needed to override deps
-    implementation(Config.Libs.Androidx.cardView) // Needed to override Facebook
+    compileOnly(libs.facebook.login)
+    implementation(libs.androidx.legacy.support.v4) // Needed to override deps
+    implementation(libs.androidx.cardview) // Needed to override Facebook
 
-    testImplementation(Config.Libs.Test.junit)
-    testImplementation(Config.Libs.Test.truth)
-    testImplementation(Config.Libs.Test.core)
-    testImplementation(Config.Libs.Test.robolectric)
-    testImplementation(Config.Libs.Test.kotlinReflect)
-    testImplementation(Config.Libs.Provider.facebook)
-    testImplementation(Config.Libs.Test.mockitoCore)
-    testImplementation(Config.Libs.Test.mockitoInline)
-    testImplementation(Config.Libs.Test.mockitoKotlin)
-    testImplementation(Config.Libs.Androidx.credentials)
-    testImplementation(Config.Libs.Test.composeUiTestJunit4)
+    testImplementation(libs.junit)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.core)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlin.reflect)
+    testImplementation(libs.facebook.login)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.androidx.credentials)
+    testImplementation(libs.compose.ui.test.junit4)
 
     debugImplementation(project(":internal:lintchecks"))
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
 }
 
 val mockitoAgent by configurations.creating
 
 dependencies {
-    mockitoAgent(Config.Libs.Test.mockitoCore) {
+    mockitoAgent(libs.mockito.core) {
         isTransitive = false
     }
 }

@@ -1,13 +1,13 @@
 plugins {
-    id("kotlin")
+    id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
-    compileOnly(Config.Libs.Lint.api)
-    compileOnly(Config.Libs.Kotlin.jvm)
+    compileOnly(libs.lint.api)
+    compileOnly(libs.kotlin.stdlib)
 
-    testImplementation(Config.Libs.Lint.api)
-    testImplementation(Config.Libs.Lint.tests)
+    testImplementation(libs.lint.api)
+    testImplementation(libs.lint.tests)
 }
 
  tasks.withType<Jar>().configureEach {

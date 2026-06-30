@@ -1,25 +1,14 @@
 @file:Suppress("UnstableApiUsage")
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
-        maven("https://oss.jfrog.org/artifactory/oss-release-local")
-    }
-
-    dependencies {
-        classpath(Config.Plugins.android)
-        classpath(Config.Plugins.kotlin)
-        classpath(Config.Plugins.google)
-        classpath(Config.Plugins.mavenPublish)
-        classpath(Config.Plugins.buildInfo)
-    }
-}
-
 plugins {
-    id("com.github.ben-manes.versions") version "0.20.0"
-    id("org.jetbrains.kotlin.plugin.compose") version Config.kotlinVersion apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.maven.publish) apply false
+    alias(libs.plugins.versions)
 }
 
 allprojects {

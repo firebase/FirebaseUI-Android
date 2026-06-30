@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose") version Config.kotlinVersion
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -10,7 +12,6 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
     }
 
     compileOptions {
@@ -18,15 +19,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
     }
 
     testOptions {
+        targetSdk = Config.SdkVersions.target
         unitTests {
             isIncludeAndroidResources = true
         }
@@ -38,32 +36,38 @@ dependencies {
     implementation(project(":auth"))
 
     // Compose dependencies
-    implementation(platform(Config.Libs.Androidx.Compose.bom))
-    implementation(Config.Libs.Androidx.Compose.ui)
-    implementation(Config.Libs.Androidx.Compose.material3)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
 
     // Firebase dependencies
-    implementation(platform(Config.Libs.Firebase.bom))
-    implementation(Config.Libs.Firebase.auth)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 
     // Test dependencies
-    testImplementation(Config.Libs.Test.junit)
-    testImplementation(Config.Libs.Test.truth)
-    testImplementation(Config.Libs.Test.core)
-    testImplementation(Config.Libs.Test.robolectric)
-    testImplementation(Config.Libs.Test.kotlinReflect)
-    testImplementation(Config.Libs.Test.mockitoCore)
-    testImplementation(Config.Libs.Test.mockitoInline)
-    testImplementation(Config.Libs.Test.mockitoKotlin)
-    testImplementation(Config.Libs.Androidx.credentials)
-    testImplementation(Config.Libs.Misc.googleid)
-    testImplementation(Config.Libs.Test.composeUiTestJunit4)
+    testImplementation(libs.junit)
+    testImplementation(libs.truth)
+    testImplementation(libs.test.core)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlin.reflect)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.androidx.credentials)
+    testImplementation(libs.googleid)
+    testImplementation(libs.compose.ui.test.junit4)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
 }
 
 val mockitoAgent by configurations.creating
 
 dependencies {
-    mockitoAgent(Config.Libs.Test.mockitoCore) {
+    mockitoAgent(libs.mockito.core) {
         isTransitive = false
     }
 }

@@ -1,5 +1,6 @@
 plugins {
   id("com.android.application")
+  id("com.google.gms.google-services")
 }
 
 // This is always set to 'true' on Travis CI
@@ -81,8 +82,6 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":storage"))
 
-    implementation(platform(Config.Libs.Firebase.bom))
-    implementation(Config.Libs.Androidx.lifecycleExtensions)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.androidx.lifecycle.extensions)
 }
-
-apply(plugin = "com.google.gms.google-services")
