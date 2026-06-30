@@ -9,10 +9,13 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
+    }
+
+    testOptions {
+        targetSdk = Config.SdkVersions.target
     }
 
     compileOptions {    

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -37,36 +39,39 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
 dependencies {
     implementation(project(":auth"))
 
-    implementation(Config.Libs.Kotlin.jvm)
-    implementation(Config.Libs.Androidx.lifecycleRuntime)
-    implementation(Config.Libs.Androidx.Compose.activityCompose)
-    implementation(platform(Config.Libs.Androidx.Compose.bom))
-    implementation(Config.Libs.Androidx.Compose.ui)
-    implementation(Config.Libs.Androidx.Compose.uiGraphics)
-    implementation(Config.Libs.Androidx.Compose.toolingPreview)
-    implementation(Config.Libs.Androidx.Compose.material3)
-
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.compose.activity)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
 
     // Facebook
-    implementation(Config.Libs.Provider.facebook)
+    implementation(libs.facebook.login)
 
-    testImplementation(Config.Libs.Test.junit)
-    androidTestImplementation(Config.Libs.Test.junitExt)
-    androidTestImplementation(platform(Config.Libs.Androidx.Compose.bom))
-    androidTestImplementation(Config.Libs.Test.composeUiTestJunit4)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.ui.test.junit4)
 
-    debugImplementation(Config.Libs.Androidx.Compose.tooling)
+    debugImplementation(libs.compose.ui.tooling)
 
-    implementation(platform(Config.Libs.Firebase.bom))
+    implementation(platform(libs.firebase.bom))
 }

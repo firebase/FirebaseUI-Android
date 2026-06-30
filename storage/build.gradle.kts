@@ -9,13 +9,16 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
     }
 
-    compileOptions {    
+    testOptions {
+        targetSdk = Config.SdkVersions.target
+    }
+
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -45,13 +48,13 @@ android {
 }
 
 dependencies {
-    api(Config.Libs.Misc.glide)
+    api(libs.glide)
 
-    implementation(platform(Config.Libs.Firebase.bom))
-    api(Config.Libs.Firebase.storage)
+    implementation(platform(libs.firebase.bom))
+    api(libs.firebase.storage)
     // Override Play Services
-    implementation(Config.Libs.Androidx.legacySupportv4)
+    implementation(libs.androidx.legacy.support.v4)
 
-    testImplementation(Config.Libs.Test.junit)
-    testImplementation(Config.Libs.Test.mockitoCore)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
 }
