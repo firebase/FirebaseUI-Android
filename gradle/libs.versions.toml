@@ -1,6 +1,5 @@
 [versions]
 kotlin = "2.2.0"
-kotlin-serialization = "1.9.0"
 android-gradle-plugin = "8.10.0"
 google-services = "4.3.8"
 maven-publish-plugin = "0.34.0"
@@ -13,14 +12,11 @@ facebook = "18.0.3"
 compose-bom = "2025.10.00"
 activity-compose = "1.11.0"
 navigation-compose = "2.8.3"
-navigation3 = "1.0.0-alpha08"
-lifecycle-viewmodel-compose = "1.0.0-alpha04"
 core-ktx = "1.13.1"
 lifecycle-viewmodel-ktx = "2.2.0"
 coroutines = "1.7.3"
 zxing = "3.5.3"
 
-leakcanary = "2.14"
 glide = "4.11.0"
 lint = "30.0.0"
 
@@ -41,7 +37,6 @@ test-rules = "1.5.0"
 # Kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlin-serialization" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 
@@ -58,9 +53,7 @@ androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensi
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version = "2.3.1" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version = "2.3.1" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle-viewmodel-ktx" }
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version = "1.0.0" }
-androidx-multidex = { module = "androidx.multidex:multidex", version = "2.0.1" }
 androidx-paging = { module = "androidx.paging:paging-runtime", version = "3.0.0" }
 androidx-paging-rxjava3 = { module = "androidx.paging:paging-rxjava3", version = "3.0.0" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version = "1.2.1" }
@@ -82,10 +75,6 @@ compose-activity = { module = "androidx.activity:activity-compose", version.ref 
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 
-# Navigation3
-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
-
 # Firebase (BOM-managed, no version except BOM itself)
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -100,10 +89,7 @@ play-services-auth = { module = "com.google.android.gms:play-services-auth", ver
 facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebook" }
 
 # Misc
-leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
-easypermissions = { module = "pub.devrel:easypermissions", version = "3.0.0" }
 libphonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version = "9.0.16" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version = "1.1.1" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
