@@ -7,7 +7,7 @@ description: Set up FirebaseUI Android Auth with predefined Compose screens in a
 
 Use this skill when the user wants to add FirebaseUI Auth to an existing Android app. Assume you are working in the user's app repo, not the FirebaseUI source repo.
 
-Default to the high-level predefined screen API: `FirebaseAuthScreen` with `authUIConfiguration {}`. Only use low-level controllers or custom slot UIs when the user explicitly asks for custom auth screens.
+Default to the high-level predefined screen API: `FirebaseAuthScreen` with `authUIConfiguration {}`. Only reach for the low-level `AuthFlowController` (`authUI.createAuthFlow(configuration)`, returning `createIntent`/`authStateFlow`/`cancel`/`dispose` for manual `ActivityResultLauncher`-based flows) or custom slot UIs when the user explicitly asks for custom auth screens.
 
 ## Source References
 
@@ -16,6 +16,7 @@ Use these when details are needed beyond this skill:
 - FirebaseUI Auth docs: `https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md`
 - Firebase Android setup: `https://firebase.google.com/docs/android/setup`
 - Firebase Auth provider setup: `https://firebase.google.com/docs/auth`
+- `AuthUIStringProvider` customization sample: `https://github.com/firebase/FirebaseUI-Android/blob/master/auth/src/main/java/com/firebase/ui/auth/configuration/string_provider/AuthUIStringProviderSample.kt`
 
 ## Setup Workflow
 
@@ -174,7 +175,63 @@ If the project uses Navigation Compose, prefer making `FirebaseAuthScreen` a des
 <string name="facebook_client_token" translatable="false">CHANGE-ME</string>
 ```
 
-- Generic OIDC providers use `AuthProvider.GenericOAuth(...)` with the provider ID exactly as configured in Firebase Console, for example `oidc.line`.
+- Generic OIDC and SAML providers use `AuthProvider.GenericOAuth(...)` with the provider ID exactly as configured in Firebase Console, for example `oidc.line` or `saml.mycompany`.
+
+## String Customization
+
+Only add this when the user explicitly asks to change wording or branding, not by default.
+
+Set `stringProvider` on `authUIConfiguration { }` to override built-in UI copy. Delegate to `DefaultAuthUIStringProvider(context)` via Kotlin interface delegation and override only the strings that need to change:
+
+```kotlin
+class CustomAuthUIStringProvider(
+    private val defaultProvider: AuthUIStringProvider
+) : AuthUIStringProvider by defaultProvider {
+    override val signInWithGoogle: String = "Continue with Google"
+    override val continueText: String = "Continue to MyApp"
+}
+
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers { /* ... */ }
+    stringProvider = CustomAuthUIStringProvider(DefaultAuthUIStringProvider(applicationContext))
+}
+```
+
+## Theming
+
+Only customize shapes/colors when the user asks for brand-specific styling; the defaults are fine otherwise. Set `theme` on `authUIConfiguration { }` using `AuthUITheme`:
+
+```kotlin
+// Adjust provider button corner radius globally
+val theme = AuthUITheme.Default.copy(providerButtonShape = RoundedCornerShape(12.dp))
+
+// Inherit from the app's Material theme instead of FirebaseUI defaults
+val theme = AuthUITheme.fromMaterialTheme(providerButtonShape = RoundedCornerShape(12.dp))
+
+// Override shape/color for individual providers
+val theme = AuthUITheme.Default.copy(
+    providerButtonShape = RoundedCornerShape(12.dp),
+    providerStyles = mapOf(
+        "google.com" to ProviderStyleDefaults.Google.copy(shape = RoundedCornerShape(24.dp)),
+        "facebook.com" to ProviderStyleDefaults.Facebook.copy(shape = RoundedCornerShape(8.dp)),
+    )
+)
+```
+
+## Content Slots
+
+Only wire these when the user explicitly asks for custom auth screens; default to the predefined `FirebaseAuthScreen` UI otherwise. `FirebaseAuthScreen` accepts optional composable slot parameters that replace individual screens while keeping navigation, error handling, and MFA flow intact:
+
+- `emailContent: (@Composable (EmailAuthContentState) -> Unit)?` — replaces the email sign-in/sign-up/reset UI.
+- `phoneContent: (@Composable (PhoneAuthContentState) -> Unit)?` — replaces the phone auth UI.
+- `customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)?` — replaces the provider list on the method picker screen.
+- `customMethodPickerTermsConfiguration: MethodPickerTermsConfiguration?` — replaces the default "By continuing..." terms footer with custom content, for example a consent checkbox. Takes `content`, `accepted`, and optionally `disableProvidersUntilAccepted = true` to gate sign-in until consent is given.
+- `mfaEnrollmentContent`, `mfaChallengeContent`, `reauthContent`, `authenticatedContent` — replace MFA enrollment, MFA challenge, reauthentication, and the post-sign-in state respectively.
+
+Each slot receives a state object with the same fields/callbacks the default UI uses (e.g. `EmailAuthContentState` exposes `email`, `password`, `isLoading`, `onEmailChange`, `onSignInClick`, etc.). Read the corresponding state class before writing custom UI so field names are correct.
+
+`reauthContent` only appears when triggered. Wrap sensitive operations (updating a password, deleting the account, etc.) in `authUI.withReauth(context, reason = "...") { /* operation */ }`; if the wrapped call throws `AuthException.InvalidCredentialsException`, `FirebaseAuthScreen` automatically navigates to `reauthContent` (or its default bottom sheet if no custom slot is provided) to re-verify the user before retrying.
 
 ## Gotchas
 
