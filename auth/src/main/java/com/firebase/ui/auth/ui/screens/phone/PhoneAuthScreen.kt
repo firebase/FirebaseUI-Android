@@ -161,7 +161,7 @@ fun PhoneAuthScreen(
     val pendingVerificationPhoneNumber = remember { mutableStateOf<String?>(null) }
     val verificationStartTime = remember { mutableStateOf<Long?>(null) }
 
-    val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null

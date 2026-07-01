@@ -31,6 +31,9 @@ import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringPro
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
+import com.firebase.ui.auth.testutil.awaitWithLooper
+import com.firebase.ui.auth.testutil.ensureFreshUser
+import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
@@ -406,6 +409,119 @@ class PhoneAuthScreenTest {
         composeTestRule.onNodeWithText(stringProvider.sendVerificationCode.uppercase())
             .performScrollTo()
             .assertIsEnabled()
+    }
+
+    @Test
+    fun `onSuccess fires when a returning signed-in user links a phone number`() {
+        val email = "returning-user-2352@example.com"
+        val password = "Test@123"
+        val phone = "2025550199"
+        val country = CountryUtils.findByCountryCode("US")!!
+
+        // Step 1: establish a pre-existing session - the "returning user".
+        println("TEST: Creating email/password user...")
+        val createdUser = ensureFreshUser(authUI, email, password)
+        requireNotNull(createdUser) { "Failed to create user" }
+
+        println("TEST: Verifying email in emulator...")
+        verifyEmailInEmulator(authUI, emulatorApi, createdUser)
+
+        authUI.auth.signInWithEmailAndPassword(email, password).awaitWithLooper()
+        assertThat(authUI.auth.currentUser).isNotNull()
+
+        // Step 2: mount PhoneAuthScreen standalone, exactly like the reporter's app -
+        // success is only observable via the onSuccess callback.
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = country.countryCode,
+                        allowedCountries = null,
+                        timeout = 60L,
+                    )
+                )
+            }
+            isCredentialLinkingEnabled = true
+        }
+
+        var successResult: AuthResult? = null
+
+        composeTestRule.setContent {
+            TestAuthScreen(
+                configuration = configuration,
+                onSuccess = { result -> successResult = result },
+            )
+        }
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 3: enter phone number and request a verification code.
+        println("TEST: Entering phone number...")
+        composeTestRule.onNodeWithText(stringProvider.phoneNumberHint)
+            .performTextInput(phone)
+
+        composeTestRule.onNodeWithText(stringProvider.sendVerificationCode.uppercase())
+            .performScrollTo()
+            .assertIsEnabled()
+            .performClick()
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 4: fetch verification code from emulator
+        println("TEST: Fetching phone verification code...")
+        var phoneCode: String? = null
+        var retries = 0
+        val maxRetries = 5
+        while (phoneCode == null && retries < maxRetries) {
+            Thread.sleep(if (retries == 0) 200L else 500L * retries)
+            shadowOf(Looper.getMainLooper()).idle()
+            try {
+                phoneCode = emulatorApi.fetchVerifyPhoneCode(phone)
+                println("TEST: Found phone code after ${retries + 1} attempts")
+            } catch (e: Exception) {
+                retries++
+                if (retries >= maxRetries) {
+                    Assume.assumeTrue(
+                        "Skipping test: Firebase Auth Emulator not available. Error: ${e.message}",
+                        false
+                    )
+                }
+                println("TEST: Phone code not found yet, retrying... (attempt $retries/$maxRetries)")
+            }
+        }
+        requireNotNull(phoneCode) { "Phone code should not be null at this point" }
+
+        // Step 5: enter verification code
+        println("TEST: Entering verification code: $phoneCode")
+        val textFields = composeTestRule.onAllNodes(hasSetTextAction())
+        phoneCode.forEachIndexed { index, digit ->
+            composeTestRule.waitForIdle()
+            textFields[index].performTextInput(digit.toString())
+        }
+
+        composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
+            .performScrollTo()
+            .assertIsEnabled()
+            .performClick()
+
+        composeTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 6: onSuccess must fire - this is what issue #2352 reports as broken.
+        println("TEST: Waiting for onSuccess callback...")
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            successResult != null
+        }
+
+        assertThat(successResult).isNotNull()
+        assertThat(successResult?.user?.phoneNumber).isEqualTo(
+            CountryUtils.formatPhoneNumber(country.dialCode, phone)
+        )
     }
 
     @Composable
