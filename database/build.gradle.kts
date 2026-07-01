@@ -10,7 +10,7 @@ android {
     defaultConfig {
         minSdk = Config.SdkVersions.min
 
-        resourcePrefix("fui_")
+        resourcePrefix = "fui_"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.firebase.bom))
+    api(platform(libs.firebase.bom))
     api(project(":common"))
     api(libs.firebase.database)
 
