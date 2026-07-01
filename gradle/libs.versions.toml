@@ -12,7 +12,7 @@ facebook = "18.0.3"
 compose-bom = "2025.10.00"
 activity-compose = "1.11.0"
 navigation-compose = "2.9.8"
-coroutines = "1.7.3"
+coroutines = "1.11.0"
 zxing = "3.5.3"
 
 annotation = "1.2.0"
