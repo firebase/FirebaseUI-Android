@@ -4,6 +4,9 @@ on:
   - pull_request
   - push
 
+permissions:
+  contents: read
+
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
