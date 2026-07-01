@@ -26,7 +26,7 @@ jobs:
           key: firebase-emulators-v3-${{ runner.os }}
 
       - name: Install Node.js 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
 
