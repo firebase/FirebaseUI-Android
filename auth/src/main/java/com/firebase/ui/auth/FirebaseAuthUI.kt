@@ -680,6 +680,12 @@ class FirebaseAuthUI private constructor(
          * @param app The [FirebaseApp] instance to use
          * @param auth The [FirebaseAuth] instance with custom configuration
          * @return A new [FirebaseAuthUI] instance with the provided dependencies
+         *
+         * **NOTE:** because this method always returns a new instance, calling it directly inside
+         * a `@Composable` function body (instead of hoisting the result with `remember` or storing
+         * it outside composition) gives an unstable reference every recomposition. Code that keys
+         * `remember(authUI) { authUI.authStateFlow() }` on the result won't see a stable key and
+         * will silently lose the intended optimization of subscribing to the flow only once.
          */
         @JvmStatic
         fun create(app: FirebaseApp, auth: FirebaseAuth): FirebaseAuthUI {
