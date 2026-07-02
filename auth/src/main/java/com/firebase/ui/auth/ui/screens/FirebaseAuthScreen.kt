@@ -138,7 +138,7 @@ fun FirebaseAuthScreen(
     val stringProvider = DefaultAuthUIStringProvider(context)
     val navController = rememberNavController()
 
-    val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val dialogController = rememberTopLevelDialogController(stringProvider, authState)
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }

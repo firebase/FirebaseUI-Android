@@ -162,7 +162,7 @@ fun EmailAuthScreen(
         confirmPasswordTextValue
     )
 
-    val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
     val authCredentialForLinking = remember { credentialForLinking }
     val errorMessage =
