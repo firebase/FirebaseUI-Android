@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.library")
     id("com.vanniktech.maven.publish")
+    id("org.jetbrains.kotlin.android")
     alias(libs.plugins.kotlin.compose)
 }
 
@@ -16,7 +17,7 @@ android {
         buildConfigField("String", "LIBRARY_NAME", "\"firebase-ui-android\"")
         buildConfigField("String", "VERSION_NAME", "\"${Config.version}\"")
 
-        resourcePrefix = "fui_"
+        resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -105,7 +106,7 @@ dependencies {
     implementation(libs.zxing.core)
     annotationProcessor(libs.androidx.lifecycle.compiler)
 
-    api(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.bom))
     api(libs.firebase.auth)
 
     // Phone number validation
