@@ -161,7 +161,7 @@ fun PhoneAuthScreen(
     val pendingVerificationPhoneNumber = remember { mutableStateOf<String?>(null) }
     val verificationStartTime = remember { mutableStateOf<Long?>(null) }
 
-    val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
@@ -210,7 +210,7 @@ fun PhoneAuthScreen(
             }
 
             is AuthState.Error -> {
-                val exception = AuthException.from(state.exception)
+                val exception = AuthException.from(state.exception, stringProvider)
                 onError(exception)
                 
                 // Show dialog for phone-specific errors using top-level controller
@@ -284,6 +284,7 @@ fun PhoneAuthScreen(
                         provider = provider,
                         activity = activity,
                         phoneNumber = fullPhoneNumber,
+                        config = configuration,
                     )
                 } catch (e: Exception) {
                     // Error will be handled by authState flow
@@ -319,6 +320,7 @@ fun PhoneAuthScreen(
                             activity = activity,
                             provider = provider,
                             phoneNumber = fullPhoneNumber,
+                            config = configuration,
                             forceResendingToken = forceResendingToken.value,
                         )
                         resendTimerSeconds.intValue = provider.timeout.toInt() // Restart timer

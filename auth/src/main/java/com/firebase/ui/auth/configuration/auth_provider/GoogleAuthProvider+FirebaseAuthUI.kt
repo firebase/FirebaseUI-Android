@@ -59,7 +59,7 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
     provider: AuthProvider.Google,
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
-    return remember(this) {
+    return remember(this, config) {
         {
             coroutineScope.launch {
                 try {
@@ -67,7 +67,7 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
                 } catch (e: AuthException) {
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
-                    val authException = AuthException.from(e)
+                    val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
                 }
             }
@@ -119,7 +119,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
 ) {
     var idTokenFromResult: String? = null
     try {
-        updateAuthState(AuthState.Loading("Signing in with google..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithGoogle))
 
         // Request OAuth scopes if specified (before sign-in)
         if (provider.scopes.isNotEmpty()) {
@@ -128,7 +128,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
                 authorizationProvider.authorize(context, requestedScopes)
             } catch (e: Exception) {
                 // Continue with sign-in even if scope authorization fails
-                val authException = AuthException.from(e)
+                val authException = AuthException.from(e, context)
                 updateAuthState(AuthState.Error(authException))
             }
         }
@@ -227,7 +227,7 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
         throw e
 
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }

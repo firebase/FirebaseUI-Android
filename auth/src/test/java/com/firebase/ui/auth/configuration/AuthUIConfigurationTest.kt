@@ -88,6 +88,7 @@ class AuthUIConfigurationTest {
         assertThat(config.isNewEmailAccountsAllowed).isTrue()
         assertThat(config.isDisplayNameRequired).isTrue()
         assertThat(config.isProviderChoiceAlwaysShown).isFalse()
+        assertThat(config.legacyFetchSignInWithEmail).isFalse()
     }
 
     @Test
@@ -129,6 +130,7 @@ class AuthUIConfigurationTest {
             isNewEmailAccountsAllowed = false
             isDisplayNameRequired = false
             isProviderChoiceAlwaysShown = true
+            legacyFetchSignInWithEmail = true
         }
 
         assertThat(config.context).isEqualTo(applicationContext)
@@ -147,6 +149,7 @@ class AuthUIConfigurationTest {
         assertThat(config.isNewEmailAccountsAllowed).isFalse()
         assertThat(config.isDisplayNameRequired).isFalse()
         assertThat(config.isProviderChoiceAlwaysShown).isTrue()
+        assertThat(config.legacyFetchSignInWithEmail).isTrue()
     }
 
     @Test
@@ -325,7 +328,7 @@ class AuthUIConfigurationTest {
     }
 
     @Test
-    fun `validation accepts custom OIDC providers`() {
+    fun `validation accepts custom OIDC and SAML providers`() {
         val linkedInProvider = AuthProvider.GenericOAuth(
             providerName = "LinkedIn",
             providerId = "oidc.linkedin",
@@ -348,17 +351,30 @@ class AuthUIConfigurationTest {
             contentColor = null,
         )
 
+        val samlProvider = AuthProvider.GenericOAuth(
+            providerName = "Corp SSO",
+            providerId = "saml.corp-sso",
+            scopes = listOf(),
+            customParameters = mapOf(),
+            buttonLabel = "Sign in with Corp SSO",
+            buttonIcon = null,
+            buttonColor = null,
+            contentColor = null,
+        )
+
         val config = authUIConfiguration {
             context = applicationContext
             providers {
                 provider(linkedInProvider)
                 provider(oktaProvider)
+                provider(samlProvider)
             }
         }
 
-        assertThat(config.providers).hasSize(2)
+        assertThat(config.providers).hasSize(3)
         assertThat(config.providers[0].providerId).isEqualTo("oidc.linkedin")
         assertThat(config.providers[1].providerId).isEqualTo("oidc.okta")
+        assertThat(config.providers[2].providerId).isEqualTo("saml.corp-sso")
     }
 
     @Test
@@ -458,6 +474,7 @@ class AuthUIConfigurationTest {
             "isCredentialManagerEnabled",
             "isMfaEnabled",
             "isAnonymousUpgradeEnabled",
+            "isCredentialLinkingEnabled",
             "tosUrl",
             "privacyPolicyUrl",
             "logo",
@@ -465,7 +482,9 @@ class AuthUIConfigurationTest {
             "isNewEmailAccountsAllowed",
             "isDisplayNameRequired",
             "isProviderChoiceAlwaysShown",
-            "transitions"
+            "legacyFetchSignInWithEmail",
+            "transitions",
+            "isReauthenticationMode"
         )
 
         val actualProperties = allProperties.map { it.name }.toSet()

@@ -211,6 +211,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
             return actionCodeSettings {
                 url = continueUrl
                 handleCodeInApp = emailLinkActionCodeSettings.canHandleCodeInApp()
+                linkDomain = emailLinkActionCodeSettings.linkDomain
                 iosBundleId = emailLinkActionCodeSettings.iosBundle
                 setAndroidPackageName(
                     emailLinkActionCodeSettings.androidPackageName ?: "",
@@ -990,6 +991,13 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                     && currentUser.isAnonymous
         }
 
+        internal fun canLinkCredential(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
+            val currentUser = auth.currentUser
+            return config.isCredentialLinkingEnabled
+                    && currentUser != null
+                    && !currentUser.isAnonymous
+        }
+
         /**
          * Merges profile information (display name and photo URL) with the current user's profile.
          *
@@ -1043,4 +1051,18 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
             }
         }
     }
+}
+
+/**
+ * Filters this provider list to only those whose [AuthProvider.providerId] matches a provider
+ * already linked to [user], as reported by [com.google.firebase.auth.FirebaseUser.providerData].
+ *
+ * Used by [com.firebase.ui.auth.FirebaseAuthUI.createReauthFlow] to restrict the reauthentication
+ * UI to methods the user has actually registered.
+ */
+internal fun List<AuthProvider>.filterToLinkedProviders(
+    user: com.google.firebase.auth.FirebaseUser,
+): List<AuthProvider> {
+    val linkedIds = user.providerData.map { it.providerId }.toSet()
+    return filter { it.providerId in linkedIds }
 }

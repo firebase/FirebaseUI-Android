@@ -103,7 +103,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 class AuthFlowController internal constructor(
     private val authUI: FirebaseAuthUI,
-    private val configuration: AuthUIConfiguration
+    internal val configuration: AuthUIConfiguration
 ) {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
@@ -158,7 +158,11 @@ class AuthFlowController internal constructor(
      */
     fun createIntent(context: Context): Intent {
         checkNotDisposed()
-        return FirebaseAuthActivity.createIntent(context, configuration)
+        return FirebaseAuthActivity.createIntent(
+            context = context,
+            configuration = configuration,
+            authUI = authUI
+        )
     }
 
     /**

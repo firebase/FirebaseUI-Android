@@ -6,6 +6,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -19,18 +20,19 @@ import kotlinx.coroutines.tasks.await
  * @see createOrLinkUserWithEmailAndPassword for upgrading anonymous accounts
  */
 @Composable
-internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
+internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(config: AuthUIConfiguration): () -> Unit {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     return remember(this) {
         {
             coroutineScope.launch {
                 try {
-                    signInAnonymously()
+                    signInAnonymously(config)
                 } catch (e: AuthException) {
                     // Already an AuthException, don't re-wrap it
                     updateAuthState(AuthState.Error(e))
                 } catch (e: Exception) {
-                    val authException = AuthException.from(e)
+                    val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
                 }
             }
@@ -106,11 +108,11 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(): () -> Unit {
  * @see createOrLinkUserWithEmailAndPassword for email/password upgrade
  * @see signInWithPhoneAuthCredential for phone authentication upgrade
  */
-internal suspend fun FirebaseAuthUI.signInAnonymously() {
+internal suspend fun FirebaseAuthUI.signInAnonymously(config: AuthUIConfiguration) {
     try {
-        updateAuthState(AuthState.Loading("Signing in anonymously..."))
-        auth.signInAnonymously().await()
-        updateAuthState(AuthState.Idle)
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInAnonymously))
+        val result = auth.signInAnonymously().await()
+        updateAuthStateWithResult(result, defaultIsNewUser = true)
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in anonymously was cancelled",

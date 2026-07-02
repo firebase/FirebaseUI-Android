@@ -42,6 +42,7 @@ class AuthUIConfigurationBuilder {
     var isCredentialManagerEnabled: Boolean = true
     var isMfaEnabled: Boolean = true
     var isAnonymousUpgradeEnabled: Boolean = false
+    var isCredentialLinkingEnabled: Boolean = false
     var tosUrl: String? = null
     var privacyPolicyUrl: String? = null
     var logo: AuthUIAsset? = null
@@ -49,7 +50,9 @@ class AuthUIConfigurationBuilder {
     var isNewEmailAccountsAllowed: Boolean = true
     var isDisplayNameRequired: Boolean = true
     var isProviderChoiceAlwaysShown: Boolean = false
+    var legacyFetchSignInWithEmail: Boolean = false
     var transitions: AuthUITransitions? = null
+    internal var isReauthenticationMode: Boolean = false
 
     fun providers(block: AuthProvidersBuilder.() -> Unit) =
         providers.addAll(AuthProvidersBuilder().apply(block).build())
@@ -63,10 +66,12 @@ class AuthUIConfigurationBuilder {
             "At least one provider must be configured"
         }
 
-        // No unsupported providers (allow predefined providers and custom OIDC providers starting with "oidc.")
+        // No unsupported providers (allow predefined providers and custom OIDC/SAML providers)
         val supportedProviderIds = Provider.entries.map { it.id }.toSet()
+        val customPrefixes = listOf("oidc.", "saml.")
         val unknownProviders = providers.filter { provider ->
-            provider.providerId !in supportedProviderIds && !provider.providerId.startsWith("oidc.")
+            provider.providerId !in supportedProviderIds &&
+                    customPrefixes.none { provider.providerId.startsWith(it) }
         }
         require(unknownProviders.isEmpty()) {
             "Unknown providers: ${unknownProviders.joinToString { it.providerId }}"
@@ -107,6 +112,7 @@ class AuthUIConfigurationBuilder {
             isCredentialManagerEnabled = isCredentialManagerEnabled,
             isMfaEnabled = isMfaEnabled,
             isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled,
+            isCredentialLinkingEnabled = isCredentialLinkingEnabled,
             tosUrl = tosUrl,
             privacyPolicyUrl = privacyPolicyUrl,
             logo = logo,
@@ -114,7 +120,9 @@ class AuthUIConfigurationBuilder {
             isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
             isDisplayNameRequired = isDisplayNameRequired,
             isProviderChoiceAlwaysShown = isProviderChoiceAlwaysShown,
-            transitions = transitions
+            legacyFetchSignInWithEmail = legacyFetchSignInWithEmail,
+            transitions = transitions,
+            isReauthenticationMode = isReauthenticationMode,
         )
     }
 }
@@ -165,6 +173,13 @@ class AuthUIConfiguration(
     val isAnonymousUpgradeEnabled: Boolean = false,
 
     /**
+     * Allows linking a new credential to an already authenticated (non-anonymous) user.
+     * When enabled, signing in via FirebaseUI while a user is already signed in will link
+     * the new credential to the existing account instead of creating a new one.
+     */
+    val isCredentialLinkingEnabled: Boolean = false,
+
+    /**
      * The URL for the terms of service.
      */
     val tosUrl: String? = null,
@@ -200,8 +215,47 @@ class AuthUIConfiguration(
     val isProviderChoiceAlwaysShown: Boolean = false,
 
     /**
+     * Enables legacy provider recovery via `fetchSignInMethodsForEmail`.
+     *
+     * This should only be enabled when email enumeration protection is disabled for the
+     * Firebase project and the application explicitly wants to use the legacy API to
+     * recover from email/password attempts made with the wrong provider.
+     */
+    val legacyFetchSignInWithEmail: Boolean = false,
+
+    /**
      * Custom screen transition animations.
      * If null, uses default fade in/out transitions.
      */
     val transitions: AuthUITransitions? = null,
-)
+
+    /**
+     * When true, the flow operates as a reauthentication flow: account creation is disabled and
+     * only providers already linked to the current user are shown. Set by [FirebaseAuthUI.createReauthFlow].
+     */
+    internal val isReauthenticationMode: Boolean = false,
+) {
+    internal fun copy(
+        providers: List<AuthProvider> = this.providers,
+        isNewEmailAccountsAllowed: Boolean = this.isNewEmailAccountsAllowed,
+        isReauthenticationMode: Boolean = this.isReauthenticationMode,
+    ): AuthUIConfiguration = AuthUIConfiguration(
+        context = this.context,
+        providers = providers,
+        theme = this.theme,
+        locale = this.locale,
+        stringProvider = this.stringProvider,
+        isCredentialManagerEnabled = this.isCredentialManagerEnabled,
+        isMfaEnabled = this.isMfaEnabled,
+        isAnonymousUpgradeEnabled = this.isAnonymousUpgradeEnabled,
+        tosUrl = this.tosUrl,
+        privacyPolicyUrl = this.privacyPolicyUrl,
+        logo = this.logo,
+        passwordResetActionCodeSettings = this.passwordResetActionCodeSettings,
+        isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
+        isDisplayNameRequired = this.isDisplayNameRequired,
+        isProviderChoiceAlwaysShown = this.isProviderChoiceAlwaysShown,
+        transitions = this.transitions,
+        isReauthenticationMode = isReauthenticationMode,
+    )
+}

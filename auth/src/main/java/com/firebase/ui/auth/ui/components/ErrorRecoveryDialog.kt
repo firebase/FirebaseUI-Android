@@ -23,6 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.firebase.ui.auth.AuthException
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.GithubAuthProvider
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.TwitterAuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 
 /**
@@ -140,6 +146,11 @@ private fun getRecoveryMessage(
             } ?: baseMessage
         }
 
+        is AuthException.PasswordPolicyViolationException -> {
+            error.message?.takeIf { it.isNotBlank() }
+                ?: stringProvider.weakPasswordRecoveryMessage
+        }
+
         is AuthException.EmailAlreadyInUseException -> {
             // Include email if available
             val baseMessage = stringProvider.emailAlreadyInUseRecoveryMessage
@@ -156,6 +167,9 @@ private fun getRecoveryMessage(
         is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
         is AuthException.AccountLinkingRequiredException -> {
             // Use the custom message which includes email and provider details
+            error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
+        }
+        is AuthException.DifferentSignInMethodRequiredException -> {
             error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
         }
         is AuthException.EmailMismatchException -> stringProvider.emailMismatchMessage
@@ -192,6 +206,8 @@ private fun getRecoveryActionText(
         is AuthException.AuthCancelledException -> error.message ?: stringProvider.continueText
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
         is AuthException.AccountLinkingRequiredException -> stringProvider.signInDefault // User needs to sign in to link accounts
+        is AuthException.DifferentSignInMethodRequiredException ->
+            getDifferentSignInMethodActionText(error.suggestedSignInMethod, stringProvider)
         is AuthException.MfaRequiredException -> stringProvider.continueText // Use "Continue" for MFA
         is AuthException.EmailLinkPromptForEmailException -> stringProvider.continueText
         is AuthException.EmailLinkCrossDeviceLinkingException -> stringProvider.continueText
@@ -201,6 +217,7 @@ private fun getRecoveryActionText(
         is AuthException.NetworkException,
         is AuthException.InvalidCredentialsException,
         is AuthException.WeakPasswordException,
+        is AuthException.PasswordPolicyViolationException,
         is AuthException.TooManyRequestsException,
         is AuthException.PhoneVerificationCooldownException -> stringProvider.retryAction
         is AuthException.UnknownException -> stringProvider.retryAction
@@ -221,11 +238,13 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.InvalidCredentialsException -> true
         is AuthException.UserNotFoundException -> true
         is AuthException.WeakPasswordException -> true
+        is AuthException.PasswordPolicyViolationException -> true
         is AuthException.EmailAlreadyInUseException -> true
         is AuthException.TooManyRequestsException -> false // User must wait
         is AuthException.PhoneVerificationCooldownException -> false // User must wait for cooldown
         is AuthException.MfaRequiredException -> true
         is AuthException.AccountLinkingRequiredException -> true
+        is AuthException.DifferentSignInMethodRequiredException -> true
         is AuthException.AuthCancelledException -> true
         is AuthException.EmailLinkPromptForEmailException -> true
         is AuthException.EmailLinkCrossDeviceLinkingException -> true
@@ -233,5 +252,23 @@ private fun isRecoverable(error: AuthException): Boolean {
         is AuthException.EmailLinkDifferentAnonymousUserException -> false
         is AuthException.UnknownException -> true
         else -> true
+    }
+}
+
+private fun getDifferentSignInMethodActionText(
+    signInMethod: String,
+    stringProvider: AuthUIStringProvider,
+): String {
+    return when (signInMethod) {
+        GoogleAuthProvider.PROVIDER_ID -> stringProvider.continueWithGoogle
+        FacebookAuthProvider.PROVIDER_ID -> stringProvider.continueWithFacebook
+        TwitterAuthProvider.PROVIDER_ID -> stringProvider.continueWithTwitter
+        GithubAuthProvider.PROVIDER_ID -> stringProvider.continueWithGithub
+        PhoneAuthProvider.PROVIDER_ID -> stringProvider.continueWithPhone
+        "apple.com" -> stringProvider.continueWithApple
+        "microsoft.com" -> stringProvider.continueWithMicrosoft
+        "yahoo.com" -> stringProvider.continueWithYahoo
+        EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD -> stringProvider.signInWithEmailLink
+        else -> stringProvider.continueText
     }
 }
