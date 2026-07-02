@@ -3,7 +3,7 @@ object Config {
     val submodules = listOf("auth", "common", "firestore", "database", "storage")
 
     object SdkVersions {
-        const val compile = 37
+        const val compile = 36
         const val target = 36
         const val min = 23
     }

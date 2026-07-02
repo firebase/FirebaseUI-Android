@@ -18,7 +18,7 @@ android {
         versionName = Config.version
         versionCode = 1
 
-        resourcePrefix = "fui_"
+        resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
 
         multiDexEnabled = true
@@ -35,8 +35,11 @@ android {
             // using the debug key
             signingConfig = signingConfigs["debug"]
 
-            isMinifyEnabled = true
-            isShrinkResources = true
+            postprocessing {
+                isRemoveUnusedCode = true
+                isRemoveUnusedResources = true
+                isObfuscate = true
+            }
         }
     }
 

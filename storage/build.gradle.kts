@@ -10,7 +10,7 @@ android {
     defaultConfig {
         minSdk = Config.SdkVersions.min
 
-        resourcePrefix = "fui_"
+        resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -50,7 +50,7 @@ android {
 dependencies {
     api(libs.glide)
 
-    api(platform(libs.firebase.bom))
+    implementation(platform(libs.firebase.bom))
     api(libs.firebase.storage)
     // Override Play Services
     implementation(libs.androidx.legacy.support.v4)
