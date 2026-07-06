@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.4.0"
-android-gradle-plugin = "8.10.0"
+android-gradle-plugin = "8.13.0"
 google-services = "4.3.8"
 maven-publish-plugin = "0.37.0"
 versions-plugin = "0.20.0"
