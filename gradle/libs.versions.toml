@@ -33,7 +33,7 @@ material = "1.4.0"
 paging = "3.0.0"
 recyclerview = "1.2.1"
 
-glide = "4.11.0"
+glide = "5.0.7"
 lint = "30.0.0"
 
 junit = "4.13.2"
