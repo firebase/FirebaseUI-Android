@@ -7,7 +7,7 @@ versions-plugin = "0.20.0"
 
 firebase-bom = "34.7.0"
 play-services-auth = "21.4.0"
-facebook = "18.0.3"
+facebook = "18.3.0"
 
 compose-bom = "2025.10.00"
 activity-compose = "1.11.0"
