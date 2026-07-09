@@ -2,7 +2,6 @@ name: E2E Tests (Firebase Emulator)
 
 on:
   - pull_request
-  - push
 
 permissions:
   contents: read

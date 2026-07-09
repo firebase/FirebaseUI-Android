@@ -328,7 +328,7 @@ class FirebaseAuthUI private constructor(
             }
 
             // AuthStateListener does not reliably fire for account linking, but IdTokenListener does.
-            val idTokenListener = IdTokenListener { firebaseAuth ->
+            val idTokenListener = IdTokenListener { firebaseAuth: FirebaseAuth ->
                 trySend(buildState(firebaseAuth.currentUser))
             }
 
