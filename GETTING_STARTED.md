@@ -26,7 +26,7 @@ FirebaseUI Auth provides the following benefits:
 dependencies {
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta03")
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94

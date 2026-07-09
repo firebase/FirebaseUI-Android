@@ -61,7 +61,7 @@ android {
 }
 
 dependencies {
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta03")
 
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
     implementation("com.google.firebase:firebase-auth")
