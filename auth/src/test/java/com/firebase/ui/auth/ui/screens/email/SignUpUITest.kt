@@ -21,6 +21,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
@@ -107,7 +109,7 @@ class SignUpUITest {
 
         // With email/password/confirmPassword all valid and no display name required,
         // the sign up button should be enabled even though displayName is still "".
-        composeTestRule.onNodeWithText(stringProvider.signupPageTitle.uppercase())
+        composeTestRule.onNode(hasText(stringProvider.signupPageTitle.uppercase()) and hasClickAction())
             .assertIsEnabled()
     }
 }
