@@ -13,7 +13,7 @@ compose-bom = "2025.10.00"
 activity-compose = "1.11.0"
 navigation-compose = "2.9.8"
 coroutines = "1.11.0"
-zxing = "3.5.3"
+zxing = "3.5.4"
 
 annotation = "1.10.0"
 activity = "1.13.0"
