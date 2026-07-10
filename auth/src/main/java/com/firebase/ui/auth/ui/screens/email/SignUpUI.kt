@@ -95,7 +95,7 @@ fun SignUpUI(
     val isFormValid = remember(displayName, email, password, confirmPassword) {
         derivedStateOf {
             listOf(
-                displayNameValidator.validate(displayName),
+                !provider.isDisplayNameRequired || displayNameValidator.validate(displayName),
                 emailValidator.validate(email),
                 passwordValidator.validate(password),
                 confirmPasswordValidator.validate(confirmPassword)
