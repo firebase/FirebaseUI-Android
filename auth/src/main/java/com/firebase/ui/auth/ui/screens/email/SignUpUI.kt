@@ -47,7 +47,6 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
-import com.firebase.ui.auth.configuration.theme.LocalAuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
 import com.firebase.ui.auth.configuration.validators.GeneralFieldValidator
 import com.firebase.ui.auth.configuration.validators.PasswordValidator
@@ -121,7 +120,7 @@ fun SignUpUI(
                         }
                     }
                 },
-                colors = LocalAuthUITheme.current.topAppBarColors ?: AuthUITheme.topAppBarColors
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         },
     ) { innerPadding ->

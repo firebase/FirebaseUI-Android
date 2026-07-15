@@ -249,6 +249,15 @@ class AuthUITheme(
                 titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
             )
+
+        /**
+         * Resolves the top app bar colors to use for the current [LocalAuthUITheme], falling back
+         * to [topAppBarColors] when the current theme doesn't specify its own.
+         */
+        @OptIn(ExperimentalMaterial3Api::class)
+        @get:Composable
+        val resolvedTopAppBarColors: TopAppBarColors
+            get() = LocalAuthUITheme.current.topAppBarColors ?: topAppBarColors
     }
 }
 
