@@ -26,6 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -71,7 +72,15 @@ class HighLevelApiDemoActivity : ComponentActivity() {
         val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
 
         val customTheme = AuthUITheme.Default.copy(
-            providerButtonShape = ShapeDefaults.ExtraLarge
+            providerButtonShape = ShapeDefaults.ExtraLarge,
+            topAppBarColors = TopAppBarColors(
+                containerColor = Color(0xFF2E7D32),
+                scrolledContainerColor = Color(0xFF2E7D32),
+                navigationIconContentColor = Color.White,
+                titleContentColor = Color.White,
+                actionIconContentColor = Color.White,
+                subtitleContentColor = Color.White,
+            )
         )
 
         class CustomAuthUIStringProvider(
