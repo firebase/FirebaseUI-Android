@@ -3,10 +3,13 @@ package com.firebase.ui.auth.configuration.theme
 import android.content.Context
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -311,6 +314,59 @@ class AuthUIThemeTest {
         assertThat(observedProviderButtonShape).isEqualTo(RoundedCornerShape(20.dp))
         assertThat(observedProviderStyles).containsKey("google.com")
         assertThat(observedProviderStyles?.get("google.com")?.backgroundColor).isEqualTo(Color.Red)
+    }
+
+    // ========================================================================
+    // topAppBarColors Tests
+    // ========================================================================
+
+    @Test
+    fun `Default theme has null topAppBarColors`() {
+        assertThat(AuthUITheme.Default.topAppBarColors).isNull()
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun `Copy with custom topAppBarColors applies correctly`() {
+        lateinit var customColors: TopAppBarColors
+        var observedColors: TopAppBarColors? = null
+
+        composeTestRule.setContent {
+            customColors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Red,
+                titleContentColor = Color.White,
+                navigationIconContentColor = Color.White,
+            )
+            val customTheme = AuthUITheme.Default.copy(topAppBarColors = customColors)
+
+            CompositionLocalProvider(
+                LocalAuthUITheme provides customTheme
+            ) {
+                observedColors = LocalAuthUITheme.current.topAppBarColors
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        assertThat(observedColors).isEqualTo(customColors)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun `Resolved topAppBarColors falls back to default when theme value is null`() {
+        var resolvedColors: TopAppBarColors? = null
+        var defaultColors: TopAppBarColors? = null
+
+        composeTestRule.setContent {
+            AuthUITheme(theme = AuthUITheme.Default) {
+                defaultColors = AuthUITheme.topAppBarColors
+                resolvedColors = LocalAuthUITheme.current.topAppBarColors ?: AuthUITheme.topAppBarColors
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        assertThat(resolvedColors).isEqualTo(defaultColors)
     }
 
     // ========================================================================
