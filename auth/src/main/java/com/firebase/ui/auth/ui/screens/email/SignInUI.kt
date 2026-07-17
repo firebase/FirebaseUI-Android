@@ -36,15 +36,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TooltipAnchorPosition
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -228,29 +223,17 @@ fun SignInUI(
                 modifier = Modifier
                     .align(Alignment.End),
             ) {
-                TooltipBox(
-                    positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                        TooltipAnchorPosition.Above
-                    ),
-                    tooltip = {
-                        PlainTooltip {
-                            Text(stringProvider.newAccountsDisabledTooltip)
-                        }
-                    },
-                    state = rememberTooltipState(
-                        initialIsVisible = !provider.isNewAccountsAllowed
-                    )
-                ) {
+                if (provider.isNewAccountsAllowed) {
                     Button(
                         onClick = {
                             onGoToSignUp()
                         },
-                        enabled = provider.isNewAccountsAllowed && !isLoading,
+                        enabled = !isLoading,
                     ) {
                         Text(stringProvider.signupPageTitle.uppercase())
                     }
+                    Spacer(modifier = Modifier.width(16.dp))
                 }
-                Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = {
                         onSignInClick()
