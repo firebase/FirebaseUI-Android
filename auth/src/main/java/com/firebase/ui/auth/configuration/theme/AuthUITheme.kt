@@ -16,7 +16,6 @@ package com.firebase.ui.auth.configuration.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.TopAppBarColors
@@ -241,7 +240,6 @@ class AuthUITheme(
             )
         }
 
-        @OptIn(ExperimentalMaterial3Api::class)
         @get:Composable
         val topAppBarColors
             get() = TopAppBarDefaults.topAppBarColors(
@@ -254,7 +252,6 @@ class AuthUITheme(
          * Resolves the top app bar colors to use for the current [LocalAuthUITheme], falling back
          * to [topAppBarColors] when the current theme doesn't specify its own.
          */
-        @OptIn(ExperimentalMaterial3Api::class)
         @get:Composable
         val resolvedTopAppBarColors: TopAppBarColors
             get() = LocalAuthUITheme.current.topAppBarColors ?: topAppBarColors

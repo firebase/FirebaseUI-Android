@@ -26,7 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -85,13 +85,9 @@ class HighLevelApiDemoActivity : ComponentActivity() {
         setContent {
             val customTheme = AuthUITheme.Adaptive.copy(
                 providerButtonShape = ShapeDefaults.ExtraLarge,
-                topAppBarColors = TopAppBarColors(
+                topAppBarColors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFFFFA000),
                     scrolledContainerColor = Color(0xFFFFA000),
-                    navigationIconContentColor = Color.Black,
-                    titleContentColor = Color.Black,
-                    actionIconContentColor = Color.Black,
-                    subtitleContentColor = Color.Black,
                 )
             )
 
