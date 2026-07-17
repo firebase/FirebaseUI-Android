@@ -1552,13 +1552,9 @@ Override the colors used by the top app bar shown on auth screens:
 
 ```kotlin
 val customTheme = AuthUITheme.Default.copy(
-    topAppBarColors = TopAppBarColors(
+    topAppBarColors = TopAppBarDefaults.topAppBarColors(
         containerColor = Color(0xFF2E7D32),
         scrolledContainerColor = Color(0xFF2E7D32),
-        navigationIconContentColor = Color.White,
-        titleContentColor = Color.White,
-        actionIconContentColor = Color.White,
-        subtitleContentColor = Color.White,
     )
 )
 

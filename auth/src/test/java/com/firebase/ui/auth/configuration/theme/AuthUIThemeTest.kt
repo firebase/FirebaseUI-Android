@@ -3,7 +3,6 @@ package com.firebase.ui.auth.configuration.theme
 import android.content.Context
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.ShapeDefaults
@@ -325,7 +324,6 @@ class AuthUIThemeTest {
         assertThat(AuthUITheme.Default.topAppBarColors).isNull()
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun `Copy with custom topAppBarColors applies correctly`() {
         lateinit var customColors: TopAppBarColors
@@ -351,7 +349,6 @@ class AuthUIThemeTest {
         assertThat(observedColors).isEqualTo(customColors)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun `resolvedTopAppBarColors falls back to default when theme value is null`() {
         var resolvedColors: TopAppBarColors? = null
@@ -369,7 +366,6 @@ class AuthUIThemeTest {
         assertThat(resolvedColors).isEqualTo(defaultColors)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun `resolvedTopAppBarColors uses the theme's custom value when set`() {
         lateinit var customColors: TopAppBarColors
