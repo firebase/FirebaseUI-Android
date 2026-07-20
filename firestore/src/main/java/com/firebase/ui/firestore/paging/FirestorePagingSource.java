@@ -1,5 +1,7 @@
 package com.firebase.ui.firestore.paging;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -18,6 +20,8 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnapshot> {
+
+    private static final String TAG = "FirestorePagingSource";
 
     private final Query mQuery;
     private final Source mSource;
@@ -54,8 +58,14 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 // Only throw a new Exception when the original
                 // Throwable cannot be cast to Exception
                 throw new Exception(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return new LoadResult.Error<PageKey, DocumentSnapshot>(e);
             }
-        }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
+        }).subscribeOn(Schedulers.io()).onErrorReturn(e -> {
+            Log.e(TAG, "FirestorePagingSource load failed", e);
+            return new LoadResult.Error<>(e);
+        });
     }
 
     private LoadResult<PageKey, DocumentSnapshot> toLoadResult(
