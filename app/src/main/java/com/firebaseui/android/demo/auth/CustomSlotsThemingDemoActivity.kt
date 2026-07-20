@@ -22,10 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.firebaseui.android.demo.CustomMethodPickerDemoActivity
-import com.firebaseui.android.demo.EmailAuthSlotDemoActivity
-import com.firebaseui.android.demo.PhoneAuthSlotDemoActivity
-import com.firebaseui.android.demo.ShapeCustomizationDemoActivity
 
 class CustomSlotsThemingDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -40,16 +40,6 @@ import com.google.firebase.firestore.Query
 
 class FirestoreDemoActivity : ComponentActivity() {
 
-    companion object {
-        // Point the app at a local Firestore emulator (firebase emulators:start).
-        // 10.0.2.2 is the Android emulator's alias for the host machine's localhost.
-        private const val USE_FIRESTORE_EMULATOR = true
-        private const val FIRESTORE_EMULATOR_HOST = "10.0.2.2"
-        private const val FIRESTORE_EMULATOR_PORT = 8080
-
-        private var emulatorConfigured = false
-    }
-
     private lateinit var adapter: ScoreAdapter
     private var currentPage by mutableIntStateOf(1)
     private var prevAppendWasLoading = false
@@ -58,13 +48,7 @@ class FirestoreDemoActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val firestore = FirebaseFirestore.getInstance()
-        if (USE_FIRESTORE_EMULATOR && !emulatorConfigured) {
-            firestore.useEmulator(FIRESTORE_EMULATOR_HOST, FIRESTORE_EMULATOR_PORT)
-            emulatorConfigured = true
-        }
-
-        val collection = firestore.collection("firestore_demo")
+        val collection = FirebaseFirestore.getInstance().collection("firestore_demo")
 
         // Query must only contain where()/orderBy() — the paging library adds limit().
         val query: Query = collection.orderBy("score")
