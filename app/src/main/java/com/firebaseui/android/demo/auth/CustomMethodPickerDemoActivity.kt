@@ -1,7 +1,8 @@
-package com.firebaseui.android.demo
+package com.firebaseui.android.demo.auth
 
 import android.os.Bundle
 import android.util.Log
+import com.firebaseui.android.demo.R
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
