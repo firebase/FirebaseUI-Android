@@ -28,6 +28,7 @@ import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebaseui.android.demo.auth.AuthChooserActivity
 import com.firebaseui.android.demo.auth.HighLevelApiDemoActivity
 import com.firebaseui.android.demo.database.DatabaseDemoActivity
+import com.firebaseui.android.demo.firestore.FirestoreDemoActivity
 import com.firebaseui.android.demo.storage.StorageDemoActivity
 import com.google.firebase.FirebaseApp
 
@@ -85,6 +86,9 @@ class MainActivity : ComponentActivity() {
                         onDatabaseClick = {
                             startActivity(Intent(this, DatabaseDemoActivity::class.java))
                         },
+                        onFirestoreClick = {
+                            startActivity(Intent(this, FirestoreDemoActivity::class.java))
+                        },
                         onStorageClick = {
                             startActivity(Intent(this, StorageDemoActivity::class.java))
                         }
@@ -99,6 +103,7 @@ class MainActivity : ComponentActivity() {
 fun ChooserScreen(
     onAuthClick: () -> Unit,
     onDatabaseClick: () -> Unit,
+    onFirestoreClick: () -> Unit,
     onStorageClick: () -> Unit,
 ) {
     Column(
@@ -148,6 +153,24 @@ fun ChooserScreen(
                 )
                 Text(
                     text = "Paginated list with FirebaseRecyclerPagingAdapter and orderByChild",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        Card(modifier = Modifier.fillMaxWidth(), onClick = onFirestoreClick) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "Firestore",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Paginated list with FirestorePagingAdapter and orderBy",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
