@@ -60,6 +60,7 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 throw new Exception(e);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+                Log.w(TAG, "FirestorePagingSource load interrupted", e);
                 return new LoadResult.Error<PageKey, DocumentSnapshot>(e);
             }
         }).subscribeOn(Schedulers.io()).onErrorReturn(e -> {
