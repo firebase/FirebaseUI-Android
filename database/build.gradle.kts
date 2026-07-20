@@ -9,7 +9,6 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
@@ -17,7 +16,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    compileOptions {    
+    testOptions {
+        targetSdk = Config.SdkVersions.target
+    }
+
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -52,19 +55,19 @@ android {
 }
 
 dependencies {
-    implementation(platform(Config.Libs.Firebase.bom))
+    implementation(platform(libs.firebase.bom))
     api(project(":common"))
-    api(Config.Libs.Firebase.database)
+    api(libs.firebase.database)
 
-    api(Config.Libs.Androidx.legacySupportv4)
-    api(Config.Libs.Androidx.recyclerView)
+    api(libs.androidx.legacy.support.v4)
+    api(libs.androidx.recyclerview)
 
-    compileOnly(Config.Libs.Androidx.paging)
-    api(Config.Libs.Androidx.pagingRxJava)
-    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
+    compileOnly(libs.androidx.paging)
+    api(libs.androidx.paging.rxjava3)
+    annotationProcessor(libs.androidx.lifecycle.compiler)
 
-    androidTestImplementation(Config.Libs.Test.junit)
-    androidTestImplementation(Config.Libs.Test.junitExt)
-    androidTestImplementation(Config.Libs.Test.runner)
-    androidTestImplementation(Config.Libs.Test.rules)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.test.runner)
+    androidTestImplementation(libs.test.rules)
 }

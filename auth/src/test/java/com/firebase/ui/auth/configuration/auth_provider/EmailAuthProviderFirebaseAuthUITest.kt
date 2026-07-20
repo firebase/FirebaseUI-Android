@@ -20,6 +20,7 @@ import com.firebase.ui.auth.R
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
@@ -37,6 +38,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.SignInMethodQueryResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -81,6 +83,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
+    private lateinit var emailConfig: AuthUIConfiguration
 
     @Before
     fun setUp() {
@@ -102,6 +105,13 @@ class EmailAuthProviderFirebaseAuthUITest {
                 .setProjectId("fake-project-id")
                 .build()
         )
+
+        emailConfig = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+            }
+        }
     }
 
     @After
@@ -414,6 +424,156 @@ class EmailAuthProviderFirebaseAuthUITest {
     }
 
     @Test
+    fun `signInWithEmailAndPassword - uses legacy provider recovery when configured`() = runTest {
+        val invalidCredentialsException = FirebaseAuthInvalidCredentialsException(
+            "ERROR_WRONG_PASSWORD",
+            "Wrong password"
+        )
+        val signInTask = TaskCompletionSource<AuthResult>()
+        signInTask.setException(invalidCredentialsException)
+        `when`(mockFirebaseAuth.signInWithEmailAndPassword("test@example.com", "Pass@123"))
+            .thenReturn(signInTask.task)
+
+        val queryResult = mock(SignInMethodQueryResult::class.java)
+        `when`(queryResult.signInMethods).thenReturn(listOf(GoogleAuthProvider.PROVIDER_ID))
+        val fetchTask = TaskCompletionSource<SignInMethodQueryResult>()
+        fetchTask.setResult(queryResult)
+        `when`(mockFirebaseAuth.fetchSignInMethodsForEmail("test@example.com"))
+            .thenReturn(fetchTask.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+                provider(
+                    AuthProvider.Google(
+                        scopes = emptyList(),
+                        serverClientId = "test-client-id"
+                    )
+                )
+            }
+            legacyFetchSignInWithEmail = true
+        }
+
+        try {
+            instance.signInWithEmailAndPassword(
+                context = applicationContext,
+                config = config,
+                email = "test@example.com",
+                password = "Pass@123"
+            )
+            assertThat(false).isTrue()
+        } catch (e: AuthException.DifferentSignInMethodRequiredException) {
+            assertThat(e.email).isEqualTo("test@example.com")
+            assertThat(e.signInMethods).containsExactly(GoogleAuthProvider.PROVIDER_ID)
+            assertThat(e.suggestedSignInMethod).isEqualTo(GoogleAuthProvider.PROVIDER_ID)
+            assertThat(e.cause).isEqualTo(invalidCredentialsException)
+        }
+
+        val currentState = instance.authStateFlow().first { it is AuthState.Error }
+        val errorState = currentState as AuthState.Error
+        assertThat(errorState.exception)
+            .isInstanceOf(AuthException.DifferentSignInMethodRequiredException::class.java)
+        verify(mockFirebaseAuth).fetchSignInMethodsForEmail("test@example.com")
+    }
+
+    @Test
+    fun `signInWithEmailAndPassword - keeps invalid credentials when password sign in is available`() = runTest {
+        val invalidCredentialsException = FirebaseAuthInvalidCredentialsException(
+            "ERROR_WRONG_PASSWORD",
+            "Wrong password"
+        )
+        val signInTask = TaskCompletionSource<AuthResult>()
+        signInTask.setException(invalidCredentialsException)
+        `when`(mockFirebaseAuth.signInWithEmailAndPassword("test@example.com", "Pass@123"))
+            .thenReturn(signInTask.task)
+
+        val queryResult = mock(SignInMethodQueryResult::class.java)
+        `when`(queryResult.signInMethods)
+            .thenReturn(listOf(com.google.firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD))
+        val fetchTask = TaskCompletionSource<SignInMethodQueryResult>()
+        fetchTask.setResult(queryResult)
+        `when`(mockFirebaseAuth.fetchSignInMethodsForEmail("test@example.com"))
+            .thenReturn(fetchTask.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+            }
+            legacyFetchSignInWithEmail = true
+        }
+
+        try {
+            instance.signInWithEmailAndPassword(
+                context = applicationContext,
+                config = config,
+                email = "test@example.com",
+                password = "Pass@123"
+            )
+            assertThat(false).isTrue()
+        } catch (e: AuthException.InvalidCredentialsException) {
+            assertThat(e.cause).isEqualTo(invalidCredentialsException)
+        }
+
+        verify(mockFirebaseAuth).fetchSignInMethodsForEmail("test@example.com")
+    }
+
+    @Test
+    fun `signInWithEmailAndPassword - does not use legacy provider recovery when disabled`() = runTest {
+        val invalidCredentialsException = FirebaseAuthInvalidCredentialsException(
+            "ERROR_WRONG_PASSWORD",
+            "Wrong password"
+        )
+        val signInTask = TaskCompletionSource<AuthResult>()
+        signInTask.setException(invalidCredentialsException)
+        `when`(mockFirebaseAuth.signInWithEmailAndPassword("test@example.com", "Pass@123"))
+            .thenReturn(signInTask.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+                provider(
+                    AuthProvider.Google(
+                        scopes = emptyList(),
+                        serverClientId = "test-client-id"
+                    )
+                )
+            }
+        }
+
+        try {
+            instance.signInWithEmailAndPassword(
+                context = applicationContext,
+                config = config,
+                email = "test@example.com",
+                password = "Pass@123"
+            )
+            assertThat(false).isTrue()
+        } catch (e: AuthException.InvalidCredentialsException) {
+            assertThat(e.cause).isEqualTo(invalidCredentialsException)
+        }
+
+        verify(mockFirebaseAuth, never()).fetchSignInMethodsForEmail(anyString())
+    }
+
+    @Test
     fun `signInWithEmailAndPassword - handles user not found`() = runTest {
         val userNotFoundException = FirebaseAuthInvalidUserException(
             "ERROR_USER_NOT_FOUND",
@@ -608,11 +768,47 @@ class EmailAuthProviderFirebaseAuthUITest {
             assertThat(e.credential).isEqualTo(updatedCredential)
             assertThat(e.cause).isEqualTo(collisionException)
         }
+    }
 
-        val currentState = instance.authStateFlow().first { it is AuthState.Error }
-        assertThat(currentState).isInstanceOf(AuthState.Error::class.java)
-        val errorState = currentState as AuthState.Error
-        assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
+    @Test
+    fun `signInAndLinkWithCredential - links credential to authenticated non-anonymous user when isCredentialLinkingEnabled`() = runTest {
+        val authenticatedUser = mock(FirebaseUser::class.java)
+        `when`(authenticatedUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(authenticatedUser)
+
+        val credential = GoogleAuthProvider.getCredential("google-id-token", null)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(authenticatedUser)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(authenticatedUser.linkWithCredential(credential))
+            .thenReturn(taskCompletionSource.task)
+        // Also stub signInWithCredential so the test fails at the verify assertion,
+        // not with a NPE from an unmocked call
+        `when`(mockFirebaseAuth.signInWithCredential(credential))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+            }
+            isCredentialLinkingEnabled = true
+        }
+
+        val result = instance.signInAndLinkWithCredential(
+            config = config,
+            credential = credential
+        )
+
+        assertThat(result).isNotNull()
+        verify(authenticatedUser).linkWithCredential(credential)
+        verify(mockFirebaseAuth, never()).signInWithCredential(credential)
     }
 
     // =============================================================================================
@@ -630,7 +826,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendPasswordResetEmail("test@example.com")
+        instance.sendPasswordResetEmail("test@example.com", emailConfig)
 
         verify(mockFirebaseAuth).sendPasswordResetEmail(
             ArgumentMatchers.eq("test@example.com"),
@@ -654,7 +850,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendPasswordResetEmail("test@example.com", actionCodeSettings)
+        instance.sendPasswordResetEmail("test@example.com", emailConfig, actionCodeSettings)
 
         verify(mockFirebaseAuth).sendPasswordResetEmail("test@example.com", actionCodeSettings)
 
@@ -678,7 +874,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com")
+            instance.sendPasswordResetEmail("test@example.com", emailConfig)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.UserNotFoundException) {
             assertThat(e.cause).isEqualTo(userNotFoundException)
@@ -701,7 +897,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com")
+            instance.sendPasswordResetEmail("test@example.com", emailConfig)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.InvalidCredentialsException) {
             assertThat(e.cause).isEqualTo(invalidEmailException)
@@ -721,7 +917,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com")
+            instance.sendPasswordResetEmail("test@example.com", emailConfig)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.AuthCancelledException) {
             assertThat(e.message).contains("cancelled")
@@ -1456,5 +1652,152 @@ class EmailAuthProviderFirebaseAuthUITest {
         } catch (e: AuthException.InvalidEmailLinkException) {
             assertThat(e).isNotNull()
         }
+    }
+
+    @Test
+    fun `signInWithEmailAndPassword - emits AuthState Success with non-null result`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithEmailAndPassword("test@example.com", "Pass@123"))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }
+
+        instance.signInWithEmailAndPassword(
+            context = applicationContext,
+            config = config,
+            email = "test@example.com",
+            password = "Pass@123"
+        )
+
+        val state = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(state).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
+    }
+
+    @Test
+    fun `signInAndLinkWithCredential - emits AuthState Success with non-null result`() = runTest {
+        val credential = GoogleAuthProvider.getCredential("google-id-token", null)
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithCredential(credential))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }
+
+        instance.signInAndLinkWithCredential(config = config, credential = credential)
+
+        val state = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(state).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
+    }
+
+    @Test
+    fun `createOrLinkUserWithEmailAndPassword - emits AuthState Success with non-null result`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.createUserWithEmailAndPassword("new@example.com", "Pass@123"))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }
+
+        instance.createOrLinkUserWithEmailAndPassword(
+            context = applicationContext,
+            config = config,
+            provider = emailProvider,
+            name = null,
+            email = "new@example.com",
+            password = "Pass@123"
+        )
+
+        val state = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(state).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = true))
+    }
+
+    @Test
+    fun `signInWithEmailLink - emits AuthState Success with non-null result`() = runTest {
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.email).thenReturn("test@example.com")
+        `when`(mockUser.isAnonymous).thenReturn(false)
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+        `when`(mockFirebaseAuth.signInWithCredential(any())).thenReturn(taskCompletionSource.task)
+
+        val provider = AuthProvider.Email(
+            isEmailLinkSignInEnabled = true,
+            emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                .setUrl("https://example.com")
+                .setHandleCodeInApp(true)
+                .build(),
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        val mockPersistence = MockPersistenceManager()
+        mockPersistence.setSessionRecord(
+            EmailLinkPersistenceManager.SessionRecord(
+                sessionId = "session123",
+                email = "test@example.com",
+                anonymousUserId = null,
+                credentialForLinking = null
+            )
+        )
+
+        val emailLink =
+            "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123"
+
+        instance.signInWithEmailLink(
+            context = applicationContext,
+            config = config,
+            provider = provider,
+            email = "test@example.com",
+            emailLink = emailLink,
+            persistenceManager = mockPersistence
+        )
+
+        val state = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(state).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
     }
 }

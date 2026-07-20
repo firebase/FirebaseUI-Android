@@ -42,6 +42,7 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundExceptio
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import kotlinx.coroutines.launch
 
 enum class EmailAuthMode {
@@ -130,6 +131,7 @@ fun EmailAuthScreen(
     authUI: FirebaseAuthUI,
     credentialForLinking: AuthCredential? = null,
     emailLinkFromDifferentDevice: String? = null,
+    onContinueWithProvider: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
@@ -160,7 +162,7 @@ fun EmailAuthScreen(
         confirmPasswordTextValue
     )
 
-    val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
     val authCredentialForLinking = remember { credentialForLinking }
     val errorMessage =
@@ -181,7 +183,7 @@ fun EmailAuthScreen(
             }
 
             is AuthState.Error -> {
-                val exception = AuthException.from(state.exception)
+                val exception = AuthException.from(state.exception, stringProvider)
                 onError(exception)
                 dialogController?.showErrorDialog(
                     exception = exception,
@@ -208,6 +210,20 @@ fun EmailAuthScreen(
 
                             else -> Unit
                         }
+                    },
+                    onRecover = if (exception is AuthException.DifferentSignInMethodRequiredException) {
+                        { ex ->
+                            val differentProviderException =
+                                ex as AuthException.DifferentSignInMethodRequiredException
+                            if (differentProviderException.suggestedSignInMethod ==
+                                EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD) {
+                                mode.value = EmailAuthMode.EmailLinkSignIn
+                            } else {
+                                onContinueWithProvider(differentProviderException.suggestedSignInMethod)
+                            }
+                        }
+                    } else {
+                        null
                     },
                     onDismiss = {
                         // Dialog dismissed
@@ -265,7 +281,7 @@ fun EmailAuthScreen(
                         skipCredentialSave = isUsingRetrievedCredential
                     )
                 } catch (e: Exception) {
-                    onError(AuthException.from(e))
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },
@@ -290,7 +306,7 @@ fun EmailAuthScreen(
                         )
                     }
                 } catch (e: Exception) {
-                    onError(AuthException.from(e))
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },
@@ -306,7 +322,7 @@ fun EmailAuthScreen(
                         password = passwordTextValue.value,
                     )
                 } catch (e: Exception) {
-
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },
@@ -315,10 +331,11 @@ fun EmailAuthScreen(
                 try {
                     authUI.sendPasswordResetEmail(
                         email = emailTextValue.value,
+                        config = configuration,
                         actionCodeSettings = configuration.passwordResetActionCodeSettings,
                     )
                 } catch (e: Exception) {
-
+                    onError(AuthException.from(e, stringProvider))
                 }
             }
         },

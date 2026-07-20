@@ -58,6 +58,36 @@
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
+        <activity
+            android:name=".CredentialLinkingDemoActivity"
+            android:label="Credential Linking Demo"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name=".EmailAuthSlotDemoActivity"
+            android:label="Email Auth — Custom Slot"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name=".PhoneAuthSlotDemoActivity"
+            android:label="Phone Auth — Custom Slot"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name=".ShapeCustomizationDemoActivity"
+            android:label="Shape Customization"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
+        <activity
+            android:name=".CustomMethodPickerDemoActivity"
+            android:label="Custom Method Picker Layout"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
         <!-- Database -->
         <activity
             android:name="com.firebaseui.android.demo.database.DatabaseDemoActivity"

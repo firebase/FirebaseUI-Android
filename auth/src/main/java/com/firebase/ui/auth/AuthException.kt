@@ -14,7 +14,10 @@
 
 package com.firebase.ui.auth
 
+import android.content.Context
 import com.firebase.ui.auth.AuthException.Companion.from
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuthException
@@ -121,6 +124,25 @@ abstract class AuthException(
     ) : AuthException(message, cause)
 
     /**
+     * The password violates one or more Google Identity Platform password policy requirements.
+     *
+     * This exception is thrown when GIdP password policy enforcement is enabled and the supplied
+     * password fails one or more configured constraints (e.g. minimum length, missing uppercase).
+     *
+     * [message] is a newline-separated, human-readable description of each failing constraint
+     * as returned by the server, suitable for direct display in the UI.
+     *
+     * @property message Human-readable description of the failing constraints
+     * @property failingRequirements The individual constraint strings from the server
+     * @property cause The underlying [Throwable] that caused this exception
+     */
+    class PasswordPolicyViolationException(
+        message: String,
+        val failingRequirements: List<String>,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
      * An account with the given email already exists.
      *
      * This exception is thrown when attempting to create a new account with
@@ -197,6 +219,26 @@ abstract class AuthException(
         message: String,
         val email: String? = null,
         val credential: AuthCredential? = null,
+        cause: Throwable? = null
+    ) : AuthException(message, cause)
+
+    /**
+     * A different sign-in method should be used for this email address.
+     *
+     * This exception is used for the opt-in legacy recovery path backed by
+     * `fetchSignInMethodsForEmail`, allowing the UI to guide users toward a previously
+     * used provider when email enumeration protection has been disabled.
+     *
+     * @property email The email address being recovered
+     * @property signInMethods The sign-in methods returned by Firebase Auth
+     * @property suggestedSignInMethod The preferred method the UI should direct the user toward
+     * @property cause The underlying authentication failure that triggered the lookup
+     */
+    class DifferentSignInMethodRequiredException(
+        message: String,
+        val email: String,
+        val signInMethods: List<String>,
+        val suggestedSignInMethod: String,
         cause: Throwable? = null
     ) : AuthException(message, cause)
 
@@ -341,15 +383,47 @@ abstract class AuthException(
          * @return An appropriate [AuthException] subtype
          */
         @JvmStatic
-        fun from(firebaseException: Exception): AuthException {
+        fun from(firebaseException: Exception, context: Context): AuthException =
+            from(firebaseException, DefaultAuthUIStringProvider(context))
+
+        @JvmStatic
+        @JvmOverloads
+        fun from(firebaseException: Exception, stringProvider: AuthUIStringProvider? = null): AuthException {
             return when (firebaseException) {
                 // If already an AuthException, return it directly
                 is AuthException -> firebaseException
-                
-                // Handle specific Firebase Auth exceptions first (before general FirebaseException)
+
+                // Handle specific Firebase Auth exceptions first (before general FirebaseException).
+                // FirebaseAuthWeakPasswordException extends FirebaseAuthInvalidCredentialsException,
+                // so it must be checked before the parent type.
+                is FirebaseAuthWeakPasswordException -> {
+                    val sourceText = firebaseException.reason ?: firebaseException.message ?: ""
+                    if (sourceText.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
+                        val requirements = parsePasswordPolicyRequirements(sourceText)
+                        PasswordPolicyViolationException(
+                            message = requirements.joinToString("\n").ifEmpty {
+                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                    ?: "Password does not meet policy requirements"
+                            },
+                            failingRequirements = requirements,
+                            cause = firebaseException
+                        )
+                    } else {
+                        WeakPasswordException(
+                            message = stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Password is too weak",
+                            cause = firebaseException,
+                            reason = firebaseException.reason
+                        )
+                    }
+                }
+
                 is FirebaseAuthInvalidCredentialsException -> {
                     InvalidCredentialsException(
-                        message = firebaseException.message ?: "Invalid credentials provided",
+                        message = stringProvider?.errorInvalidCredentials.nonEmpty()
+                            ?: firebaseException.message
+                            ?: "Invalid credentials provided",
                         cause = firebaseException
                     )
                 }
@@ -357,53 +431,56 @@ abstract class AuthException(
                 is FirebaseAuthInvalidUserException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_USER_NOT_FOUND" -> UserNotFoundException(
-                            message = firebaseException.message ?: "User not found",
+                            message = stringProvider?.errorUserNotFound.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "User not found",
                             cause = firebaseException
                         )
 
                         "ERROR_USER_DISABLED" -> InvalidCredentialsException(
-                            message = firebaseException.message ?: "User account has been disabled",
+                            message = stringProvider?.errorUserDisabled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "User account has been disabled",
                             cause = firebaseException
                         )
 
                         else -> UserNotFoundException(
-                            message = firebaseException.message ?: "User account error",
+                            message = stringProvider?.errorUserAccountGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "User account error",
                             cause = firebaseException
                         )
                     }
                 }
 
-                is FirebaseAuthWeakPasswordException -> {
-                    WeakPasswordException(
-                        message = firebaseException.message ?: "Password is too weak",
-                        cause = firebaseException,
-                        reason = firebaseException.reason
-                    )
-                }
-
                 is FirebaseAuthUserCollisionException -> {
                     when (firebaseException.errorCode) {
                         "ERROR_EMAIL_ALREADY_IN_USE" -> EmailAlreadyInUseException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorEmailAlreadyInUse.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Email address is already in use",
                             cause = firebaseException,
                             email = firebaseException.email
                         )
 
                         "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL" -> AccountLinkingRequiredException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorAccountExistsDifferentCredential.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Account already exists with different credentials",
                             cause = firebaseException
                         )
 
                         "ERROR_CREDENTIAL_ALREADY_IN_USE" -> AccountLinkingRequiredException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorCredentialAlreadyInUse.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Credential is already associated with a different user account",
                             cause = firebaseException
                         )
 
                         else -> AccountLinkingRequiredException(
-                            message = firebaseException.message ?: "Account collision error",
+                            message = stringProvider?.errorAccountCollisionGeneric.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Account collision error",
                             cause = firebaseException
                         )
                     }
@@ -411,7 +488,8 @@ abstract class AuthException(
 
                 is FirebaseAuthMultiFactorException -> {
                     MfaRequiredException(
-                        message = firebaseException.message
+                        message = stringProvider?.errorMfaRequiredFallback.nonEmpty()
+                            ?: firebaseException.message
                             ?: "Multi-factor authentication required",
                         cause = firebaseException
                     )
@@ -419,23 +497,25 @@ abstract class AuthException(
 
                 is FirebaseAuthRecentLoginRequiredException -> {
                     InvalidCredentialsException(
-                        message = firebaseException.message
+                        message = stringProvider?.errorRecentLoginRequired.nonEmpty()
+                            ?: firebaseException.message
                             ?: "Recent login required for this operation",
                         cause = firebaseException
                     )
                 }
 
                 is FirebaseAuthException -> {
-                    // Handle FirebaseAuthException and check for specific error codes
                     when (firebaseException.errorCode) {
                         "ERROR_TOO_MANY_REQUESTS" -> TooManyRequestsException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorTooManyRequests.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "Too many requests. Please try again later",
                             cause = firebaseException
                         )
 
                         else -> UnknownException(
-                            message = firebaseException.message
+                            message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: firebaseException.message
                                 ?: "An unknown authentication error occurred",
                             cause = firebaseException
                         )
@@ -443,33 +523,64 @@ abstract class AuthException(
                 }
 
                 is FirebaseException -> {
-                    // Handle general Firebase exceptions, which include network errors
-                    NetworkException(
-                        message = firebaseException.message ?: "Network error occurred",
-                        cause = firebaseException
-                    )
+                    val msg = firebaseException.message ?: ""
+                    if (msg.contains("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)) {
+                        val requirements = parsePasswordPolicyRequirements(msg)
+                        PasswordPolicyViolationException(
+                            message = requirements.joinToString("\n").ifEmpty {
+                                stringProvider?.errorWeakPasswordGeneric.nonEmpty()
+                                    ?: "Password does not meet policy requirements"
+                            },
+                            failingRequirements = requirements,
+                            cause = firebaseException
+                        )
+                    } else {
+                        NetworkException(
+                            message = stringProvider?.errorNetworkGeneric.nonEmpty()
+                                ?: msg.ifEmpty { "Network error occurred" },
+                            cause = firebaseException
+                        )
+                    }
                 }
 
                 else -> {
-                    // Check for common cancellation patterns
-                    if (firebaseException.message?.contains(
-                            "cancelled",
-                            ignoreCase = true
-                        ) == true ||
+                    if (firebaseException.message?.contains("cancelled", ignoreCase = true) == true ||
                         firebaseException.message?.contains("canceled", ignoreCase = true) == true
                     ) {
                         AuthCancelledException(
-                            message = firebaseException.message ?: "Authentication was cancelled",
+                            message = stringProvider?.errorAuthCancelled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Authentication was cancelled",
                             cause = firebaseException
                         )
                     } else {
                         UnknownException(
-                            message = firebaseException.message ?: "An unknown error occurred",
+                            message = stringProvider?.errorUnknownAuth.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "An unknown error occurred",
                             cause = firebaseException
                         )
                     }
                 }
             }
+        }
+
+        private fun String?.nonEmpty(): String? = this?.ifEmpty { null }
+
+        // Finds the [...] content that immediately follows PASSWORD_DOES_NOT_MEET_REQUIREMENTS
+        // in both FirebaseException and FirebaseAuthWeakPasswordException messages.
+        // GIdP returns human-readable requirement strings inside those brackets, e.g.
+        // "...PASSWORD_DOES_NOT_MEET_REQUIREMENTS:Missing password requirements: [Password must contain at least 10 characters]"
+        private fun parsePasswordPolicyRequirements(message: String): List<String> {
+            val policyIndex = message.indexOf("PASSWORD_DOES_NOT_MEET_REQUIREMENTS", ignoreCase = true)
+            if (policyIndex == -1) return emptyList()
+            val start = message.indexOf('[', policyIndex)
+            val end = message.indexOf(']', policyIndex)
+            if (start == -1 || end == -1 || end <= start) return emptyList()
+            return message.substring(start + 1, end)
+                .split(',')
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
         }
     }
 }

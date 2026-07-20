@@ -38,7 +38,41 @@ class DefaultAuthUIStringProvider(
      * Common Strings
      */
     override val initializing: String
-        get() = "Initializing"
+        get() = localizedContext.getString(R.string.fui_initializing)
+
+    /**
+     * Loading State Strings
+     */
+    override val loadingSigningInAnonymously: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_anonymously)
+    override val loadingSigningInWithGoogle: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_google)
+    override val loadingSigningInWithFacebook: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_facebook)
+    override fun loadingSigningInWithProvider(providerName: String): String =
+        localizedContext.getString(R.string.fui_loading_signing_in_with_provider, providerName)
+    override val loadingVerifyingPhoneNumber: String
+        get() = localizedContext.getString(R.string.fui_loading_verifying_phone_number)
+    override val loadingSubmittingVerificationCode: String
+        get() = localizedContext.getString(R.string.fui_loading_submitting_verification_code)
+    override val loadingSigningInWithPhone: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_phone)
+    override val loadingCreatingUser: String
+        get() = localizedContext.getString(R.string.fui_loading_creating_user)
+    override val loadingSigningIn: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in)
+    override val loadingLinkingCredential: String
+        get() = localizedContext.getString(R.string.fui_loading_linking_credential)
+    override val loadingSendingEmailLink: String
+        get() = localizedContext.getString(R.string.fui_loading_sending_email_link)
+    override val loadingSigningInWithEmailLink: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_in_with_email_link)
+    override val loadingSendingPasswordResetEmail: String
+        get() = localizedContext.getString(R.string.fui_loading_sending_password_reset)
+    override val loadingSigningOut: String
+        get() = localizedContext.getString(R.string.fui_loading_signing_out)
+    override val loadingDeletingAccount: String
+        get() = localizedContext.getString(R.string.fui_loading_deleting_account)
 
     /**
      * Auth Provider strings
@@ -278,7 +312,7 @@ class DefaultAuthUIStringProvider(
      * Multi-Factor Authentication Strings
      */
     override val enterTOTPCode: String
-        get() = "Enter TOTP Code"
+        get() = localizedContext.getString(R.string.fui_enter_totp_code)
 
     /**
      * Provider Picker Strings
@@ -494,4 +528,49 @@ class DefaultAuthUIStringProvider(
 
     override val mfaDisabledTooltip: String
         get() = localizedContext.getString(R.string.fui_mfa_disabled_tooltip)
+
+    override val errorUserDisabled: String
+        get() = localizedContext.getString(R.string.fui_error_user_disabled)
+
+    override val errorInvalidCredentials: String
+        get() = localizedContext.getString(R.string.fui_error_invalid_credentials)
+
+    override val errorUserNotFound: String
+        get() = localizedContext.getString(R.string.fui_error_user_not_found)
+
+    override val errorUserAccountGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_user_account_generic)
+
+    override val errorWeakPasswordGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_weak_password_generic)
+
+    override val errorEmailAlreadyInUse: String
+        get() = localizedContext.getString(R.string.fui_error_email_already_in_use)
+
+    override val errorAccountExistsDifferentCredential: String
+        get() = localizedContext.getString(R.string.fui_error_account_exists_different_credential)
+
+    override val errorCredentialAlreadyInUse: String
+        get() = localizedContext.getString(R.string.fui_error_credential_already_in_use)
+
+    override val errorAccountCollisionGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_account_collision_generic)
+
+    override val errorMfaRequiredFallback: String
+        get() = localizedContext.getString(R.string.fui_error_mfa_required_fallback)
+
+    override val errorRecentLoginRequired: String
+        get() = localizedContext.getString(R.string.fui_error_recent_login_required)
+
+    override val errorTooManyRequests: String
+        get() = localizedContext.getString(R.string.fui_error_too_many_requests)
+
+    override val errorUnknownAuth: String
+        get() = localizedContext.getString(R.string.fui_error_unknown_auth)
+
+    override val errorNetworkGeneric: String
+        get() = localizedContext.getString(R.string.fui_error_network_generic)
+
+    override val errorAuthCancelled: String
+        get() = localizedContext.getString(R.string.fui_error_auth_cancelled)
 }

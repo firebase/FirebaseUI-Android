@@ -9,13 +9,16 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
     }
 
-    compileOptions {    
+    testOptions {
+        targetSdk = Config.SdkVersions.target
+    }
+
+    compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -45,8 +48,8 @@ android {
 }
 
 dependencies {
-    api(Config.Libs.Androidx.lifecycleRuntime)
-    api(Config.Libs.Androidx.lifecycleViewModel)
-    implementation(Config.Libs.Androidx.annotations)
-    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
+    api(libs.androidx.lifecycle.runtime)
+    api(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.annotation)
+    annotationProcessor(libs.androidx.lifecycle.compiler)
 }

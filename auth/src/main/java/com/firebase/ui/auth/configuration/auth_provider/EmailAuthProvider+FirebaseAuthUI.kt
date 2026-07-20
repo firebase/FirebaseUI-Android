@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canLinkCredential
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.mergeProfile
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledException
@@ -40,10 +41,30 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthMultiFactorException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.SignInMethodQueryResult
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
 private const val TAG = "EmailAuthProvider"
+
+/**
+ * Signs in or reauthenticates with [credential] depending on [AuthUIConfiguration.isReauthenticationMode].
+ *
+ * - Normal mode: [com.google.firebase.auth.FirebaseAuth.signInWithCredential], returns [AuthResult].
+ * - Reauth mode: [com.google.firebase.auth.FirebaseUser.reauthenticate] (Task<Void>), returns null.
+ *   Callers must reconstruct auth state from [com.google.firebase.auth.FirebaseAuth.currentUser].
+ */
+internal suspend fun FirebaseAuthUI.signInOrReauth(
+    credential: AuthCredential,
+    config: AuthUIConfiguration,
+): AuthResult? = if (config.isReauthenticationMode) {
+    val currentUser = auth.currentUser
+        ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in for reauthentication")
+    currentUser.reauthenticate(credential).await()
+    null
+} else {
+    auth.signInWithCredential(credential).await()
+}
 
 /**
  * Creates an email/password account or links the credential to an anonymous user.
@@ -126,12 +147,14 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
     credentialProvider: AuthProvider.Email.CredentialProvider = AuthProvider.Email.DefaultCredentialProvider(),
 ): AuthResult? {
     val canUpgrade = canUpgradeAnonymous(config, auth)
+    val canLink = canLinkCredential(config, auth)
+    val shouldLinkCredential = canUpgrade || canLink
     val pendingCredential =
-        if (canUpgrade) credentialProvider.getCredential(email, password) else null
+        if (shouldLinkCredential) credentialProvider.getCredential(email, password) else null
 
     try {
-        // Check if new accounts are allowed (only for non-upgrade flows)
-        if (!canUpgrade && !provider.isNewAccountsAllowed) {
+        // Check if new accounts are allowed (only for non-upgrade/non-linking flows)
+        if (!shouldLinkCredential && !provider.isNewAccountsAllowed) {
             throw AuthException.UserNotFoundException(
                 message = context.getString(R.string.fui_error_email_does_not_exist)
             )
@@ -155,8 +178,8 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             }
         }
 
-        updateAuthState(AuthState.Loading("Creating user..."))
-        val result = if (canUpgrade) {
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingCreatingUser))
+        val result = if (shouldLinkCredential) {
             auth.currentUser?.linkWithCredential(requireNotNull(pendingCredential))?.await()
         } else {
             auth.createUserWithEmailAndPassword(email, password).await()
@@ -197,7 +220,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             }
         }
 
-        updateAuthState(AuthState.Idle)
+        updateAuthStateWithResult(result, defaultIsNewUser = true)
         return result
     } catch (e: FirebaseAuthUserCollisionException) {
         // Account collision: email already exists
@@ -205,10 +228,10 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             message = "An account already exists with this email. " +
                     "Please sign in with your existing account.",
             email = e.email ?: email,
-            credential = if (canUpgrade) {
-                e.updatedCredential ?: pendingCredential
-            } else {
-                null
+            credential = when {
+                canUpgrade -> e.updatedCredential ?: pendingCredential
+                canLink -> pendingCredential
+                else -> null
             },
             cause = e
         )
@@ -225,7 +248,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -321,7 +344,15 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
     skipCredentialSave: Boolean = false,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningIn))
+        // In reauth mode build a credential and go through signInAndLinkWithCredential so
+        // signInOrReauth routes to FirebaseUser.reauthenticate() instead of signInWithCredential().
+        if (config.isReauthenticationMode) {
+            return signInAndLinkWithCredential(
+                config = config,
+                credential = EmailAuthProvider.getCredential(email, password),
+            )
+        }
         return if (canUpgradeAnonymous(config, auth)) {
             // Anonymous upgrade flow: validate credential in scratch auth
             val credentialToValidate = EmailAuthProvider.getCredential(email, password)
@@ -431,7 +462,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                 }
             }
 
-            updateAuthState(AuthState.Idle)
+            updateAuthStateWithResult(result)
         }
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
@@ -450,11 +481,78 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = recoverLegacyDifferentSignInMethod(config, email, e)
+            ?: AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }
+
+private suspend fun FirebaseAuthUI.recoverLegacyDifferentSignInMethod(
+    config: AuthUIConfiguration,
+    email: String,
+    cause: Exception,
+): AuthException.DifferentSignInMethodRequiredException? {
+    if (!config.legacyFetchSignInWithEmail) {
+        return null
+    }
+
+    val authException = AuthException.from(cause)
+    if (authException !is AuthException.InvalidCredentialsException &&
+        authException !is AuthException.UserNotFoundException) {
+        return null
+    }
+
+    val signInMethods = fetchLegacySignInMethods(email)
+    val suggestedSignInMethod = selectSuggestedLegacySignInMethod(config, signInMethods) ?: return null
+
+    return AuthException.DifferentSignInMethodRequiredException(
+        message = config.stringProvider.accountLinkingRequiredRecoveryMessage,
+        email = email,
+        signInMethods = signInMethods,
+        suggestedSignInMethod = suggestedSignInMethod,
+        cause = cause
+    )
+}
+
+private fun selectSuggestedLegacySignInMethod(
+    config: AuthUIConfiguration,
+    signInMethods: List<String>,
+): String? {
+    if (signInMethods.isEmpty() ||
+        EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD in signInMethods) {
+        return null
+    }
+
+    val emailProvider = config.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
+    val configuredProviderIds = config.providers.map { it.providerId }.toSet()
+
+    return signInMethods.firstOrNull { signInMethod ->
+        when {
+            signInMethod == EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD -> {
+                emailProvider?.isEmailLinkSignInEnabled == true
+            }
+
+            signInMethod == EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD -> false
+            else -> signInMethod in configuredProviderIds
+        }
+    }
+}
+
+private suspend fun FirebaseAuthUI.fetchLegacySignInMethods(email: String): List<String> {
+    return try {
+        @Suppress("DEPRECATION")
+        auth.fetchSignInMethodsForEmail(email)
+            .await()
+            .toSignInMethods()
+    } catch (fetchException: Exception) {
+        Log.w(TAG, "Legacy fetchSignInMethodsForEmail failed for: $email", fetchException)
+        emptyList()
+    }
+}
+
+private fun SignInMethodQueryResult?.toSignInMethods(): List<String> =
+    this?.signInMethods?.filter { it.isNotBlank() } ?: emptyList()
 
 /**
  * Signs in with a credential or links it to an existing anonymous user.
@@ -547,18 +645,23 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
     photoUrl: Uri? = null,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in user..."))
-        return if (canUpgradeAnonymous(config, auth)) {
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingLinkingCredential))
+        val result = if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
-            auth.signInWithCredential(credential).await()
-        }.also { result ->
-            // Merge profile information from the provider
-            result?.user?.let {
-                mergeProfile(auth, displayName, photoUrl)
-            }
-            updateAuthState(AuthState.Idle)
+            signInOrReauth(credential, config)
         }
+        // signInOrReauth returns null in reauth mode (Task<Void> has no AuthResult).
+        // Reconstruct success state from the now-reauthenticated current user.
+        if (result == null && config.isReauthenticationMode) {
+            auth.currentUser?.let {
+                updateAuthState(AuthState.Success(result = null, user = it, isNewUser = false))
+            }
+            return null
+        }
+        result?.user?.let { mergeProfile(auth, displayName, photoUrl) }
+        updateAuthStateWithResult(result)
+        return result
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
         val resolver = e.resolver
@@ -727,7 +830,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
     persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ) {
     try {
-        updateAuthState(AuthState.Loading("Sending sign in email link..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingEmailLink))
 
         // Get anonymousUserId if can upgrade anonymously else default to empty string.
         // NOTE: check for empty string instead of null to validate anonymous user ID matches
@@ -766,7 +869,7 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -885,7 +988,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
     persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading("Signing in with email link..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithEmailLink))
 
         // Validate link format
         if (!auth.isSignInWithEmailLink(emailLink)) {
@@ -974,7 +1077,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         }
         // Clear DataStore after success
         persistenceManager.clear(context)
-        updateAuthState(AuthState.Idle)
+        updateAuthStateWithResult(result)
         return result
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
@@ -987,7 +1090,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = AuthException.from(e)
+        val authException = AuthException.from(e, context)
         updateAuthState(AuthState.Error(authException))
         throw authException
     }
@@ -1153,10 +1256,11 @@ private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
  */
 internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
     email: String,
+    config: AuthUIConfiguration,
     actionCodeSettings: ActionCodeSettings? = null,
 ) {
     try {
-        updateAuthState(AuthState.Loading("Sending password reset email..."))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingPasswordResetEmail))
         auth.sendPasswordResetEmail(email, actionCodeSettings).await()
         updateAuthState(AuthState.PasswordResetLinkSent())
     } catch (e: CancellationException) {

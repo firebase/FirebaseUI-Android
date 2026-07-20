@@ -19,6 +19,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
@@ -33,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -41,6 +43,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
@@ -56,6 +59,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
     private lateinit var firebaseApp: FirebaseApp
     private lateinit var applicationContext: Context
+    private lateinit var config: AuthUIConfiguration
 
     @Before
     fun setUp() {
@@ -77,6 +81,14 @@ class AnonymousAuthProviderFirebaseAuthUITest {
                 .setProjectId("fake-project-id")
                 .build()
         )
+
+        config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Anonymous)
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+            }
+        }
     }
 
     @After
@@ -106,12 +118,30 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.signInAnonymously()
+        instance.signInAnonymously(config)
 
         verify(mockFirebaseAuth).signInAnonymously()
 
-        val finalState = instance.authStateFlow().first { it is AuthState.Idle }
-        assertThat(finalState).isInstanceOf(AuthState.Idle::class.java)
+        val finalState = instance.authStateFlow().first { it is AuthState.Success }
+        assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = true))
+    }
+
+    @Test
+    @Config(qualifiers = "es")
+    fun `signInAnonymously - emits Loading state with translated message`() = runTest {
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        `when`(mockFirebaseAuth.signInAnonymously()).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+        // Queue signInAnonymously first; first{} suspends and lets the scheduler run it
+        val job = launch { runCatching { instance.signInAnonymously(config) } }
+        val loadingState = instance.authStateFlow().first { it is AuthState.Loading }
+
+        assertThat((loadingState as AuthState.Loading).message)
+            .isEqualTo("test_loading_signing_in_anonymously")
+
+        job.cancel()
     }
 
     @Test
@@ -125,7 +155,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.NetworkException) {
             assertThat(e.cause).isEqualTo(networkException)
@@ -148,7 +178,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.AuthCancelledException) {
             assertThat(e.message).contains("cancelled")
@@ -172,7 +202,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.UnknownException) {
             assertThat(e.cause).isEqualTo(genericException)
@@ -312,5 +342,54 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         assertThat(result).isNotNull()
         verify(mockAnonymousUser).linkWithCredential(credential)
+    }
+
+    // =============================================================================================
+    // Credential Linking for Authenticated (Non-Anonymous) Users Tests
+    // =============================================================================================
+
+    @Test
+    fun `createOrLinkUserWithEmailAndPassword - links email credential to authenticated non-anonymous user when isCredentialLinkingEnabled`() = runTest {
+        val authenticatedUser = mock(FirebaseUser::class.java)
+        `when`(authenticatedUser.isAnonymous).thenReturn(false)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(authenticatedUser)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mock(AuthResult::class.java))
+        `when`(authenticatedUser.linkWithCredential(ArgumentMatchers.any(AuthCredential::class.java)))
+            .thenReturn(taskCompletionSource.task)
+        // Stub createUserWithEmailAndPassword so the test fails at verify, not with NPE
+        `when`(mockFirebaseAuth.createUserWithEmailAndPassword(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString()
+        )).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(emailProvider)
+            }
+            isCredentialLinkingEnabled = true
+        }
+
+        instance.createOrLinkUserWithEmailAndPassword(
+            context = applicationContext,
+            config = config,
+            provider = emailProvider,
+            name = null,
+            email = "test@example.com",
+            password = "Pass@123"
+        )
+
+        verify(authenticatedUser).linkWithCredential(ArgumentMatchers.any(AuthCredential::class.java))
+        verify(mockFirebaseAuth, never()).createUserWithEmailAndPassword(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString()
+        )
     }
 }

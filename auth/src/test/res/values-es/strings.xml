@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fui_loading_signing_in_anonymously" translatable="false">test_loading_signing_in_anonymously</string>
+    <string name="fui_loading_deleting_account" translatable="false">test_loading_deleting_account</string>
+</resources>

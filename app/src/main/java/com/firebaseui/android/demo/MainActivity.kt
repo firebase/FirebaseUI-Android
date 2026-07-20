@@ -129,7 +129,7 @@ fun ChooserScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "High-Level API, Low-Level API, Custom Slots & Theming",
+                    text = "High-Level API, Low-Level API, Custom Slots & Theming, Credential Linking",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

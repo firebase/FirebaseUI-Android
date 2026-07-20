@@ -9,13 +9,16 @@ android {
 
     defaultConfig {
         minSdk = Config.SdkVersions.min
-        targetSdk = Config.SdkVersions.target
 
         resourcePrefix("fui_")
         vectorDrawables.useSupportLibrary = true
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    testOptions {
+        targetSdk = Config.SdkVersions.target
     }
 
     lint {
@@ -48,25 +51,25 @@ android {
 }
 
 dependencies {
-    implementation(platform(Config.Libs.Firebase.bom))
+    implementation(platform(libs.firebase.bom))
     api(project(":common"))
-    api(Config.Libs.Firebase.firestore)
+    api(libs.firebase.firestore)
 
-    api(Config.Libs.Androidx.legacySupportv4)
-    api(Config.Libs.Androidx.recyclerView)
+    api(libs.androidx.legacy.support.v4)
+    api(libs.androidx.recyclerview)
 
-    compileOnly(Config.Libs.Androidx.paging)
-    api(Config.Libs.Androidx.pagingRxJava)
-    annotationProcessor(Config.Libs.Androidx.lifecycleCompiler)
+    compileOnly(libs.androidx.paging)
+    api(libs.androidx.paging.rxjava3)
+    annotationProcessor(libs.androidx.lifecycle.compiler)
 
     lintChecks(project(":lint"))
 
-    androidTestImplementation(Config.Libs.Test.archCoreTesting)
-    androidTestImplementation(Config.Libs.Test.core)
-    androidTestImplementation(Config.Libs.Test.junit)
-    androidTestImplementation(Config.Libs.Test.junitExt)
-    androidTestImplementation(Config.Libs.Test.runner)
-    androidTestImplementation(Config.Libs.Test.rules)
-    androidTestImplementation(Config.Libs.Test.mockito)
-    androidTestImplementation(Config.Libs.Androidx.paging)
+    androidTestImplementation(libs.arch.core.testing)
+    androidTestImplementation(libs.test.core)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.test.runner)
+    androidTestImplementation(libs.test.rules)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.androidx.paging)
 }
