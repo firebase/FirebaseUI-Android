@@ -23,6 +23,7 @@ import androidx.paging.PagingSource.LoadParams.Refresh;
 import androidx.paging.PagingSource.LoadResult.Page;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 
 import static org.junit.Assert.assertEquals;
@@ -117,6 +118,7 @@ public class FirestorePagingSourceTest {
         when(mMockQuery.get(Source.DEFAULT)).thenReturn(taskCompletionSource.getTask());
 
         List<Throwable> undeliverableErrors = new CopyOnWriteArrayList<>();
+        Consumer<? super Throwable> originalErrorHandler = RxJavaPlugins.getErrorHandler();
         RxJavaPlugins.setErrorHandler(undeliverableErrors::add);
         try {
             Refresh<PageKey> refreshRequest = new Refresh<>(null, 2, false);
@@ -132,7 +134,7 @@ public class FirestorePagingSourceTest {
                             + "undeliverable RxJava exception: " + undeliverableErrors,
                     undeliverableErrors.isEmpty());
         } finally {
-            RxJavaPlugins.setErrorHandler(null);
+            RxJavaPlugins.setErrorHandler(originalErrorHandler);
         }
     }
 
