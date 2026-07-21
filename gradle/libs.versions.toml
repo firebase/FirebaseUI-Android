@@ -17,7 +17,7 @@ zxing = "3.5.4"
 
 annotation = "1.10.0"
 activity = "1.13.0"
-browser = "1.3.0"
+browser = "1.10.0"
 cardview = "1.0.0"
 constraintlayout = "2.2.1"
 core-ktx = "1.13.1"
