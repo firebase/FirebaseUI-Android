@@ -44,7 +44,7 @@ mockito-core = "5.23.0"
 mockito-kotlin = "6.3.0"
 robolectric = "4.16.1"
 test-core = "1.7.0"
-arch-core-testing = "2.1.0"
+arch-core-testing = "2.2.0"
 test-runner = "1.7.0"
 test-rules = "1.7.0"
 
