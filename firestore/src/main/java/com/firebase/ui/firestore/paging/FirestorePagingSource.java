@@ -47,13 +47,14 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
                 }
                 return toLoadResult(snapshot.getDocuments(), nextPage);
             } catch (ExecutionException e) {
-                if (e.getCause() instanceof Exception) {
-                    // throw the original Exception
-                    throw (Exception) e.getCause();
-                }
-                // Only throw a new Exception when the original
-                // Throwable cannot be cast to Exception
-                throw new Exception(e);
+                // Report the original cause rather than the ExecutionException wrapper.
+                Throwable cause = e.getCause();
+                return new LoadResult.Error<PageKey, DocumentSnapshot>(cause == null ? e : cause);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return new LoadResult.Error<PageKey, DocumentSnapshot>(e);
+            } catch (Exception e) {
+                return new LoadResult.Error<PageKey, DocumentSnapshot>(e);
             }
         }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
     }
