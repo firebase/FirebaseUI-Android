@@ -31,11 +31,12 @@ import com.firebaseui.android.demo.database.DatabaseDemoActivity
 import com.firebaseui.android.demo.firestore.FirestoreDemoActivity
 import com.firebaseui.android.demo.storage.StorageDemoActivity
 import com.google.firebase.FirebaseApp
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
     companion object {
-        private const val USE_AUTH_EMULATOR = true
+        internal const val USE_AUTH_EMULATOR = true
         private const val AUTH_EMULATOR_HOST = "10.0.2.2"
         private const val AUTH_EMULATOR_PORT = 9099
 
@@ -43,6 +44,10 @@ class MainActivity : ComponentActivity() {
         private const val USE_FIRESTORE_EMULATOR = true
         private const val FIRESTORE_EMULATOR_HOST = "10.0.2.2"
         private const val FIRESTORE_EMULATOR_PORT = 8080
+
+        private const val USE_DATABASE_EMULATOR = true
+        private const val DATABASE_EMULATOR_HOST = "10.0.2.2"
+        private const val DATABASE_EMULATOR_PORT = 8199
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +64,11 @@ class MainActivity : ComponentActivity() {
         if (USE_FIRESTORE_EMULATOR) {
             FirebaseFirestore.getInstance()
                 .useEmulator(FIRESTORE_EMULATOR_HOST, FIRESTORE_EMULATOR_PORT)
+        }
+
+        if (USE_DATABASE_EMULATOR) {
+            FirebaseDatabase.getInstance()
+                .useEmulator(DATABASE_EMULATOR_HOST, DATABASE_EMULATOR_PORT)
         }
 
         var pendingEmailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
