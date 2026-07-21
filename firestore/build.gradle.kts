@@ -19,6 +19,9 @@ android {
 
     testOptions {
         targetSdk = Config.SdkVersions.target
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 
     lint {
@@ -63,6 +66,12 @@ dependencies {
     annotationProcessor(libs.androidx.lifecycle.compiler)
 
     lintChecks(project(":lint"))
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.test.core)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.androidx.paging)
 
     androidTestImplementation(libs.arch.core.testing)
     androidTestImplementation(libs.test.core)
