@@ -1,7 +1,10 @@
 {
-  "database": {
-    "rules": "database.rules.json"
-  },
+  "database": [
+    {
+      "instance": "flutterfire-e2e-tests-default-rtdb",
+      "rules": "database.rules.json"
+    }
+  ],
   "emulators": {
     "auth": {
       "port": 9099
