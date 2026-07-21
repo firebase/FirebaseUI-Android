@@ -1,0 +1,9 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "database_demo": {
+      ".indexOn": "score"
+    }
+  }
+}
