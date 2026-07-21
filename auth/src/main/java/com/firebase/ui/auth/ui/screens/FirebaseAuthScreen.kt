@@ -20,6 +20,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -104,6 +105,14 @@ import kotlinx.coroutines.tasks.await
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).
+ * @param customMethodPickerLayout Optional slot that fully replaces the method-picker screen.
+ * When provided, it renders as the *entire* screen content — edge-to-edge, with no logo, no
+ * Terms of Service/Privacy Policy footer, and no automatic system-inset handling. The caller is
+ * responsible for its own insets (e.g. `Modifier.safeDrawingPadding()`) and for displaying any
+ * required legal disclosures. [customMethodPickerTermsConfiguration] is ignored when this is set.
+ * @param customMethodPickerTermsConfiguration Optional custom Terms of Service/Privacy Policy
+ * footer for the *default* method-picker layout. Ignored when [customMethodPickerLayout] is
+ * provided, since that slot takes over the whole screen.
  *
  * @since 10.0.0
  */
@@ -207,19 +216,26 @@ fun FirebaseAuthScreen(
                 }
             ) {
                 composable(AuthRoute.MethodPicker.route) {
-                    Scaffold { innerPadding ->
-                        AuthMethodPicker(
-                            modifier = modifier
-                                .padding(innerPadding),
-                            providers = configuration.providers,
-                            logo = logoAsset,
-                            termsOfServiceUrl = configuration.tosUrl,
-                            privacyPolicyUrl = configuration.privacyPolicyUrl,
-                            lastSignInPreference = lastSignInPreference.value,
-                            customLayout = customMethodPickerLayout,
-                            termsConfiguration = customMethodPickerTermsConfiguration,
-                            onProviderSelected = onProviderSelected,
-                        )
+                    if (customMethodPickerLayout != null) {
+                        // Takes over the entire screen — no logo, no ToS/Privacy footer, and no
+                        // automatic inset handling. See the KDoc on customMethodPickerLayout.
+                        Box(modifier = modifier.fillMaxSize()) {
+                            customMethodPickerLayout(configuration.providers, onProviderSelected)
+                        }
+                    } else {
+                        Scaffold { innerPadding ->
+                            AuthMethodPicker(
+                                modifier = modifier
+                                    .padding(innerPadding),
+                                providers = configuration.providers,
+                                logo = logoAsset,
+                                termsOfServiceUrl = configuration.tosUrl,
+                                privacyPolicyUrl = configuration.privacyPolicyUrl,
+                                lastSignInPreference = lastSignInPreference.value,
+                                termsConfiguration = customMethodPickerTermsConfiguration,
+                                onProviderSelected = onProviderSelected,
+                            )
+                        }
                     }
                 }
 
