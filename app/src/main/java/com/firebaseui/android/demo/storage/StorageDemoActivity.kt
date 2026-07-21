@@ -23,7 +23,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,9 +53,9 @@ class StorageDemoActivity : ComponentActivity() {
 fun StorageDemoScreen() {
     var gsUrl by remember { mutableStateOf("") }
     var stringStatus by remember { mutableStateOf("Not loaded") }
-    var stringLoadKey by remember { mutableIntStateOf(0) }
+    var stringUrlToLoad by remember { mutableStateOf("") }
     var refStatus by remember { mutableStateOf("Not loaded") }
-    var refLoadKey by remember { mutableIntStateOf(0) }
+    var refUrlToLoad by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -96,16 +95,18 @@ fun StorageDemoScreen() {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Button(onClick = {
-                    stringStatus = "Loading..."
-                    stringLoadKey++
+                    if (gsUrl.isNotEmpty()) {
+                        stringStatus = "Loading..."
+                        stringUrlToLoad = gsUrl
+                    }
                 }) { Text("Load") }
                 StatusText(stringStatus)
                 AndroidView(
                     factory = { ImageView(it) },
                     update = { view ->
-                        if (stringLoadKey > 0) {
+                        if (stringUrlToLoad.isNotEmpty()) {
                             GlideApp.with(view)
-                                .load(gsUrl)
+                                .load(stringUrlToLoad)
                                 .listener(glideListener { success, error ->
                                     stringStatus = if (success) "Loaded" else "Error: $error"
                                 })
@@ -133,16 +134,18 @@ fun StorageDemoScreen() {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Button(onClick = {
-                    refStatus = "Loading..."
-                    refLoadKey++
+                    if (gsUrl.isNotEmpty()) {
+                        refStatus = "Loading..."
+                        refUrlToLoad = gsUrl
+                    }
                 }) { Text("Load") }
                 StatusText(refStatus)
                 AndroidView(
                     factory = { ImageView(it) },
                     update = { view ->
-                        if (refLoadKey > 0) {
+                        if (refUrlToLoad.isNotEmpty()) {
                             runCatching {
-                                FirebaseStorage.getInstance().getReferenceFromUrl(gsUrl)
+                                FirebaseStorage.getInstance().getReferenceFromUrl(refUrlToLoad)
                             }.onSuccess { ref ->
                                 GlideApp.with(view)
                                     .load(ref)

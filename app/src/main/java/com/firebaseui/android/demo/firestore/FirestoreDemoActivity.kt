@@ -98,9 +98,12 @@ class FirestoreDemoActivity : ComponentActivity() {
     }
 
     private fun seedData(collection: CollectionReference) {
+        val batch = collection.firestore.batch()
         for (i in 1..50) {
-            collection.add(ScoreItem("Item $i", (1..100).random()))
+            val docRef = collection.document()
+            batch.set(docRef, ScoreItem("Item $i", (1..100).random()))
         }
+        batch.commit()
     }
 }
 
@@ -112,7 +115,10 @@ class ScoreViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             RecyclerView.LayoutParams.MATCH_PARENT,
             RecyclerView.LayoutParams.WRAP_CONTENT
         )
-        setPadding(48, 24, 48, 24)
+        val density = context.resources.displayMetrics.density
+        val hPadding = (16 * density).toInt()
+        val vPadding = (8 * density).toInt()
+        setPadding(hPadding, vPadding, hPadding, vPadding)
         textSize = 16f
     }
 )
