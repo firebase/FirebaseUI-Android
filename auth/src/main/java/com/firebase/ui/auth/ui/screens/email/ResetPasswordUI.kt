@@ -130,7 +130,7 @@ fun ResetPasswordUI(
                         }
                     }
                 },
-                colors = AuthUITheme.topAppBarColors
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         },
     ) { innerPadding ->

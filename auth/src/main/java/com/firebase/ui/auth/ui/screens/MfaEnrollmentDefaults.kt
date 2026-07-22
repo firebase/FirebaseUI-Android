@@ -53,6 +53,7 @@ import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.toMfaErrorMessage
@@ -253,7 +254,8 @@ private fun SelectFactorUI(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringProvider.mfaManageFactorsTitle) }
+                title = { Text(stringProvider.mfaManageFactorsTitle) },
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         }
     ) { innerPadding ->
