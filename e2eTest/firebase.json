@@ -1,7 +1,19 @@
 {
+  "database": [
+    {
+      "instance": "flutterfire-e2e-tests-default-rtdb",
+      "rules": "database.rules.json"
+    }
+  ],
   "emulators": {
     "auth": {
       "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "database": {
+      "port": 8199
     },
     "ui": {
       "enabled": true

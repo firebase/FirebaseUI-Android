@@ -1,5 +1,6 @@
 package com.firebase.ui.firestore.paging;
 
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -14,12 +15,15 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import androidx.paging.PagingSource;
 import androidx.paging.PagingSource.LoadParams.Append;
 import androidx.paging.PagingSource.LoadParams.Refresh;
 import androidx.paging.PagingSource.LoadResult.Page;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -103,6 +107,33 @@ public class FirestorePagingSourceTest {
                 pagingSource.loadSingle(appendRequest).blockingGet();
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testLoadSingle_interruptedWhileDisposed_doesNotThrowUndeliverableException()
+            throws InterruptedException {
+        FirestorePagingSource pagingSource = new FirestorePagingSource(mMockQuery, Source.DEFAULT);
+        TaskCompletionSource<QuerySnapshot> taskCompletionSource = new TaskCompletionSource<>();
+        when(mMockQuery.get(Source.DEFAULT)).thenReturn(taskCompletionSource.getTask());
+
+        List<Throwable> undeliverableErrors = new CopyOnWriteArrayList<>();
+        RxJavaPlugins.setErrorHandler(undeliverableErrors::add);
+        try {
+            Refresh<PageKey> refreshRequest = new Refresh<>(null, 2, false);
+            Disposable disposable = pagingSource.loadSingle(refreshRequest)
+                    .subscribe(result -> { }, error -> { });
+
+            Thread.sleep(300);
+            disposable.dispose();
+            Thread.sleep(300);
+
+            assertTrue(
+                    "Interruption during an in-flight load must not surface as an "
+                            + "undeliverable RxJava exception: " + undeliverableErrors,
+                    undeliverableErrors.isEmpty());
+        } finally {
+            RxJavaPlugins.setErrorHandler(null);
+        }
     }
 
     private void initMockQuery() {
