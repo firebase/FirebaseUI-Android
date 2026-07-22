@@ -165,9 +165,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
 }
 
 /**
- * Renders with a simulated status/nav bar (see CP-240) so the lack of edge-to-edge insets
- * handling above is visible in the IDE. A plain `@Preview` draws no system chrome at all, so
- * this bug would be invisible there.
+ * Renders with a simulated status/nav bar (see CP-240) so correct edge-to-edge inset handling
+ * can be verified in the IDE preview. A plain `@Preview` draws no system chrome at all, so
+ * inset issues would be invisible there.
  */
 @Preview(showSystemUi = true)
 @Composable
