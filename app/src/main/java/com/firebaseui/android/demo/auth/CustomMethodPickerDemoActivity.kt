@@ -142,11 +142,6 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                             Log.d("CustomMethodPickerDemo", "Auth cancelled")
                         },
                         customMethodPickerLayout = { providers, onProviderSelected ->
-                            // customMethodPickerLayout now renders as the entire screen (no
-                            // built-in logo/ToS footer/inset handling), so the terms checkbox
-                            // that used to live in customMethodPickerTermsConfiguration is
-                            // rendered inline here instead, and this composable owns its own
-                            // insets via Modifier.safeDrawingPadding() in SpotlightMethodPicker.
                             SpotlightMethodPicker(
                                 providers = providers,
                                 onProviderSelected = onProviderSelected,
@@ -186,8 +181,6 @@ fun SpotlightMethodPicker(
     val anonymous = groups["anonymous"]?.firstOrNull()
 
     LazyColumn(
-        // customMethodPickerLayout now renders as the entire screen, so this composable is
-        // responsible for its own insets.
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding(),
@@ -305,7 +298,7 @@ fun SpotlightMethodPicker(
 }
 
 @Composable
-fun ProviderIconButton(
+private fun ProviderIconButton(
     style: AuthUITheme.ProviderStyle,
     contentDescription: String,
     onClick: () -> Unit,
@@ -342,12 +335,12 @@ fun ProviderIconButton(
 }
 
 @Composable
-fun AuthUIAsset.asPainter(): Painter = when (this) {
+private fun AuthUIAsset.asPainter(): Painter = when (this) {
     is AuthUIAsset.Resource -> painterResource(resId)
     is AuthUIAsset.Vector -> rememberVectorPainter(image)
 }
 
-fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle = when (provider) {
+private fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle = when (provider) {
     is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
     is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
     is AuthProvider.Github -> ProviderStyleDefaults.Github
