@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -52,7 +53,6 @@ import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 import com.firebase.ui.auth.ui.components.AuthProviderButton
-import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 
 class CustomMethodPickerDemoActivity : ComponentActivity() {
@@ -142,32 +142,19 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                             Log.d("CustomMethodPickerDemo", "Auth cancelled")
                         },
                         customMethodPickerLayout = { providers, onProviderSelected ->
+                            // customMethodPickerLayout now renders as the entire screen (no
+                            // built-in logo/ToS footer/inset handling), so the terms checkbox
+                            // that used to live in customMethodPickerTermsConfiguration is
+                            // rendered inline here instead, and this composable owns its own
+                            // insets via Modifier.safeDrawingPadding() in SpotlightMethodPicker.
                             SpotlightMethodPicker(
                                 providers = providers,
                                 onProviderSelected = onProviderSelected,
-                                enabled = termsAccepted
+                                enabled = termsAccepted,
+                                termsAccepted = termsAccepted,
+                                onTermsAcceptedChange = { termsAccepted = it }
                             )
                         },
-                        customMethodPickerTermsConfiguration = MethodPickerTermsConfiguration(
-                            content = {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Checkbox(
-                                        checked = termsAccepted,
-                                        onCheckedChange = { termsAccepted = it }
-                                    )
-                                    Text(
-                                        text = "I have read and accept the Terms of Service and Privacy Policy",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        modifier = Modifier.padding(start = 8.dp)
-                                    )
-                                }
-                            },
-                            accepted = termsAccepted,
-                            disableProvidersUntilAccepted = true,
-                        ),
                     )
                 }
             }
@@ -180,6 +167,8 @@ fun SpotlightMethodPicker(
     providers: List<AuthProvider>,
     onProviderSelected: (AuthProvider) -> Unit,
     enabled: Boolean = true,
+    termsAccepted: Boolean = true,
+    onTermsAcceptedChange: (Boolean) -> Unit = {},
 ) {
     val stringProvider = LocalAuthUIStringProvider.current
 
@@ -197,7 +186,11 @@ fun SpotlightMethodPicker(
     val anonymous = groups["anonymous"]?.firstOrNull()
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        // customMethodPickerLayout now renders as the entire screen, so this composable is
+        // responsible for its own insets.
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding(),
         contentPadding = PaddingValues(vertical = 48.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -290,11 +283,29 @@ fun SpotlightMethodPicker(
                 }
             }
         }
+
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = termsAccepted,
+                    onCheckedChange = onTermsAcceptedChange
+                )
+                Text(
+                    text = "I have read and accept the Terms of Service and Privacy Policy",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
     }
 }
 
 @Composable
-private fun ProviderIconButton(
+fun ProviderIconButton(
     style: AuthUITheme.ProviderStyle,
     contentDescription: String,
     onClick: () -> Unit,
@@ -331,12 +342,12 @@ private fun ProviderIconButton(
 }
 
 @Composable
-private fun AuthUIAsset.asPainter(): Painter = when (this) {
+fun AuthUIAsset.asPainter(): Painter = when (this) {
     is AuthUIAsset.Resource -> painterResource(resId)
     is AuthUIAsset.Vector -> rememberVectorPainter(image)
 }
 
-private fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle = when (provider) {
+fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle = when (provider) {
     is AuthProvider.Facebook -> ProviderStyleDefaults.Facebook
     is AuthProvider.Twitter -> ProviderStyleDefaults.Twitter
     is AuthProvider.Github -> ProviderStyleDefaults.Github
@@ -347,6 +358,7 @@ private fun styleForProvider(provider: AuthProvider): AuthUITheme.ProviderStyle 
         backgroundColor = provider.buttonColor ?: Color(0xFF666666),
         contentColor = provider.contentColor ?: Color.White
     )
+
     else -> AuthUITheme.ProviderStyle(
         icon = null,
         backgroundColor = Color(0xFF666666),

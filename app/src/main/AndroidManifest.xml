@@ -88,6 +88,12 @@
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
+        <activity
+            android:name=".auth.fullcustomization.FullCustomizationDemoActivity"
+            android:label="Full Customization"
+            android:exported="false"
+            android:theme="@style/Theme.FirebaseUIAndroid" />
+
         <!-- Database -->
         <activity
             android:name="com.firebaseui.android.demo.database.DatabaseDemoActivity"
