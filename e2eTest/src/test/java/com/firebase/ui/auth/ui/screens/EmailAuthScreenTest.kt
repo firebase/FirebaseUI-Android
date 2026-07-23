@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -28,6 +29,7 @@ import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
@@ -137,6 +139,11 @@ class EmailAuthScreenTest {
     @After
     fun tearDown() {
         closeable.close()
+
+        // Sign out first: the FirebaseAuth SDK instance backing authUI isn't recreated until the
+        // next test's setUp() deletes/reinitializes the FirebaseApp, so a session left signed in
+        // here would otherwise still be live when the next test's composition starts.
+        authUI.auth.signOut()
 
         // Clean up after each test to prevent test pollution
         FirebaseAuthUI.clearInstanceCache()
@@ -585,22 +592,24 @@ class EmailAuthScreenTest {
         shadowOf(Looper.getMainLooper()).idle()
         composeAndroidTestRule.waitForIdle()
 
-        // Wait for auth state to transition to EmailSignInLinkSent
-        println("TEST: Waiting for auth state change... Current state: $currentAuthState")
+        // Wait for the "email link sent" dialog to appear, rather than polling currentAuthState:
+        // the screen resets AuthState back to Idle immediately after consuming
+        // EmailSignInLinkSent (so a second, independent authStateFlow() collector — like
+        // currentAuthState here — can miss the transient value entirely per StateFlow's
+        // conflation contract), whereas the dialog's visibility is latched in local Compose
+        // state that isn't reset the same way, so it's a reliable, non-racy signal.
+        println("TEST: Waiting for email link sent dialog...")
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            println("TEST: Auth state during wait: $currentAuthState")
-            currentAuthState is AuthState.EmailSignInLinkSent
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailSignInLinkSentDialogTitle)
+                .fetchSemanticsNodes().isNotEmpty()
         }
 
         // Ensure final recomposition is complete before assertions
         shadowOf(Looper.getMainLooper()).idle()
         composeAndroidTestRule.waitForIdle()
 
-        // Verify the auth state and user properties
-        println("TEST: Verifying auth state: $currentAuthState")
-        assertThat(currentAuthState)
-            .isInstanceOf(AuthState.EmailSignInLinkSent::class.java)
+        // Verify the dialog and user properties
         assertThat(authUI.auth.currentUser).isNull()
         composeAndroidTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogTitle)
             .assertIsDisplayed()
@@ -842,9 +851,15 @@ class EmailAuthScreenTest {
         whenever(mockCredentialManager.createCredential(any(), any<CreatePasswordRequest>()))
             .thenReturn(mock())
 
-        // Mock successful credential retrieval
+        // No credential exists yet for this account (sign-up hasn't happened), so the very first
+        // mount's auto-retrieval attempt must find nothing rather than "succeed" with a credential
+        // for an account that doesn't exist — otherwise it triggers a real sign-in failure (and,
+        // now that dialogs correctly persist, a real error dialog) before step 1 even runs.
+        // thenAnswer (not thenThrow) since getCredential's suspend-compiled signature doesn't
+        // declare GetCredentialException, which Mockito otherwise rejects as an invalid checked
+        // exception for the method.
         whenever(mockCredentialManager.getCredential(any(), any<GetCredentialRequest>()))
-            .thenReturn(mockCredentialResponse)
+            .thenAnswer { throw NoCredentialException() }
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -905,6 +920,11 @@ class EmailAuthScreenTest {
         // Verify credentials were saved during sign-up (first call)
         verify(mockCredentialManager, times(1)).createCredential(any(), any<CreatePasswordRequest>())
         println("TEST: Sign-up complete, credentials saved (createCredential called once)")
+
+        // Now that the account actually exists, retrieval can start "succeeding" — matching the
+        // real scenario this test verifies (auto-sign-in via a previously-saved credential).
+        whenever(mockCredentialManager.getCredential(any(), any<GetCredentialRequest>()))
+            .thenReturn(mockCredentialResponse)
 
         // STEP 2: Sign out
         println("TEST: Signing out...")
