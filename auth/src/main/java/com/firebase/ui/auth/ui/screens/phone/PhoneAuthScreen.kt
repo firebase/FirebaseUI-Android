@@ -341,6 +341,8 @@ fun PhoneAuthScreen(
         }
     )
 
+    BackHandler { onCancel() }
+
     if (content != null) {
         content(state)
     } else {
@@ -360,7 +362,6 @@ private fun DefaultPhoneAuthContent(
 ) {
     when (state.step) {
         PhoneAuthStep.EnterPhoneNumber -> {
-            BackHandler { onCancel() }
             EnterPhoneNumberUI(
                 configuration = configuration,
                 isLoading = state.isLoading,
