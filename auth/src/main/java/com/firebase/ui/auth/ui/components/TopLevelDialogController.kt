@@ -172,7 +172,7 @@ fun rememberTopLevelDialogController(
     stringProvider: AuthUIStringProvider,
     authState: () -> AuthState
 ): TopLevelDialogController {
-    return remember(stringProvider) {
+    return remember {
         TopLevelDialogController(stringProvider, authState)
     }
 }
