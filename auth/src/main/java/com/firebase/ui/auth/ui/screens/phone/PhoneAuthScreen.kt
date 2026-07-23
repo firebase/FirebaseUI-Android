@@ -196,6 +196,11 @@ fun PhoneAuthScreen(
                 pendingVerificationPhoneNumber.value = null
                 verificationStartTime.value = null
 
+                // Consume the one-off SMSAutoVerified notification before starting the async
+                // sign-in call below, so it doesn't leak to a freshly created PhoneAuthScreen
+                // instance and isn't clobbered by whatever state that call itself produces.
+                authUI.updateAuthState(AuthState.Idle)
+
                 coroutineScope.launch {
                     try {
                         authUI.signInWithPhoneAuthCredential(
@@ -228,10 +233,16 @@ fun PhoneAuthScreen(
                         // Dialog dismissed
                     }
                 )
+                // Consume the one-off Error notification immediately after handling it so
+                // it doesn't leak to a freshly created PhoneAuthScreen instance.
+                authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
+                // Consume the one-off Cancelled notification so it doesn't leak to a
+                // freshly created PhoneAuthScreen instance.
+                authUI.updateAuthState(AuthState.Idle)
             }
 
             else -> Unit
