@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.screens.phone
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -359,6 +360,7 @@ private fun DefaultPhoneAuthContent(
 ) {
     when (state.step) {
         PhoneAuthStep.EnterPhoneNumber -> {
+            BackHandler { onCancel() }
             EnterPhoneNumberUI(
                 configuration = configuration,
                 isLoading = state.isLoading,
@@ -372,6 +374,7 @@ private fun DefaultPhoneAuthContent(
         }
 
         PhoneAuthStep.EnterVerificationCode -> {
+            BackHandler { state.onChangeNumberClick() }
             EnterVerificationCodeUI(
                 configuration = configuration,
                 isLoading = state.isLoading,
