@@ -196,6 +196,7 @@ fun PhoneAuthScreen(
                 pendingVerificationPhoneNumber.value = null
                 verificationStartTime.value = null
 
+                // Consumed before the async sign-in call so it can't be clobbered by that call's own state.
                 authUI.updateAuthState(AuthState.Idle)
 
                 coroutineScope.launch {
@@ -230,11 +231,13 @@ fun PhoneAuthScreen(
                         // Dialog dismissed
                     }
                 )
+                // Consumed immediately so this doesn't leak to a freshly created screen.
                 authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
+                // Consumed so this doesn't leak to a freshly created screen.
                 authUI.updateAuthState(AuthState.Idle)
             }
 

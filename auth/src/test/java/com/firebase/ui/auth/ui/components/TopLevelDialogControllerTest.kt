@@ -12,6 +12,16 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+/**
+ * Unit tests for [TopLevelDialogController] and [rememberTopLevelDialogController].
+ *
+ * These cover the fix for a bug where keying `remember` on the live `authState` value recreated
+ * the controller (and wiped its `shownErrorStates` de-duplication set) on every state change —
+ * which, combined with screens resetting `AuthState` back to `Idle` immediately after consuming
+ * an `Error`, would tear down and discard the just-shown dialog on the very next recomposition.
+ *
+ * @suppress Internal test class
+ */
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [34])
 class TopLevelDialogControllerTest {
@@ -42,6 +52,7 @@ class TopLevelDialogControllerTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
 
+        // Mirrors the fixed screens resetting authState right after showing the dialog.
         composeTestRule.runOnIdle {
             state = AuthState.Idle
         }
@@ -77,6 +88,7 @@ class TopLevelDialogControllerTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertDoesNotExist()
 
+        // Same Error instance again — must be a no-op, the de-dup set persists across calls.
         composeTestRule.runOnIdle {
             controller.showErrorDialog(exception = exception)
         }

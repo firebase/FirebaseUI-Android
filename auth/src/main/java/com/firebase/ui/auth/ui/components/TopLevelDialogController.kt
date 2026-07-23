@@ -162,6 +162,10 @@ class TopLevelDialogController(
 
 /**
  * Creates and remembers a [TopLevelDialogController].
+ *
+ * [authState] is a lambda rather than a snapshot value so the controller can read the
+ * live auth state on every [TopLevelDialogController.showErrorDialog] call without being
+ * recreated (and losing its de-duplication history) whenever the auth state changes.
  */
 @Composable
 fun rememberTopLevelDialogController(

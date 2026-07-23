@@ -542,6 +542,7 @@ fun FirebaseAuthScreen(
                         // Keep external cancellation reporting centralized here so child screens
                         // can handle local navigation without triggering duplicate callbacks.
                         onSignInCancelled()
+                        // Consumed so this doesn't leak to a freshly created screen.
                         authUI.updateAuthState(AuthState.Idle)
                     }
 
@@ -633,6 +634,7 @@ fun FirebaseAuthScreen(
                             // Dialog dismissed
                         }
                     )
+                    // Consumed immediately so this doesn't leak to a freshly created screen.
                     authUI.updateAuthState(AuthState.Idle)
                 }
             }

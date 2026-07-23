@@ -169,6 +169,8 @@ fun EmailAuthScreen(
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
 
+    // Latched locally since these get consumed (reset to Idle) below — deriving directly from
+    // authState would close ResetPasswordUI/SignInEmailLinkUI's dialogs as soon as it resets.
     var resetLinkSentLocal by rememberSaveable { mutableStateOf(false) }
     var emailSignInLinkSentLocal by rememberSaveable { mutableStateOf(false) }
 
@@ -231,11 +233,13 @@ fun EmailAuthScreen(
                         // Dialog dismissed
                     }
                 )
+                // Consumed immediately so this doesn't leak to a freshly created screen.
                 authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
+                // Consumed so this doesn't leak to a freshly created screen.
                 authUI.updateAuthState(AuthState.Idle)
             }
 
