@@ -318,24 +318,13 @@ class FirebaseAuthUIAuthStateTest {
         assertThat(states[2]).isEqualTo(AuthState.Cancelled) // After second update
     }
 
-    // =============================================================================================
-    // Stale one-off AuthState regression tests
-    //
-    // Screens consume Error/Cancelled/SMSAutoVerified by immediately resetting the shared
-    // singleton back to Idle in the same effect that reacts to them (see FirebaseAuthScreen,
-    // EmailAuthScreen, PhoneAuthScreen). These tests prove a fresh collector attaching after that
-    // reset — simulating a newly created screen/Activity instance — never sees the stale value.
-    // =============================================================================================
-
     @Test
     fun `Error does not leak to a fresh collector after being consumed`() = runBlocking {
         `when`(mockFirebaseAuth.currentUser).thenReturn(null)
 
-        // Simulate a screen observing Error and then consuming it, as the fixed screens now do.
         authUI.updateAuthState(AuthState.Error(Exception("boom")))
         authUI.updateAuthState(AuthState.Idle)
 
-        // A brand-new collector (simulating a freshly created Activity) must see Idle.
         assertThat(authUI.authStateFlow().first()).isEqualTo(AuthState.Idle)
     }
 
@@ -365,9 +354,6 @@ class FirebaseAuthUIAuthStateTest {
         runBlocking {
             `when`(mockFirebaseAuth.currentUser).thenReturn(null)
 
-            // No consuming reset here — this documents the pre-fix behavior so the underlying
-            // combine()-prefers-non-Idle mechanism (FirebaseAuthUI.authStateFlow()) doesn't
-            // silently change without a corresponding consume step in the screens.
             authUI.updateAuthState(AuthState.Error(Exception("boom")))
 
             assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.Error::class.java)
