@@ -69,12 +69,12 @@ class ExportTranslationsScript(BaseStringScript):
         if type == self.TYPE_STR:
             joined = _add_char_limit(joined, STRING_VALUE_PATTERN)
         elif type == self.TYPE_PLUR:
-            result_lines = []
-            for l in joined.split('\n'):
-                if '<item ' in l and '</item>' in l:
-                    l = _add_char_limit(l, ITEM_VALUE_PATTERN)
-                result_lines.append(l)
-            joined = '\n'.join(result_lines)
+            joined = re.sub(
+                r'(<item\s+[^>]*>.*?</item>)',
+                lambda m: _add_char_limit(m.group(1), ITEM_VALUE_PATTERN),
+                joined,
+                flags=re.DOTALL
+            )
 
         return joined.split('\n')
 
