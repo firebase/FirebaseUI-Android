@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -167,8 +168,11 @@ fun EmailAuthScreen(
     val authCredentialForLinking = remember { credentialForLinking }
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
-    val resetLinkSent = authState is AuthState.PasswordResetLinkSent
-    val emailSignInLinkSent = authState is AuthState.EmailSignInLinkSent
+
+    // Latched locally since these get consumed (reset to Idle) below — deriving directly from
+    // authState would close ResetPasswordUI/SignInEmailLinkUI's dialogs as soon as it resets.
+    var resetLinkSentLocal by rememberSaveable { mutableStateOf(false) }
+    var emailSignInLinkSentLocal by rememberSaveable { mutableStateOf(false) }
 
     // Track if credentials were retrieved from Credential Manager
     val retrievedCredential = remember { mutableStateOf<Pair<String, String>?>(null) }
@@ -229,10 +233,24 @@ fun EmailAuthScreen(
                         // Dialog dismissed
                     }
                 )
+                // Consumed immediately so this doesn't leak to a freshly created screen.
+                authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
+                // Consumed so this doesn't leak to a freshly created screen.
+                authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.PasswordResetLinkSent -> {
+                resetLinkSentLocal = true
+                authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.EmailSignInLinkSent -> {
+                emailSignInLinkSentLocal = true
+                authUI.updateAuthState(AuthState.Idle)
             }
 
             else -> Unit
@@ -247,8 +265,8 @@ fun EmailAuthScreen(
         confirmPassword = confirmPasswordTextValue.value,
         isLoading = isLoading,
         error = errorMessage,
-        resetLinkSent = resetLinkSent,
-        emailSignInLinkSent = emailSignInLinkSent,
+        resetLinkSent = resetLinkSentLocal,
+        emailSignInLinkSent = emailSignInLinkSentLocal,
         onEmailChange = { email ->
             emailTextValue.value = email
         },
@@ -286,6 +304,7 @@ fun EmailAuthScreen(
             }
         },
         onSignInEmailLinkClick = {
+            emailSignInLinkSentLocal = false
             coroutineScope.launch {
                 try {
                     if (emailLinkFromDifferentDevice != null) {
@@ -327,6 +346,7 @@ fun EmailAuthScreen(
             }
         },
         onSendResetLinkClick = {
+            resetLinkSentLocal = false
             coroutineScope.launch {
                 try {
                     authUI.sendPasswordResetEmail(
@@ -346,14 +366,17 @@ fun EmailAuthScreen(
         onGoToSignIn = {
             textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.SignIn
+            emailSignInLinkSentLocal = false
         },
         onGoToResetPassword = {
             textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.ResetPassword
+            resetLinkSentLocal = false
         },
         onGoToEmailLinkSignIn = {
             textValues.forEach { it.value = "" }
             mode.value = EmailAuthMode.EmailLinkSignIn
+            emailSignInLinkSentLocal = false
         },
     )
 

@@ -139,7 +139,7 @@ fun FirebaseAuthScreen(
     val navController = rememberNavController()
 
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
-    val dialogController = rememberTopLevelDialogController(stringProvider, authState)
+    val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
@@ -542,6 +542,8 @@ fun FirebaseAuthScreen(
                         // Keep external cancellation reporting centralized here so child screens
                         // can handle local navigation without triggering duplicate callbacks.
                         onSignInCancelled()
+                        // Consumed so this doesn't leak to a freshly created screen.
+                        authUI.updateAuthState(AuthState.Idle)
                     }
 
                     is AuthState.Idle -> {
@@ -632,6 +634,8 @@ fun FirebaseAuthScreen(
                             // Dialog dismissed
                         }
                     )
+                    // Consumed immediately so this doesn't leak to a freshly created screen.
+                    authUI.updateAuthState(AuthState.Idle)
                 }
             }
 
