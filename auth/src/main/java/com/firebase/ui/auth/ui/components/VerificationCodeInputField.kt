@@ -292,7 +292,8 @@ private fun SingleDigitField(
                 lineHeight = 24.sp,
             ),
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.NumberPassword
+                keyboardType = KeyboardType.Number,
+                autoCorrect = false
             ),
             decorationBox = { innerTextField ->
                 Box(
