@@ -77,6 +77,7 @@ class FirebaseAuthActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.decorView.filterTouchesWhenObscured = true
         enableEdgeToEdge()
 
         // Extract configuration and auth instance from cache using UUID key
