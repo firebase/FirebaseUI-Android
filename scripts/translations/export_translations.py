@@ -1,5 +1,6 @@
 # coding=UTF-8
 
+import math
 import os
 import re
 import sys
@@ -9,6 +10,59 @@ from base_string_script import BaseStringScript
 PREFIXED_NAME_START = 'name="fui_'
 UNPREFIXED_NAME_START = 'name="'
 
+CHAR_LIMIT_PATTERN = re.compile(r'\[CHAR_LIMIT=\d+\]')
+TRANSLATION_DESC_PATTERN = re.compile(r'(translation_description="[^"]*?)(")')
+XML_TAG_PATTERN = re.compile(r'<[^>]+>')
+STRING_VALUE_PATTERN = re.compile(r'>([^<]*(?:<xliff:g[^>]*>[^<]*</xliff:g>[^<]*)*)</string>')
+ITEM_VALUE_PATTERN = re.compile(r'>([^<]*(?:<xliff:g[^>]*>[^<]*</xliff:g>[^<]*)*)</item>')
+
+XML_ENTITIES = {'&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&apos;': "'"}
+ENTITY_PATTERN = re.compile('|'.join(
+    re.escape(k) for k in sorted(XML_ENTITIES, key=len, reverse=True)
+))
+ESCAPE_PATTERN = re.compile(r'\\(u[0-9A-Fa-f]{4}|n|t|\'|")')
+
+
+def _decode_entities(text):
+    """Decode XML entities and Android escape sequences to get true visible length."""
+    text = ENTITY_PATTERN.sub(lambda m: XML_ENTITIES[m.group()], text)
+    text = ESCAPE_PATTERN.sub('X', text)
+    return text
+
+
+def _extract_visible_text(value):
+    """Strip XML tags and decode entities to get the visible text length."""
+    text = XML_TAG_PATTERN.sub('', value).strip()
+    text = _decode_entities(text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+
+def _calculate_char_limit(english_text):
+    """Return ~1.5x the English text length, rounded up to the nearest 5."""
+    length = len(english_text)
+    limit = math.ceil(length * 1.5)
+    return int(math.ceil(limit / 5.0) * 5)
+
+
+def _add_char_limit(text, value_pattern):
+    """Add [CHAR_LIMIT=xxx] to translation_description if missing."""
+    if 'translation_description=' not in text:
+        return text
+    desc_match = TRANSLATION_DESC_PATTERN.search(text)
+    if desc_match and CHAR_LIMIT_PATTERN.search(desc_match.group(1)):
+        return text
+    match = value_pattern.search(text)
+    if not match:
+        return text
+    visible = _extract_visible_text(match.group(1))
+    if not visible:
+        return text
+    limit = _calculate_char_limit(visible)
+    return TRANSLATION_DESC_PATTERN.sub(
+        r'\1 [CHAR_LIMIT=%d]\2' % limit, text, count=1)
+
+
 class ExportTranslationsScript(BaseStringScript):
 
     def ProcessTag(self, line, type):
@@ -16,13 +70,21 @@ class ExportTranslationsScript(BaseStringScript):
 
         if PREFIXED_NAME_START in joined:
             joined = joined.replace(PREFIXED_NAME_START, UNPREFIXED_NAME_START)
-            return joined.split('\n')
-        else:
-            return line
+
+        if type == self.TYPE_STR:
+            joined = _add_char_limit(joined, STRING_VALUE_PATTERN)
+        elif type == self.TYPE_PLUR:
+            joined = re.sub(
+                r'(<item\s+[^>]*>.*?</item>)',
+                lambda m: _add_char_limit(m.group(1), ITEM_VALUE_PATTERN),
+                joined,
+                flags=re.DOTALL
+            )
+
+        return joined.split('\n')
 
     def WriteFile(self, file_name, file_contents):
-        # Override to just print the contents
-        print file_contents
+        print(file_contents)
 
 if __name__ == '__main__':
     ets = ExportTranslationsScript()
