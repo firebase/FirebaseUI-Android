@@ -17,13 +17,15 @@ STRING_VALUE_PATTERN = re.compile(r'>([^<]*(?:<xliff:g[^>]*>[^<]*</xliff:g>[^<]*
 ITEM_VALUE_PATTERN = re.compile(r'>([^<]*(?:<xliff:g[^>]*>[^<]*</xliff:g>[^<]*)*)</item>')
 
 XML_ENTITIES = {'&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&apos;': "'"}
+ENTITY_PATTERN = re.compile('|'.join(
+    re.escape(k) for k in sorted(XML_ENTITIES, key=len, reverse=True)
+))
 ESCAPE_PATTERN = re.compile(r'\\(u[0-9A-Fa-f]{4}|n|t|\'|")')
 
 
 def _decode_entities(text):
     """Decode XML entities and Android escape sequences to get true visible length."""
-    for entity, char in XML_ENTITIES.items():
-        text = text.replace(entity, char)
+    text = ENTITY_PATTERN.sub(lambda m: XML_ENTITIES[m.group()], text)
     text = ESCAPE_PATTERN.sub('X', text)
     return text
 
@@ -31,7 +33,9 @@ def _decode_entities(text):
 def _extract_visible_text(value):
     """Strip XML tags and decode entities to get the visible text length."""
     text = XML_TAG_PATTERN.sub('', value).strip()
-    return _decode_entities(text)
+    text = _decode_entities(text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 
 def _calculate_char_limit(english_text):
@@ -45,7 +49,8 @@ def _add_char_limit(text, value_pattern):
     """Add [CHAR_LIMIT=xxx] to translation_description if missing."""
     if 'translation_description=' not in text:
         return text
-    if CHAR_LIMIT_PATTERN.search(text):
+    desc_match = TRANSLATION_DESC_PATTERN.search(text)
+    if desc_match and CHAR_LIMIT_PATTERN.search(desc_match.group(1)):
         return text
     match = value_pattern.search(text)
     if not match:
