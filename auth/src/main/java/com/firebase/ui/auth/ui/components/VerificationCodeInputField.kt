@@ -292,8 +292,7 @@ private fun SingleDigitField(
                 lineHeight = 24.sp,
             ),
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                autoCorrect = false
+                keyboardType = KeyboardType.Number
             ),
             decorationBox = { innerTextField ->
                 Box(
