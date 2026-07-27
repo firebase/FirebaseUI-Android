@@ -129,13 +129,13 @@ fun EmailAuthScreen(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    prefillEmail: String? = null,
     credentialForLinking: AuthCredential? = null,
     emailLinkFromDifferentDevice: String? = null,
     onContinueWithProvider: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
+    prefillEmail: String? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()

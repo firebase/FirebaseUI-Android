@@ -82,15 +82,15 @@ class MethodPickerTermsConfiguration(
  * @param providers The list of providers to display.
  * @param logo An optional logo to display.
  * @param onProviderSelected A callback when a provider is selected.
- * @param onContinueAsSelected A callback when the "Continue as..." button is selected, with the
- * provider and saved identifier (email, phone number, etc.). Falls back to [onProviderSelected]
- * if not provided.
  * @param customLayout An optional custom layout composable for the provider buttons.
  * @param termsOfServiceUrl The URL for the Terms of Service.
  * @param privacyPolicyUrl The URL for the Privacy Policy.
  * @param lastSignInPreference The last sign-in preference to show a "Continue as..." button.
  * @param termsConfiguration Optional configuration for a custom ToS/Privacy Policy footer.
  * When provided, replaces the default "By continuing..." text. See [MethodPickerTermsConfiguration].
+ * @param onContinueAsSelected A callback when the "Continue as..." button is selected, with the
+ * provider and saved identifier (email, phone number, etc.). Falls back to [onProviderSelected]
+ * if not provided.
  *
  * @since 10.0.0
  */
@@ -100,12 +100,12 @@ fun AuthMethodPicker(
     providers: List<AuthProvider>,
     logo: AuthUIAsset? = null,
     onProviderSelected: (AuthProvider) -> Unit,
-    onContinueAsSelected: ((AuthProvider, String?) -> Unit)? = null,
     termsOfServiceUrl: String? = null,
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     termsConfiguration: MethodPickerTermsConfiguration? = null,
+    onContinueAsSelected: ((AuthProvider, String?) -> Unit)? = null,
 ) {
     val continueAsHandler: (AuthProvider, String?) -> Unit =
         onContinueAsSelected ?: { provider, _ -> onProviderSelected(provider) }
