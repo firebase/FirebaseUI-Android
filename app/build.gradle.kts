@@ -57,8 +57,8 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":firestore"))
     implementation(project(":storage"))
-    implementation(Config.Libs.Androidx.paging)
-    kapt(Config.Libs.Misc.glideCompiler)
+    implementation(libs.androidx.paging)
+    kapt(libs.glide.compiler)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.lifecycle.runtime)

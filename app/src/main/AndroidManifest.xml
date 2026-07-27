@@ -59,31 +59,31 @@
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".auth.CredentialLinkingDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.CredentialLinkingDemoActivity"
             android:label="Credential Linking Demo"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".auth.EmailAuthSlotDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.EmailAuthSlotDemoActivity"
             android:label="Email Auth — Custom Slot"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".auth.PhoneAuthSlotDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.PhoneAuthSlotDemoActivity"
             android:label="Phone Auth — Custom Slot"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".auth.ShapeCustomizationDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.ShapeCustomizationDemoActivity"
             android:label="Shape Customization"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />
 
         <activity
-            android:name=".auth.CustomMethodPickerDemoActivity"
+            android:name="com.firebaseui.android.demo.auth.CustomMethodPickerDemoActivity"
             android:label="Custom Method Picker Layout"
             android:exported="false"
             android:theme="@style/Theme.FirebaseUIAndroid" />

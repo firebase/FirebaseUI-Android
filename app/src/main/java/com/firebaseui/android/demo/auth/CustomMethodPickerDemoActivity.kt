@@ -2,7 +2,6 @@ package com.firebaseui.android.demo.auth
 
 import android.os.Bundle
 import android.util.Log
-import com.firebaseui.android.demo.R
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -54,6 +53,7 @@ import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
 import com.firebase.ui.auth.ui.components.AuthProviderButton
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
+import com.firebaseui.android.demo.R
 
 class CustomMethodPickerDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

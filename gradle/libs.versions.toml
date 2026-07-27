@@ -105,6 +105,7 @@ facebook-login = { module = "com.facebook.android:facebook-login", version.ref =
 
 # Misc
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 libphonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "libphonenumber" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }

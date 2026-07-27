@@ -48,6 +48,10 @@ class MainActivity : ComponentActivity() {
         private const val USE_DATABASE_EMULATOR = true
         private const val DATABASE_EMULATOR_HOST = "10.0.2.2"
         private const val DATABASE_EMULATOR_PORT = 8199
+
+        // useEmulator() throws once the Firestore/Database client has been used elsewhere in
+        // the process, so this must only run once per process, not on every onCreate().
+        private var emulatorsConfigured = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,18 +61,21 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(applicationContext)
         val authUI = FirebaseAuthUI.getInstance()
 
-        if (USE_AUTH_EMULATOR) {
-            authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
-        }
+        if (!emulatorsConfigured) {
+            if (USE_AUTH_EMULATOR) {
+                authUI.auth.useEmulator(AUTH_EMULATOR_HOST, AUTH_EMULATOR_PORT)
+            }
 
-        if (USE_FIRESTORE_EMULATOR) {
-            FirebaseFirestore.getInstance()
-                .useEmulator(FIRESTORE_EMULATOR_HOST, FIRESTORE_EMULATOR_PORT)
-        }
+            if (USE_FIRESTORE_EMULATOR) {
+                FirebaseFirestore.getInstance()
+                    .useEmulator(FIRESTORE_EMULATOR_HOST, FIRESTORE_EMULATOR_PORT)
+            }
 
-        if (USE_DATABASE_EMULATOR) {
-            FirebaseDatabase.getInstance()
-                .useEmulator(DATABASE_EMULATOR_HOST, DATABASE_EMULATOR_PORT)
+            if (USE_DATABASE_EMULATOR) {
+                FirebaseDatabase.getInstance()
+                    .useEmulator(DATABASE_EMULATOR_HOST, DATABASE_EMULATOR_PORT)
+            }
+            emulatorsConfigured = true
         }
 
         var pendingEmailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
