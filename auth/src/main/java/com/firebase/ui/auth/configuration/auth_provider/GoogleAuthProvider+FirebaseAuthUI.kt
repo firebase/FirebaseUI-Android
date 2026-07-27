@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.credentials.CredentialManager
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.firebase.ui.auth.AuthException
@@ -94,7 +95,9 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
  * **Error Handling:**
  * - [GoogleIdTokenParsingException]: Library version mismatch
  * - [NoCredentialException]: No Google accounts on device
- * - [GetCredentialException]: User cancellation, configuration errors, or no credentials
+ * - [GetCredentialCancellationException]: User dismissed the Credential Manager sheet -
+ *   updates [AuthState.Cancelled] and does not throw
+ * - [GetCredentialException]: Configuration errors or no credentials
  * - Configuration errors trigger detailed developer guidance logs
  *
  * @param context Android context for Credential Manager
@@ -214,6 +217,13 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
         // Re-throw to let UI handle the account linking flow
         updateAuthState(AuthState.Error(e))
         throw e
+    } catch (e: GetCredentialCancellationException) {
+        // User dismissed the Credential Manager sheet - this is a normal user action,
+        // not an error, so it goes to AuthState.Cancelled instead of AuthState.Error.
+        // Swallow (don't rethrow) so rememberGoogleSignInHandler's catch block doesn't
+        // overwrite this state with AuthState.Error.
+        updateAuthState(AuthState.Cancelled)
+
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with google was cancelled",
