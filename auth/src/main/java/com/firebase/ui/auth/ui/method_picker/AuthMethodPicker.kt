@@ -130,6 +130,7 @@ fun AuthMethodPicker(
         } else {
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .weight(1f),
                 contentAlignment = Alignment.TopCenter,
             ) {
