@@ -141,7 +141,7 @@ fun SignInEmailLinkUI(
                         }
                     }
                 },
-                colors = AuthUITheme.topAppBarColors
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         },
     ) { innerPadding ->

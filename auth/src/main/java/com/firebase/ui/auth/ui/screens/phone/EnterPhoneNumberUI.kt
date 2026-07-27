@@ -99,7 +99,7 @@ fun EnterPhoneNumberUI(
                         }
                     }
                 },
-                colors = AuthUITheme.topAppBarColors
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         },
     ) { innerPadding ->

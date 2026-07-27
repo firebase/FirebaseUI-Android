@@ -1546,6 +1546,26 @@ val configuration = authUIConfiguration {
 }
 ```
 
+### Customizing the Top App Bar
+
+Override the colors used by the top app bar shown on auth screens:
+
+```kotlin
+val customTheme = AuthUITheme.Default.copy(
+    topAppBarColors = TopAppBarDefaults.topAppBarColors(
+        containerColor = Color(0xFF2E7D32),
+        scrolledContainerColor = Color(0xFF2E7D32),
+    )
+)
+
+val configuration = authUIConfiguration {
+    providers { provider(AuthProvider.Email()) }
+    theme = customTheme
+}
+```
+
+If left unset (`null`), the top app bar falls back to colors derived from `colorScheme`'s `primary`/`onPrimary`.
+
 ### Screen Transitions
 
 Customize the animations when navigating between screens using the `AuthUITransitions` object:

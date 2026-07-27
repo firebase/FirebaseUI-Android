@@ -103,7 +103,7 @@ fun EnterVerificationCodeUI(
                         }
                     }
                 },
-                colors = AuthUITheme.topAppBarColors
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         },
     ) { innerPadding ->
