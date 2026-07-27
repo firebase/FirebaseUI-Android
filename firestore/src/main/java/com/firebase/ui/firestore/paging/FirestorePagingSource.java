@@ -1,5 +1,7 @@
 package com.firebase.ui.firestore.paging;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -18,6 +20,8 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnapshot> {
+
+    private static final String TAG = "FirestorePagingSource";
 
     private final Query mQuery;
     private final Source mSource;
@@ -49,11 +53,16 @@ public class FirestorePagingSource extends RxPagingSource<PageKey, DocumentSnaps
             } catch (ExecutionException e) {
                 // Report the original cause rather than the ExecutionException wrapper.
                 Throwable cause = e.getCause();
-                return new LoadResult.Error<PageKey, DocumentSnapshot>(cause == null ? e : cause);
+                Throwable error = cause == null ? e : cause;
+                Log.e(TAG, "FirestorePagingSource load failed", error);
+                return new LoadResult.Error<PageKey, DocumentSnapshot>(error);
             } catch (InterruptedException e) {
+                // The load was cancelled (the subscription was disposed mid-await), not a real
+                // failure — restore the interrupt flag and return quietly without logging.
                 Thread.currentThread().interrupt();
                 return new LoadResult.Error<PageKey, DocumentSnapshot>(e);
             } catch (Exception e) {
+                Log.e(TAG, "FirestorePagingSource load failed", e);
                 return new LoadResult.Error<PageKey, DocumentSnapshot>(e);
             }
         }).subscribeOn(Schedulers.io()).onErrorReturn(LoadResult.Error::new);
