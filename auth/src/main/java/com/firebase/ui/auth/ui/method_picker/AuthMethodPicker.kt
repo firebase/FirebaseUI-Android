@@ -16,7 +16,6 @@ package com.firebase.ui.auth.ui.method_picker
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -128,14 +128,15 @@ fun AuthMethodPicker(
                 customLayout(providers, onProviderSelected)
             }
         } else {
-            BoxWithConstraints(
+            Box(
                 modifier = Modifier
                     .weight(1f),
+                contentAlignment = Alignment.TopCenter,
             ) {
-                val paddingWidth = maxWidth.value * 0.23
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = paddingWidth.dp)
+                        .widthIn(max = 400.dp)
+                        .padding(horizontal = 24.dp)
                         .testTag("AuthMethodPicker LazyColumn"),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
