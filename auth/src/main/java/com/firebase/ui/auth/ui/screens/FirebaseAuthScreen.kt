@@ -942,13 +942,18 @@ private fun ReauthSheetContent(
         popExitTransition = { fadeOut(animationSpec = tween(700)) },
     ) {
         composable(AuthRoute.MethodPicker.route) {
-            Scaffold { innerPadding ->
-                AuthMethodPicker(
-                    modifier = Modifier.padding(innerPadding),
-                    providers = reauthConfig.providers,
-                    customLayout = customMethodPickerLayout,
-                    onProviderSelected = onProviderSelected,
-                )
+            if (customMethodPickerLayout != null) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
+                }
+            } else {
+                Scaffold { innerPadding ->
+                    AuthMethodPicker(
+                        modifier = Modifier.padding(innerPadding),
+                        providers = reauthConfig.providers,
+                        onProviderSelected = onProviderSelected,
+                    )
+                }
             }
         }
 
