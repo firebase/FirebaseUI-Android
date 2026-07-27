@@ -147,6 +147,7 @@ fun FirebaseAuthScreen(
     val pendingReauthState = remember { mutableStateOf<AuthState.ReauthenticationRequired?>(null) }
     val pendingReauthOperation = remember { mutableStateOf<(suspend (android.content.Context) -> Unit)?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
+    val prefillEmail = remember { mutableStateOf<String?>(null) }
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
     val startRoute = remember(configuration.providers, configuration.isProviderChoiceAlwaysShown) {
@@ -218,7 +219,14 @@ fun FirebaseAuthScreen(
                             lastSignInPreference = lastSignInPreference.value,
                             customLayout = customMethodPickerLayout,
                             termsConfiguration = customMethodPickerTermsConfiguration,
-                            onProviderSelected = onProviderSelected,
+                            onProviderSelected = { provider ->
+                                prefillEmail.value = null
+                                onProviderSelected(provider)
+                            },
+                            onContinueAsSelected = { provider, identifier ->
+                                prefillEmail.value = identifier
+                                onProviderSelected(provider)
+                            },
                         )
                     }
                 }
@@ -228,6 +236,7 @@ fun FirebaseAuthScreen(
                         context = context,
                         configuration = configuration,
                         authUI = authUI,
+                        prefillEmail = prefillEmail.value,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
                         onContinueWithProvider = continueWithProvider,

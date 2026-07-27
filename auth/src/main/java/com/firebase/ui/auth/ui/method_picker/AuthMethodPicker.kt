@@ -82,6 +82,9 @@ class MethodPickerTermsConfiguration(
  * @param providers The list of providers to display.
  * @param logo An optional logo to display.
  * @param onProviderSelected A callback when a provider is selected.
+ * @param onContinueAsSelected A callback when the "Continue as..." button is selected, with the
+ * provider and saved identifier (email, phone number, etc.). Falls back to [onProviderSelected]
+ * if not provided.
  * @param customLayout An optional custom layout composable for the provider buttons.
  * @param termsOfServiceUrl The URL for the Terms of Service.
  * @param privacyPolicyUrl The URL for the Privacy Policy.
@@ -97,12 +100,15 @@ fun AuthMethodPicker(
     providers: List<AuthProvider>,
     logo: AuthUIAsset? = null,
     onProviderSelected: (AuthProvider) -> Unit,
+    onContinueAsSelected: ((AuthProvider, String?) -> Unit)? = null,
     termsOfServiceUrl: String? = null,
     privacyPolicyUrl: String? = null,
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     termsConfiguration: MethodPickerTermsConfiguration? = null,
 ) {
+    val continueAsHandler: (AuthProvider, String?) -> Unit =
+        onContinueAsSelected ?: { provider, _ -> onProviderSelected(provider) }
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
     val stringProvider = LocalAuthUIStringProvider.current
@@ -148,7 +154,7 @@ fun AuthMethodPicker(
                                     provider = lastProvider,
                                     identifier = preference.identifier,
                                     enabled = providerButtonsEnabled,
-                                    onClick = { onProviderSelected(lastProvider) }
+                                    onClick = { continueAsHandler(lastProvider, preference.identifier) }
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
 

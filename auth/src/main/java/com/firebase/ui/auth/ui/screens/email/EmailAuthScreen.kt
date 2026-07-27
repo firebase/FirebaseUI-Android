@@ -129,6 +129,7 @@ fun EmailAuthScreen(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
+    prefillEmail: String? = null,
     credentialForLinking: AuthCredential? = null,
     emailLinkFromDifferentDevice: String? = null,
     onContinueWithProvider: (String) -> Unit = {},
@@ -150,7 +151,7 @@ fun EmailAuthScreen(
     }
     val mode = rememberSaveable { mutableStateOf(initialMode) }
     val displayNameValue = rememberSaveable { mutableStateOf("") }
-    val emailTextValue = rememberSaveable { mutableStateOf("") }
+    val emailTextValue = rememberSaveable { mutableStateOf(prefillEmail ?: "") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
 
