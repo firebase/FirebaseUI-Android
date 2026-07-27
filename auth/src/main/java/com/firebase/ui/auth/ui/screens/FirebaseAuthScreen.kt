@@ -224,7 +224,7 @@ fun FirebaseAuthScreen(
                                 onProviderSelected(provider)
                             },
                             onContinueAsSelected = { provider, identifier ->
-                                prefillEmail.value = identifier
+                                prefillEmail.value = if (provider is AuthProvider.Email) identifier else null
                                 onProviderSelected(provider)
                             },
                         )
