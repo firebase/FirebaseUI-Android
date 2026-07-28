@@ -16,9 +16,9 @@ package com.firebase.ui.auth.configuration.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
@@ -81,6 +81,12 @@ class AuthUITheme(
      * ```
      */
     val providerButtonShape: Shape? = null,
+
+    /**
+     * Custom colors for the top app bar shown on auth screens. If null, falls back to
+     * colors derived from [colorScheme] (see [AuthUITheme.topAppBarColors]).
+     */
+    val topAppBarColors: TopAppBarColors? = null,
 ) {
 
     /**
@@ -91,6 +97,7 @@ class AuthUITheme(
      * @param shapes The shapes to use. Defaults to this theme's shapes.
      * @param providerStyles Custom styling for individual providers. Defaults to this theme's provider styles.
      * @param providerButtonShape Default shape for provider buttons. Defaults to this theme's provider button shape.
+     * @param topAppBarColors Custom top app bar colors. Defaults to this theme's top app bar colors.
      * @return A new AuthUITheme instance with the specified properties.
      */
     fun copy(
@@ -99,13 +106,15 @@ class AuthUITheme(
         shapes: Shapes = this.shapes,
         providerStyles: Map<String, ProviderStyle> = this.providerStyles,
         providerButtonShape: Shape? = this.providerButtonShape,
+        topAppBarColors: TopAppBarColors? = this.topAppBarColors,
     ): AuthUITheme {
         return AuthUITheme(
             colorScheme = colorScheme,
             typography = typography,
             shapes = shapes,
             providerStyles = providerStyles,
-            providerButtonShape = providerButtonShape
+            providerButtonShape = providerButtonShape,
+            topAppBarColors = topAppBarColors
         )
     }
 
@@ -118,6 +127,7 @@ class AuthUITheme(
         if (shapes != other.shapes) return false
         if (providerStyles != other.providerStyles) return false
         if (providerButtonShape != other.providerButtonShape) return false
+        if (topAppBarColors != other.topAppBarColors) return false
 
         return true
     }
@@ -128,12 +138,14 @@ class AuthUITheme(
         result = 31 * result + shapes.hashCode()
         result = 31 * result + providerStyles.hashCode()
         result = 31 * result + (providerButtonShape?.hashCode() ?: 0)
+        result = 31 * result + (topAppBarColors?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
         return "AuthUITheme(colorScheme=$colorScheme, typography=$typography, shapes=$shapes, " +
-                "providerStyles=$providerStyles, providerButtonShape=$providerButtonShape)"
+                "providerStyles=$providerStyles, providerButtonShape=$providerButtonShape, " +
+                "topAppBarColors=$topAppBarColors)"
     }
 
     /**
@@ -228,7 +240,6 @@ class AuthUITheme(
             )
         }
 
-        @OptIn(ExperimentalMaterial3Api::class)
         @get:Composable
         val topAppBarColors
             get() = TopAppBarDefaults.topAppBarColors(
@@ -236,6 +247,14 @@ class AuthUITheme(
                 titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
             )
+
+        /**
+         * Resolves the top app bar colors to use for the current [LocalAuthUITheme], falling back
+         * to [topAppBarColors] when the current theme doesn't specify its own.
+         */
+        @get:Composable
+        val resolvedTopAppBarColors: TopAppBarColors
+            get() = LocalAuthUITheme.current.topAppBarColors ?: topAppBarColors
     }
 }
 

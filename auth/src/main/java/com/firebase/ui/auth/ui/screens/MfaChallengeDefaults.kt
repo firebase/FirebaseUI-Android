@@ -27,17 +27,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.MfaFactor
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
@@ -50,108 +55,136 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
         VerificationCodeValidator(stringProvider)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = if (isSms) {
-                val phoneLabel = state.maskedPhoneNumber ?: ""
-                stringProvider.enterVerificationCodeTitle(phoneLabel)
-            } else {
-                stringProvider.mfaStepVerifyFactorTitle
-            },
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center
-        )
-
-        if (isSms && state.maskedPhoneNumber != null) {
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             Text(
-                text = stringProvider.mfaStepVerifyFactorSmsHelper,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        if (state.error != null) {
-            Text(
-                text = state.error,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
+                text = if (isSms) {
+                    val phoneLabel = state.maskedPhoneNumber ?: ""
+                    stringProvider.enterVerificationCodeTitle(phoneLabel)
+                } else {
+                    stringProvider.mfaStepVerifyFactorTitle
+                },
+                style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center
             )
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        VerificationCodeInputField(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            codeLength = 6,
-            validator = verificationCodeValidator,
-            isError = state.error != null,
-            errorMessage = state.error,
-            onCodeChange = state.onVerificationCodeChange
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (isSms) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(
-                    onClick = { state.onResendCodeClick?.invoke() },
-                    enabled = state.onResendCodeClick != null && !state.isLoading && state.resendTimer == 0
-                ) {
-                    Text(
-                        text = if (state.resendTimer > 0) {
-                            val minutes = state.resendTimer / 60
-                            val seconds = state.resendTimer % 60
-                            val formatted = "$minutes:${String.format(java.util.Locale.ROOT, "%02d", seconds)}"
-                            stringProvider.resendCodeTimer(formatted)
-                        } else {
-                            stringProvider.resendCode
-                        }
-                    )
-                }
-
-                TextButton(
-                    onClick = state.onCancelClick,
-                    enabled = !state.isLoading
-                ) {
-                    Text(stringProvider.useDifferentMethodAction)
-                }
-            }
-        } else {
-            OutlinedButton(
-                onClick = state.onCancelClick,
-                enabled = !state.isLoading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringProvider.dismissAction)
-            }
-        }
-
-        Button(
-            onClick = state.onVerifyClick,
-            enabled = state.isValid && !state.isLoading,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(end = 8.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.onPrimary
+            if (isSms && state.maskedPhoneNumber != null) {
+                Text(
+                    text = stringProvider.mfaStepVerifyFactorSmsHelper,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Text(stringProvider.verifyAction)
+
+            if (state.error != null) {
+                Text(
+                    text = state.error,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            VerificationCodeInputField(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                codeLength = 6,
+                validator = verificationCodeValidator,
+                isError = state.error != null,
+                errorMessage = state.error,
+                onCodeChange = state.onVerificationCodeChange
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (isSms) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(
+                        onClick = { state.onResendCodeClick?.invoke() },
+                        enabled = state.onResendCodeClick != null && !state.isLoading && state.resendTimer == 0
+                    ) {
+                        Text(
+                            text = if (state.resendTimer > 0) {
+                                val minutes = state.resendTimer / 60
+                                val seconds = state.resendTimer % 60
+                                val formatted = "$minutes:${String.format(java.util.Locale.ROOT, "%02d", seconds)}"
+                                stringProvider.resendCodeTimer(formatted)
+                            } else {
+                                stringProvider.resendCode
+                            }
+                        )
+                    }
+
+                    TextButton(
+                        onClick = state.onCancelClick,
+                        enabled = !state.isLoading
+                    ) {
+                        Text(stringProvider.useDifferentMethodAction)
+                    }
+                }
+            } else {
+                OutlinedButton(
+                    onClick = state.onCancelClick,
+                    enabled = !state.isLoading,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringProvider.dismissAction)
+                }
+            }
+
+            Button(
+                onClick = state.onVerifyClick,
+                enabled = state.isValid && !state.isLoading,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(end = 8.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+                Text(stringProvider.verifyAction)
+            }
+        }
+    }
+}
+
+/**
+ * Renders with a simulated status/nav bar (see CP-240) so correct edge-to-edge inset handling
+ * can be verified in the IDE preview. A plain `@Preview` draws no system chrome at all, so
+ * inset issues would be invisible there.
+ */
+@Preview(showSystemUi = true)
+@Composable
+private fun PreviewDefaultMfaChallengeContentEdgeToEdge() {
+    val applicationContext = LocalContext.current
+    val stringProvider = DefaultAuthUIStringProvider(applicationContext)
+
+    AuthUITheme {
+        CompositionLocalProvider(
+            LocalAuthUIStringProvider provides stringProvider
+        ) {
+            DefaultMfaChallengeContent(
+                state = MfaChallengeContentState(
+                    factorType = MfaFactor.Sms,
+                    maskedPhoneNumber = "+1••••••890"
+                )
+            )
         }
     }
 }
