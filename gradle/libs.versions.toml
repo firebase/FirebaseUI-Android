@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 android-gradle-plugin = "8.10.0"
 google-services = "4.5.0"
 maven-publish-plugin = "0.34.0"
