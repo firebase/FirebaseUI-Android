@@ -1,0 +1,119 @@
+/*
+ * Copyright 2025 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.firebase.ui.auth.ui.screens.email
+
+import android.content.Context
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.configuration.authUIConfiguration
+import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+
+@Config(sdk = [34])
+@RunWith(RobolectricTestRunner::class)
+class SignInUITest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    private lateinit var applicationContext: Context
+    private lateinit var stringProvider: AuthUIStringProvider
+
+    @Before
+    fun setUp() {
+        applicationContext = ApplicationProvider.getApplicationContext()
+        stringProvider = DefaultAuthUIStringProvider(applicationContext)
+    }
+
+    @Test
+    fun `email field is pre-filled when initial email value is provided`() {
+        val prefillEmail = "user@example.com"
+        val provider = AuthProvider.Email(
+            isDisplayNameRequired = false,
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = prefillEmail,
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onRetrievedCredential = { },
+                    onSignInClick = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                    onGoToEmailLinkSignIn = { },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText(prefillEmail).assertExists()
+    }
+
+    @Test
+    fun `email field is empty when no initial email value is provided`() {
+        val provider = AuthProvider.Email(
+            isDisplayNameRequired = false,
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = "",
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onRetrievedCredential = { },
+                    onSignInClick = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                    onGoToEmailLinkSignIn = { },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("user@example.com").assertDoesNotExist()
+    }
+}
