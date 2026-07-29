@@ -499,21 +499,18 @@ class EmailAuthScreenTest {
         println("TEST: Pumping looper after click...")
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Wait for auth state to transition to PasswordResetLinkSent
-        println("TEST: Waiting for auth state change... Current state: $currentAuthState")
+        // Wait for the dialog rather than polling currentAuthState, which the screen resets to
+        // Idle right after consuming PasswordResetLinkSent (see EmailSignInLinkSent test above).
+        println("TEST: Waiting for password reset link sent dialog...")
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            println("TEST: Auth state during wait: $currentAuthState")
-            currentAuthState is AuthState.PasswordResetLinkSent
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.recoverPasswordLinkSentDialogTitle)
+                .fetchSemanticsNodes().isNotEmpty()
         }
 
         // Ensure final recomposition is complete before assertions
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Verify the auth state and user properties
-        println("TEST: Verifying final auth state: $currentAuthState")
-        assertThat(currentAuthState)
-            .isInstanceOf(AuthState.PasswordResetLinkSent::class.java)
         assertThat(authUI.auth.currentUser).isNull()
         composeAndroidTestRule.onNodeWithText(stringProvider.recoverPasswordLinkSentDialogTitle)
             .assertIsDisplayed()
