@@ -159,7 +159,7 @@ fun FirebaseAuthScreen(
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
     // Last-processed AuthState, so the Idle branch below can tell a genuine reset apart from
-    // Idle-as-a-side-effect of consuming a one-off notification (see wasConsumedNotification).
+    // Idle-as-a-side-effect of consuming a notification (see AuthState.isNotification).
     val previousAuthState = remember { mutableStateOf<AuthState>(AuthState.Idle) }
     val startRoute = remember(configuration.providers, configuration.isProviderChoiceAlwaysShown) {
         getStartRoute(configuration)
@@ -572,14 +572,9 @@ fun FirebaseAuthScreen(
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
-                        // A one-off notification resets to Idle purely to avoid leaking to a
-                        // freshly created screen — that's not a request to leave the current one.
-                        val wasConsumedNotification = previous is AuthState.Error ||
-                            previous is AuthState.Cancelled ||
-                            previous is AuthState.SMSAutoVerified ||
-                            previous is AuthState.PasswordResetLinkSent ||
-                            previous is AuthState.EmailSignInLinkSent
-                        if (!wasConsumedNotification && currentRoute != startRoute.route) {
+                        // A notification resets to Idle purely to avoid leaking to a freshly
+                        // created screen — that's not a request to leave the current one.
+                        if (!previous.isNotification && currentRoute != startRoute.route) {
                             navController.navigate(startRoute.route) {
                                 popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
                                 launchSingleTop = true
