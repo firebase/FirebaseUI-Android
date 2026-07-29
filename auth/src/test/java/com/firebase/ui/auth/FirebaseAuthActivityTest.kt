@@ -153,6 +153,16 @@ class FirebaseAuthActivityTest {
         assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_CANCELED)
     }
 
+    @Test
+    fun `activity sets filterTouchesWhenObscured on window after onCreate`() {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().get()
+
+        assertThat(activity.window.decorView.filterTouchesWhenObscured).isTrue()
+    }
+
     // =============================================================================================
     // Configuration Extraction Tests
     // =============================================================================================

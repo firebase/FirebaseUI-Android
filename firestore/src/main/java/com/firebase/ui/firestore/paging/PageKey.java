@@ -3,6 +3,8 @@ package com.firebase.ui.firestore.paging;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
@@ -43,18 +45,25 @@ public class PageKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PageKey key = (PageKey) o;
-        if (mStartAfter == null && key.mStartAfter == null &&
-                mEndBefore == null && key.mEndBefore == null)
-            return true;
-        return mStartAfter.getId().equals(key.mStartAfter.getId()) &&
-                mEndBefore.getId().equals(key.mEndBefore.getId());
+        return Objects.equals(documentId(mStartAfter), documentId(key.mStartAfter)) &&
+                Objects.equals(documentId(mEndBefore), documentId(key.mEndBefore));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(documentId(mStartAfter), documentId(mEndBefore));
+    }
+
+    @Nullable
+    private static String documentId(@Nullable DocumentSnapshot snapshot) {
+        return snapshot == null ? null : snapshot.getId();
     }
 
     @Override
     @NonNull
     public String toString() {
-        String startAfter = mStartAfter == null ? null : mStartAfter.getId();
-        String endBefore = mEndBefore == null ? null : mEndBefore.getId();
+        String startAfter = documentId(mStartAfter);
+        String endBefore = documentId(mEndBefore);
         return "PageKey{" +
                 "StartAfter=" + startAfter +
                 ", EndBefore=" + endBefore +

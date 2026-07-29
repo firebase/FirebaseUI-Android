@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -95,7 +94,7 @@ fun SignUpUI(
     val isFormValid = remember(displayName, email, password, confirmPassword) {
         derivedStateOf {
             listOf(
-                displayNameValidator.validate(displayName),
+                !provider.isDisplayNameRequired || displayNameValidator.validate(displayName),
                 emailValidator.validate(email),
                 passwordValidator.validate(password),
                 confirmPasswordValidator.validate(confirmPassword)
@@ -120,15 +119,14 @@ fun SignUpUI(
                         }
                     }
                 },
-                colors = AuthUITheme.topAppBarColors
+                colors = AuthUITheme.resolvedTopAppBarColors
             )
         },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .safeDrawingPadding()
-                .padding(horizontal = 16.dp)
+                .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
             if (provider.isDisplayNameRequired) {

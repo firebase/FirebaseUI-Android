@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 android {
@@ -53,6 +54,11 @@ kotlin {
 
 dependencies {
     implementation(project(":auth"))
+    implementation(project(":database"))
+    implementation(project(":firestore"))
+    implementation(project(":storage"))
+    implementation(libs.androidx.paging)
+    kapt(libs.glide.compiler)
 
     implementation(libs.kotlin.stdlib)
     implementation(libs.androidx.lifecycle.runtime)

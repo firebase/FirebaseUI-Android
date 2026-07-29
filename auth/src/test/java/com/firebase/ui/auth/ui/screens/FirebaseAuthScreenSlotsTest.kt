@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -22,16 +23,22 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -131,6 +138,115 @@ class FirebaseAuthScreenSlotsTest {
         }
 
         composeTestRule.onNodeWithTag("AuthMethodPicker LazyColumn").assertIsDisplayed()
+    }
+
+    @Test
+    fun `customMethodPickerLayout provided hides the default method picker chrome`() {
+        val configuration = authUIConfiguration {
+            context = this@FirebaseAuthScreenSlotsTest.context
+            providers {
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+                provider(AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null))
+            }
+        }
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                customMethodPickerLayout = { _, _ ->
+                    Text(
+                        text = "Custom Picker",
+                        modifier = Modifier.testTag("custom_method_picker")
+                    )
+                }
+            )
+        }
+
+        composeTestRule.onNodeWithTag("custom_method_picker").assertIsDisplayed()
+        // AuthMethodPicker (and with it, the logo/ToS footer it renders) must not exist at all —
+        // customMethodPickerLayout now takes over the entire screen, it doesn't sit alongside them.
+        composeTestRule.onNodeWithTag("AuthMethodPicker LazyColumn").assertDoesNotExist()
+    }
+
+    @Test
+    fun `customMethodPickerTermsConfiguration is ignored when customMethodPickerLayout is provided`() {
+        val configuration = authUIConfiguration {
+            context = this@FirebaseAuthScreenSlotsTest.context
+            providers {
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+                provider(AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null))
+            }
+        }
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                customMethodPickerLayout = { _, _ ->
+                    Text(
+                        text = "Custom Picker",
+                        modifier = Modifier.testTag("custom_method_picker")
+                    )
+                },
+                customMethodPickerTermsConfiguration = MethodPickerTermsConfiguration(
+                    content = {
+                        Checkbox(
+                            checked = false,
+                            onCheckedChange = {},
+                            modifier = Modifier.testTag("terms_checkbox")
+                        )
+                    }
+                )
+            )
+        }
+
+        composeTestRule.onNodeWithTag("custom_method_picker").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("terms_checkbox").assertDoesNotExist()
+    }
+
+    @Test
+    fun `customMethodPickerLayout renders full-screen in the reauthentication sheet too`() {
+        val mockProviderInfo = mock(UserInfo::class.java)
+        `when`(mockProviderInfo.providerId).thenReturn("password")
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.providerData).thenReturn(listOf(mockProviderInfo))
+
+        val configuration = authUIConfiguration {
+            context = this@FirebaseAuthScreenSlotsTest.context
+            providers {
+                provider(AuthProvider.Email(emailLinkActionCodeSettings = null, passwordValidationRules = emptyList()))
+                provider(AuthProvider.Phone(defaultNumber = null, defaultCountryCode = null, allowedCountries = null))
+            }
+        }
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                customMethodPickerLayout = { _, _ ->
+                    Text(
+                        text = "Custom Reauth Picker",
+                        modifier = Modifier.testTag("custom_reauth_picker")
+                    )
+                }
+            )
+        }
+
+        authUI.updateAuthState(AuthState.ReauthenticationRequired(mockUser))
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("custom_reauth_picker").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("AuthMethodPicker LazyColumn").assertDoesNotExist()
     }
 
     // =============================================================================================
