@@ -41,6 +41,7 @@ import kotlinx.coroutines.tasks.await
  *
  * @param config Authentication UI configuration
  * @param provider OAuth provider configuration
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  *
  * @return Lambda that triggers OAuth sign-in when invoked
  *
@@ -54,6 +55,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
     activity: Activity?,
     config: AuthUIConfiguration,
     provider: AuthProvider.OAuth,
+    onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
     activity ?: throw IllegalStateException(
@@ -73,9 +75,11 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
                     )
                 } catch (e: AuthException) {
                     updateAuthState(AuthState.Error(e))
+                    onSignInFailure(e)
                 } catch (e: Exception) {
                     val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
+                    onSignInFailure(authException)
                 }
             }
         }

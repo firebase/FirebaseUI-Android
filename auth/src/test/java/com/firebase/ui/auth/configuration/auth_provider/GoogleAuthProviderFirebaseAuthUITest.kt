@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.core.net.toUri
 import androidx.credentials.CredentialManager
 import androidx.test.core.app.ApplicationProvider
@@ -37,6 +38,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -66,6 +68,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class GoogleAuthProviderFirebaseAuthUITest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     @Mock
     private lateinit var mockFirebaseAuth: FirebaseAuth
@@ -919,5 +924,60 @@ class GoogleAuthProviderFirebaseAuthUITest {
         // Verify final state is Success (with the real AuthResult)
         val finalState = instance.authStateFlow().first { it !is AuthState.Loading }
         assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
+    }
+
+    // =============================================================================================
+    // rememberGoogleSignInHandler - onSignInFailure reporting
+    // =============================================================================================
+
+    @Test
+    fun `rememberGoogleSignInHandler reports failure via onSignInFailure immediately, at the source`() {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        // A picker-level failure that used to never reach onSignInFailure at all:
+        // the outer fallback throws AuthException.UnknownException when no Google accounts are found.
+        instance.testCredentialManagerProvider = object : AuthProvider.Google.CredentialManagerProvider {
+            override suspend fun getGoogleCredential(
+                context: Context,
+                credentialManager: CredentialManager,
+                serverClientId: String,
+                filterByAuthorizedAccounts: Boolean,
+                autoSelectEnabled: Boolean
+            ): AuthProvider.Google.GoogleSignInResult {
+                throw AuthException.UnknownException(
+                    "No Google accounts available.\n\nPlease add a Google account to your device and try again."
+                )
+            }
+
+            override suspend fun clearCredentialState(context: Context, credentialManager: CredentialManager) = Unit
+        }
+
+        val reportedFailures = mutableListOf<AuthException>()
+        var launcher: (() -> Unit)? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberGoogleSignInHandler(
+                context = applicationContext,
+                config = config,
+                provider = googleProvider,
+                onSignInFailure = { reportedFailures.add(it) },
+            )
+        }
+
+        composeTestRule.runOnIdle { launcher?.invoke() }
+        composeTestRule.waitForIdle()
+
+        assertThat(reportedFailures).hasSize(1)
+        assertThat(reportedFailures.single()).isInstanceOf(AuthException.UnknownException::class.java)
     }
 }

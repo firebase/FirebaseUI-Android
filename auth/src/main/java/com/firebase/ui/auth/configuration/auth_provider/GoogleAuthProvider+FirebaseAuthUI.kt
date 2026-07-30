@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
  * @param context Android context for Credential Manager
  * @param config Authentication UI configuration
  * @param provider Google provider configuration with server client ID and optional scopes
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  * @return A callback function that initiates Google Sign-In when invoked
  *
  * @see signInWithGoogle
@@ -57,6 +58,7 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Google,
+    onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
     return remember(this, config) {
@@ -66,9 +68,11 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
                     signInWithGoogle(context, config, provider)
                 } catch (e: AuthException) {
                     updateAuthState(AuthState.Error(e))
+                    onSignInFailure(e)
                 } catch (e: Exception) {
                     val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
+                    onSignInFailure(authException)
                 }
             }
         }

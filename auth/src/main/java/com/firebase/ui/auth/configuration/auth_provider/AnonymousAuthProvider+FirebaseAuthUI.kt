@@ -14,13 +14,18 @@ import kotlinx.coroutines.tasks.await
 /**
  * Creates a remembered launcher function for anonymous sign-in.
  *
+ * @param config Authentication UI configuration
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  * @return A launcher function that starts the anonymous sign-in flow when invoked
  *
  * @see signInAnonymously
  * @see createOrLinkUserWithEmailAndPassword for upgrading anonymous accounts
  */
 @Composable
-internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(config: AuthUIConfiguration): () -> Unit {
+internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(
+    config: AuthUIConfiguration,
+    onSignInFailure: (AuthException) -> Unit = {},
+): () -> Unit {
     val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     return remember(this) {
@@ -31,9 +36,11 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(config: AuthUIConfigu
                 } catch (e: AuthException) {
                     // Already an AuthException, don't re-wrap it
                     updateAuthState(AuthState.Error(e))
+                    onSignInFailure(e)
                 } catch (e: Exception) {
                     val authException = AuthException.from(e, context)
                     updateAuthState(AuthState.Error(authException))
+                    onSignInFailure(authException)
                 }
             }
         }

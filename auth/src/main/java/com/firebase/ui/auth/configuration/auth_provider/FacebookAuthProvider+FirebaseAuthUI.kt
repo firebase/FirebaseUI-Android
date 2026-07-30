@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
  * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Facebook] configuration with scopes and credential provider
  * @param loginManagerProvider Provides logout operations to clear stale Facebook sessions
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  *
  * @return A launcher function that starts the Facebook sign-in flow when invoked
  *
@@ -58,6 +59,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
+    onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
     val callbackManager = remember { CallbackManager.Factory.create() }
@@ -87,9 +89,11 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                         } catch (e: AuthException) {
                             // Already an AuthException, don't re-wrap it
                             updateAuthState(AuthState.Error(e))
+                            onSignInFailure(e)
                         } catch (e: Exception) {
                             val authException = AuthException.from(e, context)
                             updateAuthState(AuthState.Error(authException))
+                            onSignInFailure(authException)
                         }
                     }
                 }
@@ -106,6 +110,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                             authException
                         )
                     )
+                    onSignInFailure(authException)
                 }
             })
 
