@@ -162,6 +162,21 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
                         autoSelectEnabled = provider.autoSelectEnabled
                     )
                 } catch (fallbackException: NoCredentialException) {
+                    // Credential Manager doesn't distinguish "no account on device" from
+                    // developer-side misconfiguration, so log the possible causes for
+                    // debugging. Never surfaced to end users: the overwhelming majority
+                    // hitting this genuinely have no account, and Firebase Console
+                    // guidance would just confuse them.
+                    Log.w(
+                        "GoogleAuthProvider",
+                        "No credential returned from Credential Manager after trying both " +
+                            "authorized and all accounts. Possible causes: (1) no Google " +
+                            "account on this device, (2) no Android OAuth client / SHA-1 " +
+                            "registered for this app's package + signing certificate in the " +
+                            "Firebase console, or (3) the Credential Manager Google ID " +
+                            "provider is unavailable on this device.",
+                        fallbackException
+                    )
                     // No Google accounts available on device at all
                     throw AuthException.UnknownException(
                         message = "No Google accounts available.\n\nPlease add a Google account to your device and try again.",
