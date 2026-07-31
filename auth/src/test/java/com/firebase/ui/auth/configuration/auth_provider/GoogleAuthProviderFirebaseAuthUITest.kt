@@ -15,10 +15,12 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.core.net.toUri
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -55,6 +57,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowLog
 
 /**
  * Comprehensive unit tests for Google Sign-In provider methods in FirebaseAuthUI.
@@ -443,6 +446,65 @@ class GoogleAuthProviderFirebaseAuthUITest {
         assertThat(finalState).isInstanceOf(AuthState.Error::class.java)
         val errorState = finalState as AuthState.Error
         assertThat(errorState.exception).isInstanceOf(AuthException.UnknownException::class.java)
+    }
+
+    @Test
+    fun `Sign in with Google when both credential attempts throw NoCredentialException logs diagnostic warning`() = runTest {
+        ShadowLog.clear()
+        val noCredentialException = NoCredentialException("No credential available")
+
+        `when`(
+            mockCredentialManagerProvider.getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(true),
+                autoSelectEnabled = eq(false)
+            )
+        ).thenAnswer { throw noCredentialException }
+
+        `when`(
+            mockCredentialManagerProvider.getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(false),
+                autoSelectEnabled = eq(false)
+            )
+        ).thenAnswer { throw noCredentialException }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        try {
+            instance.signInWithGoogle(
+                context = applicationContext,
+                config = config,
+                provider = googleProvider,
+                authorizationProvider = mockAuthorizationProvider,
+                credentialManagerProvider = mockCredentialManagerProvider
+            )
+            throw AssertionError("Expected exception to be thrown")
+        } catch (e: AuthException) {
+            // User-facing message stays generic - never mentions Firebase Console/SHA-1
+            assertThat(e).isInstanceOf(AuthException.UnknownException::class.java)
+            assertThat(e.message).contains("No Google accounts available")
+        }
+
+        // Diagnostic detail goes to Logcat only, for developers
+        val diagnosticLog = ShadowLog.getLogs().firstOrNull {
+            it.type == Log.WARN && it.tag == "GoogleAuthProvider" && it.msg.contains("SHA-1")
+        }
+        assertThat(diagnosticLog).isNotNull()
     }
 
     @Test
