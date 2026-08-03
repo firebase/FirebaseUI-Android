@@ -458,24 +458,30 @@ fun FirebaseAuthScreen(
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
 
-                        // If reauth just completed, execute the pending retry and skip normal success handling
-                        pendingReauthOperation.value?.let { retry ->
-                            pendingReauthOperation.value = null
-                            pendingReauthConfig.value = null
-                            pendingReauthState.value = null
-                            // Lock the state to Loading before launching the retry so no
-                            // intermediate Success emission can navigate to AuthRoute.Success.
-                            authUI.updateAuthState(AuthState.Loading())
-                            coroutineScope.launch {
-                                try {
-                                    retry(context)
-                                } catch (e: kotlinx.coroutines.CancellationException) {
-                                    throw e
-                                } catch (e: Exception) {
-                                    authUI.updateAuthState(AuthState.Error(e))
+                        // If reauth just completed, execute the pending retry and skip normal success handling.
+                        // Guard on !previous.isNotification: authStateFlow() masks a notification's
+                        // self-consumed Idle (e.g. a failed reauth's Error) back into Success while the
+                        // user stays signed in — that masked Success must not be mistaken for a
+                        // genuinely completed reauth.
+                        if (!previous.isNotification) {
+                            pendingReauthOperation.value?.let { retry ->
+                                pendingReauthOperation.value = null
+                                pendingReauthConfig.value = null
+                                pendingReauthState.value = null
+                                // Lock the state to Loading before launching the retry so no
+                                // intermediate Success emission can navigate to AuthRoute.Success.
+                                authUI.updateAuthState(AuthState.Loading())
+                                coroutineScope.launch {
+                                    try {
+                                        retry(context)
+                                    } catch (e: kotlinx.coroutines.CancellationException) {
+                                        throw e
+                                    } catch (e: Exception) {
+                                        authUI.updateAuthState(AuthState.Error(e))
+                                    }
                                 }
+                                return@LaunchedEffect
                             }
-                            return@LaunchedEffect
                         }
 
                         state.result?.let { result ->
@@ -566,18 +572,22 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Idle -> {
-                        pendingReauthOperation.value = null
-                        pendingReauthConfig.value = null
-                        pendingReauthState.value = null
-                        pendingResolver.value = null
-                        pendingLinkingCredential.value = null
-                        lastSuccessfulUserId.value = null
                         // A notification resets to Idle purely to avoid leaking to a freshly
-                        // created screen — that's not a request to leave the current one.
-                        if (!previous.isNotification && currentRoute != startRoute.route) {
-                            navController.navigate(startRoute.route) {
-                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
-                                launchSingleTop = true
+                        // created screen — that's not a request to leave the current one or
+                        // tear down an in-flight session (e.g. a reauth sheet surviving a
+                        // wrong-password Error on the same authUI).
+                        if (!previous.isNotification) {
+                            pendingReauthOperation.value = null
+                            pendingReauthConfig.value = null
+                            pendingReauthState.value = null
+                            pendingResolver.value = null
+                            pendingLinkingCredential.value = null
+                            lastSuccessfulUserId.value = null
+                            if (currentRoute != startRoute.route) {
+                                navController.navigate(startRoute.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                                    launchSingleTop = true
+                                }
                             }
                         }
                     }
