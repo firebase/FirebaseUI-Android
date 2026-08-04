@@ -459,10 +459,8 @@ fun FirebaseAuthScreen(
                         pendingLinkingCredential.value = null
 
                         // If reauth just completed, execute the pending retry and skip normal success handling.
-                        // Guard on !previous.isNotification: authStateFlow() masks a notification's
-                        // self-consumed Idle (e.g. a failed reauth's Error) back into Success while the
-                        // user stays signed in — that masked Success must not be mistaken for a
-                        // genuinely completed reauth.
+                        // Guarded on !previous.isNotification: a wrong-password Error masks back into
+                        // Success while signed in, and that must not be mistaken for a completed reauth.
                         if (!previous.isNotification) {
                             pendingReauthOperation.value?.let { retry ->
                                 pendingReauthOperation.value = null
@@ -573,9 +571,7 @@ fun FirebaseAuthScreen(
 
                     is AuthState.Idle -> {
                         // A notification resets to Idle purely to avoid leaking to a freshly
-                        // created screen — that's not a request to leave the current one or
-                        // tear down an in-flight session (e.g. a reauth sheet surviving a
-                        // wrong-password Error on the same authUI).
+                        // created screen — that's not a request to leave the current one.
                         if (!previous.isNotification) {
                             pendingReauthOperation.value = null
                             pendingReauthConfig.value = null

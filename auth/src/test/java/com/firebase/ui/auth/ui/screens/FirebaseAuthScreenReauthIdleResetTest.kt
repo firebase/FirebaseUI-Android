@@ -45,14 +45,6 @@ import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/**
- * Covers a regression flagged in PR review
- * (https://github.com/firebase/FirebaseUI-Android/pull/2415#pullrequestreview-4843203197):
- * a wrong-password Error during reauth shares `authUI` with the main screen, so its
- * Error -> Idle self-consume must not tear down the in-flight reauth session.
- *
- * @suppress Internal test class
- */
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE, sdk = [34])
 class FirebaseAuthScreenReauthIdleResetTest {

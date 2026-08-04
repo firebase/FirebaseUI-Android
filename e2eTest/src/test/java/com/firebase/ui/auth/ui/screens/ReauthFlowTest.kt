@@ -309,12 +309,6 @@ class ReauthFlowTest {
         assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
     }
 
-    /**
-     * Regression test: authStateFlow() masks a notification's self-consumed Idle (e.g. a failed
-     * reauth's Error) back into Success while the user stays signed in. FirebaseAuthScreen must
-     * not mistake that masked Success for a genuinely completed reauth and fire the pending
-     * retryOperation on a wrong password.
-     */
     @Test
     fun `wrong password during reauth does not fire the pending retry operation`() {
         val email = "reauth-wrong-pw-${System.currentTimeMillis()}@example.com"
@@ -393,8 +387,7 @@ class ReauthFlowTest {
 
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
-        // Step 2: emit ReauthenticationRequired with a retryOperation, as any real caller
-        // protecting a sensitive action would.
+        // Step 2: emit ReauthenticationRequired with a retryOperation.
         authUI.updateAuthState(
             AuthState.ReauthenticationRequired(
                 user = signedInUser,
@@ -431,12 +424,10 @@ class ReauthFlowTest {
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Dismiss the error dialog, which self-consumes Error -> Idle on the shared authUI
-        // (and gets masked back into Success by authStateFlow() since the user is still signed in).
+        // Dismiss the error dialog, which self-consumes Error -> Idle on the shared authUI.
         composeAndroidTestRule.onNodeWithText(stringProvider.dismissAction).performClick()
         shadowOf(Looper.getMainLooper()).idle()
 
-        // A wrong password must never be treated as a successful reauth.
         assertThat(retryOperationCalled).isFalse()
     }
 }
