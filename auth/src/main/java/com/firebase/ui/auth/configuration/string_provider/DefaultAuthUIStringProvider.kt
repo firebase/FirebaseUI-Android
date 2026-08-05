@@ -523,9 +523,6 @@ class DefaultAuthUIStringProvider(
     override fun tosAndPrivacyPolicy(termsOfServiceLabel: String, privacyPolicyLabel: String): String =
         localizedContext.getString(R.string.fui_tos_and_pp, termsOfServiceLabel, privacyPolicyLabel)
 
-    override val newAccountsDisabledTooltip: String
-        get() = localizedContext.getString(R.string.fui_new_accounts_disabled_tooltip)
-
     override val mfaDisabledTooltip: String
         get() = localizedContext.getString(R.string.fui_mfa_disabled_tooltip)
 
