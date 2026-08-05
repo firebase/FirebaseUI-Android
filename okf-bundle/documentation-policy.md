@@ -1,0 +1,74 @@
+---
+type: Reference
+title: OKF documentation and commit policy
+description: Canonical rules for durable vs ephemeral knowledge, commit messages, and post-update bundle consistency.
+tags: [okf, documentation, policy, commits, work-queue]
+timestamp: 2026-07-31T00:00:00Z
+---
+
+# OKF documentation and commit policy
+
+Single source of truth for OKF knowledge and commit wording. Other OKF docs/work queues link here; do not restate.
+
+## Durable vs ephemeral
+
+| Kind | Where it lives | What it contains |
+|------|----------------|------------------|
+| **Durable** | OKF reference docs (design, runbooks, registries, workflows) | Stable API names, module layout, SDK/tooling versions, verification **methods**, architecture, canonical commands |
+| **Ephemeral** | Explicit **work-queue** docs only | Session phase/probe IDs, **planned commit subjects** (`commit_subject`), gate state, `next_work_type`, snapshot labels, dated banners, run counts |
+
+**Rules**
+
+1. General OKF docs get **durable only** updates: no phase IDs, **commit subjects**, session e2e counts, or gate snapshots.
+2. Ephemeral state lives **only** in work queues. When an item closes, durable outcomes move to reference docs; queue rows may archive/delete.
+3. Durable docs may link to a work queue for current status; do not duplicate ephemeral fields.
+4. Create a work-queue doc only when active cross-cutting work needs gate tracking. Do not invent empty queues for completed migrations.
+
+## Commits as documentation
+
+We treat **git commits** as durable documentation: they are the canonical record of what changed, when, and why — for humans and agents reviewing history later, not only for the current PR thread.
+
+Commit messages use [Conventional Commits](https://www.conventionalcommits.org/) and describe durable product/process deliverables: what changed and why, not probe IDs, gates, e2e counts, or “phase X complete”.
+
+Scopes commonly used in this repo: `auth`, `firestore`, `database`, `storage`, `common`, `ci`, `deps`, `docs`. Prefer the Gradle module name when the change is module-scoped.
+
+Examples from [CONTRIBUTING.md](../CONTRIBUTING.md):
+
+```text
+fix(auth): fixed a bug with email sign-in!
+feat(auth): add support for passkey authentication
+```
+
+## Pull requests
+
+When a PR contains **exactly one commit**, the **PR title must match that commit's subject line exactly** (character-for-character). Multi-commit PRs use a summary title that describes the overall change set.
+
+PR process expectations live in [.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) and [CONTRIBUTING.md](../CONTRIBUTING.md). New features that affect Auth UX should consider [FirebaseUI-iOS](https://github.com/firebase/FirebaseUI-iOS) parity.
+
+## OKF update contract
+
+OKF markdown edits require an **independent bundle consistency pass**. Use a fresh context with:
+
+1. A short summary of what changed and which files were touched.
+2. Instruction to scan the **entire** `okf-bundle/` tree.
+
+Confirm:
+
+| Check | Requirement |
+|-------|-------------|
+| **Canonical location** | Each topic has one owning doc; others link to it ([agent command policy](testing/agent-command-policy.md) for **all** agent shell commands; [change authoring](testing/change-authoring-workflow.md) for workflow/gates/frozen tree; [change authoring § validation evidence (blocking)](testing/change-authoring-workflow.md#validation-evidence-blocking); [running e2e](testing/running-e2e.md) for emulator + `e2eTest` detail; [iteration vocabulary](testing/iteration-vocabulary.md) for term ids only; [validation checklist](testing/validation-checklist.md) for command sequence; this file for doc/commit policy) |
+| **DRY** | No duplicated procedures, policy paragraphs, or ephemeral snapshots outside work queues |
+| **Link hygiene** | Cross-links resolve; indexes list canonical entry points |
+| **Durability** | No ephemeral fields leaked into general reference docs |
+
+Fix violations before handoff/merge. Work-queue edits still follow this split.
+
+## Work-queue documents
+
+Work queues are **intentionally ephemeral**: phases, **commit subjects**, gates, active coordination. They are not policy or finalized registry/design homes.
+
+Work queues record **gates**, **`next_work_type`**, **`validation_tier`**, and **`commit_subject`** using field names and allowed values from [iteration vocabulary](testing/iteration-vocabulary.md). Gate semantics and workflow rules: [change authoring workflow](testing/change-authoring-workflow.md). They do **not** name agent roles, dispatch instructions, or session choreography — those are out of scope for the public repo.
+
+Record **`commit_subject`** (the planned Conventional Commit subject line) **before** `git commit`, in the same staged changeset as the item being memorialized. Do not record SHAs — they are unstable under history rewrite. After commit, the subject in git and in the queue must match character-for-character ([PR title rule](#pull-requests) for single-commit PRs).
+
+New work queues link here in frontmatter/opening section; do not copy policy inline.
