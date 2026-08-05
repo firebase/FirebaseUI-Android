@@ -34,11 +34,11 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(
             } catch (e: AuthException) {
                 // Already an AuthException, don't re-wrap it
                 updateAuthState(AuthState.Error(e))
-                onSignInFailure(e)
+                if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
                 val authException = AuthException.from(e, context)
                 updateAuthState(AuthState.Error(authException))
-                onSignInFailure(authException)
+                if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
     }

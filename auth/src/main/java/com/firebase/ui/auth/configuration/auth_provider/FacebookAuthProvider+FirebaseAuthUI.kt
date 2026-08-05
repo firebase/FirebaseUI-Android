@@ -95,11 +95,11 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                         } catch (e: AuthException) {
                             // Already an AuthException, don't re-wrap it
                             updateAuthState(AuthState.Error(e))
-                            currentOnSignInFailure(e)
+                            if (e !is AuthException.AuthCancelledException) currentOnSignInFailure(e)
                         } catch (e: Exception) {
                             val authException = AuthException.from(e, currentContext)
                             updateAuthState(AuthState.Error(authException))
-                            currentOnSignInFailure(authException)
+                            if (authException !is AuthException.AuthCancelledException) currentOnSignInFailure(authException)
                         }
                     }
                 }
