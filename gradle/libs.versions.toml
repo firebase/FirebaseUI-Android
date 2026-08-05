@@ -3,7 +3,6 @@ kotlin = "2.4.10"
 android-gradle-plugin = "8.10.0"
 google-services = "4.5.0"
 maven-publish-plugin = "0.34.0"
-versions-plugin = "0.55.0"
 
 firebase-bom = "34.7.0"
 play-services-auth = "21.6.0"
@@ -135,4 +134,3 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish-plugin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
