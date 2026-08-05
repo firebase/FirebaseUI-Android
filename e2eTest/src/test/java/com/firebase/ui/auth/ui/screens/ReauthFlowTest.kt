@@ -297,4 +297,126 @@ class ReauthFlowTest {
 
         assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
     }
+
+    @Test
+    fun `wrong password during reauth does not fire the pending retry operation`() {
+        val email = "reauth-wrong-pw-${System.currentTimeMillis()}@example.com"
+        val password = "test123"
+        val wrongPassword = "wrong-password"
+
+        val user = ensureFreshUser(authUI, email, password)
+        requireNotNull(user) { "Failed to create user" }
+
+        try {
+            verifyEmailInEmulator(authUI, emulatorApi, user)
+        } catch (e: Exception) {
+            Assume.assumeTrue(
+                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
+                false
+            )
+        }
+
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        var currentAuthState: AuthState = AuthState.Idle
+        var retryOperationCalled = false
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false
+        }
+
+        composeAndroidTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                FirebaseAuthScreen(
+                    configuration = configuration,
+                    authUI = authUI,
+                    onSignInSuccess = {},
+                    onSignInFailure = {},
+                    onSignInCancelled = {},
+                ) { state, _ ->
+                    if (state is AuthState.Success) Text("AUTHENTICATED") else Text("NOT AUTHENTICATED")
+                }
+                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+                currentAuthState = authState
+            }
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 1: complete initial sign-in via the main screen form (correct password).
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performScrollTo()
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.Success
+        }
+        composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
+
+        val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
+
+        // Step 2: emit ReauthenticationRequired with a retryOperation.
+        authUI.updateAuthState(
+            AuthState.ReauthenticationRequired(
+                user = signedInUser,
+                reason = "Please verify your identity to continue",
+                retryOperation = { retryOperationCalled = true },
+            )
+        )
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailHint)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Step 3: enter the WRONG password in the reauth sheet.
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performScrollTo()
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(wrongPassword)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // The error dialog surfaces the failed reauth attempt.
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.errorDialogTitle)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Dismiss the error dialog, which self-consumes Error -> Idle on the shared authUI.
+        composeAndroidTestRule.onNodeWithText(stringProvider.dismissAction).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(retryOperationCalled).isFalse()
+    }
 }
