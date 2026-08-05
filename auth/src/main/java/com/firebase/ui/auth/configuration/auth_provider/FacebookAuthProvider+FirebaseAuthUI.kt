@@ -19,8 +19,10 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -64,6 +66,10 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     val coroutineScope = rememberCoroutineScope()
     val callbackManager = remember { CallbackManager.Factory.create() }
     val loginManager = LoginManager.getInstance()
+    val currentContext by rememberUpdatedState(context)
+    val currentConfig by rememberUpdatedState(config)
+    val currentProvider by rememberUpdatedState(provider)
+    val currentOnSignInFailure by rememberUpdatedState(onSignInFailure)
 
     val launcher = rememberLauncherForActivityResult(
         loginManager.createLogInActivityResultContract(
@@ -73,7 +79,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
         onResult = {},
     )
 
-    DisposableEffect(config) {
+    DisposableEffect(Unit) {
         loginManager.registerCallback(
             callbackManager,
             object : FacebookCallback<LoginResult> {
@@ -81,19 +87,19 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                     coroutineScope.launch {
                         try {
                             signInWithFacebook(
-                                context = context,
-                                config = config,
-                                provider = provider,
+                                context = currentContext,
+                                config = currentConfig,
+                                provider = currentProvider,
                                 accessToken = result.accessToken,
                             )
                         } catch (e: AuthException) {
                             // Already an AuthException, don't re-wrap it
                             updateAuthState(AuthState.Error(e))
-                            onSignInFailure(e)
+                            currentOnSignInFailure(e)
                         } catch (e: Exception) {
-                            val authException = AuthException.from(e, context)
+                            val authException = AuthException.from(e, currentContext)
                             updateAuthState(AuthState.Error(authException))
-                            onSignInFailure(authException)
+                            currentOnSignInFailure(authException)
                         }
                     }
                 }
@@ -104,13 +110,13 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
 
                 override fun onError(error: FacebookException) {
                     Log.e("FacebookAuthProvider", "Error during Facebook sign in", error)
-                    val authException = AuthException.from(error, context)
+                    val authException = AuthException.from(error, currentContext)
                     updateAuthState(
                         AuthState.Error(
                             authException
                         )
                     )
-                    onSignInFailure(authException)
+                    currentOnSignInFailure(authException)
                 }
             })
 

@@ -3,7 +3,6 @@ package com.firebase.ui.auth.configuration.auth_provider
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.GetCredentialException
@@ -61,19 +60,17 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
     onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
-    return remember(this, config) {
-        {
-            coroutineScope.launch {
-                try {
-                    signInWithGoogle(context, config, provider)
-                } catch (e: AuthException) {
-                    updateAuthState(AuthState.Error(e))
-                    onSignInFailure(e)
-                } catch (e: Exception) {
-                    val authException = AuthException.from(e, context)
-                    updateAuthState(AuthState.Error(authException))
-                    onSignInFailure(authException)
-                }
+    return {
+        coroutineScope.launch {
+            try {
+                signInWithGoogle(context, config, provider)
+            } catch (e: AuthException) {
+                updateAuthState(AuthState.Error(e))
+                onSignInFailure(e)
+            } catch (e: Exception) {
+                val authException = AuthException.from(e, context)
+                updateAuthState(AuthState.Error(authException))
+                onSignInFailure(authException)
             }
         }
     }

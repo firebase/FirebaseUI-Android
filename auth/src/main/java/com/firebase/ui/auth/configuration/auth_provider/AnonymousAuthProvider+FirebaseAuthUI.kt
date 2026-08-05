@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -28,20 +27,18 @@ internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(
 ): () -> Unit {
     val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    return remember(this) {
-        {
-            coroutineScope.launch {
-                try {
-                    signInAnonymously(config)
-                } catch (e: AuthException) {
-                    // Already an AuthException, don't re-wrap it
-                    updateAuthState(AuthState.Error(e))
-                    onSignInFailure(e)
-                } catch (e: Exception) {
-                    val authException = AuthException.from(e, context)
-                    updateAuthState(AuthState.Error(authException))
-                    onSignInFailure(authException)
-                }
+    return {
+        coroutineScope.launch {
+            try {
+                signInAnonymously(config)
+            } catch (e: AuthException) {
+                // Already an AuthException, don't re-wrap it
+                updateAuthState(AuthState.Error(e))
+                onSignInFailure(e)
+            } catch (e: Exception) {
+                val authException = AuthException.from(e, context)
+                updateAuthState(AuthState.Error(authException))
+                onSignInFailure(authException)
             }
         }
     }

@@ -3,7 +3,6 @@ package com.firebase.ui.auth.configuration.auth_provider
 import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -63,24 +62,22 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
                 "Ensure FirebaseAuthScreen is used within an Activity."
     )
 
-    return remember(this, provider.providerId, config) {
-        {
-            coroutineScope.launch {
-                try {
-                    signInWithProvider(
-                        context = context,
-                        config = config,
-                        activity = activity,
-                        provider = provider
-                    )
-                } catch (e: AuthException) {
-                    updateAuthState(AuthState.Error(e))
-                    onSignInFailure(e)
-                } catch (e: Exception) {
-                    val authException = AuthException.from(e, context)
-                    updateAuthState(AuthState.Error(authException))
-                    onSignInFailure(authException)
-                }
+    return {
+        coroutineScope.launch {
+            try {
+                signInWithProvider(
+                    context = context,
+                    config = config,
+                    activity = activity,
+                    provider = provider
+                )
+            } catch (e: AuthException) {
+                updateAuthState(AuthState.Error(e))
+                onSignInFailure(e)
+            } catch (e: Exception) {
+                val authException = AuthException.from(e, context)
+                updateAuthState(AuthState.Error(authException))
+                onSignInFailure(authException)
             }
         }
     }
