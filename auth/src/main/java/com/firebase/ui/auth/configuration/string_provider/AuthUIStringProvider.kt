@@ -582,9 +582,6 @@ interface AuthUIStringProvider {
     /** ToS and Privacy Policy combined message with placeholders for links */
     fun tosAndPrivacyPolicy(termsOfServiceLabel: String, privacyPolicyLabel: String): String
 
-    /** Tooltip message shown when new account sign-up is disabled */
-    val newAccountsDisabledTooltip: String
-
     /** Tooltip message shown when MFA is disabled */
     val mfaDisabledTooltip: String
 
