@@ -8,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.maven.publish) apply false
-    alias(libs.plugins.versions)
 }
 
 allprojects {
