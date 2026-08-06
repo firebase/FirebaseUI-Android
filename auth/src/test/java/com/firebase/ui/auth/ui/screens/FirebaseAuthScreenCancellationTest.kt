@@ -68,14 +68,6 @@ class FirebaseAuthScreenCancellationTest {
         }
     }
 
-    // Prior to the Cancelled/Aborted split, AuthState.Cancelled always invoked
-    // onSignInCancelled(), so these tests (originally named "...invokes callback once")
-    // asserted the terminal callback fired exactly once for a single-provider config.
-    // Cancelled is now operation-level only — no terminal callback, ever — so the
-    // meaningful assertion for Cancelled is that the callback is NOT invoked. Coverage
-    // for the "callback fires exactly once, not duplicated" concern now belongs to
-    // AuthState.Aborted, verified separately below.
-
     @Test
     fun `single email provider cancellation does not invoke callback`() {
         val configuration = authUIConfiguration {

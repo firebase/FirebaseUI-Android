@@ -213,7 +213,6 @@ class AuthFlowControllerTest {
         // Collect first state after cancel
         val state = controller.authStateFlow.first()
 
-        // Should be Aborted state (AuthFlowController.cancel() is flow-ending)
         assertThat(state).isInstanceOf(AuthState.Aborted::class.java)
     }
 
@@ -438,7 +437,6 @@ class AuthFlowControllerTest {
         // Advance test scheduler to process all pending coroutines
         testScheduler.advanceUntilIdle()
 
-        // Verify aborted state (AuthFlowController.cancel() is flow-ending)
         val state = controller.authStateFlow.first()
         assertThat(state).isInstanceOf(AuthState.Aborted::class.java)
 

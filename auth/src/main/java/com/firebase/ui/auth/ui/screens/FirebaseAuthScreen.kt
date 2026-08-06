@@ -550,10 +550,6 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Cancelled -> {
-                        // Operation-level cancellation only: the flow stays open and returns to
-                        // the method picker. No terminal callback here — onSignInCancelled() is
-                        // reserved for Aborted, since firing a terminal callback while this screen
-                        // keeps running would mislead a host that isn't watching AuthState itself.
                         pendingReauthOperation.value = null
                         pendingReauthConfig.value = null
                         pendingReauthState.value = null
@@ -566,17 +562,10 @@ fun FirebaseAuthScreen(
                                 launchSingleTop = true
                             }
                         }
-                        // Consumed so this doesn't leak to a freshly created screen.
                         authUI.updateAuthState(AuthState.Idle)
                     }
 
                     is AuthState.Aborted -> {
-                        // Flow-ending: when hosted by FirebaseAuthActivity, that activity's own
-                        // authStateFlow collector independently finishes on Aborted. When this
-                        // screen is embedded standalone (no FirebaseAuthActivity around to absorb
-                        // it), onSignInCancelled() is the only signal the host gets that the flow
-                        // is over, so it's invoked unconditionally here. No navigation: the screen
-                        // is being torn down or the host is otherwise handling flow-end.
                         pendingReauthOperation.value = null
                         pendingReauthConfig.value = null
                         pendingReauthState.value = null
@@ -584,19 +573,6 @@ fun FirebaseAuthScreen(
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
                         onSignInCancelled()
-                        // Consumed so this doesn't leak to a freshly created screen.
-                        //
-                        // NOT a race with FirebaseAuthActivity's own Aborted collector: cancel()
-                        // (the sole setter of Aborted) now carries @MainThread, enforced by lint,
-                        // not just convention. Activity's collector observes authUI.authStateFlow()
-                        // — a combine(...).distinctUntilChanged() — via Dispatchers.Main.immediate,
-                        // so a main-thread cancel() resumes it in-line and finish() runs before
-                        // cancel() returns. This LaunchedEffect, by contrast, is driven by Compose's
-                        // collectAsState() recomposition, which requires an actual dispatch, so this
-                        // branch and the Idle reset below run strictly after the Activity has
-                        // already finished. See FirebaseAuthActivity's Aborted branch for why that
-                        // in-line resume is a kotlinx-coroutines implementation detail (combine()
-                        // propagating the caller's dispatcher), not an unconditional guarantee.
                         authUI.updateAuthState(AuthState.Idle)
                     }
 
