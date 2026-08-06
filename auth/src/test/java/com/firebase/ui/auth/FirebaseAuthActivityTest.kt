@@ -335,6 +335,26 @@ class FirebaseAuthActivityTest {
         assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_CANCELED)
     }
 
+    @Test
+    fun `Aborted state resets to Idle so a later flow on the same authUI does not immediately finish`() = runTest {
+        val firstIntent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val firstController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, firstIntent)
+        val firstActivity = firstController.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.Aborted)
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(firstActivity.isFinishing).isTrue()
+
+        val secondIntent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val secondController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, secondIntent)
+        val secondActivity = secondController.create().start().resume().get()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(secondActivity.isFinishing).isFalse()
+    }
+
     // =============================================================================================
     // Auth State Cancelled Tests
     // =============================================================================================

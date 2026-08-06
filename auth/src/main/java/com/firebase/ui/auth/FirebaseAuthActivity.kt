@@ -122,6 +122,7 @@ class FirebaseAuthActivity : ComponentActivity() {
                     }
                     is AuthState.Aborted -> {
                         setResult(RESULT_CANCELED)
+                        authUI.updateAuthState(AuthState.Idle)
                         finish()
                     }
                     is AuthState.Error -> {
