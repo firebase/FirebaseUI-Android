@@ -343,7 +343,12 @@ lifecycleScope.launch {
             Log.e(TAG, "Auth failed", state.exception)
         }
         is AuthState.Cancelled -> {
-            // User cancelled
+            // User cancelled a single sign-in attempt (e.g. dismissed the
+            // Credential Manager sheet, backed out of MFA); the flow stays open
+        }
+        is AuthState.Aborted -> {
+            // Flow was ended via controller.cancel()
+            finish()
         }
         else -> {
             // Handle other states (RequiresMfa, RequiresEmailVerification, etc.)
@@ -375,6 +380,7 @@ sealed class AuthState {
     data class RequiresEmailVerification(val user: FirebaseUser, val email: String) : AuthState()
     data class RequiresProfileCompletion(val user: FirebaseUser, val missingFields: List<String> = emptyList()) : AuthState()
     object Cancelled : AuthState()
+    object Aborted : AuthState()
     object PasswordResetLinkSent : AuthState()
     object EmailSignInLinkSent : AuthState()
     data class SMSAutoVerified(val credential: PhoneAuthCredential) : AuthState()
@@ -684,7 +690,7 @@ fun AuthenticationScreen() {
 | `configuration` | `AuthUIConfiguration` | *Required* | Authentication configuration (providers, theme, etc.) |
 | `onSignInSuccess` | `(AuthResult) -> Unit` | *Required* | Callback when sign-in succeeds |
 | `onSignInFailure` | `(AuthException) -> Unit` | *Required* | Callback when sign-in fails |
-| `onSignInCancelled` | `() -> Unit` | *Required* | Callback when user cancels authentication |
+| `onSignInCancelled` | `() -> Unit` | *Required* | Callback when the auth flow ends via `AuthState.Aborted` (e.g. `AuthFlowController.cancel()`); not called when the user merely backs out of a single sign-in attempt (`AuthState.Cancelled`) |
 | `modifier` | `Modifier` | `Modifier` | Modifier for the composable |
 | `authUI` | `FirebaseAuthUI` | `FirebaseAuthUI.getInstance()` | Custom FirebaseAuthUI instance (for multi-app support) |
 | `emailLink` | `String?` | `null` | Email link for passwordless sign-in (see [Email Link Sign-In](#email-link-sign-in)) |
@@ -777,7 +783,11 @@ class AuthActivity : ComponentActivity() {
                 showEmailVerificationScreen(state.user)
             }
             is AuthState.Cancelled -> {
-                // User cancelled authentication
+                // User cancelled a single sign-in attempt; the flow stays open
+                // and returns to the method picker
+            }
+            is AuthState.Aborted -> {
+                // Flow was ended via controller.cancel()
                 finish()
             }
             else -> {

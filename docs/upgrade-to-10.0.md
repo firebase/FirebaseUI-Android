@@ -394,6 +394,56 @@ class AuthActivity : ComponentActivity() {
 }
 ```
 
+## Breaking Change: `AuthState.Cancelled` Split into `Cancelled` and `Aborted` (beta04)
+
+Prior to `10.0.0-beta04`, `AuthState.Cancelled` was used for two different situations:
+cancelling a single sign-in attempt (e.g. dismissing the Credential Manager sheet, backing
+out of an MFA challenge) **and** ending the whole authentication flow via
+`AuthFlowController.cancel()`. Because both cases emitted the same state, any consumer that
+matched on `AuthState.Cancelled` to tear down its UI would also tear down the flow when the
+user simply backed out of one provider — even though the flow was meant to stay open and
+return to the method picker.
+
+`AuthState.Cancelled` and `AuthState.Aborted` now have distinct meanings:
+
+- **`AuthState.Cancelled`** — operation-level. The user backed out of a single sign-in
+  attempt. The flow stays open and returns to the method picker. `FirebaseAuthActivity` does
+  **not** finish, and `onSignInCancelled()` is **not** called.
+- **`AuthState.Aborted`** (new) — flow-ending. Emitted only by `AuthFlowController.cancel()`.
+  `FirebaseAuthActivity` finishes with `RESULT_CANCELED`, and `onSignInCancelled()` is called.
+
+**What to do:** If you match on `AuthState.Cancelled` expecting the flow-termination
+semantics of `AuthFlowController.cancel()` (e.g. finishing an Activity, navigating away),
+change that branch to match `AuthState.Aborted` instead:
+
+**Old (pre-beta04):**
+```kotlin
+when (state) {
+    is AuthState.Cancelled -> {
+        // Flow was cancelled
+        finish()
+    }
+    // ...
+}
+```
+
+**New (beta04+):**
+```kotlin
+when (state) {
+    is AuthState.Cancelled -> {
+        // User cancelled a single sign-in attempt; the flow stays open
+    }
+    is AuthState.Aborted -> {
+        // Flow was ended via controller.cancel()
+        finish()
+    }
+    // ...
+}
+```
+
+This is a behavioral change only (`AuthState` is not `sealed`, so no compile break occurs).
+It only affects `10.0.0` beta releases (beta01–beta03), which have not shipped stable.
+
 ## Common Issues and Solutions
 
 ### Issue: "Unresolved reference: authUIConfiguration"
