@@ -71,7 +71,10 @@ import java.util.concurrent.atomic.AtomicBoolean
  *                         // Handle error
  *                     }
  *                     is AuthState.Cancelled -> {
- *                         // User cancelled
+ *                         // User cancelled a single sign-in attempt; flow stays open
+ *                     }
+ *                     is AuthState.Aborted -> {
+ *                         // The whole flow was ended via authController.cancel()
  *                     }
  *                     else -> {}
  *                 }
@@ -93,7 +96,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * **Lifecycle Management:**
  * - [createIntent] - Generate Intent to start the auth flow Activity
  * - [start] - Alternative to launch the flow (for Activity context)
- * - [cancel] - Cancel the ongoing auth flow, transitions to [AuthState.Cancelled]
+ * - [cancel] - Cancel the ongoing auth flow, transitions to [AuthState.Aborted]
  * - [dispose] - Release all resources (coroutines, listeners). Call in onDestroy()
  *
  * @property authUI The [FirebaseAuthUI] instance managing authentication
@@ -120,7 +123,9 @@ class AuthFlowController internal constructor(
      * - [AuthState.Loading] - Authentication in progress
      * - [AuthState.Success] - User signed in successfully
      * - [AuthState.Error] - Authentication error occurred
-     * - [AuthState.Cancelled] - User cancelled the flow
+     * - [AuthState.Cancelled] - Operation-level cancellation; the user cancelled a single
+     *   sign-in attempt and the flow stays open
+     * - [AuthState.Aborted] - The whole flow was ended via [cancel]
      * - [AuthState.RequiresMfa] - Multi-factor authentication required
      * - [AuthState.RequiresEmailVerification] - Email verification required
      */
@@ -195,9 +200,13 @@ class AuthFlowController internal constructor(
     /**
      * Cancels the ongoing authentication flow.
      *
-     * This method transitions the auth state to [AuthState.Cancelled] and
+     * This method transitions the auth state to [AuthState.Aborted] and
      * signals the auth flow to terminate. The auth flow Activity will finish
      * and return [Activity.RESULT_CANCELED].
+     *
+     * Unlike [AuthState.Cancelled] (an operation-level cancellation that leaves the flow
+     * open, e.g. dismissing the Google Credential Manager sheet), calling this method ends
+     * the entire flow.
      *
      * **Example:**
      * ```kotlin
@@ -211,7 +220,7 @@ class AuthFlowController internal constructor(
      */
     fun cancel() {
         checkNotDisposed()
-        authUI.updateAuthState(AuthState.Cancelled)
+        authUI.updateAuthState(AuthState.Aborted)
     }
 
     /**

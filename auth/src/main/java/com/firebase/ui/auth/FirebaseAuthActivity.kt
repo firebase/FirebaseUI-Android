@@ -36,7 +36,11 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * This activity displays the [FirebaseAuthScreen] composable and manages
  * the authentication flow lifecycle. It automatically finishes when the user
- * signs in successfully or cancels the flow.
+ * signs in successfully ([AuthState.Success]) or the flow is aborted
+ * ([AuthState.Aborted], e.g. via [AuthFlowController.cancel]). Operation-level
+ * cancellations ([AuthState.Cancelled], e.g. dismissing the Google Credential Manager
+ * sheet) do not finish the activity — the flow stays open and the screen returns to
+ * the method picker.
  *
  * **Do not launch this Activity directly.**
  * Use [AuthFlowController] to start the auth flow:
@@ -116,8 +120,8 @@ class FirebaseAuthActivity : ComponentActivity() {
                         setResult(RESULT_OK, resultIntent)
                         finish()
                     }
-                    is AuthState.Cancelled -> {
-                        // User cancelled the flow
+                    is AuthState.Aborted -> {
+                        // The whole flow was aborted (e.g. AuthFlowController.cancel())
                         setResult(RESULT_CANCELED)
                         finish()
                     }
@@ -149,6 +153,9 @@ class FirebaseAuthActivity : ComponentActivity() {
                     onSignInFailure = { exception ->
                         // State flow will handle error
                     },
+                    // TODO(J2): Re-check this once FirebaseAuthScreen's internals are split for
+                    // Cancelled/Aborted — onSignInCancelled may need to emit AuthState.Aborted
+                    // instead if it now represents the whole flow ending.
                     onSignInCancelled = {
                         authUI.updateAuthState(AuthState.Cancelled)
                     }
