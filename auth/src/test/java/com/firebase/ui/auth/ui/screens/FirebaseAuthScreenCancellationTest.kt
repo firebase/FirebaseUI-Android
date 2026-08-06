@@ -69,7 +69,7 @@ class FirebaseAuthScreenCancellationTest {
     }
 
     @Test
-    fun `single email provider cancellation does not invoke callback`() {
+    fun `single email provider cancellation invokes callback exactly once`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -98,11 +98,11 @@ class FirebaseAuthScreenCancellationTest {
         }
         composeTestRule.waitForIdle()
 
-        assertThat(cancelCount).isEqualTo(0)
+        assertThat(cancelCount).isEqualTo(1)
     }
 
     @Test
-    fun `single phone provider cancellation does not invoke callback`() {
+    fun `single phone provider cancellation invokes callback exactly once`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -132,11 +132,11 @@ class FirebaseAuthScreenCancellationTest {
         }
         composeTestRule.waitForIdle()
 
-        assertThat(cancelCount).isEqualTo(0)
+        assertThat(cancelCount).isEqualTo(1)
     }
 
     @Test
-    fun `single email provider abort invokes callback exactly once`() {
+    fun `single email provider abort does not invoke callback`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -165,11 +165,11 @@ class FirebaseAuthScreenCancellationTest {
         }
         composeTestRule.waitForIdle()
 
-        assertThat(cancelCount).isEqualTo(1)
+        assertThat(cancelCount).isEqualTo(0)
     }
 
     @Test
-    fun `single phone provider abort invokes callback exactly once`() {
+    fun `single phone provider abort does not invoke callback`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -199,6 +199,6 @@ class FirebaseAuthScreenCancellationTest {
         }
         composeTestRule.waitForIdle()
 
-        assertThat(cancelCount).isEqualTo(1)
+        assertThat(cancelCount).isEqualTo(0)
     }
 }

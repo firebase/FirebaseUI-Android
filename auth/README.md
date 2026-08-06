@@ -179,7 +179,9 @@ class MainActivity : ComponentActivity() {
                         Toast.makeText(this, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
                     },
                     onSignInCancelled = {
-                        finish()
+                        // User backed out of a single provider (e.g. dismissed the Google
+                        // Credential Manager sheet); FirebaseAuthScreen already returns to
+                        // the method picker on its own — no action needed here.
                     }
                 )
             }
@@ -677,7 +679,8 @@ fun AuthenticationScreen() {
             }
         },
         onSignInCancelled = {
-            navigateBack()
+            // User backed out of a single provider; the screen already returns
+            // to the method picker on its own.
         }
     )
 }
@@ -690,7 +693,7 @@ fun AuthenticationScreen() {
 | `configuration` | `AuthUIConfiguration` | *Required* | Authentication configuration (providers, theme, etc.) |
 | `onSignInSuccess` | `(AuthResult) -> Unit` | *Required* | Callback when sign-in succeeds |
 | `onSignInFailure` | `(AuthException) -> Unit` | *Required* | Callback when sign-in fails |
-| `onSignInCancelled` | `() -> Unit` | *Required* | Callback when the auth flow ends via `AuthState.Aborted` (e.g. `AuthFlowController.cancel()`); not called when the user merely backs out of a single sign-in attempt (`AuthState.Cancelled`) |
+| `onSignInCancelled` | `() -> Unit` | *Required* | Callback when the user backs out of a single sign-in attempt (`AuthState.Cancelled`, e.g. dismissing the Google Credential Manager sheet); `FirebaseAuthScreen` already returns to the method picker itself, so this is informational only. Not called when the whole flow ends via `AuthFlowController.cancel()` (`AuthState.Aborted`) — that state is observable directly on `authUI.authStateFlow()`/`authFlowController.authStateFlow` for callers who need it |
 | `modifier` | `Modifier` | `Modifier` | Modifier for the composable |
 | `authUI` | `FirebaseAuthUI` | `FirebaseAuthUI.getInstance()` | Custom FirebaseAuthUI instance (for multi-app support) |
 | `emailLink` | `String?` | `null` | Email link for passwordless sign-in (see [Email Link Sign-In](#email-link-sign-in)) |
@@ -712,7 +715,8 @@ FirebaseAuthScreen(
         showError(exception)
     },
     onSignInCancelled = {
-        finish()
+        // User backed out of a single provider; the screen already returns
+        // to the method picker on its own.
     },
     authenticatedContent = { state, uiContext ->
         // Show a welcome screen or profile completion UI
@@ -1739,7 +1743,8 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     // Handle error
                 },
                 onSignInCancelled = {
-                    finish()
+                    // User backed out of a single provider; the screen already
+                    // returns to the method picker on its own.
                 }
             )
         }

@@ -562,6 +562,7 @@ fun FirebaseAuthScreen(
                                 launchSingleTop = true
                             }
                         }
+                        onSignInCancelled()
                         authUI.updateAuthState(AuthState.Idle)
                     }
 
@@ -572,7 +573,6 @@ fun FirebaseAuthScreen(
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
-                        onSignInCancelled()
                         authUI.updateAuthState(AuthState.Idle)
                     }
 
