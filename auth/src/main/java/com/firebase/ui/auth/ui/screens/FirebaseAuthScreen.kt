@@ -62,6 +62,7 @@ import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.BuildConfig
+import com.firebase.ui.auth.FirebaseAuthActivity
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -567,13 +568,17 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Aborted -> {
-                        pendingReauthOperation.value = null
-                        pendingReauthConfig.value = null
-                        pendingReauthState.value = null
-                        pendingResolver.value = null
-                        pendingLinkingCredential.value = null
-                        lastSuccessfulUserId.value = null
-                        authUI.updateAuthState(AuthState.Idle)
+                        // Hosted by FirebaseAuthActivity: its own authStateFlow collector
+                        // independently finishes the activity and resets state on Aborted.
+                        if (activity !is FirebaseAuthActivity) {
+                            pendingReauthOperation.value = null
+                            pendingReauthConfig.value = null
+                            pendingReauthState.value = null
+                            pendingResolver.value = null
+                            pendingLinkingCredential.value = null
+                            lastSuccessfulUserId.value = null
+                            authUI.updateAuthState(AuthState.Idle)
+                        }
                     }
 
                     is AuthState.Idle -> {
