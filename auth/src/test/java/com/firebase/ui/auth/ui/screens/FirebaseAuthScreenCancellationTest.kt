@@ -68,8 +68,16 @@ class FirebaseAuthScreenCancellationTest {
         }
     }
 
+    // Prior to the Cancelled/Aborted split, AuthState.Cancelled always invoked
+    // onSignInCancelled(), so these tests (originally named "...invokes callback once")
+    // asserted the terminal callback fired exactly once for a single-provider config.
+    // Cancelled is now operation-level only — no terminal callback, ever — so the
+    // meaningful assertion for Cancelled is that the callback is NOT invoked. Coverage
+    // for the "callback fires exactly once, not duplicated" concern now belongs to
+    // AuthState.Aborted, verified separately below.
+
     @Test
-    fun `single email provider cancellation invokes callback once`() {
+    fun `single email provider cancellation does not invoke callback`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -98,11 +106,11 @@ class FirebaseAuthScreenCancellationTest {
         }
         composeTestRule.waitForIdle()
 
-        assertThat(cancelCount).isEqualTo(1)
+        assertThat(cancelCount).isEqualTo(0)
     }
 
     @Test
-    fun `single phone provider cancellation invokes callback once`() {
+    fun `single phone provider cancellation does not invoke callback`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -129,6 +137,73 @@ class FirebaseAuthScreenCancellationTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(AuthState.Cancelled)
+        }
+        composeTestRule.waitForIdle()
+
+        assertThat(cancelCount).isEqualTo(0)
+    }
+
+    @Test
+    fun `single email provider abort invokes callback exactly once`() {
+        val configuration = authUIConfiguration {
+            context = ApplicationProvider.getApplicationContext()
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+        }
+        var cancelCount = 0
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = { cancelCount++ }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(AuthState.Aborted)
+        }
+        composeTestRule.waitForIdle()
+
+        assertThat(cancelCount).isEqualTo(1)
+    }
+
+    @Test
+    fun `single phone provider abort invokes callback exactly once`() {
+        val configuration = authUIConfiguration {
+            context = ApplicationProvider.getApplicationContext()
+            providers {
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = null,
+                        allowedCountries = null
+                    )
+                )
+            }
+        }
+        var cancelCount = 0
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = { cancelCount++ }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(AuthState.Aborted)
         }
         composeTestRule.waitForIdle()
 

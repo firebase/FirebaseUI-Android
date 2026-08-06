@@ -313,18 +313,18 @@ class FirebaseAuthActivityTest {
     }
 
     // =============================================================================================
-    // Auth State Cancelled Tests
+    // Auth State Aborted Tests
     // =============================================================================================
 
     @Test
-    fun `activity finishes with RESULT_CANCELED on Cancelled state`() = runTest {
+    fun `activity finishes with RESULT_CANCELED on Aborted state`() = runTest {
         val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
         val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
 
         val activity = controller.create().start().resume().get()
 
-        // Update to Cancelled state
-        authUI.updateAuthState(AuthState.Cancelled)
+        // Update to Aborted state (flow-ending cancellation)
+        authUI.updateAuthState(AuthState.Aborted)
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -334,6 +334,28 @@ class FirebaseAuthActivityTest {
         // Result should be RESULT_CANCELED
         val shadowActivity = shadowOf(activity)
         assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+    }
+
+    // =============================================================================================
+    // Auth State Cancelled Tests
+    // =============================================================================================
+
+    @Test
+    fun `activity does not finish on Cancelled state`() = runTest {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().start().resume().get()
+
+        // Update to Cancelled state (operation-level cancellation, e.g. dismissing a
+        // provider sheet or backing out of an MFA challenge). Since the Cancelled/Aborted
+        // split, Cancelled no longer terminates the flow.
+        authUI.updateAuthState(AuthState.Cancelled)
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Activity should remain open
+        assertThat(activity.isFinishing).isFalse()
     }
 
     // =============================================================================================
@@ -556,6 +578,37 @@ class FirebaseAuthActivityTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Activity should NOT finish on RequiresMfa state
+        assertThat(activity.isFinishing).isFalse()
+    }
+
+    // Regression test for the AuthState.Cancelled/Aborted split (CPRN-299): the MFA
+    // challenge screen's onCancel handler emits AuthState.Cancelled. Before the split,
+    // Cancelled always finished FirebaseAuthActivity, so backing out of an MFA challenge
+    // used to terminate the whole sign-in flow. After the split, Cancelled is
+    // operation-level only, so the same onCancel action now correctly keeps the flow
+    // open instead of exiting — a real behavior change for existing beta consumers.
+    @Test
+    fun `activity does not finish when MFA challenge is cancelled`() = runTest {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().start().resume().get()
+
+        // Enter the MFA challenge, as if a resolver was returned.
+        authUI.updateAuthState(AuthState.RequiresMfa(
+            resolver = mockMultiFactorResolver,
+            hint = "Enter verification code"
+        ))
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Simulate the MFA challenge screen's onCancel handler backing out of the
+        // challenge (see FirebaseAuthScreen.kt's MfaChallenge composable onCancel).
+        authUI.updateAuthState(AuthState.Cancelled)
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // The flow must stay open: the activity should NOT finish on Cancelled.
         assertThat(activity.isFinishing).isFalse()
     }
 
