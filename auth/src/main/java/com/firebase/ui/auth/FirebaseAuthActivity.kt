@@ -121,7 +121,17 @@ class FirebaseAuthActivity : ComponentActivity() {
                         finish()
                     }
                     is AuthState.Aborted -> {
-                        // The whole flow was aborted (e.g. AuthFlowController.cancel())
+                        // The whole flow was aborted (e.g. AuthFlowController.cancel(), which now
+                        // carries @MainThread, enforced by lint, not just convention).
+                        //
+                        // We collect authUI.authStateFlow() — a combine(...).distinctUntilChanged()
+                        // — via lifecycleScope's default Dispatchers.Main.immediate, so a main-thread
+                        // cancel() resumes this collector in-line and finish() below runs before
+                        // cancel() returns, strictly before FirebaseAuthScreen's Compose-driven Idle
+                        // reset (see that branch). That in-line resume depends on combine()
+                        // propagating the caller's dispatcher rather than dispatching its own — a
+                        // kotlinx-coroutines implementation detail worth re-checking if
+                        // authStateFlow()'s implementation changes.
                         setResult(RESULT_CANCELED)
                         finish()
                     }
@@ -153,12 +163,13 @@ class FirebaseAuthActivity : ComponentActivity() {
                     onSignInFailure = { exception ->
                         // State flow will handle error
                     },
-                    // TODO(J2): Re-check this once FirebaseAuthScreen's internals are split for
-                    // Cancelled/Aborted — onSignInCancelled may need to emit AuthState.Aborted
-                    // instead if it now represents the whole flow ending.
-                    onSignInCancelled = {
-                        authUI.updateAuthState(AuthState.Cancelled)
-                    }
+                    // onSignInCancelled() is now only invoked by FirebaseAuthScreen from its
+                    // Aborted branch (Cancelled is operation-level and keeps the flow open, so it
+                    // no longer fires this terminal callback). The authStateFlow collector above
+                    // already finishes this activity on Aborted, so there's nothing left to do
+                    // here — re-emitting Cancelled would incorrectly push a stale state onto the
+                    // shared authUI instance after the flow has already ended.
+                    onSignInCancelled = {}
                 )
             }
         }

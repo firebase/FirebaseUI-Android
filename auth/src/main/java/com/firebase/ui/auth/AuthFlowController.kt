@@ -18,6 +18,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.MainThread
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -218,6 +219,7 @@ class AuthFlowController internal constructor(
      *
      * @throws IllegalStateException if the controller has been disposed
      */
+    @MainThread
     fun cancel() {
         checkNotDisposed()
         authUI.updateAuthState(AuthState.Aborted)
