@@ -30,10 +30,20 @@ class EmulatorAuthApi(
             try {
                 clearAccounts()
                 return
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+                throw e
             } catch (e: Exception) {
                 lastError = e
                 println("WARNING: Failed to clear emulator data (attempt $attempt/$maxRetries): ${e.message}")
-                if (attempt < maxRetries) Thread.sleep(500L * attempt)
+                if (attempt < maxRetries) {
+                    try {
+                        Thread.sleep(500L * attempt)
+                    } catch (ie: InterruptedException) {
+                        Thread.currentThread().interrupt()
+                        throw ie
+                    }
+                }
             }
         }
         throw IllegalStateException(
