@@ -315,18 +315,17 @@ class FirebaseAuthActivityTest {
     }
 
     // =============================================================================================
-    // Auth State Cancelled Tests
+    // Auth State Aborted Tests
     // =============================================================================================
 
     @Test
-    fun `activity finishes with RESULT_CANCELED on Cancelled state`() = runTest {
+    fun `activity finishes with RESULT_CANCELED on Aborted state`() = runTest {
         val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
         val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
 
         val activity = controller.create().start().resume().get()
 
-        // Update to Cancelled state
-        authUI.updateAuthState(AuthState.Cancelled)
+        authUI.updateAuthState(AuthState.Aborted)
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -336,6 +335,44 @@ class FirebaseAuthActivityTest {
         // Result should be RESULT_CANCELED
         val shadowActivity = shadowOf(activity)
         assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+    }
+
+    @Test
+    fun `Aborted state resets to Idle so a later flow on the same authUI does not immediately finish`() = runTest {
+        val firstIntent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val firstController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, firstIntent)
+        val firstActivity = firstController.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.Aborted)
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(firstActivity.isFinishing).isTrue()
+
+        val secondIntent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val secondController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, secondIntent)
+        val secondActivity = secondController.create().start().resume().get()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(secondActivity.isFinishing).isFalse()
+    }
+
+    // =============================================================================================
+    // Auth State Cancelled Tests
+    // =============================================================================================
+
+    @Test
+    fun `activity does not finish on Cancelled state`() = runTest {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.Cancelled)
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(activity.isFinishing).isFalse()
     }
 
     // =============================================================================================
@@ -558,6 +595,27 @@ class FirebaseAuthActivityTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Activity should NOT finish on RequiresMfa state
+        assertThat(activity.isFinishing).isFalse()
+    }
+
+    @Test
+    fun `activity does not finish when MFA challenge is cancelled`() = runTest {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.RequiresMfa(
+            resolver = mockMultiFactorResolver,
+            hint = "Enter verification code"
+        ))
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        authUI.updateAuthState(AuthState.Cancelled)
+
+        shadowOf(Looper.getMainLooper()).idle()
+
         assertThat(activity.isFinishing).isFalse()
     }
 

@@ -16,6 +16,7 @@ package com.firebase.ui.auth
 
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.MainThread
 import androidx.annotation.RestrictTo
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -360,6 +361,7 @@ class FirebaseAuthUI private constructor(
      *
      * @param state The new [AuthState] to emit
      */
+    @MainThread
     fun updateAuthState(state: AuthState) {
         _authStateFlow.value = state
     }
