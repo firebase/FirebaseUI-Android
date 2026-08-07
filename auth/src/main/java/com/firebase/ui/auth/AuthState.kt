@@ -132,12 +132,35 @@ abstract class AuthState private constructor() {
 
     /**
      * Authentication was cancelled by the user.
+     *
+     * This is an operation-level cancellation: the user backed out of a single sign-in
+     * attempt (e.g. dismissed the Google Credential Manager sheet, backed out of an MFA
+     * challenge). The flow stays open and the screen returns to the method picker.
+     *
+     * @see Aborted for the state that ends the whole flow instead
      */
     class Cancelled internal constructor() : AuthState() {
         override val isNotification: Boolean = true
         override fun equals(other: Any?): Boolean = other is Cancelled
         override fun hashCode(): Int = javaClass.hashCode()
         override fun toString(): String = "AuthState.Cancelled"
+    }
+
+    /**
+     * The entire authentication flow was aborted.
+     *
+     * This state is emitted only by [AuthFlowController.cancel]. Unlike [Cancelled], which is
+     * a normal in-flow outcome that leaves the flow open, [Aborted] ends the whole flow —
+     * for example, [FirebaseAuthActivity] finishes with `RESULT_CANCELED` when it observes
+     * this state.
+     *
+     * @see Cancelled for the operation-level state that leaves the flow open
+     */
+    class Aborted internal constructor() : AuthState() {
+        override val isNotification: Boolean = true
+        override fun equals(other: Any?): Boolean = other is Aborted
+        override fun hashCode(): Int = javaClass.hashCode()
+        override fun toString(): String = "AuthState.Aborted"
     }
 
     /**
@@ -358,5 +381,12 @@ abstract class AuthState private constructor() {
          */
         @JvmStatic
         val Cancelled: Cancelled = Cancelled()
+
+        /**
+         * Creates an Aborted state instance.
+         * @return A new [Aborted] state
+         */
+        @JvmStatic
+        val Aborted: Aborted = Aborted()
     }
 }

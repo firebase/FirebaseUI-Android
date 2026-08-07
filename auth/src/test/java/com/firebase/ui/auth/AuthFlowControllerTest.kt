@@ -201,7 +201,7 @@ class AuthFlowControllerTest {
     // =============================================================================================
 
     @Test
-    fun `cancel() updates state to Cancelled`() = runTest {
+    fun `cancel() updates state to Aborted`() = runTest {
         val controller = authUI.createAuthFlow(configuration)
 
         // Cancel the flow
@@ -213,8 +213,7 @@ class AuthFlowControllerTest {
         // Collect first state after cancel
         val state = controller.authStateFlow.first()
 
-        // Should be Cancelled state
-        assertThat(state).isInstanceOf(AuthState.Cancelled::class.java)
+        assertThat(state).isInstanceOf(AuthState.Aborted::class.java)
     }
 
     @Test
@@ -438,9 +437,8 @@ class AuthFlowControllerTest {
         // Advance test scheduler to process all pending coroutines
         testScheduler.advanceUntilIdle()
 
-        // Verify cancelled state
         val state = controller.authStateFlow.first()
-        assertThat(state).isInstanceOf(AuthState.Cancelled::class.java)
+        assertThat(state).isInstanceOf(AuthState.Aborted::class.java)
 
         // Dispose
         controller.dispose()
