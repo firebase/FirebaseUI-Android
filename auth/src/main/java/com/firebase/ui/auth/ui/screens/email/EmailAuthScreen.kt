@@ -136,6 +136,7 @@ fun EmailAuthScreen(
     onSuccess: (AuthResult) -> Unit,
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
+    prefillEmail: String? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
@@ -151,7 +152,7 @@ fun EmailAuthScreen(
     }
     val mode = rememberSaveable { mutableStateOf(initialMode) }
     val displayNameValue = rememberSaveable { mutableStateOf("") }
-    val emailTextValue = rememberSaveable { mutableStateOf("") }
+    val emailTextValue = rememberSaveable { mutableStateOf(prefillEmail ?: "") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
 
