@@ -157,6 +157,7 @@ fun FirebaseAuthScreen(
     val pendingReauthState = remember { mutableStateOf<AuthState.ReauthenticationRequired?>(null) }
     val pendingReauthOperation = remember { mutableStateOf<(suspend (android.content.Context) -> Unit)?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
+    val prefillEmail = remember { mutableStateOf<String?>(null) }
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
     // Last-processed AuthState, so the Idle branch below can tell a genuine reset apart from
@@ -235,7 +236,14 @@ fun FirebaseAuthScreen(
                                 privacyPolicyUrl = configuration.privacyPolicyUrl,
                                 lastSignInPreference = lastSignInPreference.value,
                                 termsConfiguration = customMethodPickerTermsConfiguration,
-                                onProviderSelected = onProviderSelected,
+                                onProviderSelected = { provider ->
+                                    prefillEmail.value = null
+                                    onProviderSelected(provider)
+                                },
+                                onContinueAsSelected = { provider, identifier ->
+                                    prefillEmail.value = if (provider is AuthProvider.Email) identifier else null
+                                    onProviderSelected(provider)
+                                },
                             )
                         }
                     }
@@ -246,6 +254,7 @@ fun FirebaseAuthScreen(
                         context = context,
                         configuration = configuration,
                         authUI = authUI,
+                        prefillEmail = prefillEmail.value,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
                         onContinueWithProvider = continueWithProvider,
