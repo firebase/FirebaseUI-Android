@@ -16,7 +16,9 @@ package com.firebase.ui.auth.ui.screens.email
 
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
@@ -32,6 +34,11 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+/**
+ * Unit tests for [SignInUI], covering the sign-up button's visibility and email pre-fill.
+ *
+ * @suppress Internal test class
+ */
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
 class SignInUITest {
@@ -46,6 +53,53 @@ class SignInUITest {
     fun setUp() {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
+    }
+
+    private fun setSignInUIContent(isNewAccountsAllowed: Boolean) {
+        val provider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            isNewAccountsAllowed = isNewAccountsAllowed,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = "",
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onSignInClick = { },
+                    onRetrievedCredential = { },
+                    onGoToEmailLinkSignIn = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `sign up button is hidden when new accounts are not allowed`() {
+        setSignInUIContent(isNewAccountsAllowed = false)
+
+        composeTestRule.onNode(hasText(stringProvider.signupPageTitle.uppercase()) and hasClickAction())
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `sign up button is enabled when new accounts are allowed`() {
+        setSignInUIContent(isNewAccountsAllowed = true)
+
+        composeTestRule.onNode(hasText(stringProvider.signupPageTitle.uppercase()) and hasClickAction())
+            .assertIsEnabled()
     }
 
     @Test

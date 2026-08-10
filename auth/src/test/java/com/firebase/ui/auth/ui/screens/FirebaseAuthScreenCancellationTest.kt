@@ -69,7 +69,7 @@ class FirebaseAuthScreenCancellationTest {
     }
 
     @Test
-    fun `single email provider cancellation invokes callback once`() {
+    fun `single email provider cancellation invokes callback exactly once`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -102,7 +102,7 @@ class FirebaseAuthScreenCancellationTest {
     }
 
     @Test
-    fun `single phone provider cancellation invokes callback once`() {
+    fun `single phone provider cancellation invokes callback exactly once`() {
         val configuration = authUIConfiguration {
             context = ApplicationProvider.getApplicationContext()
             providers {
@@ -133,5 +133,72 @@ class FirebaseAuthScreenCancellationTest {
         composeTestRule.waitForIdle()
 
         assertThat(cancelCount).isEqualTo(1)
+    }
+
+    @Test
+    fun `single email provider abort does not invoke callback`() {
+        val configuration = authUIConfiguration {
+            context = ApplicationProvider.getApplicationContext()
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+        }
+        var cancelCount = 0
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = { cancelCount++ }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(AuthState.Aborted)
+        }
+        composeTestRule.waitForIdle()
+
+        assertThat(cancelCount).isEqualTo(0)
+    }
+
+    @Test
+    fun `single phone provider abort does not invoke callback`() {
+        val configuration = authUIConfiguration {
+            context = ApplicationProvider.getApplicationContext()
+            providers {
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = null,
+                        allowedCountries = null
+                    )
+                )
+            }
+        }
+        var cancelCount = 0
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = { cancelCount++ }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(AuthState.Aborted)
+        }
+        composeTestRule.waitForIdle()
+
+        assertThat(cancelCount).isEqualTo(0)
     }
 }

@@ -17,6 +17,7 @@ package com.firebase.ui.auth.configuration.auth_provider
 import android.content.Context
 import androidx.core.net.toUri
 import androidx.credentials.CredentialManager
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -47,7 +48,9 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -537,6 +540,46 @@ class GoogleAuthProviderFirebaseAuthUITest {
         assertThat(finalState).isInstanceOf(AuthState.Error::class.java)
         val errorState = finalState as AuthState.Error
         assertThat(errorState.exception).isInstanceOf(AuthException.AuthCancelledException::class.java)
+    }
+
+    @Test
+    fun `Sign in with Google when Credential Manager sheet is dismissed should update state to Cancelled without throwing`() = runTest {
+        // GetCredentialCancellationException is a checked exception, so it must be stubbed via
+        // doAnswer rather than thenThrow (which validates against the method's declared throws).
+        doAnswer { throw GetCredentialCancellationException("User cancelled the selector") }
+            .whenever(mockCredentialManagerProvider)
+            .getGoogleCredential(
+                context = eq(applicationContext),
+                credentialManager = any<CredentialManager>(),
+                serverClientId = eq("test-client-id"),
+                filterByAuthorizedAccounts = eq(true),
+                autoSelectEnabled = eq(false)
+            )
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        // Should not throw - user cancellation is not an error
+        instance.signInWithGoogle(
+            context = applicationContext,
+            config = config,
+            provider = googleProvider,
+            authorizationProvider = mockAuthorizationProvider,
+            credentialManagerProvider = mockCredentialManagerProvider
+        )
+
+        // Verify state is Cancelled, not Error
+        val finalState = instance.authStateFlow().first()
+        assertThat(finalState).isEqualTo(AuthState.Cancelled)
     }
 
     // =============================================================================================
