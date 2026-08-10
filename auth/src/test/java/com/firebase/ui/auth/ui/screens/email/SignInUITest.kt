@@ -20,6 +20,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -34,7 +35,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [SignInUI], covering the sign-up button's visibility.
+ * Unit tests for [SignInUI], covering the sign-up button's visibility and email pre-fill.
  *
  * @suppress Internal test class
  */
@@ -99,5 +100,74 @@ class SignInUITest {
 
         composeTestRule.onNode(hasText(stringProvider.signupPageTitle.uppercase()) and hasClickAction())
             .assertIsEnabled()
+    }
+
+    @Test
+    fun `email field is pre-filled when initial email value is provided`() {
+        val prefillEmail = "user@example.com"
+        val provider = AuthProvider.Email(
+            isDisplayNameRequired = false,
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = prefillEmail,
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onRetrievedCredential = { },
+                    onSignInClick = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                    onGoToEmailLinkSignIn = { },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText(prefillEmail).assertExists()
+    }
+
+    @Test
+    fun `email field is empty when no initial email value is provided`() {
+        val provider = AuthProvider.Email(
+            isDisplayNameRequired = false,
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = "",
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onRetrievedCredential = { },
+                    onSignInClick = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                    onGoToEmailLinkSignIn = { },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("user@example.com").assertDoesNotExist()
     }
 }
