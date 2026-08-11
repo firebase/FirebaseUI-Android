@@ -116,7 +116,7 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                             authException
                         )
                     )
-                    currentOnSignInFailure(authException)
+                    if (authException !is AuthException.AuthCancelledException) currentOnSignInFailure(authException)
                 }
             })
 

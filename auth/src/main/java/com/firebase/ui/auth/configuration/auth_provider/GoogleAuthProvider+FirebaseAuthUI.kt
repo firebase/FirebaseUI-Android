@@ -22,8 +22,8 @@ import kotlinx.coroutines.launch
  * Creates a remembered callback for Google Sign-In that can be invoked from UI components.
  *
  * This Composable function returns a lambda that, when invoked, initiates the Google Sign-In
- * flow using [signInWithGoogle]. The callback is stable across recompositions and automatically
- * handles coroutine scoping and error state management.
+ * flow using [signInWithGoogle]. The callback is rebuilt on every recomposition so it always
+ * captures the latest parameters, and handles coroutine scoping and error state management.
  *
  * **Usage:**
  * ```kotlin

@@ -980,4 +980,50 @@ class GoogleAuthProviderFirebaseAuthUITest {
         assertThat(reportedFailures).hasSize(1)
         assertThat(reportedFailures.single()).isInstanceOf(AuthException.UnknownException::class.java)
     }
+
+    @Test
+    fun `rememberGoogleSignInHandler does not report onSignInFailure for user cancellation`() {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val googleProvider = AuthProvider.Google(
+            serverClientId = "test-client-id",
+            scopes = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(googleProvider)
+            }
+        }
+
+        instance.testCredentialManagerProvider = object : AuthProvider.Google.CredentialManagerProvider {
+            override suspend fun getGoogleCredential(
+                context: Context,
+                credentialManager: CredentialManager,
+                serverClientId: String,
+                filterByAuthorizedAccounts: Boolean,
+                autoSelectEnabled: Boolean
+            ): AuthProvider.Google.GoogleSignInResult {
+                throw CancellationException("User cancelled")
+            }
+
+            override suspend fun clearCredentialState(context: Context, credentialManager: CredentialManager) = Unit
+        }
+
+        val reportedFailures = mutableListOf<AuthException>()
+        var launcher: (() -> Unit)? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberGoogleSignInHandler(
+                context = applicationContext,
+                config = config,
+                provider = googleProvider,
+                onSignInFailure = { reportedFailures.add(it) },
+            )
+        }
+
+        composeTestRule.runOnIdle { launcher?.invoke() }
+        composeTestRule.waitForIdle()
+
+        assertThat(reportedFailures).isEmpty()
+    }
 }

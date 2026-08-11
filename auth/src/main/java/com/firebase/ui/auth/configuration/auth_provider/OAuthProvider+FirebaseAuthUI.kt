@@ -20,8 +20,9 @@ import kotlinx.coroutines.tasks.await
 /**
  * Creates a Composable handler for OAuth provider sign-in.
  *
- * This function creates a remember-scoped sign-in handler that can be invoked
- * from button clicks or other UI events. It automatically handles:
+ * This function creates a sign-in handler, rebuilt on every recomposition so it always
+ * captures the latest parameters, that can be invoked from button clicks or other UI events.
+ * It automatically handles:
  * - Activity retrieval from LocalActivity
  * - Coroutine scope management
  * - Error handling and state updates
