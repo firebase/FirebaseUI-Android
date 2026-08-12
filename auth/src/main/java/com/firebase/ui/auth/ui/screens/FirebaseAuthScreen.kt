@@ -190,6 +190,7 @@ fun FirebaseAuthScreen(
                 )
             )
         },
+        onSignInFailure = onSignInFailure,
     )
     val continueWithProvider: (String) -> Unit = { providerId ->
         configuration.providers.find { it.providerId == providerId }?.let { onProviderSelected(it) }
@@ -1033,6 +1034,7 @@ private fun FirebaseAuthUI.rememberOnProviderSelected(
     config: AuthUIConfiguration,
     onNavigate: (AuthRoute) -> Unit,
     onUnknownProvider: ((AuthProvider) -> Unit)? = null,
+    onSignInFailure: (AuthException) -> Unit = {},
 ): (AuthProvider) -> Unit {
     val anonymousProvider = config.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
     val googleProvider = config.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
@@ -1044,16 +1046,18 @@ private fun FirebaseAuthUI.rememberOnProviderSelected(
     val twitterProvider = config.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
     val genericOAuthProviders = config.providers.filterIsInstance<AuthProvider.GenericOAuth>()
 
-    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(config) }
-    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it) }
-    val onSignInWithFacebook = facebookProvider?.let { rememberSignInWithFacebookLauncher(context, config, it) }
-    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(config, onSignInFailure) }
+    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it, onSignInFailure) }
+    val onSignInWithFacebook = facebookProvider?.let {
+        rememberSignInWithFacebookLauncher(context, config, it, onSignInFailure = onSignInFailure)
+    }
+    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
     val genericOAuthHandlers = genericOAuthProviders.associateWith {
-        rememberOAuthSignInHandler(context, activity, config, it)
+        rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure)
     }
 
     return { provider ->

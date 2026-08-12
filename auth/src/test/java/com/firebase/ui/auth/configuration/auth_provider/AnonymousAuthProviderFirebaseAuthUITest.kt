@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import android.content.Context
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
@@ -53,6 +55,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class AnonymousAuthProviderFirebaseAuthUITest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     @Mock
     private lateinit var mockFirebaseAuth: FirebaseAuth
@@ -212,6 +217,35 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         assertThat(currentState).isInstanceOf(AuthState.Error::class.java)
         val errorState = currentState as AuthState.Error
         assertThat(errorState.exception).isInstanceOf(AuthException.UnknownException::class.java)
+    }
+
+    // =============================================================================================
+    // rememberAnonymousSignInHandler - onSignInFailure reporting
+    // =============================================================================================
+
+    @Test
+    fun `rememberAnonymousSignInHandler reports failure via onSignInFailure immediately, at the source`() {
+        val networkException = FirebaseNetworkException("Network error")
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setException(networkException)
+        `when`(mockFirebaseAuth.signInAnonymously()).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val reportedFailures = mutableListOf<AuthException>()
+        var launcher: (() -> Unit)? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberAnonymousSignInHandler(
+                config = config,
+                onSignInFailure = { reportedFailures.add(it) },
+            )
+        }
+
+        composeTestRule.runOnIdle { launcher?.invoke() }
+        composeTestRule.waitForIdle()
+
+        assertThat(reportedFailures).hasSize(1)
+        assertThat(reportedFailures.single()).isInstanceOf(AuthException.NetworkException::class.java)
     }
 
     // =============================================================================================
