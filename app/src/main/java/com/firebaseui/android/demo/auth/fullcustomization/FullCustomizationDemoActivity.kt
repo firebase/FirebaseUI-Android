@@ -16,9 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.MfaConfiguration
+import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
@@ -26,8 +29,13 @@ import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthMethodPickerUI
+import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthenticatedUI
+import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaChallengeUI
+import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaEnrollmentUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSignInUI
+import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthUI
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationTheme
+import kotlinx.coroutines.launch
 
 class FullCustomizationDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +96,11 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                         onSignInCancelled = {
                             Log.d("FullCustomizationDemo", "Auth cancelled")
                         },
+                        mfaConfiguration = MfaConfiguration(
+                            allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+                            requireEnrollment = false,
+                            enableRecoveryCodes = true,
+                        ),
                         customMethodPickerLayout = { providers, onProviderSelected ->
                             MainUI(
                                 authUI = authUI,
@@ -97,6 +110,30 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                             )
                         },
                         phoneContent = { state -> PhoneSignInUI(state) },
+                        mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
+                        mfaChallengeContent = { state -> MfaChallengeUI(state) },
+                        reauthContent = { reauthState, onDismiss ->
+                            ReauthUI(
+                                state = reauthState,
+                                onDismiss = onDismiss,
+                                onVerified = {
+                                    val retry = reauthState.retryOperation
+                                    // Dismiss first: onDismiss resets the auth state to Idle, so
+                                    // running the retry afterwards keeps the Success it reports
+                                    // from being clobbered. Neither call suspends, so the
+                                    // composable's cancellation can't interleave between them —
+                                    // and the retry itself runs on lifecycleScope, which outlives
+                                    // this UI.
+                                    onDismiss()
+                                    retry?.let {
+                                        lifecycleScope.launch { it(applicationContext) }
+                                    }
+                                },
+                            )
+                        },
+                        authenticatedContent = { state, uiContext ->
+                            AuthenticatedUI(state = state, uiContext = uiContext)
+                        },
                     )
                 }
             }
