@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicLong
 
 /**
  * The central class that coordinates all authentication operations for Firebase Auth UI Compose.
@@ -79,6 +80,7 @@ class FirebaseAuthUI private constructor(
 ) {
 
     private val _authStateFlow = MutableStateFlow<AuthState>(AuthState.Idle)
+    private val authStateRevision = AtomicLong(0)
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     var testCredentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null
@@ -363,8 +365,28 @@ class FirebaseAuthUI private constructor(
      */
     @MainThread
     fun updateAuthState(state: AuthState) {
+        authStateRevision.incrementAndGet()
         _authStateFlow.value = state
     }
+
+    /**
+     * Retracts a pending [AuthState.Loading] by resetting to [AuthState.Idle], but only while
+     * [revision] is still the most recent write. Any state emitted since is left untouched.
+     *
+     * The revision is what makes this precise: [AuthState.Loading] compares equal whenever the
+     * message matches, and [MutableStateFlow] drops a write equal to the current value without
+     * replacing the stored reference - so neither equality nor identity can tell a concurrent
+     * operation's Loading apart from the caller's.
+     *
+     * @param revision The value [currentAuthStateRevision] returned right after the caller emitted
+     * the [AuthState.Loading] it now wants to retract
+     */
+    internal fun clearLoadingState(revision: Long) {
+        if (authStateRevision.get() == revision) updateAuthState(AuthState.Idle)
+    }
+
+    /** Identifies the most recent [updateAuthState] write. See [clearLoadingState]. */
+    internal fun currentAuthStateRevision(): Long = authStateRevision.get()
 
     internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
         val user = result?.user

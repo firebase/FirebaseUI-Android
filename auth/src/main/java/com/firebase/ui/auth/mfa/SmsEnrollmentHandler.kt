@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneMultiFactorGenerator
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -33,7 +34,7 @@ import kotlinx.coroutines.tasks.await
  * - Verifying SMS codes entered by users
  * - Finalizing enrollment with Firebase Authentication
  *
- * This handler uses the existing [AuthProvider.Phone.verifyPhoneNumberAwait] infrastructure
+ * This handler uses the existing [AuthProvider.Phone.verifyPhoneNumberFlow] infrastructure
  * for sending and verifying SMS codes, ensuring consistency with the primary phone auth flow.
  *
  * **Usage:**
@@ -59,7 +60,7 @@ import kotlinx.coroutines.tasks.await
  *
  * @since 10.0.0
  * @see TotpEnrollmentHandler
- * @see AuthProvider.Phone.verifyPhoneNumberAwait
+ * @see AuthProvider.Phone.verifyPhoneNumberFlow
  */
 class SmsEnrollmentHandler(
     private val activity: Activity,
@@ -98,13 +99,14 @@ class SmsEnrollmentHandler(
         }
 
         val multiFactorSession = user.multiFactor.session.await()
-        val result = phoneProvider.verifyPhoneNumberAwait(
+        // Enrolment only needs the first result, so stop collecting after one emission.
+        val result = phoneProvider.verifyPhoneNumberFlow(
             auth = auth,
             activity = activity,
             phoneNumber = phoneNumber,
             multiFactorSession = multiFactorSession,
             forceResendingToken = null
-        )
+        ).first()
 
         return when (result) {
             is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
@@ -146,13 +148,14 @@ class SmsEnrollmentHandler(
         }
 
         val multiFactorSession = user.multiFactor.session.await()
-        val result = phoneProvider.verifyPhoneNumberAwait(
+        // Enrolment only needs the first result, so stop collecting after one emission.
+        val result = phoneProvider.verifyPhoneNumberFlow(
             auth = auth,
             activity = activity,
             phoneNumber = session.phoneNumber,
             multiFactorSession = multiFactorSession,
             forceResendingToken = session.forceResendingToken
-        )
+        ).first()
 
         return when (result) {
             is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
