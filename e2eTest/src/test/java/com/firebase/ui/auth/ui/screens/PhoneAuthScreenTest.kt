@@ -35,6 +35,7 @@ import com.firebase.ui.auth.testutil.awaitWithLooper
 import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
@@ -159,7 +160,7 @@ class PhoneAuthScreenTest {
             .performClick()
         composeTestRule.waitForIdle()
         // Select country from list
-        composeTestRule.onNodeWithTag("CountrySelector LazyColumn")
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST)
             .assertIsDisplayed()
             .performScrollToNode(hasText(country.name))
         composeTestRule.onNodeWithText(country.name)

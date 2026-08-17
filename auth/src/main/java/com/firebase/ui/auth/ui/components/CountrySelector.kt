@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.data.ALL_COUNTRIES
 import com.firebase.ui.auth.data.CountryData
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.util.CountryUtils
 import kotlinx.coroutines.launch
 
@@ -165,7 +166,7 @@ fun CountrySelector(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(500.dp)
-                        .testTag("CountrySelector LazyColumn")
+                        .testTag(FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST)
                 ) {
                     items(filteredCountries) { country ->
                         Button(

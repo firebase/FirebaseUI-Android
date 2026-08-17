@@ -44,6 +44,7 @@ import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.generateMockGoogleIdToken
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.common.truth.Truth.assertThat
@@ -363,7 +364,7 @@ class CredentialLinkingScreenTest {
         // Step 5: Click the Google sign-in button on the method picker
         println("TEST: Clicking Google sign-in button...")
         composeTestRule
-            .onNodeWithTag("AuthMethodPicker LazyColumn")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
             .performScrollToNode(hasText(stringProvider.signInWithGoogle))
         composeTestRule
             .onNode(hasText(stringProvider.signInWithGoogle))
