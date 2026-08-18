@@ -16,10 +16,15 @@ package com.firebase.ui.auth.ui.screens.email
 
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.configuration.authUIConfiguration
@@ -169,5 +174,71 @@ class SignInUITest {
         }
 
         composeTestRule.onNodeWithText("user@example.com").assertDoesNotExist()
+    }
+
+    // =============================================================================================
+    // Modifier contract tests
+    // =============================================================================================
+
+    private fun setSignInUIContent(modifier: Modifier) {
+        val provider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    modifier = modifier,
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = "",
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onSignInClick = { },
+                    onRetrievedCredential = { },
+                    onGoToEmailLinkSignIn = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                )
+            }
+        }
+    }
+
+    /**
+     * The screen's `modifier` used to be handed to the "trouble signing in" `Text` as well as to
+     * the `Scaffold`, so a caller's sizing, padding or tag silently landed on a single label deep
+     * inside the layout. It must reach the screen root and nothing else.
+     */
+    @Test
+    fun `caller modifier does not reach the trouble signing in label`() {
+        setSignInUIContent(modifier = Modifier.testTag(CALLER_TAG))
+
+        composeTestRule
+            .onNode(
+                hasTestTag(CALLER_TAG) and hasText(stringProvider.troubleSigningIn),
+                useUnmergedTree = true
+            )
+            .assertDoesNotExist()
+    }
+
+    /** The corollary: exactly one node carries what the caller passed. */
+    @Test
+    fun `caller modifier is applied to exactly one node`() {
+        setSignInUIContent(modifier = Modifier.testTag(CALLER_TAG))
+
+        composeTestRule
+            .onAllNodesWithTag(CALLER_TAG, useUnmergedTree = true)
+            .assertCountEquals(1)
+    }
+
+    private companion object {
+        const val CALLER_TAG = "caller_supplied_tag"
     }
 }

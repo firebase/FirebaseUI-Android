@@ -103,6 +103,9 @@ import kotlinx.coroutines.tasks.await
  * flows, error handling, and multi-factor enrollment/challenge flows. Back navigation is driven by
  * the Jetpack Navigation stack so presses behave like native Android navigation.
  *
+ * @param modifier Applied once to the root [Surface] that hosts the whole auth flow. It is not
+ * forwarded to individual destinations, so it affects the flow as a whole rather than any single
+ * screen.
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).
@@ -202,7 +205,7 @@ fun FirebaseAuthScreen(
         LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current)
     ) {
         Surface(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
         ) {
             NavHost(
@@ -223,13 +226,13 @@ fun FirebaseAuthScreen(
             ) {
                 composable(AuthRoute.MethodPicker.route) {
                     if (customMethodPickerLayout != null) {
-                        Box(modifier = modifier.fillMaxSize()) {
+                        Box(modifier = Modifier.fillMaxSize()) {
                             customMethodPickerLayout(configuration.providers, onProviderSelected)
                         }
                     } else {
                         Scaffold { innerPadding ->
                             AuthMethodPicker(
-                                modifier = modifier
+                                modifier = Modifier
                                     .padding(innerPadding),
                                 providers = configuration.providers,
                                 logo = logoAsset,

@@ -172,7 +172,6 @@ fun SignInEmailLinkUI(
                 contentPadding = PaddingValues.Zero
             ) {
                 Text(
-                    modifier = modifier,
                     text = stringProvider.troubleSigningIn,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
