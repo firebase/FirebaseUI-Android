@@ -34,6 +34,14 @@ import kotlinx.coroutines.CancellationException
  *   - UI should show code entry screen
  *   - User enters code → call [submitVerificationCode]
  *
+ * **Lifecycle:** Firebase reports verification progress as a stream, so this call does not
+ * return once the code is sent - on the SMS path it keeps collecting until the auto-retrieval
+ * window expires, verification fails, or the caller is cancelled. A credential auto-retrieved
+ * after [AuthState.PhoneNumberVerificationRequired] is therefore still emitted, as
+ * [AuthState.SMSAutoVerified]. On the instant-verification path Firebase reports no terminal
+ * callback at all, so only cancellation ends the call. Callers should cancel a superseded
+ * attempt before starting a new one.
+ *
  * **Resending codes:**
  * To resend a verification code, call this method again with:
  * - `forceResendingToken` = the token from [AuthState.PhoneNumberVerificationRequired]
@@ -99,8 +107,8 @@ import kotlinx.coroutines.CancellationException
  *
  * @throws AuthException.InvalidCredentialsException if the phone number is invalid
  * @throws AuthException.TooManyRequestsException if SMS quota is exceeded
- * @throws AuthException.AuthCancelledException if the operation is cancelled
  * @throws AuthException.NetworkException if a network error occurs
+ * @throws kotlinx.coroutines.CancellationException if the caller's coroutine is cancelled
  */
 internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     provider: AuthProvider.Phone,
@@ -111,37 +119,39 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null,
     verifier: AuthProvider.Phone.Verifier = AuthProvider.Phone.DefaultVerifier(),
 ) {
+    // -1 never matches a real revision, so a cancellation before the Loading lands clears nothing.
+    var loadingRevision = -1L
     try {
         updateAuthState(AuthState.Loading(config.stringProvider.loadingVerifyingPhoneNumber))
-        val result = provider.verifyPhoneNumberAwait(
+        loadingRevision = currentAuthStateRevision()
+        provider.verifyPhoneNumberFlow(
             auth = auth,
             activity = activity,
             phoneNumber = phoneNumber,
             multiFactorSession = multiFactorSession,
             forceResendingToken = forceResendingToken,
             verifier = verifier
-        )
-        when (result) {
-            is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
-                updateAuthState(AuthState.SMSAutoVerified(credential = result.credential))
-            }
+        ).collect { result ->
+            when (result) {
+                is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
+                    updateAuthState(AuthState.SMSAutoVerified(credential = result.credential))
+                }
 
-            is AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification -> {
-                updateAuthState(
-                    AuthState.PhoneNumberVerificationRequired(
-                        verificationId = result.verificationId,
-                        forceResendingToken = result.token,
+                is AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification -> {
+                    updateAuthState(
+                        AuthState.PhoneNumberVerificationRequired(
+                            verificationId = result.verificationId,
+                            forceResendingToken = result.token,
+                        )
                     )
-                )
+                }
             }
         }
     } catch (e: CancellationException) {
-        val cancelledException = AuthException.AuthCancelledException(
-            message = "Verify phone number was cancelled",
-            cause = e
-        )
-        updateAuthState(AuthState.Error(cancelledException))
-        throw cancelledException
+        // Cancellation here is the screen's own bookkeeping, not a failure: retract only the
+        // Loading this call emitted, then rethrow so no spurious Error reaches authStateFlow.
+        clearLoadingState(loadingRevision)
+        throw e
     } catch (e: AuthException) {
         updateAuthState(AuthState.Error(e))
         throw e
