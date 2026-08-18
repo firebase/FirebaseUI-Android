@@ -55,12 +55,13 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.actionCodeSettings
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 @AuthUIConfigurationDsl
 class AuthProvidersBuilder {
@@ -336,19 +337,23 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         }
 
         /**
-         * Internal coroutine-based wrapper for Firebase Phone Authentication verification.
+         * Internal wrapper that exposes Firebase Phone Authentication verification as a [Flow].
          *
-         * This method wraps the callback-based Firebase Phone Auth API into a suspending function
-         * using Kotlin coroutines. It handles the Firebase [PhoneAuthProvider.OnVerificationStateChangedCallbacks]
-         * and converts them into a [VerifyPhoneNumberResult].
+         * Firebase's [PhoneAuthProvider.OnVerificationStateChangedCallbacks] is a multi-shot
+         * callback: for the same request it can report `onCodeSent` and then, once the SMS is
+         * auto-retrieved, `onVerificationCompleted`. Each callback becomes one emission, so no
+         * result is ever dropped.
          *
          * **Callback mapping:**
          * - `onVerificationCompleted` → [VerifyPhoneNumberResult.AutoVerified]
          * - `onCodeSent` → [VerifyPhoneNumberResult.NeedsManualVerification]
-         * - `onVerificationFailed` → throws the exception
+         * - `onVerificationFailed` → terminates the flow with that exception
+         * - `onCodeAutoRetrievalTimeOut` → completes the flow normally
          *
-         * This is a private helper method used by [verifyPhoneNumber]. Callers should use
-         * [verifyPhoneNumber] instead as it handles state management and error handling.
+         * `onCodeAutoRetrievalTimeOut` fires only when the window expires without a prior
+         * `onVerificationCompleted`, so the flow terminates on its own only on the SMS path.
+         * Instant verification has no terminal callback: there the flow stays open until the
+         * collector is cancelled. Callers that only want the first result should use `first()`.
          *
          * @param auth The [FirebaseAuth] instance to use for verification
          * @param phoneNumber The phone number to verify in E.164 format
@@ -357,17 +362,16 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * instead of primary sign-in. Pass null for standard phone authentication.
          * @param forceResendingToken Optional token from previous verification for resending
          *
-         * @return [VerifyPhoneNumberResult] indicating auto-verified or manual verification needed
-         * @throws FirebaseException if verification fails
+         * @return a [Flow] of [VerifyPhoneNumberResult] emissions, one per Firebase callback
          */
-        internal suspend fun verifyPhoneNumberAwait(
+        internal fun verifyPhoneNumberFlow(
             auth: FirebaseAuth,
             activity: Activity?,
             phoneNumber: String,
             multiFactorSession: MultiFactorSession? = null,
             forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
             verifier: Verifier = DefaultVerifier(),
-        ): VerifyPhoneNumberResult {
+        ): Flow<VerifyPhoneNumberResult> {
             return verifier.verifyPhoneNumber(
                 auth,
                 activity,
@@ -383,7 +387,7 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
          * @suppress
          */
         internal interface Verifier {
-            suspend fun verifyPhoneNumber(
+            fun verifyPhoneNumber(
                 auth: FirebaseAuth,
                 activity: Activity?,
                 phoneNumber: String,
@@ -391,14 +395,14 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
                 multiFactorSession: MultiFactorSession?,
                 isInstantVerificationEnabled: Boolean,
-            ): VerifyPhoneNumberResult
+            ): Flow<VerifyPhoneNumberResult>
         }
 
         /**
          * @suppress
          */
         internal class DefaultVerifier : Verifier {
-            override suspend fun verifyPhoneNumber(
+            override fun verifyPhoneNumber(
                 auth: FirebaseAuth,
                 activity: Activity?,
                 phoneNumber: String,
@@ -406,48 +410,55 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
                 forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
                 multiFactorSession: MultiFactorSession?,
                 isInstantVerificationEnabled: Boolean,
-            ): VerifyPhoneNumberResult {
-                return suspendCoroutine { continuation ->
-                    val options = PhoneAuthOptions.newBuilder(auth)
-                        .setPhoneNumber(phoneNumber)
-                        .requireSmsValidation(!isInstantVerificationEnabled)
-                        .setTimeout(timeout, TimeUnit.SECONDS)
-                        .setCallbacks(object :
-                            PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                                continuation.resume(VerifyPhoneNumberResult.AutoVerified(credential))
-                            }
-
-                            override fun onVerificationFailed(e: FirebaseException) {
-                                continuation.resumeWithException(e)
-                            }
-
-                            override fun onCodeSent(
-                                verificationId: String,
-                                token: PhoneAuthProvider.ForceResendingToken,
-                            ) {
-                                continuation.resume(
-                                    VerifyPhoneNumberResult.NeedsManualVerification(
-                                        verificationId,
-                                        token
-                                    )
-                                )
-                            }
-                        })
-                        .apply {
-                            activity?.let {
-                                setActivity(it)
-                            }
-                            forceResendingToken?.let {
-                                setForceResendingToken(it)
-                            }
-                            multiFactorSession?.let {
-                                setMultiFactorSession(it)
-                            }
+            ): Flow<VerifyPhoneNumberResult> = callbackFlow {
+                val options = PhoneAuthOptions.newBuilder(auth)
+                    .setPhoneNumber(phoneNumber)
+                    .requireSmsValidation(!isInstantVerificationEnabled)
+                    .setTimeout(timeout, TimeUnit.SECONDS)
+                    .setCallbacks(object :
+                        PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                            trySend(VerifyPhoneNumberResult.AutoVerified(credential))
                         }
-                        .build()
-                    PhoneAuthProvider.verifyPhoneNumber(options)
-                }
+
+                        override fun onVerificationFailed(e: FirebaseException) {
+                            close(e)
+                        }
+
+                        override fun onCodeSent(
+                            verificationId: String,
+                            token: PhoneAuthProvider.ForceResendingToken,
+                        ) {
+                            trySend(
+                                VerifyPhoneNumberResult.NeedsManualVerification(
+                                    verificationId,
+                                    token
+                                )
+                            )
+                        }
+
+                        // Firebase's own terminal: nothing further can arrive for this request,
+                        // so complete rather than leaving the collector waiting forever.
+                        override fun onCodeAutoRetrievalTimeOut(verificationId: String) {
+                            close()
+                        }
+                    })
+                    .apply {
+                        activity?.let {
+                            setActivity(it)
+                        }
+                        forceResendingToken?.let {
+                            setForceResendingToken(it)
+                        }
+                        multiFactorSession?.let {
+                            setMultiFactorSession(it)
+                        }
+                    }
+                    .build()
+                PhoneAuthProvider.verifyPhoneNumber(options)
+                // Firebase exposes no way to unregister these callbacks, so there is nothing to
+                // tear down when the collector goes away.
+                awaitClose { }
             }
         }
 
