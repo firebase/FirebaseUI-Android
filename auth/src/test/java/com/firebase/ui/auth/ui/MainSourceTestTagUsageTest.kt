@@ -45,10 +45,33 @@ import org.junit.Test
  * the file is clean. Indirection through a local wrapper function remains out of reach and is
  * accepted: it costs more to write than to review, and the reviewer sees the wrapper.
  *
- * The same scan answers a second, adjacent question that nothing else could: whether a file applying
- * a tag also flags a semantics owner, so the tag can become a resource id at all. Both failures are
- * invisible to every Compose assertion in the suite, which is why a lexical check is worth its
+ * The same scan answers two adjacent questions that nothing else could. Whether every semantics
+ * owner the library creates carries [exposeTestTagsAsResourceIds] — the rule that file declares,
+ * stated as owners rather than tags — and, as a cheaper backstop for owner shapes this scan does not
+ * recognise, whether a file applying a tag flags an owner anywhere in itself. All of these failures
+ * are invisible to every Compose assertion in the suite, which is why a lexical check is worth its
  * limitations here.
+ *
+ * ## What the owner check cannot see
+ *
+ * The owner check is lexical, so four gaps are known and accepted rather than papered over:
+ *
+ * * It recognises the owner-creating shapes in [SEMANTICS_OWNER_SHAPES] by name. A `Dialog`
+ *   subclassed or wrapped under a different name, or a future Compose owner shape, is invisible to
+ *   it. That is what the weaker per-file check below still covers.
+ * * Lexical presence cannot tell an *applied* modifier from one that is built and discarded.
+ *   `Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds().let { Modifier })` reads as flagged.
+ *   Requiring the call inside the owner's own argument list rather than merely nearby is as close as
+ *   a scan gets; the remaining shapes are not ones anybody writes by accident.
+ * * The converse is a false positive: a flag reached through a local, as in
+ *   `val m = Modifier.exposeTestTagsAsResourceIds()` followed by `Scaffold(modifier = m)`, is not in
+ *   the argument list and reads as unflagged. The fix — inline it, or flag in the argument list too
+ *   — is harmless, because the property is `isImportantForAccessibility = false` and setting it
+ *   twice changes nothing.
+ * * `@Preview` composables are skipped. They are private, are never composed in a shipped
+ *   application, and Android Studio's preview host is not a crawler, so an owner inside one has
+ *   nothing to expose. This is the only exemption, and it is a rule rather than an allowlist so that
+ *   adding a preview cannot redden an unrelated build.
  *
  * It lives in its own class rather than in [FirebaseAuthTestTagsTest] because it tests a different
  * thing by a different mechanism: the registry test asserts properties of compiled constants, while
@@ -96,25 +119,64 @@ class MainSourceTestTagUsageTest {
     }
 
     /**
-     * Catches the other half of the same problem: a tag that goes through the registry but never
-     * becomes a resource id because the semantics owner around it was never flagged.
+     * The rule [exposeTestTagsAsResourceIds] declares, checked as declared: **every semantics owner
+     * the library creates carries the flag, whether or not anything inside it is tagged today.**
+     *
+     * Stating the rule over owners rather than over tags is the whole point of it. A flag on an owner
+     * that holds no tags costs nothing, while a tag added inside an owner that was skipped costs a
+     * silent regression — `onNodeWithTag(...).assertExists()` still passes and only a Robo directive
+     * or `By.res()`, neither of which runs in CI, can tell. So a check keyed on "this file applies a
+     * tag" cannot enforce it: the four owners that had to be fixed by hand while this branch was
+     * written — the manage-MFA tooltip and the three sibling `Scaffold`s in the MFA enrollment steps
+     * — hold no tags at all, and no tag-keyed check would ever have named them.
+     *
+     * An owner is recognised by construction shape ([SEMANTICS_OWNER_SHAPES]) and is required to carry
+     * the flag *in its own argument list*, which ties the flag to that owner rather than to its
+     * neighbourhood. A shape invoked with a trailing lambda and no argument list at all — `Scaffold {
+     * … }` — cannot be passed a modifier and so cannot be flagged; it is reported for the same
+     * reason, and the fix is to give it one. The gaps this cannot see are listed on the class.
+     */
+    @Test
+    fun `every semantics owner the library creates flags itself`() {
+        val unflagged = semanticsOwnerSites().filterNot { site -> site.flagged }
+
+        assertWithMessage(
+            "The semantics owners below are created by the library but do not call " +
+                "$FLAG_FUNCTION_NAME() in their own argument list, so a test tag applied inside " +
+                "one of them is not guaranteed to become an Android resource id. " +
+                "TestTagsAsResourceIds.kt states the rule as owners rather than " +
+                "tags on purpose: flagging an owner that holds no tag is free, because the property " +
+                "is not relevant to accessibility, while adding a tag inside an owner that was " +
+                "skipped is a silent regression that leaves every Compose assertion in this suite " +
+                "green and only Firebase Test Lab Robo or UiAutomator By.res() — neither of which " +
+                "runs in CI — able to see it. That is issue #2050:\n" +
+                unflagged.joinToString("\n") { "  ${it.path}:${it.line} -> ${it.shape}" } +
+                "\n\nFix: pass Modifier.$FLAG_FUNCTION_NAME() to the owner, combining it with any " +
+                "modifier already there. An owner invoked with a trailing lambda and no argument " +
+                "list has nowhere to put it, so give it one. If the owner genuinely must not be " +
+                "flagged, it does not belong in SEMANTICS_OWNER_SHAPES — change the list and say " +
+                "why, rather than leaving a named exception here."
+        ).that(unflagged).isEmpty()
+    }
+
+    /**
+     * The cheaper backstop for the owner check above: a file that applies a tag must flag an owner
+     * somewhere in itself, whatever shape that owner has.
      *
      * Nothing in the type system ties a `testTag` call to an enclosing
-     * [exposeTestTagsAsResourceIds]. The flag is read at runtime by walking a node's semantics
-     * ancestors, so omitting it leaves `onNodeWithTag(...).assertExists()` passing, the suite green,
-     * and only `By.res()` — which does not run in CI — able to tell. [TestTagsAsResourceIdsTest]
-     * covers the tags that exist today, but a tag added on a screen it has no fixture for would slip
-     * through both classes.
+     * [exposeTestTagsAsResourceIds]. The check above covers the owner shapes it knows by name; this
+     * one covers the case where a tag is applied under something it does not recognise, at the cost
+     * of being coarser — it requires the flag *somewhere in the file*, not that it encloses that
+     * particular tag.
      *
-     * The check this can make lexically is coarser than the real rule: it requires every file that
-     * applies a tag to also apply the flag *somewhere*, not that the flag encloses that particular
-     * tag. Two things it therefore cannot see are a file that flags one owner and tags a node under
-     * a second, unflagged one, and a tag placed in a file with no owner of its own that relies on a
-     * flag applied by its caller. The first is what [TestTagsAsResourceIdsTest] is for. The second
-     * would be a false positive here, and the fix for it — apply the flag in the file too — is
-     * harmless rather than wrong: the property is `isImportantForAccessibility = false`, so setting
-     * it again where it is already set changes nothing. A coarse check that costs a redundant
-     * one-liner is worth more than no check.
+     * Three things it therefore cannot see: a file that flags one owner and tags a node under a
+     * second, unflagged one; a tag placed in a file with no owner of its own that relies on a flag
+     * applied by its caller; and, as everywhere in this class, a flag that is built and never
+     * applied. The first is what the owner check and [TestTagsAsResourceIdsTest] are for. The second
+     * would be a false positive, and the fix for it — apply the flag in the file too — is harmless
+     * rather than wrong: the property is `isImportantForAccessibility = false`, so setting it again
+     * where it is already set changes nothing. A coarse check that costs a redundant one-liner is
+     * worth more than no check.
      */
     @Test
     fun `every main source file that applies a test tag also flags a semantics owner`() {
@@ -183,6 +245,26 @@ class MainSourceTestTagUsageTest {
                 "quietly stopped covering them. If a tagged node was genuinely removed, lower " +
                 "MINIMUM_TAG_CALL_SITES to match."
         ).that(callSites.size).isAtLeast(MINIMUM_TAG_CALL_SITES)
+
+        val ownerSites = semanticsOwnerSites()
+
+        assertWithMessage(
+            "Scanned ${sources.size} Kotlin files under $mainSources and recognised no semantics " +
+                "owner construction at all. The auth screens are built out of Scaffolds, dialogs " +
+                "and bottom sheets, so zero matches means the owner check in this class would pass " +
+                "vacuously."
+        ).that(ownerSites).isNotEmpty()
+
+        assertWithMessage(
+            "Expected at least $MINIMUM_SEMANTICS_OWNER_SITES semantics owner constructions in " +
+                "auth main sources but found ${ownerSites.size}:\n" +
+                ownerSites.joinToString("\n") { "  ${it.path}:${it.line} -> ${it.shape}" } +
+                "\n\nA floor, not a pin, for the same reason as MINIMUM_TAG_CALL_SITES: new " +
+                "screens are expected. Dropping below the owners that already exist means the scan " +
+                "has stopped recognising a call shape it used to, and the owner assertion has " +
+                "quietly stopped covering it. If an owner was genuinely removed, lower " +
+                "MINIMUM_SEMANTICS_OWNER_SITES to match."
+        ).that(ownerSites.size).isAtLeast(MINIMUM_SEMANTICS_OWNER_SITES)
     }
 
     /**
@@ -222,15 +304,27 @@ class MainSourceTestTagUsageTest {
         return kotlinSources(mainSources).flatMap { file -> tagCallSitesIn(file, mainSources) }
     }
 
+    /** Every semantics owner construction found in the auth main sources, in file order. */
+    private fun semanticsOwnerSites(): List<OwnerSite> {
+        val mainSources = mainSourceRoot()
+        return kotlinSources(mainSources).flatMap { file -> semanticsOwnerSitesIn(file, mainSources) }
+    }
+
     /**
-     * Locates `auth/src/main/java` without trusting the working directory.
+     * Locates `auth/src/main` without trusting the working directory.
      *
      * Gradle runs unit tests with the module directory as the working directory, but that is a
      * default rather than a guarantee, and the same test may be launched from an IDE or from the
      * repository root. So the module-relative and repository-relative paths are both tried at the
      * working directory and at each of its ancestors, and a candidate only counts once
      * [FirebaseAuthTestTags] itself is found inside it. Using the registry file as the sentinel
-     * means resolution cannot silently land on some unrelated `src/main/java`.
+     * means resolution cannot silently land on some unrelated `src/main`.
+     *
+     * The whole of `src/main` is resolved rather than `src/main/java` specifically, because a Kotlin
+     * file is not required to live under `java/`: an `src/main/kotlin` directory is a source root
+     * Gradle compiles and would have been invisible to this scan. Walking `src/main` covers every
+     * source directory in it, present and future, and only `.kt` files are read from it. The
+     * sentinel is looked for under either directory for the same reason.
      */
     private fun mainSourceRoot(): File {
         val workingDirectory = File(System.getProperty("user.dir") ?: ".").absoluteFile
@@ -246,13 +340,14 @@ class MainSourceTestTagUsageTest {
         }
 
         val resolved = candidates.firstOrNull { candidate ->
-            File(candidate, REGISTRY_RELATIVE_PATH).isFile
+            REGISTRY_RELATIVE_PATHS.any { relativePath -> File(candidate, relativePath).isFile }
         }
 
         assertWithMessage(
             "Could not locate the auth main source tree, so this class cannot check anything and " +
                 "fails rather than passing on an empty scan. Looked for " +
-                "$REGISTRY_RELATIVE_PATH under \"$MODULE_RELATIVE_MAIN_SOURCES\" and " +
+                "${REGISTRY_RELATIVE_PATHS.joinToString(" or ")} under " +
+                "\"$MODULE_RELATIVE_MAIN_SOURCES\" and " +
                 "\"$REPOSITORY_RELATIVE_MAIN_SOURCES\", relative to the working directory " +
                 "$workingDirectory and up to $MAX_ANCESTOR_WALK of its ancestors. If the :auth " +
                 "module or its source set moved, update the constants in this class."
@@ -296,6 +391,70 @@ class MainSourceTestTagUsageTest {
                     argument = argument.replace(WHITESPACE_RUN, " ").trim()
                 )
             }.toList()
+    }
+
+    /**
+     * Finds the semantics owner constructions in [file] and says which of them flag themselves.
+     *
+     * Matching runs over [maskCommentsAndLiterals] output for the same reason the tag scan does: the
+     * KDoc in these files names `Scaffold`, `ModalBottomSheet` and the rest constantly, and a
+     * documented shape is not a constructed one. The flag is then looked for inside the owner's own
+     * argument list — balanced over the masked text, so a paren in a string cannot unbalance it —
+     * rather than within some number of surrounding lines, so the flag is tied to that owner and not
+     * to a sibling that happens to sit above it. An owner invoked with a trailing lambda and no
+     * argument list has no argument list to search and is reported: it cannot be handed a modifier at
+     * all.
+     */
+    private fun semanticsOwnerSitesIn(file: File, root: File): List<OwnerSite> {
+        val relativePath = file.toRelativeString(root).replace(File.separatorChar, '/')
+        val source = file.readText()
+        val masked = maskCommentsAndLiterals(source)
+
+        return OWNER_CONSTRUCTION_PATTERN.findAll(masked)
+            .filterNot { match -> precedingWord(masked, match.range.first) in CALL_DISQUALIFYING_KEYWORDS }
+            .filterNot { match -> isInsidePreview(masked, match.range.first) }
+            .map { match ->
+                val delimiterIndex = match.range.last
+                val arguments = if (masked[delimiterIndex] == '(') {
+                    // Masked on both sides: a flag name quoted in a string is not an application.
+                    balancedArgument(masked, masked, delimiterIndex)
+                } else {
+                    ""
+                }
+
+                OwnerSite(
+                    path = relativePath,
+                    line = masked.take(match.range.first).count { it == '\n' } + 1,
+                    shape = match.groupValues[1],
+                    flagged = FLAG_APPLICATION_PATTERN.containsMatchIn(arguments)
+                )
+            }.toList()
+    }
+
+    /**
+     * Whether the code at [index] sits in a `@Preview` composable.
+     *
+     * Resolution is by nearest preceding function declaration and the annotation block directly above
+     * it, which is exact for the top-level composables these sources are written as. A preview is
+     * private, is never composed in a shipped application, and is rendered by Android Studio rather
+     * than by a crawler, so an owner inside one has nothing to expose as a resource id.
+     */
+    private fun isInsidePreview(masked: String, index: Int): Boolean {
+        val declaration = FUNCTION_DECLARATION_PATTERN
+            .findAll(masked)
+            .lastOrNull { match -> match.range.first < index }
+            ?: return false
+
+        for (line in masked.take(declaration.range.first).lines().asReversed()) {
+            val trimmed = line.trim()
+            when {
+                trimmed.isEmpty() -> continue
+                trimmed.startsWith(PREVIEW_ANNOTATION_PREFIX) -> return true
+                trimmed.startsWith("@") -> continue
+                else -> return false
+            }
+        }
+        return false
     }
 
     /**
@@ -466,6 +625,14 @@ class MainSourceTestTagUsageTest {
     /** One `testTag` application in a main source file. */
     private data class TagCallSite(val path: String, val line: Int, val argument: String)
 
+    /** One semantics owner construction in a main source file, and whether it flags itself. */
+    private data class OwnerSite(
+        val path: String,
+        val line: Int,
+        val shape: String,
+        val flagged: Boolean,
+    )
+
     private companion object {
         /**
          * Lower bound on the number of `testTag` applications in `auth/src/main`, so a scan that
@@ -473,6 +640,13 @@ class MainSourceTestTagUsageTest {
          * nodes is the expected direction of travel and should not redden an unrelated build.
          */
         const val MINIMUM_TAG_CALL_SITES = 35
+
+        /**
+         * Lower bound on the number of recognised semantics owner constructions outside `@Preview`
+         * functions, so a scan that stops recognising a call shape announces itself rather than
+         * reporting a clean tree. A floor for the same reason as [MINIMUM_TAG_CALL_SITES].
+         */
+        const val MINIMUM_SEMANTICS_OWNER_SITES = 21
 
         const val REGISTRY_REFERENCE_PREFIX = "FirebaseAuthTestTags."
 
@@ -485,13 +659,57 @@ class MainSourceTestTagUsageTest {
          */
         val FLAG_APPLICATION_PATTERN = Regex("""\b$FLAG_FUNCTION_NAME\s*\(""")
 
-        const val REGISTRY_RELATIVE_PATH = "com/firebase/ui/auth/ui/FirebaseAuthTestTags.kt"
+        /**
+         * The Compose call shapes that create a semantics owner the library is responsible for
+         * flagging. Dialogs, popups and bottom sheets are each hosted in their own window with their
+         * own semantics root; a `Scaffold` is a subtree root that a sibling `Scaffold`'s flag does not
+         * reach. Longest-first is not needed — `\b` already stops `Dialog` from matching inside
+         * `AlertDialog` — but alphabetical order keeps `AlertDialog` ahead of it anyway.
+         */
+        val SEMANTICS_OWNER_SHAPES = listOf(
+            "AlertDialog",
+            "Dialog",
+            "ModalBottomSheet",
+            "PlainTooltip",
+            "Popup",
+            "Scaffold",
+        )
+
+        /**
+         * One of [SEMANTICS_OWNER_SHAPES] being constructed. `{` is accepted as the delimiter as well
+         * as `(` so that a trailing-lambda-only call, which can carry no modifier and therefore no
+         * flag, is caught rather than missed.
+         */
+        val OWNER_CONSTRUCTION_PATTERN =
+            Regex("""\b(${SEMANTICS_OWNER_SHAPES.joinToString("|")})\s*[({]""")
+
+        /**
+         * A function declaration at any indentation, used to find the declaration enclosing a call
+         * site so its annotations can be read.
+         */
+        val FUNCTION_DECLARATION_PATTERN = Regex(
+            """(?m)^[ \t]*(?:(?:private|internal|public|protected|expect|actual|override|""" +
+                """suspend|inline|operator|infix)\s+)*fun\s"""
+        )
+
+        /** Covers `@Preview` and its multipreview variants, such as `@PreviewLightDark`. */
+        const val PREVIEW_ANNOTATION_PREFIX = "@Preview"
+
+        /**
+         * The registry, used as the sentinel that a candidate directory really is the auth main
+         * source tree. Both conventional Kotlin source directories are tried, so moving the registry
+         * from `java/` to `kotlin/` does not disarm the scan.
+         */
+        val REGISTRY_RELATIVE_PATHS = listOf(
+            "java/com/firebase/ui/auth/ui/FirebaseAuthTestTags.kt",
+            "kotlin/com/firebase/ui/auth/ui/FirebaseAuthTestTags.kt",
+        )
 
         /** Working directory is the module directory under Gradle's default. */
-        const val MODULE_RELATIVE_MAIN_SOURCES = "src/main/java"
+        const val MODULE_RELATIVE_MAIN_SOURCES = "src/main"
 
         /** Working directory is the repository root, as when launched from an IDE run config. */
-        const val REPOSITORY_RELATIVE_MAIN_SOURCES = "auth/src/main/java"
+        const val REPOSITORY_RELATIVE_MAIN_SOURCES = "auth/src/main"
 
         const val MAX_ANCESTOR_WALK = 6
 
@@ -509,7 +727,10 @@ class MainSourceTestTagUsageTest {
 
         val CLOSING_BRACKETS = setOf(')', ']', '}')
 
-        /** `fun testTag(` declares one rather than calling it. */
+        /**
+         * `fun testTag(` declares one rather than calling it, and `fun Scaffold(` would declare a
+         * composable rather than construct one.
+         */
         val CALL_DISQUALIFYING_KEYWORDS = setOf("fun")
 
         /** `val testTag =` binds a name; it does not assign a semantics property. */

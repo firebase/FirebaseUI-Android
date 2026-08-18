@@ -244,7 +244,10 @@ fun FirebaseAuthScreen(
                             customMethodPickerLayout(configuration.providers, onProviderSelected)
                         }
                     } else {
-                        Scaffold { innerPadding ->
+                        // Flagged because the library creates the owner, not because a tag needs it
+                        // here — see exposeTestTagsAsResourceIds. This one sits under the flagged
+                        // Surface above, so it is redundant today and cheap to keep uniform.
+                        Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                             AuthMethodPicker(
                                 modifier = Modifier
                                     .padding(innerPadding),
@@ -1009,7 +1012,10 @@ private fun ReauthSheetContent(
                     customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
                 }
             } else {
-                Scaffold { innerPadding ->
+                // Flagged for the same reason as its counterpart in FirebaseAuthScreen: the owner is
+                // ours, so it carries the flag whether or not anything under it is tagged today. The
+                // enclosing ModalBottomSheet already flags this subtree.
+                Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                     AuthMethodPicker(
                         modifier = Modifier.padding(innerPadding),
                         providers = reauthConfig.providers,

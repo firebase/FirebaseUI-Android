@@ -131,11 +131,15 @@ internal fun DefaultMfaEnrollmentContent(
         )
     }
 
-    // Each step below composes its own root. They are siblings rather than nested, so the flag one
-    // of them applies reaches none of the others and each has to carry
-    // Modifier.exposeTestTagsAsResourceIds() itself — which they all do, whether or not they tag
-    // anything today. The steps that delegate to a shared screen (EnterPhoneNumberUI,
-    // EnterVerificationCodeUI) get it from that screen.
+    // Each step below composes its own root, and each carries Modifier.exposeTestTagsAsResourceIds()
+    // itself whether or not it tags anything today. Not because an ancestor's flag would fail to
+    // reach them — a flag is inherited by walking semantics ancestors, and that walk crosses
+    // composable boundaries freely, so inside this library every step is already covered by the
+    // Surface that wraps the NavHost in FirebaseAuthScreen. The flags are load-bearing because
+    // MfaEnrollmentScreen is public: a host application can call it standalone, with no flagged
+    // ancestor of ours above it, and the resource ids have to work there too. The steps that
+    // delegate to a shared screen (EnterPhoneNumberUI, EnterVerificationCodeUI) get it from that
+    // screen.
     Box(modifier = Modifier.fillMaxSize()) {
         when (state.step) {
             MfaEnrollmentStep.SelectFactor -> {

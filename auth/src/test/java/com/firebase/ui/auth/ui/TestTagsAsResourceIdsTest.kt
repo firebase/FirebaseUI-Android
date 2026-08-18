@@ -228,6 +228,13 @@ class TestTagsAsResourceIdsTest {
      * under test. `performTextInput` on a tag shows that a Compose test can type; it says nothing
      * about whether a crawler holding only a resource name can, which is the gap issue #2050 is
      * about.
+     *
+     * Two properties are asserted before the text is sent, because a crawler reads both and either
+     * one alone can be satisfied by a node it will never type into. `className` has to be
+     * [EDIT_TEXT_CLASS_NAME] — the field a crawler consults to decide a node accepts text at all,
+     * and the only class Robo's `inputText` directives are documented for — and `ACTION_SET_TEXT`
+     * has to be offered. They fail independently: a plain container can advertise the action, and a
+     * node with the action can lose the class to an unrelated semantics property.
      */
     private fun setTextByResourceId(resourceName: String, text: String) {
         val (provider, virtualViewId) = accessibilityNodePublishing(resourceName)
@@ -236,6 +243,20 @@ class TestTagsAsResourceIdsTest {
             "The accessibility node published as \"$resourceName\" disappeared between being " +
                 "found and being read."
         }
+
+        assertWithMessage(
+            "The node published as \"$resourceName\" reports className=${info.className} rather " +
+                "than $EDIT_TEXT_CLASS_NAME, so a crawler will not treat it as typeable however " +
+                "many text actions it offers. Robo decides a node accepts text from its class, and " +
+                "its documented directive support is EditText-only. Compose derives the class from " +
+                "the node's semantics: `AndroidComposeViewAccessibilityDelegateCompat` maps " +
+                "EditableText to EditText, but prefers Text over it — so adding a Text or Role " +
+                "property anywhere in this node's modifier chain, including through a modifier a " +
+                "caller passes in, silently turns this into a TextView while ACTION_SET_TEXT stays " +
+                "on offer and every other assertion in this class keeps passing. Fix: keep the " +
+                "group's semantics to isEditable/editableText/maxTextLength and the text actions, " +
+                "and put any label on a child rather than on the node itself."
+        ).that(info.className?.toString()).isEqualTo(EDIT_TEXT_CLASS_NAME)
 
         assertWithMessage(
             "The node published as \"$resourceName\" offers no ACTION_SET_TEXT, so a Robo " +
@@ -870,6 +891,13 @@ class TestTagsAsResourceIdsTest {
 
         /** Six digits, the length both code screens expect. */
         const val VERIFICATION_CODE = "123456"
+
+        /**
+         * The class a crawler requires before it will type into a node. Robo's `inputText` directives
+         * are documented for `EditText` only, and the class is what a crawler reads to decide a node
+         * accepts text — not the action list, which a plain container can also carry.
+         */
+        const val EDIT_TEXT_CLASS_NAME = "android.widget.EditText"
 
         /**
          * Matches every semantics node, so [accessibilityNodePublishing] can search the whole tree

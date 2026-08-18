@@ -95,9 +95,11 @@ import com.firebase.ui.auth.configuration.validators.FieldValidator
  * That is accepted: it is more verbose, but the alternative leaves the code unreachable by every
  * tool the tags exist for.
  *
- * Both actions refuse input they cannot represent — a non-digit, or more digits than there are
- * remaining boxes — rather than silently truncating it, so a caller sees a failed action instead of
- * a half-entered code.
+ * Both actions refuse input they cannot represent — a character no digit box can show, or more digits
+ * than there are remaining boxes — rather than silently truncating it, so a caller sees a failed
+ * action instead of a half-entered code. "Digit" is `Character.isDigit`'s definition rather than ASCII
+ * `0`-`9`, so a code typed in Arabic-Indic or fullwidth digits is accepted and normalised to its ASCII
+ * value, exactly as the per-box keyboard path already treats it; see the comment on `digitsOf`.
  *
  * @param modifier Applied to the group. A [androidx.compose.ui.platform.testTag] passed here names
  * the node that accepts the code, so it is the handle both Compose tests and resource-id lookups
@@ -180,6 +182,14 @@ fun VerificationCodeInputField(
     // The digits of [text], or null when this field cannot hold them. Rejecting is deliberate: a
     // caller that asked to enter "12a456" is better served by a failed action than by a code that
     // silently lost a character.
+    //
+    // "Digit" here is Character.isDigit's definition, not ASCII 0-9: isDigitsOnly() and digitToInt()
+    // both accept Arabic-Indic ("١٢٣٤٥٦") and fullwidth ("１２３") digits and yield the same values as
+    // their ASCII counterparts, so such input is normalised rather than rejected. That is kept
+    // deliberately, because the per-box keyboard path below does exactly the same thing — narrowing
+    // only these two actions to ASCII would make a code typed on a localised keypad enterable by hand
+    // and refused through ACTION_SET_TEXT. Nothing malformed gets through either way: the length and
+    // digit checks still hold, so the outcome is a well-formed code in ASCII, never a partial one.
     fun digitsOf(text: String, availableSlots: Int): List<Int>? = when {
         text.isEmpty() -> emptyList()
         text.length > availableSlots -> null
@@ -197,9 +207,27 @@ fun VerificationCodeInputField(
             // layout node as these actions, which is what lets one resource-id lookup both find
             // this node and type into it.
             .semantics {
+                // TODO: this group is an important, EditText-classed accessibility node with no
+                // label of its own, so TalkBack announces it as an unlabelled edit box. The label
+                // belongs here, on the node that owns the text-input semantics, and not on the
+                // digit boxes below — but it has to come from AuthUIStringProvider rather than be
+                // hardcoded, and adding a string to that public interface is tracked separately. It
+                // must be set as a `contentDescription`, not as `text`: Compose prefers Text over
+                // EditableText when deriving className, so a `text` property here would flip this
+                // node from EditText to TextView and stop a Robo crawler treating it as typeable
+                // (asserted in TestTagsAsResourceIdsTest.setTextByResourceId).
                 isEditable = true
                 maxTextLength = codeLength
-                editableText = AnnotatedString(code.value.mapNotNull { it }.joinToString(""))
+                // The digits before the first empty box, not every digit entered. Boxes fill
+                // non-contiguously — tapping box 3 moves the focus there directly — so compacting
+                // the whole list would report [1, 2, null, 4] as "124" and claim a digit at a
+                // position that is actually empty. A prefix is always positionally true, and it is
+                // what insertTextAtCursor appends to, so the two agree. It can understate: with only
+                // box 3 filled this reads as empty. Note that the onCodeChange callback below is
+                // deliberately left compacted — screens depend on that contract.
+                editableText = AnnotatedString(
+                    code.value.takeWhile { it != null }.joinToString("")
+                )
 
                 setText { newCode ->
                     val digits = digitsOf(newCode.text, codeLength) ?: return@setText false
@@ -209,12 +237,15 @@ fun VerificationCodeInputField(
                 }
 
                 insertTextAtCursor { inserted ->
+                    // Inserting nothing succeeds before the full-code guard is reached, because
+                    // inserting nothing into a full code is a no-op and a no-op is not a failure.
+                    if (inserted.text.isEmpty()) return@insertTextAtCursor true
+
                     val firstEmpty = code.value.indexOfFirst { it == null }
                     if (firstEmpty < 0) return@insertTextAtCursor false
 
                     val digits = digitsOf(inserted.text, codeLength - firstEmpty)
                         ?: return@insertTextAtCursor false
-                    if (digits.isEmpty()) return@insertTextAtCursor true
 
                     code.value = code.value.toMutableList().also { updated ->
                         digits.forEachIndexed { offset, digit ->
