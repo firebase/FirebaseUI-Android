@@ -103,9 +103,14 @@ import kotlinx.coroutines.tasks.await
  * flows, error handling, and multi-factor enrollment/challenge flows. Back navigation is driven by
  * the Jetpack Navigation stack so presses behave like native Android navigation.
  *
- * @param modifier Applied once to the root [Surface] that hosts the whole auth flow. It is not
- * forwarded to individual destinations, so it affects the flow as a whole rather than any single
- * screen.
+ * @param modifier Applied once to the root [Surface] that hosts the flow's navigation graph. It is
+ * not forwarded to individual destinations, so it decorates whichever destination is showing rather
+ * than any single screen. Its reach stops at this composable's own window: content that Compose
+ * hosts in a separate semantics owner — every dialog and bottom sheet the flow shows, including the
+ * default reauthentication sheet and the phone number country selector — is not a descendant of
+ * this [Surface] and is not affected. So passing `Modifier.semantics { testTagsAsResourceId = true }`
+ * here exposes the navigation destinations' test tags as resource ids but not the tags applied
+ * inside those sheets.
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).

@@ -591,6 +591,11 @@ class AuthProviderButtonTest {
     /**
      * The one node the caller's modifier reaches is the button itself, not the content row: the
      * tagged node has to be the clickable one.
+     *
+     * This queries the merged tree, where `TestTag`'s merge policy keeps the ancestor's value, so
+     * the duplicated tag resolved to the button before the fix as well and this assertion held
+     * either way. It is a guard on which node owns the tag, not a pin on the change; the unmerged
+     * count above is what pins it.
      */
     @Test
     fun `caller modifier lands on the button rather than its content`() {

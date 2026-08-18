@@ -20,17 +20,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import org.junit.After
@@ -52,6 +56,10 @@ import org.robolectric.annotation.Config
  * never received it at all, so a caller could not decorate the flow as a whole. In particular a
  * host application could not attach `semantics { testTagsAsResourceId = true }` through the public
  * API, because no destination-level modifier reaches the root.
+ *
+ * One test here asserts the opposite of the rest on purpose. "Reaches the root" is not the same as
+ * "reaches everything the flow shows", and the last test in this class pins where the difference
+ * lies so the gap is recorded rather than assumed away.
  *
  * @suppress Internal test class
  */
@@ -97,6 +105,20 @@ class FirebaseAuthScreenModifierTest {
                 AuthProvider.Email(
                     emailLinkActionCodeSettings = null,
                     passwordValidationRules = emptyList()
+                )
+            )
+        }
+    }
+
+    /** A single phone provider makes the phone screen the start route, country selector included. */
+    private fun phoneOnlyConfiguration(): AuthUIConfiguration = authUIConfiguration {
+        context = this@FirebaseAuthScreenModifierTest.context
+        providers {
+            provider(
+                AuthProvider.Phone(
+                    defaultNumber = null,
+                    defaultCountryCode = null,
+                    allowedCountries = null
                 )
             )
         }
@@ -217,9 +239,51 @@ class FirebaseAuthScreenModifierTest {
             .assertCountEquals(1)
     }
 
+    /**
+     * Pins the documented edge of the modifier's reach, and is expected to keep passing: a
+     * bottom sheet is a **separate semantics owner**, so its content is not a descendant of the
+     * root the caller's modifier lands on.
+     *
+     * This is a boundary, not a bug, and it is asserted rather than left implicit because the
+     * obvious reading of "the modifier reaches the root of the flow" is that it therefore covers
+     * everything the flow shows. It does not. `Modifier.semantics { testTagsAsResourceId = true }`
+     * passed into [FirebaseAuthScreen] turns the navigation destinations' tags into resource ids
+     * and leaves every dialog and bottom sheet untouched — including this one, which owns
+     * [FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST], so `By.res("fui_country_selector_…")`
+     * still will not resolve it. Making those surfaces opt in individually is separate work; if
+     * this test starts failing because the sheet's content became a descendant of the root, that
+     * work landed and the [FirebaseAuthScreen] `modifier` KDoc needs updating with it.
+     */
+    @Test
+    fun `caller modifier does not reach bottom sheet content, which is a separate semantics owner`() {
+        setContent(phoneOnlyConfiguration(), Modifier.testTag(CALLER_TAG))
+
+        composeTestRule.onNodeWithContentDescription(COUNTRY_SELECTOR_DESCRIPTION).performClick()
+        composeTestRule.waitForIdle()
+
+        // The sheet is open and its tagged node is findable, so the query below is meaningful.
+        composeTestRule
+            .onAllNodesWithTag(SHEET_TAG, useUnmergedTree = true)
+            .assertCountEquals(1)
+
+        // But it hangs off the sheet's own semantics root, not off the caller-tagged one.
+        composeTestRule
+            .onAllNodes(
+                hasTestTag(SHEET_TAG) and hasAnyAncestor(hasTestTag(CALLER_TAG)),
+                useUnmergedTree = true
+            )
+            .assertCountEquals(0)
+    }
+
     private companion object {
         const val CALLER_TAG = "caller_supplied_tag"
 
         const val SENTINEL_TAG = "destination_content_sentinel"
+
+        /** A tag applied inside a [androidx.compose.material3.ModalBottomSheet] by the flow. */
+        const val SHEET_TAG = FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST
+
+        /** Opens the country selector sheet from the phone screen. */
+        const val COUNTRY_SELECTOR_DESCRIPTION = "Country selector"
     }
 }

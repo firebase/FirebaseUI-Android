@@ -67,7 +67,10 @@ import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
  * )
  * ```
  *
- * @param modifier A modifier for the button
+ * @param modifier Applied to the button itself, and to nothing else — the content row sizes
+ * independently. Note that the content row fills the available width unconditionally, so the button
+ * renders full-width whatever width this modifier asks for; constrain it from the parent layout
+ * instead (for example by placing the button in a fixed-width container).
  * @param provider The provider to represent.
  * @param onClick A callback when the button is clicked
  * @param enabled If the button is enabled. Defaults to true.
