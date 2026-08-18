@@ -81,6 +81,7 @@ import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
@@ -108,9 +109,13 @@ import kotlinx.coroutines.tasks.await
  * than any single screen. Its reach stops at this composable's own window: content that Compose
  * hosts in a separate semantics owner — every dialog and bottom sheet the flow shows, including the
  * default reauthentication sheet and the phone number country selector — is not a descendant of
- * this [Surface] and is not affected. So passing `Modifier.semantics { testTagsAsResourceId = true }`
- * here exposes the navigation destinations' test tags as resource ids but not the tags applied
- * inside those sheets.
+ * this [Surface], so a modifier passed here does not decorate it.
+ *
+ * That boundary no longer costs you the resource ids, though. Exposing
+ * [com.firebase.ui.auth.ui.FirebaseAuthTestTags] as Android resource ids is not something a caller
+ * has to arrange: the library sets `testTagsAsResourceId` itself at every semantics owner it
+ * creates, dialogs and bottom sheets included, so Firebase Test Lab Robo directives and
+ * `By.res()` resolve every published tag without any modifier being passed here.
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).
@@ -212,6 +217,7 @@ fun FirebaseAuthScreen(
         Surface(
             modifier = modifier
                 .fillMaxSize()
+                .exposeTestTagsAsResourceIds()
         ) {
             NavHost(
                 navController = navController,
@@ -719,6 +725,7 @@ fun FirebaseAuthScreen(
             val reauthConfig = pendingReauthConfig.value
             if (reauthConfig != null) {
                 ModalBottomSheet(
+                    modifier = Modifier.exposeTestTagsAsResourceIds(),
                     onDismissRequest = {
                         pendingReauthOperation.value = null
                         pendingReauthConfig.value = null
@@ -937,6 +944,7 @@ private fun ProfileCompletionContent(
 @Composable
 private fun LoadingDialog(message: String) {
     AlertDialog(
+        modifier = Modifier.exposeTestTagsAsResourceIds(),
         onDismissRequest = {},
         confirmButton = {},
         containerColor = Color.Transparent,

@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -66,9 +67,11 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledExcepti
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundException
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -145,7 +148,7 @@ fun SignInUI(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = {
@@ -175,6 +178,7 @@ fun SignInUI(
                 .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD),
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
@@ -187,6 +191,7 @@ fun SignInUI(
             )
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD),
                 value = password,
                 validator = passwordValidator,
                 enabled = !isLoading,
@@ -201,7 +206,8 @@ fun SignInUI(
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(
                 modifier = Modifier
-                    .align(Alignment.Start),
+                    .align(Alignment.Start)
+                    .testTag(FirebaseAuthTestTags.SignIn.FORGOT_PASSWORD_BUTTON),
                 onClick = {
                     onGoToResetPassword()
                 },
@@ -222,6 +228,8 @@ fun SignInUI(
             ) {
                 if (provider.isNewAccountsAllowed) {
                     Button(
+                        modifier = Modifier
+                            .testTag(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON),
                         onClick = {
                             onGoToSignUp()
                         },
@@ -232,6 +240,8 @@ fun SignInUI(
                     Spacer(modifier = Modifier.width(16.dp))
                 }
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON),
                     onClick = {
                         onSignInClick()
                     },
@@ -268,7 +278,9 @@ fun SignInUI(
                     onClick = {
                         onGoToEmailLinkSignIn()
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(FirebaseAuthTestTags.SignIn.EMAIL_LINK_BUTTON),
                     enabled = !isLoading
                 ) {
                     Text(stringProvider.signInWithEmailLink.uppercase())

@@ -59,7 +59,7 @@ import org.robolectric.annotation.Config
  *
  * One test here asserts the opposite of the rest on purpose. "Reaches the root" is not the same as
  * "reaches everything the flow shows", and the last test in this class pins where the difference
- * lies so the gap is recorded rather than assumed away.
+ * lies so the boundary is recorded rather than assumed away.
  *
  * @suppress Internal test class
  */
@@ -246,13 +246,16 @@ class FirebaseAuthScreenModifierTest {
      *
      * This is a boundary, not a bug, and it is asserted rather than left implicit because the
      * obvious reading of "the modifier reaches the root of the flow" is that it therefore covers
-     * everything the flow shows. It does not. `Modifier.semantics { testTagsAsResourceId = true }`
-     * passed into [FirebaseAuthScreen] turns the navigation destinations' tags into resource ids
-     * and leaves every dialog and bottom sheet untouched — including this one, which owns
-     * [FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST], so `By.res("fui_country_selector_…")`
-     * still will not resolve it. Making those surfaces opt in individually is separate work; if
-     * this test starts failing because the sheet's content became a descendant of the root, that
-     * work landed and the [FirebaseAuthScreen] `modifier` KDoc needs updating with it.
+     * everything the flow shows. It does not — no modifier passed to [FirebaseAuthScreen] decorates
+     * anything inside this sheet.
+     *
+     * What that boundary no longer implies is that the sheet's tags are unreachable as resource ids.
+     * The library now sets `testTagsAsResourceId` at each semantics owner it creates, this sheet
+     * included, so [FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST] does resolve under
+     * `By.res("fui_country_selector_country_list")` — by the library's own doing rather than by
+     * inheritance from the caller's modifier. That exposure is asserted in
+     * [TestTagsAsResourceIdsTest]; the assertions here stay about the modifier's reach, which is
+     * unchanged.
      */
     @Test
     fun `caller modifier does not reach bottom sheet content, which is a separate semantics owner`() {

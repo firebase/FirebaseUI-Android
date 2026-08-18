@@ -59,6 +59,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.toMfaErrorMessage
 import com.firebase.ui.auth.ui.components.QrCodeImage
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
@@ -242,6 +243,7 @@ private fun SelectFactorUI(
     val factorsToEnroll = availableFactors.filter { it !in enrolledFactorIds }
 
     Scaffold(
+        modifier = Modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = { Text(stringProvider.mfaManageFactorsTitle) },

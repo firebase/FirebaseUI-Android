@@ -43,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,8 +53,10 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,6 +86,7 @@ fun ResetPasswordUI(
 
     if (isDialogVisible.value) {
         AlertDialog(
+            modifier = Modifier.exposeTestTagsAsResourceIds(),
             title = {
                 Text(
                     text = stringProvider.recoverPasswordLinkSentDialogTitle,
@@ -98,6 +102,8 @@ fun ResetPasswordUI(
             },
             confirmButton = {
                 TextButton(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.ResetPassword.DISMISS_BUTTON),
                     onClick = {
                         onGoToSignIn()
                         isDialogVisible.value = false
@@ -113,7 +119,7 @@ fun ResetPasswordUI(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = {
@@ -140,6 +146,7 @@ fun ResetPasswordUI(
                 .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.ResetPassword.EMAIL_FIELD),
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
@@ -156,6 +163,8 @@ fun ResetPasswordUI(
                     .align(Alignment.End),
             ) {
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.ResetPassword.SIGN_IN_BUTTON),
                     onClick = {
                         onGoToSignIn()
                     },
@@ -165,6 +174,8 @@ fun ResetPasswordUI(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.ResetPassword.SEND_BUTTON),
                     onClick = {
                         onSendResetLink()
                     },

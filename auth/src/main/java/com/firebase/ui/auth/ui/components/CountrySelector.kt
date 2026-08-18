@@ -58,6 +58,7 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.data.ALL_COUNTRIES
 import com.firebase.ui.auth.data.CountryData
 import com.firebase.ui.auth.ui.FirebaseAuthTestTags
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.util.CountryUtils
 import kotlinx.coroutines.launch
 
@@ -65,6 +66,7 @@ import kotlinx.coroutines.launch
  * A country selector component that displays the selected country's flag and dial code with a dropdown icon.
  * Designed to be used as a leadingIcon in a TextField.
  *
+ * @param modifier A modifier for the clickable row that opens the country list.
  * @param selectedCountry The currently selected country.
  * @param onCountrySelected Callback when a country is selected.
  * @param enabled Whether the selector is enabled.
@@ -73,6 +75,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountrySelector(
+    modifier: Modifier = Modifier,
     selectedCountry: CountryData,
     onCountrySelected: (CountryData) -> Unit,
     enabled: Boolean = true,
@@ -105,7 +108,7 @@ fun CountrySelector(
 
     // Clickable row showing flag, dial code and dropdown icon
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
             .clickable(enabled = enabled) {
                 showBottomSheet = true
@@ -135,6 +138,7 @@ fun CountrySelector(
 
     if (showBottomSheet) {
         ModalBottomSheet(
+            modifier = Modifier.exposeTestTagsAsResourceIds(),
             onDismissRequest = {
                 showBottomSheet = false
                 searchQuery = ""

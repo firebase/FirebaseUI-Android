@@ -415,7 +415,7 @@ class MainSourceTestTagUsageTest {
          * stops reaching files announces itself. A floor rather than an exact count: tagging more
          * nodes is the expected direction of travel and should not redden an unrelated build.
          */
-        const val MINIMUM_TAG_CALL_SITES = 3
+        const val MINIMUM_TAG_CALL_SITES = 33
 
         const val REGISTRY_REFERENCE_PREFIX = "FirebaseAuthTestTags."
 

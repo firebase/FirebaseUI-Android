@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GithubAuthProvider
@@ -118,7 +119,7 @@ fun ErrorRecoveryDialog(
                 )
             }
         },
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         properties = properties
     )
 }

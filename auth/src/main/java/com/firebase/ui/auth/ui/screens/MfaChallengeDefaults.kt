@@ -46,6 +46,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @Composable
 internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
@@ -55,7 +56,7 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
         VerificationCodeValidator(stringProvider)
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()

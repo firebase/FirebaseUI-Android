@@ -45,6 +45,7 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthProviderButton
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.util.SignInPreferenceManager
 
 /**
@@ -118,7 +119,7 @@ fun AuthMethodPicker(
             termsConfiguration.accepted
 
     Column(
-        modifier = modifier
+        modifier = modifier.exposeTestTagsAsResourceIds()
     ) {
         logo?.let {
             Image(

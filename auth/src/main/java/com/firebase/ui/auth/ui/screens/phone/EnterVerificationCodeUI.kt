@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,8 +52,10 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.VerificationCodeValidator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +89,7 @@ fun EnterVerificationCodeUI(
     val resendEnabled = resendTimer == 0 && !isLoading
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = {
@@ -119,7 +122,9 @@ fun EnterVerificationCodeUI(
             Spacer(modifier = Modifier.height(8.dp))
 
             TextButton(
-                modifier = Modifier.align(Alignment.Start),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .testTag(FirebaseAuthTestTags.VerificationCode.CHANGE_PHONE_NUMBER_BUTTON),
                 onClick = onChangeNumberClick,
                 enabled = !isLoading,
                 contentPadding = PaddingValues.Zero
@@ -134,14 +139,18 @@ fun EnterVerificationCodeUI(
             Spacer(modifier = Modifier.height(16.dp))
 
             VerificationCodeInputField(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .testTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD),
                 validator = verificationCodeValidator,
                 onCodeChange = onVerificationCodeChange
             )
             Spacer(modifier = Modifier.height(8.dp))
 
             TextButton(
-                modifier = Modifier.align(Alignment.Start),
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .testTag(FirebaseAuthTestTags.VerificationCode.RESEND_CODE_BUTTON),
                 onClick = onResendCodeClick,
                 enabled = resendEnabled,
                 contentPadding = PaddingValues.Zero
@@ -168,6 +177,8 @@ fun EnterVerificationCodeUI(
                     .align(Alignment.End),
             ) {
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.VerificationCode.VERIFY_BUTTON),
                     onClick = onVerifyCodeClick,
                     enabled = !isLoading && isFormValid.value,
                 ) {
