@@ -131,6 +131,11 @@ internal fun DefaultMfaEnrollmentContent(
         )
     }
 
+    // Each step below composes its own root. They are siblings rather than nested, so the flag one
+    // of them applies reaches none of the others and each has to carry
+    // Modifier.exposeTestTagsAsResourceIds() itself — which they all do, whether or not they tag
+    // anything today. The steps that delegate to a shared screen (EnterPhoneNumberUI,
+    // EnterVerificationCodeUI) get it from that screen.
     Box(modifier = Modifier.fillMaxSize()) {
         when (state.step) {
             MfaEnrollmentStep.SelectFactor -> {
@@ -410,7 +415,7 @@ private fun ConfigureTotpUI(
     error: String?,
     stringProvider: AuthUIStringProvider
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -499,7 +504,7 @@ private fun VerifyTotpUI(
     error: String?,
     stringProvider: AuthUIStringProvider
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

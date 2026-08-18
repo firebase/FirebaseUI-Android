@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,7 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
 import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
@@ -98,7 +100,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
             Spacer(modifier = Modifier.height(8.dp))
 
             VerificationCodeInputField(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .testTag(FirebaseAuthTestTags.MfaChallenge.CODE_FIELD),
                 codeLength = 6,
                 validator = verificationCodeValidator,
                 isError = state.error != null,
@@ -150,7 +154,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
             Button(
                 onClick = state.onVerifyClick,
                 enabled = state.isValid && !state.isLoading,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(FirebaseAuthTestTags.MfaChallenge.VERIFY_BUTTON)
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(

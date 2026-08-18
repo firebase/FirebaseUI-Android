@@ -234,11 +234,15 @@ class CredentialLinkingScreenTest {
 
         // Step 6: Enter verification code
         println("TEST: Entering verification code: $phoneCode")
-        val textFields = composeTestRule.onAllNodes(hasSetTextAction())
-        phoneCode.forEachIndexed { index, digit ->
-            composeTestRule.waitForIdle()
-            textFields[index].performTextInput(digit.toString())
-        }
+        // The whole code goes in through the published tag in one call: the tagged group is the
+        // editable node and spreads the string across its digit boxes. Selecting the boxes
+        // positionally out of onAllNodes(hasSetTextAction()) — as this did — depended on which
+        // nodes happen to accept text and in what order.
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+            .performTextInput(phoneCode)
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
             .performScrollTo()

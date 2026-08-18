@@ -15,15 +15,21 @@
 package com.firebase.ui.auth.ui
 
 import android.content.Context
+import android.os.Bundle
+import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityNodeProvider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewRootForTest
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasScrollAction
@@ -32,8 +38,10 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -42,11 +50,14 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
+import com.firebase.ui.auth.ui.screens.DefaultMfaChallengeContent
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebase.ui.auth.ui.screens.email.ResetPasswordUI
 import com.firebase.ui.auth.ui.screens.email.SignInEmailLinkUI
@@ -55,6 +66,7 @@ import com.firebase.ui.auth.ui.screens.email.SignUpUI
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.firebase.ui.auth.util.CountryUtils
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseUser
@@ -105,6 +117,21 @@ import org.robolectric.annotation.GraphicsMode
  * own window with its own semantics root, so it inherits nothing from the composable that opened it
  * — the case with no coverage before this class existed, and the one where forgetting the modifier
  * is invisible in a Compose-only assertion.
+ *
+ * ## What is deliberately not covered here
+ *
+ * [exposeTestTagsAsResourceIds] is applied to every semantics owner the library creates, including
+ * the ones that hold no tag today, and those flags have no test of their own. That is intentional
+ * twice over. There is nothing to assert — the property is only observable through a tag beneath it,
+ * so a test would have to plant its own tag and would then be testing Compose. And the flags exist
+ * precisely because no test can see them missing: the whole reason for flagging owners rather than
+ * tags is that a tag added inside an unflagged owner keeps every Compose assertion green. The loading
+ * dialog, the default re-authentication sheet, the manage-MFA tooltip, and the TOTP enrollment steps
+ * are all in that state.
+ *
+ * The one case where a flag-without-tags *is* asserted is `error recovery dialog exposes a caller
+ * supplied tag`, which stands in for all of them: it plants a caller tag in an owner the library
+ * flags but does not tag, and so proves the mechanism works the moment a tag arrives.
  *
  * @suppress Internal test class
  */
@@ -189,6 +216,86 @@ class TestTagsAsResourceIdsTest {
         if (hasScrollableAncestor) {
             composeTestRule.onNode(hasTestTag(tag)).performScrollTo()
         }
+    }
+
+    /**
+     * Enters [text] into whatever node the platform publishes under the resource id [resourceName],
+     * the way something outside Compose would: the node is found by scanning the accessibility tree
+     * for that resource id, and the text is delivered through `ACTION_SET_TEXT` — the action behind
+     * a Robo `inputText` directive and UiAutomator's `setText`.
+     *
+     * The Compose test tag is deliberately not used to locate the node, because that is the claim
+     * under test. `performTextInput` on a tag shows that a Compose test can type; it says nothing
+     * about whether a crawler holding only a resource name can, which is the gap issue #2050 is
+     * about.
+     */
+    private fun setTextByResourceId(resourceName: String, text: String) {
+        val (provider, virtualViewId) = accessibilityNodePublishing(resourceName)
+
+        val info = requireNotNull(provider.createAccessibilityNodeInfo(virtualViewId)) {
+            "The accessibility node published as \"$resourceName\" disappeared between being " +
+                "found and being read."
+        }
+
+        assertWithMessage(
+            "The node published as \"$resourceName\" offers no ACTION_SET_TEXT, so a Robo " +
+                "inputText directive naming it would resolve a node and type nothing. Compose " +
+                "offers that action only where SemanticsActions.SetText is declared, so the node " +
+                "needs Modifier.semantics { setText { … } } (or to be a real text field). Actions " +
+                "offered: ${info.actionList.map { it.id }}."
+        ).that(info.actionList.map { it.id }).contains(AccessibilityNodeInfo.ACTION_SET_TEXT)
+
+        val arguments = Bundle().apply {
+            putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text)
+        }
+
+        assertWithMessage(
+            "ACTION_SET_TEXT on \"$resourceName\" with \"$text\" was refused. The node advertises " +
+                "the action, so its SetText handler rejected the value."
+        ).that(
+            provider.performAction(
+                virtualViewId,
+                AccessibilityNodeInfo.ACTION_SET_TEXT,
+                arguments
+            )
+        ).isTrue()
+
+        composeTestRule.waitForIdle()
+    }
+
+    /**
+     * The accessibility node whose `viewIdResourceName` is [resourceName], together with the
+     * provider that owns it, asserting that exactly one node claims the id.
+     *
+     * Every semantics node in the tree is examined rather than the one carrying a matching test tag,
+     * so this resolves the id the same way `By.res()` does — and so a tag that never reached the
+     * accessibility tree fails here instead of being found by the back door.
+     */
+    private fun accessibilityNodePublishing(
+        resourceName: String
+    ): Pair<AccessibilityNodeProvider, Int> {
+        val matches = composeTestRule
+            .onAllNodes(ANY_NODE, useUnmergedTree = true)
+            .fetchSemanticsNodes()
+            .mapNotNull { node: SemanticsNode ->
+                val provider = (node.root as? ViewRootForTest)
+                    ?.view
+                    ?.accessibilityNodeProvider
+                    ?: return@mapNotNull null
+                val info = provider.createAccessibilityNodeInfo(node.id)
+                if (info?.viewIdResourceName == resourceName) provider to node.id else null
+            }
+
+        assertWithMessage(
+            "Expected exactly one accessibility node to publish viewIdResourceName " +
+                "\"$resourceName\". Zero means the tag is not exposed as a resource id here — " +
+                "either the tag is not applied, its node is scrolled out of the window, or the " +
+                "enclosing semantics owner is missing " +
+                "Modifier.exposeTestTagsAsResourceIds(). More than one means By.res() cannot " +
+                "address either of them. Found ${matches.size}."
+        ).that(matches).hasSize(1)
+
+        return matches.single()
     }
 
     private fun field(): SemanticsMatcher = hasSetTextAction()
@@ -379,18 +486,142 @@ class TestTagsAsResourceIdsTest {
             )
         }
 
-        // The code input is a row of single-digit fields rather than one text field, so the tag
-        // names the container and the field check applies to what it contains.
-        assertExposedAsResourceId(
-            FirebaseAuthTestTags.VerificationCode.CODE_FIELD,
-            hasAnyDescendant(hasSetTextAction())
-        )
+        // The code is drawn as one box per digit, but the tag names the group and the group is the
+        // node that takes text — so `field()` here, not `hasAnyDescendant(field())`. See the typing
+        // tests below for why that distinction is the whole point.
+        assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.CODE_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.VERIFY_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.RESEND_CODE_BUTTON, button())
         assertExposedAsResourceId(
             FirebaseAuthTestTags.VerificationCode.CHANGE_PHONE_NUMBER_BUTTON,
             button()
         )
+    }
+
+    // =============================================================================================
+    // The code fields, which have to accept a code and not merely carry a tag
+    // =============================================================================================
+
+    /**
+     * The finding this section exists for: `fui_verification_code_code_field` used to name a bare
+     * container whose entire semantics config was its test tag. A Robo directive
+     * `{"resourceName": "fui_verification_code_code_field", "inputText": "123456"}` resolved that
+     * node and typed nothing, and the six real digit boxes were unaddressable — no resource id of
+     * their own, and six identical content descriptions between them. The constant promised a code
+     * input and delivered a `Column`.
+     *
+     * So this drives the code in the way that failed: locate the node by resource id, issue
+     * `ACTION_SET_TEXT`, and then require the code to have arrived where the screen keeps it. The
+     * verify button being enabled afterwards is the part that matters — it is the screen agreeing
+     * that it holds a complete, valid code, which is as far as a crawler needs to get.
+     */
+    @Test
+    fun `a robo directive can type a whole code into the verification code field`() {
+        val entered = mutableStateOf("")
+
+        setContent {
+            EnterVerificationCodeUI(
+                configuration = phoneConfiguration(),
+                isLoading = false,
+                verificationCode = entered.value,
+                fullPhoneNumber = "+1 555 555 5555",
+                resendTimer = 0,
+                onVerificationCodeChange = { entered.value = it },
+                onVerifyCodeClick = { },
+                onResendCodeClick = { },
+                onChangeNumberClick = { },
+            )
+        }
+
+        // Scrolling is a harness necessity, not part of the addressing: a node outside the window
+        // has no accessibility node at all, so there would be no resource id to find.
+        scrollIntoWindow(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+
+        setTextByResourceId(FirebaseAuthTestTags.VerificationCode.CODE_FIELD, VERIFICATION_CODE)
+
+        assertWithMessage(
+            "ACTION_SET_TEXT on fui_verification_code_code_field reported success but the screen " +
+                "did not receive the code, so the tagged node accepted text without passing it to " +
+                "the digit boxes."
+        ).that(entered.value).isEqualTo(VERIFICATION_CODE)
+
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.VERIFY_BUTTON)
+            .assertIsEnabled()
+    }
+
+    /**
+     * The same claim for a host application's own Compose tests, which the registry KDoc invites:
+     * `performTextInput` against the published tag enters the whole code. It exercises a different
+     * semantics action from the test above — `InsertTextAtCursor` rather than `SetText` — so both
+     * are covered.
+     */
+    @Test
+    fun `performTextInput on the verification code tag enters the whole code`() {
+        val entered = mutableStateOf("")
+
+        setContent {
+            EnterVerificationCodeUI(
+                configuration = phoneConfiguration(),
+                isLoading = false,
+                verificationCode = entered.value,
+                fullPhoneNumber = "+1 555 555 5555",
+                resendTimer = 0,
+                onVerificationCodeChange = { entered.value = it },
+                onVerifyCodeClick = { },
+                onResendCodeClick = { },
+                onChangeNumberClick = { },
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+            .performTextInput(VERIFICATION_CODE)
+
+        // The code reaches the caller from a LaunchedEffect keyed on the digits, so the recomposition
+        // the action triggers has to settle before the callback has run.
+        composeTestRule.waitForIdle()
+
+        assertWithMessage(
+            "performTextInput on the published verification code tag did not enter the code."
+        ).that(entered.value).isEqualTo(VERIFICATION_CODE)
+    }
+
+    /**
+     * The multi-factor challenge screen shares the code input with the phone screen and had no tags
+     * at all, so it had the same hole in a place a user reaches during an ordinary sign-in rather
+     * than during enrollment. It is covered by the same assertions rather than by a weaker one,
+     * because "reachable by a crawler" means the same thing on both screens.
+     */
+    @Test
+    fun `a robo directive can type a whole code into the mfa challenge field`() {
+        val entered = mutableStateOf("")
+
+        setContent {
+            DefaultMfaChallengeContent(
+                state = MfaChallengeContentState(
+                    factorType = MfaFactor.Sms,
+                    maskedPhoneNumber = "+1••••••890",
+                    verificationCode = entered.value,
+                    onVerificationCodeChange = { entered.value = it },
+                )
+            )
+        }
+
+        scrollIntoWindow(FirebaseAuthTestTags.MfaChallenge.CODE_FIELD)
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaChallenge.CODE_FIELD, field())
+        setTextByResourceId(FirebaseAuthTestTags.MfaChallenge.CODE_FIELD, VERIFICATION_CODE)
+
+        assertWithMessage(
+            "ACTION_SET_TEXT on fui_mfa_challenge_code_field reported success but the challenge " +
+                "screen did not receive the code."
+        ).that(entered.value).isEqualTo(VERIFICATION_CODE)
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaChallenge.VERIFY_BUTTON, button())
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.MfaChallenge.VERIFY_BUTTON)
+            .assertIsEnabled()
     }
 
     @Test
@@ -408,6 +639,34 @@ class TestTagsAsResourceIdsTest {
             FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST,
             hasScrollAction()
         )
+    }
+
+    /**
+     * The "Continue as …" button only exists when a previous sign-in preference is stored, so it
+     * needs a fixture of its own and had no coverage without one. It is worth having: for a
+     * returning user it is the first control on the flow's first screen, so it is what a crawl
+     * reaches before anything else.
+     */
+    @Test
+    fun `method picker exposes its continue as button`() {
+        val provider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+
+        setContent {
+            AuthMethodPicker(
+                providers = listOf(provider),
+                lastSignInPreference = SignInPreferenceManager.SignInPreference(
+                    providerId = provider.providerId,
+                    identifier = "user@example.com",
+                    timestamp = 0L
+                ),
+                onProviderSelected = { },
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON, button())
     }
 
     // =============================================================================================
@@ -608,5 +867,14 @@ class TestTagsAsResourceIdsTest {
 
         /** Opens the country selector sheet. */
         const val COUNTRY_SELECTOR_DESCRIPTION = "Country selector"
+
+        /** Six digits, the length both code screens expect. */
+        const val VERIFICATION_CODE = "123456"
+
+        /**
+         * Matches every semantics node, so [accessibilityNodePublishing] can search the whole tree
+         * for a resource id rather than being handed the node by its test tag.
+         */
+        val ANY_NODE = SemanticsMatcher("any semantics node") { true }
     }
 }

@@ -54,12 +54,62 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.editableText
+import androidx.compose.ui.semantics.insertTextAtCursor
+import androidx.compose.ui.semantics.isEditable
+import androidx.compose.ui.semantics.maxTextLength
+import androidx.compose.ui.semantics.requestFocus
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setText
+import androidx.compose.ui.text.AnnotatedString
 import androidx.core.text.isDigitsOnly
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.FieldValidator
 
+/**
+ * A row of [codeLength] single-character boxes that together hold one verification code.
+ *
+ * ## Why the group, and not the boxes, is the editable node
+ *
+ * Visually this is one field; structurally it is [codeLength] separate `BasicTextField`s, each of
+ * which rejects anything longer than a single digit. That split is invisible to a user and fatal to
+ * anything driving the screen from outside Compose. A Firebase Test Lab Robo directive, a Play
+ * pre-launch crawl, and UiAutomator all type by issuing `ACTION_SET_TEXT` against one accessibility
+ * node, and there was no node that could accept a whole code: the boxes take one character each and
+ * are indistinguishable from one another in the accessibility tree, while the container that a
+ * caller can address by test tag carried no text-input action at all. A directive naming it resolved
+ * a node and typed nothing — the shape of issue #2050, where Robo found the login field but could
+ * not fill the password.
+ *
+ * So the container declares the text-input semantics itself: [setText] replaces the whole code and
+ * [insertTextAtCursor] fills forward from the first empty box, both spreading the string they are
+ * given across the boxes. One `ACTION_SET_TEXT` carrying `"123456"` therefore enters the entire
+ * code, and `performTextInput` works on the container in a host application's own Compose tests.
+ * [editableText] and [isEditable] are declared alongside them because they are what makes the
+ * platform describe this node as an editable field rather than a plain container, which is how a
+ * crawler decides a node is worth typing into at all.
+ *
+ * The cost is that the group is now a node accessibility services will visit, sitting above
+ * [codeLength] boxes they also visit, so a screen reader reads the code once and then the boxes.
+ * That is accepted: it is more verbose, but the alternative leaves the code unreachable by every
+ * tool the tags exist for.
+ *
+ * Both actions refuse input they cannot represent — a non-digit, or more digits than there are
+ * remaining boxes — rather than silently truncating it, so a caller sees a failed action instead of
+ * a half-entered code.
+ *
+ * @param modifier Applied to the group. A [androidx.compose.ui.platform.testTag] passed here names
+ * the node that accepts the code, so it is the handle both Compose tests and resource-id lookups
+ * should use.
+ * @param codeLength How many digits the code has, and therefore how many boxes are drawn.
+ * @param validator Optional validator run against the code on every change; when supplied it drives
+ * the error state instead of [isError].
+ * @param isError Whether to draw the boxes in their error state. Ignored when [validator] is set.
+ * @param errorMessage Message shown beneath the boxes. Ignored when [validator] is set.
+ * @param onCodeComplete Called with the code once every box is filled.
+ * @param onCodeChange Called with the code so far on every change.
+ */
 @Composable
 fun VerificationCodeInputField(
     modifier: Modifier = Modifier,
@@ -127,8 +177,64 @@ fun VerificationCodeInputField(
         errorMessage
     }
 
+    // The digits of [text], or null when this field cannot hold them. Rejecting is deliberate: a
+    // caller that asked to enter "12a456" is better served by a failed action than by a code that
+    // silently lost a character.
+    fun digitsOf(text: String, availableSlots: Int): List<Int>? = when {
+        text.isEmpty() -> emptyList()
+        text.length > availableSlots -> null
+        !text.isDigitsOnly() -> null
+        else -> text.map { it.digitToInt() }
+    }
+
+    // Index the visible cursor should sit at once [filled] boxes are occupied from the start.
+    fun cursorAfter(filled: Int): Int = filled.coerceIn(0, codeLength - 1)
+
     Column(
-        modifier = modifier,
+        modifier = modifier
+            // Makes the group the node that accepts a whole code — see this composable's KDoc.
+            // Applied after [modifier] so that a testTag the caller passed lands on the same
+            // layout node as these actions, which is what lets one resource-id lookup both find
+            // this node and type into it.
+            .semantics {
+                isEditable = true
+                maxTextLength = codeLength
+                editableText = AnnotatedString(code.value.mapNotNull { it }.joinToString(""))
+
+                setText { newCode ->
+                    val digits = digitsOf(newCode.text, codeLength) ?: return@setText false
+                    code.value = List(codeLength) { index -> digits.getOrNull(index) }
+                    focusedIndex.value = cursorAfter(digits.size)
+                    true
+                }
+
+                insertTextAtCursor { inserted ->
+                    val firstEmpty = code.value.indexOfFirst { it == null }
+                    if (firstEmpty < 0) return@insertTextAtCursor false
+
+                    val digits = digitsOf(inserted.text, codeLength - firstEmpty)
+                        ?: return@insertTextAtCursor false
+                    if (digits.isEmpty()) return@insertTextAtCursor true
+
+                    code.value = code.value.toMutableList().also { updated ->
+                        digits.forEachIndexed { offset, digit ->
+                            updated[firstEmpty + offset] = digit
+                        }
+                    }
+                    focusedIndex.value = cursorAfter(firstEmpty + digits.size)
+                    true
+                }
+
+                // Focus is moved by writing the index the widget already watches rather than by
+                // touching a FocusRequester directly, so this cannot throw if it is invoked before
+                // the boxes have been attached.
+                requestFocus {
+                    focusedIndex.value =
+                        code.value.indexOfFirst { it == null }.takeIf { it >= 0 }
+                            ?: (codeLength - 1)
+                    true
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(

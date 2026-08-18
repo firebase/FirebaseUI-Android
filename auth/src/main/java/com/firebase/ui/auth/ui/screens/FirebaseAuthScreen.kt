@@ -113,9 +113,12 @@ import kotlinx.coroutines.tasks.await
  *
  * That boundary no longer costs you the resource ids, though. Exposing
  * [com.firebase.ui.auth.ui.FirebaseAuthTestTags] as Android resource ids is not something a caller
- * has to arrange: the library sets `testTagsAsResourceId` itself at every semantics owner it
- * creates, dialogs and bottom sheets included, so Firebase Test Lab Robo directives and
- * `By.res()` resolve every published tag without any modifier being passed here.
+ * has to arrange: the library sets `testTagsAsResourceId` itself at each semantics owner it creates
+ * — every screen root, and every dialog, bottom sheet, and popup, including the ones holding no tag
+ * of their own — so Firebase Test Lab Robo directives and `By.res()` resolve every published tag
+ * without any modifier being passed here. Owners are flagged as a standing rule rather than a
+ * case-by-case judgement, so a tag added inside one later cannot quietly fail to become a resource
+ * id.
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).
@@ -859,7 +862,10 @@ private fun AuthSuccessContent(
                     TooltipAnchorPosition.Above
                 ),
                 tooltip = {
-                    PlainTooltip {
+                    // The tooltip is shown in a popup, which is its own semantics owner and so
+                    // inherits nothing from the Surface above. Nothing here is tagged yet; the flag
+                    // is applied because the owner exists — see exposeTestTagsAsResourceIds.
+                    PlainTooltip(modifier = Modifier.exposeTestTagsAsResourceIds()) {
                         Text(stringProvider.mfaDisabledTooltip)
                     }
                 },

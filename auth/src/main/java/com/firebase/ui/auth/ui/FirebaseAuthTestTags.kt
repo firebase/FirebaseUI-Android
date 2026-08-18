@@ -156,7 +156,17 @@ object FirebaseAuthTestTags {
     /** Tags on the SMS verification code screen. */
     object VerificationCode {
 
-        /** The verification code input. */
+        /**
+         * The verification code input.
+         *
+         * The code is drawn as one box per digit, and this names the group rather than any one box.
+         * The group is the editable node: it accepts a whole code in a single `ACTION_SET_TEXT` or
+         * `performTextInput` and spreads it across the boxes, so one Robo directive
+         * (`{"resourceName": "fui_verification_code_code_field", "inputText": "123456"}`) enters the
+         * whole thing. See
+         * [com.firebase.ui.auth.ui.components.VerificationCodeInputField] for why the boxes
+         * themselves are not addressable.
+         */
         const val CODE_FIELD = "fui_verification_code_code_field"
 
         /** The button that submits the entered code. */
@@ -170,11 +180,44 @@ object FirebaseAuthTestTags {
     }
 
     /**
+     * Tags on the multi-factor sign-in challenge screen — the second factor a user is asked for
+     * after their password, which is part of a plain sign-in and not of MFA enrollment.
+     *
+     * Separate from [VerificationCode] even though both screens show the same code input: the SMS
+     * step of a phone sign-in and the second-factor challenge are different screens reached by
+     * different routes, and giving them one value would leave a `By.res` match unable to say which
+     * screen it landed on.
+     */
+    object MfaChallenge {
+
+        /**
+         * The verification code input, for both the SMS and TOTP factors.
+         *
+         * Accepts a whole code in one action, exactly as
+         * [VerificationCode.CODE_FIELD] does — the two screens share the input widget.
+         */
+        const val CODE_FIELD = "fui_mfa_challenge_code_field"
+
+        /** The button that submits the entered code. */
+        const val VERIFY_BUTTON = "fui_mfa_challenge_verify_button"
+    }
+
+    /**
      * Tags on the re-authentication dialog.
      *
      * Deliberately a group of its own rather than reusing [SignIn]: the re-authentication surface
      * and the flow behind it are composed at the same time while the dialog is open, so a shared
      * value would match two nodes and neither could be addressed.
+     *
+     * That reasoning covers the tags declared here, but not everything the re-authentication surface
+     * can show. The default re-authentication bottom sheet re-enters the ordinary email flow to
+     * collect a password, so [SignIn.EMAIL_FIELD] and its siblings appear *inside* the sheet, under
+     * the same values they carry on the sign-in screen. Nothing collides today, because the sheet is
+     * only raised from the post-sign-in surface and no sign-in screen is composed behind it — so
+     * each value still resolves to one node. What a crawler cannot do is tell from the resource id
+     * alone whether it is looking at the sign-in screen or at the re-authentication sheet; a test
+     * that needs to distinguish them has to key off something else on the surface, and anything
+     * that raises the sheet over a live sign-in screen would turn this into a real collision.
      */
     object Reauth {
 

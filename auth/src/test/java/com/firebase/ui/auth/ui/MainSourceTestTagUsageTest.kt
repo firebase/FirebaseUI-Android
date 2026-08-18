@@ -45,6 +45,11 @@ import org.junit.Test
  * the file is clean. Indirection through a local wrapper function remains out of reach and is
  * accepted: it costs more to write than to review, and the reviewer sees the wrapper.
  *
+ * The same scan answers a second, adjacent question that nothing else could: whether a file applying
+ * a tag also flags a semantics owner, so the tag can become a resource id at all. Both failures are
+ * invisible to every Compose assertion in the suite, which is why a lexical check is worth its
+ * limitations here.
+ *
  * It lives in its own class rather than in [FirebaseAuthTestTagsTest] because it tests a different
  * thing by a different mechanism: the registry test asserts properties of compiled constants, while
  * this one reads files off disk and therefore carries a failure mode of its own — a scan that
@@ -88,6 +93,58 @@ class MainSourceTestTagUsageTest {
                 "\n\nFix: drop the `as` clause and call `testTag` directly, passing a " +
                 "$REGISTRY_REFERENCE_PREFIX constant."
         ).that(aliases).isEmpty()
+    }
+
+    /**
+     * Catches the other half of the same problem: a tag that goes through the registry but never
+     * becomes a resource id because the semantics owner around it was never flagged.
+     *
+     * Nothing in the type system ties a `testTag` call to an enclosing
+     * [exposeTestTagsAsResourceIds]. The flag is read at runtime by walking a node's semantics
+     * ancestors, so omitting it leaves `onNodeWithTag(...).assertExists()` passing, the suite green,
+     * and only `By.res()` — which does not run in CI — able to tell. [TestTagsAsResourceIdsTest]
+     * covers the tags that exist today, but a tag added on a screen it has no fixture for would slip
+     * through both classes.
+     *
+     * The check this can make lexically is coarser than the real rule: it requires every file that
+     * applies a tag to also apply the flag *somewhere*, not that the flag encloses that particular
+     * tag. Two things it therefore cannot see are a file that flags one owner and tags a node under
+     * a second, unflagged one, and a tag placed in a file with no owner of its own that relies on a
+     * flag applied by its caller. The first is what [TestTagsAsResourceIdsTest] is for. The second
+     * would be a false positive here, and the fix for it — apply the flag in the file too — is
+     * harmless rather than wrong: the property is `isImportantForAccessibility = false`, so setting
+     * it again where it is already set changes nothing. A coarse check that costs a redundant
+     * one-liner is worth more than no check.
+     */
+    @Test
+    fun `every main source file that applies a test tag also flags a semantics owner`() {
+        val root = mainSourceRoot()
+        val unflagged = kotlinSources(root)
+            .filter { file -> tagCallSitesIn(file, root).isNotEmpty() }
+            // Masked, so a KDoc paragraph or a commented-out line that merely names the function
+            // does not count as applying it.
+            .filterNot { file ->
+                FLAG_APPLICATION_PATTERN.containsMatchIn(maskCommentsAndLiterals(file.readText()))
+            }
+            .map { file -> file.toRelativeString(root).replace(File.separatorChar, '/') }
+
+        assertWithMessage(
+            "The files below apply a Compose test tag but never call " +
+                "$FLAG_FUNCTION_NAME(), so nothing in them exposes a tag as an Android resource " +
+                "id. Compose reads that flag by walking a node's semantics ancestors and the walk " +
+                "stops at the root of the node's own window, so a tag with no flagged owner above " +
+                "it is visible to Compose tests and invisible to Firebase Test Lab Robo and " +
+                "UiAutomator By.res() — the exact failure of issue #2050, and one that leaves " +
+                "every assertion in the suite green:\n" +
+                unflagged.joinToString("\n") { "  $it" } +
+                "\n\nFix: call Modifier.$FLAG_FUNCTION_NAME() on the semantics owner that " +
+                "encloses the tagged node — the screen's root, or the dialog, bottom sheet, or " +
+                "popup it lives in, each of which is its own semantics owner and inherits nothing " +
+                "from the composable that opened it. If the owner is genuinely in another file " +
+                "because this file only contributes content to a flagged screen, applying it here " +
+                "as well is safe and satisfies this check: the property is not relevant to " +
+                "accessibility, so setting it twice is a no-op."
+        ).that(unflagged).isEmpty()
     }
 
     /**
@@ -415,9 +472,18 @@ class MainSourceTestTagUsageTest {
          * stops reaching files announces itself. A floor rather than an exact count: tagging more
          * nodes is the expected direction of travel and should not redden an unrelated build.
          */
-        const val MINIMUM_TAG_CALL_SITES = 33
+        const val MINIMUM_TAG_CALL_SITES = 35
 
         const val REGISTRY_REFERENCE_PREFIX = "FirebaseAuthTestTags."
+
+        /** The modifier that exposes tags beneath a semantics owner as Android resource ids. */
+        const val FLAG_FUNCTION_NAME = "exposeTestTagsAsResourceIds"
+
+        /**
+         * `exposeTestTagsAsResourceIds(` as a call. The declaration in `TestTagsAsResourceIds.kt`
+         * matches too, but that file applies no tags and so is never examined.
+         */
+        val FLAG_APPLICATION_PATTERN = Regex("""\b$FLAG_FUNCTION_NAME\s*\(""")
 
         const val REGISTRY_RELATIVE_PATH = "com/firebase/ui/auth/ui/FirebaseAuthTestTags.kt"
 
