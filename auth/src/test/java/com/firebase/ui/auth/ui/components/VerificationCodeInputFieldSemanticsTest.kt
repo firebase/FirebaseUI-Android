@@ -40,21 +40,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The text-input contract [VerificationCodeInputField] declares on the group that holds its digit
- * boxes.
- *
- * That contract is the reason the group carries semantics at all. The boxes accept one character
- * each, so nothing could be handed a whole code, and the node a caller can address by test tag had
- * no text-input action — a Firebase Test Lab Robo `inputText` directive naming it resolved a node and
- * typed nothing, which is issue #2050 reproduced on the verification screen.
- * [com.firebase.ui.auth.ui.TestTagsAsResourceIdsTest] proves the code arrives through the resource id
- * a crawler would use; this class pins the behaviour underneath that — how a string is spread across
- * the boxes, and what happens to input the boxes cannot hold.
- *
- * The rejection cases matter as much as the accepting ones. Both actions return a `Boolean`, and
- * silently truncating over-long or non-numeric input would hand a caller a half-entered code and a
- * success. So the actions are invoked directly here rather than through `performTextReplacement`,
- * which discards the result.
+ * The text-input contract [VerificationCodeInputField] declares on the group holding its digit
+ * boxes, without which a Robo `inputText` directive resolved the node and typed nothing (#2050).
  *
  * @suppress Internal test class
  */
@@ -211,10 +198,8 @@ class VerificationCodeInputFieldSemanticsTest {
     }
 
     /**
-     * Inserting nothing is a no-op, and a no-op reports success — including on a full code, where
-     * there is no empty box to insert into. The two guards in `insertTextAtCursor` are ordered for
-     * this: the emptiness check runs before the "nowhere to insert" check, so an empty insert cannot
-     * be reported as a failed action.
+     * Inserting nothing is a no-op that reports success, even on a full code: the emptiness check
+     * in `insertTextAtCursor` runs before the "nowhere to insert" check.
      */
     @Test
     fun `insertTextAtCursor accepts an empty insert whether or not the code is full`() {
@@ -233,14 +218,8 @@ class VerificationCodeInputFieldSemanticsTest {
     }
 
     /**
-     * Pins the digit definition the actions use, which is `Character.isDigit`'s rather than ASCII
-     * `0`-`9`: a code in Arabic-Indic or fullwidth digits is accepted and normalised to its ASCII
-     * value.
-     *
-     * This is behaviour worth pinning rather than narrowing. The per-box keyboard path normalises the
-     * same way, so restricting only these two actions to ASCII would leave a code that can be typed by
-     * hand on a localised keypad refused through `ACTION_SET_TEXT`. Nothing malformed gets in either
-     * way — the length and digit checks still hold, so what arrives is a complete, well-formed code.
+     * Pins the digit definition as `Character.isDigit`'s rather than ASCII `0`-`9`, matching the
+     * per-box keyboard path so a code typed on a localised keypad isn't refused via `ACTION_SET_TEXT`.
      */
     @Test
     fun `the actions accept non ASCII digits and normalise them`() {
@@ -257,13 +236,8 @@ class VerificationCodeInputFieldSemanticsTest {
     }
 
     /**
-     * The group's `editableText` is the digits before the first empty box, not every digit entered.
-     *
-     * Boxes can be filled out of order — tapping the third box moves focus straight to it — so
-     * compacting the whole list would report `[1, 2, null, 4]` as `"124"` and place a digit at a
-     * position that is empty. A prefix understates instead, which is what a text field with a cursor
-     * means anyway and what `insertTextAtCursor` appends to. `editableText` is read back by anything
-     * holding the node, a crawler included, so it has to be positionally honest.
+     * The group's `editableText` is the digits before the first empty box, not every digit entered:
+     * boxes can be filled out of order, and compacting would misreport a gap-filled digit's position.
      */
     @Test
     fun `editableText reports the digits before the first gap rather than a compacted code`() {
@@ -309,16 +283,14 @@ class VerificationCodeInputFieldSemanticsTest {
 
     private companion object {
         /**
-         * A fixture-local tag. The registry values belong to screens, and this exercises the widget
-         * on its own — a host application tagging our node with its own value is supported and this
-         * stands in for that too.
+         * A fixture-local tag: the registry values belong to screens, and this exercises the
+         * widget on its own, standing in for a host app's own tag too.
          */
         const val CODE_FIELD_TAG = "verification_code_group_under_test"
 
         /**
-         * The shared prefix of every digit box's content description (each box's full
-         * description is positional, e.g. "Verification code digit 3 of 6"), used with a
-         * substring match to reach one box directly by its index in the row.
+         * Shared prefix of each digit box's content description (e.g. "...digit 3 of 6"), used
+         * with a substring match to reach one box by its index.
          */
         const val DIGIT_BOX_DESCRIPTION = "Verification code digit"
 

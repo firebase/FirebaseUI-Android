@@ -417,10 +417,8 @@ interface AuthUIStringProvider {
     val verificationCodeLabel: String
 
     /**
-     * Content description for a single box in the verification code input, announced
-     * positionally by assistive technology (for example, "Verification code digit 3 of 6") so
-     * that each box is distinguishable from the others. [position] is the box's 1-indexed
-     * position; [total] is the total number of boxes.
+     * Content description for a single verification code digit, announced positionally
+     * (e.g. "Verification code digit 3 of 6").
      */
     fun verificationCodeDigitDescription(position: Int, total: Int): String
 

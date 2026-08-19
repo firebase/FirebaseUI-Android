@@ -104,21 +104,8 @@ import kotlinx.coroutines.tasks.await
  * flows, error handling, and multi-factor enrollment/challenge flows. Back navigation is driven by
  * the Jetpack Navigation stack so presses behave like native Android navigation.
  *
- * @param modifier Applied once to the root [Surface] that hosts the flow's navigation graph. It is
- * not forwarded to individual destinations, so it decorates whichever destination is showing rather
- * than any single screen. Its reach stops at this composable's own window: content that Compose
- * hosts in a separate semantics owner — every dialog and bottom sheet the flow shows, including the
- * default reauthentication sheet and the phone number country selector — is not a descendant of
- * this [Surface], so a modifier passed here does not decorate it.
- *
- * That boundary no longer costs you the resource ids, though. Exposing
- * [com.firebase.ui.auth.ui.FirebaseAuthTestTags] as Android resource ids is not something a caller
- * has to arrange: the library sets `testTagsAsResourceId` itself at each semantics owner it creates
- * — every screen root, and every dialog, bottom sheet, and popup, including the ones holding no tag
- * of their own — so Firebase Test Lab Robo directives and `By.res()` resolve every published tag
- * without any modifier being passed here. Owners are flagged as a standing rule rather than a
- * case-by-case judgement, so a tag added inside one later cannot quietly fail to become a resource
- * id.
+ * @param modifier Applied once to the root [Surface]; it does not reach dialogs/sheets, which are
+ * separate semantics owners the library flags for test-tag exposure on its own.
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).
@@ -244,9 +231,8 @@ fun FirebaseAuthScreen(
                             customMethodPickerLayout(configuration.providers, onProviderSelected)
                         }
                     } else {
-                        // Flagged because the library creates the owner, not because a tag needs it
-                        // here — see exposeTestTagsAsResourceIds. This one sits under the flagged
-                        // Surface above, so it is redundant today and cheap to keep uniform.
+                        // Redundant under the flagged Surface above, but kept uniform per
+                        // exposeTestTagsAsResourceIds.
                         Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                             AuthMethodPicker(
                                 modifier = Modifier
@@ -865,9 +851,8 @@ private fun AuthSuccessContent(
                     TooltipAnchorPosition.Above
                 ),
                 tooltip = {
-                    // The tooltip is shown in a popup, which is its own semantics owner and so
-                    // inherits nothing from the Surface above. Nothing here is tagged yet; the flag
-                    // is applied because the owner exists — see exposeTestTagsAsResourceIds.
+                    // The tooltip is its own semantics owner (a popup), so it's flagged even
+                    // though nothing inside it is tagged yet.
                     PlainTooltip(modifier = Modifier.exposeTestTagsAsResourceIds()) {
                         Text(stringProvider.mfaDisabledTooltip)
                     }
@@ -1012,9 +997,8 @@ private fun ReauthSheetContent(
                     customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
                 }
             } else {
-                // Flagged for the same reason as its counterpart in FirebaseAuthScreen: the owner is
-                // ours, so it carries the flag whether or not anything under it is tagged today. The
-                // enclosing ModalBottomSheet already flags this subtree.
+                // Same reasoning as FirebaseAuthScreen's Scaffold: flagged even though the
+                // enclosing ModalBottomSheet already covers this subtree.
                 Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                     AuthMethodPicker(
                         modifier = Modifier.padding(innerPadding),

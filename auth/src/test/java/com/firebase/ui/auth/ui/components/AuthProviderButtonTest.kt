@@ -75,9 +75,7 @@ class AuthProviderButtonTest {
         clickedProvider = null
     }
 
-    // =============================================================================================
-    // Basic UI Tests
-    // =============================================================================================
+    // ---- Basic UI Tests ----
 
     @Test
     fun `AuthProviderButton displays Google provider correctly`() {
@@ -328,9 +326,7 @@ class AuthProviderButtonTest {
             .assertIsEnabled()
     }
 
-    // =============================================================================================
-    // Click Interaction Tests
-    // =============================================================================================
+    // ---- Click Interaction Tests ----
 
     @Test
     fun `AuthProviderButton onClick is called when clicked`() {
@@ -372,9 +368,7 @@ class AuthProviderButtonTest {
         assertThat(clickedProvider).isNull()
     }
 
-    // =============================================================================================
-    // Style Resolution Tests
-    // =============================================================================================
+    // ---- Style Resolution Tests ----
 
     @Test
     fun `AuthProviderButton uses custom style when provided`() {
@@ -477,9 +471,7 @@ class AuthProviderButtonTest {
         assertThat(resolvedStyle.icon).isEqualTo(googleDefaultStyle.icon)
     }
 
-    // =============================================================================================
-    // Provider Style Fallback Tests
-    // =============================================================================================
+    // ---- Provider Style Fallback Tests ----
 
     @Test
     fun `AuthProviderButton provides fallback for unknown provider`() {
@@ -555,20 +547,11 @@ class AuthProviderButtonTest {
         assertThat(resolvedStyle.contentColor).isEqualTo(AuthUITheme.ProviderStyle.Empty.contentColor)
     }
 
-    // =============================================================================================
-    // Modifier contract tests
-    // =============================================================================================
+    // ---- Modifier contract tests ----
 
     /**
-     * A composable must apply its `modifier` to exactly one node, its outermost one. This button
-     * used to hand the same instance to both the [androidx.compose.material3.Button] and the inner
-     * content [androidx.compose.foundation.layout.Row], which duplicated everything the caller
-     * passed: a `testTag` landed on two nodes, and padding was applied twice.
-     *
-     * The unmerged tree is what matters here. `TestTag`'s merge policy keeps the ancestor's value,
-     * so the duplicate collapses to a single node in the merged tree and is invisible to an
-     * ordinary `onNodeWithTag` lookup — while still being two real nodes, and so two Android
-     * resource ids once `testTagsAsResourceId` is enabled.
+     * A composable must apply `modifier` to exactly one node. This button used to hand the same
+     * instance to both the Button and its inner Row, duplicating tags and padding.
      */
     @Test
     fun `caller modifier is applied to exactly one node`() {
@@ -589,13 +572,8 @@ class AuthProviderButtonTest {
     }
 
     /**
-     * The one node the caller's modifier reaches is the button itself, not the content row: the
-     * tagged node has to be the clickable one.
-     *
-     * This queries the merged tree, where `TestTag`'s merge policy keeps the ancestor's value, so
-     * the duplicated tag resolved to the button before the fix as well and this assertion held
-     * either way. It is a guard on which node owns the tag, not a pin on the change; the unmerged
-     * count above is what pins it.
+     * The caller's modifier must reach the button itself, not the content row. This is a guard on
+     * which node owns the tag, not a pin on the fix — the unmerged count test above pins that.
      */
     @Test
     fun `caller modifier lands on the button rather than its content`() {
@@ -616,9 +594,8 @@ class AuthProviderButtonTest {
     }
 
     /**
-     * The content row now owns its own width instead of inheriting the caller's, so a full-width
-     * button still lays its icon and label out from the start edge rather than centring them.
-     * This pins the rendered layout that the duplicated modifier used to produce by accident.
+     * The content row owns its own width now, so a full-width button still start-aligns its icon
+     * and label rather than centering them.
      */
     @Test
     fun `full width button keeps its content start aligned`() {

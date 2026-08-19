@@ -82,9 +82,7 @@ class CountrySelectorTest {
         }
     }
 
-    // =============================================================================================
-    // Test Tag Tests
-    // =============================================================================================
+    // ---- Test Tag Tests ----
 
     @Test
     fun `CountrySelector tags the country list once the bottom sheet is open`() {
@@ -107,9 +105,7 @@ class CountrySelectorTest {
             .assertDoesNotExist()
     }
 
-    // =============================================================================================
-    // Selection Tests
-    // =============================================================================================
+    // ---- Selection Tests ----
 
     @Test
     fun `CountrySelector reports the country picked from the tagged list`() {

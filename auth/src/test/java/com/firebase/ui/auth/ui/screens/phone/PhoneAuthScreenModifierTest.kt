@@ -41,14 +41,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Tests that [PhoneAuthScreen] honours the Compose modifier contract.
- *
- * The screen declared a `modifier` parameter and documented it as "Optional [Modifier] for the
- * composable", but never applied it: the composable rendered either the caller's `content` slot,
- * which takes no modifier, or the default per-step UI, which had no `modifier` parameter. The
- * parameter was therefore dead, and any caller sizing, padding or tagging the screen through it was
- * silently ignored. The screen now applies it once, to the outermost node it introduces for the
- * rendered content, so the same instance takes effect on both branches.
+ * Tests that [PhoneAuthScreen] honours its `modifier` contract, which used to be dead: declared
+ * but never applied on either the content-slot or default-UI rendering path.
  *
  * @suppress Internal test class
  */

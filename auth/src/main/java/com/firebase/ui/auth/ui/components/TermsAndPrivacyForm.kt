@@ -41,10 +41,8 @@ fun TermsAndPrivacyForm(
 ) {
     val uriHandler = LocalUriHandler.current
     Row(
-        // This component is never composed as its own semantics owner — every call site sits
-        // inside a screen Scaffold that already flags itself — but the flag is applied here as
-        // well so the tags above remain exposed even for a future caller that hosts this
-        // component with no flagged ancestor of its own. Setting the property twice is a no-op.
+        // Flagged here too (a no-op if an ancestor already is) so tags stay exposed for any
+        // future caller without a flagged ancestor.
         modifier = modifier.exposeTestTagsAsResourceIds(),
     ) {
         TextButton(

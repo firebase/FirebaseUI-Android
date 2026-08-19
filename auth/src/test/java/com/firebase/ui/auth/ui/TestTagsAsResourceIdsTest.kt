@@ -90,54 +90,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 /**
- * The end-to-end check for the reason [FirebaseAuthTestTags] exists: that each published tag is
- * applied to a real node on its screen, and that the node carries the tag as an Android **resource
- * id** rather than only as a Compose test tag.
- *
- * That distinction is the whole point, and it is why these tests read `viewIdResourceName` off the
- * accessibility node instead of calling `assertExists()` on a `testTag` matcher. A `testTag` is
- * visible only to Compose's own test APIs. Firebase Test Lab Robo directives, the Play pre-launch
- * report's crawler, and UiAutomator's `By.res()` all match on the resource name, and they see it
- * only when [exposeTestTagsAsResourceIds] has been applied at the enclosing semantics owner. An
- * `onNodeWithTag(...).assertExists()` passes identically with and without that modifier, so it
- * cannot tell the fixed state from the bug — issue #2050, where Robo could type a username but
- * never reach the password field.
- *
- * Two harness details are load-bearing:
- *
- * * `@GraphicsMode(NATIVE)`. Compose builds its accessibility node tree by subtracting each node's
- *   bounds from an `android.graphics.Region` of unaccounted space. Under Robolectric's legacy
- *   graphics that `Region` is inert, every node below the root is treated as covered, and
- *   `createAccessibilityNodeInfo` returns an empty node for which `viewIdResourceName` is always
- *   `null` — the assertions here would fail for a reason that has nothing to do with the library.
- * * Scrolling a node into the window before reading it. Nodes lying outside the root's bounds are
- *   culled from that same tree, and these screens are taller than the test window, so a tag near
- *   the bottom of a screen has no accessibility node until it is scrolled to. Enlarging the window
- *   is the obvious alternative and is deliberately not used: at `h2400dp` an `AlertDialog`
- *   containing a text field — the shape [com.firebase.ui.auth.ui.components.ReauthenticationDialog]
- *   has — sends Robolectric's text measurement into a runaway allocation and the suite dies with an
- *   `OutOfMemoryError` that has nothing to do with test tags. It reproduces with stock Material 3
- *   components and no test tags involved, so it is a harness limit, not a library one.
- *
- * Dialogs and bottom sheets are covered explicitly rather than incidentally. Each is hosted in its
- * own window with its own semantics root, so it inherits nothing from the composable that opened it
- * — the case with no coverage before this class existed, and the one where forgetting the modifier
- * is invisible in a Compose-only assertion.
- *
- * ## What is deliberately not covered here
- *
- * [exposeTestTagsAsResourceIds] is applied to every semantics owner the library creates, including
- * the ones that hold no tag today, and those flags have no test of their own. That is intentional
- * twice over. There is nothing to assert — the property is only observable through a tag beneath it,
- * so a test would have to plant its own tag and would then be testing Compose. And the flags exist
- * precisely because no test can see them missing: the whole reason for flagging owners rather than
- * tags is that a tag added inside an unflagged owner keeps every Compose assertion green. The loading
- * dialog, the default re-authentication sheet, the manage-MFA tooltip, and the TOTP enrollment steps
- * are all in that state.
- *
- * The one case where a flag-without-tags *is* asserted is `error recovery dialog exposes a caller
- * supplied tag`, which stands in for all of them: it plants a caller tag in an owner the library
- * flags but does not tag, and so proves the mechanism works the moment a tag arrives.
+ * End-to-end check that each published tag reaches a real node as an Android **resource id**, not
+ * only a Compose test tag — `assertExists()` on a `testTag` matcher can't tell the two apart.
  *
  * @suppress Internal test class
  */
@@ -158,22 +112,11 @@ class TestTagsAsResourceIdsTest {
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
     }
 
-    // =============================================================================================
-    // The assertion this class is built around
-    // =============================================================================================
+    // ---- The assertion this class is built around ----
 
     /**
-     * Asserts that exactly one node carries [tag], that it is the kind of node [expected] describes,
-     * and that the platform sees the tag as a resource id.
-     *
-     * The node kind is asserted alongside the tag because "the tag exists somewhere" is not the
-     * claim worth making — a tag parked on a `Spacer` next to the password field would satisfy it
-     * while leaving Robo with nothing to type into. So a field is required to accept text and a
-     * button to be clickable.
-     *
-     * `node.root` is read rather than assumed, so the same helper works for a dialog or bottom
-     * sheet: those live in a different window, and this resolves whichever window actually hosts
-     * the node.
+     * Asserts exactly one node carries [tag], is the kind of node [expected] describes, and is
+     * exposed to the platform as a resource id — not just that a tag exists somewhere.
      */
     private fun assertExposedAsResourceId(tag: String, expected: SemanticsMatcher) {
         val interaction: SemanticsNodeInteraction = composeTestRule.onNode(hasTestTag(tag))
@@ -207,11 +150,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * Scrolls the node tagged [tag] into the window when it sits inside a scrollable, because a node
-     * outside the root's bounds has no accessibility node to read a resource id from.
-     *
-     * The scrollable ancestor is looked for rather than the scroll being attempted unconditionally,
-     * so that a genuine `performScrollTo` failure still fails the test instead of being swallowed.
+     * Scrolls the node tagged [tag] into the window when scrollable, since a node outside the
+     * root's bounds has no accessibility node to read a resource id from.
      */
     private fun scrollIntoWindow(tag: String) {
         val hasScrollableAncestor = composeTestRule
@@ -225,22 +165,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * Enters [text] into whatever node the platform publishes under the resource id [resourceName],
-     * the way something outside Compose would: the node is found by scanning the accessibility tree
-     * for that resource id, and the text is delivered through `ACTION_SET_TEXT` — the action behind
-     * a Robo `inputText` directive and UiAutomator's `setText`.
-     *
-     * The Compose test tag is deliberately not used to locate the node, because that is the claim
-     * under test. `performTextInput` on a tag shows that a Compose test can type; it says nothing
-     * about whether a crawler holding only a resource name can, which is the gap issue #2050 is
-     * about.
-     *
-     * Two properties are asserted before the text is sent, because a crawler reads both and either
-     * one alone can be satisfied by a node it will never type into. `className` has to be
-     * [EDIT_TEXT_CLASS_NAME] — the field a crawler consults to decide a node accepts text at all,
-     * and the only class Robo's `inputText` directives are documented for — and `ACTION_SET_TEXT`
-     * has to be offered. They fail independently: a plain container can advertise the action, and a
-     * node with the action can lose the class to an unrelated semantics property.
+     * Enters [text] via `ACTION_SET_TEXT` into the node published under resource id [resourceName],
+     * the way a crawler would — deliberately not located by its Compose test tag.
      */
     private fun setTextByResourceId(resourceName: String, text: String) {
         val (provider, virtualViewId) = accessibilityNodePublishing(resourceName)
@@ -291,12 +217,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The accessibility node whose `viewIdResourceName` is [resourceName], together with the
-     * provider that owns it, asserting that exactly one node claims the id.
-     *
-     * Every semantics node in the tree is examined rather than the one carrying a matching test tag,
-     * so this resolves the id the same way `By.res()` does — and so a tag that never reached the
-     * accessibility tree fails here instead of being found by the back door.
+     * The accessibility node whose `viewIdResourceName` is [resourceName], found by scanning the
+     * whole tree the way `By.res()` does — not via the matching Compose test tag.
      */
     private fun accessibilityNodePublishing(
         resourceName: String
@@ -329,9 +251,7 @@ class TestTagsAsResourceIdsTest {
 
     private fun button(): SemanticsMatcher = hasClickAction()
 
-    // =============================================================================================
-    // Fixtures
-    // =============================================================================================
+    // ---- Fixtures ----
 
     private fun setContent(content: @Composable () -> Unit) {
         composeTestRule.setContent {
@@ -381,9 +301,7 @@ class TestTagsAsResourceIdsTest {
         }
     }
 
-    // =============================================================================================
-    // In-window screen roots
-    // =============================================================================================
+    // ---- In-window screen roots ----
 
     @Test
     fun `sign in screen exposes its credential fields and actions`() {
@@ -417,10 +335,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The password visibility toggle on [AuthTextField] is a shared, low-level component reused by
-     * every password-holding screen, so it needs a distinct tag per call site — this pins the
-     * end-to-end path for the sign-in screen's toggle: [AuthTextField]'s new
-     * `visibilityToggleModifier` parameter reaching a real Android resource id.
+     * Pins [AuthTextField]'s `visibilityToggleModifier` reaching a real resource id on the sign-in
+     * screen's toggle, since the shared component needs a distinct tag per call site.
      */
     @Test
     fun `sign in screen exposes its password visibility toggle`() {
@@ -560,9 +476,8 @@ class TestTagsAsResourceIdsTest {
             )
         }
 
-        // The code is drawn as one box per digit, but the tag names the group and the group is the
-        // node that takes text — so `field()` here, not `hasAnyDescendant(field())`. See the typing
-        // tests below for why that distinction is the whole point.
+        // The tag names the digit group, which is the node that takes text — hence `field()`, not
+        // `hasAnyDescendant(field())`.
         assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.CODE_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.VERIFY_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.RESEND_CODE_BUTTON, button())
@@ -573,22 +488,11 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.BACK_BUTTON, button())
     }
 
-    // =============================================================================================
-    // The code fields, which have to accept a code and not merely carry a tag
-    // =============================================================================================
+    // ---- The code fields, which have to accept a code and not merely carry a tag ----
 
     /**
-     * The finding this section exists for: `fui_verification_code_code_field` used to name a bare
-     * container whose entire semantics config was its test tag. A Robo directive
-     * `{"resourceName": "fui_verification_code_code_field", "inputText": "123456"}` resolved that
-     * node and typed nothing, and the six real digit boxes were unaddressable — no resource id of
-     * their own, and six identical content descriptions between them. The constant promised a code
-     * input and delivered a `Column`.
-     *
-     * So this drives the code in the way that failed: locate the node by resource id, issue
-     * `ACTION_SET_TEXT`, and then require the code to have arrived where the screen keeps it. The
-     * verify button being enabled afterwards is the part that matters — it is the screen agreeing
-     * that it holds a complete, valid code, which is as far as a crawler needs to get.
+     * Regression pin: `fui_verification_code_code_field` used to name a bare container whose
+     * `ACTION_SET_TEXT` typed nothing into the real digit boxes, which had no resource id of their own.
      */
     @Test
     fun `a robo directive can type a whole code into the verification code field`() {
@@ -626,10 +530,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The same claim for a host application's own Compose tests, which the registry KDoc invites:
-     * `performTextInput` against the published tag enters the whole code. It exercises a different
-     * semantics action from the test above — `InsertTextAtCursor` rather than `SetText` — so both
-     * are covered.
+     * The same claim for a host app's own Compose tests: `performTextInput` on the published tag
+     * enters the whole code, exercising `InsertTextAtCursor` rather than `SetText`.
      */
     @Test
     fun `performTextInput on the verification code tag enters the whole code`() {
@@ -663,10 +565,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The multi-factor challenge screen shares the code input with the phone screen and had no tags
-     * at all, so it had the same hole in a place a user reaches during an ordinary sign-in rather
-     * than during enrollment. It is covered by the same assertions rather than by a weaker one,
-     * because "reachable by a crawler" means the same thing on both screens.
+     * The MFA challenge screen shares the code input with the phone screen and had no tags at all,
+     * so it gets the same assertions rather than a weaker one.
      */
     @Test
     fun `a robo directive can type a whole code into the mfa challenge field`() {
@@ -703,10 +603,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * [FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON] is shared by two controls that render in
-     * mutually exclusive branches of [DefaultMfaChallengeContent] — the SMS "use a different
-     * method" button and the TOTP "dismiss" button. This pins the TOTP side of that sharing: the
-     * same tag resolves to exactly one node here too, distinct from the SMS fixture above.
+     * [FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON] is shared by two mutually exclusive
+     * controls in [DefaultMfaChallengeContent]; this pins the TOTP side, distinct from SMS above.
      */
     @Test
     fun `mfa challenge cancel button is exposed for the totp factor as well`() {
@@ -742,10 +640,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The "Continue as …" button only exists when a previous sign-in preference is stored, so it
-     * needs a fixture of its own and had no coverage without one. It is worth having: for a
-     * returning user it is the first control on the flow's first screen, so it is what a crawl
-     * reaches before anything else.
+     * The "Continue as …" button only exists when a sign-in preference is stored, so it needs its
+     * own fixture — and it's the first control a returning user's crawl reaches.
      */
     @Test
     fun `method picker exposes its continue as button`() {
@@ -769,9 +665,7 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON, button())
     }
 
-    // =============================================================================================
-    // Separate semantics owners: dialogs
-    // =============================================================================================
+    // ---- Separate semantics owners: dialogs ----
 
     /**
      * The "reset link sent" dialog. Its dismiss button is the only way forward for a crawler that
@@ -833,9 +727,7 @@ class TestTagsAsResourceIdsTest {
 
     /**
      * [ErrorRecoveryDialog] publishes no tag of its own, so this pins the flag from the caller's
-     * side: a host application's tag passed in through the public `modifier` becomes a resource id.
-     * Without the library's own flag inside the dialog it would not, because the dialog's window is
-     * a fresh semantics root and the flag is read by walking ancestors.
+     * side: a host app's tag passed via `modifier` becomes a resource id via the dialog's own flag.
      */
     @Test
     fun `error recovery dialog exposes a caller supplied tag`() {
@@ -871,16 +763,11 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.ErrorRecovery.DISMISS_BUTTON, button())
     }
 
-    // =============================================================================================
-    // Separate semantics owners: bottom sheets
-    // =============================================================================================
+    // ---- Separate semantics owners: bottom sheets ----
 
     /**
-     * The country selector sheet, and the case that made this work necessary rather than merely
-     * tidy: [FirebaseAuthScreenModifierTest] shows that a modifier passed to the flow's root does
-     * not reach this sheet at all, so before the library set the flag here itself,
-     * `By.res("fui_country_selector_country_list")` could not resolve however the caller was
-     * configured.
+     * The country selector sheet: [FirebaseAuthScreenModifierTest] shows a modifier passed to the
+     * flow's root never reaches it, so the sheet must set the flag itself.
      */
     @Test
     fun `country selector bottom sheet exposes its country list`() {
@@ -900,17 +787,11 @@ class TestTagsAsResourceIdsTest {
         )
     }
 
-    // =============================================================================================
-    // MFA enrollment: the factor-selection step, and the collision it is built to avoid
-    // =============================================================================================
+    // ---- MFA enrollment: the factor-selection step, and the collision it is built to avoid ----
 
     /**
-     * [DefaultMfaEnrollmentContent] renders one enroll button per not-yet-enrolled factor in a
-     * `forEach`, so a user enrolled in neither factor composes both buttons at once — the exact
-     * shape of collision this whole tag registry exists to prevent (see
-     * [com.firebase.ui.auth.ui.FirebaseAuthTestTags.MfaEnrollment]). This proves both are
-     * addressable *at the same time*, not merely that each works in isolation: a fixture that
-     * rendered them one at a time would not catch a shared tag.
+     * [DefaultMfaEnrollmentContent] renders both enroll buttons at once via `forEach`, so this
+     * proves both are addressable simultaneously — a one-at-a-time fixture would miss a shared tag.
      */
     @Test
     fun `mfa enrollment exposes distinct buttons for each available factor at once`() {
@@ -933,9 +814,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The mirror case on [com.firebase.ui.auth.ui.screens.MfaEnrollmentDefaults]'s
-     * `EnrolledFactorItem`: a user enrolled in both SMS and TOTP composes one remove button per
-     * factor in the same `forEach`, so the two need to be addressable at once as well.
+     * Mirror case on `EnrolledFactorItem`: a user enrolled in both factors composes one remove
+     * button per factor in the same `forEach`, so both need to be addressable at once too.
      */
     @Test
     fun `mfa enrollment exposes distinct remove buttons for each enrolled factor at once`() {
@@ -959,9 +839,7 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.REMOVE_TOTP_BUTTON, button())
     }
 
-    // =============================================================================================
-    // MFA enrollment: TOTP setup and verification
-    // =============================================================================================
+    // ---- MFA enrollment: TOTP setup and verification ----
 
     @Test
     fun `mfa enrollment totp setup step exposes its back and continue buttons`() {
@@ -986,10 +864,8 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The TOTP verification step's code field is the highest-value new node in the enrollment
-     * flow — it is the one place a Robo directive has to type a real value rather than merely tap
-     * a button — so it gets the same `ACTION_SET_TEXT` treatment as the phone verification code
-     * field above, rather than only an existence check.
+     * The TOTP verification code field is the one enrollment node a Robo directive must type a
+     * real value into, so it gets the same `ACTION_SET_TEXT` treatment as the phone code field.
      */
     @Test
     fun `a robo directive can type a code into the mfa enrollment totp verification field`() {
@@ -1039,16 +915,11 @@ class TestTagsAsResourceIdsTest {
         )
     }
 
-    // =============================================================================================
-    // The flow root
-    // =============================================================================================
+    // ---- The flow root ----
 
     /**
-     * The root [androidx.compose.material3.Surface] inside [FirebaseAuthScreen] carries the flag as
-     * well, so content the flow hosts directly — rather than through one of the screen composables
-     * that flags itself — is covered too. The custom method-picker slot is used because it renders
-     * under that `Surface` without going through [AuthMethodPicker], which would supply a flag of
-     * its own and make this pass either way.
+     * The flow root's `Surface` in [FirebaseAuthScreen] carries the flag too, covering content
+     * hosted directly beneath it — the custom method-picker slot bypasses [AuthMethodPicker]'s own flag.
      */
     @Test
     fun `flow root exposes tags on content hosted directly beneath it`() {
@@ -1089,9 +960,7 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(CALLER_TAG, hasText("Custom Picker"))
     }
 
-    // =============================================================================================
-    // FirebaseAuthScreen needs a live FirebaseApp
-    // =============================================================================================
+    // ---- FirebaseAuthScreen needs a live FirebaseApp ----
 
     private val authUI: FirebaseAuthUI
         get() {
@@ -1130,9 +999,8 @@ class TestTagsAsResourceIdsTest {
         const val VERIFICATION_CODE = "123456"
 
         /**
-         * The class a crawler requires before it will type into a node. Robo's `inputText` directives
-         * are documented for `EditText` only, and the class is what a crawler reads to decide a node
-         * accepts text — not the action list, which a plain container can also carry.
+         * The class a crawler requires before typing into a node; Robo's `inputText` directives are
+         * documented for `EditText` only.
          */
         const val EDIT_TEXT_CLASS_NAME = "android.widget.EditText"
 

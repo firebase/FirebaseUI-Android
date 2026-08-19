@@ -37,11 +37,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Modifier-contract tests for [SignInEmailLinkUI].
- *
- * This screen carried the same defect as [SignInUI]: the screen-level `modifier` was correctly
- * applied to the `Scaffold` and then applied a second time to the "trouble signing in" label, so a
- * caller's sizing, padding or tag reached a leaf it was never meant to touch.
+ * Modifier-contract tests for [SignInEmailLinkUI], which applied the screen-level `modifier` a
+ * second time to the "trouble signing in" label, the same defect [SignInUI] had.
  *
  * @suppress Internal test class
  */

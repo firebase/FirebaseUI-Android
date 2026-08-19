@@ -95,10 +95,8 @@ class AccessibilityTest {
             }
         }
 
-        // Every box's description is distinct and positional (e.g. "digit 3 of 6"), not the
-        // single shared literal all six boxes used to carry. Asserting each expected positional
-        // string resolves to exactly one node proves both properties: the descriptions differ
-        // from each other and each one names its own position.
+        // Each box's description must be distinct and positional, not the single shared literal
+        // all six boxes used to carry.
         val descriptions = (1..codeLength).map { position ->
             stringProvider.verificationCodeDigitDescription(position, codeLength)
         }

@@ -176,9 +176,7 @@ class SignInUITest {
         composeTestRule.onNodeWithText("user@example.com").assertDoesNotExist()
     }
 
-    // =============================================================================================
-    // Modifier contract tests
-    // =============================================================================================
+    // ---- Modifier contract tests ----
 
     private fun setSignInUIContent(modifier: Modifier) {
         val provider = AuthProvider.Email(
@@ -212,9 +210,8 @@ class SignInUITest {
     }
 
     /**
-     * The screen's `modifier` used to be handed to the "trouble signing in" `Text` as well as to
-     * the `Scaffold`, so a caller's sizing, padding or tag silently landed on a single label deep
-     * inside the layout. It must reach the screen root and nothing else.
+     * The screen's `modifier` used to also land on the "trouble signing in" `Text`; it must reach
+     * only the screen root.
      */
     @Test
     fun `caller modifier does not reach the trouble signing in label`() {

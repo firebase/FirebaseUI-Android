@@ -113,10 +113,8 @@ class PhoneAuthContentState(
 )
 
 /**
- * A stateful composable that manages the complete logic for phone number authentication. It handles
- * the multi-step flow of sending and verifying an SMS code, exposing the state for each step to a
- * custom UI via a trailing lambda (slot). It contributes no UI of its own beyond the layout node
- * that hosts the rendered content.
+ * A stateful composable that manages the complete logic for phone number authentication, exposing
+ * state for each step to a custom UI slot. Contributes no UI beyond its hosting layout node.
  *
  * @param context The Android context.
  * @param configuration The authentication UI configuration containing the phone provider settings.
@@ -124,9 +122,8 @@ class PhoneAuthContentState(
  * @param onSuccess Callback invoked when authentication succeeds with the [AuthResult].
  * @param onError Callback invoked when an authentication error occurs.
  * @param onCancel Callback invoked when the user cancels the authentication flow.
- * @param modifier Applied once, to the [Box] that hosts the rendered content — the [content] slot
- * when one is supplied, otherwise the default per-step UI. That box propagates its incoming minimum
- * constraints, so it does not change how the content is measured.
+ * @param modifier Applied once to the [Box] hosting the rendered content; it propagates minimum
+ * constraints so it doesn't change how content is measured.
  * @param content A composable lambda that receives [PhoneAuthContentState] to render the UI for
  * each step. If null, the default UI for the current step is rendered.
  */
@@ -427,9 +424,8 @@ fun PhoneAuthScreen(
         }
     )
 
-    // The caller's modifier is applied exactly once, here, to this composable's outermost node.
-    // `propagateMinConstraints` keeps the box layout-neutral: the content is measured with the same
-    // constraints it received before the box existed.
+    // propagateMinConstraints keeps this box layout-neutral: content is measured with the same
+    // constraints it would receive without the box.
     Box(modifier = modifier, propagateMinConstraints = true) {
         if (content != null) {
             content(state)

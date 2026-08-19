@@ -69,42 +69,11 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.FieldValidator
 
 /**
- * A row of [codeLength] single-character boxes that together hold one verification code.
+ * A row of [codeLength] single-character boxes that together hold one verification code. The
+ * group itself declares the text-input semantics so Robo/UiAutomator can `ACTION_SET_TEXT` the
+ * whole code in one action, since the individual boxes can't be addressed that way (issue #2050).
  *
- * ## Why the group, and not the boxes, is the editable node
- *
- * Visually this is one field; structurally it is [codeLength] separate `BasicTextField`s, each of
- * which rejects anything longer than a single digit. That split is invisible to a user and fatal to
- * anything driving the screen from outside Compose. A Firebase Test Lab Robo directive, a Play
- * pre-launch crawl, and UiAutomator all type by issuing `ACTION_SET_TEXT` against one accessibility
- * node, and there was no node that could accept a whole code: the boxes take one character each and
- * are indistinguishable from one another in the accessibility tree, while the container that a
- * caller can address by test tag carried no text-input action at all. A directive naming it resolved
- * a node and typed nothing — the shape of issue #2050, where Robo found the login field but could
- * not fill the password.
- *
- * So the container declares the text-input semantics itself: [setText] replaces the whole code and
- * [insertTextAtCursor] fills forward from the first empty box, both spreading the string they are
- * given across the boxes. One `ACTION_SET_TEXT` carrying `"123456"` therefore enters the entire
- * code, and `performTextInput` works on the container in a host application's own Compose tests.
- * [editableText] and [isEditable] are declared alongside them because they are what makes the
- * platform describe this node as an editable field rather than a plain container, which is how a
- * crawler decides a node is worth typing into at all.
- *
- * The cost is that the group is now a node accessibility services will visit, sitting above
- * [codeLength] boxes they also visit, so a screen reader reads the code once and then the boxes.
- * That is accepted: it is more verbose, but the alternative leaves the code unreachable by every
- * tool the tags exist for.
- *
- * Both actions refuse input they cannot represent — a character no digit box can show, or more digits
- * than there are remaining boxes — rather than silently truncating it, so a caller sees a failed
- * action instead of a half-entered code. "Digit" is `Character.isDigit`'s definition rather than ASCII
- * `0`-`9`, so a code typed in Arabic-Indic or fullwidth digits is accepted and normalised to its ASCII
- * value, exactly as the per-box keyboard path already treats it; see the comment on `digitsOf`.
- *
- * @param modifier Applied to the group. A [androidx.compose.ui.platform.testTag] passed here names
- * the node that accepts the code, so it is the handle both Compose tests and resource-id lookups
- * should use.
+ * @param modifier Applied to the group; a testTag here is the handle for resource-id lookups.
  * @param codeLength How many digits the code has, and therefore how many boxes are drawn.
  * @param validator Optional validator run against the code on every change; when supplied it drives
  * the error state instead of [isError].
@@ -181,17 +150,8 @@ fun VerificationCodeInputField(
         errorMessage
     }
 
-    // The digits of [text], or null when this field cannot hold them. Rejecting is deliberate: a
-    // caller that asked to enter "12a456" is better served by a failed action than by a code that
-    // silently lost a character.
-    //
-    // "Digit" here is Character.isDigit's definition, not ASCII 0-9: isDigitsOnly() and digitToInt()
-    // both accept Arabic-Indic ("١٢٣٤٥٦") and fullwidth ("１２３") digits and yield the same values as
-    // their ASCII counterparts, so such input is normalised rather than rejected. That is kept
-    // deliberately, because the per-box keyboard path below does exactly the same thing — narrowing
-    // only these two actions to ASCII would make a code typed on a localised keypad enterable by hand
-    // and refused through ACTION_SET_TEXT. Nothing malformed gets through either way: the length and
-    // digit checks still hold, so the outcome is a well-formed code in ASCII, never a partial one.
+    // The digits of [text], or null when this field cannot hold them. "Digit" follows
+    // Character.isDigit, so Arabic-Indic/fullwidth digits are accepted and normalised to ASCII.
     fun digitsOf(text: String, availableSlots: Int): List<Int>? = when {
         text.isEmpty() -> emptyList()
         text.length > availableSlots -> null
@@ -204,29 +164,15 @@ fun VerificationCodeInputField(
 
     Column(
         modifier = modifier
-            // Makes the group the node that accepts a whole code — see this composable's KDoc.
-            // Applied after [modifier] so that a testTag the caller passed lands on the same
-            // layout node as these actions, which is what lets one resource-id lookup both find
-            // this node and type into it.
+            // Applied after [modifier] so a caller-supplied testTag lands on the same node
+            // these text-input actions are declared on.
             .semantics {
-                // TODO: this group is an important, EditText-classed accessibility node with no
-                // label of its own, so TalkBack announces it as an unlabelled edit box. The label
-                // belongs here, on the node that owns the text-input semantics, and not on the
-                // digit boxes below — but it has to come from AuthUIStringProvider rather than be
-                // hardcoded, and adding a string to that public interface is tracked separately. It
-                // must be set as a `contentDescription`, not as `text`: Compose prefers Text over
-                // EditableText when deriving className, so a `text` property here would flip this
-                // node from EditText to TextView and stop a Robo crawler treating it as typeable
-                // (asserted in TestTagsAsResourceIdsTest.setTextByResourceId).
+                // TODO: give this group a proper label via AuthUIStringProvider (tracked
+                // separately). Must be contentDescription, not text — text breaks Robo detection.
                 isEditable = true
                 maxTextLength = codeLength
-                // The digits before the first empty box, not every digit entered. Boxes fill
-                // non-contiguously — tapping box 3 moves the focus there directly — so compacting
-                // the whole list would report [1, 2, null, 4] as "124" and claim a digit at a
-                // position that is actually empty. A prefix is always positionally true, and it is
-                // what insertTextAtCursor appends to, so the two agree. It can understate: with only
-                // box 3 filled this reads as empty. Note that the onCodeChange callback below is
-                // deliberately left compacted — screens depend on that contract.
+                // Digits before the first empty box, not every digit entered — boxes fill
+                // non-contiguously, so compacting would misreport a gap-filled state.
                 editableText = AnnotatedString(
                     code.value.takeWhile { it != null }.joinToString("")
                 )
@@ -258,9 +204,8 @@ fun VerificationCodeInputField(
                     true
                 }
 
-                // Focus is moved by writing the index the widget already watches rather than by
-                // touching a FocusRequester directly, so this cannot throw if it is invoked before
-                // the boxes have been attached.
+                // Moves focus via the index the widget watches, not a FocusRequester, so this
+                // can't throw if invoked before the boxes are attached.
                 requestFocus {
                     focusedIndex.value =
                         code.value.indexOfFirst { it == null }.takeIf { it >= 0 }

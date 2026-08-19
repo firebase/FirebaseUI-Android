@@ -495,9 +495,7 @@ class AuthMethodPickerTest {
             )
         }
 
-        // assertHasClickAction is the only check in this suite that catches the tag drifting onto a
-        // non-clickable wrapper around the button: the click tests inject raw touch events, which
-        // still hit-test through an untagged wrapper to the button beneath. Keep it.
+        // Load-bearing: catches the tag drifting onto a non-clickable wrapper around the button.
         composeTestRule
             .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON)
             .assertIsDisplayed()

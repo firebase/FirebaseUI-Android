@@ -20,11 +20,8 @@ import java.lang.reflect.Modifier
 import org.junit.Test
 
 /**
- * Enforces the invariants [FirebaseAuthTestTags] documents, by reflecting over the whole registry
- * — the root object and every nested grouping object — rather than over a hand-maintained list.
- *
- * The registry is a plain Kotlin object of [String] constants, so these tests need no Android
- * runtime and run on plain JUnit.
+ * Enforces [FirebaseAuthTestTags] invariants by reflecting over the whole registry rather than a
+ * hand-maintained list.
  *
  * @suppress Internal test class
  */
@@ -84,9 +81,7 @@ class FirebaseAuthTestTagsTest {
         registeredTags().forEach { (path, value) ->
             val segments = path.split('.')
 
-            // Exactly one grouping level, in both directions: the surface prefix asserted below
-            // is read from segments[1], so a second nesting level would leave it ambiguous which
-            // of the two enclosing groups a value has to repeat.
+            // Exactly one grouping level: the surface prefix below reads segments[1].
             assertWithMessage(
                 if (segments.size < EXPECTED_PATH_SEGMENTS) {
                     "Tag $path is declared directly on the registry root. Every tag belongs to a " +
@@ -140,9 +135,7 @@ class FirebaseAuthTestTagsTest {
                 into["$path.${field.name}"] = field.get(null) as String
             }
 
-        // A computed tag (`val TAG: String get() = …`) has no backing field, so the scan above
-        // would miss it and it would escape every invariant in this class. Read it through its
-        // getter instead, skipping the getters that back the fields already collected.
+        // A computed tag (`val TAG: String get() = …`) has no backing field; read it via getter.
         val singleton = group.declaredFields
             .firstOrNull { Modifier.isStatic(it.modifiers) && it.type == group }
             ?.also { it.isAccessible = true }
@@ -178,9 +171,8 @@ class FirebaseAuthTestTagsTest {
     }
 
     /**
-     * Converts a grouping object name to the `snake_case` surface segment its tag values repeat.
-     * A run of capitals stays one segment, so `OAuthProvider` becomes `oauth_provider` rather than
-     * `o_auth_provider`.
+     * Converts a grouping object name to its `snake_case` surface segment, keeping acronym runs
+     * (e.g. `OAuthProvider` -> `oauth_provider`) in one segment.
      */
     private fun String.toSnakeCase(): String =
         replace(Regex("(?<=[a-z0-9])(?=\\p{Upper})"), "_").lowercase()

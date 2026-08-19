@@ -46,20 +46,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Tests that [FirebaseAuthScreen] honours the Compose modifier contract: the caller's `modifier`
- * is applied once, to the composable's own outermost node.
- *
- * The screen used to ignore its `modifier` at the root — the hosting `Surface` hardcoded
- * `Modifier.fillMaxSize()` — and forward the caller's instance into individual `NavHost`
- * destinations instead. That made the parameter mean "decorate whichever screen happens to be
- * showing", which is both surprising and incomplete: destinations other than the method picker
- * never received it at all, so a caller could not decorate the flow as a whole. In particular a
- * host application could not attach `semantics { testTagsAsResourceId = true }` through the public
- * API, because no destination-level modifier reaches the root.
- *
- * One test here asserts the opposite of the rest on purpose. "Reaches the root" is not the same as
- * "reaches everything the flow shows", and the last test in this class pins where the difference
- * lies so the boundary is recorded rather than assumed away.
+ * Tests that [FirebaseAuthScreen] applies the caller's `modifier` once, to its own outermost node
+ * — it used to hardcode `Modifier.fillMaxSize()` at the root and forward the caller's instance in.
  *
  * @suppress Internal test class
  */
@@ -164,10 +152,8 @@ class FirebaseAuthScreenModifierTest {
     }
 
     /**
-     * The decisive case. When the flow starts somewhere other than the method picker, the old code
-     * dropped the caller's modifier entirely — there was no `modifier` forwarding on any route
-     * except `MethodPicker`, and the root `Surface` used a fresh `Modifier`. So this found zero
-     * nodes before the fix and finds exactly one after it.
+     * The decisive case: on a route other than the method picker, the old code dropped the
+     * caller's modifier entirely, so this found zero nodes before the fix.
      */
     @Test
     fun `caller modifier reaches the root on a route that never received it`() {
@@ -197,10 +183,8 @@ class FirebaseAuthScreenModifierTest {
     }
 
     /**
-     * Regression guard for the method-picker route, which is the one route that did receive the
-     * caller's modifier. It must now be tagged once, at the root, rather than on the picker's own
-     * `Column`. This asserts the count only, so it held before the fix as well; the routing case
-     * above is what pins the change.
+     * Regression guard for the method-picker route: the tag must land once, at the root, not on
+     * the picker's own `Column`. This held before the fix too; the routing case above pins it.
      */
     @Test
     fun `caller modifier is applied once on the method picker route`() {
@@ -212,10 +196,8 @@ class FirebaseAuthScreenModifierTest {
     }
 
     /**
-     * The custom method-picker slot used to take the caller's modifier on its wrapping `Box`; it
-     * now sits under the tagged root instead. Both arrangements satisfy these assertions, so this
-     * is a guard against the modifier being duplicated or dropped on this path rather than a pin
-     * on the change itself.
+     * Guard against the modifier being duplicated or dropped when a custom method-picker slot is
+     * supplied, not a pin on a specific arrangement.
      */
     @Test
     fun `caller modifier is applied once when a custom method picker is supplied`() {
@@ -240,22 +222,8 @@ class FirebaseAuthScreenModifierTest {
     }
 
     /**
-     * Pins the documented edge of the modifier's reach, and is expected to keep passing: a
-     * bottom sheet is a **separate semantics owner**, so its content is not a descendant of the
-     * root the caller's modifier lands on.
-     *
-     * This is a boundary, not a bug, and it is asserted rather than left implicit because the
-     * obvious reading of "the modifier reaches the root of the flow" is that it therefore covers
-     * everything the flow shows. It does not — no modifier passed to [FirebaseAuthScreen] decorates
-     * anything inside this sheet.
-     *
-     * What that boundary no longer implies is that the sheet's tags are unreachable as resource ids.
-     * The library now sets `testTagsAsResourceId` at each semantics owner it creates, this sheet
-     * included, so [FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST] does resolve under
-     * `By.res("fui_country_selector_country_list")` — by the library's own doing rather than by
-     * inheritance from the caller's modifier. That exposure is asserted in
-     * [TestTagsAsResourceIdsTest]; the assertions here stay about the modifier's reach, which is
-     * unchanged.
+     * Pins a boundary, not a bug: a bottom sheet is a separate semantics owner, so its content is
+     * not a descendant of the root the caller's modifier lands on.
      */
     @Test
     fun `caller modifier does not reach bottom sheet content, which is a separate semantics owner`() {

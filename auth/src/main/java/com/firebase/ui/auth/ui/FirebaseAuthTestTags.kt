@@ -15,33 +15,8 @@
 package com.firebase.ui.auth.ui
 
 /**
- * Stable Compose test tags applied by the FirebaseUI Auth screens.
- *
- * These values are **public API**. Host applications reference them from their own UI tests, and
- * they are intended to be surfaced as Android resource ids so that Firebase Test Lab Robo
- * directives and Play pre-launch reports can target the auth surfaces. Renaming or removing a
- * constant — or changing the string a constant resolves to — is a **breaking change**, not an
- * internal refactor.
- *
- * Constants are grouped by the screen or surface that owns them, and every value repeats that
- * surface as a segment so a `By.res` prefix match selects exactly one surface. Within a group the
- * element type is the **last** token of both the constant name and the value, so sibling nodes sort
- * and complete together.
- *
- * Values are lowercase `snake_case` with a `fui_` prefix. The prefix is not decoration: once these
- * tags are exposed as resource ids they land in the host application's `id` namespace, so it
- * namespaces our tags away from the host app's own resource ids and keeps `By.res()` lookups
- * unambiguous.
- *
- * ## Usage Example:
- *
- * ```kotlin
- * composeTestRule
- *     .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
- *     .performScrollToNode(hasText("Sign in with Google"))
- * ```
- *
- * @since 10.0.0
+ * Stable Compose test tags applied by the FirebaseUI Auth screens. These are public API — renaming
+ * or removing a constant is a breaking change, not an internal refactor.
  */
 object FirebaseAuthTestTags {
 
@@ -185,15 +160,8 @@ object FirebaseAuthTestTags {
     object VerificationCode {
 
         /**
-         * The verification code input.
-         *
-         * The code is drawn as one box per digit, and this names the group rather than any one box.
-         * The group is the editable node: it accepts a whole code in a single `ACTION_SET_TEXT` or
-         * `performTextInput` and spreads it across the boxes, so one Robo directive
-         * (`{"resourceName": "fui_verification_code_code_field", "inputText": "123456"}`) enters the
-         * whole thing. See
-         * [com.firebase.ui.auth.ui.components.VerificationCodeInputField] for why the boxes
-         * themselves are not addressable.
+         * The verification code input group (one box per digit). The group itself is the
+         * editable node, so a single action enters the whole code.
          */
         const val CODE_FIELD = "fui_verification_code_code_field"
 
@@ -211,22 +179,12 @@ object FirebaseAuthTestTags {
     }
 
     /**
-     * Tags on the multi-factor sign-in challenge screen — the second factor a user is asked for
-     * after their password, which is part of a plain sign-in and not of MFA enrollment.
-     *
-     * Separate from [VerificationCode] even though both screens show the same code input: the SMS
-     * step of a phone sign-in and the second-factor challenge are different screens reached by
-     * different routes, and giving them one value would leave a `By.res` match unable to say which
-     * screen it landed on.
+     * Tags on the multi-factor sign-in challenge screen (the second factor requested during
+     * sign-in, distinct from MFA enrollment).
      */
     object MfaChallenge {
 
-        /**
-         * The verification code input, for both the SMS and TOTP factors.
-         *
-         * Accepts a whole code in one action, exactly as
-         * [VerificationCode.CODE_FIELD] does — the two screens share the input widget.
-         */
+        /** The verification code input, for both the SMS and TOTP factors. */
         const val CODE_FIELD = "fui_mfa_challenge_code_field"
 
         /** The button that submits the entered code. */
@@ -236,32 +194,15 @@ object FirebaseAuthTestTags {
         const val RESEND_CODE_BUTTON = "fui_mfa_challenge_resend_code_button"
 
         /**
-         * The button that cancels the challenge and returns to sign-in.
-         *
-         * Shared by the SMS "use a different method" control and the TOTP "dismiss" control: the
-         * two are rendered by an `if (isSms) {...} else {...}` branch in
-         * [com.firebase.ui.auth.ui.screens.DefaultMfaChallengeContent] and so never compose at the
-         * same time, and both are bound to the same `onCancelClick` callback.
+         * The button that cancels the challenge and returns to sign-in. Shared by the SMS and
+         * TOTP variants, which never compose at the same time.
          */
         const val CANCEL_BUTTON = "fui_mfa_challenge_cancel_button"
     }
 
     /**
-     * Tags on the re-authentication dialog.
-     *
-     * Deliberately a group of its own rather than reusing [SignIn]: the re-authentication surface
-     * and the flow behind it are composed at the same time while the dialog is open, so a shared
-     * value would match two nodes and neither could be addressed.
-     *
-     * That reasoning covers the tags declared here, but not everything the re-authentication surface
-     * can show. The default re-authentication bottom sheet re-enters the ordinary email flow to
-     * collect a password, so [SignIn.EMAIL_FIELD] and its siblings appear *inside* the sheet, under
-     * the same values they carry on the sign-in screen. Nothing collides today, because the sheet is
-     * only raised from the post-sign-in surface and no sign-in screen is composed behind it — so
-     * each value still resolves to one node. What a crawler cannot do is tell from the resource id
-     * alone whether it is looking at the sign-in screen or at the re-authentication sheet; a test
-     * that needs to distinguish them has to key off something else on the surface, and anything
-     * that raises the sheet over a live sign-in screen would turn this into a real collision.
+     * Tags on the re-authentication dialog. Kept separate from [SignIn] because the dialog and
+     * the flow behind it can be composed at the same time.
      */
     object Reauth {
 
@@ -275,21 +216,10 @@ object FirebaseAuthTestTags {
         const val DISMISS_BUTTON = "fui_reauth_dismiss_button"
     }
 
-    /**
-     * Tags on the error recovery dialog shown by [com.firebase.ui.auth.ui.components.TopLevelDialogController].
-     *
-     * The dialog is rendered from exactly one call site — [com.firebase.ui.auth.ui.components.TopLevelDialogController.CurrentDialog],
-     * itself composed once at the root of a flow — so a shared value for the retry action is safe
-     * even though the button's label text changes with the [com.firebase.ui.auth.AuthException]
-     * subtype being recovered from: only one instance of the dialog is ever composed at a time.
-     */
+    /** Tags on the error recovery dialog. Only one instance is ever composed at a time. */
     object ErrorRecovery {
 
-        /**
-         * The recovery/retry action, shown when the error is recoverable. Its label varies with the
-         * exception type (retry, sign in, continue, dismiss, ...), but it is always the same button
-         * instance, so one constant addresses it regardless of which error is showing.
-         */
+        /** The recovery/retry action; its label varies with the error being recovered from. */
         const val RETRY_BUTTON = "fui_error_recovery_retry_button"
 
         /** The button that dismisses the dialog without recovering. */
@@ -297,14 +227,8 @@ object FirebaseAuthTestTags {
     }
 
     /**
-     * Tags on [com.firebase.ui.auth.ui.components.TermsAndPrivacyForm], the terms-of-service and
-     * privacy-policy links shown at the bottom of several screens.
-     *
-     * Component-scoped rather than duplicated per screen, for the same reason as [MethodPicker] and
-     * [CountrySelector]: every call site renders behind a mutually exclusive `when` or `if` in its
-     * screen's parent (see [com.firebase.ui.auth.ui.screens.email.EmailAuthScreen] and
-     * [com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen]), so no two instances are ever composed
-     * at once and a shared value still resolves to exactly one node.
+     * Tags on the terms-of-service and privacy-policy links shown at the bottom of several
+     * screens. Component-scoped since call sites never compose more than one instance at once.
      */
     object TermsAndPrivacy {
 
@@ -316,15 +240,8 @@ object FirebaseAuthTestTags {
     }
 
     /**
-     * Tags on the multi-factor enrollment flow — the screens a user configures a second factor
-     * through, as opposed to [MfaChallenge], which is the second factor they are asked for during an
-     * ordinary sign-in.
-     *
-     * Two shapes here render more than one instance of the same node at once, and are keyed by
-     * factor rather than given one shared value: [SelectFactor][com.firebase.ui.auth.ui.screens.MfaEnrollmentDefaults]
-     * lists one enroll button per not-yet-enrolled factor, and one remove button per already-enrolled
-     * factor, so a user who has enrolled neither factor sees two enroll buttons at once, and a user
-     * enrolled in both sees two remove buttons at once.
+     * Tags on the multi-factor enrollment flow. Enroll/remove buttons are keyed per-factor since
+     * more than one can be shown at once.
      */
     object MfaEnrollment {
 
@@ -352,8 +269,7 @@ object FirebaseAuthTestTags {
 
         /**
          * The input for the code generated by the user's authenticator app, on the TOTP
-         * verification step. Distinct from [CONFIGURE_TOTP_BACK_BUTTON]'s step, which only displays
-         * the secret and QR code and collects nothing.
+         * verification step.
          */
         const val VERIFY_TOTP_CODE_FIELD = "fui_mfa_enrollment_verify_totp_code_field"
 

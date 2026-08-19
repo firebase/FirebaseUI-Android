@@ -133,15 +133,8 @@ internal fun DefaultMfaEnrollmentContent(
         )
     }
 
-    // Each step below composes its own root, and each carries Modifier.exposeTestTagsAsResourceIds()
-    // itself whether or not it tags anything today. Not because an ancestor's flag would fail to
-    // reach them — a flag is inherited by walking semantics ancestors, and that walk crosses
-    // composable boundaries freely, so inside this library every step is already covered by the
-    // Surface that wraps the NavHost in FirebaseAuthScreen. The flags are load-bearing because
-    // MfaEnrollmentScreen is public: a host application can call it standalone, with no flagged
-    // ancestor of ours above it, and the resource ids have to work there too. The steps that
-    // delegate to a shared screen (EnterPhoneNumberUI, EnterVerificationCodeUI) get it from that
-    // screen.
+    // Each step flags itself with exposeTestTagsAsResourceIds() because this screen is public and
+    // can be called standalone, with no flagged ancestor of ours above it.
     Box(modifier = Modifier.fillMaxSize()) {
         when (state.step) {
             MfaEnrollmentStep.SelectFactor -> {
@@ -314,10 +307,8 @@ private fun SelectFactorUI(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // One button per not-yet-enrolled factor renders in this loop, so a user enrolled
-                // in neither factor sees both buttons at once. A shared tag would collide exactly
-                // the way the registry's uniqueness test cannot catch on its own, so each factor
-                // gets its own constant, keyed off the same `when` branch used for the label.
+                // Keyed per factor because a user enrolled in neither factor sees both buttons
+                // at once, and a shared tag would collide.
                 factorsToEnroll.forEach { factor ->
                     Button(
                         onClick = { onFactorSelected(factor) },
@@ -409,10 +400,8 @@ private fun EnrolledFactorItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            // This item is rendered once per enrolled factor by a `forEach` in the caller, so a
-            // user enrolled in both SMS and TOTP composes two of these at once. The same collision
-            // risk as the enroll buttons above, resolved the same way: key the tag off the factor
-            // type rather than sharing one value.
+            // Same collision risk as the enroll buttons above (one item per enrolled factor),
+            // resolved the same way: key the tag off the factor type.
             OutlinedButton(
                 onClick = onRemove,
                 enabled = enabled,

@@ -233,10 +233,8 @@ class CredentialLinkingScreenTest {
 
         // Step 6: Enter verification code
         println("TEST: Entering verification code: $phoneCode")
-        // The whole code goes in through the published tag in one call: the tagged group is the
-        // editable node and spreads the string across its digit boxes. Selecting the boxes
-        // positionally out of onAllNodes(hasSetTextAction()) — as this did — depended on which
-        // nodes happen to accept text and in what order.
+        // The whole code goes in via the published tag in one call, rather than selecting boxes
+        // positionally out of onAllNodes(hasSetTextAction()).
         composeTestRule.waitForIdle()
         composeTestRule
             .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
