@@ -64,6 +64,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setText
 import androidx.compose.ui.text.AnnotatedString
 import androidx.core.text.isDigitsOnly
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.FieldValidator
 
@@ -126,6 +127,7 @@ fun VerificationCodeInputField(
     val focusedIndex = remember { mutableStateOf<Int?>(null) }
     val focusRequesters = remember { (1..codeLength).map { FocusRequester() } }
     val keyboardManager = LocalSoftwareKeyboardController.current
+    val stringProvider = LocalAuthUIStringProvider.current
 
     // Derive validation state
     val currentCodeString = remember { mutableStateOf("") }
@@ -279,6 +281,10 @@ fun VerificationCodeInputField(
                         .aspectRatio(1f),
                     number = number,
                     isError = showError,
+                    digitContentDescription = stringProvider.verificationCodeDigitDescription(
+                        position = index + 1,
+                        total = codeLength
+                    ),
                     focusRequester = focusRequesters[index],
                     onFocusChanged = { isFocused ->
                         if (isFocused) {
@@ -328,6 +334,7 @@ private fun SingleDigitField(
     modifier: Modifier = Modifier,
     number: Int?,
     isError: Boolean = false,
+    digitContentDescription: String,
     focusRequester: FocusRequester,
     onFocusChanged: (Boolean) -> Unit,
     onNumberChanged: (Int?) -> Unit,
@@ -390,7 +397,7 @@ private fun SingleDigitField(
                 .fillMaxSize()
                 .wrapContentSize()
                 .semantics {
-                    contentDescription = "Verification code digit"
+                    contentDescription = digitContentDescription
                 }
                 .focusRequester(focusRequester)
                 .onFocusChanged {

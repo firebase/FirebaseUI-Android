@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.components
 
+import android.content.Context
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.AccessibilityAction
@@ -26,6 +28,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.text.AnnotatedString
+import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.Rule
@@ -61,14 +66,20 @@ class VerificationCodeInputFieldSemanticsTest {
     val composeTestRule = createComposeRule()
 
     private val entered = mutableListOf<String>()
+    private val context: Context = ApplicationProvider.getApplicationContext()
+    private val stringProvider = DefaultAuthUIStringProvider(context)
 
     private fun setContent(codeLength: Int = 6) {
         composeTestRule.setContent {
-            VerificationCodeInputField(
-                modifier = Modifier.testTag(CODE_FIELD_TAG),
-                codeLength = codeLength,
-                onCodeChange = { entered += it }
-            )
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
+            ) {
+                VerificationCodeInputField(
+                    modifier = Modifier.testTag(CODE_FIELD_TAG),
+                    codeLength = codeLength,
+                    onCodeChange = { entered += it }
+                )
+            }
         }
     }
 
@@ -263,7 +274,7 @@ class VerificationCodeInputFieldSemanticsTest {
         assertThat(editableText()).isEqualTo("12")
 
         // A gap: the fourth box is filled directly, as tapping it and typing would.
-        composeTestRule.onAllNodesWithContentDescription(DIGIT_BOX_DESCRIPTION)[3]
+        composeTestRule.onAllNodesWithContentDescription(DIGIT_BOX_DESCRIPTION, substring = true)[3]
             .performTextInput("4")
         composeTestRule.waitForIdle()
 
@@ -278,7 +289,7 @@ class VerificationCodeInputFieldSemanticsTest {
         ).that(currentCode()).isEqualTo("124")
 
         // Filling the gap makes the prefix the whole code again.
-        composeTestRule.onAllNodesWithContentDescription(DIGIT_BOX_DESCRIPTION)[2]
+        composeTestRule.onAllNodesWithContentDescription(DIGIT_BOX_DESCRIPTION, substring = true)[2]
             .performTextInput("3")
         composeTestRule.waitForIdle()
 
@@ -304,7 +315,11 @@ class VerificationCodeInputFieldSemanticsTest {
          */
         const val CODE_FIELD_TAG = "verification_code_group_under_test"
 
-        /** The content description each digit box carries, used to reach one box directly. */
+        /**
+         * The shared prefix of every digit box's content description (each box's full
+         * description is positional, e.g. "Verification code digit 3 of 6"), used with a
+         * substring match to reach one box directly by its index in the row.
+         */
         const val DIGIT_BOX_DESCRIPTION = "Verification code digit"
 
         /** `123456` in Arabic-Indic digits. */

@@ -63,16 +63,55 @@ class AccessibilityTest {
     @Test
     fun verificationCodeInputField_rendersCorrectly() {
         composeTestRule.setContent {
-            VerificationCodeInputField(
-                codeLength = 6,
-                onCodeComplete = {},
-                onCodeChange = {}
-            )
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
+            ) {
+                VerificationCodeInputField(
+                    codeLength = 6,
+                    onCodeComplete = {},
+                    onCodeChange = {}
+                )
+            }
         }
 
         // Verify the verification code field renders
         // Note: Content descriptions are applied but may not be directly findable in Robolectric
         composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun verificationCodeInputField_digitBoxesHaveDistinctPositionalDescriptions() {
+        val codeLength = 6
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
+            ) {
+                VerificationCodeInputField(
+                    codeLength = codeLength,
+                    onCodeComplete = {},
+                    onCodeChange = {}
+                )
+            }
+        }
+
+        // Every box's description is distinct and positional (e.g. "digit 3 of 6"), not the
+        // single shared literal all six boxes used to carry. Asserting each expected positional
+        // string resolves to exactly one node proves both properties: the descriptions differ
+        // from each other and each one names its own position.
+        val descriptions = (1..codeLength).map { position ->
+            stringProvider.verificationCodeDigitDescription(position, codeLength)
+        }
+
+        assert(descriptions.toSet().size == codeLength) {
+            "Expected $codeLength distinct digit descriptions, got: $descriptions"
+        }
+
+        descriptions.forEach { description ->
+            composeTestRule
+                .onNodeWithContentDescription(description)
+                .assertExists()
+        }
     }
 
     @Test
