@@ -639,7 +639,7 @@ class MainSourceTestTagUsageTest {
          * stops reaching files announces itself. A floor rather than an exact count: tagging more
          * nodes is the expected direction of travel and should not redden an unrelated build.
          */
-        const val MINIMUM_TAG_CALL_SITES = 35
+        const val MINIMUM_TAG_CALL_SITES = 63
 
         /**
          * Lower bound on the number of recognised semantics owner constructions outside `@Preview`

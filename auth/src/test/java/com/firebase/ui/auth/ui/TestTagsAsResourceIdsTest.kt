@@ -53,11 +53,14 @@ import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringPro
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.screens.DefaultMfaChallengeContent
+import com.firebase.ui.auth.ui.screens.DefaultMfaEnrollmentContent
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebase.ui.auth.ui.screens.email.ResetPasswordUI
 import com.firebase.ui.auth.ui.screens.email.SignInEmailLinkUI
@@ -70,6 +73,9 @@ import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.MultiFactorInfo
+import com.google.firebase.auth.PhoneMultiFactorInfo
+import com.google.firebase.auth.TotpMultiFactorInfo
 import com.google.firebase.auth.actionCodeSettings
 import com.google.common.truth.Truth.assertWithMessage
 import org.junit.After
@@ -387,7 +393,44 @@ class TestTagsAsResourceIdsTest {
                 isLoading = false,
                 emailSignInLinkSent = false,
                 email = "",
-                password = "",
+                password = "password123",
+                onEmailChange = { },
+                onPasswordChange = { },
+                onRetrievedCredential = { },
+                onSignInClick = { },
+                onGoToSignUp = { },
+                onGoToResetPassword = { },
+                onGoToEmailLinkSignIn = { },
+                onNavigateBack = { },
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.EMAIL_FIELD, field())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD, field())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.FORGOT_PASSWORD_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.EMAIL_LINK_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.BACK_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.TermsAndPrivacy.TOS_LINK, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.TermsAndPrivacy.PRIVACY_LINK, button())
+    }
+
+    /**
+     * The password visibility toggle on [AuthTextField] is a shared, low-level component reused by
+     * every password-holding screen, so it needs a distinct tag per call site — this pins the
+     * end-to-end path for the sign-in screen's toggle: [AuthTextField]'s new
+     * `visibilityToggleModifier` parameter reaching a real Android resource id.
+     */
+    @Test
+    fun `sign in screen exposes its password visibility toggle`() {
+        setContent {
+            SignInUI(
+                configuration = emailConfiguration(),
+                isLoading = false,
+                emailSignInLinkSent = false,
+                email = "",
+                password = "password123",
                 onEmailChange = { },
                 onPasswordChange = { },
                 onRetrievedCredential = { },
@@ -398,12 +441,7 @@ class TestTagsAsResourceIdsTest {
             )
         }
 
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.EMAIL_FIELD, field())
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD, field())
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON, button())
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON, button())
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.FORGOT_PASSWORD_BUTTON, button())
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.EMAIL_LINK_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignIn.PASSWORD_VISIBILITY_TOGGLE, button())
     }
 
     @Test
@@ -414,14 +452,15 @@ class TestTagsAsResourceIdsTest {
                 isLoading = false,
                 displayName = "",
                 email = "",
-                password = "",
-                confirmPassword = "",
+                password = "password123",
+                confirmPassword = "password123",
                 onDisplayNameChange = { },
                 onEmailChange = { },
                 onPasswordChange = { },
                 onConfirmPasswordChange = { },
                 onGoToSignIn = { },
                 onSignUpClick = { },
+                onNavigateBack = { },
             )
         }
 
@@ -431,6 +470,12 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.SIGN_UP_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.SIGN_IN_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.BACK_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.PASSWORD_VISIBILITY_TOGGLE, button())
+        assertExposedAsResourceId(
+            FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_VISIBILITY_TOGGLE,
+            button()
+        )
     }
 
     @Test
@@ -444,12 +489,14 @@ class TestTagsAsResourceIdsTest {
                 onEmailChange = { },
                 onSendResetLink = { },
                 onGoToSignIn = { },
+                onNavigateBack = { },
             )
         }
 
         assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.EMAIL_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.SEND_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.SIGN_IN_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.BACK_BUTTON, button())
     }
 
     @Test
@@ -464,12 +511,15 @@ class TestTagsAsResourceIdsTest {
                 onSignInWithEmailLink = { },
                 onGoToSignIn = { },
                 onGoToResetPassword = { },
+                onNavigateBack = { },
             )
         }
 
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.EMAIL_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.SEND_LINK_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.PASSWORD_SIGN_IN_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.FORGOT_PASSWORD_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.BACK_BUTTON, button())
     }
 
     @Test
@@ -483,12 +533,14 @@ class TestTagsAsResourceIdsTest {
                 onPhoneNumberChange = { },
                 onCountrySelected = { },
                 onSendCodeClick = { },
+                onNavigateBack = { },
             )
         }
 
         assertExposedAsResourceId(FirebaseAuthTestTags.PhoneNumber.PHONE_NUMBER_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.PhoneNumber.COUNTRY_SELECTOR_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.PhoneNumber.SEND_CODE_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.PhoneNumber.BACK_BUTTON, button())
     }
 
     @Test
@@ -504,6 +556,7 @@ class TestTagsAsResourceIdsTest {
                 onVerifyCodeClick = { },
                 onResendCodeClick = { },
                 onChangeNumberClick = { },
+                onNavigateBack = { },
             )
         }
 
@@ -517,6 +570,7 @@ class TestTagsAsResourceIdsTest {
             FirebaseAuthTestTags.VerificationCode.CHANGE_PHONE_NUMBER_BUTTON,
             button()
         )
+        assertExposedAsResourceId(FirebaseAuthTestTags.VerificationCode.BACK_BUTTON, button())
     }
 
     // =============================================================================================
@@ -643,6 +697,31 @@ class TestTagsAsResourceIdsTest {
         composeTestRule
             .onNodeWithTag(FirebaseAuthTestTags.MfaChallenge.VERIFY_BUTTON)
             .assertIsEnabled()
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaChallenge.RESEND_CODE_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON, button())
+    }
+
+    /**
+     * [FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON] is shared by two controls that render in
+     * mutually exclusive branches of [DefaultMfaChallengeContent] — the SMS "use a different
+     * method" button and the TOTP "dismiss" button. This pins the TOTP side of that sharing: the
+     * same tag resolves to exactly one node here too, distinct from the SMS fixture above.
+     */
+    @Test
+    fun `mfa challenge cancel button is exposed for the totp factor as well`() {
+        setContent {
+            DefaultMfaChallengeContent(
+                state = MfaChallengeContentState(
+                    factorType = MfaFactor.Totp,
+                )
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON, button())
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.MfaChallenge.RESEND_CODE_BUTTON)
+            .assertDoesNotExist()
     }
 
     @Test
@@ -773,6 +852,25 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(CALLER_TAG, hasAnyDescendant(hasClickAction()))
     }
 
+    /**
+     * The dialog's own retry and dismiss actions, as opposed to the caller-supplied tag above:
+     * these are the library's tags, always present regardless of what modifier a caller passes in.
+     */
+    @Test
+    fun `error recovery dialog exposes its retry and dismiss buttons`() {
+        setContent {
+            ErrorRecoveryDialog(
+                error = AuthException.NetworkException(message = "offline"),
+                stringProvider = stringProvider,
+                onRetry = { },
+                onDismiss = { },
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.ErrorRecovery.DISMISS_BUTTON, button())
+    }
+
     // =============================================================================================
     // Separate semantics owners: bottom sheets
     // =============================================================================================
@@ -799,6 +897,145 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(
             FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST,
             hasScrollAction()
+        )
+    }
+
+    // =============================================================================================
+    // MFA enrollment: the factor-selection step, and the collision it is built to avoid
+    // =============================================================================================
+
+    /**
+     * [DefaultMfaEnrollmentContent] renders one enroll button per not-yet-enrolled factor in a
+     * `forEach`, so a user enrolled in neither factor composes both buttons at once — the exact
+     * shape of collision this whole tag registry exists to prevent (see
+     * [com.firebase.ui.auth.ui.FirebaseAuthTestTags.MfaEnrollment]). This proves both are
+     * addressable *at the same time*, not merely that each works in isolation: a fixture that
+     * rendered them one at a time would not catch a shared tag.
+     */
+    @Test
+    fun `mfa enrollment exposes distinct buttons for each available factor at once`() {
+        setContent {
+            DefaultMfaEnrollmentContent(
+                state = MfaEnrollmentContentState(
+                    step = MfaEnrollmentStep.SelectFactor,
+                    availableFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+                    enrolledFactors = emptyList(),
+                    onSkipClick = { },
+                ),
+                authConfiguration = phoneConfiguration(),
+                user = mock(),
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.ENROLL_SMS_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.ENROLL_TOTP_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.SKIP_BUTTON, button())
+    }
+
+    /**
+     * The mirror case on [com.firebase.ui.auth.ui.screens.MfaEnrollmentDefaults]'s
+     * `EnrolledFactorItem`: a user enrolled in both SMS and TOTP composes one remove button per
+     * factor in the same `forEach`, so the two need to be addressable at once as well.
+     */
+    @Test
+    fun `mfa enrollment exposes distinct remove buttons for each enrolled factor at once`() {
+        val phoneFactor = mock<PhoneMultiFactorInfo>()
+        whenever(phoneFactor.phoneNumber).thenReturn("+1234567890")
+        val totpFactor = mock<TotpMultiFactorInfo>()
+
+        setContent {
+            DefaultMfaEnrollmentContent(
+                state = MfaEnrollmentContentState(
+                    step = MfaEnrollmentStep.SelectFactor,
+                    availableFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+                    enrolledFactors = listOf<MultiFactorInfo>(phoneFactor, totpFactor),
+                ),
+                authConfiguration = phoneConfiguration(),
+                user = mock(),
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.REMOVE_SMS_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.REMOVE_TOTP_BUTTON, button())
+    }
+
+    // =============================================================================================
+    // MFA enrollment: TOTP setup and verification
+    // =============================================================================================
+
+    @Test
+    fun `mfa enrollment totp setup step exposes its back and continue buttons`() {
+        setContent {
+            DefaultMfaEnrollmentContent(
+                state = MfaEnrollmentContentState(
+                    step = MfaEnrollmentStep.ConfigureTotp,
+                ),
+                authConfiguration = phoneConfiguration(),
+                user = mock(),
+            )
+        }
+
+        assertExposedAsResourceId(
+            FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_BACK_BUTTON,
+            button()
+        )
+        assertExposedAsResourceId(
+            FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_CONTINUE_BUTTON,
+            button()
+        )
+    }
+
+    /**
+     * The TOTP verification step's code field is the highest-value new node in the enrollment
+     * flow — it is the one place a Robo directive has to type a real value rather than merely tap
+     * a button — so it gets the same `ACTION_SET_TEXT` treatment as the phone verification code
+     * field above, rather than only an existence check.
+     */
+    @Test
+    fun `a robo directive can type a code into the mfa enrollment totp verification field`() {
+        val entered = mutableStateOf("")
+
+        setContent {
+            DefaultMfaEnrollmentContent(
+                state = MfaEnrollmentContentState(
+                    step = MfaEnrollmentStep.VerifyFactor,
+                    selectedFactor = MfaFactor.Totp,
+                    verificationCode = entered.value,
+                    onVerificationCodeChange = { entered.value = it },
+                ),
+                authConfiguration = phoneConfiguration(),
+                user = mock(),
+            )
+        }
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_CODE_FIELD, field())
+        setTextByResourceId(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_CODE_FIELD, VERIFICATION_CODE)
+
+        assertWithMessage(
+            "ACTION_SET_TEXT on fui_mfa_enrollment_verify_totp_code_field reported success but " +
+                "the enrollment screen did not receive the code."
+        ).that(entered.value).isEqualTo(VERIFICATION_CODE)
+
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BACK_BUTTON, button())
+        assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BUTTON, button())
+    }
+
+    @Test
+    fun `mfa enrollment recovery codes step exposes its saved confirmation button`() {
+        setContent {
+            DefaultMfaEnrollmentContent(
+                state = MfaEnrollmentContentState(
+                    step = MfaEnrollmentStep.ShowRecoveryCodes,
+                    recoveryCodes = listOf("1111-1111", "2222-2222"),
+                ),
+                authConfiguration = phoneConfiguration(),
+                user = mock(),
+            )
+        }
+
+        assertExposedAsResourceId(
+            FirebaseAuthTestTags.MfaEnrollment.RECOVERY_CODES_SAVED_BUTTON,
+            button()
         )
     }
 

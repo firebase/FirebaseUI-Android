@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.toMfaErrorMessage
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.QrCodeImage
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
 import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
@@ -312,11 +314,22 @@ private fun SelectFactorUI(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                // One button per not-yet-enrolled factor renders in this loop, so a user enrolled
+                // in neither factor sees both buttons at once. A shared tag would collide exactly
+                // the way the registry's uniqueness test cannot catch on its own, so each factor
+                // gets its own constant, keyed off the same `when` branch used for the label.
                 factorsToEnroll.forEach { factor ->
                     Button(
                         onClick = { onFactorSelected(factor) },
                         enabled = !isLoading,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = when (factor) {
+                            MfaFactor.Sms -> Modifier
+                                .fillMaxWidth()
+                                .testTag(FirebaseAuthTestTags.MfaEnrollment.ENROLL_SMS_BUTTON)
+                            MfaFactor.Totp -> Modifier
+                                .fillMaxWidth()
+                                .testTag(FirebaseAuthTestTags.MfaEnrollment.ENROLL_TOTP_BUTTON)
+                        }
                     ) {
                         when (factor) {
                             MfaFactor.Sms -> Text(stringProvider.mfaStepConfigureSmsTitle)
@@ -336,6 +349,7 @@ private fun SelectFactorUI(
 
             onSkipClick?.let {
                 TextButton(
+                    modifier = Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.SKIP_BUTTON),
                     onClick = it,
                     enabled = !isLoading
                 ) {
@@ -395,9 +409,20 @@ private fun EnrolledFactorItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            // This item is rendered once per enrolled factor by a `forEach` in the caller, so a
+            // user enrolled in both SMS and TOTP composes two of these at once. The same collision
+            // risk as the enroll buttons above, resolved the same way: key the tag off the factor
+            // type rather than sharing one value.
             OutlinedButton(
                 onClick = onRemove,
                 enabled = enabled,
+                modifier = when (factorInfo) {
+                    is PhoneMultiFactorInfo ->
+                        Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.REMOVE_SMS_BUTTON)
+                    is TotpMultiFactorInfo ->
+                        Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.REMOVE_TOTP_BUTTON)
+                    else -> Modifier
+                },
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 )
@@ -480,7 +505,9 @@ private fun ConfigureTotpUI(
                 TextButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_BACK_BUTTON)
                 ) {
                     Text(stringProvider.backAction)
                 }
@@ -488,7 +515,9 @@ private fun ConfigureTotpUI(
                 Button(
                     onClick = onContinueClick,
                     enabled = !isLoading && isValid,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_CONTINUE_BUTTON)
                 ) {
                     Text(stringProvider.continueText)
                 }
@@ -546,7 +575,9 @@ private fun VerifyTotpUI(
                 label = { Text(stringProvider.verificationCodeLabel) },
                 enabled = !isLoading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_CODE_FIELD)
             )
 
             Row(
@@ -556,7 +587,9 @@ private fun VerifyTotpUI(
                 OutlinedButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BACK_BUTTON)
                 ) {
                     Text(stringProvider.backAction)
                 }
@@ -564,7 +597,9 @@ private fun VerifyTotpUI(
                 Button(
                     onClick = onVerifyClick,
                     enabled = !isLoading && isValid,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BUTTON)
                 ) {
                     Text(stringProvider.verifyAction)
                 }

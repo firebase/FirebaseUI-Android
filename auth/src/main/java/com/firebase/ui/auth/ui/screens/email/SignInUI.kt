@@ -159,7 +159,10 @@ fun SignInUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.BACK_BUTTON)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -201,7 +204,10 @@ fun SignInUI(
                 },
                 onValueChange = { text ->
                     onPasswordChange(text)
-                }
+                },
+                visibilityToggleModifier = Modifier.testTag(
+                    FirebaseAuthTestTags.SignIn.PASSWORD_VISIBILITY_TOGGLE
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(

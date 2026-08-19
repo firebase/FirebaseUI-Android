@@ -138,7 +138,10 @@ fun SignInEmailLinkUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.EmailLink.BACK_BUTTON)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -171,7 +174,8 @@ fun SignInEmailLinkUI(
             Spacer(modifier = Modifier.height(16.dp))
             TextButton(
                 modifier = Modifier
-                    .align(Alignment.Start),
+                    .align(Alignment.Start)
+                    .testTag(FirebaseAuthTestTags.EmailLink.FORGOT_PASSWORD_BUTTON),
                 onClick = {
                     onGoToResetPassword()
                 },

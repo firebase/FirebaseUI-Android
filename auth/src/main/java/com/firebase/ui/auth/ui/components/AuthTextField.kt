@@ -86,6 +86,11 @@ import com.firebase.ui.auth.configuration.validators.PasswordValidator
  * @param visualTransformation Visual transformation for the input (e.g., password).
  * @param leadingIcon An optional icon to display at the start of the field.
  * @param trailingIcon An optional icon to display at the start of the field.
+ * @param visibilityToggleModifier A modifier applied to the password visibility toggle button
+ * shown when [isSecureTextField] is `true`. Distinct from [modifier], which applies to the field
+ * itself: the toggle is a separate node, so a caller that needs to address it — for example to
+ * apply a test tag — passes one here rather than expecting [modifier] to reach it. Defaults to
+ * [Modifier], leaving the toggle untagged for callers that don't need to address it.
  */
 @Composable
 fun AuthTextField(
@@ -103,6 +108,7 @@ fun AuthTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    visibilityToggleModifier: Modifier = Modifier,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -167,6 +173,7 @@ fun AuthTextField(
         trailingIcon = trailingIcon ?: {
             if (isSecureTextField) {
                 IconButton(
+                    modifier = visibilityToggleModifier,
                     onClick = {
                         passwordVisible = !passwordVisible
                     }

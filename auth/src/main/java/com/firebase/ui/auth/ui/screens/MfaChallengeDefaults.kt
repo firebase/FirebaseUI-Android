@@ -119,6 +119,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(
+                        modifier = Modifier.testTag(
+                            FirebaseAuthTestTags.MfaChallenge.RESEND_CODE_BUTTON
+                        ),
                         onClick = { state.onResendCodeClick?.invoke() },
                         enabled = state.onResendCodeClick != null && !state.isLoading && state.resendTimer == 0
                     ) {
@@ -135,6 +138,7 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
                     }
 
                     TextButton(
+                        modifier = Modifier.testTag(FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON),
                         onClick = state.onCancelClick,
                         enabled = !state.isLoading
                     ) {
@@ -145,7 +149,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
                 OutlinedButton(
                     onClick = state.onCancelClick,
                     enabled = !state.isLoading,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON)
                 ) {
                     Text(stringProvider.dismissAction)
                 }

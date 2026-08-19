@@ -114,7 +114,10 @@ fun SignUpUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.BACK_BUTTON)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -171,7 +174,10 @@ fun SignUpUI(
                 },
                 onValueChange = { text ->
                     onPasswordChange(text)
-                }
+                },
+                visibilityToggleModifier = Modifier.testTag(
+                    FirebaseAuthTestTags.SignUp.PASSWORD_VISIBILITY_TOGGLE
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
@@ -185,7 +191,10 @@ fun SignUpUI(
                 },
                 onValueChange = { text ->
                     onConfirmPasswordChange(text)
-                }
+                },
+                visibilityToggleModifier = Modifier.testTag(
+                    FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_VISIBILITY_TOGGLE
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(

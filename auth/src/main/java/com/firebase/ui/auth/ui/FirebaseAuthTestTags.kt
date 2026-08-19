@@ -84,6 +84,12 @@ object FirebaseAuthTestTags {
 
         /** The button that switches to email link sign-in. */
         const val EMAIL_LINK_BUTTON = "fui_sign_in_email_link_button"
+
+        /** The toggle that shows or hides the entered password. */
+        const val PASSWORD_VISIBILITY_TOGGLE = "fui_sign_in_password_visibility_toggle"
+
+        /** The top app bar's back navigation button. */
+        const val BACK_BUTTON = "fui_sign_in_back_button"
     }
 
     /** Tags on the email/password sign-up screen. */
@@ -106,6 +112,16 @@ object FirebaseAuthTestTags {
 
         /** The button that navigates back to the sign-in screen. */
         const val SIGN_IN_BUTTON = "fui_sign_up_sign_in_button"
+
+        /** The toggle that shows or hides the entered password. */
+        const val PASSWORD_VISIBILITY_TOGGLE = "fui_sign_up_password_visibility_toggle"
+
+        /** The toggle that shows or hides the entered password confirmation. */
+        const val CONFIRM_PASSWORD_VISIBILITY_TOGGLE =
+            "fui_sign_up_confirm_password_visibility_toggle"
+
+        /** The top app bar's back navigation button. */
+        const val BACK_BUTTON = "fui_sign_up_back_button"
     }
 
     /** Tags on the password recovery screen. */
@@ -122,6 +138,9 @@ object FirebaseAuthTestTags {
 
         /** The dismiss button of the "reset link sent" dialog. */
         const val DISMISS_BUTTON = "fui_reset_password_dismiss_button"
+
+        /** The top app bar's back navigation button. */
+        const val BACK_BUTTON = "fui_reset_password_back_button"
     }
 
     /** Tags on the email link ("magic link") sign-in screen. */
@@ -138,6 +157,12 @@ object FirebaseAuthTestTags {
 
         /** The dismiss button of the "sign-in link sent" dialog. */
         const val DISMISS_BUTTON = "fui_email_link_dismiss_button"
+
+        /** The "trouble signing in" button that navigates to password recovery. */
+        const val FORGOT_PASSWORD_BUTTON = "fui_email_link_forgot_password_button"
+
+        /** The top app bar's back navigation button. */
+        const val BACK_BUTTON = "fui_email_link_back_button"
     }
 
     /** Tags on the phone number entry screen. */
@@ -151,6 +176,9 @@ object FirebaseAuthTestTags {
 
         /** The button that requests an SMS verification code. */
         const val SEND_CODE_BUTTON = "fui_phone_number_send_code_button"
+
+        /** The top app bar's back navigation button. */
+        const val BACK_BUTTON = "fui_phone_number_back_button"
     }
 
     /** Tags on the SMS verification code screen. */
@@ -177,6 +205,9 @@ object FirebaseAuthTestTags {
 
         /** The button that returns to phone number entry. */
         const val CHANGE_PHONE_NUMBER_BUTTON = "fui_verification_code_change_phone_number_button"
+
+        /** The top app bar's back navigation button. */
+        const val BACK_BUTTON = "fui_verification_code_back_button"
     }
 
     /**
@@ -200,6 +231,19 @@ object FirebaseAuthTestTags {
 
         /** The button that submits the entered code. */
         const val VERIFY_BUTTON = "fui_mfa_challenge_verify_button"
+
+        /** The button that requests a new code. SMS factor only. */
+        const val RESEND_CODE_BUTTON = "fui_mfa_challenge_resend_code_button"
+
+        /**
+         * The button that cancels the challenge and returns to sign-in.
+         *
+         * Shared by the SMS "use a different method" control and the TOTP "dismiss" control: the
+         * two are rendered by an `if (isSms) {...} else {...}` branch in
+         * [com.firebase.ui.auth.ui.screens.DefaultMfaChallengeContent] and so never compose at the
+         * same time, and both are bound to the same `onCancelClick` callback.
+         */
+        const val CANCEL_BUTTON = "fui_mfa_challenge_cancel_button"
     }
 
     /**
@@ -229,5 +273,97 @@ object FirebaseAuthTestTags {
 
         /** The button that dismisses the dialog without re-authenticating. */
         const val DISMISS_BUTTON = "fui_reauth_dismiss_button"
+    }
+
+    /**
+     * Tags on the error recovery dialog shown by [com.firebase.ui.auth.ui.components.TopLevelDialogController].
+     *
+     * The dialog is rendered from exactly one call site — [com.firebase.ui.auth.ui.components.TopLevelDialogController.CurrentDialog],
+     * itself composed once at the root of a flow — so a shared value for the retry action is safe
+     * even though the button's label text changes with the [com.firebase.ui.auth.AuthException]
+     * subtype being recovered from: only one instance of the dialog is ever composed at a time.
+     */
+    object ErrorRecovery {
+
+        /**
+         * The recovery/retry action, shown when the error is recoverable. Its label varies with the
+         * exception type (retry, sign in, continue, dismiss, ...), but it is always the same button
+         * instance, so one constant addresses it regardless of which error is showing.
+         */
+        const val RETRY_BUTTON = "fui_error_recovery_retry_button"
+
+        /** The button that dismisses the dialog without recovering. */
+        const val DISMISS_BUTTON = "fui_error_recovery_dismiss_button"
+    }
+
+    /**
+     * Tags on [com.firebase.ui.auth.ui.components.TermsAndPrivacyForm], the terms-of-service and
+     * privacy-policy links shown at the bottom of several screens.
+     *
+     * Component-scoped rather than duplicated per screen, for the same reason as [MethodPicker] and
+     * [CountrySelector]: every call site renders behind a mutually exclusive `when` or `if` in its
+     * screen's parent (see [com.firebase.ui.auth.ui.screens.email.EmailAuthScreen] and
+     * [com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen]), so no two instances are ever composed
+     * at once and a shared value still resolves to exactly one node.
+     */
+    object TermsAndPrivacy {
+
+        /** The link that opens the terms-of-service URL. */
+        const val TOS_LINK = "fui_terms_and_privacy_tos_link"
+
+        /** The link that opens the privacy-policy URL. */
+        const val PRIVACY_LINK = "fui_terms_and_privacy_privacy_link"
+    }
+
+    /**
+     * Tags on the multi-factor enrollment flow — the screens a user configures a second factor
+     * through, as opposed to [MfaChallenge], which is the second factor they are asked for during an
+     * ordinary sign-in.
+     *
+     * Two shapes here render more than one instance of the same node at once, and are keyed by
+     * factor rather than given one shared value: [SelectFactor][com.firebase.ui.auth.ui.screens.MfaEnrollmentDefaults]
+     * lists one enroll button per not-yet-enrolled factor, and one remove button per already-enrolled
+     * factor, so a user who has enrolled neither factor sees two enroll buttons at once, and a user
+     * enrolled in both sees two remove buttons at once.
+     */
+    object MfaEnrollment {
+
+        /** The button that starts SMS enrollment, shown on the factor-selection step. */
+        const val ENROLL_SMS_BUTTON = "fui_mfa_enrollment_enroll_sms_button"
+
+        /** The button that starts TOTP enrollment, shown on the factor-selection step. */
+        const val ENROLL_TOTP_BUTTON = "fui_mfa_enrollment_enroll_totp_button"
+
+        /** The button that removes an already-enrolled SMS factor. */
+        const val REMOVE_SMS_BUTTON = "fui_mfa_enrollment_remove_sms_button"
+
+        /** The button that removes an already-enrolled TOTP factor. */
+        const val REMOVE_TOTP_BUTTON = "fui_mfa_enrollment_remove_totp_button"
+
+        /** The button that skips enrollment, shown on the factor-selection step when optional. */
+        const val SKIP_BUTTON = "fui_mfa_enrollment_skip_button"
+
+        /** The button that returns from the TOTP secret/QR step to factor selection. */
+        const val CONFIGURE_TOTP_BACK_BUTTON = "fui_mfa_enrollment_configure_totp_back_button"
+
+        /** The button that advances from the TOTP secret/QR step to code verification. */
+        const val CONFIGURE_TOTP_CONTINUE_BUTTON =
+            "fui_mfa_enrollment_configure_totp_continue_button"
+
+        /**
+         * The input for the code generated by the user's authenticator app, on the TOTP
+         * verification step. Distinct from [CONFIGURE_TOTP_BACK_BUTTON]'s step, which only displays
+         * the secret and QR code and collects nothing.
+         */
+        const val VERIFY_TOTP_CODE_FIELD = "fui_mfa_enrollment_verify_totp_code_field"
+
+        /** The button that returns from TOTP code verification to the secret/QR step. */
+        const val VERIFY_TOTP_BACK_BUTTON = "fui_mfa_enrollment_verify_totp_back_button"
+
+        /** The button that submits the entered TOTP code to complete verification. */
+        const val VERIFY_TOTP_BUTTON = "fui_mfa_enrollment_verify_totp_button"
+
+        /** The button confirming the user has saved their recovery codes, completing enrollment. */
+        const val RECOVERY_CODES_SAVED_BUTTON = "fui_mfa_enrollment_recovery_codes_saved_button"
     }
 }
