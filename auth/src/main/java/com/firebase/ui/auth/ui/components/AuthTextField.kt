@@ -91,6 +91,17 @@ import com.firebase.ui.auth.configuration.validators.PasswordValidator
  * itself: the toggle is a separate node, so a caller that needs to address it — for example to
  * apply a test tag — passes one here rather than expecting [modifier] to reach it. Defaults to
  * [Modifier], leaving the toggle untagged for callers that don't need to address it.
+ *
+ * This is the template for exposing a shared component's internal, non-root elements to a
+ * specific screen: a plain `Modifier` parameter per addressable internal node, rather than a
+ * `String` tag threaded in and applied with `.testTag(it)` inside the component. A `String` here
+ * would defeat [com.firebase.ui.auth.ui.FirebaseAuthTestTags]'s registry-provenance guard, which
+ * requires every `testTag(...)` argument in main sources to be a literal
+ * `FirebaseAuthTestTags.<Group>.<TAG>` reference — a variable would either bypass that check or
+ * fail it outright. Screens instead build the tag from the registry and pass it down as a
+ * `Modifier.testTag(...)`, keeping the literal reference at the call site that owns it. Follow
+ * this shape for any future internal element on a shared component that a screen needs to
+ * address individually.
  */
 @Composable
 fun AuthTextField(
