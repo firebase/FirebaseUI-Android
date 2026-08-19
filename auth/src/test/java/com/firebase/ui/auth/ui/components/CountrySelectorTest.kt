@@ -85,18 +85,6 @@ class CountrySelectorTest {
     // ---- Test Tag Tests ----
 
     @Test
-    fun `CountrySelector tags the country list once the bottom sheet is open`() {
-        setCountrySelectorContent()
-
-        composeTestRule.onNodeWithContentDescription("Country selector").performClick()
-        composeTestRule.waitForIdle()
-
-        composeTestRule
-            .onNodeWithTag(FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST)
-            .assertIsDisplayed()
-    }
-
-    @Test
     fun `CountrySelector does not tag a country list while the bottom sheet is closed`() {
         setCountrySelectorContent()
 

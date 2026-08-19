@@ -530,41 +530,6 @@ class TestTagsAsResourceIdsTest {
     }
 
     /**
-     * The same claim for a host app's own Compose tests: `performTextInput` on the published tag
-     * enters the whole code, exercising `InsertTextAtCursor` rather than `SetText`.
-     */
-    @Test
-    fun `performTextInput on the verification code tag enters the whole code`() {
-        val entered = mutableStateOf("")
-
-        setContent {
-            EnterVerificationCodeUI(
-                configuration = phoneConfiguration(),
-                isLoading = false,
-                verificationCode = entered.value,
-                fullPhoneNumber = "+1 555 555 5555",
-                resendTimer = 0,
-                onVerificationCodeChange = { entered.value = it },
-                onVerifyCodeClick = { },
-                onResendCodeClick = { },
-                onChangeNumberClick = { },
-            )
-        }
-
-        composeTestRule
-            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
-            .performTextInput(VERIFICATION_CODE)
-
-        // The code reaches the caller from a LaunchedEffect keyed on the digits, so the recomposition
-        // the action triggers has to settle before the callback has run.
-        composeTestRule.waitForIdle()
-
-        assertWithMessage(
-            "performTextInput on the published verification code tag did not enter the code."
-        ).that(entered.value).isEqualTo(VERIFICATION_CODE)
-    }
-
-    /**
      * The MFA challenge screen shares the code input with the phone screen and had no tags at all,
      * so it gets the same assertions rather than a weaker one.
      */

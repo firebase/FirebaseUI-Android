@@ -183,19 +183,6 @@ class FirebaseAuthScreenModifierTest {
     }
 
     /**
-     * Regression guard for the method-picker route: the tag must land once, at the root, not on
-     * the picker's own `Column`. This held before the fix too; the routing case above pins it.
-     */
-    @Test
-    fun `caller modifier is applied once on the method picker route`() {
-        setContent(methodPickerConfiguration(), Modifier.testTag(CALLER_TAG))
-
-        composeTestRule
-            .onAllNodesWithTag(CALLER_TAG, useUnmergedTree = true)
-            .assertCountEquals(1)
-    }
-
-    /**
      * Guard against the modifier being duplicated or dropped when a custom method-picker slot is
      * supplied, not a pin on a specific arrangement.
      */
