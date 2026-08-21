@@ -37,9 +37,8 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.getHelperText
 import com.firebase.ui.auth.mfa.getTitle
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactor
 import org.junit.After
@@ -88,21 +87,7 @@ class MfaEnrollmentScreenTest {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
-        }
-
-        // Initialize default FirebaseApp
-        FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
 
         // Use mock user instead of real Firebase user

@@ -26,10 +26,9 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.ensureFreshUser
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
@@ -57,19 +56,8 @@ class ReauthFlowTest {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        FirebaseApp.getApps(applicationContext).forEach { it.delete() }
-
-        val firebaseApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        val firebaseApp = ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
 
         emulatorApi = EmulatorAuthApi(
             projectId = firebaseApp.options.projectId
@@ -83,6 +71,7 @@ class ReauthFlowTest {
 
     @After
     fun tearDown() {
+        authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
         emulatorApi.clearEmulatorData()
     }

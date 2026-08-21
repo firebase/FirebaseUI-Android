@@ -65,35 +65,44 @@ class FirebaseAuthActivityTest {
 
         applicationContext = ApplicationProvider.getApplicationContext()
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
+        // Reuse FirebaseApps across tests in this class rather than deleting and
+        // re-initializing them for every test, to reduce churn on the "[DEFAULT]"
+        // app name (Robolectric shares statics across test methods in this class).
+        val secondaryApp = if (FirebaseApp.getApps(applicationContext).isEmpty()) {
+            FirebaseApp.initializeApp(
+                applicationContext,
+                FirebaseOptions.Builder()
+                    .setApiKey("fake-api-key")
+                    .setApplicationId("fake-app-id")
+                    .setProjectId("fake-project-id")
+                    .build()
+            )
+
+            val app = FirebaseApp.initializeApp(
+                applicationContext,
+                FirebaseOptions.Builder()
+                    .setApiKey("fake-api-key-2")
+                    .setApplicationId("fake-app-id-2")
+                    .setProjectId("fake-project-id-2")
+                    .build(),
+                "secondary"
+            )
+
+            // Other test classes in this module independently delete and recreate
+            // the "[DEFAULT]" FirebaseApp. Newer firebase-auth releases sometimes
+            // surface that unrelated churn here as "FirebaseApp was deleted" from
+            // useEmulator(), even though the app we just initialized is live. This
+            // call is a defensive safety net (these tests drive UI state through
+            // mocks, never real network calls), so it's safe to ignore.
+            runCatching { FirebaseAuthUI.getInstance().auth.useEmulator("127.0.0.1", 9099) }
+            runCatching { FirebaseAuthUI.getInstance(app).auth.useEmulator("127.0.0.1", 9099) }
+            app
+        } else {
+            FirebaseApp.getInstance("secondary")
         }
 
-        // Initialize default FirebaseApp
-        FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
-        val secondaryApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key-2")
-                .setApplicationId("fake-app-id-2")
-                .setProjectId("fake-project-id-2")
-                .build(),
-            "secondary"
-        )
-
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
         secondaryAuthUI = FirebaseAuthUI.getInstance(secondaryApp)
-        secondaryAuthUI.auth.useEmulator("127.0.0.1", 9099)
 
         configuration = AuthUIConfiguration(
             context = applicationContext,
@@ -113,13 +122,6 @@ class FirebaseAuthActivityTest {
     fun tearDown() {
         FirebaseAuthActivity.clearLaunchStateCache()
         FirebaseAuthUI.clearInstanceCache()
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            try {
-                app.delete()
-            } catch (_: Exception) {
-                // Ignore if already deleted
-            }
-        }
     }
 
     // =============================================================================================

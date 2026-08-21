@@ -42,12 +42,11 @@ import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.awaitWithLooper
 import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.generateMockGoogleIdToken
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assume
@@ -89,21 +88,8 @@ class CredentialLinkingScreenTest {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
-        }
-
-        val firebaseApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        val firebaseApp = ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
 
         authUI.testCredentialManagerProvider = object : AuthProvider.Google.CredentialManagerProvider {
             override suspend fun getGoogleCredential(
@@ -137,6 +123,7 @@ class CredentialLinkingScreenTest {
 
     @After
     fun tearDown() {
+        authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
         emulatorApi.clearEmulatorData()
     }

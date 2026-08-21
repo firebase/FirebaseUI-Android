@@ -33,6 +33,7 @@ import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.awaitWithLooper
 import com.firebase.ui.auth.testutil.ensureFreshUser
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
@@ -40,8 +41,6 @@ import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthStep
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import org.junit.After
 import org.junit.Assume
@@ -75,23 +74,8 @@ class PhoneAuthScreenTest {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
-        }
-
-        // Initialize default FirebaseApp
-        val firebaseApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        val firebaseApp = ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
 
         emulatorApi = EmulatorAuthApi(
             projectId = firebaseApp.options.projectId
@@ -106,7 +90,10 @@ class PhoneAuthScreenTest {
 
     @After
     fun tearDown() {
-        // Clean up after each test to prevent test pollution
+        // Clean up after each test to prevent test pollution. The FirebaseApp itself is
+        // shared across test classes (see ensureTestFirebaseApp), so the client-side
+        // session must be reset explicitly here rather than relying on app re-creation.
+        authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
 
         // Clear emulator data
