@@ -173,6 +173,7 @@ private fun MainUI(
             ) { state ->
                 AuthMethodPickerUI(
                     state = state,
+                    auth = authUI.auth,
                     otherProviders = providers.filterNot { it is AuthProvider.Email },
                     onProviderSelected = onProviderSelected,
                     tosUrl = configuration.tosUrl,
