@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
@@ -61,7 +63,10 @@ fun SignUpStep(
     var lastName by remember { mutableStateOf("") }
     var confirmEmail by remember { mutableStateOf("") }
 
-    val emailsMatch = confirmEmail.isNotBlank() && confirmEmail == state.email
+    // Compared case-insensitively and trimmed: this field uses the default keyboard, which
+    // auto-capitalises on many IMEs, so an exact match would reject the user's own address.
+    val emailsMatch = confirmEmail.isNotBlank() &&
+        confirmEmail.trim().equals(state.email.trim(), ignoreCase = true)
     val passwordsMatch = state.confirmPassword.isNotBlank() && state.confirmPassword == state.password
     val canSignUp = firstName.isNotBlank() &&
         lastName.isNotBlank() &&
@@ -153,6 +158,9 @@ fun SignUpStep(
                                     onValueChange = { confirmEmail = it },
                                     label = "Confirm Email",
                                     enabled = !state.isLoading,
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Email,
+                                    ),
                                     isError = confirmEmail.isNotBlank() && !emailsMatch,
                                     supportingText = if (confirmEmail.isNotBlank() && !emailsMatch) {
                                         "Emails don't match"
