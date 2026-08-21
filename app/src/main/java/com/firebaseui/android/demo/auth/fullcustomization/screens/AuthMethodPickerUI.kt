@@ -1,6 +1,7 @@
 package com.firebaseui.android.demo.auth.fullcustomization.screens
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -25,6 +26,7 @@ private enum class FlowStep { EnterEmail, Login, SignUp }
 @Composable
 fun AuthMethodPickerUI(
     state: EmailAuthContentState,
+    auth: FirebaseAuth,
     otherProviders: List<AuthProvider>,
     onProviderSelected: (AuthProvider) -> Unit,
     tosUrl: String?,
@@ -45,6 +47,10 @@ fun AuthMethodPickerUI(
         flowStep = FlowStep.EnterEmail
     }
 
+    // customMethodPickerLayout is the NavHost's start destination and these steps are local
+    // state, so without this the system back press would leave the auth flow entirely.
+    BackHandler(enabled = flowStep != FlowStep.EnterEmail) { onUseDifferentEmail() }
+
     Box(modifier = Modifier.fillMaxSize()) {
         when (flowStep) {
             FlowStep.EnterEmail -> EmailEntryStep(
@@ -54,7 +60,7 @@ fun AuthMethodPickerUI(
                 onContinue = {
                     isCheckingEmail = true
                     coroutineScope.launch {
-                        val signInMethods = fetchLegacySignInMethods(state.email)
+                        val signInMethods = fetchLegacySignInMethods(auth, state.email)
                         flowStep = if (signInMethods.isEmpty()) FlowStep.SignUp else FlowStep.Login
                         isCheckingEmail = false
                     }
@@ -90,11 +96,10 @@ fun AuthMethodPickerUI(
  * deprecated by Firebase ("legacy") and, depending on the project's Email Enumeration Protection
  * setting, may always return an empty list regardless of whether the email exists.
  */
-private suspend fun fetchLegacySignInMethods(email: String): List<String> {
+private suspend fun fetchLegacySignInMethods(auth: FirebaseAuth, email: String): List<String> {
     return try {
         @Suppress("DEPRECATION")
-        FirebaseAuth.getInstance()
-            .fetchSignInMethodsForEmail(email)
+        auth.fetchSignInMethodsForEmail(email)
             .await()
             .signInMethods
             ?.filter { it.isNotBlank() }

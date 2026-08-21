@@ -45,6 +45,11 @@ fun CtaButton(
                 .height(80.dp),
         ) {
             if (isLoading) {
+                // Left on the M3 default (colorScheme.primary). Every caller passes
+                // `enabled = ... && !isLoading`, so the button is disabled exactly while the
+                // spinner shows: the container is the translucent disabled fill, and primary
+                // reads clearly against it. Using LocalContentColor here would instead pick up
+                // disabledContentColor (onSurface at 38%) and wash the spinner out.
                 CircularProgressIndicator(modifier = Modifier.size(20.dp))
             } else {
                 Text(text = text, style = MaterialTheme.typography.titleMedium)
