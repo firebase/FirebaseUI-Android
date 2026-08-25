@@ -26,7 +26,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.AuthException
@@ -180,15 +179,15 @@ fun PhoneAuthScreen(
         }
     }
 
-    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
+    val currentAuthState = remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
+    val authState by currentAuthState
     val isLoading = authState is AuthState.Loading
 
-    // A cancelled attempt leaves its Loading behind, and that state outlives this composition on
-    // the process-scoped FirebaseAuthUI, so a freshly composed screen would inherit the spinner.
-    val currentAuthState by rememberUpdatedState(authState)
+    // A cancelled Loading outlives this composition on the process-scoped FirebaseAuthUI, and
+    // currentAuthState is re-remembered per authUI, so onDispose reads the right instance.
     DisposableEffect(authUI) {
         onDispose {
-            if (currentAuthState is AuthState.Loading) {
+            if (currentAuthState.value is AuthState.Loading) {
                 authUI.updateAuthState(AuthState.Idle)
             }
         }
