@@ -18,6 +18,7 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.AuthException
@@ -180,6 +182,17 @@ fun PhoneAuthScreen(
 
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
+
+    // A cancelled attempt leaves its Loading behind, and that state outlives this composition on
+    // the process-scoped FirebaseAuthUI, so a freshly composed screen would inherit the spinner.
+    val currentAuthState by rememberUpdatedState(authState)
+    DisposableEffect(authUI) {
+        onDispose {
+            if (currentAuthState is AuthState.Loading) {
+                authUI.updateAuthState(AuthState.Idle)
+            }
+        }
+    }
     val errorMessage =
         if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
 
@@ -399,6 +412,8 @@ fun PhoneAuthScreen(
         resendTimer = resendTimerSeconds.intValue,
         onChangeNumberClick = {
             cancelVerification("changing phone number")
+            // Nothing replaces the cancelled attempt here, so this handler retracts its Loading.
+            authUI.updateAuthState(AuthState.Idle)
             verificationJob.value = null
             isSubmittingCode.value = false
             step.value = PhoneAuthStep.EnterPhoneNumber
