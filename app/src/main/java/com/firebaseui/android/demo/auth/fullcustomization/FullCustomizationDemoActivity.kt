@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.lifecycleScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -35,7 +34,6 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaEnrollm
 import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSignInUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthUI
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationTheme
-import kotlinx.coroutines.launch
 
 class FullCustomizationDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,25 +109,7 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                         phoneContent = { state -> PhoneSignInUI(state) },
                         mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
                         mfaChallengeContent = { state -> MfaChallengeUI(state) },
-                        reauthContent = { reauthState, onDismiss ->
-                            ReauthUI(
-                                state = reauthState,
-                                onDismiss = onDismiss,
-                                onVerified = {
-                                    val retry = reauthState.retryOperation
-                                    // Dismiss first: onDismiss resets the auth state to Idle, so
-                                    // running the retry afterwards keeps the Success it reports
-                                    // from being clobbered. Neither call suspends, so the
-                                    // composable's cancellation can't interleave between them —
-                                    // and the retry itself runs on lifecycleScope, which outlives
-                                    // this UI.
-                                    onDismiss()
-                                    retry?.let {
-                                        lifecycleScope.launch { it(applicationContext) }
-                                    }
-                                },
-                            )
-                        },
+                        reauthContent = { state -> ReauthUI(state) },
                         authenticatedContent = { state, uiContext ->
                             AuthenticatedUI(state = state, uiContext = uiContext)
                         },
