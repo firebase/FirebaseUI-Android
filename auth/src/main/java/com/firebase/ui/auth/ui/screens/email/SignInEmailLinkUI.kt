@@ -74,6 +74,7 @@ fun SignInEmailLinkUI(
     onGoToSignIn: () -> Unit,
     onGoToResetPassword: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
+    isEmailLocked: Boolean = false,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
@@ -154,6 +155,7 @@ fun SignInEmailLinkUI(
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
+                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },

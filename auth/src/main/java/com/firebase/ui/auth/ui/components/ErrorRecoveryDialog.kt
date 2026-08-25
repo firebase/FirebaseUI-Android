@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.firebase.ui.auth.AuthException
@@ -32,6 +33,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
+
+/** Test tag on the dialog's recovery/retry action button, which only renders when it has an action. */
+internal const val ERROR_DIALOG_ACTION_TEST_TAG = "ErrorRecoveryDialogAction"
 
 /**
  * A composable dialog for displaying authentication errors with recovery options.
@@ -61,7 +65,8 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
  *
  * @param error The [AuthException] to display recovery information for
  * @param stringProvider The [AuthUIStringProvider] for localized strings
- * @param onRetry Callback invoked when the user taps the retry action
+ * @param onRetry Callback invoked when the user taps the retry action, or `null` when there is
+ * nothing to retry — the action button is then not rendered at all
  * @param onDismiss Callback invoked when the user dismisses the dialog
  * @param modifier Optional [Modifier] for the dialog
  * @param onRecover Optional callback for custom recovery actions based on the exception type
@@ -73,7 +78,7 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 fun ErrorRecoveryDialog(
     error: AuthException,
     stringProvider: AuthUIStringProvider,
-    onRetry: (AuthException) -> Unit,
+    onRetry: ((AuthException) -> Unit)?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     onRecover: ((AuthException) -> Unit)? = null,
@@ -97,11 +102,12 @@ fun ErrorRecoveryDialog(
             )
         },
         confirmButton = {
-            if (isRecoverable(error)) {
+            // No callback means no action to take, so an action button would be a no-op.
+            val action = onRecover ?: onRetry
+            if (action != null && isRecoverable(error)) {
                 TextButton(
-                    onClick = {
-                        onRecover?.invoke(error) ?: onRetry(error)
-                    }
+                    onClick = { action(error) },
+                    modifier = Modifier.testTag(ERROR_DIALOG_ACTION_TEST_TAG),
                 ) {
                     Text(
                         text = getRecoveryActionText(error, stringProvider),

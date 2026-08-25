@@ -86,6 +86,7 @@ import com.firebase.ui.auth.configuration.validators.PasswordValidator
  * @param visualTransformation Visual transformation for the input (e.g., password).
  * @param leadingIcon An optional icon to display at the start of the field.
  * @param trailingIcon An optional icon to display at the start of the field.
+ * @param readOnly If the value cannot be edited by the user.
  */
 @Composable
 fun AuthTextField(
@@ -103,6 +104,7 @@ fun AuthTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
+    readOnly: Boolean = false,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -133,6 +135,7 @@ fun AuthTextField(
         label = label,
         singleLine = true,
         enabled = enabled,
+        readOnly = readOnly,
         isError = isError ?: validator?.hasError ?: false,
         supportingText = {
             if (validator?.hasError ?: false) {

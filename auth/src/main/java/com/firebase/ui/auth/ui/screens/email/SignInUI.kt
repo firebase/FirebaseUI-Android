@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -87,6 +88,7 @@ fun SignInUI(
     onGoToResetPassword: () -> Unit,
     onGoToEmailLinkSignIn: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
+    isEmailLocked: Boolean = false,
 ) {
     val context = LocalContext.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
@@ -105,11 +107,22 @@ fun SignInUI(
         }
     }
 
+    val isSignUpOffered = provider.isNewAccountsAllowed &&
+            configuration.isNewEmailAccountsAllowed &&
+            !configuration.isReauthenticationMode
+
+    // Both routes leave this screen for an out-of-band email step, which a reauthentication sheet
+    // cannot observe — and an email link reopens the app with no pending operation left to resume.
+    val isPasswordRecoveryOffered = !configuration.isReauthenticationMode
+    val isEmailLinkSignInOffered =
+        provider.isEmailLinkSignInEnabled && !configuration.isReauthenticationMode
+
     // Retrieve saved credentials when in SignIn mode
     val credentialRetrievalAttempted = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (configuration.isCredentialManagerEnabled &&
+            !configuration.isReauthenticationMode &&
             !credentialRetrievalAttempted.value &&
             PasswordCredentialHandler.hasSavedCredentials(context)) {
             credentialRetrievalAttempted.value = true
@@ -156,7 +169,10 @@ fun SignInUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag("SignInBackButton"),
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -178,6 +194,7 @@ fun SignInUI(
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
+                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },
@@ -199,29 +216,31 @@ fun SignInUI(
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            TextButton(
-                modifier = Modifier
-                    .align(Alignment.Start),
-                onClick = {
-                    onGoToResetPassword()
-                },
-                enabled = !isLoading,
-                contentPadding = PaddingValues.Zero
-            ) {
-                Text(
-                    modifier = modifier,
-                    text = stringProvider.troubleSigningIn,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    textDecoration = TextDecoration.Underline
-                )
+            if (isPasswordRecoveryOffered) {
+                TextButton(
+                    modifier = Modifier
+                        .align(Alignment.Start),
+                    onClick = {
+                        onGoToResetPassword()
+                    },
+                    enabled = !isLoading,
+                    contentPadding = PaddingValues.Zero
+                ) {
+                    Text(
+                        modifier = modifier,
+                        text = stringProvider.troubleSigningIn,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
-            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .align(Alignment.End),
             ) {
-                if (provider.isNewAccountsAllowed) {
+                if (isSignUpOffered) {
                     Button(
                         onClick = {
                             onGoToSignUp()
@@ -250,7 +269,7 @@ fun SignInUI(
             }
 
             // Show toggle to email link sign-in
-            if (provider.isEmailLinkSignInEnabled) {
+            if (isEmailLinkSignInOffered) {
                 Spacer(modifier = Modifier.height(64.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),

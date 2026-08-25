@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -184,10 +186,9 @@ class ReauthFlowTest {
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Step 3: Enter credentials in the reauth bottom sheet.
         composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
-            .performTextInput(email)
+            .assertTextContains(email)
         composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
             .performScrollTo()
             .performTextInput(password)
@@ -207,23 +208,155 @@ class ReauthFlowTest {
     }
 
     /**
-     * Verifies that when reauthContent is provided, it receives the ReauthenticationRequired state
-     * and calling onDismiss resets the auth state to Idle.
+     * Verifies the [ReauthContentState] contract for the custom reauthContent slot: it receives the
+     * reauthenticating user, the reason, and the configured providers already filtered to the ones
+     * linked to that user; dismissing it drops the pending retry operation without firing it.
+     *
+     * The user stays signed in, as they always are during reauthentication. That is why dismissing
+     * does *not* leave the state on [AuthState.Idle]: `onDismiss` resets the library's internal
+     * state, and `authStateFlow()` then falls back to the live session, which is an
+     * [AuthState.Success] for the session that already existed.
      */
     @Test
-    fun `custom reauthContent receives ReauthenticationRequired state and dismisses to Idle`() {
+    fun `custom reauthContent receives linked providers and dismisses without retrying`() {
         val email = "reauth-custom-${System.currentTimeMillis()}@example.com"
         val password = "test123"
 
         val user = ensureFreshUser(authUI, email, password)
         requireNotNull(user) { "Failed to create user" }
 
+        try {
+            verifyEmailInEmulator(authUI, emulatorApi, user)
+        } catch (e: Exception) {
+            Assume.assumeTrue(
+                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
+                false
+            )
+        }
+
         val capturedUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in after creation" }
-        authUI.auth.signOut()
-        shadowOf(Looper.getMainLooper()).idle()
 
         var currentAuthState: AuthState = AuthState.Idle
+        var retryOperationCalled = false
+        var capturedState: ReauthContentState? = null
         val expectedReason = "Sensitive operation requires sign-in"
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = null,
+                        allowedCountries = null
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false
+        }
+
+        composeAndroidTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                FirebaseAuthScreen(
+                    configuration = configuration,
+                    authUI = authUI,
+                    onSignInSuccess = {},
+                    onSignInFailure = {},
+                    onSignInCancelled = {},
+                    reauthContent = { reauthState ->
+                        capturedState = reauthState
+                        Column {
+                            Text("REAUTH REQUIRED - ${reauthState.reason}")
+                            Button(onClick = reauthState.onDismiss) { Text("DISMISS REAUTH") }
+                        }
+                    },
+                ) { _, _ ->
+                    Text("CONTENT")
+                }
+                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+                currentAuthState = authState
+            }
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Emit ReauthenticationRequired to trigger the custom reauthContent slot.
+        authUI.updateAuthState(
+            AuthState.ReauthenticationRequired(
+                user = capturedUser,
+                reason = expectedReason,
+                retryOperation = { retryOperationCalled = true },
+            )
+        )
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Verify the custom reauth content is displayed with the correct reason.
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText("REAUTH REQUIRED - $expectedReason")
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeAndroidTestRule.onNodeWithText("REAUTH REQUIRED - $expectedReason")
+            .assertIsDisplayed()
+
+        val state = requireNotNull(capturedState) { "reauthContent was never composed" }
+        assertThat(state.user.uid).isEqualTo(capturedUser.uid)
+        assertThat(state.reason).isEqualTo(expectedReason)
+        assertThat(state.providers.map { it.providerId }).containsExactly("password")
+
+        composeAndroidTestRule.onNodeWithText("DISMISS REAUTH").performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText("CONTENT").fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeAndroidTestRule.onAllNodesWithText("REAUTH REQUIRED - $expectedReason")
+            .assertCountEquals(0)
+        val observedState = currentAuthState
+        assertThat(observedState).isInstanceOf(AuthState.Success::class.java)
+        assertThat((observedState as AuthState.Success).user.uid).isEqualTo(capturedUser.uid)
+        assertThat(observedState.result).isNull()
+        assertThat(retryOperationCalled).isFalse()
+    }
+
+    /**
+     * The custom slot only picks a provider: selecting email makes the library present its own
+     * email sub-flow (prefilled with the user's address), and completing it fires the pending
+     * retry operation — mirroring the default bottom sheet path.
+     */
+    @Test
+    fun `reauth through the custom slot email sub-flow triggers the retry operation`() {
+        val email = "reauth-slot-email-${System.currentTimeMillis()}@example.com"
+        val password = "test123"
+
+        val user = ensureFreshUser(authUI, email, password)
+        requireNotNull(user) { "Failed to create user" }
+
+        try {
+            verifyEmailInEmulator(authUI, emulatorApi, user)
+        } catch (e: Exception) {
+            Assume.assumeTrue(
+                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
+                false
+            )
+        }
+
+        val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
+
+        var retryOperationCalled = false
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -248,54 +381,63 @@ class ReauthFlowTest {
                     onSignInSuccess = {},
                     onSignInFailure = {},
                     onSignInCancelled = {},
-                    reauthContent = { reauthState, onDismiss ->
+                    reauthContent = { reauthState ->
                         Column {
-                            Text("REAUTH REQUIRED - ${reauthState.reason}")
-                            Button(onClick = onDismiss) { Text("DISMISS REAUTH") }
+                            Text("PICK A PROVIDER")
+                            reauthState.providers.forEach { provider ->
+                                Button(
+                                    onClick = { reauthState.onProviderSelected(provider) }
+                                ) { Text("USE ${provider.providerId}") }
+                            }
                         }
                     },
                 ) { _, _ ->
-                    Text("CONTENT")
+                    Text("AUTHENTICATED")
                 }
-                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
-                currentAuthState = authState
             }
         }
 
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Emit ReauthenticationRequired to trigger the custom reauthContent slot.
         authUI.updateAuthState(
             AuthState.ReauthenticationRequired(
-                user = capturedUser,
-                reason = expectedReason,
+                user = signedInUser,
+                reason = "Please verify your identity to continue",
+                retryOperation = { retryOperationCalled = true },
             )
         )
 
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Verify the custom reauth content is displayed with the correct reason.
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText("REAUTH REQUIRED - $expectedReason")
+            composeAndroidTestRule.onAllNodesWithText("USE password")
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeAndroidTestRule.onNodeWithText("REAUTH REQUIRED - $expectedReason")
-            .assertIsDisplayed()
+        composeAndroidTestRule.onNodeWithText("USE password").performClick()
+        shadowOf(Looper.getMainLooper()).idle()
 
-        // Dismiss the custom reauth UI via the onDismiss callback.
-        composeAndroidTestRule.onNodeWithText("DISMISS REAUTH").performClick()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText(email).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .performClick()
 
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Verify that dismissing resets auth state to Idle.
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            currentAuthState is AuthState.Idle
+            retryOperationCalled
         }
 
-        assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
+        assertThat(retryOperationCalled).isTrue()
     }
 
     @Test
@@ -393,10 +535,9 @@ class ReauthFlowTest {
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Step 3: enter the WRONG password in the reauth sheet.
         composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
-            .performTextInput(email)
+            .assertTextContains(email)
         composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
             .performScrollTo()
             .performTextInput(wrongPassword)

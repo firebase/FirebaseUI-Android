@@ -88,6 +88,8 @@ enum class EmailAuthMode {
  * @param onGoToSignUp A callback to switch the UI to the SignUp mode.
  * @param onGoToSignIn A callback to switch the UI to the SignIn mode.
  * @param onGoToResetPassword A callback to switch the UI to the ResetPassword mode.
+ * @param isEmailLocked true when the library fixed [email] and it must not be edited. Render the
+ * email field read-only while it is true.
  */
 class EmailAuthContentState(
     val mode: EmailAuthMode,
@@ -112,6 +114,7 @@ class EmailAuthContentState(
     val onGoToSignIn: () -> Unit,
     val onGoToResetPassword: () -> Unit,
     val onGoToEmailLinkSignIn: () -> Unit,
+    val isEmailLocked: Boolean = false,
 )
 
 /**
@@ -156,13 +159,32 @@ fun EmailAuthScreen(
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
 
+    val isEmailLocked = remember(prefillEmail, configuration.isReauthenticationMode) {
+        configuration.isReauthenticationMode && !prefillEmail.isNullOrEmpty()
+    }
+
+    val isSignUpOffered = provider.isNewAccountsAllowed &&
+            configuration.isNewEmailAccountsAllowed &&
+            !configuration.isReauthenticationMode
+
     // Used for clearing text fields when switching EmailAuthMode changes
-    val textValues = listOf(
-        displayNameValue,
-        emailTextValue,
-        passwordTextValue,
-        confirmPasswordTextValue
-    )
+    val textValues = remember {
+        listOf(
+            displayNameValue,
+            emailTextValue,
+            passwordTextValue,
+            confirmPasswordTextValue
+        )
+    }
+
+    val resetTextValues: () -> Unit = remember(textValues, isEmailLocked, prefillEmail) {
+        {
+            textValues.forEach { it.value = "" }
+            if (isEmailLocked) {
+                emailTextValue.value = prefillEmail.orEmpty()
+            }
+        }
+    }
 
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading
@@ -196,10 +218,7 @@ fun EmailAuthScreen(
                     onRetry = { ex ->
                         when (ex) {
                             is AuthException.UserNotFoundException -> {
-                                val provider = configuration.providers
-                                    .filterIsInstance<AuthProvider.Email>()
-                                    .first()
-                                if (provider.isNewAccountsAllowed) {
+                                if (isSignUpOffered) {
                                     // User not found, but new accounts are allowed, switch to sign-up
                                     mode.value = EmailAuthMode.SignUp
                                 }
@@ -263,6 +282,7 @@ fun EmailAuthScreen(
         mode = mode.value,
         displayName = displayNameValue.value,
         email = emailTextValue.value,
+        isEmailLocked = isEmailLocked,
         password = passwordTextValue.value,
         confirmPassword = confirmPasswordTextValue.value,
         isLoading = isLoading,
@@ -270,7 +290,9 @@ fun EmailAuthScreen(
         resetLinkSent = resetLinkSentLocal,
         emailSignInLinkSent = emailSignInLinkSentLocal,
         onEmailChange = { email ->
-            emailTextValue.value = email
+            if (!isEmailLocked) {
+                emailTextValue.value = email
+            }
         },
         onPasswordChange = { password ->
             passwordTextValue.value = password
@@ -362,23 +384,31 @@ fun EmailAuthScreen(
             }
         },
         onGoToSignUp = {
-            textValues.forEach { it.value = "" }
-            mode.value = EmailAuthMode.SignUp
+            if (isSignUpOffered) {
+                resetTextValues()
+                mode.value = EmailAuthMode.SignUp
+            }
         },
         onGoToSignIn = {
-            textValues.forEach { it.value = "" }
+            resetTextValues()
             mode.value = EmailAuthMode.SignIn
             emailSignInLinkSentLocal = false
         },
         onGoToResetPassword = {
-            textValues.forEach { it.value = "" }
-            mode.value = EmailAuthMode.ResetPassword
-            resetLinkSentLocal = false
+            // Reauthentication is a modal confirmation of the signed-in account: diverting it to
+            // an out-of-band email step strands the pending operation behind something it can't see.
+            if (!configuration.isReauthenticationMode) {
+                resetTextValues()
+                mode.value = EmailAuthMode.ResetPassword
+                resetLinkSentLocal = false
+            }
         },
         onGoToEmailLinkSignIn = {
-            textValues.forEach { it.value = "" }
-            mode.value = EmailAuthMode.EmailLinkSignIn
-            emailSignInLinkSentLocal = false
+            if (!configuration.isReauthenticationMode) {
+                resetTextValues()
+                mode.value = EmailAuthMode.EmailLinkSignIn
+                emailSignInLinkSentLocal = false
+            }
         },
     )
 
@@ -414,7 +444,8 @@ private fun DefaultEmailAuthContent(
                 onGoToSignUp = state.onGoToSignUp,
                 onGoToResetPassword = state.onGoToResetPassword,
                 onGoToEmailLinkSignIn = state.onGoToEmailLinkSignIn,
-                onNavigateBack = onCancel
+                onNavigateBack = onCancel,
+                isEmailLocked = state.isEmailLocked,
             )
         }
 
@@ -422,6 +453,7 @@ private fun DefaultEmailAuthContent(
             SignInEmailLinkUI(
                 configuration = configuration,
                 email = state.email,
+                isEmailLocked = state.isEmailLocked,
                 isLoading = state.isLoading,
                 emailSignInLinkSent = state.emailSignInLinkSent,
                 onEmailChange = state.onEmailChange,
@@ -446,7 +478,8 @@ private fun DefaultEmailAuthContent(
                 onConfirmPasswordChange = state.onConfirmPasswordChange,
                 onSignUpClick = state.onSignUpClick,
                 onGoToSignIn = state.onGoToSignIn,
-                onNavigateBack = onCancel
+                onNavigateBack = onCancel,
+                isEmailLocked = state.isEmailLocked,
             )
         }
 
@@ -455,6 +488,7 @@ private fun DefaultEmailAuthContent(
                 configuration = configuration,
                 isLoading = state.isLoading,
                 email = state.email,
+                isEmailLocked = state.isEmailLocked,
                 resetLinkSent = state.resetLinkSent,
                 onEmailChange = state.onEmailChange,
                 onSendResetLink = state.onSendResetLinkClick,

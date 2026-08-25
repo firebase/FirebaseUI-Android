@@ -27,6 +27,7 @@ import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.MockPersistenceManager
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.ActionCodeSettings
@@ -265,6 +266,82 @@ class EmailAuthProviderFirebaseAuthUITest {
         } catch (e: Exception) {
             assertThat(e.message).isEqualTo(applicationContext.getString(R.string.fui_error_password_missing_uppercase))
         }
+    }
+
+    /**
+     * Creating an account cannot re-prove an existing session — it *replaces* it. Left open, the
+     * reauthentication email sub-flow could route to sign-up, mint a brand new user, and have the
+     * resulting library-published success consume the pending sensitive operation, which would then
+     * run against a different, never-reauthenticated account.
+     */
+    @Test
+    fun `createOrLinkUserWithEmailAndPassword - rejects reauthentication mode outright`() = runTest {
+        val user = mock(FirebaseUser::class.java)
+        `when`(user.uid).thenReturn("existing-uid")
+        `when`(mockFirebaseAuth.currentUser).thenReturn(user)
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList(),
+            isNewAccountsAllowed = true
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }.copy(isReauthenticationMode = true)
+
+        try {
+            instance.createOrLinkUserWithEmailAndPassword(
+                context = applicationContext,
+                config = config,
+                provider = emailProvider,
+                name = null,
+                email = "brand-new@example.com",
+                password = "Pass@123"
+            )
+            assertWithMessage("expected reauthentication mode to reject account creation").fail()
+        } catch (e: Exception) {
+            assertThat(e.message)
+                .isEqualTo(
+                    applicationContext.getString(R.string.fui_error_reauth_sign_up_not_allowed)
+                )
+        }
+        verify(mockFirebaseAuth, never()).createUserWithEmailAndPassword(anyString(), anyString())
+    }
+
+    /**
+     * `isNewEmailAccountsAllowed` is the configuration-level veto the reauthentication config sets;
+     * it had no consumer at all, so it vetoed nothing.
+     */
+    @Test
+    fun `createOrLinkUserWithEmailAndPassword - respects isNewEmailAccountsAllowed setting`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList(),
+            isNewAccountsAllowed = true
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }.copy(isNewEmailAccountsAllowed = false)
+
+        try {
+            instance.createOrLinkUserWithEmailAndPassword(
+                context = applicationContext,
+                config = config,
+                provider = emailProvider,
+                name = null,
+                email = "test@example.com",
+                password = "Pass@123"
+            )
+            assertWithMessage("expected isNewEmailAccountsAllowed=false to veto account creation")
+                .fail()
+        } catch (e: Exception) {
+            assertThat(e.message)
+                .isEqualTo(applicationContext.getString(R.string.fui_error_email_does_not_exist))
+        }
+        verify(mockFirebaseAuth, never()).createUserWithEmailAndPassword(anyString(), anyString())
     }
 
     @Test
@@ -686,6 +763,49 @@ class EmailAuthProviderFirebaseAuthUITest {
         assertThat(result).isNotNull()
         assertThat(result?.user).isEqualTo(mockUser)
         verify(mockFirebaseAuth).signInWithCredential(credential)
+    }
+
+    /**
+     * A successful `reauthenticate` whose `currentUser` has since gone null must surface an error
+     * rather than publishing nothing: the reauth UI would otherwise sit on its last Loading state
+     * forever, with no Success and no Error to act on.
+     */
+    @Test
+    fun `signInAndLinkWithCredential - reauth with a null currentUser reports an error`() = runTest {
+        val user = mock(FirebaseUser::class.java)
+        `when`(user.uid).thenReturn("existing-uid")
+        `when`(user.isAnonymous).thenReturn(false)
+
+        // Non-null while reauthenticating, then gone by the time the success is built.
+        var currentUser: FirebaseUser? = user
+        `when`(mockFirebaseAuth.currentUser).thenAnswer { currentUser }
+
+        val credential = GoogleAuthProvider.getCredential("google-id-token", null)
+        `when`(user.reauthenticate(credential)).thenAnswer {
+            currentUser = null
+            val source = TaskCompletionSource<Void>()
+            source.setResult(null)
+            source.task
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }.copy(isReauthenticationMode = true)
+
+        try {
+            instance.signInAndLinkWithCredential(config = config, credential = credential)
+            assertWithMessage("expected a null currentUser after reauth to throw").fail()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(AuthException.UserNotFoundException::class.java)
+        }
+        assertThat(instance.authStateFlow().first())
+            .isInstanceOf(AuthState.Error::class.java)
     }
 
     @Test

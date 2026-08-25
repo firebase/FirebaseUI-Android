@@ -827,7 +827,7 @@ FirebaseAuthScreen(
     phoneContent = { state -> /* ... */ },
     mfaEnrollmentContent = { state -> /* ... */ },
     mfaChallengeContent = { state -> /* ... */ },
-    reauthContent = { state, onDismiss -> /* ... */ },
+    reauthContent = { state -> /* ... */ },
 ) { authState, uiContext ->
     // authenticated content
 }
@@ -992,35 +992,36 @@ mfaChallengeContent = { state ->
 
 #### Reauthentication (`reauthContent`)
 
-Replaces the default reauthentication bottom sheet shown when a sensitive operation requires the user to re-verify their identity. Receives the `AuthState.ReauthenticationRequired` state (including an optional `reason` string and the signed-in `user`) and an `onDismiss` callback that resets auth state to `Idle`.
+Replaces the default reauthentication bottom sheet shown when a sensitive operation requires the user to re-verify their identity. The `ReauthContentState` carries `user`, `reason`, the `providers` already filtered to those linked to that user, and callbacks to select a provider or dismiss.
+
+The library owns the credential exchange, so the slot only renders a provider chooser. Selecting a federated provider reauthenticates directly; selecting `AuthProvider.Email` or `AuthProvider.Phone` hands off to the library's own email/phone sub-flow, which honours your `emailContent` / `phoneContent` slots and replaces this slot while it is active. Password and OTP entry therefore never appear here.
 
 ```kotlin
-reauthContent = { state, onDismiss ->
+reauthContent = { state ->
     AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Verify your identity") },
+        onDismissRequest = state.onDismiss,
+        title = { Text(state.reason ?: "Verify your identity") },
         text = {
-            Column {
-                state.reason?.let { Text(it) }
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation(),
-                )
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                if (state.isLoading) CircularProgressIndicator()
+                state.providers.forEach { provider ->
+                    Button(
+                        onClick = { state.onProviderSelected(provider) },
+                        enabled = !state.isLoading,
+                    ) { Text("Continue with ${provider.providerName}") }
+                }
             }
         },
-        confirmButton = {
-            Button(onClick = {
-                // Re-authenticate then update auth state on success
-            }) { Text("Confirm") }
-        },
+        confirmButton = {},
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = state.onDismiss) { Text("Cancel") }
         },
     )
 }
 ```
+
+While this slot is shown the library suppresses its own loading and error dialogs, so render `state.isLoading` and `state.error` yourself. On success the library resumes the operation that required reauthentication — there is nothing to retry. `state.onDismiss` abandons it and calls `onSignInCancelled`, since the pending operation will never run; backing out of a single provider attempt returns to the slot with the operation still pending and does *not* call `onSignInCancelled`. Render the slot so it blocks interaction with the content behind it — that content stays composed, and the library only makes its own affordances inert.
 
 For most cases, use [`withReauth`](#reauthentication) instead — it handles the full reauth cycle automatically and only shows the default bottom sheet. Use `reauthContent` when you need a custom design for the reauth UI.
 

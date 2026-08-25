@@ -28,7 +28,8 @@ import com.google.firebase.auth.PhoneAuthProvider
  * This class encapsulates all possible authentication states that can occur during
  * the authentication flow, including success, error, and intermediate states.
  *
- * Use the companion object factory methods or specific subclass constructors to create instances.
+ * Instances come from the companion object factory methods or a subclass constructor; states only
+ * the library may publish have an `internal` constructor.
  *
  * @since 10.0.0
  */
@@ -76,11 +77,14 @@ abstract class AuthState private constructor() {
      * @property result The [AuthResult] containing the authenticated user, may be null if not available
      * @property user The authenticated [FirebaseUser]
      * @property isNewUser Whether this is a newly created user account
+     * @property reauthenticatedUid The uid this success re-proved, or `null` if it is not a
+     * reauthentication. Settable only from within the library.
      */
-    class Success(
+    class Success internal constructor(
         val result: AuthResult?,
         val user: FirebaseUser,
-        val isNewUser: Boolean = false
+        val isNewUser: Boolean = false,
+        val reauthenticatedUid: String? = null
     ) : AuthState() {
         override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
@@ -88,18 +92,21 @@ abstract class AuthState private constructor() {
             if (other !is Success) return false
             return result == other.result &&
                     user == other.user &&
-                    isNewUser == other.isNewUser
+                    isNewUser == other.isNewUser &&
+                    reauthenticatedUid == other.reauthenticatedUid
         }
 
         override fun hashCode(): Int {
             var result1 = result?.hashCode() ?: 0
             result1 = 31 * result1 + user.hashCode()
             result1 = 31 * result1 + isNewUser.hashCode()
+            result1 = 31 * result1 + (reauthenticatedUid?.hashCode() ?: 0)
             return result1
         }
 
         override fun toString(): String =
-            "AuthState.Success(result=$result, user=$user, isNewUser=$isNewUser)"
+            "AuthState.Success(result=$result, user=$user, isNewUser=$isNewUser, " +
+                    "reauthenticatedUid=$reauthenticatedUid)"
     }
 
     /**
@@ -257,21 +264,15 @@ abstract class AuthState private constructor() {
     class ReauthenticationRequired(
         val user: FirebaseUser,
         val reason: String? = null,
-        // Not included in equals/hashCode — lambdas have no meaningful equality.
         val retryOperation: (suspend (android.content.Context) -> Unit)? = null,
     ) : AuthState() {
         override val isNotification: Boolean = false
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is ReauthenticationRequired) return false
-            return user == other.user && reason == other.reason
-        }
 
-        override fun hashCode(): Int {
-            var result = user.hashCode()
-            result = 31 * result + (reason?.hashCode() ?: 0)
-            return result
-        }
+        // Identity, not value: arming a second sensitive operation for the same user must replace
+        // the first, and MutableStateFlow silently drops a write equal to the current value.
+        override fun equals(other: Any?): Boolean = this === other
+
+        override fun hashCode(): Int = System.identityHashCode(this)
 
         override fun toString(): String =
             "AuthState.ReauthenticationRequired(user=$user, reason=$reason)"

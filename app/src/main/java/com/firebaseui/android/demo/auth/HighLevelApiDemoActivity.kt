@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -58,6 +60,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.ui.screens.ReauthContentState
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
@@ -229,13 +232,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         onSignInCancelled = {
                             Log.d("HighLevelApiDemoActivity", "Authentication cancelled")
                         },
-                        reauthContent = { state, onDismiss ->
-                            ReauthDialog(
-                                authUI = authUI,
-                                state = state,
-                                onDismiss = onDismiss,
-                            )
-                        },
+                        reauthContent = { state -> ReauthDialog(state = state) },
                         authenticatedContent = { state, uiContext ->
                             AppAuthenticatedContent(state, uiContext)
                         }
@@ -414,20 +411,15 @@ private fun AppAuthenticatedContent(
     }
 }
 
+/**
+ * Custom reauth UI. The slot only chooses a provider — the library owns every credential path, and
+ * for email/phone it presents its own sub-flow, which replaces this dialog while it is up. Keep the
+ * slot stateless for that reason.
+ */
 @Composable
-private fun ReauthDialog(
-    authUI: FirebaseAuthUI,
-    state: AuthState.ReauthenticationRequired,
-    onDismiss: () -> Unit,
-) {
-    var password by remember { mutableStateOf("") }
-    var isVerifying by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    val coroutineScope = rememberCoroutineScope()
-    val email = state.user.email.orEmpty()
-
+private fun ReauthDialog(state: ReauthContentState) {
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = state.onDismiss,
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         title = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -442,59 +434,42 @@ private fun ReauthDialog(
             }
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Text(
-                    "Signing in as $email",
+                    "Signed in as ${state.user.displayIdentifier()}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
-                com.firebase.ui.auth.ui.components.AuthTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        errorMessage = null
-                    },
-                    label = { Text("Password") },
-                    isSecureTextField = true,
-                    isError = errorMessage != null,
-                    errorMessage = errorMessage,
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        isVerifying = true
-                        errorMessage = null
-                        try {
-                            val result = authUI.auth
-                                .signInWithEmailAndPassword(email, password)
-                                .await()
-                            result.user?.let { user ->
-                                authUI.updateAuthState(AuthState.Success(result, user))
-                            }
-                        } catch (e: Exception) {
-                            errorMessage = "Incorrect password. Please try again."
-                        } finally {
-                            isVerifying = false
-                        }
-                    }
-                },
-                enabled = password.isNotBlank() && !isVerifying,
-            ) {
-                if (isVerifying) {
+                state.error?.let { error ->
+                    Text(
+                        error,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                if (state.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(16.dp),
                         strokeWidth = 2.dp,
                     )
-                } else {
-                    Text("Verify")
+                }
+                state.providers.forEach { provider ->
+                    Button(
+                        onClick = { state.onProviderSelected(provider) },
+                        enabled = !state.isLoading,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Continue with ${provider.providerName}")
+                    }
                 }
             }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = state.onDismiss) { Text("Cancel") }
         },
     )
 }

@@ -116,7 +116,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
-                reauthContent = { _, _ ->
+                reauthContent = {
                     Text(text = "Reauth UI", modifier = Modifier.testTag("reauth_marker"))
                 }
             )

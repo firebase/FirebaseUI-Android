@@ -67,6 +67,7 @@ fun ResetPasswordUI(
     onSendResetLink: () -> Unit,
     onGoToSignIn: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
+    isEmailLocked: Boolean = false,
 ) {
 
     val context = LocalContext.current
@@ -143,6 +144,7 @@ fun ResetPasswordUI(
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
+                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },
