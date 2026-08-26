@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Налаштувати підтвердження через SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Налаштувати додаток автентифікації</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Підтвердіть свій код</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Збережіть коди відновлення</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Виберіть другий спосіб автентифікації для захисту облікового запису</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Введіть номер телефону для отримання кодів підтвердження</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Введіть код, надісланий на ваш телефон</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Введіть код із додатка автентифікації</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Введіть код підтвердження</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Збережіть ці коди в безпечному місці. Ви можете використовувати їх для входу, якщо втратите доступ до способу автентифікації.</string>
 
     <string name="fui_confirm_password_hint">Підтвердьте пароль</string>
     <string name="fui_passwords_do_not_match">Паролі не збігаються</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Потрібна повторна автентифікація</string>
     <string name="fui_reauth_success_message">Повторна автентифікація виконана</string>
     <string name="fui_reauthenticate_action">Повторна автентифікація</string>
-    <string name="fui_recovery_codes_saved_action">Я зберіг коди відновлення</string>
     <string name="fui_remove_action">Видалити</string>
     <string name="fui_resend_verification_email_action">Надіслати лист підтвердження повторно</string>
     <string name="fui_secret_key_label">Секретний ключ</string>

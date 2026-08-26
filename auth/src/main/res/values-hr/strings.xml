@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Postavite SMS provjeru</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Postavite aplikaciju za provjeru autentičnosti</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Potvrdite svoju šifru</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Spremite šifre za oporavak</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Odaberite drugu metodu provjere autentičnosti kako biste zaštitili svoj račun</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Unesite svoj telefonski broj kako biste primali šifre za potvrdu</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Unesite šifru poslanu na vaš telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Unesite šifru iz svoje aplikacije za provjeru autentičnosti</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Unesite svoju šifru za potvrdu</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Pohranite ove šifre na sigurno mjesto. Možete ih koristiti za prijavu ako izgubite pristup svojoj metodi provjere autentičnosti.</string>
 
     <string name="fui_confirm_password_hint">Potvrdite zaporku</string>
     <string name="fui_passwords_do_not_match">Zaporke se ne podudaraju</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Potrebna je ponovna autentifikacija</string>
     <string name="fui_reauth_success_message">Ponovna autentifikacija uspješna</string>
     <string name="fui_reauthenticate_action">Ponovno autentificiraj</string>
-    <string name="fui_recovery_codes_saved_action">Spremio sam kodove za oporavak</string>
     <string name="fui_remove_action">Ukloni</string>
     <string name="fui_resend_verification_email_action">Ponovno pošalji e-poštu za provjeru</string>
     <string name="fui_secret_key_label">Tajni ključ</string>

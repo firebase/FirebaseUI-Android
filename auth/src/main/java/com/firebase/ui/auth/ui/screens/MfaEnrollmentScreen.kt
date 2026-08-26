@@ -45,14 +45,13 @@ import kotlinx.coroutines.launch
  * A stateful composable that manages the Multi-Factor Authentication (MFA) enrollment flow.
  *
  * This screen handles all steps of MFA enrollment including factor selection, configuration,
- * verification, and recovery code display. It uses the provided handlers to communicate with
- * Firebase Authentication and exposes state through a content slot for custom UI rendering.
+ * and verification. It uses the provided handlers to communicate with Firebase Authentication
+ * and exposes state through a content slot for custom UI rendering.
  *
  * **Enrollment Flow:**
  * 1. **SelectFactor** - User chooses between SMS or TOTP
  * 2. **ConfigureSms** or **ConfigureTotp** - User sets up their chosen factor
  * 3. **VerifyFactor** - User verifies with a code
- * 4. **ShowRecoveryCodes** - (Optional) User receives backup codes
  *
  * @param user The currently authenticated [FirebaseUser] to enroll in MFA
  * @param auth The [FirebaseAuth] instance
@@ -99,8 +98,6 @@ fun MfaEnrollmentScreen(
     val totpQrCodeUrl = remember { mutableStateOf<String?>(null) }
 
     val verificationCode = rememberSaveable { mutableStateOf("") }
-
-    val recoveryCodes = remember { mutableStateOf<List<String>?>(null) }
 
     val resendTimerSeconds = rememberSaveable { mutableIntStateOf(0) }
 
@@ -179,9 +176,6 @@ fun MfaEnrollmentScreen(
                         MfaFactor.Totp -> currentStep.value = MfaEnrollmentStep.ConfigureTotp
                         null -> currentStep.value = MfaEnrollmentStep.SelectFactor
                     }
-                }
-                MfaEnrollmentStep.ShowRecoveryCodes -> {
-                    currentStep.value = MfaEnrollmentStep.VerifyFactor
                 }
             }
             error.value = null
@@ -322,12 +316,7 @@ fun MfaEnrollmentScreen(
                     // Refresh enrolled factors after successful enrollment
                     enrolledFactors.value = user.multiFactor.enrolledFactors
 
-                    if (configuration.enableRecoveryCodes) {
-                        recoveryCodes.value = generateRecoveryCodes()
-                        currentStep.value = MfaEnrollmentStep.ShowRecoveryCodes
-                    } else {
-                        onComplete()
-                    }
+                    onComplete()
                     error.value = null
                     lastException.value = null
                 } catch (e: Exception) {
@@ -365,11 +354,7 @@ fun MfaEnrollmentScreen(
                     }
                 }
             }
-        } else null,
-        recoveryCodes = recoveryCodes.value,
-        onCodesSavedClick = {
-            onComplete()
-        }
+        } else null
     )
 
     if (content != null) {
@@ -380,17 +365,5 @@ fun MfaEnrollmentScreen(
             authConfiguration = phoneAuthConfiguration,
             user = user
         )
-    }
-}
-
-/**
- * Generates placeholder recovery codes.
- * In a production implementation, these would come from Firebase or a backend service.
- */
-private fun generateRecoveryCodes(): List<String> {
-    return List(10) { index ->
-        List(4) { (0..9).random() }
-            .joinToString("")
-            .let { if (index % 2 == 0) "$it-${(1000..9999).random()}" else it }
     }
 }

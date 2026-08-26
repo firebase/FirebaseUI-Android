@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastavit ověření SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastavit ověřovací aplikaci</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Ověřte svůj kód</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Uložte obnovací kódy</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Vyberte druhou metodu ověření pro zabezpečení účtu</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Zadejte telefonní číslo pro příjem ověřovacích kódů</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Zadejte kód odeslaný na váš telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Zadejte kód z ověřovací aplikace</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Zadejte ověřovací kód</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Uložte tyto kódy na bezpečném místě. Můžete je použít k přihlášení, pokud ztratíte přístup k metodě ověření.</string>
 
     <string name="fui_confirm_password_hint">Potvrďte heslo</string>
     <string name="fui_passwords_do_not_match">Hesla se neshodují</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Vyžaduje se opětovné ověření</string>
     <string name="fui_reauth_success_message">Opětovné ověření proběhlo úspěšně</string>
     <string name="fui_reauthenticate_action">Znovu ověřit</string>
-    <string name="fui_recovery_codes_saved_action">Uložil jsem kódy pro obnovení</string>
     <string name="fui_remove_action">Odstranit</string>
     <string name="fui_resend_verification_email_action">Znovu odeslat ověřovací e-mail</string>
     <string name="fui_secret_key_label">Tajný klíč</string>

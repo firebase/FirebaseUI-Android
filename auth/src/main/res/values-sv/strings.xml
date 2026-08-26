@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurera SMS-verifiering</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurera autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiera din kod</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Spara dina återställningskoder</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Välj en andra autentiseringsmetod för att skydda ditt konto</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ange ditt telefonnummer för att ta emot verifieringskoder</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Ange koden som skickades till din telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Ange koden från din autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ange din verifieringskod</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Förvara dessa koder på en säker plats. Du kan använda dem för att logga in om du förlorar åtkomst till din autentiseringsmetod.</string>
 
     <string name="fui_confirm_password_hint">Bekräfta lösenord</string>
     <string name="fui_passwords_do_not_match">Lösenorden matchar inte</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Omautentisering krävs</string>
     <string name="fui_reauth_success_message">Omautentisering lyckades</string>
     <string name="fui_reauthenticate_action">Omautentisera</string>
-    <string name="fui_recovery_codes_saved_action">Jag har sparat mina återställningskoder</string>
     <string name="fui_remove_action">Ta bort</string>
     <string name="fui_resend_verification_email_action">Skicka verifieringsmail igen</string>
     <string name="fui_secret_key_label">Hemlig nyckel</string>

@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-verificatie instellen</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-app instellen</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code verifiëren</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Herstelcodes opslaan</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selecteer een tweede authenticatiemethode om je account te beveiligen</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Voer je telefoonnummer in om verificatiecodes te ontvangen</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Voer de code in die naar je telefoon is verzonden</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Voer de code uit je authenticator-app in</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Voer je verificatiecode in</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewaar deze codes op een veilige plek. Je kunt ze gebruiken om in te loggen als je geen toegang meer hebt tot je authenticatiemethode.</string>
 
     <string name="fui_confirm_password_hint">Bevestig wachtwoord</string>
     <string name="fui_passwords_do_not_match">Wachtwoorden komen niet overeen</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Herauthenticatie vereist</string>
     <string name="fui_reauth_success_message">Herauthenticatie geslaagd</string>
     <string name="fui_reauthenticate_action">Opnieuw authenticeren</string>
-    <string name="fui_recovery_codes_saved_action">Ik heb mijn herstelcodes opgeslagen</string>
     <string name="fui_remove_action">Verwijderen</string>
     <string name="fui_resend_verification_email_action">Verificatie-e-mail opnieuw verzenden</string>
     <string name="fui_secret_key_label">Geheime sleutel</string>

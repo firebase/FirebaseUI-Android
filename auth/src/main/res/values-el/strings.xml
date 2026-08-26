@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Ρύθμιση επαλήθευσης SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Ρύθμιση εφαρμογής ελέγχου ταυτότητας</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Επαληθεύστε τον κωδικό σας</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Αποθηκεύστε τους κωδικούς ανάκτησης</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Επιλέξτε μια δεύτερη μέθοδο ελέγχου ταυτότητας για να προστατεύσετε τον λογαριασμό σας</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Εισαγάγετε τον αριθμό τηλεφώνου σας για να λαμβάνετε κωδικούς επαλήθευσης</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Εισαγάγετε τον κωδικό που στάλθηκε στο τηλέφωνό σας</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Εισαγάγετε τον κωδικό από την εφαρμογή ελέγχου ταυτότητας</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Εισαγάγετε τον κωδικό επαλήθευσης</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Αποθηκεύστε αυτούς τους κωδικούς σε ασφαλές μέρος. Μπορείτε να τους χρησιμοποιήσετε για σύνδεση εάν χάσετε την πρόσβαση στη μέθοδο ελέγχου ταυτότητας.</string>
 
     <string name="fui_confirm_password_hint">Επιβεβαίωση κωδικού πρόσβασης</string>
     <string name="fui_passwords_do_not_match">Οι κωδικοί πρόσβασης δεν ταιριάζουν</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Απαιτείται επανέλεγχος ταυτότητας</string>
     <string name="fui_reauth_success_message">Ο επανέλεγχος ταυτότητας ολοκληρώθηκε</string>
     <string name="fui_reauthenticate_action">Επανέλεγχος</string>
-    <string name="fui_recovery_codes_saved_action">Έχω αποθηκεύσει τους κωδικούς ανάκτησης</string>
     <string name="fui_remove_action">Κατάργηση</string>
     <string name="fui_resend_verification_email_action">Επαναποστολή email επαλήθευσης</string>
     <string name="fui_secret_key_label">Μυστικό κλειδί</string>

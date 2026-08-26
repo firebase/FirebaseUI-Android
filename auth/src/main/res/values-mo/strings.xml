@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configurați verificarea prin SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configurați aplicația de autentificare</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verificați codul</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Salvați codurile de recuperare</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Selectați o a doua metodă de autentificare pentru a vă securiza contul</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Introduceți numărul de telefon pentru a primi coduri de verificare</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Introduceți codul trimis pe telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Introduceți codul din aplicația dvs. de autentificare</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Introduceți codul de verificare</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Stocați aceste coduri într-un loc sigur. Le puteți folosi pentru a vă conecta dacă pierdeți accesul la metoda de autentificare.</string>
 
     <string name="fui_confirm_password_hint">Confirmați parola</string>
     <string name="fui_passwords_do_not_match">Parolele nu se potrivesc</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Este necesară reautentificarea</string>
     <string name="fui_reauth_success_message">Reautentificare reușită</string>
     <string name="fui_reauthenticate_action">Reautentificare</string>
-    <string name="fui_recovery_codes_saved_action">Am salvat codurile de recuperare</string>
     <string name="fui_remove_action">Eliminare</string>
     <string name="fui_resend_verification_email_action">Retrimite e-mailul de verificare</string>
     <string name="fui_secret_key_label">Cheie secretă</string>
