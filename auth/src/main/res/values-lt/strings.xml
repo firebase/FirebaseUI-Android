@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nustatyti SMS patvirtinimą</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nustatyti autentifikatoriaus programą</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Patvirtinkite kodą</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Išsaugokite atkūrimo kodus</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pasirinkite antrą autentifikavimo metodą, kad apsaugotumėte paskyrą</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Įveskite telefono numerį, kad gautumėte patvirtinimo kodus</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Įveskite kodą, išsiųstą į telefoną</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Įveskite kodą iš autentifikatoriaus programos</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Įveskite patvirtinimo kodą</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Išsaugokite šiuos kodus saugioje vietoje. Galite juos naudoti prisijungti, jei prarasite prieigą prie autentifikavimo metodo.</string>
 
     <string name="fui_confirm_password_hint">Patvirtinti slaptažodį</string>
     <string name="fui_passwords_do_not_match">Slaptažodžiai nesutampa</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Reikalingas pakartotinis autentifikavimas</string>
     <string name="fui_reauth_success_message">Pakartotinis autentifikavimas sėkmingas</string>
     <string name="fui_reauthenticate_action">Autentifikuoti iš naujo</string>
-    <string name="fui_recovery_codes_saved_action">Išsaugojau atkūrimo kodus</string>
     <string name="fui_remove_action">Pašalinti</string>
     <string name="fui_resend_verification_email_action">Siųsti patvirtinimo el. laišką iš naujo</string>
     <string name="fui_secret_key_label">Slaptasis raktas</string>

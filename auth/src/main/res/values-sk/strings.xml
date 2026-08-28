@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastaviť overenie SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastaviť overovaciu aplikáciu</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Overte svoj kód</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Uložte obnovovacie kódy</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Vyberte druhú metódu overenia na zabezpečenie účtu</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Zadajte telefónne číslo na príjem overovacích kódov</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Zadajte kód odoslaný na váš telefón</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Zadajte kód z overovacej aplikácie</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Zadajte overovací kód</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Uložte tieto kódy na bezpečnom mieste. Môžete ich použiť na prihlásenie, ak stratíte prístup k metóde overenia.</string>
 
     <string name="fui_confirm_password_hint">Potvrdiť heslo</string>
     <string name="fui_passwords_do_not_match">Heslá sa nezhodujú</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Vyžaduje sa opätovné overenie</string>
     <string name="fui_reauth_success_message">Opätovné overenie bolo úspešné</string>
     <string name="fui_reauthenticate_action">Znova overiť</string>
-    <string name="fui_recovery_codes_saved_action">Uložil som si kódy na obnovenie</string>
     <string name="fui_remove_action">Odstrániť</string>
     <string name="fui_resend_verification_email_action">Znova poslať overovací e-mail</string>
     <string name="fui_secret_key_label">Tajný kľúč</string>
