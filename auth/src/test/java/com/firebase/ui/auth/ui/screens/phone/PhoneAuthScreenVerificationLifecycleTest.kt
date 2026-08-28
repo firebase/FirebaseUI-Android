@@ -510,6 +510,20 @@ class PhoneAuthScreenVerificationLifecycleTest {
     }
 
     @Test
+    fun `change-number clears the loading state left behind by the cancelled attempt`() {
+        mockStatic(PhoneAuthProvider::class.java).use { statics ->
+            setScreenContent()
+            sendCode(statics)
+            assertThat(capturedState!!.isLoading).isTrue()
+
+            onUi { it.onChangeNumberClick() }
+            settle()
+
+            assertThat(capturedState!!.isLoading).isFalse()
+        }
+    }
+
+    @Test
     fun `a failed sign-in reports exactly one error`() {
         val credential = mock(PhoneAuthCredential::class.java)
         `when`(mockAuth.signInWithCredential(any()))
