@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS認証を設定</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">認証アプリを設定</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">コードを確認</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">復元コードを保存</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">アカウントを保護するため、2つ目の認証方法を選択してください</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">確認コードを受け取るために電話番号を入力してください</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">電話に送信されたコードを入力してください</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">認証アプリのコードを入力してください</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">確認コードを入力してください</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">これらのコードを安全な場所に保管してください。認証方法にアクセスできなくなった場合、これらを使用してログインできます。</string>
 
     <string name="fui_confirm_password_hint">パスワードの確認</string>
     <string name="fui_passwords_do_not_match">パスワードが一致しません</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">再認証が必要です</string>
     <string name="fui_reauth_success_message">再認証に成功しました</string>
     <string name="fui_reauthenticate_action">再認証</string>
-    <string name="fui_recovery_codes_saved_action">復旧コードを保存しました</string>
     <string name="fui_remove_action">削除</string>
     <string name="fui_resend_verification_email_action">確認メールを再送信</string>
     <string name="fui_secret_key_label">シークレットキー</string>

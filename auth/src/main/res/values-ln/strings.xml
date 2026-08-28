@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Bongisa bondimi ya SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Bongisa aplikasyo ya bondimi</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Talela kode na yo</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Bomba ba kode ya bozongisi</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pona lolenge ya mibale ya bondimi po na kobatela konte na yo</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Kota nimero ya telefone na yo po na kozwa ba kode ya bondimi</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Kota kode oyo etindaki na telefone na yo</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Kota kode oyo euti na aplikasyo na yo ya bondimi</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Kota kode na yo ya bondimi</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bomba ba kode oyo na esika moko ya libateli. Okoki kosalela yango po na kokota soki obungi nzela ya bondimi na yo.</string>
 
     <string name="fui_confirm_password_hint">Ndima mot de passe</string>
     <string name="fui_passwords_do_not_match">Ba mot de passe ekokani te</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Re-authentification esengeli</string>
     <string name="fui_reauth_success_message">Re-authentification elongi</string>
     <string name="fui_reauthenticate_action">Re-authentifier</string>
-    <string name="fui_recovery_codes_saved_action">Nabombi ba codes ya récupération na ngai</string>
     <string name="fui_remove_action">Longola</string>
     <string name="fui_resend_verification_email_action">Tinda lisusu e-mail ya vérification</string>
     <string name="fui_secret_key_label">Clé secrète</string>

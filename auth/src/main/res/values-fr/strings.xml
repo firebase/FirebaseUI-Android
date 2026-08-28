@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configurer la vérification par SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configurer l\'application d\'authentification</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Vérifiez votre code</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Enregistrez vos codes de récupération</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Sélectionnez une deuxième méthode d\'authentification pour sécuriser votre compte</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Saisissez votre numéro de téléphone pour recevoir les codes de vérification</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Saisissez le code envoyé à votre téléphone</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Saisissez le code de votre application d\'authentification</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Saisissez votre code de vérification</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Conservez ces codes en lieu sûr. Vous pouvez les utiliser pour vous connecter si vous perdez l\'accès à votre méthode d\'authentification.</string>
 
     <string name="fui_confirm_password_hint">Confirmer le mot de passe</string>
     <string name="fui_passwords_do_not_match">Les mots de passe ne correspondent pas</string>
@@ -163,7 +161,6 @@
     <string name="fui_reauth_dialog_message">Pour votre sécurité, veuillez saisir à nouveau votre mot de passe pour continuer.</string>
     <string name="fui_reauth_dialog_title">Vérifiez votre identité</string>
     <string name="fui_reauth_generic_error">Échec de l\'authentification. Veuillez réessayer.</string>
-    <string name="fui_recovery_codes_saved_action">J\'ai sauvegardé ces codes</string>
     <string name="fui_remove_action">Supprimer</string>
     <string name="fui_resend_verification_email_action">Renvoyer l\'e-mail de vérification</string>
     <string name="fui_secret_key_label">Clé secrète</string>

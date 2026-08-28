@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS-Bestätigung einrichten</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Authenticator-App einrichten</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Code bestätigen</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Wiederherstellungscodes speichern</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wählen Sie eine zweite Authentifizierungsmethode aus, um Ihr Konto zu schützen</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Geben Sie Ihre Telefonnummer ein, um Bestätigungscodes zu erhalten</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Geben Sie den an Ihr Telefon gesendeten Code ein</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Geben Sie den Code aus Ihrer Authenticator-App ein</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Geben Sie Ihren Bestätigungscode ein</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Bewahren Sie diese Codes an einem sicheren Ort auf. Sie können sie zum Anmelden verwenden, wenn Sie den Zugriff auf Ihre Authentifizierungsmethode verlieren.</string>
 
     <string name="fui_confirm_password_hint">Passwort bestätigen</string>
     <string name="fui_passwords_do_not_match">Passwörter stimmen nicht überein</string>
@@ -163,7 +161,6 @@
     <string name="fui_reauth_dialog_message">Zu Ihrer Sicherheit geben Sie bitte Ihr Passwort erneut ein, um fortzufahren.</string>
     <string name="fui_reauth_dialog_title">Verifizieren Sie Ihre Identität</string>
     <string name="fui_reauth_generic_error">Authentifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.</string>
-    <string name="fui_recovery_codes_saved_action">Ich habe diese Codes gespeichert</string>
     <string name="fui_remove_action">Entfernen</string>
     <string name="fui_resend_verification_email_action">Bestätigungs-E-Mail erneut senden</string>
     <string name="fui_secret_key_label">Geheimer Schlüssel</string>

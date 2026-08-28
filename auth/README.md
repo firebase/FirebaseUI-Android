@@ -6,7 +6,7 @@ Built entirely with **Jetpack Compose** and **Material Design 3**, FirebaseUI Au
 
 - **Simple API** - Choose between high-level screens or low-level controllers for maximum flexibility
 - **12+ Authentication Methods** - Email/Password, Phone, Google, Facebook, Twitter, GitHub, Microsoft, Yahoo, Apple, Anonymous, and custom OAuth providers
-- **Multi-Factor Authentication** - SMS and TOTP (Time-based One-Time Password) with recovery codes
+- **Multi-Factor Authentication** - SMS and TOTP (Time-based One-Time Password)
 - **Android Credential Manager** - Automatic credential saving and one-tap sign-in
 - **Material Design 3** - Beautiful, themeable UI components that integrate seamlessly with your app
 - **Localization Support** - Customizable strings for internationalization
@@ -1073,10 +1073,7 @@ val mfaConfig = MfaConfiguration(
     allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
 
     // Optional: Require MFA enrollment (default: false)
-    requireEnrollment = false,
-
-    // Optional: Enable recovery codes (default: true)
-    enableRecoveryCodes = true
+    requireEnrollment = false
 )
 
 val configuration = authUIConfiguration {
@@ -1137,9 +1134,6 @@ MfaEnrollmentScreen(
         }
         MfaEnrollmentStep.VerifyFactor -> {
             CustomVerificationUI(state)
-        }
-        MfaEnrollmentStep.ShowRecoveryCodes -> {
-            CustomRecoveryCodesUI(state)
         }
     }
 }
