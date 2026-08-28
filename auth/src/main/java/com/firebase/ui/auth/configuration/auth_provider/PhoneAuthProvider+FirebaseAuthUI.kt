@@ -119,11 +119,8 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null,
     verifier: AuthProvider.Phone.Verifier = AuthProvider.Phone.DefaultVerifier(),
 ) {
-    // -1 never matches a real revision, so a cancellation before the Loading lands clears nothing.
-    var loadingRevision = -1L
     try {
         updateAuthState(AuthState.Loading(config.stringProvider.loadingVerifyingPhoneNumber))
-        loadingRevision = currentAuthStateRevision()
         provider.verifyPhoneNumberFlow(
             auth = auth,
             activity = activity,
@@ -148,9 +145,8 @@ internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
             }
         }
     } catch (e: CancellationException) {
-        // Cancellation here is the screen's own bookkeeping, not a failure: retract only the
-        // Loading this call emitted, then rethrow so no spurious Error reaches authStateFlow.
-        clearLoadingState(loadingRevision)
+        // Writes nothing: the caller cancelling this attempt owns whatever state replaces it, and
+        // a retraction from here would race the replacement's own Loading.
         throw e
     } catch (e: AuthException) {
         updateAuthState(AuthState.Error(e))
