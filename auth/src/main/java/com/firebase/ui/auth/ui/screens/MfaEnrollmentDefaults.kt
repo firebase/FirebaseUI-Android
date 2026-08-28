@@ -208,16 +208,6 @@ internal fun DefaultMfaEnrollmentContent(
                     null -> Unit
                 }
             }
-
-            MfaEnrollmentStep.ShowRecoveryCodes -> {
-                ShowRecoveryCodesUI(
-                    recoveryCodes = state.recoveryCodes.orEmpty(),
-                    onDoneClick = state.onCodesSavedClick,
-                    isLoading = state.isLoading,
-                    error = state.error,
-                    stringProvider = stringProvider
-                )
-            }
         }
 
         SnackbarHost(
@@ -567,73 +557,6 @@ private fun VerifyTotpUI(
                 ) {
                     Text(stringProvider.verifyAction)
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ShowRecoveryCodesUI(
-    recoveryCodes: List<String>,
-    onDoneClick: () -> Unit,
-    isLoading: Boolean,
-    error: String?,
-    stringProvider: AuthUIStringProvider
-) {
-    Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = stringProvider.mfaStepShowRecoveryCodesTitle,
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
-            )
-
-            Text(
-                text = stringProvider.mfaStepShowRecoveryCodesHelper,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.error
-            )
-
-            error?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                recoveryCodes.forEach { code ->
-                    Text(
-                        text = code,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-
-            Button(
-                onClick = onDoneClick,
-                enabled = !isLoading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringProvider.recoveryCodesSavedAction)
             }
         }
     }

@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">SMS ચકાસણી સેટ કરો</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">પ્રમાણીકરણ ઍપ સેટ કરો</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">તમારો કોડ ચકાસો</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">તમારા પુનઃપ્રાપ્તિ કોડ સાચવો</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">તમારા એકાઉન્ટને સુરક્ષિત કરવા બીજી પ્રમાણીકરણ પદ્ધતિ પસંદ કરો</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">ચકાસણી કોડ મેળવવા તમારો ફોન નંબર દાખલ કરો</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">તમારા ફોન પર મોકલવામાં આવેલો કોડ દાખલ કરો</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">તમારી પ્રમાણીકરણ ઍપનો કોડ દાખલ કરો</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">તમારો ચકાસણી કોડ દાખલ કરો</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">આ કોડને સુરક્ષિત સ્થળે સંગ્રહિત કરો. જો તમે તમારી પ્રમાણીકરણ પદ્ધતિની ઍક્સેસ ગુમાવો છો, તો તમે સાઇન ઇન કરવા માટે તેનો ઉપયોગ કરી શકો છો.</string>
 
     <string name="fui_confirm_password_hint">પાસવર્ડ કન્ફર્મ કરો</string>
     <string name="fui_passwords_do_not_match">પાસવર્ડ મેળ ખાતા નથી</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">ફરીથી પ્રમાણીકરણ આવશ્યક છે</string>
     <string name="fui_reauth_success_message">ફરીથી પ્રમાણીકરણ સફળ</string>
     <string name="fui_reauthenticate_action">ફરીથી પ્રમાણીકરણ</string>
-    <string name="fui_recovery_codes_saved_action">મેં મારા પુનઃપ્રાપ્તિ કોડ સાચવ્યા છે</string>
     <string name="fui_remove_action">દૂર કરો</string>
     <string name="fui_resend_verification_email_action">ચકાસણી ઇમેઇલ ફરી મોકલો</string>
     <string name="fui_secret_key_label">ગુપ્ત કી</string>

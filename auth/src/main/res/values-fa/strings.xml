@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">تأیید پیامک را راه‌اندازی کنید</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">برنامه احراز هویت را راه‌اندازی کنید</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">کد خود را تأیید کنید</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">کدهای بازیابی خود را ذخیره کنید</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">برای ایمن کردن حساب خود، روش دوم احراز هویت را انتخاب کنید</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">شماره تلفن خود را وارد کنید تا کدهای تأیید دریافت کنید</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">کد ارسال شده به تلفن خود را وارد کنید</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">کد برنامه احراز هویت خود را وارد کنید</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">کد تأیید خود را وارد کنید</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">این کدها را در مکانی امن ذخیره کنید. اگر دسترسی به روش احراز هویت خود را از دست دادید، می‌توانید از آن‌ها برای ورود استفاده کنید.</string>
 
     <string name="fui_confirm_password_hint">تأیید گذرواژه</string>
     <string name="fui_passwords_do_not_match">گذرواژه‌ها مطابقت ندارند</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">احراز هویت مجدد لازم است</string>
     <string name="fui_reauth_success_message">احراز هویت مجدد موفق بود</string>
     <string name="fui_reauthenticate_action">احراز هویت مجدد</string>
-    <string name="fui_recovery_codes_saved_action">کدهای بازیابی خود را ذخیره کردم</string>
     <string name="fui_remove_action">حذف</string>
     <string name="fui_resend_verification_email_action">ارسال مجدد ایمیل تأیید</string>
     <string name="fui_secret_key_label">کلید مخفی</string>

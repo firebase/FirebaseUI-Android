@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Määritä tekstiviestivahvistus</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Määritä todennussovellus</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Vahvista koodisi</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Tallenna palautuskoodisi</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Valitse toinen todennusmenetelmä tilisi suojaamiseksi</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Anna puhelinnumerosi vastaanottaaksesi vahvistuskoodit</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Anna puhelimeesi lähetetty koodi</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Anna todennussovelluksesi koodi</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Anna vahvistuskoodisi</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Tallenna nämä koodit turvalliseen paikkaan. Voit käyttää niitä kirjautumiseen, jos menetät pääsyn todennusmenetelmääsi.</string>
 
     <string name="fui_confirm_password_hint">Vahvista salasana</string>
     <string name="fui_passwords_do_not_match">Salasanat eivät täsmää</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Uudelleentodennus vaaditaan</string>
     <string name="fui_reauth_success_message">Uudelleentodennus onnistui</string>
     <string name="fui_reauthenticate_action">Todenna uudelleen</string>
-    <string name="fui_recovery_codes_saved_action">Olen tallentanut palautuskoodini</string>
     <string name="fui_remove_action">Poista</string>
     <string name="fui_resend_verification_email_action">Lähetä vahvistussähköposti uudelleen</string>
     <string name="fui_secret_key_label">Salainen avain</string>
