@@ -20,9 +20,12 @@ import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
@@ -31,6 +34,9 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import androidx.compose.runtime.CompositionLocalProvider
+import com.firebase.ui.auth.ui.components.ERROR_DIALOG_ACTION_TEST_TAG
+import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
+import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ActionCodeSettings
@@ -162,6 +168,38 @@ class EmailAuthScreenReauthEmailLockTest {
                 onCancel = {},
             )
         }
+    }
+
+    /**
+     * Every branch of this screen's `onRetry` is inert in reauthentication mode (sign-up and
+     * mode switches are all vetoed), so an action button on the error dialog could only dismiss —
+     * and it raced the outer screen's `onRetry = null` for the same error.
+     */
+    @Test
+    fun `the reauth sub-flow error dialog offers no action button`() {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                val controller = rememberTopLevelDialogController(
+                    stringProvider = stringProvider,
+                    authState = { AuthState.Idle },
+                )
+                CompositionLocalProvider(LocalTopLevelDialogController provides controller) {
+                    EmailAuthScreenUnderTest(reauthConfiguration(), prefillEmail)
+                    controller.CurrentDialog()
+                }
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(
+                AuthState.Error(AuthException.UserNotFoundException(message = "nope"))
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.dismissAction).assertExists()
+        composeTestRule.onNodeWithTag(ERROR_DIALOG_ACTION_TEST_TAG).assertDoesNotExist()
     }
 
     /**

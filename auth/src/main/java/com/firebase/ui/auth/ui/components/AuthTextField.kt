@@ -42,10 +42,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.PasswordRule
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.validators.EmailValidator
@@ -107,6 +110,7 @@ fun AuthTextField(
     readOnly: Boolean = false,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
+    val localContext = LocalContext.current
 
     // Automatically set the correct keyboard type based on validator or field type
     val resolvedKeyboardOptions = remember(validator, isSecureTextField, keyboardOptions) {
@@ -126,7 +130,17 @@ fun AuthTextField(
 
     TextField(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            // A read-only field looks identical to an editable one, so state it semantically.
+            .then(
+                if (readOnly) {
+                    Modifier.semantics {
+                        stateDescription = localContext.getString(R.string.fui_text_field_read_only)
+                    }
+                } else {
+                    Modifier
+                }
+            ),
         value = value,
         onValueChange = { newValue ->
             onValueChange(newValue)

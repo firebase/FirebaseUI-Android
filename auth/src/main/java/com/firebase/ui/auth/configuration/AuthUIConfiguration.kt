@@ -248,6 +248,7 @@ class AuthUIConfiguration(
         isCredentialManagerEnabled = this.isCredentialManagerEnabled,
         isMfaEnabled = this.isMfaEnabled,
         isAnonymousUpgradeEnabled = this.isAnonymousUpgradeEnabled,
+        isCredentialLinkingEnabled = this.isCredentialLinkingEnabled,
         tosUrl = this.tosUrl,
         privacyPolicyUrl = this.privacyPolicyUrl,
         logo = this.logo,
@@ -255,6 +256,7 @@ class AuthUIConfiguration(
         isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
         isDisplayNameRequired = this.isDisplayNameRequired,
         isProviderChoiceAlwaysShown = this.isProviderChoiceAlwaysShown,
+        legacyFetchSignInWithEmail = this.legacyFetchSignInWithEmail,
         transitions = this.transitions,
         isReauthenticationMode = isReauthenticationMode,
     )

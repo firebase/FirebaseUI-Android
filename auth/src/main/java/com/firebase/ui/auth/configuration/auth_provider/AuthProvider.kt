@@ -1005,6 +1005,9 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         internal fun canLinkCredential(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
             val currentUser = auth.currentUser
             return config.isCredentialLinkingEnabled
+                    // Linking is not a proof of identity: diverting a reauthentication to
+                    // linkWithCredential would yield an unstamped Success the guard must reject.
+                    && !config.isReauthenticationMode
                     && currentUser != null
                     && !currentUser.isAnonymous
         }

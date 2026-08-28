@@ -1091,6 +1091,11 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         }
         // Clear DataStore after success
         persistenceManager.clear(context)
+        // In reauth mode the stamped Success is already published and there is no AuthResult, so
+        // updateAuthStateWithResult would overwrite the stamp with Idle and orphan the operation.
+        if (result == null && config.isReauthenticationMode) {
+            return null
+        }
         updateAuthStateWithResult(result)
         return result
     } catch (e: CancellationException) {

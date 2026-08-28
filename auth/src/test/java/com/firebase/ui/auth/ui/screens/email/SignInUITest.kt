@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.screens.email
 
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
 import androidx.credentials.CredentialManager
@@ -34,6 +36,7 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.PasswordCredential
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -291,6 +294,7 @@ class SignInUITest {
         initialEmail: String,
         isEmailLocked: Boolean = false,
         onSignInClicked: () -> Unit = {},
+        onCredentialProbeDone: (() -> Unit)? = null,
     ) {
         composeTestRule.setContent {
             CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
@@ -311,6 +315,14 @@ class SignInUITest {
                     onGoToEmailLinkSignIn = { },
                     isEmailLocked = isEmailLocked,
                 )
+                if (onCredentialProbeDone != null) {
+                    // Mirrors the suspend read SignInUI's own autofill effect makes first, and is
+                    // launched after it, so completing here means that effect already decided.
+                    LaunchedEffect(Unit) {
+                        PasswordCredentialHandler.hasSavedCredentials(applicationContext)
+                        onCredentialProbeDone()
+                    }
+                }
             }
         }
     }
@@ -407,12 +419,14 @@ class SignInUITest {
         PasswordCredentialHandler.testCredentialManagerProvider = FakeCredentialManagerProvider
         var signInClicks = 0
 
+        var probeDone = false
         setStatefulSignInUIContent(
             createReauthFlowConfiguration(),
             initialEmail = "linked@example.com",
             onSignInClicked = { signInClicks++ },
+            onCredentialProbeDone = { probeDone = true },
         )
-        awaitOrTimeout { FakeCredentialManagerProvider.wasQueried }
+        awaitOrTimeout { probeDone || FakeCredentialManagerProvider.wasQueried }
 
         assertThat(FakeCredentialManagerProvider.wasQueried).isFalse()
         composeTestRule.onNodeWithText(SAVED_CREDENTIAL_USERNAME).assertDoesNotExist()
@@ -420,13 +434,45 @@ class SignInUITest {
         assertThat(signInClicks).isEqualTo(0)
     }
 
-    /** Polls [condition] for up to two seconds, idling composition in between. */
+    /**
+     * Polls [condition] and returns as soon as it holds, idling composition in between. The two
+     * second cap is only a safety net — the caller supplies a condition that really does settle.
+     */
     private fun awaitOrTimeout(condition: () -> Boolean) {
         val deadline = System.currentTimeMillis() + 2_000
         while (System.currentTimeMillis() < deadline && !condition()) {
             composeTestRule.waitForIdle()
             Thread.sleep(25)
         }
+    }
+
+    /**
+     * Firebase reports the provider id `"password"` for passwordless email-link accounts too, so
+     * such a user is offered the Email method and lands on a password field they can never fill.
+     * Reauthentication mode has also removed the email-link toggle and "trouble signing in?", so
+     * without this notice the screen is a silent dead end. The provider cannot be filtered out
+     * instead: `providerData` cannot tell a password account from an email-link one.
+     */
+    @Test
+    fun `a password requirement notice is shown while reauthenticating`() {
+        setStatefulSignInUIContent(
+            createReauthFlowConfiguration(),
+            initialEmail = "linked@example.com",
+            isEmailLocked = true,
+        )
+
+        composeTestRule.onNodeWithTag(REAUTH_PASSWORD_NOTICE_TEST_TAG).assertExists()
+        composeTestRule
+            .onNodeWithText(applicationContext.getString(R.string.fui_reauth_password_required_notice))
+            .assertExists()
+    }
+
+    /** The notice is specific to reauthentication and must not appear in a normal sign-in. */
+    @Test
+    fun `no password requirement notice outside reauthentication`() {
+        setSignInUIContent(isNewAccountsAllowed = true)
+
+        composeTestRule.onNodeWithTag(REAUTH_PASSWORD_NOTICE_TEST_TAG).assertDoesNotExist()
     }
 
     /** Control for the test above: outside reauthentication mode the autofill still happens. */

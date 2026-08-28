@@ -215,25 +215,31 @@ fun EmailAuthScreen(
                 dialogController?.showErrorDialog(
                     exception = exception,
                     errorState = state,
-                    onRetry = { ex ->
-                        when (ex) {
-                            is AuthException.UserNotFoundException -> {
-                                if (isSignUpOffered) {
-                                    // User not found, but new accounts are allowed, switch to sign-up
-                                    mode.value = EmailAuthMode.SignUp
+                    // Every branch below is inert while reauthenticating, so an action button
+                    // would only dismiss the dialog — leave it without one.
+                    onRetry = if (configuration.isReauthenticationMode) {
+                        null
+                    } else {
+                        { ex: AuthException ->
+                            when (ex) {
+                                is AuthException.UserNotFoundException -> {
+                                    if (isSignUpOffered) {
+                                        // User not found, but new accounts are allowed, switch to sign-up
+                                        mode.value = EmailAuthMode.SignUp
+                                    }
                                 }
-                            }
 
-                            is AuthException.InvalidCredentialsException -> {
-                                // User can retry sign in with corrected credentials
-                            }
+                                is AuthException.InvalidCredentialsException -> {
+                                    // User can retry sign in with corrected credentials
+                                }
 
-                            is AuthException.EmailAlreadyInUseException -> {
-                                // Switch to sign-in mode
-                                mode.value = EmailAuthMode.SignIn
-                            }
+                                is AuthException.EmailAlreadyInUseException -> {
+                                    // Switch to sign-in mode
+                                    mode.value = EmailAuthMode.SignIn
+                                }
 
-                            else -> Unit
+                                else -> Unit
+                            }
                         }
                     },
                     onRecover = if (exception is AuthException.DifferentSignInMethodRequiredException) {

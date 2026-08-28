@@ -1021,7 +1021,9 @@ reauthContent = { state ->
 }
 ```
 
-While this slot is shown the library suppresses its own loading and error dialogs, so render `state.isLoading` and `state.error` yourself. On success the library resumes the operation that required reauthentication — there is nothing to retry. `state.onDismiss` abandons it and calls `onSignInCancelled`, since the pending operation will never run; backing out of a single provider attempt returns to the slot with the operation still pending and does *not* call `onSignInCancelled`. Render the slot so it blocks interaction with the content behind it — that content stays composed, and the library only makes its own affordances inert.
+While this slot is shown the library suppresses its own loading and error dialogs, so render `state.isLoading` and `state.error` yourself. `state.error` is the same message the library's own error dialog would have shown, and `state.exception` carries the exception behind it when you need to branch on the failure type. On success the library resumes the operation that required reauthentication — there is nothing to retry. `state.onDismiss` abandons reauthentication and calls `onSignInCancelled`, so any pending operation will never run; backing out of a single provider attempt returns to the slot with the operation still pending and does *not* call `onSignInCancelled`. Render the slot so it blocks interaction with the content behind it — that content stays composed, and the library only makes its own affordances inert.
+
+An armed reauthentication survives Activity recreation: rotating keeps the pending operation, the latched `state.error`, and any active email/phone sub-flow. `state.exception` is not saveable, so after a recreation `state.error` still carries the message while `state.exception` is `null` — branch on the type only for a failure your own composition observed. The pending operation cannot survive process death, and if it is lost the flow emits an `AuthState.Error` explaining that identity confirmation was interrupted rather than dropping the operation silently.
 
 For most cases, use [`withReauth`](#reauthentication) instead — it handles the full reauth cycle automatically and only shows the default bottom sheet. Use `reauthContent` when you need a custom design for the reauth UI.
 
@@ -1049,11 +1051,12 @@ lifecycleScope.launch {
 3. `FirebaseAuthScreen` shows the reauth UI scoped to the user's linked providers.
 4. On successful reauthentication, retries the operation automatically and emits `AuthState.Success` or `AuthState.Error`.
 
+The armed reauthentication lives on the process-cached `FirebaseAuthUI`, so it survives Activity recreation; it does not survive process death, and a lost operation is reported as an `AuthState.Error` rather than silently dropped.
+
 **Activity-based alternative:** use `createReauthFlow` to start a standalone reauthentication activity scoped to the current user's linked providers, returning an `AuthFlowController`.
 
 ```kotlin
 val reauth = authUI.createReauthFlow(
-    context = context,
     configuration = authUIConfiguration {
         // Providers are automatically filtered to those linked to the current user
     },

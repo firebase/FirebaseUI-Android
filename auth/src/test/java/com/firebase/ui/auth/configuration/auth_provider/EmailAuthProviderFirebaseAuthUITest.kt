@@ -766,6 +766,85 @@ class EmailAuthProviderFirebaseAuthUITest {
     }
 
     /**
+     * Only the null-`currentUser` failure was covered, so the *value* of the stamp was free: a
+     * `reauthenticatedUid = null` would still have published a Success, which the screen accepts
+     * as a completed sign-in while refusing to resume the operation it was armed for.
+     */
+    @Test
+    fun `signInAndLinkWithCredential - reauth success stamps the reauthenticated uid`() = runTest {
+        val user = mock(FirebaseUser::class.java)
+        `when`(user.uid).thenReturn("existing-uid")
+        `when`(user.isAnonymous).thenReturn(false)
+        `when`(user.isEmailVerified).thenReturn(true)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(user)
+
+        val credential = GoogleAuthProvider.getCredential("google-id-token", null)
+        val reauthTask = TaskCompletionSource<Void>()
+        reauthTask.setResult(null)
+        `when`(user.reauthenticate(credential)).thenReturn(reauthTask.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider) }
+        }.copy(isReauthenticationMode = true)
+
+        val result = instance.signInAndLinkWithCredential(config = config, credential = credential)
+
+        assertThat(result).isNull()
+        verify(user).reauthenticate(credential)
+        verify(mockFirebaseAuth, never()).signInWithCredential(any())
+        val state = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(state).isInstanceOf(AuthState.Success::class.java)
+        val success = state as AuthState.Success
+        assertThat(success.reauthenticatedUid).isEqualTo("existing-uid")
+        assertThat(success.result).isNull()
+        assertThat(success.user).isSameInstanceAs(user)
+    }
+
+    /**
+     * With `isCredentialLinkingEnabled` forwarded by `copy()`, a reauthentication would otherwise
+     * divert to `linkWithCredential` — which proves no identity and yields an unstamped Success.
+     */
+    @Test
+    fun `signInAndLinkWithCredential - credential linking never diverts a reauthentication`() =
+        runTest {
+            val user = mock(FirebaseUser::class.java)
+            `when`(user.uid).thenReturn("existing-uid")
+            `when`(user.isAnonymous).thenReturn(false)
+            `when`(user.isEmailVerified).thenReturn(true)
+            `when`(mockFirebaseAuth.currentUser).thenReturn(user)
+
+            val credential = GoogleAuthProvider.getCredential("google-id-token", null)
+            val reauthTask = TaskCompletionSource<Void>()
+            reauthTask.setResult(null)
+            `when`(user.reauthenticate(credential)).thenReturn(reauthTask.task)
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val emailProvider = AuthProvider.Email(
+                emailLinkActionCodeSettings = null,
+                passwordValidationRules = emptyList()
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                isCredentialLinkingEnabled = true
+                providers { provider(emailProvider) }
+            }.copy(isReauthenticationMode = true)
+            assertThat(config.isCredentialLinkingEnabled).isTrue()
+
+            instance.signInAndLinkWithCredential(config = config, credential = credential)
+
+            verify(user).reauthenticate(credential)
+            verify(user, never()).linkWithCredential(any())
+            val state = instance.authStateFlow().first { it !is AuthState.Loading }
+            assertThat((state as AuthState.Success).reauthenticatedUid).isEqualTo("existing-uid")
+        }
+
+    /**
      * A successful `reauthenticate` whose `currentUser` has since gone null must surface an error
      * rather than publishing nothing: the reauth UI would otherwise sit on its last Loading state
      * forever, with no Success and no Error to act on.
@@ -1864,6 +1943,73 @@ class EmailAuthProviderFirebaseAuthUITest {
         val state = instance.authStateFlow().first { it !is AuthState.Loading }
         assertThat(state).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = true))
     }
+
+    /**
+     * In reauthentication mode the email-link path has no [AuthResult] — `signInOrReauth` returns
+     * null after publishing the stamped Success itself. Falling through to
+     * `updateAuthStateWithResult(null)` publishes [AuthState.Idle] over that stamp in the same
+     * coroutine, so a conflated collector can see only Idle: the proof of identity is lost and the
+     * pending sensitive operation is orphaned with no error anywhere.
+     */
+    @Test
+    fun `signInWithEmailLink - reauth keeps the stamped Success instead of resetting to Idle`() =
+        runTest {
+            val mockUser = mock(FirebaseUser::class.java)
+            `when`(mockUser.uid).thenReturn("reauth-uid")
+            `when`(mockUser.email).thenReturn("test@example.com")
+            `when`(mockUser.isAnonymous).thenReturn(false)
+            `when`(mockUser.isEmailVerified).thenReturn(true)
+            `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+            `when`(mockFirebaseAuth.isSignInWithEmailLink(anyString())).thenReturn(true)
+
+            val reauthTask = TaskCompletionSource<Void>()
+            reauthTask.setResult(null)
+            `when`(mockUser.reauthenticate(any())).thenReturn(reauthTask.task)
+
+            val provider = AuthProvider.Email(
+                isEmailLinkSignInEnabled = true,
+                emailLinkActionCodeSettings = ActionCodeSettings.newBuilder()
+                    .setUrl("https://example.com")
+                    .setHandleCodeInApp(true)
+                    .build(),
+                passwordValidationRules = emptyList()
+            )
+            val config = authUIConfiguration {
+                context = applicationContext
+                providers { provider(provider) }
+            }.copy(isReauthenticationMode = true)
+
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+
+            val mockPersistence = MockPersistenceManager()
+            mockPersistence.setSessionRecord(
+                EmailLinkPersistenceManager.SessionRecord(
+                    sessionId = "session123",
+                    email = "test@example.com",
+                    anonymousUserId = null,
+                    credentialForLinking = null
+                )
+            )
+
+            val emailLink =
+                "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code" +
+                        "&continueUrl=https://example.com?ui_sid=session123"
+
+            val result = instance.signInWithEmailLink(
+                context = applicationContext,
+                config = config,
+                provider = provider,
+                email = "test@example.com",
+                emailLink = emailLink,
+                persistenceManager = mockPersistence
+            )
+
+            assertThat(result).isNull()
+            verify(mockUser).reauthenticate(any())
+            val state = instance.authStateFlow().first { it !is AuthState.Loading }
+            assertThat(state).isInstanceOf(AuthState.Success::class.java)
+            assertThat((state as AuthState.Success).reauthenticatedUid).isEqualTo("reauth-uid")
+        }
 
     @Test
     fun `signInWithEmailLink - emits AuthState Success with non-null result`() = runTest {

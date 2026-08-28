@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -70,6 +71,9 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundExceptio
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
+
+/** Test tag on the notice explaining that reauthentication here needs the account's password. */
+internal const val REAUTH_PASSWORD_NOTICE_TEST_TAG = "ReauthPasswordRequiredNotice"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -234,6 +238,18 @@ fun SignInUI(
                         textDecoration = TextDecoration.Underline
                     )
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            if (configuration.isReauthenticationMode) {
+                // Firebase reports "password" for passwordless email-link accounts too, so such a
+                // user is offered a password field they can never fill. Say so instead of stalling.
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .testTag(REAUTH_PASSWORD_NOTICE_TEST_TAG),
+                    text = context.getString(R.string.fui_reauth_password_required_notice),
+                    style = MaterialTheme.typography.bodySmall,
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
             Row(

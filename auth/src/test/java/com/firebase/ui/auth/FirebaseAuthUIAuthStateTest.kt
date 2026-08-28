@@ -261,6 +261,43 @@ class FirebaseAuthUIAuthStateTest {
         assertThat(states[2]).isEqualTo(AuthState.Idle) // After sign-out
     }
 
+    /**
+     * A host calling raw `auth.signOut()` while a reauthentication is armed used to leave the
+     * internal state at ReauthenticationRequired: the combine keeps preferring it, so the reauth UI
+     * stays up over a signed-out session and every provider fails with an untranslated "no user".
+     */
+    @Test
+    fun `authStateFlow() clears an armed ReauthenticationRequired when the user signs out`() =
+        runBlocking {
+            `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+            `when`(mockFirebaseUser.isEmailVerified).thenReturn(true)
+            `when`(mockFirebaseUser.providerData).thenReturn(emptyList())
+
+            val listenerCaptor = ArgumentCaptor.forClass(AuthStateListener::class.java)
+            val states = mutableListOf<AuthState>()
+            // Collected open-endedly and cancelled below: a fixed `take` would hang rather than
+            // fail when the sign-out emission never arrives.
+            val job = launch { authUI.authStateFlow().toList(states) }
+
+            delay(100)
+            verify(mockFirebaseAuth).addAuthStateListener(listenerCaptor.capture())
+
+            authUI.updateAuthState(
+                AuthState.ReauthenticationRequired(mockFirebaseUser, reason = "Confirm it is you")
+            )
+            delay(100)
+            assertThat(states.last())
+                .isInstanceOf(AuthState.ReauthenticationRequired::class.java)
+
+            // The host signs out behind the library's back, e.g. authUI.auth.signOut().
+            `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+            listenerCaptor.value.onAuthStateChanged(mockFirebaseAuth)
+            delay(200)
+            job.cancel()
+
+            assertThat(states.last()).isEqualTo(AuthState.Idle)
+        }
+
     @Test
     fun `authStateFlow() removes listener when flow is cancelled`() = runBlocking {
         // Given auth state flow

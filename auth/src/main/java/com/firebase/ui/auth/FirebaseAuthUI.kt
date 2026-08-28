@@ -320,7 +320,8 @@ class FirebaseAuthUI private constructor(
                     val current = _authStateFlow.value
                     if (current is AuthState.Success ||
                         current is AuthState.RequiresEmailVerification ||
-                        current is AuthState.RequiresProfileCompletion
+                        current is AuthState.RequiresProfileCompletion ||
+                        current is AuthState.ReauthenticationRequired
                     ) {
                         _authStateFlow.value = AuthState.Idle
                     }
