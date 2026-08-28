@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configura verifica SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configura app di autenticazione</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifica il codice</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Salva i codici di recupero</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleziona un secondo metodo di autenticazione per proteggere il tuo account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Inserisci il tuo numero di telefono per ricevere i codici di verifica</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Inserisci il codice inviato al tuo telefono</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Inserisci il codice dalla tua app di autenticazione</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Inserisci il codice di verifica</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Conserva questi codici in un luogo sicuro. Puoi usarli per accedere se perdi l\'accesso al tuo metodo di autenticazione.</string>
 
     <string name="fui_confirm_password_hint">Conferma password</string>
     <string name="fui_passwords_do_not_match">Le password non corrispondono</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Riautenticazione richiesta</string>
     <string name="fui_reauth_success_message">Riautenticazione riuscita</string>
     <string name="fui_reauthenticate_action">Riautentica</string>
-    <string name="fui_recovery_codes_saved_action">Ho salvato i miei codici di recupero</string>
     <string name="fui_remove_action">Rimuovi</string>
     <string name="fui_resend_verification_email_action">Invia nuovamente email di verifica</string>
     <string name="fui_secret_key_label">Chiave segreta</string>

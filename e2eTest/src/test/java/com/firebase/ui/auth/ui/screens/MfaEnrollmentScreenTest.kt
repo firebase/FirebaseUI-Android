@@ -433,18 +433,6 @@ class MfaEnrollmentScreenTest {
                         Text("BACK")
                     }
                 }
-
-                MfaEnrollmentStep.ShowRecoveryCodes -> {
-                    state.recoveryCodes?.forEach { code ->
-                        Text(code)
-                    }
-                    Button(
-                        onClick = state.onCodesSavedClick,
-                        enabled = !state.isLoading
-                    ) {
-                        Text("DONE")
-                    }
-                }
             }
         }
     }
