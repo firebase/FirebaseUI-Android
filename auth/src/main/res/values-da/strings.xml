@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurer SMS-bekræftelse</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurer godkendelsesapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Bekræft din kode</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Gem dine gendannelseskoder</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Vælg en anden godkendelsesmetode for at beskytte din konto</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Indtast dit telefonnummer for at modtage bekræftelseskoder</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Indtast koden sendt til din telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Indtast koden fra din godkendelsesapp</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Indtast din bekræftelseskode</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Gem disse koder et sikkert sted. Du kan bruge dem til at logge ind, hvis du mister adgang til din godkendelsesmetode.</string>
 
     <string name="fui_confirm_password_hint">Bekræft adgangskode</string>
     <string name="fui_passwords_do_not_match">Adgangskoderne stemmer ikke overens</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Gengodkendelse påkrævet</string>
     <string name="fui_reauth_success_message">Gengodkendelse lykkedes</string>
     <string name="fui_reauthenticate_action">Gengodkend</string>
-    <string name="fui_recovery_codes_saved_action">Jeg har gemt mine gendannelseskoder</string>
     <string name="fui_remove_action">Fjern</string>
     <string name="fui_resend_verification_email_action">Send bekræftelsesemail igen</string>
     <string name="fui_secret_key_label">Hemmelig nøgle</string>

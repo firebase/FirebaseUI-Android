@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Skonfiguruj weryfikację SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Skonfiguruj aplikację uwierzytelniającą</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Zweryfikuj kod</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Zapisz kody odzyskiwania</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Wybierz drugą metodę uwierzytelniania, aby zabezpieczyć swoje konto</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Wprowadź numer telefonu, aby otrzymywać kody weryfikacyjne</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Wprowadź kod wysłany na Twój telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Wprowadź kod z aplikacji uwierzytelniającej</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Wprowadź kod weryfikacyjny</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Przechowuj te kody w bezpiecznym miejscu. Możesz ich użyć do zalogowania się, jeśli stracisz dostęp do metody uwierzytelniania.</string>
 
     <string name="fui_confirm_password_hint">Potwierdź hasło</string>
     <string name="fui_passwords_do_not_match">Hasła nie są takie same</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Wymagane ponowne uwierzytelnienie</string>
     <string name="fui_reauth_success_message">Ponowne uwierzytelnienie zakończone sukcesem</string>
     <string name="fui_reauthenticate_action">Uwierzytelnij ponownie</string>
-    <string name="fui_recovery_codes_saved_action">Zapisałem kody odzyskiwania</string>
     <string name="fui_remove_action">Usuń</string>
     <string name="fui_resend_verification_email_action">Wyślij ponownie e-mail weryfikacyjny</string>
     <string name="fui_secret_key_label">Tajny klucz</string>

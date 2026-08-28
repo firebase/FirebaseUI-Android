@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">I-set Up ang SMS Verification</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">I-set Up ang Authenticator App</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">I-verify ang Iyong Code</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">I-save ang Iyong Mga Recovery Code</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Pumili ng pangalawang paraan ng authentication para protektahan ang iyong account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Ilagay ang iyong numero ng telepono para makatanggap ng mga verification code</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Ilagay ang code na ipinadala sa iyong telepono</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Ilagay ang code mula sa iyong authenticator app</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Ilagay ang iyong verification code</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">I-imbak ang mga code na ito sa ligtas na lugar. Magagamit mo ang mga ito para mag-sign in kung mawawala ang access sa iyong paraan ng authentication.</string>
 
     <string name="fui_confirm_password_hint">Kumpirmahin ang password</string>
     <string name="fui_passwords_do_not_match">Hindi tugma ang mga password</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">Kinakailangan ang muling pag-authenticate</string>
     <string name="fui_reauth_success_message">Matagumpay ang muling pag-authenticate</string>
     <string name="fui_reauthenticate_action">Mag-authenticate muli</string>
-    <string name="fui_recovery_codes_saved_action">Na-save ko ang aking mga recovery code</string>
     <string name="fui_remove_action">Alisin</string>
     <string name="fui_resend_verification_email_action">Ipadala muli ang verification email</string>
     <string name="fui_secret_key_label">Secret key</string>
