@@ -99,7 +99,6 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                         mfaConfiguration = MfaConfiguration(
                             allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
                             requireEnrollment = false,
-                            enableRecoveryCodes = true,
                         ),
                         customMethodPickerLayout = { providers, onProviderSelected ->
                             MainUI(
