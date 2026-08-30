@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +44,7 @@ private const val TAG = "FullCustomizationDemo"
 /**
  * Custom UI for `FirebaseAuthScreen.authenticatedContent`.
  *
- * Its main job in this demo is making the other slots reachable: "Set up two-factor" navigates to
+ * Its main job in this demo is making the other slots reachable: the two-factor button navigates to
  * the flow that `mfaEnrollmentContent` renders, and changing the password is a sensitive operation,
  * so wrapping it in [com.firebase.ui.auth.FirebaseAuthUI.withReauth] is what provokes
  * `reauthContent`.
@@ -69,6 +70,12 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
     // Read on every recomposition rather than remembering: the identifier has to follow the
     // current user, which changes across sign-out and reauth.
     val identifier = authUI.getCurrentUser().displayIdentifier()
+
+    // enrolledFactors reads the cached user, so it still shows the pre-enrollment list when we come
+    // back from the MFA flow. This destination is disposed while that flow is on screen, so the
+    // effect re-runs on return and refreshes it; keyed on Unit, it can't loop on its own update.
+    LaunchedEffect(Unit) { uiContext.onReloadUser() }
+    val enrolledFactors = authUI.getCurrentUser()?.multiFactor?.enrolledFactors.orEmpty()
 
     var newPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -162,7 +169,9 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
             Spacer(modifier = Modifier.height(16.dp))
 
             CtaButton(
-                text = "Set up two-factor",
+                // Relabelled rather than disabled: SelectFactorStep is the only place a factor can
+                // be removed, so greying this out once one exists would strand the user with it.
+                text = if (enrolledFactors.isEmpty()) "Set up two-factor" else "Manage two-factor",
                 onClick = uiContext.onManageMfa,
                 enabled = !isUpdating,
                 colors = ButtonDefaults.buttonColors(
