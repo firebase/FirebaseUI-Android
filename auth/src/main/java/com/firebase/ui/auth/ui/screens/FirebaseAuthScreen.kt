@@ -43,6 +43,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,7 +51,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,8 +90,15 @@ import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
+import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
+import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
+import com.firebase.ui.auth.ui.screens.reauth.CustomReauthContent
+import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
+import com.firebase.ui.auth.ui.screens.reauth.ReauthPresentationState
+import com.firebase.ui.auth.ui.screens.reauth.ReauthPresentationStateSaver
+import com.firebase.ui.auth.ui.screens.reauth.ReauthSheetContent
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.firebase.ui.auth.util.displayIdentifier
@@ -122,7 +129,8 @@ import kotlinx.coroutines.tasks.await
  * @param reauthContent Optional slot that replaces the default reauthentication bottom sheet,
  * receiving a [ReauthContentState]. The library owns the credential exchange. An armed
  * reauthentication survives Activity recreation (rotation) but not process death; if it is lost
- * the flow surfaces an error rather than dropping the pending operation silently.
+ * the flow surfaces an error rather than dropping the pending operation silently. An enrolled
+ * second factor is challenged over the slot, honouring [mfaChallengeContent].
  *
  * @since 10.0.0
  */
@@ -157,44 +165,51 @@ fun FirebaseAuthScreen(
     val stringProvider = remember(context) { DefaultAuthUIStringProvider(context) }
     val navController = rememberNavController()
 
-    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
+    val observedAuthState by remember(authUI) { authUI.authStateFlow() }
+        .collectAsState(initial = null as AuthState?)
+    val authState = observedAuthState ?: AuthState.Idle
     val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
-    val pendingReauthConfig = remember { mutableStateOf<AuthUIConfiguration?>(null) }
-    val pendingReauthState = remember { mutableStateOf<AuthState.ReauthenticationRequired?>(null) }
-    val pendingReauthOperation = remember { mutableStateOf<(suspend (android.content.Context) -> Unit)?>(null) }
-    // Saved so a re-derived arming (rotation) can be told apart from a genuinely new one, and so a
-    // recreation that cannot re-derive it is reported rather than dropped silently.
-    val reauthArmedUid = rememberSaveable { mutableStateOf<String?>(null) }
-    // The exception is not saveable, its already-localized message is. Written only together, so
-    // the slot's `error` and `exception` can never disagree.
-    val reauthFailure = remember { mutableStateOf<AuthException?>(null) }
-    val reauthErrorMessage = rememberSaveable { mutableStateOf<String?>(null) }
-    val reauthSubRoute =
-        rememberSaveable(stateSaver = ReauthSubRouteSaver) { mutableStateOf<AuthRoute?>(null) }
-    val setReauthFailure: (AuthException?) -> Unit = remember(stringProvider) {
-        { failure ->
-            reauthFailure.value = failure
-            reauthErrorMessage.value = failure?.let { getRecoveryMessage(it, stringProvider) }
+    // This screen is the only thing that can drive a reauthentication request to completion, so
+    // FirebaseAuthUI only folds ordinary states into an armed request while one is registered.
+    DisposableEffect(authUI) {
+        authUI.addReauthenticationDrainer()
+        onDispose { authUI.removeReauthenticationDrainer() }
+    }
+    val reauthPresentation = rememberSaveable(stateSaver = ReauthPresentationStateSaver) {
+        mutableStateOf<ReauthPresentationState?>(null)
+    }
+    val clearReauthPresentation: () -> Unit = remember {
+        { reauthPresentation.value = null }
+    }
+    val reauthState = authState as? AuthState.Reauthentication
+    val reauthRequest = reauthState?.request
+    val reauthRequired = reauthRequest?.let { AuthState.Reauthentication.Required(it) }
+    val reauthConfig = reauthRequest?.let { request ->
+        configuration.providers.filterToLinkedProviders(request.user)
+            .takeIf { it.isNotEmpty() }
+            ?.let { linkedProviders ->
+                configuration.copy(
+                    providers = linkedProviders,
+                    isNewEmailAccountsAllowed = false,
+                    isReauthenticationMode = true,
+                )
+            }
+    }
+    val reauthException = (reauthState as? AuthState.Reauthentication.AttemptFailed)
+        ?.exception
+        ?.let { throwable ->
+            when (throwable) {
+                is AuthException -> throwable
+                else -> AuthException.from(throwable, stringProvider)
+            }
         }
-    }
-    val clearPendingReauth: () -> Unit = remember(setReauthFailure) {
-        {
-            pendingReauthOperation.value = null
-            pendingReauthConfig.value = null
-            pendingReauthState.value = null
-            reauthArmedUid.value = null
-            reauthSubRoute.value = null
-            setReauthFailure(null)
-        }
-    }
-    // Idle would drop the arming from the process-cached FirebaseAuthUI, so an Activity recreation
-    // could no longer re-derive the pending operation. Re-emit the arming instead.
-    val resetTransientAuthState: () -> Unit = remember(authUI) {
-        { authUI.updateAuthState(pendingReauthState.value ?: AuthState.Idle) }
-    }
+    val reauthErrorMessage = reauthException?.let { getRecoveryMessage(it, stringProvider) }
+    // Firebase requires the second factor to complete the reauthentication too, so the challenge
+    // is presented as a reauth sub-flow instead of on the outer NavHost under the modal.
+    val reauthMfa = reauthState as? AuthState.Reauthentication.RequiresMfa
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
     val prefillEmail = remember { mutableStateOf<String?>(null) }
     val reauthPrefillEmail = remember(authUI, configuration.isReauthenticationMode) {
@@ -202,8 +217,9 @@ fun FirebaseAuthScreen(
     }
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
-    // Lets the Idle branch below tell a genuine reset apart from consuming a notification
-    // (AuthState.isNotification) and from collectAsState's placeholder Idle (null == none yet).
+    // Lets the Idle branch below tell a genuine reset apart from consuming a notification.
+    // collectAsState uses null until the first real flow emission, so process restoration can
+    // distinguish that placeholder from FirebaseAuthUI's actual Idle/Success state.
     val previousAuthState = remember { mutableStateOf<AuthState?>(null) }
     val startRoute = remember(configuration.providers, configuration.isProviderChoiceAlwaysShown) {
         getStartRoute(configuration)
@@ -237,9 +253,10 @@ fun FirebaseAuthScreen(
     // Remembered so the method picker is not recomposed on every parent recomposition;
     // rememberOnProviderSelected returns a fresh lambda each time, so read it through a holder.
     val currentOuterProviderSelected = rememberUpdatedState(onOuterProviderSelected)
+    val currentReauthState = rememberUpdatedState(reauthState)
     val onProviderSelected: (AuthProvider) -> Unit = remember {
         { provider ->
-            if (pendingReauthState.value == null) {
+            if (currentReauthState.value == null) {
                 currentOuterProviderSelected.value(provider)
             }
         }
@@ -374,7 +391,7 @@ fun FirebaseAuthScreen(
                             },
                             onManageMfa = {
                                 // Inert while armed: this content stays composed beneath the slot.
-                                if (pendingReauthState.value == null) {
+                                if (reauthState == null) {
                                     if (configuration.isMfaEnabled) {
                                         navController.navigate(AuthRoute.MfaEnrollment.route)
                                     } else {
@@ -417,7 +434,7 @@ fun FirebaseAuthScreen(
                             },
                             onNavigate = { route ->
                                 // Inert while armed: this content stays composed beneath the slot.
-                                if (pendingReauthState.value == null) {
+                                if (reauthState == null) {
                                     navController.navigate(route.route)
                                 }
                             }
@@ -487,7 +504,7 @@ fun FirebaseAuthScreen(
             LaunchedEffect(emailLink) {
                 // A link arriving while armed would sign in on the non-reauth configuration, and
                 // could sign in a different user the armed operation can then never match.
-                if (emailLink != null && emailProvider != null && pendingReauthState.value == null) {
+                if (emailLink != null && emailProvider != null && reauthState == null) {
                     try {
                         // Try to retrieve saved email from DataStore (same-device flow)
                         val savedEmail =
@@ -521,76 +538,34 @@ fun FirebaseAuthScreen(
             }
 
             // Synchronise auth state changes with navigation stack.
-            LaunchedEffect(authState) {
-                val state = authState
+            LaunchedEffect(observedAuthState) {
+                val state = observedAuthState ?: return@LaunchedEffect
                 val previous = previousAuthState.value
                 previousAuthState.value = state
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
-                // Armed before this composition existed, but the attempt in flight died with it:
-                // the operation can no longer run, so report it instead of dropping it silently.
-                if (reauthArmedUid.value != null &&
-                    pendingReauthState.value == null &&
-                    state is AuthState.Loading
+                val savedPresentation = reauthPresentation.value
+
+                // A saveable marker without its matching process-local AuthState means process
+                // death discarded the retry callback. Report that loss for every real first
+                // emission, not only Loading; FirebaseAuth commonly restores as Success.
+                if (savedPresentation != null &&
+                    state !is AuthState.Reauthentication &&
+                    state !is AuthState.Aborted
                 ) {
-                    clearPendingReauth()
+                    clearReauthPresentation()
                     authUI.updateAuthState(
-                        AuthState.Error(
-                            AuthException.UnknownException(
-                                context.getString(R.string.fui_error_reauth_interrupted)
-                            )
+                        AuthState.Reauthentication.Interrupted(
+                            requestId = savedPresentation.requestId,
+                            userUid = savedPresentation.userUid,
                         )
                     )
                     return@LaunchedEffect
                 }
+
                 when (state) {
                     is AuthState.Success -> {
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
-
-                        val expectedReauthUid = pendingReauthState.value?.user?.uid
-                        if (expectedReauthUid != null) {
-                            if (state.reauthenticatedUid == expectedReauthUid) {
-                                val retry = pendingReauthOperation.value
-                                clearPendingReauth()
-                                if (retry != null) {
-                                    authUI.updateAuthState(AuthState.Loading())
-                                    coroutineScope.launch {
-                                        try {
-                                            retry(context)
-                                        } catch (e: kotlinx.coroutines.CancellationException) {
-                                            throw e
-                                        } catch (e: Exception) {
-                                            authUI.updateAuthState(AuthState.Error(e))
-                                        }
-                                    }
-                                } else if (currentRoute != AuthRoute.Success.route) {
-                                    // Nothing to resume, but the slot is gone: land on Success
-                                    // rather than whatever route it was covering.
-                                    navController.navigate(AuthRoute.Success.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            inclusive = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-                                }
-                                // A reauthentication is never a sign-in: onSignInSuccess must not
-                                // fire for it, whether or not an operation was attached.
-                                return@LaunchedEffect
-                            } else {
-                                // Only the ambient re-emission for the armed user is benign; a
-                                // stamp for another account leaves the slot inert, unexplained.
-                                if (state.reauthenticatedUid != null ||
-                                    authUI.auth.currentUser?.uid != expectedReauthUid
-                                ) {
-                                    setReauthFailure(
-                                        AuthException.UnknownException(
-                                            context.getString(R.string.fui_error_reauth_incomplete)
-                                        )
-                                    )
-                                }
-                                return@LaunchedEffect
-                            }
-                        }
 
                         state.result?.let { result ->
                             if (state.user.uid != lastSuccessfulUserId.value) {
@@ -613,11 +588,11 @@ fun FirebaseAuthScreen(
                         }
                     }
 
-                    is AuthState.ReauthenticationRequired -> {
+                    is AuthState.Reauthentication.Required -> {
                         val linked = configuration.providers.filterToLinkedProviders(state.user)
                         if (linked.isEmpty()) {
-                            clearPendingReauth()
-                            authUI.updateAuthState(
+                            clearReauthPresentation()
+                            authUI.finishReauthentication(
                                 AuthState.Error(
                                     AuthException.UnknownException(
                                         context.getString(R.string.fui_error_reauth_no_linked_providers)
@@ -626,31 +601,108 @@ fun FirebaseAuthScreen(
                             )
                             return@LaunchedEffect
                         }
-                        // The durability re-emit and a post-recreation re-derivation are the same
-                        // arming: keep the latched error and sub-flow. A new one clears both.
-                        val sameArming = pendingReauthState.value === state ||
-                                (pendingReauthState.value == null &&
-                                        reauthArmedUid.value == state.user.uid)
-                        if (!sameArming) {
-                            reauthSubRoute.value = null
-                            setReauthFailure(null)
+                        val currentPresentation = reauthPresentation.value
+                        if (currentPresentation?.requestId != state.requestId) {
+                            reauthPresentation.value = ReauthPresentationState(
+                                requestId = state.requestId,
+                                userUid = state.userUid,
+                            )
                         }
-                        reauthArmedUid.value = state.user.uid
-                        pendingReauthOperation.value = state.retryOperation
-                        pendingReauthState.value = state
-                        pendingReauthConfig.value = configuration.copy(
-                            providers = linked,
-                            isNewEmailAccountsAllowed = false,
-                            isReauthenticationMode = true,
+                    }
+
+                    is AuthState.Reauthentication.Succeeded -> {
+                        val success = state.success
+                        if (success.reauthenticatedUid != state.userUid ||
+                            success.user.uid != state.userUid
+                        ) {
+                            authUI.updateAuthState(
+                                AuthState.Error(
+                                    AuthException.UnknownException(
+                                        context.getString(R.string.fui_error_reauth_incomplete)
+                                    )
+                                )
+                            )
+                        } else {
+                            authUI.updateAuthState(
+                                AuthState.Reauthentication.RetryingOperation(state.request)
+                            )
+                        }
+                    }
+
+                    is AuthState.Reauthentication.RetryingOperation -> {
+                        val request = state.request
+                        if (!request.hasRetryOperation) {
+                            clearReauthPresentation()
+                            authUI.finishReauthentication(
+                                AuthState.Success(
+                                    result = null,
+                                    user = request.user,
+                                )
+                            )
+                            return@LaunchedEffect
+                        }
+                        // Claimed before the first suspension point, so a recreation that resumes
+                        // this phase reports the interruption instead of running the operation again.
+                        val retry = request.claimRetryOperation()
+                        if (retry == null) {
+                            clearReauthPresentation()
+                            authUI.finishReauthentication(
+                                AuthState.Error(
+                                    AuthException.UnknownException(
+                                        context.getString(R.string.fui_error_reauth_interrupted)
+                                    )
+                                )
+                            )
+                            return@LaunchedEffect
+                        }
+                        try {
+                            retry(context)
+                            val currentUser = authUI.auth.currentUser
+                            val outcome = if (currentUser != null) {
+                                AuthState.Success(result = null, user = currentUser)
+                            } else {
+                                AuthState.Idle
+                            }
+                            authUI.updateReauthentication(state.requestId) {
+                                it.operationFinished(outcome)
+                            }
+                        } catch (e: kotlinx.coroutines.CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            authUI.updateAuthState(AuthState.Error(e))
+                        }
+                    }
+
+                    is AuthState.Reauthentication.OperationFinished -> {
+                        clearReauthPresentation()
+                        authUI.finishReauthentication(state.outcome)
+                    }
+
+                    is AuthState.Reauthentication.Interrupted -> {
+                        clearReauthPresentation()
+                        authUI.finishReauthentication(
+                            AuthState.Error(
+                                AuthException.UnknownException(
+                                    context.getString(R.string.fui_error_reauth_interrupted)
+                                )
+                            )
                         )
+                    }
+
+                    is AuthState.Reauthentication -> {
+                        // Activity recreation may resume in any in-flight reauthentication phase.
+                        val currentPresentation = reauthPresentation.value
+                        if (currentPresentation?.requestId != state.requestId) {
+                            reauthPresentation.value = ReauthPresentationState(
+                                requestId = state.requestId,
+                                userUid = state.userUid,
+                            )
+                        }
                     }
 
                     is AuthState.RequiresEmailVerification,
                     is AuthState.RequiresProfileCompletion,
                         -> {
-                        // Reachable while armed (a wrong password in the sub-flow falls back to
-                        // this): navigating would wipe the back stack out from under the slot.
-                        if (pendingReauthState.value != null) return@LaunchedEffect
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         if (currentRoute != AuthRoute.Success.route) {
@@ -662,18 +714,6 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.RequiresMfa -> {
-                        // An MFA-enrolled account cannot complete reauthentication today; pushing
-                        // the challenge under the slot would leave a dead UI with no explanation.
-                        if (pendingReauthState.value != null) {
-                            authUI.updateAuthState(
-                                AuthState.Error(
-                                    AuthException.UnknownException(
-                                        context.getString(R.string.fui_error_reauth_mfa_unsupported)
-                                    )
-                                )
-                            )
-                            return@LaunchedEffect
-                        }
                         pendingResolver.value = state.resolver
                         if (currentRoute != AuthRoute.MfaChallenge.route) {
                             navController.navigate(AuthRoute.MfaChallenge.route) {
@@ -683,11 +723,7 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Cancelled -> {
-                        if (pendingReauthState.value != null) {
-                            resetTransientAuthState()
-                            return@LaunchedEffect
-                        }
-                        clearPendingReauth()
+                        clearReauthPresentation()
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
                         lastSuccessfulUserId.value = null
@@ -705,7 +741,7 @@ fun FirebaseAuthScreen(
                         // Hosted by FirebaseAuthActivity: its own authStateFlow collector
                         // independently finishes the activity and resets state on Aborted.
                         if (activity !is FirebaseAuthActivity) {
-                            clearPendingReauth()
+                            clearReauthPresentation()
                             pendingResolver.value = null
                             pendingLinkingCredential.value = null
                             lastSuccessfulUserId.value = null
@@ -717,7 +753,7 @@ fun FirebaseAuthScreen(
                         // A notification resets to Idle purely to avoid leaking to a freshly
                         // created screen — that's not a request to leave the current one.
                         if (previous != null && !previous.isNotification) {
-                            clearPendingReauth()
+                            clearReauthPresentation()
                             pendingResolver.value = null
                             pendingLinkingCredential.value = null
                             lastSuccessfulUserId.value = null
@@ -734,9 +770,45 @@ fun FirebaseAuthScreen(
                 }
             }
 
+            val reauthUiVisible = when (reauthState) {
+                is AuthState.Reauthentication.Required,
+                is AuthState.Reauthentication.Authenticating,
+                is AuthState.Reauthentication.AttemptFailed,
+                is AuthState.Reauthentication.RequiresMfa,
+                is AuthState.Reauthentication.PhoneNumberVerificationRequired,
+                is AuthState.Reauthentication.SmsAutoVerified,
+                is AuthState.Reauthentication.PasswordResetLinkSent,
+                is AuthState.Reauthentication.EmailSignInLinkSent,
+                    -> true
+
+                else -> false
+            }
+            // Derived from the state rather than the saveable marker, because the resolver lives
+            // only in the state: this sub-route can never outlive the challenge it presents.
+            val reauthSubRoute = if (reauthMfa != null) {
+                AuthRoute.MfaChallenge
+            } else {
+                reauthPresentation.value?.subRoute
+            }
             val reauthSlotActive = reauthContent != null &&
-                    pendingReauthState.value != null &&
-                    reauthSubRoute.value == null
+                    reauthUiVisible &&
+                    reauthSubRoute == null
+
+            val reauthAttemptFailure =
+                reauthState as? AuthState.Reauthentication.AttemptFailed
+            if (reauthAttemptFailure != null && !reauthSlotActive) {
+                LaunchedEffect(reauthAttemptFailure) {
+                    val exception = reauthException ?: return@LaunchedEffect
+                    dialogController.showErrorDialog(
+                        exception = exception,
+                        // The latched failure is never the live Error, so without an explicit key
+                        // reopening a sub-flow re-adds this effect and re-shows a stale dialog.
+                        errorState = AuthState.Error(reauthAttemptFailure.exception),
+                        onRetry = null,
+                        onRecover = null,
+                    )
+                }
+            }
 
             // Handle errors using top-level dialog controller
             val errorState = authState as? AuthState.Error
@@ -747,20 +819,12 @@ fun FirebaseAuthScreen(
                         else -> AuthException.from(throwable, stringProvider)
                     }
 
-                    if (reauthSlotActive) {
-                        if (exception !is AuthException.AuthCancelledException) {
-                            setReauthFailure(exception)
-                        }
-                        resetTransientAuthState()
-                        return@LaunchedEffect
-                    }
-
                     dialogController.showErrorDialog(
                         exception = exception,
                         errorState = errorState,
                         // Child screens own their retry logic, so there is nothing to retry here.
                         onRetry = null,
-                        onRecover = if (pendingReauthState.value != null) null else when (exception) {
+                        onRecover = when (exception) {
                             is AuthException.EmailAlreadyInUseException -> {
                                 {
                                     navController.navigate(AuthRoute.Email.route) {
@@ -816,54 +880,80 @@ fun FirebaseAuthScreen(
                         }
                     )
                     // Consumed immediately so this doesn't leak to a freshly created screen.
-                    resetTransientAuthState()
+                    authUI.updateAuthState(AuthState.Idle)
                 }
             }
 
             // Render the top-level dialog (only one instance)
             dialogController.CurrentDialog()
 
-            val loadingState = authState as? AuthState.Loading
-            if (loadingState != null && !reauthSlotActive) {
-                LoadingDialog(loadingState.message ?: stringProvider.progressDialogLoading)
+            val loadingMessage = when (val state = authState) {
+                is AuthState.Loading -> state.message
+                is AuthState.Reauthentication.Authenticating -> state.message
+                is AuthState.Reauthentication.RetryingOperation -> null
+                else -> null
+            }
+            val isLoading = authState is AuthState.Loading ||
+                    authState is AuthState.Reauthentication.Authenticating ||
+                    authState is AuthState.Reauthentication.RetryingOperation
+            if (isLoading && !reauthSlotActive) {
+                LoadingDialog(loadingMessage ?: stringProvider.progressDialogLoading)
             }
 
             // Keyed on authUI only: onSignInCancelled is a caller lambda that is typically not
             // remembered, so keying on it would defeat the remember entirely.
             val currentOnSignInCancelled = rememberUpdatedState(onSignInCancelled)
-            val onReauthDismiss: () -> Unit = remember(authUI, clearPendingReauth) {
+            val onReauthDismiss: () -> Unit = remember(authUI, clearReauthPresentation) {
                 {
-                    clearPendingReauth()
-                    authUI.updateAuthState(AuthState.Idle)
+                    clearReauthPresentation()
+                    authUI.finishReauthentication(AuthState.Idle)
                     // Abandoning reauthentication drops the pending operation for good, so the
                     // host has to learn it will never run. A cancelled provider attempt does not.
                     currentOnSignInCancelled.value()
                 }
             }
-            val onReauthAttemptStarted: () -> Unit =
-                remember(setReauthFailure) { { setReauthFailure(null) } }
+            val onReauthAttemptStarted: () -> Unit = remember(authUI, reauthState?.requestId) {
+                {
+                    reauthState?.requestId?.let { requestId ->
+                        authUI.updateReauthentication(requestId) { it.attemptStarted() }
+                    }
+                }
+            }
             val onReauthSubRouteChange: (AuthRoute?) -> Unit =
-                remember { { route -> reauthSubRoute.value = route } }
+                remember {
+                    { route ->
+                        reauthPresentation.value = reauthPresentation.value?.copy(subRoute = route)
+                    }
+                }
+            val onReauthMfaError: (Exception) -> Unit = remember(authUI) {
+                { exception ->
+                    // Clear the sub-flow that triggered the challenge so the failure lands on the
+                    // slot, where the caller renders `error`, rather than back inside that sub-flow.
+                    reauthPresentation.value = reauthPresentation.value?.copy(subRoute = null)
+                    authUI.updateAuthState(AuthState.Error(exception))
+                }
+            }
 
-            val reauthConfig = pendingReauthConfig.value
-            val pendingReauth = pendingReauthState.value
-            if (reauthConfig != null && pendingReauth != null) {
+            if (reauthConfig != null && reauthRequired != null && reauthUiVisible) {
                 if (reauthContent != null) {
                     CustomReauthContent(
                         authUI = authUI,
                         reauthConfig = reauthConfig,
-                        reauthState = pendingReauth,
+                        reauthState = reauthRequired,
                         activity = activity,
                         context = context,
                         emailContent = emailContent,
                         phoneContent = phoneContent,
-                        isLoading = loadingState != null,
+                        mfaChallengeContent = mfaChallengeContent,
+                        mfaResolver = reauthMfa?.resolver,
+                        isLoading = authState is AuthState.Reauthentication.Authenticating,
                         // The same string ErrorRecoveryDialog would have shown for this failure.
-                        error = reauthErrorMessage.value,
-                        exception = reauthFailure.value,
-                        activeSubRoute = reauthSubRoute.value,
+                        error = reauthErrorMessage,
+                        exception = reauthException,
+                        activeSubRoute = reauthSubRoute,
                         onActiveSubRouteChange = onReauthSubRouteChange,
                         onAttemptStarted = onReauthAttemptStarted,
+                        onMfaError = onReauthMfaError,
                         onDismiss = onReauthDismiss,
                         content = reauthContent,
                     )
@@ -875,11 +965,14 @@ fun FirebaseAuthScreen(
                         ReauthSheetContent(
                             authUI = authUI,
                             reauthConfig = reauthConfig,
+                            requestId = reauthRequired.requestId,
                             activity = activity,
                             context = context,
-                            prefillEmail = pendingReauth.user.email,
+                            prefillEmail = reauthRequired.user.email,
                             emailContent = emailContent,
                             phoneContent = phoneContent,
+                            mfaChallengeContent = mfaChallengeContent,
+                            mfaResolver = reauthMfa?.resolver,
                             customMethodPickerLayout = customMethodPickerLayout,
                             onDismiss = onReauthDismiss,
                         )
@@ -889,19 +982,6 @@ fun FirebaseAuthScreen(
         }
     }
 }
-
-// Saved as its route String — AuthRoute is not Parcelable, and Email/Phone are the only reauth
-// sub-flows, so any other saved route restores as "no sub-flow" rather than a dead branch.
-private val ReauthSubRouteSaver: Saver<AuthRoute?, String> = Saver(
-    save = { it?.route },
-    restore = { route ->
-        when (route) {
-            AuthRoute.Email.route -> AuthRoute.Email
-            AuthRoute.Phone.route -> AuthRoute.Phone
-            else -> null
-        }
-    },
-)
 
 sealed class AuthRoute(val route: String) {
     object MethodPicker : AuthRoute("auth_method_picker")
@@ -1116,204 +1196,9 @@ private fun LoadingDialog(message: String) {
         }
     )
 }
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ReauthSheetContent(
-    authUI: FirebaseAuthUI,
-    reauthConfig: AuthUIConfiguration,
-    activity: android.app.Activity?,
-    context: android.content.Context,
-    prefillEmail: String?,
-    emailContent: (@Composable (EmailAuthContentState) -> Unit)?,
-    phoneContent: (@Composable (PhoneAuthContentState) -> Unit)?,
-    customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)?,
-    onDismiss: () -> Unit,
-) {
-    val sheetNavController = rememberNavController()
-    val startRoute = remember(reauthConfig) { getStartRoute(reauthConfig) }
-    val skipsMethodPicker = startRoute != AuthRoute.MethodPicker
-    val onProviderSelected = authUI.rememberOnProviderSelected(
-        context = context,
-        activity = activity,
-        config = reauthConfig,
-        onNavigate = { route -> sheetNavController.navigate(route.route) },
-    )
-
-    NavHost(
-        navController = sheetNavController,
-        startDestination = startRoute.route,
-        enterTransition = { fadeIn(animationSpec = tween(700)) },
-        exitTransition = { fadeOut(animationSpec = tween(700)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(700)) },
-        popExitTransition = { fadeOut(animationSpec = tween(700)) },
-    ) {
-        composable(AuthRoute.MethodPicker.route) {
-            if (customMethodPickerLayout != null) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
-                }
-            } else {
-                Scaffold { innerPadding ->
-                    AuthMethodPicker(
-                        modifier = Modifier.padding(innerPadding),
-                        providers = reauthConfig.providers,
-                        onProviderSelected = onProviderSelected,
-                    )
-                }
-            }
-        }
-
-        composable(AuthRoute.Email.route) {
-            com.firebase.ui.auth.ui.screens.email.EmailAuthScreen(
-                context = context,
-                configuration = reauthConfig,
-                authUI = authUI,
-                prefillEmail = prefillEmail,
-                content = emailContent,
-                onSuccess = {},
-                onError = {},
-                onCancel = {
-                    if (skipsMethodPicker || !sheetNavController.popBackStack()) onDismiss()
-                }
-            )
-        }
-
-        composable(AuthRoute.Phone.route) {
-            com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen(
-                context = context,
-                configuration = reauthConfig,
-                authUI = authUI,
-                content = phoneContent,
-                onSuccess = {},
-                onError = {},
-                onCancel = {
-                    if (skipsMethodPicker || !sheetNavController.popBackStack()) onDismiss()
-                }
-            )
-        }
-    }
-}
-
-/**
- * Custom reauth UI — renders the caller's [content] slot, and *replaces* it with the library's own
- * email/phone sub-flow while the user is in one, i.e. after selecting [AuthProvider.Email] or
- * [AuthProvider.Phone]. Cancelling the sub-flow composes [content] again from scratch, so any state
- * the caller `remember`ed inside the slot is lost — the slot is a stateless provider chooser by
- * design. Every other provider runs the library credential exchange in place, which routes to
- * `reauthenticateWithCredential` because [reauthConfig] is in reauthentication mode.
- *
- * Only [onDismiss] abandons reauthentication; cancelling a sub-flow merely returns to [content].
- *
- * @param activeSubRoute Which sub-flow, if any, currently replaces [content].
- * @param onActiveSubRouteChange Invoked when the active sub-flow opens or closes.
- * @param onAttemptStarted Invoked just before an in-place credential attempt begins.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CustomReauthContent(
-    authUI: FirebaseAuthUI,
-    reauthConfig: AuthUIConfiguration,
-    reauthState: AuthState.ReauthenticationRequired,
-    activity: android.app.Activity?,
-    context: android.content.Context,
-    emailContent: (@Composable (EmailAuthContentState) -> Unit)?,
-    phoneContent: (@Composable (PhoneAuthContentState) -> Unit)?,
-    isLoading: Boolean,
-    error: String?,
-    exception: Exception?,
-    activeSubRoute: AuthRoute?,
-    onActiveSubRouteChange: (AuthRoute?) -> Unit,
-    onAttemptStarted: () -> Unit,
-    onDismiss: () -> Unit,
-    content: @Composable (ReauthContentState) -> Unit,
-) {
-    val openSubFlow: (AuthRoute) -> Unit = remember(onActiveSubRouteChange) {
-        { route -> onActiveSubRouteChange(route) }
-    }
-    val onProviderSelected = authUI.rememberOnProviderSelected(
-        context = context,
-        activity = activity,
-        config = reauthConfig,
-        onNavigate = openSubFlow,
-    )
-    // rememberOnProviderSelected returns a fresh lambda per recomposition, so read it through a
-    // holder rather than keying on it — otherwise this remember would never hit.
-    val currentOnProviderSelected = rememberUpdatedState(onProviderSelected)
-    val onProviderSelectedFromSlot: (AuthProvider) -> Unit = remember(onAttemptStarted) {
-        { provider ->
-            // Email and Phone only open a sub-flow; clearing the latched error there would wipe a
-            // real failure on a mis-tap, and `error` is documented to survive backing out.
-            if (provider !is AuthProvider.Email && provider !is AuthProvider.Phone) {
-                onAttemptStarted()
-            }
-            currentOnProviderSelected.value(provider)
-        }
-    }
-    val closeSubFlow: () -> Unit =
-        remember(onActiveSubRouteChange) { { onActiveSubRouteChange(null) } }
-
-    val slotState = ReauthContentState(
-        user = reauthState.user,
-        reason = reauthState.reason,
-        providers = reauthConfig.providers,
-        onProviderSelected = onProviderSelectedFromSlot,
-        isLoading = isLoading,
-        error = error,
-        onDismiss = onDismiss,
-        exception = exception,
-    )
-
-    when (val subRoute = activeSubRoute) {
-        null -> content(slotState)
-
-        AuthRoute.Email -> ModalBottomSheet(
-            onDismissRequest = closeSubFlow,
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        ) {
-            EmailAuthScreen(
-                context = context,
-                configuration = reauthConfig,
-                authUI = authUI,
-                prefillEmail = reauthState.user.email,
-                content = emailContent,
-                onSuccess = {},
-                onError = {},
-                onCancel = closeSubFlow,
-            )
-        }
-
-        AuthRoute.Phone -> ModalBottomSheet(
-            onDismissRequest = closeSubFlow,
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        ) {
-            PhoneAuthScreen(
-                context = context,
-                configuration = reauthConfig,
-                authUI = authUI,
-                content = phoneContent,
-                onSuccess = {},
-                onError = {},
-                onCancel = closeSubFlow,
-            )
-        }
-
-        else -> {
-            // No sub-flow for this route: keep the caller's slot rather than crashing
-            // composition. Add a branch when a new provider gains its own screen.
-            LaunchedEffect(subRoute) {
-                Log.w(
-                    "FirebaseAuthScreen",
-                    "No reauth sub-flow for ${subRoute?.route}; staying on the slot"
-                )
-                onActiveSubRouteChange(null)
-            }
-            content(slotState)
-        }
-    }
-}
 
 @Composable
-private fun FirebaseAuthUI.rememberOnProviderSelected(
+internal fun FirebaseAuthUI.rememberOnProviderSelected(
     context: android.content.Context,
     activity: android.app.Activity?,
     config: AuthUIConfiguration,

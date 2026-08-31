@@ -996,6 +996,8 @@ Replaces the default reauthentication bottom sheet shown when a sensitive operat
 
 The library owns the credential exchange, so the slot only renders a provider chooser. Selecting a federated provider reauthenticates directly; selecting `AuthProvider.Email` or `AuthProvider.Phone` hands off to the library's own email/phone sub-flow, which honours your `emailContent` / `phoneContent` slots and replaces this slot while it is active. Password and OTP entry therefore never appear here.
 
+If the account has multi-factor authentication enrolled, Firebase needs the second factor to complete the reauthentication too. The library presents the MFA challenge as another sub-flow over this slot, honouring your `mfaChallengeContent` slot; resolving it completes the reauthentication and the pending operation resumes. Backing out of the challenge returns to this slot with the operation still pending, and a failed challenge latches into `state.error` like any other failed attempt.
+
 ```kotlin
 reauthContent = { state ->
     AlertDialog(
@@ -1023,7 +1025,7 @@ reauthContent = { state ->
 
 While this slot is shown the library suppresses its own loading and error dialogs, so render `state.isLoading` and `state.error` yourself. `state.error` is the same message the library's own error dialog would have shown, and `state.exception` carries the exception behind it when you need to branch on the failure type. On success the library resumes the operation that required reauthentication — there is nothing to retry. `state.onDismiss` abandons reauthentication and calls `onSignInCancelled`, so any pending operation will never run; backing out of a single provider attempt returns to the slot with the operation still pending and does *not* call `onSignInCancelled`. Render the slot so it blocks interaction with the content behind it — that content stays composed, and the library only makes its own affordances inert.
 
-An armed reauthentication survives Activity recreation: rotating keeps the pending operation, the latched `state.error`, and any active email/phone sub-flow. `state.exception` is not saveable, so after a recreation `state.error` still carries the message while `state.exception` is `null` — branch on the type only for a failure your own composition observed. The pending operation cannot survive process death, and if it is lost the flow emits an `AuthState.Error` explaining that identity confirmation was interrupted rather than dropping the operation silently.
+An armed reauthentication survives Activity recreation: rotating keeps the pending operation, the latched `state.error`, its `state.exception`, and any active email/phone sub-flow. The pending operation cannot survive process death, and if it is lost the flow emits an `AuthState.Error` explaining that identity confirmation was interrupted rather than dropping the operation silently.
 
 For most cases, use [`withReauth`](#reauthentication) instead — it handles the full reauth cycle automatically and only shows the default bottom sheet. Use `reauthContent` when you need a custom design for the reauth UI.
 
@@ -1031,7 +1033,7 @@ For most cases, use [`withReauth`](#reauthentication) instead — it handles the
 
 Firebase requires the user to have signed in recently before performing sensitive operations like deleting their account or changing their password. If the session is too old, Firebase throws `FirebaseAuthRecentLoginRequiredException`.
 
-`withReauth` wraps any sensitive operation. If the exception is thrown, it automatically emits `AuthState.ReauthenticationRequired` and — once the user reauthenticates via the default bottom sheet or your `reauthContent` slot — retries the original operation.
+`withReauth` wraps any sensitive operation. If the exception is thrown, it automatically emits `AuthState.Reauthentication.Required` and — once the user reauthenticates via the default bottom sheet or your `reauthContent` slot — retries the original operation.
 
 ```kotlin
 lifecycleScope.launch {
@@ -1047,11 +1049,13 @@ lifecycleScope.launch {
 `withReauth` handles the full cycle:
 
 1. Runs the operation.
-2. If `FirebaseAuthRecentLoginRequiredException` is thrown, emits `AuthState.ReauthenticationRequired` with the retry attached.
-3. `FirebaseAuthScreen` shows the reauth UI scoped to the user's linked providers.
+2. If `FirebaseAuthRecentLoginRequiredException` is thrown, emits `AuthState.Reauthentication.Required` with the retry attached.
+3. `FirebaseAuthScreen` shows the reauth UI scoped to the user's linked providers, including the MFA challenge when the account has a second factor enrolled.
 4. On successful reauthentication, retries the operation automatically and emits `AuthState.Success` or `AuthState.Error`.
 
-The armed reauthentication lives on the process-cached `FirebaseAuthUI`, so it survives Activity recreation; it does not survive process death, and a lost operation is reported as an `AuthState.Error` rather than silently dropped.
+The armed reauthentication lives on the process-cached `FirebaseAuthUI`, so it survives Activity recreation; it does not survive process death, and a lost operation is reported as an `AuthState.Error` rather than silently dropped. The operation runs at most once: if a recreation interrupts it mid-flight the flow reports the interruption instead of starting it again, because the first attempt may already have committed.
+
+**What `authStateFlow()` emits while this is running.** From the moment `FirebaseAuthScreen` picks the request up until it ends, every state is published as an `AuthState.Reauthentication` — the phases of that one request, each carrying its `requestId` and `userUid`. The ordinary `AuthState.Loading` / `AuthState.Error` / `AuthState.Cancelled` of the credential exchange are folded into those phases, so `is AuthState.Error` and `is AuthState.Loading` do **not** match for the duration and app-side error dialogs and spinners stay quiet: the library owns the UI for that window. Match `is AuthState.Reauthentication` if you need to know it is happening. The final outcome — `AuthState.Success`, `AuthState.Error` or `AuthState.Idle` — is published as an ordinary state once the request ends. Arming a request with no `FirebaseAuthScreen` composed (catching `withReauth`/`delete`'s exception and showing your own UI) folds nothing: states are published normally, and the next one simply replaces the arming.
 
 **Activity-based alternative:** use `createReauthFlow` to start a standalone reauthentication activity scoped to the current user's linked providers, returning an `AuthFlowController`.
 

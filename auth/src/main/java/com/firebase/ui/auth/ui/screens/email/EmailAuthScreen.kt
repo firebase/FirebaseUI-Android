@@ -187,10 +187,14 @@ fun EmailAuthScreen(
     }
 
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
-    val isLoading = authState is AuthState.Loading
+    val isLoading = authState is AuthState.Loading ||
+        authState is AuthState.Reauthentication.Authenticating
     val authCredentialForLinking = remember { credentialForLinking }
-    val errorMessage =
-        if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
+    val errorMessage = when (val state = authState) {
+        is AuthState.Error -> state.exception.message
+        is AuthState.Reauthentication.AttemptFailed -> state.exception.message
+        else -> null
+    }
 
     // Latched locally since these get consumed (reset to Idle) below — deriving directly from
     // authState would close ResetPasswordUI/SignInEmailLinkUI's dialogs as soon as it resets.
@@ -275,9 +279,19 @@ fun EmailAuthScreen(
                 authUI.updateAuthState(AuthState.Idle)
             }
 
+            is AuthState.Reauthentication.PasswordResetLinkSent -> {
+                resetLinkSentLocal = true
+                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
+            }
+
             is AuthState.EmailSignInLinkSent -> {
                 emailSignInLinkSentLocal = true
                 authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.Reauthentication.EmailSignInLinkSent -> {
+                emailSignInLinkSentLocal = true
+                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
             }
 
             else -> Unit

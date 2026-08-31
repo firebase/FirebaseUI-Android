@@ -12,9 +12,10 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.screens
+package com.firebase.ui.auth.ui.screens.reauth
 
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.google.firebase.auth.FirebaseUser
 
 /**
@@ -66,7 +67,9 @@ import com.google.firebase.auth.FirebaseUser
  * @property isLoading `true` while a reauthentication attempt is in progress. Use this to show loading indicators and disable the provider buttons. The library's own loading dialog is suppressed while this slot is shown.
  * @property error A localized error message for the last failed attempt, or `null` if it did not fail. Persists until the next credential attempt starts, so it can be rendered inline. Backing out of an attempt is not a failure and leaves this unchanged. Survives Activity recreation.
  * @property onDismiss Callback to abandon reauthentication and drop the pending operation. This is the only way to abandon it — backing out of a single provider attempt returns to this slot with the operation still pending.
- * @property exception The exception behind [error], or `null` if the last attempt did not fail. Branch on its type when a message alone is not enough. Not retained across Activity recreation, which leaves [error] set with this `null`.
+ * @property exception The exception behind [error], or `null` if the last attempt did not fail.
+ * Branch on its type when a message alone is not enough. Survives Activity recreation with the
+ * active reauthentication request.
  *
  * @since 10.0.0
  */
@@ -92,6 +95,6 @@ data class ReauthContentState(
     /** Callback to abandon reauthentication and drop the pending operation. */
     val onDismiss: () -> Unit = {},
 
-    /** The exception behind [error], if the last attempt failed. Dropped on recreation. */
+    /** The exception behind [error], if the last attempt failed. */
     val exception: Exception? = null,
 )

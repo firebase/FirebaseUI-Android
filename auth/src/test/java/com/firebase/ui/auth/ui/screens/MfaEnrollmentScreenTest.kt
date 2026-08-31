@@ -22,6 +22,7 @@ import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
+import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

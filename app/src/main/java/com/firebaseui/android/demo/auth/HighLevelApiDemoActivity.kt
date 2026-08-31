@@ -60,7 +60,7 @@ import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.ui.screens.ReauthContentState
+import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
@@ -330,7 +330,7 @@ private fun AppAuthenticatedContent(
                             try {
                                 uiContext.authUI.delete(context)
                             } catch (e: AuthException.InvalidCredentialsException) {
-                                // ReauthenticationRequired state was emitted —
+                                // Reauthentication.Required state was emitted —
                                 // FirebaseAuthScreen navigates to the reauth flow automatically.
                                 Log.d("HighLevelApiDemoActivity", "Reauth required before delete")
                             } catch (e: AuthException) {

@@ -30,6 +30,7 @@ import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Assume
@@ -79,7 +80,7 @@ class ReauthFlowTest {
     }
 
     /**
-     * Full cycle: sign in via the main flow, then emit ReauthenticationRequired to simulate a
+     * Full cycle: sign in via the main flow, then emit Reauthentication.Required to simulate a
      * sensitive operation. Verifies the default ModalBottomSheet reauth UI appears, completing
      * reauthentication triggers the pending retry operation.
      *
@@ -168,9 +169,9 @@ class ReauthFlowTest {
 
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
-        // Step 2: Emit ReauthenticationRequired to simulate a sensitive operation requiring reauth.
+        // Step 2: Emit Reauthentication.Required to simulate an operation requiring reauth.
         authUI.updateAuthState(
-            AuthState.ReauthenticationRequired(
+            AuthState.Reauthentication.Required(
                 user = signedInUser,
                 reason = "Please verify your identity to continue",
                 retryOperation = { retryOperationCalled = true },
@@ -288,9 +289,9 @@ class ReauthFlowTest {
 
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Emit ReauthenticationRequired to trigger the custom reauthContent slot.
+        // Emit Reauthentication.Required to trigger the custom reauthContent slot.
         authUI.updateAuthState(
-            AuthState.ReauthenticationRequired(
+            AuthState.Reauthentication.Required(
                 user = capturedUser,
                 reason = expectedReason,
                 retryOperation = { retryOperationCalled = true },
@@ -400,7 +401,7 @@ class ReauthFlowTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         authUI.updateAuthState(
-            AuthState.ReauthenticationRequired(
+            AuthState.Reauthentication.Required(
                 user = signedInUser,
                 reason = "Please verify your identity to continue",
                 retryOperation = { retryOperationCalled = true },
@@ -518,9 +519,9 @@ class ReauthFlowTest {
 
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
-        // Step 2: emit ReauthenticationRequired with a retryOperation.
+        // Step 2: emit Reauthentication.Required with a retryOperation.
         authUI.updateAuthState(
-            AuthState.ReauthenticationRequired(
+            AuthState.Reauthentication.Required(
                 user = signedInUser,
                 reason = "Please verify your identity to continue",
                 retryOperation = { retryOperationCalled = true },

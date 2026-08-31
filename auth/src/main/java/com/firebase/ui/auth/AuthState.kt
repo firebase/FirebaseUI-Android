@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import java.util.UUID
 
 /**
  * Represents the authentication state in Firebase Auth UI.
@@ -255,27 +256,232 @@ abstract class AuthState private constructor() {
     }
 
     /**
-     * Reauthentication is required before a sensitive operation (e.g. delete account, change email)
-     * can proceed. Use [FirebaseAuthUI.createReauthFlow] to launch the reauthentication flow.
+     * A state in the lifecycle of one reauthentication request.
      *
-     * @property user The [FirebaseUser] that needs to reauthenticate
-     * @property reason Optional human-readable reason to show the user
+     * Every state carries a stable [requestId], so Activity recreation can distinguish a
+     * continuation of the same sensitive operation from a new operation for the same user. The
+     * request itself is process-local because its retry callback cannot be serialized.
      */
-    class ReauthenticationRequired(
-        val user: FirebaseUser,
-        val reason: String? = null,
-        val retryOperation: (suspend (android.content.Context) -> Unit)? = null,
-    ) : AuthState() {
+    sealed class Reauthentication : AuthState() {
+        abstract val requestId: String
+        abstract val userUid: String
+        internal abstract val request: Request?
         override val isNotification: Boolean = false
 
-        // Identity, not value: arming a second sensitive operation for the same user must replace
-        // the first, and MutableStateFlow silently drops a write equal to the current value.
-        override fun equals(other: Any?): Boolean = this === other
+        /** Process-local data shared by every resumable state of one reauthentication request. */
+        internal class Request(
+            val requestId: String,
+            val user: FirebaseUser,
+            val reason: String?,
+            retryOperation: (suspend (android.content.Context) -> Unit)?,
+        ) {
+            /** Null once [claimRetryOperation] consumed it, so no recreation can re-run it. */
+            var retryOperation: (suspend (android.content.Context) -> Unit)? = retryOperation
+                private set
 
-        override fun hashCode(): Int = System.identityHashCode(this)
+            /** Whether this request ever carried an operation, even after it was claimed. */
+            val hasRetryOperation: Boolean = retryOperation != null
 
-        override fun toString(): String =
-            "AuthState.ReauthenticationRequired(user=$user, reason=$reason)"
+            /**
+             * Hands the operation out exactly once. A second claim means the first run was lost,
+             * which must be reported rather than retried: the operation may have committed already.
+             */
+            fun claimRetryOperation(): (suspend (android.content.Context) -> Unit)? =
+                retryOperation.also { retryOperation = null }
+        }
+
+        /**
+         * Reauthentication is required before a sensitive operation (e.g. delete account, change
+         * email) can proceed. Use [FirebaseAuthUI.createReauthFlow] to launch a standalone
+         * reauthentication flow.
+         *
+         * @property requestId Stable identifier for this sensitive operation
+         * @property user The [FirebaseUser] that needs to reauthenticate
+         * @property reason Optional human-readable reason to show the user
+         */
+        class Required internal constructor(
+            override val request: Request,
+        ) : Reauthentication() {
+            constructor(
+                user: FirebaseUser,
+                reason: String? = null,
+                retryOperation: (suspend (android.content.Context) -> Unit)? = null,
+            ) : this(
+                Request(
+                    requestId = UUID.randomUUID().toString(),
+                    user = user,
+                    reason = reason,
+                    retryOperation = retryOperation,
+                )
+            )
+
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+            val user: FirebaseUser get() = request.user
+            val reason: String? get() = request.reason
+            val retryOperation: (suspend (android.content.Context) -> Unit)?
+                get() = request.retryOperation
+
+            override fun equals(other: Any?): Boolean =
+                other is Required && requestId == other.requestId
+
+            override fun hashCode(): Int = requestId.hashCode()
+
+            override fun toString(): String =
+                "AuthState.Reauthentication.Required(requestId=$requestId, " +
+                        "user=$user, reason=$reason)"
+        }
+
+        /** The user has selected a provider and the library is exchanging credentials. */
+        internal class Authenticating(
+            override val request: Request,
+            val message: String? = null,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** The most recent credential attempt failed, but the request remains armed. */
+        internal class AttemptFailed(
+            override val request: Request,
+            val exception: Exception,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** A credential attempt requires MFA, which reauthentication UI does not yet support. */
+        internal class RequiresMfa(
+            override val request: Request,
+            val resolver: MultiFactorResolver,
+            val hint: String? = null,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** Phone verification sent a code and is waiting for the user to enter it. */
+        internal class PhoneNumberVerificationRequired(
+            override val request: Request,
+            val verificationId: String,
+            val forceResendingToken: PhoneAuthProvider.ForceResendingToken,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** Phone verification obtained a credential automatically. */
+        internal class SmsAutoVerified(
+            override val request: Request,
+            val credential: PhoneAuthCredential,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** A password-reset email was sent from the reauthentication email sub-flow. */
+        internal class PasswordResetLinkSent(
+            override val request: Request,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** A sign-in link was sent from the reauthentication email sub-flow. */
+        internal class EmailSignInLinkSent(
+            override val request: Request,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** Credentials were accepted for the request's user. */
+        internal class Succeeded(
+            override val request: Request,
+            val success: Success,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** The sensitive operation is being retried after credentials were accepted. */
+        internal class RetryingOperation(
+            override val request: Request,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /** The retry completed and [outcome] is ready to become the ordinary auth state. */
+        internal class OperationFinished(
+            override val request: Request,
+            val outcome: AuthState,
+        ) : Reauthentication() {
+            override val requestId: String get() = request.requestId
+            override val userUid: String get() = request.user.uid
+        }
+
+        /**
+         * Saved UI state proved a request existed, but its process-local retry callback was lost.
+         */
+        internal class Interrupted(
+            override val requestId: String,
+            override val userUid: String,
+        ) : Reauthentication() {
+            override val request: Request? = null
+        }
+
+        /**
+         * A provider attempt is about to run, clearing any previously surfaced failure. Null once
+         * credentials were accepted, so a late attempt cannot rewind a running operation.
+         */
+        internal fun attemptStarted(): AuthState? = when (this) {
+            is Required,
+            is Authenticating,
+            is AttemptFailed,
+            is RequiresMfa,
+            is PhoneNumberVerificationRequired,
+            is SmsAutoVerified,
+            is PasswordResetLinkSent,
+            is EmailSignInLinkSent,
+                -> request?.let { Authenticating(it) }
+
+            else -> null
+        }
+
+        /**
+         * The active sub-flow was consumed, so the request returns to provider selection. Null from
+         * a surfaced failure: only [attemptStarted] clears one, when a real attempt replaces it.
+         */
+        internal fun returnedToProviderSelection(): AuthState? = when (this) {
+            is Authenticating,
+            is PhoneNumberVerificationRequired,
+            is SmsAutoVerified,
+            is PasswordResetLinkSent,
+            is EmailSignInLinkSent,
+                -> request?.let { Required(it) }
+
+            else -> null
+        }
+
+        /**
+         * The user backed out of an in-flight provider sub-flow. Null in every other phase, so a
+         * surfaced failure or a finished request is never rewound to provider selection.
+         */
+        internal fun attemptCancelled(): AuthState? = when (this) {
+            is Authenticating,
+            is RequiresMfa,
+            is PhoneNumberVerificationRequired,
+            is SmsAutoVerified,
+                -> request?.let { Required(it) }
+
+            else -> null
+        }
+
+        /** The retried sensitive operation produced [outcome]. Null unless a retry is in flight. */
+        internal fun operationFinished(outcome: AuthState): AuthState? =
+            (this as? RetryingOperation)
+                ?.let { OperationFinished(it.request, outcome) }
     }
 
     /**

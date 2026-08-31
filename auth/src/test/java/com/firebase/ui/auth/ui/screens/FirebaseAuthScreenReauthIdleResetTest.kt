@@ -20,14 +20,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -56,7 +53,6 @@ class FirebaseAuthScreenReauthIdleResetTest {
     private lateinit var mockFirebaseAuth: FirebaseAuth
 
     private lateinit var authUI: FirebaseAuthUI
-    private lateinit var stringProvider: DefaultAuthUIStringProvider
 
     @Before
     fun setUp() {
@@ -79,7 +75,6 @@ class FirebaseAuthScreenReauthIdleResetTest {
         `when`(mockFirebaseAuth.app).thenReturn(defaultApp)
 
         authUI = FirebaseAuthUI.create(defaultApp, mockFirebaseAuth)
-        stringProvider = DefaultAuthUIStringProvider(context)
     }
 
     @After
@@ -95,6 +90,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
         val mockProviderInfo = mock(UserInfo::class.java)
         `when`(mockProviderInfo.providerId).thenReturn("password")
         val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("uid-password")
         `when`(mockUser.providerData).thenReturn(listOf(mockProviderInfo))
 
         val configuration = authUIConfiguration {
@@ -109,6 +105,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
             }
         }
 
+        var capturedError: String? = null
         composeTestRule.setContent {
             FirebaseAuthScreen(
                 configuration = configuration,
@@ -116,7 +113,8 @@ class FirebaseAuthScreenReauthIdleResetTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
-                reauthContent = {
+                reauthContent = { state ->
+                    capturedError = state.error
                     Text(text = "Reauth UI", modifier = Modifier.testTag("reauth_marker"))
                 }
             )
@@ -124,23 +122,19 @@ class FirebaseAuthScreenReauthIdleResetTest {
 
         // Enter the reauth flow.
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(AuthState.ReauthenticationRequired(mockUser))
+            authUI.updateAuthState(AuthState.Reauthentication.Required(mockUser))
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_marker").assertIsDisplayed()
 
-        // Wrong password entered inside the reauth flow surfaces an Error on the same authUI.
+        // Wrong password entered inside the reauth flow becomes failure state on the same request.
         composeTestRule.runOnIdle {
             authUI.updateAuthState(AuthState.Error(Exception("wrong password")))
         }
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertIsDisplayed()
 
-        // Dismiss the error dialog, which self-consumes the Error back to Idle.
-        composeTestRule.onNodeWithText(stringProvider.dismissAction).performClick()
-        composeTestRule.waitForIdle()
-
-        // The reauth sheet must survive the notification-consume Idle.
+        // Custom reauth content owns the error presentation and the request remains active.
+        com.google.common.truth.Truth.assertThat(capturedError).isNotNull()
         composeTestRule.onNodeWithTag("reauth_marker").assertIsDisplayed()
     }
 }

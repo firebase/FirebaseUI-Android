@@ -216,6 +216,7 @@ class FirebaseAuthScreenSlotsTest {
         val mockProviderInfo = mock(UserInfo::class.java)
         `when`(mockProviderInfo.providerId).thenReturn("password")
         val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("uid-custom-picker")
         `when`(mockUser.providerData).thenReturn(listOf(mockProviderInfo))
 
         val configuration = authUIConfiguration {
@@ -242,7 +243,7 @@ class FirebaseAuthScreenSlotsTest {
             )
         }
 
-        authUI.updateAuthState(AuthState.ReauthenticationRequired(mockUser))
+        authUI.updateAuthState(AuthState.Reauthentication.Required(mockUser))
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("custom_reauth_picker").assertIsDisplayed()
