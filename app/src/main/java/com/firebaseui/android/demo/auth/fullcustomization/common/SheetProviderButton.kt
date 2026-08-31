@@ -111,6 +111,9 @@ private fun providerSheetLabel(provider: AuthProvider): String = when (provider)
     is AuthProvider.Apple -> "Sign in with Apple"
     is AuthProvider.Phone -> "Sign in with phone"
     is AuthProvider.Anonymous -> "Continue as guest"
+    // Email only reaches this button during reauthentication: the sign-in sheet filters it out,
+    // since the picker screen already has its own email field.
+    is AuthProvider.Email -> "Continue with email"
     else -> "Continue"
 }
 

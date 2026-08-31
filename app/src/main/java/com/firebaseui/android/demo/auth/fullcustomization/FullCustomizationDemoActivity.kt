@@ -29,6 +29,7 @@ import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthMethodPickerUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthenticatedUI
+import com.firebaseui.android.demo.auth.fullcustomization.screens.email.EmailAuthUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaChallengeUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaEnrollmentUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSignInUI
@@ -106,6 +107,10 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                                 onProviderSelected = onProviderSelected,
                             )
                         },
+                        // The picker hosts its own email entry; this slot covers the email
+                        // flows the library navigates to itself (reauth, linking, recovery), which
+                        // would otherwise render its stock screen.
+                        emailContent = { state -> EmailAuthUI(state, authUI.auth) },
                         phoneContent = { state -> PhoneSignInUI(state) },
                         mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
                         mfaChallengeContent = { state -> MfaChallengeUI(state) },
