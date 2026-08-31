@@ -52,6 +52,7 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserInfo
+import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -267,18 +268,25 @@ class SignInUITest {
         )
         val configuration = authUIConfiguration {
             context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
+            providers { provider(emailProvider(isEmailLinkSignInEnabled = emailLinkEnabled)) }
             isCredentialManagerEnabled = credentialManagerEnabled
         }
         return FirebaseAuthUI.create(app, auth).createReauthFlow(configuration).configuration
     }
+
+    /** Email link needs action code settings to validate, so the two always travel together. */
+    private fun emailProvider(isEmailLinkSignInEnabled: Boolean) = AuthProvider.Email(
+        isEmailLinkSignInEnabled = isEmailLinkSignInEnabled,
+        emailLinkActionCodeSettings = if (isEmailLinkSignInEnabled) {
+            actionCodeSettings {
+                url = "https://example.com/verify"
+                handleCodeInApp = true
+            }
+        } else {
+            null
+        },
+        passwordValidationRules = emptyList()
+    )
 
     /**
      * Set before [createReauthFlowConfiguration] to build a Credential-Manager-enabled config.
@@ -288,6 +296,10 @@ class SignInUITest {
      * resetting in [setUp] under a runner that reuses the instance.
      */
     private var credentialManagerEnabled = false
+
+    /** Set before [createReauthFlowConfiguration] to enable the email-link affordance. Same
+     * per-instance safety argument as [credentialManagerEnabled]. */
+    private var emailLinkEnabled = false
 
     private fun setStatefulSignInUIContent(
         configuration: AuthUIConfiguration,
@@ -449,9 +461,9 @@ class SignInUITest {
     /**
      * Firebase reports the provider id `"password"` for passwordless email-link accounts too, so
      * such a user is offered the Email method and lands on a password field they can never fill.
-     * Reauthentication mode has also removed the email-link toggle and "trouble signing in?", so
-     * without this notice the screen is a silent dead end. The provider cannot be filtered out
-     * instead: `providerData` cannot tell a password account from an email-link one.
+     * Reauthentication mode has also removed the email-link toggle, so without this notice the
+     * screen is a near-silent dead end. The provider cannot be filtered out instead:
+     * `providerData` cannot tell a password account from an email-link one.
      */
     @Test
     fun `a password requirement notice is shown while reauthenticating`() {
@@ -464,6 +476,45 @@ class SignInUITest {
         composeTestRule.onNodeWithTag(REAUTH_PASSWORD_NOTICE_TEST_TAG).assertExists()
         composeTestRule
             .onNodeWithText(applicationContext.getString(R.string.fui_reauth_password_required_notice))
+            .assertExists()
+    }
+
+    /**
+     * The asymmetry between the two out-of-band email routes during reauthentication. A password
+     * reset email leaves the reauth sheet up and the request armed, so blocking it only stranded a
+     * user who had forgotten their password with no route but dismissal. An email *link* reopens
+     * the app with nothing armed, so completing it reports an interruption instead of finishing the
+     * pending operation — useless, and it stays hidden.
+     */
+    @Test
+    fun `reauthentication offers password recovery but hides email link sign-in`() {
+        emailLinkEnabled = true
+
+        setStatefulSignInUIContent(
+            createReauthFlowConfiguration(),
+            initialEmail = "linked@example.com",
+            isEmailLocked = true,
+        )
+
+        composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).assertExists()
+        composeTestRule
+            .onNode(hasText(stringProvider.signInWithEmailLink.uppercase()) and hasClickAction())
+            .assertDoesNotExist()
+    }
+
+    /** Control for the test above: outside reauthentication the email-link toggle is offered. */
+    @Test
+    fun `email link sign-in is offered outside reauthentication mode`() {
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider(isEmailLinkSignInEnabled = true)) }
+        }
+
+        setStatefulSignInUIContent(configuration, initialEmail = "")
+
+        composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).assertExists()
+        composeTestRule
+            .onNode(hasText(stringProvider.signInWithEmailLink.uppercase()) and hasClickAction())
             .assertExists()
     }
 

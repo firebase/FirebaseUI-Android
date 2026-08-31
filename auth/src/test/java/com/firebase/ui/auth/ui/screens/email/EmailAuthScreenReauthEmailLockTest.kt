@@ -241,7 +241,7 @@ class EmailAuthScreenReauthEmailLockTest {
 
     /**
      * The lock is wired into every mode that shows the address, not only SignIn — reauthentication
-     * cannot reach those modes any more, but a custom `emailContent` slot and a future route can.
+     * reaches ResetPassword itself, and a custom `emailContent` slot can reach the rest.
      */
     @Test
     fun `ResetPasswordUI renders a locked email read-only`() {
@@ -290,25 +290,31 @@ class EmailAuthScreenReauthEmailLockTest {
     }
 
     /**
-     * Both routes hand off to an out-of-band email step the reauthentication sheet cannot observe,
-     * and an email link reopens the app with no pending operation left to resume.
+     * The two out-of-band email routes are not equivalent during reauthentication. A password reset
+     * email leaves the sheet up and the request armed, so it stays available — blocking it stranded
+     * a user who had forgotten their password with no route but dismissal. An email *link* reopens
+     * the app with nothing armed, so completing it reports an interruption instead of finishing the
+     * pending operation, and it stays hidden.
      */
     @Test
-    fun `neither password recovery nor email-link sign-in is offered while reauthenticating`() {
+    fun `password recovery is offered while reauthenticating but email-link sign-in is not`() {
         composeTestRule.setContent {
             EmailAuthScreenUnderTest(reauthConfigurationWithEmailLink(), prefill = prefillEmail)
         }
 
         // The password field proves this is the reauth SignIn screen, still usable as intended.
         composeTestRule.onNodeWithText(stringProvider.passwordHint).assertExists()
-        composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).assertDoesNotExist()
+        composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).assertExists()
         composeTestRule.onNodeWithText(stringProvider.signInWithEmailLink, ignoreCase = true)
             .assertDoesNotExist()
     }
 
-    /** Defence in depth: a custom `emailContent` slot cannot reach those modes either. */
+    /**
+     * The callback side of the same asymmetry, which a custom `emailContent` slot reaches directly:
+     * the ResetPassword switch has to work, the EmailLink switch has to stay inert.
+     */
     @Test
-    fun `the reauth mode switches to ResetPassword and EmailLink are inert`() {
+    fun `the reauth ResetPassword mode switch works while the EmailLink one is inert`() {
         val observed = mutableListOf<EmailAuthMode>()
         var goToResetPassword: (() -> Unit)? = null
         var goToEmailLinkSignIn: (() -> Unit)? = null
@@ -335,10 +341,15 @@ class EmailAuthScreenReauthEmailLockTest {
 
         composeTestRule.runOnIdle { requireNotNull(goToResetPassword).invoke() }
         composeTestRule.waitForIdle()
+
+        assertThat(observed.last()).isEqualTo(EmailAuthMode.ResetPassword)
+
         composeTestRule.runOnIdle { requireNotNull(goToEmailLinkSignIn).invoke() }
         composeTestRule.waitForIdle()
 
-        assertThat(observed.toSet()).containsExactly(EmailAuthMode.SignIn)
+        assertThat(observed.last()).isEqualTo(EmailAuthMode.ResetPassword)
+        assertThat(observed.toSet())
+            .containsExactly(EmailAuthMode.SignIn, EmailAuthMode.ResetPassword)
     }
 
     /**

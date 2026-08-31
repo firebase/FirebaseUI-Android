@@ -250,6 +250,10 @@ class FirebaseAuthUI private constructor(
         }
         val reauthConfig = configuration.copy(
             providers = linked,
+            // Belt and braces with the canLinkCredential/canUpgradeAnonymous guards: a linked
+            // credential is not a proof of identity, so a reauth config never enables either.
+            isAnonymousUpgradeEnabled = false,
+            isCredentialLinkingEnabled = false,
             isNewEmailAccountsAllowed = false,
             isReauthenticationMode = true,
         )
@@ -323,13 +327,19 @@ class FirebaseAuthUI private constructor(
                 // doesn't return Success/RequiresEmailVerification after the user is gone.
                 if (firebaseAuth.currentUser == null) {
                     val current = _authStateFlow.value
-                    if (current is AuthState.Success ||
-                        current is AuthState.RequiresEmailVerification ||
-                        current is AuthState.RequiresProfileCompletion ||
-                        current is AuthState.Reauthentication
-                    ) {
-                        _authStateFlow.value = AuthState.Idle
+                    val isStale = when (current) {
+                        is AuthState.Success,
+                        is AuthState.RequiresEmailVerification,
+                        is AuthState.RequiresProfileCompletion,
+                            -> true
+                        // A sensitive operation such as delete() signs the user out as its own
+                        // success condition, so phases owning that operation must survive this.
+                        is AuthState.Reauthentication -> !current.isReauthenticated
+                        else -> false
                     }
+                    // Via the session helper so a cleared request leaves the state machine outright
+                    // instead of being written past contextualizeReauthenticationState().
+                    if (isStale) finishReauthentication(AuthState.Idle)
                 }
                 trySend(buildState(firebaseAuth.currentUser))
             }

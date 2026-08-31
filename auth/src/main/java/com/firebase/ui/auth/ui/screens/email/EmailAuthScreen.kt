@@ -415,13 +415,11 @@ fun EmailAuthScreen(
             emailSignInLinkSentLocal = false
         },
         onGoToResetPassword = {
-            // Reauthentication is a modal confirmation of the signed-in account: diverting it to
-            // an out-of-band email step strands the pending operation behind something it can't see.
-            if (!configuration.isReauthenticationMode) {
-                resetTextValues()
-                mode.value = EmailAuthMode.ResetPassword
-                resetLinkSentLocal = false
-            }
+            // Offered during reauthentication too: a reset email leaves the sheet up and the
+            // request armed, and blocking it strands a user who has forgotten their password.
+            resetTextValues()
+            mode.value = EmailAuthMode.ResetPassword
+            resetLinkSentLocal = false
         },
         onGoToEmailLinkSignIn = {
             if (!configuration.isReauthenticationMode) {

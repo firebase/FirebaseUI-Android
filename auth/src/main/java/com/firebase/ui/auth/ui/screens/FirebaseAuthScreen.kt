@@ -193,6 +193,10 @@ fun FirebaseAuthScreen(
             ?.let { linkedProviders ->
                 configuration.copy(
                     providers = linkedProviders,
+                    // Belt and braces with the canLinkCredential/canUpgradeAnonymous guards: a
+                    // linked credential is not a proof of identity, so neither is ever enabled.
+                    isAnonymousUpgradeEnabled = false,
+                    isCredentialLinkingEnabled = false,
                     isNewEmailAccountsAllowed = false,
                     isReauthenticationMode = true,
                 )

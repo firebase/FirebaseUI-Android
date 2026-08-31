@@ -432,6 +432,13 @@ abstract class AuthState private constructor() {
         }
 
         /**
+         * Whether this request's reauthentication already succeeded. A sign-out must not clear such
+         * a phase, because the pending operation succeeding can be what signed the user out.
+         */
+        internal val isReauthenticated: Boolean
+            get() = this is Succeeded || this is RetryingOperation || this is OperationFinished
+
+        /**
          * A provider attempt is about to run, clearing any previously surfaced failure. Null once
          * credentials were accepted, so a late attempt cannot rewind a running operation.
          */

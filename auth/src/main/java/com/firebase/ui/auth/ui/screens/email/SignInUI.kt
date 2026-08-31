@@ -115,9 +115,8 @@ fun SignInUI(
             configuration.isNewEmailAccountsAllowed &&
             !configuration.isReauthenticationMode
 
-    // Both routes leave this screen for an out-of-band email step, which a reauthentication sheet
-    // cannot observe — and an email link reopens the app with no pending operation left to resume.
-    val isPasswordRecoveryOffered = !configuration.isReauthenticationMode
+    // An email link reopens the app with nothing armed, so completing it reports an interruption
+    // instead of the operation; a reset email leaves the reauth sheet and its request intact.
     val isEmailLinkSignInOffered =
         provider.isEmailLinkSignInEnabled && !configuration.isReauthenticationMode
 
@@ -220,26 +219,24 @@ fun SignInUI(
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
-            if (isPasswordRecoveryOffered) {
-                TextButton(
-                    modifier = Modifier
-                        .align(Alignment.Start),
-                    onClick = {
-                        onGoToResetPassword()
-                    },
-                    enabled = !isLoading,
-                    contentPadding = PaddingValues.Zero
-                ) {
-                    Text(
-                        modifier = modifier,
-                        text = stringProvider.troubleSigningIn,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        textDecoration = TextDecoration.Underline
-                    )
-                }
-                Spacer(modifier = Modifier.height(8.dp))
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.Start),
+                onClick = {
+                    onGoToResetPassword()
+                },
+                enabled = !isLoading,
+                contentPadding = PaddingValues.Zero
+            ) {
+                Text(
+                    modifier = modifier,
+                    text = stringProvider.troubleSigningIn,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    textDecoration = TextDecoration.Underline
+                )
             }
+            Spacer(modifier = Modifier.height(8.dp))
             if (configuration.isReauthenticationMode) {
                 // Firebase reports "password" for passwordless email-link accounts too, so such a
                 // user is offered a password field they can never fill. Say so instead of stalling.

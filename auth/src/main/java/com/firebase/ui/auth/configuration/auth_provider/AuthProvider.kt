@@ -998,6 +998,9 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         internal fun canUpgradeAnonymous(config: AuthUIConfiguration, auth: FirebaseAuth): Boolean {
             val currentUser = auth.currentUser
             return config.isAnonymousUpgradeEnabled
+                    // Same reason as canLinkCredential: an upgrade link is not a proof of
+                    // identity, so it must never be stamped as a reauthentication.
+                    && !config.isReauthenticationMode
                     && currentUser != null
                     && currentUser.isAnonymous
         }
