@@ -326,6 +326,16 @@ fun PhoneAuthScreen(
                 authUI.updateAuthState(AuthState.Idle)
             }
 
+            is AuthState.Reauthentication.AttemptFailed -> {
+                // Same teardown as the ordinary Error branch above: the attempt is over, so stop
+                // holding Firebase's callbacks. The phase itself is left latched for the reauth UI
+                // to render, so nothing is consumed here.
+                val exception = AuthException.from(state.exception, stringProvider)
+                if (exception !is AuthException.PhoneVerificationCooldownException) {
+                    cancelVerification("reauthentication attempt failed")
+                }
+            }
+
             else -> Unit
         }
     }
