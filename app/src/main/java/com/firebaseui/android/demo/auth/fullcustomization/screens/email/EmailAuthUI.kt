@@ -1,7 +1,6 @@
-package com.firebaseui.android.demo.auth.fullcustomization.screens
+package com.firebaseui.android.demo.auth.fullcustomization.screens.email
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -11,48 +10,54 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
-import com.firebaseui.android.demo.auth.fullcustomization.common.OtherSignInMethodsSheet
+import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.common.fetchLegacySignInMethods
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 private enum class FlowStep { EnterEmail, Login, SignUp }
 
+/**
+ * Custom UI for `FirebaseAuthScreen.emailContent`.
+ *
+ * The method picker hosts its own email entry, so this slot only renders for email flows the
+ * *library* navigates to: reauthentication, account linking, and email-already-in-use recovery.
+ * Without it those flows fall back to the library's stock email screen, which is jarring inside a
+ * demo whose whole premise is that nothing looks stock.
+ *
+ * There is no provider sheet here — the caller already committed to email — and an address supplied
+ * by the library (as reauthentication does) skips straight to the password step.
+ */
 @Composable
-fun AuthMethodPickerUI(
-    state: EmailAuthContentState,
-    auth: FirebaseAuth,
-    otherProviders: List<AuthProvider>,
-    onProviderSelected: (AuthProvider) -> Unit,
-    tosUrl: String?,
-    ppUrl: String?,
-) {
-    var flowStep by remember { mutableStateOf(FlowStep.EnterEmail) }
-    var showOtherMethods by remember { mutableStateOf(false) }
+fun EmailAuthUI(state: EmailAuthContentState, auth: FirebaseAuth) {
+    var flowStep by remember {
+        mutableStateOf(if (state.email.isBlank()) FlowStep.EnterEmail else FlowStep.Login)
+    }
     var isCheckingEmail by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    // Password/confirmPassword are hoisted in EmailAuthContentState, not local to LoginStep/
-    // SignUpStep — they survive a round trip back to EnterEmail, so a stale password typed for
-    // one email could carry over if a different email also routes to the same step. Clear them
-    // whenever the user backs out via "Use a different email".
     val onUseDifferentEmail: () -> Unit = {
         state.onPasswordChange("")
         state.onConfirmPasswordChange("")
         flowStep = FlowStep.EnterEmail
     }
 
-    // customMethodPickerLayout is the NavHost's start destination and these steps are local
-    // state, so without this the system back press would leave the auth flow entirely.
-    BackHandler(enabled = flowStep != FlowStep.EnterEmail) { onUseDifferentEmail() }
-
     Box(modifier = Modifier.fillMaxSize()) {
+        // The email pages don't paint their own background — MainUI and PhoneSignInUI do it for
+        // theirs — so this slot has to, or the screen renders on bare surface colour.
+        Image(
+            painter = painterResource(id = R.drawable.custom_background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+        )
+
         when (flowStep) {
             FlowStep.EnterEmail -> EmailEntryStep(
                 email = state.email,
@@ -66,29 +71,14 @@ fun AuthMethodPickerUI(
                         isCheckingEmail = false
                     }
                 },
-                onShowOtherMethods = { showOtherMethods = true },
+                // No sheet in this slot, so the affordance stays inert rather than opening an
+                // empty one.
+                onShowOtherMethods = {},
             )
 
-            FlowStep.Login -> LoginStep(
-                state = state,
-                onUseDifferentEmail = onUseDifferentEmail,
-            )
+            FlowStep.Login -> LoginStep(state = state, onUseDifferentEmail = onUseDifferentEmail)
 
-            FlowStep.SignUp -> SignUpStep(
-                state = state,
-                onUseDifferentEmail = onUseDifferentEmail,
-            )
+            FlowStep.SignUp -> SignUpStep(state = state, onUseDifferentEmail = onUseDifferentEmail)
         }
     }
-
-    if (showOtherMethods) {
-        OtherSignInMethodsSheet(
-            otherProviders = otherProviders,
-            onProviderSelected = onProviderSelected,
-            onDismissRequest = { showOtherMethods = false },
-            tosUrl = tosUrl,
-            ppUrl = ppUrl,
-        )
-    }
 }
-
