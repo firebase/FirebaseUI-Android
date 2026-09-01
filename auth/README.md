@@ -69,6 +69,7 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
    - [Email Link Sign-In](#email-link-sign-in)
    - [Password Validation Rules](#password-validation-rules)
    - [Credential Manager Integration](#credential-manager-integration)
+   - [Automated Testing (Firebase Test Lab & Robo)](#automated-testing-firebase-test-lab--robo)
    - [Sign Out & Account Deletion](#sign-out--account-deletion)
 10. [Localization](#localization)
 11. [Error Handling](#error-handling)
@@ -1840,6 +1841,92 @@ val configuration = authUIConfiguration {
     isCredentialManagerEnabled = false
 }
 ```
+
+### Automated Testing (Firebase Test Lab & Robo)
+
+Every input and button on the auth screens carries a stable, public test tag, and FirebaseUI exposes those tags as Android resource ids automatically — no setup required in your app. This is what lets [Firebase Test Lab's Robo test](https://firebase.google.com/docs/test-lab/android/robo-ux-test) and the Google Play Console's pre-launch report drive a real sign-in during automated testing, instead of typing into the wrong field or getting stuck on a screen it can't navigate.
+
+**Why this matters:** a crawler that can't tell which field is the password will happily type a username into it, then hammer "sign in" and "forgot password" until your test account is buried in reset emails. Every field and button below resolves to one unambiguous resource id, so a crawler — or your own instrumented test — can target it directly.
+
+**Tag reference.** Tags are grouped by screen; import `com.firebase.ui.auth.ui.FirebaseAuthTestTags`.
+
+| Screen | Constant | Resource id |
+|---|---|---|
+| Sign in | `SignIn.EMAIL_FIELD` | `fui_sign_in_email_field` |
+| | `SignIn.PASSWORD_FIELD` | `fui_sign_in_password_field` |
+| | `SignIn.SIGN_IN_BUTTON` | `fui_sign_in_sign_in_button` |
+| | `SignIn.SIGN_UP_BUTTON` | `fui_sign_in_sign_up_button` |
+| | `SignIn.FORGOT_PASSWORD_BUTTON` | `fui_sign_in_forgot_password_button` |
+| | `SignIn.EMAIL_LINK_BUTTON` | `fui_sign_in_email_link_button` |
+| Sign up | `SignUp.NAME_FIELD` | `fui_sign_up_name_field` |
+| | `SignUp.EMAIL_FIELD` | `fui_sign_up_email_field` |
+| | `SignUp.PASSWORD_FIELD` | `fui_sign_up_password_field` |
+| | `SignUp.CONFIRM_PASSWORD_FIELD` | `fui_sign_up_confirm_password_field` |
+| | `SignUp.SIGN_UP_BUTTON` | `fui_sign_up_sign_up_button` |
+| | `SignUp.SIGN_IN_BUTTON` | `fui_sign_up_sign_in_button` |
+| Password recovery | `ResetPassword.EMAIL_FIELD` | `fui_reset_password_email_field` |
+| | `ResetPassword.SEND_BUTTON` | `fui_reset_password_send_button` |
+| | `ResetPassword.SIGN_IN_BUTTON` | `fui_reset_password_sign_in_button` |
+| | `ResetPassword.DISMISS_BUTTON` | `fui_reset_password_dismiss_button` |
+| Email link sign-in | `EmailLink.EMAIL_FIELD` | `fui_email_link_email_field` |
+| | `EmailLink.SEND_LINK_BUTTON` | `fui_email_link_send_link_button` |
+| | `EmailLink.PASSWORD_SIGN_IN_BUTTON` | `fui_email_link_password_sign_in_button` |
+| | `EmailLink.DISMISS_BUTTON` | `fui_email_link_dismiss_button` |
+| Phone number entry | `PhoneNumber.PHONE_NUMBER_FIELD` | `fui_phone_number_phone_number_field` |
+| | `PhoneNumber.COUNTRY_SELECTOR_BUTTON` | `fui_phone_number_country_selector_button` |
+| | `PhoneNumber.SEND_CODE_BUTTON` | `fui_phone_number_send_code_button` |
+| SMS verification | `VerificationCode.CODE_FIELD` | `fui_verification_code_code_field` |
+| | `VerificationCode.VERIFY_BUTTON` | `fui_verification_code_verify_button` |
+| | `VerificationCode.RESEND_CODE_BUTTON` | `fui_verification_code_resend_code_button` |
+| | `VerificationCode.CHANGE_PHONE_NUMBER_BUTTON` | `fui_verification_code_change_phone_number_button` |
+| MFA sign-in challenge | `MfaChallenge.CODE_FIELD` | `fui_mfa_challenge_code_field` |
+| | `MfaChallenge.VERIFY_BUTTON` | `fui_mfa_challenge_verify_button` |
+| Re-authentication | `Reauth.PASSWORD_FIELD` | `fui_reauth_password_field` |
+| | `Reauth.VERIFY_BUTTON` | `fui_reauth_verify_button` |
+| | `Reauth.DISMISS_BUTTON` | `fui_reauth_dismiss_button` |
+| Method picker | `MethodPicker.PROVIDER_LIST` | `fui_method_picker_provider_list` |
+| | `MethodPicker.CONTINUE_AS_BUTTON` | `fui_method_picker_continue_as_button` |
+| Country selector | `CountrySelector.COUNTRY_LIST` | `fui_country_selector_country_list` |
+
+`VerificationCode.CODE_FIELD` and `MfaChallenge.CODE_FIELD` each name the whole six-digit input rather than an individual digit box: the field accepts a complete code in a single `ACTION_SET_TEXT`/`performTextInput` call and distributes it across the digit boxes, so one Robo directive or one `performTextInput("123456")` types the entire code.
+
+**In your own instrumented tests**, target these the same way you'd target any other tag:
+
+```kotlin
+composeTestRule
+    .onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD)
+    .performTextInput("test@example.com")
+
+composeTestRule
+    .onNodeWithTag(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD)
+    .performTextInput("correcthorsebatterystaple")
+
+composeTestRule
+    .onNodeWithTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON)
+    .performClick()
+```
+
+Or with UiAutomator, by resource name:
+
+```kotlin
+device.findObject(By.res("fui_sign_in_email_field")).text = "test@example.com"
+```
+
+**With Firebase Test Lab.** Pass the resource ids as [Robo directives](https://firebase.google.com/docs/test-lab/android/command-line#robo-test-with-a-script) so the crawler fills real values instead of guessing:
+
+```bash
+gcloud firebase test android run \
+  --type=robo \
+  --app=app-debug.apk \
+  --robo-directives=fui_sign_in_email_field=test@example.com,fui_sign_in_password_field=correcthorsebatterystaple \
+  --device model=MediumPhone.arm,version=34
+```
+
+This is exactly the mechanism a **Play Console pre-launch report** uses, under **Test and release → Testing → Pre-launch report → Settings → Test account credentials**; the resource ids above are what you enter there for the username and password fields.
+
+Verified with a real Firebase Test Lab Robo run against the sign-in screen (August 2026): the crawler resolved `fui_sign_in_email_field` and `fui_sign_in_password_field` as `android.widget.EditText` nodes, typed the directive values into both, and submitted via `fui_sign_in_sign_in_button` — along the way also navigating by resource id through sign-up, password recovery, and phone entry, confirming the tagging works generally rather than only where a directive points. Robo's crawling behavior is Google's, not ours, and can change independently of this library; treat this as a snapshot of current behavior rather than a permanent guarantee.
+
+Renaming or removing a tag, or changing the resource id it resolves to, is a breaking change to FirebaseUI's public API — not an internal detail — so a value documented here will not change without a major version bump.
 
 ### Sign Out & Account Deletion
 

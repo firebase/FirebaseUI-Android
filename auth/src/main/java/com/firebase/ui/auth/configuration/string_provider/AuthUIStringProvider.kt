@@ -416,6 +416,13 @@ interface AuthUIStringProvider {
     /** Label for verification code input fields. */
     val verificationCodeLabel: String
 
+    /**
+     * Content description for a single verification code digit, announced positionally
+     * (e.g. "Verification code digit 3 of 6").
+     */
+    fun verificationCodeDigitDescription(position: Int, total: Int): String =
+        "Verification code digit $position of $total"
+
     /** Generic identity verified confirmation message. */
     val identityVerifiedMessage: String
 

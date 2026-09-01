@@ -379,6 +379,13 @@ class DefaultAuthUIStringProvider(
     override val verificationCodeLabel: String
         get() = localizedContext.getString(R.string.fui_verification_code_label)
 
+    override fun verificationCodeDigitDescription(position: Int, total: Int): String =
+        localizedContext.getString(
+            R.string.fui_verification_code_digit_description,
+            position,
+            total
+        )
+
     override val identityVerifiedMessage: String
         get() = localizedContext.getString(R.string.fui_identity_verified_message)
 
