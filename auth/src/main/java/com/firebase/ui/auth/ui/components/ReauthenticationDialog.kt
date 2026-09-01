@@ -41,12 +41,15 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
@@ -75,6 +78,7 @@ fun ReauthenticationDialog(
     }
 
     AlertDialog(
+        modifier = Modifier.exposeTestTagsAsResourceIds(),
         onDismissRequest = { if (!isLoading) onDismiss() },
         title = {
             val view = LocalView.current
@@ -139,6 +143,7 @@ fun ReauthenticationDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
+                        .testTag(FirebaseAuthTestTags.Reauth.PASSWORD_FIELD)
                 )
 
                 if (isLoading) {
@@ -166,7 +171,8 @@ fun ReauthenticationDialog(
                         )
                     }
                 },
-                enabled = password.isNotBlank() && !isLoading
+                enabled = password.isNotBlank() && !isLoading,
+                modifier = Modifier.testTag(FirebaseAuthTestTags.Reauth.VERIFY_BUTTON)
             ) {
                 Text(stringProvider.verifyAction)
             }
@@ -174,7 +180,8 @@ fun ReauthenticationDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                enabled = !isLoading
+                enabled = !isLoading,
+                modifier = Modifier.testTag(FirebaseAuthTestTags.Reauth.DISMISS_BUTTON)
             ) {
                 Text(stringProvider.dismissAction)
             }
