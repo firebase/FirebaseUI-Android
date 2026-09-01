@@ -106,7 +106,7 @@ dependencies {
     implementation(libs.zxing.core)
     annotationProcessor(libs.androidx.lifecycle.compiler)
 
-    implementation(platform(libs.firebase.bom))
+    api(platform(libs.firebase.bom))
     api(libs.firebase.auth)
 
     // Phone number validation
