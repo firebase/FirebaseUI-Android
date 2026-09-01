@@ -65,6 +65,9 @@ object FirebaseAuthTestTags {
 
         /** The top app bar's back navigation button. */
         const val BACK_BUTTON = "fui_sign_in_back_button"
+
+        /** The notice explaining that reauthentication here needs the account's password. */
+        const val REAUTH_PASSWORD_NOTICE = "fui_sign_in_reauth_password_notice"
     }
 
     /** Tags on the email/password sign-up screen. */

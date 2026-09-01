@@ -153,8 +153,14 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
         if (shouldLinkCredential) credentialProvider.getCredential(email, password) else null
 
     try {
-        // Check if new accounts are allowed (only for non-upgrade/non-linking flows)
-        if (!shouldLinkCredential && !provider.isNewAccountsAllowed) {
+        if (config.isReauthenticationMode) {
+            throw AuthException.UnknownException(
+                message = context.getString(R.string.fui_error_reauth_sign_up_not_allowed)
+            )
+        }
+        if (!shouldLinkCredential &&
+            (!provider.isNewAccountsAllowed || !config.isNewEmailAccountsAllowed)
+        ) {
             throw AuthException.UserNotFoundException(
                 message = context.getString(R.string.fui_error_email_does_not_exist)
             )
@@ -654,9 +660,17 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
         // signInOrReauth returns null in reauth mode (Task<Void> has no AuthResult).
         // Reconstruct success state from the now-reauthenticated current user.
         if (result == null && config.isReauthenticationMode) {
-            auth.currentUser?.let {
-                updateAuthState(AuthState.Success(result = null, user = it, isNewUser = false))
-            }
+            val reauthenticatedUser = auth.currentUser
+                ?: throw AuthException.UserNotFoundException(
+                    message = "No user is currently signed in for reauthentication"
+                )
+            updateAuthState(
+                AuthState.Success(
+                    result = null,
+                    user = reauthenticatedUser,
+                    reauthenticatedUid = reauthenticatedUser.uid,
+                )
+            )
             return null
         }
         result?.user?.let { mergeProfile(auth, displayName, photoUrl) }
@@ -1077,6 +1091,11 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         }
         // Clear DataStore after success
         persistenceManager.clear(context)
+        // In reauth mode the stamped Success is already published and there is no AuthResult, so
+        // updateAuthStateWithResult would overwrite the stamp with Idle and orphan the operation.
+        if (result == null && config.isReauthenticationMode) {
+            return null
+        }
         updateAuthStateWithResult(result)
         return result
     } catch (e: CancellationException) {

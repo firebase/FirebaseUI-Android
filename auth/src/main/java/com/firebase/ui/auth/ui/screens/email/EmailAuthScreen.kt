@@ -88,6 +88,8 @@ enum class EmailAuthMode {
  * @param onGoToSignUp A callback to switch the UI to the SignUp mode.
  * @param onGoToSignIn A callback to switch the UI to the SignIn mode.
  * @param onGoToResetPassword A callback to switch the UI to the ResetPassword mode.
+ * @param isEmailLocked true when the library fixed [email] and it must not be edited. Render the
+ * email field read-only while it is true.
  */
 class EmailAuthContentState(
     val mode: EmailAuthMode,
@@ -112,6 +114,7 @@ class EmailAuthContentState(
     val onGoToSignIn: () -> Unit,
     val onGoToResetPassword: () -> Unit,
     val onGoToEmailLinkSignIn: () -> Unit,
+    val isEmailLocked: Boolean = false,
 )
 
 /**
@@ -156,19 +159,42 @@ fun EmailAuthScreen(
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
     val confirmPasswordTextValue = rememberSaveable { mutableStateOf("") }
 
+    val isEmailLocked = remember(prefillEmail, configuration.isReauthenticationMode) {
+        configuration.isReauthenticationMode && !prefillEmail.isNullOrEmpty()
+    }
+
+    val isSignUpOffered = provider.isNewAccountsAllowed &&
+            configuration.isNewEmailAccountsAllowed &&
+            !configuration.isReauthenticationMode
+
     // Used for clearing text fields when switching EmailAuthMode changes
-    val textValues = listOf(
-        displayNameValue,
-        emailTextValue,
-        passwordTextValue,
-        confirmPasswordTextValue
-    )
+    val textValues = remember {
+        listOf(
+            displayNameValue,
+            emailTextValue,
+            passwordTextValue,
+            confirmPasswordTextValue
+        )
+    }
+
+    val resetTextValues: () -> Unit = remember(textValues, isEmailLocked, prefillEmail) {
+        {
+            textValues.forEach { it.value = "" }
+            if (isEmailLocked) {
+                emailTextValue.value = prefillEmail.orEmpty()
+            }
+        }
+    }
 
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
-    val isLoading = authState is AuthState.Loading
+    val isLoading = authState is AuthState.Loading ||
+        authState is AuthState.Reauthentication.Authenticating
     val authCredentialForLinking = remember { credentialForLinking }
-    val errorMessage =
-        if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
+    val errorMessage = when (val state = authState) {
+        is AuthState.Error -> state.exception.message
+        is AuthState.Reauthentication.AttemptFailed -> state.exception.message
+        else -> null
+    }
 
     // Latched locally since these get consumed (reset to Idle) below — deriving directly from
     // authState would close ResetPasswordUI/SignInEmailLinkUI's dialogs as soon as it resets.
@@ -193,28 +219,31 @@ fun EmailAuthScreen(
                 dialogController?.showErrorDialog(
                     exception = exception,
                     errorState = state,
-                    onRetry = { ex ->
-                        when (ex) {
-                            is AuthException.UserNotFoundException -> {
-                                val provider = configuration.providers
-                                    .filterIsInstance<AuthProvider.Email>()
-                                    .first()
-                                if (provider.isNewAccountsAllowed) {
-                                    // User not found, but new accounts are allowed, switch to sign-up
-                                    mode.value = EmailAuthMode.SignUp
+                    // Every branch below is inert while reauthenticating, so an action button
+                    // would only dismiss the dialog — leave it without one.
+                    onRetry = if (configuration.isReauthenticationMode) {
+                        null
+                    } else {
+                        { ex: AuthException ->
+                            when (ex) {
+                                is AuthException.UserNotFoundException -> {
+                                    if (isSignUpOffered) {
+                                        // User not found, but new accounts are allowed, switch to sign-up
+                                        mode.value = EmailAuthMode.SignUp
+                                    }
                                 }
-                            }
 
-                            is AuthException.InvalidCredentialsException -> {
-                                // User can retry sign in with corrected credentials
-                            }
+                                is AuthException.InvalidCredentialsException -> {
+                                    // User can retry sign in with corrected credentials
+                                }
 
-                            is AuthException.EmailAlreadyInUseException -> {
-                                // Switch to sign-in mode
-                                mode.value = EmailAuthMode.SignIn
-                            }
+                                is AuthException.EmailAlreadyInUseException -> {
+                                    // Switch to sign-in mode
+                                    mode.value = EmailAuthMode.SignIn
+                                }
 
-                            else -> Unit
+                                else -> Unit
+                            }
                         }
                     },
                     onRecover = if (exception is AuthException.DifferentSignInMethodRequiredException) {
@@ -250,9 +279,19 @@ fun EmailAuthScreen(
                 authUI.updateAuthState(AuthState.Idle)
             }
 
+            is AuthState.Reauthentication.PasswordResetLinkSent -> {
+                resetLinkSentLocal = true
+                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
+            }
+
             is AuthState.EmailSignInLinkSent -> {
                 emailSignInLinkSentLocal = true
                 authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.Reauthentication.EmailSignInLinkSent -> {
+                emailSignInLinkSentLocal = true
+                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
             }
 
             else -> Unit
@@ -263,6 +302,7 @@ fun EmailAuthScreen(
         mode = mode.value,
         displayName = displayNameValue.value,
         email = emailTextValue.value,
+        isEmailLocked = isEmailLocked,
         password = passwordTextValue.value,
         confirmPassword = confirmPasswordTextValue.value,
         isLoading = isLoading,
@@ -270,7 +310,9 @@ fun EmailAuthScreen(
         resetLinkSent = resetLinkSentLocal,
         emailSignInLinkSent = emailSignInLinkSentLocal,
         onEmailChange = { email ->
-            emailTextValue.value = email
+            if (!isEmailLocked) {
+                emailTextValue.value = email
+            }
         },
         onPasswordChange = { password ->
             passwordTextValue.value = password
@@ -362,23 +404,29 @@ fun EmailAuthScreen(
             }
         },
         onGoToSignUp = {
-            textValues.forEach { it.value = "" }
-            mode.value = EmailAuthMode.SignUp
+            if (isSignUpOffered) {
+                resetTextValues()
+                mode.value = EmailAuthMode.SignUp
+            }
         },
         onGoToSignIn = {
-            textValues.forEach { it.value = "" }
+            resetTextValues()
             mode.value = EmailAuthMode.SignIn
             emailSignInLinkSentLocal = false
         },
         onGoToResetPassword = {
-            textValues.forEach { it.value = "" }
+            // Offered during reauthentication too: a reset email leaves the sheet up and the
+            // request armed, and blocking it strands a user who has forgotten their password.
+            resetTextValues()
             mode.value = EmailAuthMode.ResetPassword
             resetLinkSentLocal = false
         },
         onGoToEmailLinkSignIn = {
-            textValues.forEach { it.value = "" }
-            mode.value = EmailAuthMode.EmailLinkSignIn
-            emailSignInLinkSentLocal = false
+            if (!configuration.isReauthenticationMode) {
+                resetTextValues()
+                mode.value = EmailAuthMode.EmailLinkSignIn
+                emailSignInLinkSentLocal = false
+            }
         },
     )
 
@@ -414,7 +462,8 @@ private fun DefaultEmailAuthContent(
                 onGoToSignUp = state.onGoToSignUp,
                 onGoToResetPassword = state.onGoToResetPassword,
                 onGoToEmailLinkSignIn = state.onGoToEmailLinkSignIn,
-                onNavigateBack = onCancel
+                onNavigateBack = onCancel,
+                isEmailLocked = state.isEmailLocked,
             )
         }
 
@@ -422,6 +471,7 @@ private fun DefaultEmailAuthContent(
             SignInEmailLinkUI(
                 configuration = configuration,
                 email = state.email,
+                isEmailLocked = state.isEmailLocked,
                 isLoading = state.isLoading,
                 emailSignInLinkSent = state.emailSignInLinkSent,
                 onEmailChange = state.onEmailChange,
@@ -446,7 +496,8 @@ private fun DefaultEmailAuthContent(
                 onConfirmPasswordChange = state.onConfirmPasswordChange,
                 onSignUpClick = state.onSignUpClick,
                 onGoToSignIn = state.onGoToSignIn,
-                onNavigateBack = onCancel
+                onNavigateBack = onCancel,
+                isEmailLocked = state.isEmailLocked,
             )
         }
 
@@ -455,6 +506,7 @@ private fun DefaultEmailAuthContent(
                 configuration = configuration,
                 isLoading = state.isLoading,
                 email = state.email,
+                isEmailLocked = state.isEmailLocked,
                 resetLinkSent = state.resetLinkSent,
                 onEmailChange = state.onEmailChange,
                 onSendResetLink = state.onSendResetLinkClick,

@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -90,6 +91,7 @@ fun SignInUI(
     onGoToResetPassword: () -> Unit,
     onGoToEmailLinkSignIn: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
+    isEmailLocked: Boolean = false,
 ) {
     val context = LocalContext.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
@@ -108,11 +110,21 @@ fun SignInUI(
         }
     }
 
+    val isSignUpOffered = provider.isNewAccountsAllowed &&
+            configuration.isNewEmailAccountsAllowed &&
+            !configuration.isReauthenticationMode
+
+    // An email link reopens the app with nothing armed, so completing it reports an interruption
+    // instead of the operation; a reset email leaves the reauth sheet and its request intact.
+    val isEmailLinkSignInOffered =
+        provider.isEmailLinkSignInEnabled && !configuration.isReauthenticationMode
+
     // Retrieve saved credentials when in SignIn mode
     val credentialRetrievalAttempted = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (configuration.isCredentialManagerEnabled &&
+            !configuration.isReauthenticationMode &&
             !credentialRetrievalAttempted.value &&
             PasswordCredentialHandler.hasSavedCredentials(context)) {
             credentialRetrievalAttempted.value = true
@@ -161,7 +173,7 @@ fun SignInUI(
                     if (onNavigateBack != null) {
                         IconButton(
                             onClick = onNavigateBack,
-                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.BACK_BUTTON)
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.BACK_BUTTON),
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -185,6 +197,7 @@ fun SignInUI(
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
+                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },
@@ -228,11 +241,23 @@ fun SignInUI(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
+            if (configuration.isReauthenticationMode) {
+                // Firebase reports "password" for passwordless email-link accounts too, so such a
+                // user is offered a password field they can never fill. Say so instead of stalling.
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .testTag(FirebaseAuthTestTags.SignIn.REAUTH_PASSWORD_NOTICE),
+                    text = context.getString(R.string.fui_reauth_password_required_notice),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             Row(
                 modifier = Modifier
                     .align(Alignment.End),
             ) {
-                if (provider.isNewAccountsAllowed) {
+                if (isSignUpOffered) {
                     Button(
                         modifier = Modifier
                             .testTag(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON),
@@ -265,7 +290,7 @@ fun SignInUI(
             }
 
             // Show toggle to email link sign-in
-            if (provider.isEmailLinkSignInEnabled) {
+            if (isEmailLinkSignInOffered) {
                 Spacer(modifier = Modifier.height(64.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),

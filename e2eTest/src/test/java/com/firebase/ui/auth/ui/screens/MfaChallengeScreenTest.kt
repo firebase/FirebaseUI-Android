@@ -36,6 +36,7 @@ import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringPro
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
+import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.MultiFactorInfo
 import com.google.firebase.auth.MultiFactorResolver

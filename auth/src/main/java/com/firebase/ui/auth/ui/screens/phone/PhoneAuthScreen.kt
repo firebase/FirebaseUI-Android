@@ -182,10 +182,16 @@ fun PhoneAuthScreen(
 
     val currentAuthState = remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val authState by currentAuthState
-    val isLoading = authState is AuthState.Loading
+    val isLoading = authState is AuthState.Loading ||
+        authState is AuthState.Reauthentication.Authenticating
 
     // A cancelled Loading outlives this composition on the process-scoped FirebaseAuthUI, and
     // currentAuthState is re-remembered per authUI, so onDispose reads the right instance.
+    //
+    // Only an ordinary Loading is retracted here. Under a reauthentication request the pending
+    // Loading is published as Reauthentication.Authenticating, which the reauth flow's own teardown
+    // owns; and were this to write anyway, updateAuthState folds Idle back into the armed request
+    // rather than dropping it.
     DisposableEffect(authUI) {
         onDispose {
             if (currentAuthState.value is AuthState.Loading) {
@@ -193,8 +199,11 @@ fun PhoneAuthScreen(
             }
         }
     }
-    val errorMessage =
-        if (authState is AuthState.Error) (authState as AuthState.Error).exception.message else null
+    val errorMessage = when (val state = authState) {
+        is AuthState.Error -> state.exception.message
+        is AuthState.Reauthentication.AttemptFailed -> state.exception.message
+        else -> null
+    }
 
     // Handle resend timer countdown
     LaunchedEffect(resendTimerSeconds.intValue) {
@@ -216,14 +225,33 @@ fun PhoneAuthScreen(
                 }
             }
 
-            is AuthState.PhoneNumberVerificationRequired -> {
-                verificationId.value = state.verificationId
-                forceResendingToken.value = state.forceResendingToken
+            is AuthState.PhoneNumberVerificationRequired,
+            is AuthState.Reauthentication.PhoneNumberVerificationRequired -> {
+                verificationId.value = when (state) {
+                    is AuthState.PhoneNumberVerificationRequired -> state.verificationId
+                    is AuthState.Reauthentication.PhoneNumberVerificationRequired -> {
+                        state.verificationId
+                    }
+                    else -> error("Unreachable phone verification state")
+                }
+                forceResendingToken.value = when (state) {
+                    is AuthState.PhoneNumberVerificationRequired -> state.forceResendingToken
+                    is AuthState.Reauthentication.PhoneNumberVerificationRequired -> {
+                        state.forceResendingToken
+                    }
+                    else -> error("Unreachable phone verification state")
+                }
                 step.value = PhoneAuthStep.EnterVerificationCode
                 resendTimerSeconds.intValue = provider.timeout.toInt() // Start 60-second countdown
             }
 
-            is AuthState.SMSAutoVerified -> {
+            is AuthState.SMSAutoVerified,
+            is AuthState.Reauthentication.SmsAutoVerified -> {
+                val credential = when (state) {
+                    is AuthState.SMSAutoVerified -> state.credential
+                    is AuthState.Reauthentication.SmsAutoVerified -> state.credential
+                    else -> error("Unreachable SMS verification state")
+                }
                 // Auto-verification succeeded, sign in with the credential
                 // and clear pending verification tracking
                 pendingVerificationPhoneNumber.value = null
@@ -241,13 +269,17 @@ fun PhoneAuthScreen(
                 } else {
                     // Consumed before the async sign-in call so it can't be clobbered by that
                     // call's own state.
-                    authUI.updateAuthState(AuthState.Idle)
+                    if (state is AuthState.Reauthentication.SmsAutoVerified) {
+                        authUI.updateReauthentication(state.requestId) { it.attemptStarted() }
+                    } else {
+                        authUI.updateAuthState(AuthState.Idle)
+                    }
                     coroutineScope.launch {
                         try {
                             authUI.signInWithPhoneAuthCredential(
                                 context = context,
                                 config = configuration,
-                                credential = state.credential
+                                credential = credential
                             )
                         } catch (e: Exception) {
                             // Error will be handled by authState flow
@@ -293,6 +325,16 @@ fun PhoneAuthScreen(
                 onCancel()
                 // Consumed so this doesn't leak to a freshly created screen.
                 authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.Reauthentication.AttemptFailed -> {
+                // Same teardown as the ordinary Error branch above: the attempt is over, so stop
+                // holding Firebase's callbacks. The phase itself is left latched for the reauth UI
+                // to render, so nothing is consumed here.
+                val exception = AuthException.from(state.exception, stringProvider)
+                if (exception !is AuthException.PhoneVerificationCooldownException) {
+                    cancelVerification("reauthentication attempt failed")
+                }
             }
 
             else -> Unit
@@ -412,8 +454,16 @@ fun PhoneAuthScreen(
         resendTimer = resendTimerSeconds.intValue,
         onChangeNumberClick = {
             cancelVerification("changing phone number")
-            // Nothing replaces the cancelled attempt here, so this handler retracts its Loading.
-            authUI.updateAuthState(AuthState.Idle)
+            // Nothing replaces the cancelled attempt here, so this handler retracts its Loading -
+            // as the armed request's provider-selection phase when one is running, Idle otherwise.
+            val currentReauthentication = authState as? AuthState.Reauthentication
+            if (currentReauthentication != null) {
+                authUI.updateReauthentication(currentReauthentication.requestId) {
+                    it.returnedToProviderSelection()
+                }
+            } else {
+                authUI.updateAuthState(AuthState.Idle)
+            }
             verificationJob.value = null
             isSubmittingCode.value = false
             step.value = PhoneAuthStep.EnterPhoneNumber

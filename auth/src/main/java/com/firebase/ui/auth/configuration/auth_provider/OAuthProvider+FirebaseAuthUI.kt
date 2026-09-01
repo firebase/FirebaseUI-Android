@@ -202,7 +202,21 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                 android.util.Log.w("OAuthProvider", "Failed to save sign-in preference", e)
             }
 
-            updateAuthStateWithResult(authResult)
+            if (config.isReauthenticationMode) {
+                val reauthenticatedUser = auth.currentUser
+                    ?: throw AuthException.UserNotFoundException(
+                        message = "No user is currently signed in for reauthentication"
+                    )
+                updateAuthState(
+                    AuthState.Success(
+                        result = authResult,
+                        user = reauthenticatedUser,
+                        reauthenticatedUid = reauthenticatedUser.uid,
+                    )
+                )
+            } else {
+                updateAuthStateWithResult(authResult)
+            }
         } else {
             throw AuthException.UnknownException(
                 message = "OAuth sign-in did not return a valid credential"

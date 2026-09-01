@@ -3,7 +3,10 @@ package com.firebase.ui.auth.configuration.auth_provider
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserInfo
 import com.google.firebase.auth.actionCodeSettings
@@ -478,6 +481,65 @@ class AuthProviderTest {
         val result = providers.filterToLinkedProviders(user)
 
         assertThat(result.map { it.providerId }).containsExactly("password")
+    }
+
+    // =============================================================================================
+    // Reauthentication guards
+    // =============================================================================================
+
+    private fun anonymousUpgradeAuth(): FirebaseAuth {
+        val anonymousUser = mock(FirebaseUser::class.java)
+        `when`(anonymousUser.isAnonymous).thenReturn(true)
+        return mock(FirebaseAuth::class.java).also { `when`(it.currentUser).thenReturn(anonymousUser) }
+    }
+
+    private fun upgradeEnabledConfig(): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(
+                AuthProvider.Email(
+                    emailLinkActionCodeSettings = null,
+                    passwordValidationRules = emptyList()
+                )
+            )
+        }
+        isAnonymousUpgradeEnabled = true
+        isCredentialLinkingEnabled = true
+    }
+
+    /**
+     * `canUpgradeAnonymous` decides whether provider code calls `linkWithCredential` instead of
+     * `reauthenticate`, and OAuth tests it *before* `isReauthenticationMode`. Linking is not a
+     * proof of identity, so an upgrade taken in reauthentication mode would be stamped with
+     * `reauthenticatedUid` and forged into a reauthentication proof — the same hole
+     * `canLinkCredential` already closes for the non-anonymous case.
+     */
+    @Test
+    fun `canUpgradeAnonymous is false in reauthentication mode`() {
+        val auth = anonymousUpgradeAuth()
+        val config = upgradeEnabledConfig()
+
+        // Control: outside reauthentication an enabled upgrade is still taken.
+        assertThat(AuthProvider.canUpgradeAnonymous(config, auth)).isTrue()
+
+        assertThat(
+            AuthProvider.canUpgradeAnonymous(config.copy(isReauthenticationMode = true), auth)
+        ).isFalse()
+    }
+
+    /** The sibling guard, pinned alongside so the pair cannot drift apart again. */
+    @Test
+    fun `canLinkCredential is false in reauthentication mode`() {
+        val nonAnonymousUser = mock(FirebaseUser::class.java)
+        `when`(nonAnonymousUser.isAnonymous).thenReturn(false)
+        val auth = mock(FirebaseAuth::class.java)
+        `when`(auth.currentUser).thenReturn(nonAnonymousUser)
+        val config = upgradeEnabledConfig()
+
+        assertThat(AuthProvider.canLinkCredential(config, auth)).isTrue()
+        assertThat(
+            AuthProvider.canLinkCredential(config.copy(isReauthenticationMode = true), auth)
+        ).isFalse()
     }
 
     @Test

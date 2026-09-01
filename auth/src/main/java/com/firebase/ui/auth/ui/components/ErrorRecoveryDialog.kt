@@ -64,7 +64,8 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
  *
  * @param error The [AuthException] to display recovery information for
  * @param stringProvider The [AuthUIStringProvider] for localized strings
- * @param onRetry Callback invoked when the user taps the retry action
+ * @param onRetry Callback invoked when the user taps the retry action, or `null` when there is
+ * nothing to retry — the action button is then not rendered at all
  * @param onDismiss Callback invoked when the user dismisses the dialog
  * @param modifier Optional [Modifier] for the dialog
  * @param onRecover Optional callback for custom recovery actions based on the exception type
@@ -76,7 +77,7 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 fun ErrorRecoveryDialog(
     error: AuthException,
     stringProvider: AuthUIStringProvider,
-    onRetry: (AuthException) -> Unit,
+    onRetry: ((AuthException) -> Unit)?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     onRecover: ((AuthException) -> Unit)? = null,
@@ -100,12 +101,12 @@ fun ErrorRecoveryDialog(
             )
         },
         confirmButton = {
-            if (isRecoverable(error)) {
+            // No callback means no action to take, so an action button would be a no-op.
+            val action = onRecover ?: onRetry
+            if (action != null && isRecoverable(error)) {
                 TextButton(
                     modifier = Modifier.testTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON),
-                    onClick = {
-                        onRecover?.invoke(error) ?: onRetry(error)
-                    }
+                    onClick = { action(error) },
                 ) {
                     Text(
                         text = getRecoveryActionText(error, stringProvider),
