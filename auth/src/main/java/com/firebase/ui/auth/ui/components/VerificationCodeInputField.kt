@@ -54,12 +54,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.editableText
+import androidx.compose.ui.semantics.insertTextAtCursor
+import androidx.compose.ui.semantics.isEditable
+import androidx.compose.ui.semantics.maxTextLength
+import androidx.compose.ui.semantics.requestFocus
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setText
+import androidx.compose.ui.text.AnnotatedString
 import androidx.core.text.isDigitsOnly
+import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.FieldValidator
 
+/**
+ * A row of [codeLength] single-character boxes that together hold one verification code. The
+ * group itself declares the text-input semantics so Robo/UiAutomator can `ACTION_SET_TEXT` the
+ * whole code in one action, since the individual boxes can't be addressed that way (issue #2050).
+ *
+ * @param modifier Applied to the group; a testTag here is the handle for resource-id lookups.
+ * @param codeLength How many digits the code has, and therefore how many boxes are drawn.
+ * @param validator Optional validator run against the code on every change; when supplied it drives
+ * the error state instead of [isError].
+ * @param isError Whether to draw the boxes in their error state. Ignored when [validator] is set.
+ * @param errorMessage Message shown beneath the boxes. Ignored when [validator] is set.
+ * @param onCodeComplete Called with the code once every box is filled.
+ * @param onCodeChange Called with the code so far on every change.
+ */
 @Composable
 fun VerificationCodeInputField(
     modifier: Modifier = Modifier,
@@ -74,6 +96,7 @@ fun VerificationCodeInputField(
     val focusedIndex = remember { mutableStateOf<Int?>(null) }
     val focusRequesters = remember { (1..codeLength).map { FocusRequester() } }
     val keyboardManager = LocalSoftwareKeyboardController.current
+    val stringProvider = LocalAuthUIStringProvider.current
 
     // Derive validation state
     val currentCodeString = remember { mutableStateOf("") }
@@ -127,8 +150,69 @@ fun VerificationCodeInputField(
         errorMessage
     }
 
+    // The digits of [text], or null when this field cannot hold them. "Digit" follows
+    // Character.isDigit, so Arabic-Indic/fullwidth digits are accepted and normalised to ASCII.
+    fun digitsOf(text: String, availableSlots: Int): List<Int>? = when {
+        text.isEmpty() -> emptyList()
+        text.length > availableSlots -> null
+        !text.isDigitsOnly() -> null
+        else -> text.map { it.digitToInt() }
+    }
+
+    // Index the visible cursor should sit at once [filled] boxes are occupied from the start.
+    fun cursorAfter(filled: Int): Int = filled.coerceIn(0, codeLength - 1)
+
     Column(
-        modifier = modifier,
+        modifier = modifier
+            // Applied after [modifier] so a caller-supplied testTag lands on the same node
+            // these text-input actions are declared on.
+            .semantics {
+                // TODO: give this group a proper label via AuthUIStringProvider (tracked
+                // separately). Must be contentDescription, not text — text breaks Robo detection.
+                isEditable = true
+                maxTextLength = codeLength
+                // Digits before the first empty box, not every digit entered — boxes fill
+                // non-contiguously, so compacting would misreport a gap-filled state.
+                editableText = AnnotatedString(
+                    code.value.takeWhile { it != null }.joinToString("")
+                )
+
+                setText { newCode ->
+                    val digits = digitsOf(newCode.text, codeLength) ?: return@setText false
+                    code.value = List(codeLength) { index -> digits.getOrNull(index) }
+                    focusedIndex.value = cursorAfter(digits.size)
+                    true
+                }
+
+                insertTextAtCursor { inserted ->
+                    // Inserting nothing succeeds before the full-code guard is reached, because
+                    // inserting nothing into a full code is a no-op and a no-op is not a failure.
+                    if (inserted.text.isEmpty()) return@insertTextAtCursor true
+
+                    val firstEmpty = code.value.indexOfFirst { it == null }
+                    if (firstEmpty < 0) return@insertTextAtCursor false
+
+                    val digits = digitsOf(inserted.text, codeLength - firstEmpty)
+                        ?: return@insertTextAtCursor false
+
+                    code.value = code.value.toMutableList().also { updated ->
+                        digits.forEachIndexed { offset, digit ->
+                            updated[firstEmpty + offset] = digit
+                        }
+                    }
+                    focusedIndex.value = cursorAfter(firstEmpty + digits.size)
+                    true
+                }
+
+                // Moves focus via the index the widget watches, not a FocusRequester, so this
+                // can't throw if invoked before the boxes are attached.
+                requestFocus {
+                    focusedIndex.value =
+                        code.value.indexOfFirst { it == null }.takeIf { it >= 0 }
+                            ?: (codeLength - 1)
+                    true
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -142,6 +226,10 @@ fun VerificationCodeInputField(
                         .aspectRatio(1f),
                     number = number,
                     isError = showError,
+                    digitContentDescription = stringProvider.verificationCodeDigitDescription(
+                        position = index + 1,
+                        total = codeLength
+                    ),
                     focusRequester = focusRequesters[index],
                     onFocusChanged = { isFocused ->
                         if (isFocused) {
@@ -191,6 +279,7 @@ private fun SingleDigitField(
     modifier: Modifier = Modifier,
     number: Int?,
     isError: Boolean = false,
+    digitContentDescription: String,
     focusRequester: FocusRequester,
     onFocusChanged: (Boolean) -> Unit,
     onNumberChanged: (Int?) -> Unit,
@@ -253,7 +342,7 @@ private fun SingleDigitField(
                 .fillMaxSize()
                 .wrapContentSize()
                 .semantics {
-                    contentDescription = "Verification code digit"
+                    contentDescription = digitContentDescription
                 }
                 .focusRequester(focusRequester)
                 .onFocusChanged {

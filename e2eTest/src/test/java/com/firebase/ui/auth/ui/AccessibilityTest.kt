@@ -10,7 +10,6 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -64,16 +63,53 @@ class AccessibilityTest {
     @Test
     fun verificationCodeInputField_rendersCorrectly() {
         composeTestRule.setContent {
-            VerificationCodeInputField(
-                codeLength = 6,
-                onCodeComplete = {},
-                onCodeChange = {}
-            )
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
+            ) {
+                VerificationCodeInputField(
+                    codeLength = 6,
+                    onCodeComplete = {},
+                    onCodeChange = {}
+                )
+            }
         }
 
         // Verify the verification code field renders
         // Note: Content descriptions are applied but may not be directly findable in Robolectric
         composeTestRule.waitForIdle()
+    }
+
+    @Test
+    fun verificationCodeInputField_digitBoxesHaveDistinctPositionalDescriptions() {
+        val codeLength = 6
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider
+            ) {
+                VerificationCodeInputField(
+                    codeLength = codeLength,
+                    onCodeComplete = {},
+                    onCodeChange = {}
+                )
+            }
+        }
+
+        // Each box's description must be distinct and positional, not the single shared literal
+        // all six boxes used to carry.
+        val descriptions = (1..codeLength).map { position ->
+            stringProvider.verificationCodeDigitDescription(position, codeLength)
+        }
+
+        assert(descriptions.toSet().size == codeLength) {
+            "Expected $codeLength distinct digit descriptions, got: $descriptions"
+        }
+
+        descriptions.forEach { description ->
+            composeTestRule
+                .onNodeWithContentDescription(description)
+                .assertExists()
+        }
     }
 
     @Test
