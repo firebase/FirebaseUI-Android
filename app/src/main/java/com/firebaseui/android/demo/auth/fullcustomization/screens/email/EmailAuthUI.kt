@@ -54,8 +54,21 @@ fun EmailAuthUI(state: EmailAuthContentState) {
                 email = state.email,
                 onEmailChange = state.onEmailChange,
                 isLoading = state.isLoading,
-                onSignIn = { state.onGoToSignIn(); chosen = true },
-                onCreateAccount = { state.onGoToSignUp(); chosen = true },
+                // onGoToSignIn/onGoToSignUp call the library's resetTextValues(), which clears
+                // every field including the address just typed (it only restores one when the
+                // email is locked for reauthentication) — so put it back afterwards.
+                onSignIn = {
+                    val typed = state.email
+                    state.onGoToSignIn()
+                    state.onEmailChange(typed)
+                    chosen = true
+                },
+                onCreateAccount = {
+                    val typed = state.email
+                    state.onGoToSignUp()
+                    state.onEmailChange(typed)
+                    chosen = true
+                },
                 // No provider sheet in this slot — the caller already committed to email.
                 onShowOtherMethods = {},
             )
