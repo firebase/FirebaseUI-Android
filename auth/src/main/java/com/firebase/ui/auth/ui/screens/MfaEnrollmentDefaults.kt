@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,8 +58,10 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.toMfaErrorMessage
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.QrCodeImage
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
@@ -130,6 +133,8 @@ internal fun DefaultMfaEnrollmentContent(
         )
     }
 
+    // Each step flags itself with exposeTestTagsAsResourceIds() because this screen is public and
+    // can be called standalone, with no flagged ancestor of ours above it.
     Box(modifier = Modifier.fillMaxSize()) {
         when (state.step) {
             MfaEnrollmentStep.SelectFactor -> {
@@ -242,6 +247,7 @@ private fun SelectFactorUI(
     val factorsToEnroll = availableFactors.filter { it !in enrolledFactorIds }
 
     Scaffold(
+        modifier = Modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = { Text(stringProvider.mfaManageFactorsTitle) },
@@ -301,11 +307,20 @@ private fun SelectFactorUI(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                // Keyed per factor because a user enrolled in neither factor sees both buttons
+                // at once, and a shared tag would collide.
                 factorsToEnroll.forEach { factor ->
                     Button(
                         onClick = { onFactorSelected(factor) },
                         enabled = !isLoading,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = when (factor) {
+                            MfaFactor.Sms -> Modifier
+                                .fillMaxWidth()
+                                .testTag(FirebaseAuthTestTags.MfaEnrollment.ENROLL_SMS_BUTTON)
+                            MfaFactor.Totp -> Modifier
+                                .fillMaxWidth()
+                                .testTag(FirebaseAuthTestTags.MfaEnrollment.ENROLL_TOTP_BUTTON)
+                        }
                     ) {
                         when (factor) {
                             MfaFactor.Sms -> Text(stringProvider.mfaStepConfigureSmsTitle)
@@ -325,6 +340,7 @@ private fun SelectFactorUI(
 
             onSkipClick?.let {
                 TextButton(
+                    modifier = Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.SKIP_BUTTON),
                     onClick = it,
                     enabled = !isLoading
                 ) {
@@ -384,9 +400,18 @@ private fun EnrolledFactorItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            // Same collision risk as the enroll buttons above (one item per enrolled factor),
+            // resolved the same way: key the tag off the factor type.
             OutlinedButton(
                 onClick = onRemove,
                 enabled = enabled,
+                modifier = when (factorInfo) {
+                    is PhoneMultiFactorInfo ->
+                        Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.REMOVE_SMS_BUTTON)
+                    is TotpMultiFactorInfo ->
+                        Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.REMOVE_TOTP_BUTTON)
+                    else -> Modifier
+                },
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 )
@@ -408,7 +433,7 @@ private fun ConfigureTotpUI(
     error: String?,
     stringProvider: AuthUIStringProvider
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -469,7 +494,9 @@ private fun ConfigureTotpUI(
                 TextButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_BACK_BUTTON)
                 ) {
                     Text(stringProvider.backAction)
                 }
@@ -477,7 +504,9 @@ private fun ConfigureTotpUI(
                 Button(
                     onClick = onContinueClick,
                     enabled = !isLoading && isValid,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_CONTINUE_BUTTON)
                 ) {
                     Text(stringProvider.continueText)
                 }
@@ -497,7 +526,7 @@ private fun VerifyTotpUI(
     error: String?,
     stringProvider: AuthUIStringProvider
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -535,7 +564,9 @@ private fun VerifyTotpUI(
                 label = { Text(stringProvider.verificationCodeLabel) },
                 enabled = !isLoading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_CODE_FIELD)
             )
 
             Row(
@@ -545,7 +576,9 @@ private fun VerifyTotpUI(
                 OutlinedButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BACK_BUTTON)
                 ) {
                     Text(stringProvider.backAction)
                 }
@@ -553,7 +586,9 @@ private fun VerifyTotpUI(
                 Button(
                     onClick = onVerifyClick,
                     enabled = !isLoading && isValid,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BUTTON)
                 ) {
                     Text(stringProvider.verifyAction)
                 }

@@ -15,15 +15,23 @@
 package com.firebase.ui.auth.ui.components
 
 import android.content.Context
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -67,9 +75,7 @@ class AuthProviderButtonTest {
         clickedProvider = null
     }
 
-    // =============================================================================================
-    // Basic UI Tests
-    // =============================================================================================
+    // ---- Basic UI Tests ----
 
     @Test
     fun `AuthProviderButton displays Google provider correctly`() {
@@ -320,9 +326,7 @@ class AuthProviderButtonTest {
             .assertIsEnabled()
     }
 
-    // =============================================================================================
-    // Click Interaction Tests
-    // =============================================================================================
+    // ---- Click Interaction Tests ----
 
     @Test
     fun `AuthProviderButton onClick is called when clicked`() {
@@ -364,9 +368,7 @@ class AuthProviderButtonTest {
         assertThat(clickedProvider).isNull()
     }
 
-    // =============================================================================================
-    // Style Resolution Tests
-    // =============================================================================================
+    // ---- Style Resolution Tests ----
 
     @Test
     fun `AuthProviderButton uses custom style when provided`() {
@@ -469,9 +471,7 @@ class AuthProviderButtonTest {
         assertThat(resolvedStyle.icon).isEqualTo(googleDefaultStyle.icon)
     }
 
-    // =============================================================================================
-    // Provider Style Fallback Tests
-    // =============================================================================================
+    // ---- Provider Style Fallback Tests ----
 
     @Test
     fun `AuthProviderButton provides fallback for unknown provider`() {
@@ -545,5 +545,90 @@ class AuthProviderButtonTest {
         assertThat(resolvedStyle).isNotNull()
         assertThat(resolvedStyle.backgroundColor).isEqualTo(AuthUITheme.ProviderStyle.Empty.backgroundColor)
         assertThat(resolvedStyle.contentColor).isEqualTo(AuthUITheme.ProviderStyle.Empty.contentColor)
+    }
+
+    // ---- Modifier contract tests ----
+
+    /**
+     * A composable must apply `modifier` to exactly one node. This button used to hand the same
+     * instance to both the Button and its inner Row, duplicating tags and padding.
+     */
+    @Test
+    fun `caller modifier is applied to exactly one node`() {
+        composeTestRule.setContent {
+            AuthProviderButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(CALLER_TAG),
+                provider = AuthProvider.Google(scopes = emptyList(), serverClientId = null),
+                onClick = { },
+                stringProvider = stringProvider
+            )
+        }
+
+        composeTestRule
+            .onAllNodesWithTag(CALLER_TAG, useUnmergedTree = true)
+            .assertCountEquals(1)
+    }
+
+    /**
+     * The caller's modifier must reach the button itself, not the content row. This is a guard on
+     * which node owns the tag, not a pin on the fix — the unmerged count test above pins that.
+     */
+    @Test
+    fun `caller modifier lands on the button rather than its content`() {
+        composeTestRule.setContent {
+            AuthProviderButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(CALLER_TAG),
+                provider = AuthProvider.Google(scopes = emptyList(), serverClientId = null),
+                onClick = { },
+                stringProvider = stringProvider
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag(CALLER_TAG)
+            .assertHasClickAction()
+    }
+
+    /**
+     * The content row owns its own width now, so a full-width button still start-aligns its icon
+     * and label rather than centering them.
+     */
+    @Test
+    fun `full width button keeps its content start aligned`() {
+        composeTestRule.setContent {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                AuthProviderButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(CALLER_TAG),
+                    provider = AuthProvider.Google(scopes = emptyList(), serverClientId = null),
+                    onClick = { },
+                    stringProvider = stringProvider
+                )
+            }
+        }
+
+        val label = context.getString(R.string.fui_sign_in_with_google)
+        val buttonBounds = composeTestRule.onNodeWithTag(CALLER_TAG).getUnclippedBoundsInRoot()
+        val iconBounds = composeTestRule
+            .onNodeWithContentDescription(label, useUnmergedTree = true)
+            .getUnclippedBoundsInRoot()
+
+        // 12.dp of Button content padding is the only gap expected between the two left edges.
+        val inset = iconBounds.left - buttonBounds.left
+        assertThat(inset.value).isWithin(TOLERANCE_DP).of(CONTENT_PADDING_DP)
+    }
+
+    private companion object {
+        const val CALLER_TAG = "caller_supplied_tag"
+
+        /** Horizontal `contentPadding` applied by [AuthProviderButton] to the Material button. */
+        const val CONTENT_PADDING_DP = 12f
+
+        const val TOLERANCE_DP = 0.5f
     }
 }

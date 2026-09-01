@@ -81,6 +81,7 @@ import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
@@ -103,6 +104,8 @@ import kotlinx.coroutines.tasks.await
  * flows, error handling, and multi-factor enrollment/challenge flows. Back navigation is driven by
  * the Jetpack Navigation stack so presses behave like native Android navigation.
  *
+ * @param modifier Applied once to the root [Surface]; it does not reach dialogs/sheets, which are
+ * separate semantics owners the library flags for test-tag exposure on its own.
  * @param authenticatedContent Optional slot that allows callers to render the authenticated
  * state themselves. When provided, it receives the current [AuthState] alongside an
  * [AuthSuccessUiContext] containing common callbacks (sign out, manage MFA, reload user).
@@ -202,8 +205,9 @@ fun FirebaseAuthScreen(
         LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current)
     ) {
         Surface(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
+                .exposeTestTagsAsResourceIds()
         ) {
             NavHost(
                 navController = navController,
@@ -223,13 +227,15 @@ fun FirebaseAuthScreen(
             ) {
                 composable(AuthRoute.MethodPicker.route) {
                     if (customMethodPickerLayout != null) {
-                        Box(modifier = modifier.fillMaxSize()) {
+                        Box(modifier = Modifier.fillMaxSize()) {
                             customMethodPickerLayout(configuration.providers, onProviderSelected)
                         }
                     } else {
-                        Scaffold { innerPadding ->
+                        // Redundant under the flagged Surface above, but kept uniform per
+                        // exposeTestTagsAsResourceIds.
+                        Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                             AuthMethodPicker(
-                                modifier = modifier
+                                modifier = Modifier
                                     .padding(innerPadding),
                                 providers = configuration.providers,
                                 logo = logoAsset,
@@ -714,6 +720,7 @@ fun FirebaseAuthScreen(
             val reauthConfig = pendingReauthConfig.value
             if (reauthConfig != null) {
                 ModalBottomSheet(
+                    modifier = Modifier.exposeTestTagsAsResourceIds(),
                     onDismissRequest = {
                         pendingReauthOperation.value = null
                         pendingReauthConfig.value = null
@@ -847,7 +854,9 @@ private fun AuthSuccessContent(
                     TooltipAnchorPosition.Above
                 ),
                 tooltip = {
-                    PlainTooltip {
+                    // The tooltip is its own semantics owner (a popup), so it's flagged even
+                    // though nothing inside it is tagged yet.
+                    PlainTooltip(modifier = Modifier.exposeTestTagsAsResourceIds()) {
                         Text(stringProvider.mfaDisabledTooltip)
                     }
                 },
@@ -932,6 +941,7 @@ private fun ProfileCompletionContent(
 @Composable
 private fun LoadingDialog(message: String) {
     AlertDialog(
+        modifier = Modifier.exposeTestTagsAsResourceIds(),
         onDismissRequest = {},
         confirmButton = {},
         containerColor = Color.Transparent,
@@ -990,7 +1000,9 @@ private fun ReauthSheetContent(
                     customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
                 }
             } else {
-                Scaffold { innerPadding ->
+                // Same reasoning as FirebaseAuthScreen's Scaffold: flagged even though the
+                // enclosing ModalBottomSheet already covers this subtree.
+                Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                     AuthMethodPicker(
                         modifier = Modifier.padding(innerPadding),
                         providers = reauthConfig.providers,

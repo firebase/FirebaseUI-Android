@@ -22,9 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GithubAuthProvider
@@ -99,6 +102,7 @@ fun ErrorRecoveryDialog(
         confirmButton = {
             if (isRecoverable(error)) {
                 TextButton(
+                    modifier = Modifier.testTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON),
                     onClick = {
                         onRecover?.invoke(error) ?: onRetry(error)
                     }
@@ -111,14 +115,17 @@ fun ErrorRecoveryDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.ErrorRecovery.DISMISS_BUTTON),
+                onClick = onDismiss
+            ) {
                 Text(
                     text = stringProvider.dismissAction,
                     style = MaterialTheme.typography.labelLarge
                 )
             }
         },
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         properties = properties
     )
 }
