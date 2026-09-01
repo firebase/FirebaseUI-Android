@@ -23,21 +23,41 @@ internal data class ReauthPresentationState(
     val subRoute: AuthRoute? = null,
 )
 
-// The process-local request and retry callback live in AuthState.Reauthentication. Only the marker
-// and presentation route needed for Activity/process restoration are saveable here.
+/**
+ * Explicit ids for the sub-routes this marker round-trips. Independent of [AuthRoute.route], so
+ * renaming a destination cannot change what an already-saved marker restores to.
+ */
+private const val SUB_ROUTE_EMAIL = "email"
+private const val SUB_ROUTE_PHONE = "phone"
+
+/**
+ * The id to save for a sub-route, or null for one that must not be restored.
+ *
+ * [AuthRoute.MfaChallenge] is absent: its resolver lives only in the process-local
+ * [com.firebase.ui.auth.AuthState], so that sub-route is derived on restore rather than saved.
+ */
+internal fun AuthRoute?.reauthSubRouteId(): String? = when (this) {
+    AuthRoute.Email -> SUB_ROUTE_EMAIL
+    AuthRoute.Phone -> SUB_ROUTE_PHONE
+    else -> null
+}
+
+internal fun reauthSubRouteForId(id: String?): AuthRoute? = when (id) {
+    SUB_ROUTE_EMAIL -> AuthRoute.Email
+    SUB_ROUTE_PHONE -> AuthRoute.Phone
+    else -> null
+}
+
+// Only the marker and presentation route are saveable; the rest of the request is process-local.
 internal val ReauthPresentationStateSaver: Saver<ReauthPresentationState?, List<String?>> = Saver(
     save = { state ->
-        state?.let { listOf(it.requestId, it.userUid, it.subRoute?.route) }
+        state?.let { listOf(it.requestId, it.userUid, it.subRoute.reauthSubRouteId()) }
     },
     restore = { saved ->
         ReauthPresentationState(
             requestId = requireNotNull(saved[0]),
             userUid = requireNotNull(saved[1]),
-            subRoute = when (saved.getOrNull(2)) {
-                AuthRoute.Email.route -> AuthRoute.Email
-                AuthRoute.Phone.route -> AuthRoute.Phone
-                else -> null
-            },
+            subRoute = reauthSubRouteForId(saved.getOrNull(2)),
         )
     },
 )
