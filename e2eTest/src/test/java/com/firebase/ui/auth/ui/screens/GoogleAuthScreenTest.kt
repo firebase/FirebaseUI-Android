@@ -41,6 +41,7 @@ import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.generateMockGoogleIdToken
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -240,7 +241,7 @@ class GoogleAuthScreenTest {
         // Step 3: Click the Google sign-in button on the method picker
         println("TEST: Scrolling to Google sign-in button...")
         composeTestRule
-            .onNodeWithTag("AuthMethodPicker LazyColumn")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
             .performScrollToNode(hasText(stringProvider.signInWithGoogle))
 
         println("TEST: Clicking Google sign-in button...")
@@ -350,7 +351,7 @@ class GoogleAuthScreenTest {
 
         // Scroll to the Google sign-in button
         composeTestRule
-            .onNodeWithTag("AuthMethodPicker LazyColumn")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
             .performScrollToNode(hasText(stringProvider.signInWithGoogle))
 
         // Click the actual Google sign-in button
