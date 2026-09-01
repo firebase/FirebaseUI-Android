@@ -59,8 +59,8 @@ import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.components.ErrorRecoveryDialog
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
-import com.firebase.ui.auth.ui.screens.DefaultMfaChallengeContent
-import com.firebase.ui.auth.ui.screens.DefaultMfaEnrollmentContent
+import com.firebase.ui.auth.ui.screens.mfa.DefaultMfaChallengeContent
+import com.firebase.ui.auth.ui.screens.mfa.DefaultMfaEnrollmentContent
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
 import com.firebase.ui.auth.ui.screens.email.ResetPasswordUI
 import com.firebase.ui.auth.ui.screens.email.SignInEmailLinkUI

@@ -25,6 +25,7 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthCredential
@@ -152,6 +153,123 @@ class OAuthProviderFirebaseAuthUITest {
         // Verify state is Success after sign-in
         val finalState = instance.authStateFlow().first { it !is AuthState.Loading }
         assertThat(finalState).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
+    }
+
+    // =============================================================================================
+    // signInWithProvider - Reauthentication
+    // =============================================================================================
+
+    /**
+     * The stamp is the *only* proof `FirebaseAuthScreen` accepts before resuming a pending
+     * sensitive operation, and this is where it is applied for Apple, GitHub, Microsoft, Yahoo,
+     * Twitter and generic OAuth. Publishing a plain success here (or a null uid) would make every
+     * federated reauthentication fail closed with an "incomplete" error and strand the operation.
+     */
+    @Test
+    fun `Reauthenticating with an OAuth provider stamps the reauthenticated uid`() = runTest {
+        val mockOAuthCredential = mock(OAuthCredential::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.isAnonymous).thenReturn(false)
+        `when`(mockUser.uid).thenReturn("reauth-uid")
+        `when`(mockUser.email).thenReturn(null)
+
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+        `when`(mockAuthResult.credential).thenReturn(mockOAuthCredential)
+
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setResult(mockAuthResult)
+
+        `when`(mockFirebaseAuth.pendingAuthResult).thenReturn(null)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockUser)
+        `when`(
+            mockUser.startActivityForReauthenticateWithProvider(
+                any<Activity>(),
+                any<OAuthProvider>()
+            )
+        ).thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val appleProvider = AuthProvider.Apple(locale = null, customParameters = emptyMap())
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(appleProvider) }
+        }.copy(isReauthenticationMode = true)
+
+        instance.signInWithProvider(
+            applicationContext,
+            config = config,
+            activity = mockActivity,
+            provider = appleProvider,
+        )
+
+        verify(mockUser).startActivityForReauthenticateWithProvider(
+            eq(mockActivity),
+            any<OAuthProvider>()
+        )
+        verify(mockFirebaseAuth, never())
+            .startActivityForSignInWithProvider(any<Activity>(), any<OAuthProvider>())
+
+        val finalState = instance.authStateFlow().first { it !is AuthState.Loading }
+        assertThat(finalState).isInstanceOf(AuthState.Success::class.java)
+        val success = finalState as AuthState.Success
+        assertThat(success.reauthenticatedUid).isEqualTo("reauth-uid")
+        assertThat(success.user).isSameInstanceAs(mockUser)
+        assertThat(success.isNewUser).isFalse()
+    }
+
+    /**
+     * A successful reauthenticate whose `currentUser` has since gone must surface an error rather
+     * than an unstamped success: the reauth UI would otherwise sit on Loading with nothing to act
+     * on, or worse accept a success that proves nothing.
+     */
+    @Test
+    fun `Reauthenticating with an OAuth provider errors when the user is gone`() = runTest {
+        val mockOAuthCredential = mock(OAuthCredential::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.isAnonymous).thenReturn(false)
+        `when`(mockUser.uid).thenReturn("reauth-uid")
+
+        val mockAuthResult = mock(AuthResult::class.java)
+        `when`(mockAuthResult.user).thenReturn(mockUser)
+        `when`(mockAuthResult.credential).thenReturn(mockOAuthCredential)
+
+        // Non-null while reauthenticating, then gone by the time the success is built.
+        var currentUser: FirebaseUser? = mockUser
+        `when`(mockFirebaseAuth.pendingAuthResult).thenReturn(null)
+        `when`(mockFirebaseAuth.currentUser).thenAnswer { currentUser }
+        `when`(
+            mockUser.startActivityForReauthenticateWithProvider(
+                any<Activity>(),
+                any<OAuthProvider>()
+            )
+        ).thenAnswer {
+            currentUser = null
+            val source = TaskCompletionSource<AuthResult>()
+            source.setResult(mockAuthResult)
+            source.task
+        }
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val githubProvider = AuthProvider.Github(customParameters = emptyMap())
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers { provider(githubProvider) }
+        }.copy(isReauthenticationMode = true)
+
+        try {
+            instance.signInWithProvider(
+                applicationContext,
+                config = config,
+                activity = mockActivity,
+                provider = githubProvider,
+            )
+            assertWithMessage("expected a null currentUser after reauth to throw").fail()
+        } catch (e: Exception) {
+            assertThat(e).isInstanceOf(AuthException.UserNotFoundException::class.java)
+        }
+
+        assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Error::class.java)
     }
 
     // =============================================================================================
