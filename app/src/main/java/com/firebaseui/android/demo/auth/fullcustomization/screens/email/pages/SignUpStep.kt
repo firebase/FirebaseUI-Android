@@ -146,9 +146,16 @@ fun SignUpStep(
                             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                                 FullCustomizationTextField(
                                     value = state.email,
-                                    onValueChange = {},
-                                    enabled = false,
+                                    // Editable here, unlike the login form: the account doesn't
+                                    // exist yet, and "Create account" can be reached without
+                                    // having typed an address on the previous screen.
+                                    onValueChange = state.onEmailChange,
+                                    label = "Email",
+                                    enabled = !state.isLoading,
                                     leadingIcon = { EmailFieldIcon() },
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Email,
+                                    ),
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .semantics { contentDescription = "text-field - email address display" },

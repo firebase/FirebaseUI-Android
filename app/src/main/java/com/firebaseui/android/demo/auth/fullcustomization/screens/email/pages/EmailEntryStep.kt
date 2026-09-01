@@ -172,7 +172,9 @@ fun EmailEntryStep(
                 CtaButton(
                     text = "Create account",
                     onClick = onCreateAccount,
-                    enabled = isEmailValid && !isLoading,
+                    // Not gated on the address: the sign-up form collects and confirms it, so
+                    // there is nothing to validate here first.
+                    enabled = !isLoading,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
