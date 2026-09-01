@@ -504,10 +504,10 @@ class MainSourceTestTagUsageTest {
          * Lower bound on `testTag` applications, so a scan that stops reaching files announces
          * itself; a floor, not a pin, since tagging more nodes is expected.
          */
-        const val MINIMUM_TAG_CALL_SITES = 63
+        const val MINIMUM_TAG_CALL_SITES = 62
 
         /** Lower bound on recognised owner constructions, for the same reason as above. */
-        const val MINIMUM_SEMANTICS_OWNER_SITES = 21
+        const val MINIMUM_SEMANTICS_OWNER_SITES = 20
 
         const val REGISTRY_REFERENCE_PREFIX = "FirebaseAuthTestTags."
 

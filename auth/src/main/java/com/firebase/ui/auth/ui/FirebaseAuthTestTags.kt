@@ -278,8 +278,5 @@ object FirebaseAuthTestTags {
 
         /** The button that submits the entered TOTP code to complete verification. */
         const val VERIFY_TOTP_BUTTON = "fui_mfa_enrollment_verify_totp_button"
-
-        /** The button confirming the user has saved their recovery codes, completing enrollment. */
-        const val RECOVERY_CODES_SAVED_BUTTON = "fui_mfa_enrollment_recovery_codes_saved_button"
     }
 }

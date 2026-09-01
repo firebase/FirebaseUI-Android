@@ -861,25 +861,6 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BUTTON, button())
     }
 
-    @Test
-    fun `mfa enrollment recovery codes step exposes its saved confirmation button`() {
-        setContent {
-            DefaultMfaEnrollmentContent(
-                state = MfaEnrollmentContentState(
-                    step = MfaEnrollmentStep.ShowRecoveryCodes,
-                    recoveryCodes = listOf("1111-1111", "2222-2222"),
-                ),
-                authConfiguration = phoneConfiguration(),
-                user = mock(),
-            )
-        }
-
-        assertExposedAsResourceId(
-            FirebaseAuthTestTags.MfaEnrollment.RECOVERY_CODES_SAVED_BUTTON,
-            button()
-        )
-    }
-
     // ---- The flow root ----
 
     /**
