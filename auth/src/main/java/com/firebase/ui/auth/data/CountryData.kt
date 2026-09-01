@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.data
 
+import androidx.compose.runtime.saveable.Saver
+
 /**
  * Represents country information for phone number authentication.
  *
@@ -40,6 +42,21 @@ data class CountryData(
 }
 
 /**
+ * Round-trips [CountryData] through `rememberSaveable` as a positional list of its four fields.
+ */
+internal val CountryDataSaver: Saver<CountryData, List<String>> = Saver(
+    save = { listOf(it.name, it.dialCode, it.countryCode, it.flagEmoji) },
+    restore = { saved ->
+        CountryData(
+            name = saved[0],
+            dialCode = saved[1],
+            countryCode = saved[2],
+            flagEmoji = saved[3],
+        )
+    },
+)
+
+/**
  * Converts an ISO 3166-1 alpha-2 country code to its corresponding flag emoji.
  *
  * @param countryCode The two-letter country code (e.g., "US", "GB", "FR").
@@ -49,7 +66,7 @@ fun countryCodeToFlagEmoji(countryCode: String): String {
     if (countryCode.length != 2) return ""
 
     val uppercaseCode = countryCode.uppercase()
-    val baseCodePoint = 0x1F1E6 // Regional Indicator Symbol Letter A
+    val baseCodePoint = 0x1F1E6
     val charCodeOffset = 'A'.code
 
     val firstChar = uppercaseCode[0].code
