@@ -8,35 +8,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
+import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebaseui.android.demo.auth.fullcustomization.common.OtherSignInMethodsSheet
-import com.firebaseui.android.demo.auth.fullcustomization.common.fetchLegacySignInMethods
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-
-private enum class FlowStep { EnterEmail, Login, SignUp }
 
 @Composable
 fun AuthMethodPickerUI(
     state: EmailAuthContentState,
-    auth: FirebaseAuth,
     otherProviders: List<AuthProvider>,
     onProviderSelected: (AuthProvider) -> Unit,
     tosUrl: String?,
     ppUrl: String?,
 ) {
-    var flowStep by remember { mutableStateOf(FlowStep.EnterEmail) }
+    // Only "has the user chosen yet" is local; which form to show is state.mode, so the library's
+    // own corrections (EmailAlreadyInUse -> SignIn, UserNotFound -> SignUp) actually move the UI.
+    var chosen by rememberSaveable { mutableStateOf(false) }
     var showOtherMethods by remember { mutableStateOf(false) }
-    var isCheckingEmail by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     // Password/confirmPassword are hoisted in EmailAuthContentState, not local to LoginStep/
     // SignUpStep — they survive a round trip back to EnterEmail, so a stale password typed for
@@ -45,39 +40,32 @@ fun AuthMethodPickerUI(
     val onUseDifferentEmail: () -> Unit = {
         state.onPasswordChange("")
         state.onConfirmPasswordChange("")
-        flowStep = FlowStep.EnterEmail
+        chosen = false
     }
 
     // customMethodPickerLayout is the NavHost's start destination and these steps are local
     // state, so without this the system back press would leave the auth flow entirely.
-    BackHandler(enabled = flowStep != FlowStep.EnterEmail) { onUseDifferentEmail() }
+    BackHandler(enabled = chosen) { onUseDifferentEmail() }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        when (flowStep) {
-            FlowStep.EnterEmail -> EmailEntryStep(
+        if (!chosen) {
+            EmailEntryStep(
                 email = state.email,
                 onEmailChange = state.onEmailChange,
-                isLoading = state.isLoading || isCheckingEmail,
-                onContinue = {
-                    isCheckingEmail = true
-                    coroutineScope.launch {
-                        val signInMethods = fetchLegacySignInMethods(auth, state.email)
-                        flowStep = if (signInMethods.isEmpty()) FlowStep.SignUp else FlowStep.Login
-                        isCheckingEmail = false
-                    }
-                },
+                isLoading = state.isLoading,
+                onSignIn = { state.onGoToSignIn(); chosen = true },
+                onCreateAccount = { state.onGoToSignUp(); chosen = true },
                 onShowOtherMethods = { showOtherMethods = true },
             )
-
-            FlowStep.Login -> LoginStep(
-                state = state,
-                onUseDifferentEmail = onUseDifferentEmail,
-            )
-
-            FlowStep.SignUp -> SignUpStep(
-                state = state,
-                onUseDifferentEmail = onUseDifferentEmail,
-            )
+        } else {
+            when (state.mode) {
+                EmailAuthMode.SignUp -> SignUpStep(state, onUseDifferentEmail)
+                // Reset-password and email-link are offered inline on the login form, which also
+                // reports their "sent" states, so every mode has a screen and none can blank out.
+                EmailAuthMode.SignIn,
+                EmailAuthMode.ResetPassword,
+                EmailAuthMode.EmailLinkSignIn -> LoginStep(state, onUseDifferentEmail)
+            }
         }
     }
 

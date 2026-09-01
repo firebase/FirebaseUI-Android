@@ -110,7 +110,7 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                         // The picker hosts its own email entry; this slot covers the email
                         // flows the library navigates to itself (reauth, linking, recovery), which
                         // would otherwise render its stock screen.
-                        emailContent = { state -> EmailAuthUI(state, authUI.auth) },
+                        emailContent = { state -> EmailAuthUI(state) },
                         phoneContent = { state -> PhoneSignInUI(state) },
                         mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
                         mfaChallengeContent = { state -> MfaChallengeUI(state) },
@@ -157,7 +157,6 @@ private fun MainUI(
             ) { state ->
                 AuthMethodPickerUI(
                     state = state,
-                    auth = authUI.auth,
                     otherProviders = providers.filterNot { it is AuthProvider.Email },
                     onProviderSelected = onProviderSelected,
                     tosUrl = configuration.tosUrl,
