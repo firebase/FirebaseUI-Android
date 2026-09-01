@@ -261,6 +261,43 @@ class FirebaseAuthUIAuthStateTest {
         assertThat(states[2]).isEqualTo(AuthState.Idle) // After sign-out
     }
 
+    /**
+     * A host calling raw `auth.signOut()` while a reauthentication is armed used to leave the
+     * internal state at Reauthentication.Required: the combine keeps preferring it, so the reauth UI
+     * stays up over a signed-out session and every provider fails with an untranslated "no user".
+     */
+    @Test
+    fun `authStateFlow() clears an armed Reauthentication Required when the user signs out`() =
+        runBlocking {
+            `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+            `when`(mockFirebaseUser.isEmailVerified).thenReturn(true)
+            `when`(mockFirebaseUser.providerData).thenReturn(emptyList())
+
+            val listenerCaptor = ArgumentCaptor.forClass(AuthStateListener::class.java)
+            val states = mutableListOf<AuthState>()
+            // Collected open-endedly and cancelled below: a fixed `take` would hang rather than
+            // fail when the sign-out emission never arrives.
+            val job = launch { authUI.authStateFlow().toList(states) }
+
+            delay(100)
+            verify(mockFirebaseAuth).addAuthStateListener(listenerCaptor.capture())
+
+            authUI.updateAuthState(
+                AuthState.Reauthentication.Required(mockFirebaseUser, reason = "Confirm it is you")
+            )
+            delay(100)
+            assertThat(states.last())
+                .isInstanceOf(AuthState.Reauthentication.Required::class.java)
+
+            // The host signs out behind the library's back, e.g. authUI.auth.signOut().
+            `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+            listenerCaptor.value.onAuthStateChanged(mockFirebaseAuth)
+            delay(200)
+            job.cancel()
+
+            assertThat(states.last()).isEqualTo(AuthState.Idle)
+        }
+
     @Test
     fun `authStateFlow() removes listener when flow is cancelled`() = runBlocking {
         // Given auth state flow
@@ -435,11 +472,11 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     // =============================================================================================
-    // delete() ReauthenticationRequired state Tests
+    // delete() Reauthentication.Required state Tests
     // =============================================================================================
 
     @Test
-    fun `delete() emits ReauthenticationRequired state when recent login required`() = runTest {
+    fun `delete() emits Reauthentication Required state when recent login required`() = runTest {
         val mockUser = mock(FirebaseUser::class.java)
         val tcs = TaskCompletionSource<Void>()
         tcs.setException(
@@ -458,13 +495,13 @@ class FirebaseAuthUIAuthStateTest {
             // expected — existing contract preserved
         }
 
-        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.ReauthenticationRequired::class.java)
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.Reauthentication.Required::class.java)
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(state.user).isEqualTo(mockUser)
     }
 
     @Test
-    fun `delete() attaches retryOperation to ReauthenticationRequired state`() = runTest {
+    fun `delete() attaches retryOperation to Reauthentication Required state`() = runTest {
         val mockUser = mock(FirebaseUser::class.java)
         val tcs = TaskCompletionSource<Void>()
         tcs.setException(
@@ -478,9 +515,175 @@ class FirebaseAuthUIAuthStateTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         try { authUI.delete(context) } catch (_: AuthException.InvalidCredentialsException) {}
 
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         // Fails until delete() passes retryOperation into the state
         assertThat(state.retryOperation).isNotNull()
+    }
+
+    @Test
+    fun `reauthentication provider states retain the same request`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        // Stands in for the composed FirebaseAuthScreen that folding is scoped to.
+        authUI.addReauthenticationDrainer()
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+
+        authUI.updateAuthState(AuthState.Loading("Signing in"))
+        val authenticating = authUI.authStateFlow().first()
+        assertThat(authenticating)
+            .isInstanceOf(AuthState.Reauthentication.Authenticating::class.java)
+        assertThat((authenticating as AuthState.Reauthentication).requestId)
+            .isEqualTo(required.requestId)
+
+        authUI.updateAuthState(AuthState.Error(IllegalArgumentException("wrong password")))
+        val failed = authUI.authStateFlow().first()
+        assertThat(failed)
+            .isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+        assertThat((failed as AuthState.Reauthentication).requestId)
+            .isEqualTo(required.requestId)
+
+        authUI.updateAuthState(AuthState.Cancelled)
+        val resumed = authUI.authStateFlow().first()
+        assertThat(resumed).isInstanceOf(AuthState.Reauthentication.Required::class.java)
+        assertThat((resumed as AuthState.Reauthentication.Required).requestId)
+            .isEqualTo(required.requestId)
+    }
+
+    @Test
+    fun `reauthentication email notifications retain the request until consumed`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        authUI.addReauthenticationDrainer()
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+
+        authUI.updateAuthState(AuthState.PasswordResetLinkSent())
+        val notification = authUI.authStateFlow().first()
+        assertThat(notification)
+            .isInstanceOf(AuthState.Reauthentication.PasswordResetLinkSent::class.java)
+        assertThat((notification as AuthState.Reauthentication).requestId)
+            .isEqualTo(required.requestId)
+
+        authUI.updateReauthentication(required.requestId) { it.returnedToProviderSelection() }
+        val resumed = authUI.authStateFlow().first()
+        assertThat(resumed).isInstanceOf(AuthState.Reauthentication.Required::class.java)
+        assertThat((resumed as AuthState.Reauthentication.Required).requestId)
+            .isEqualTo(required.requestId)
+    }
+
+    @Test
+    fun `updateReauthentication ignores a stale requestId`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+
+        authUI.updateReauthentication("stale-request-id") { it.attemptStarted() }
+
+        val unchanged = authUI.authStateFlow().first()
+        assertThat(unchanged).isInstanceOf(AuthState.Reauthentication.Required::class.java)
+        assertThat((unchanged as AuthState.Reauthentication.Required).requestId)
+            .isEqualTo(required.requestId)
+    }
+
+    @Test
+    fun `attemptCancelled does not rewind a surfaced attempt failure`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        authUI.addReauthenticationDrainer()
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+        authUI.updateAuthState(AuthState.Error(IllegalArgumentException("wrong password")))
+        assertThat(authUI.authStateFlow().first())
+            .isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+
+        authUI.updateReauthentication(required.requestId) { it.attemptCancelled() }
+
+        val unchanged = authUI.authStateFlow().first()
+        assertThat(unchanged).isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+        assertThat((unchanged as AuthState.Reauthentication).requestId)
+            .isEqualTo(required.requestId)
+    }
+
+    /**
+     * The phone sub-flow's "Change number" returns to provider selection, and by then a wrong SMS
+     * code has latched a failure. Clearing it there would erase the only report the user gets.
+     */
+    @Test
+    fun `returnedToProviderSelection does not wipe a surfaced attempt failure`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        authUI.addReauthenticationDrainer()
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+        authUI.updateAuthState(AuthState.Error(IllegalArgumentException("wrong sms code")))
+        assertThat(authUI.authStateFlow().first())
+            .isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+
+        authUI.updateReauthentication(required.requestId) { it.returnedToProviderSelection() }
+
+        val unchanged = authUI.authStateFlow().first()
+        assertThat(unchanged).isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+        assertThat((unchanged as AuthState.Reauthentication).requestId)
+            .isEqualTo(required.requestId)
+    }
+
+    /** Credentials were already accepted, so a stray attempt must not rewind the retry phase. */
+    @Test
+    fun `attemptStarted does not rewind a retry in flight`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        authUI.addReauthenticationDrainer()
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+        authUI.updateAuthState(AuthState.Reauthentication.RetryingOperation(required.request))
+
+        authUI.updateReauthentication(required.requestId) { it.attemptStarted() }
+
+        assertThat(authUI.authStateFlow().first())
+            .isInstanceOf(AuthState.Reauthentication.RetryingOperation::class.java)
+    }
+
+    /**
+     * `withReauth`/`delete` are public and arm a request with no [FirebaseAuthScreen] composed —
+     * the caller catches the exception and shows its own UI. Nothing can then drain the request,
+     * so folding must not apply: the app's own collector has to keep seeing ordinary states.
+     */
+    @Test
+    fun `a Success reaches collectors while an undrainable request is armed`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        authUI.updateAuthState(AuthState.Reauthentication.Required(mockFirebaseUser))
+        assertThat(authUI.authStateFlow().first())
+            .isInstanceOf(AuthState.Reauthentication.Required::class.java)
+
+        authUI.updateAuthState(AuthState.Success(result = null, user = mockFirebaseUser))
+
+        val observed = authUI.authStateFlow().first()
+        assertThat(observed).isInstanceOf(AuthState.Success::class.java)
+        assertThat(observed).isNotInstanceOf(AuthState.Reauthentication::class.java)
+    }
+
+    /** The same escape for Idle: an undrainable arming is replaced, not made permanent. */
+    @Test
+    fun `an Idle write clears an undrainable armed request`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        authUI.updateAuthState(AuthState.Reauthentication.Required(mockFirebaseUser))
+
+        authUI.updateAuthState(AuthState.Idle)
+
+        assertThat(authUI.authStateFlow().first())
+            .isNotInstanceOf(AuthState.Reauthentication::class.java)
+    }
+
+    @Test
+    fun `operationFinished only applies while a retry is in flight`() = runTest {
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
+        val required = AuthState.Reauthentication.Required(mockFirebaseUser)
+        authUI.updateAuthState(required)
+
+        authUI.updateReauthentication(required.requestId) {
+            it.operationFinished(AuthState.Success(result = null, user = mockFirebaseUser))
+        }
+
+        assertThat(authUI.authStateFlow().first())
+            .isInstanceOf(AuthState.Reauthentication.Required::class.java)
     }
 
     // =============================================================================================
@@ -499,7 +702,7 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     @Test
-    fun `withReauth() emits ReauthenticationRequired when FirebaseAuthRecentLoginRequiredException thrown`() = runTest {
+    fun `withReauth() emits Reauthentication Required when FirebaseAuthRecentLoginRequiredException thrown`() = runTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
 
@@ -507,13 +710,13 @@ class FirebaseAuthUIAuthStateTest {
             throw FirebaseAuthRecentLoginRequiredException("ERROR_REQUIRES_RECENT_LOGIN", "Recent login required")
         }
 
-        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.ReauthenticationRequired::class.java)
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.Reauthentication.Required::class.java)
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(state.user).isEqualTo(mockFirebaseUser)
     }
 
     @Test
-    fun `withReauth() forwards reason to ReauthenticationRequired state`() = runTest {
+    fun `withReauth() forwards reason to Reauthentication Required state`() = runTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
 
@@ -521,7 +724,7 @@ class FirebaseAuthUIAuthStateTest {
             throw FirebaseAuthRecentLoginRequiredException("ERROR_REQUIRES_RECENT_LOGIN", "Recent login required")
         }
 
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(state.reason).isEqualTo("Verify identity to change email")
     }
 
@@ -538,7 +741,7 @@ class FirebaseAuthUIAuthStateTest {
             )
         }
 
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(state.retryOperation).isNotNull()
         state.retryOperation!!(context)
         assertThat(callCount).isEqualTo(2)
@@ -547,7 +750,9 @@ class FirebaseAuthUIAuthStateTest {
     @Test
     fun `withReauth() retryOperation restores auth state after successful retry`() = runTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        authUI.addReauthenticationDrainer()
         var callCount = 0
 
         authUI.withReauth(context) {
@@ -557,16 +762,37 @@ class FirebaseAuthUIAuthStateTest {
             )
         }
 
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
 
-        // Simulate FirebaseAuthScreen: set Loading, then invoke the retry
-        authUI.updateAuthState(AuthState.Loading())
-        state.retryOperation!!(context)
+        // Reach the retry phase through the uid-gated credential success, not by hand: a Success
+        // stamped for this request's user is the only thing that may unlock the operation.
+        authUI.updateAuthState(
+            AuthState.Success(
+                result = null,
+                user = mockFirebaseUser,
+                reauthenticatedUid = mockFirebaseUser.uid,
+            )
+        )
+        val succeeded = authUI.authStateFlow().first()
+        assertThat(succeeded).isInstanceOf(AuthState.Reauthentication.Succeeded::class.java)
+        val request = (succeeded as AuthState.Reauthentication.Succeeded).request
+        assertThat(request.requestId).isEqualTo(state.requestId)
 
-        // Auth state must not be stuck on Loading — withReauth owns the state lifecycle
+        // What FirebaseAuthScreen does next: claim the operation once, then run it.
+        authUI.updateAuthState(AuthState.Reauthentication.RetryingOperation(request))
+        val retry = requireNotNull(request.claimRetryOperation())
+        retry(context)
+        assertThat(callCount).isEqualTo(2)
+        // Claimed for good: a second entry into the retry phase has nothing left to run.
+        assertThat(request.claimRetryOperation()).isNull()
+
+        // The retry outcome remains attached to the request until the screen consumes it.
         val authState = authUI.authStateFlow().first()
-        assertThat(authState).isNotInstanceOf(AuthState.Loading::class.java)
-        assertThat(authState).isInstanceOf(AuthState.Success::class.java)
+        assertThat(authState)
+            .isInstanceOf(AuthState.Reauthentication.OperationFinished::class.java)
+        val finished = authState as AuthState.Reauthentication.OperationFinished
+        assertThat(finished.requestId).isEqualTo(state.requestId)
+        assertThat(finished.outcome).isInstanceOf(AuthState.Success::class.java)
     }
 
     @Test
@@ -617,7 +843,7 @@ class FirebaseAuthUIAuthStateTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         try { authUI.delete(context) } catch (_: AuthException.InvalidCredentialsException) {}
 
-        val state = authUI.authStateFlow().first() as AuthState.ReauthenticationRequired
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         // Fails until delete() passes retryOperation into the state
         state.retryOperation!!(context)
 

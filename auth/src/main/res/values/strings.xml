@@ -179,6 +179,14 @@
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending...</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">That email address doesn\'t match an existing account</string>
 
+    <!-- Reauthentication error messages -->
+    <string name="fui_error_reauth_no_linked_providers" translation_description="Error shown when none of the configured sign-in providers is linked to the signed-in account, so reauthentication cannot be offered">None of the available sign-in methods is linked to your account.</string>
+    <string name="fui_error_reauth_incomplete" translation_description="Error shown when a sign-in completed but did not re-prove the account that is being confirmed">That did not confirm your identity for this account. Please try again.</string>
+    <string name="fui_error_reauth_interrupted" translation_description="Error shown when identity confirmation was interrupted (for example by the screen being recreated) and the pending sensitive operation can no longer be completed">Confirming your identity was interrupted. Please try that action again.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed" translation_description="Error shown when account creation is attempted while confirming the identity of an already signed-in account">You cannot create a new account while confirming your identity.</string>
+    <string name="fui_reauth_password_required_notice" translation_description="Notice under the password field while confirming the identity of a signed-in account, for accounts that sign in with an email link and so have no password">Confirming your identity here needs this account\'s password. If you sign in with an email link instead of a password, this account cannot be confirmed with a password.</string>
+    <string name="fui_text_field_read_only" translation_description="Accessibility state description announced for an input field whose value is fixed and cannot be edited">Read-only</string>
+
     <!-- Other error messages -->
     <string name="fui_error_unknown" translation_description="General error messages for an unknown failure.">An unknown error occurred.</string>
     <string name="fui_error_invalid_password" translation_description="Error message for when the user enters an invalid or wrong password.">Incorrect password.</string>
