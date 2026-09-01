@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,7 +49,8 @@ fun EmailEntryStep(
     email: String,
     onEmailChange: (String) -> Unit,
     isLoading: Boolean,
-    onContinue: () -> Unit,
+    onSignIn: () -> Unit,
+    onCreateAccount: () -> Unit,
     onShowOtherMethods: () -> Unit,
 ) {
     val isEmailValid = remember(email) {
@@ -154,12 +156,28 @@ fun EmailEntryStep(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Two explicit choices rather than one "Continue" that guesses: with email
+                // enumeration protection enabled, Firebase deliberately withholds whether an
+                // address is registered, so asking is the only reliable route.
                 CtaButton(
-                    text = "Continue",
-                    onClick = onContinue,
+                    text = "Sign in",
+                    onClick = onSignIn,
                     enabled = isEmailValid && !isLoading,
                     isLoading = isLoading,
-                    modifier = Modifier.semantics { contentDescription = "button - continue to password" },
+                    modifier = Modifier.semantics { contentDescription = "button - sign in" },
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                CtaButton(
+                    text = "Create account",
+                    onClick = onCreateAccount,
+                    enabled = isEmailValid && !isLoading,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                    modifier = Modifier.semantics { contentDescription = "button - create account" },
                 )
             }
 
