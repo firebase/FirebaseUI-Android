@@ -6,22 +6,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
+import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebaseui.android.demo.R
-import com.firebaseui.android.demo.auth.fullcustomization.common.fetchLegacySignInMethods
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
-
-private enum class FlowStep { EnterEmail, Login, SignUp }
 
 /**
  * Custom UI for `FirebaseAuthScreen.emailContent`.
@@ -31,21 +26,17 @@ private enum class FlowStep { EnterEmail, Login, SignUp }
  * Without it those flows fall back to the library's stock email screen, which is jarring inside a
  * demo whose whole premise is that nothing looks stock.
  *
- * There is no provider sheet here — the caller already committed to email — and an address supplied
- * by the library (as reauthentication does) skips straight to the password step.
+ * An address supplied by the library (as reauthentication does) skips the choice entirely — the
+ * caller already knows who is signing in.
  */
 @Composable
-fun EmailAuthUI(state: EmailAuthContentState, auth: FirebaseAuth) {
-    var flowStep by remember {
-        mutableStateOf(if (state.email.isBlank()) FlowStep.EnterEmail else FlowStep.Login)
-    }
-    var isCheckingEmail by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
+fun EmailAuthUI(state: EmailAuthContentState) {
+    var chosen by rememberSaveable { mutableStateOf(state.email.isNotBlank()) }
 
     val onUseDifferentEmail: () -> Unit = {
         state.onPasswordChange("")
         state.onConfirmPasswordChange("")
-        flowStep = FlowStep.EnterEmail
+        chosen = false
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -58,27 +49,23 @@ fun EmailAuthUI(state: EmailAuthContentState, auth: FirebaseAuth) {
             modifier = Modifier.fillMaxSize(),
         )
 
-        when (flowStep) {
-            FlowStep.EnterEmail -> EmailEntryStep(
+        if (!chosen) {
+            EmailEntryStep(
                 email = state.email,
                 onEmailChange = state.onEmailChange,
-                isLoading = state.isLoading || isCheckingEmail,
-                onContinue = {
-                    isCheckingEmail = true
-                    coroutineScope.launch {
-                        val signInMethods = fetchLegacySignInMethods(auth, state.email)
-                        flowStep = if (signInMethods.isEmpty()) FlowStep.SignUp else FlowStep.Login
-                        isCheckingEmail = false
-                    }
-                },
-                // No sheet in this slot, so the affordance stays inert rather than opening an
-                // empty one.
+                isLoading = state.isLoading,
+                onSignIn = { state.onGoToSignIn(); chosen = true },
+                onCreateAccount = { state.onGoToSignUp(); chosen = true },
+                // No provider sheet in this slot — the caller already committed to email.
                 onShowOtherMethods = {},
             )
-
-            FlowStep.Login -> LoginStep(state = state, onUseDifferentEmail = onUseDifferentEmail)
-
-            FlowStep.SignUp -> SignUpStep(state = state, onUseDifferentEmail = onUseDifferentEmail)
+        } else {
+            when (state.mode) {
+                EmailAuthMode.SignUp -> SignUpStep(state, onUseDifferentEmail)
+                EmailAuthMode.SignIn,
+                EmailAuthMode.ResetPassword,
+                EmailAuthMode.EmailLinkSignIn -> LoginStep(state, onUseDifferentEmail)
+            }
         }
     }
 }
