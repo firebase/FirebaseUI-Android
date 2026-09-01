@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -32,6 +33,7 @@ import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.yield
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
@@ -560,5 +562,296 @@ class ReauthFlowTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         assertThat(retryOperationCalled).isFalse()
+    }
+
+    /**
+     * End-to-end cover for a sensitive operation that signs the user out as its own success
+     * condition — `delete()` is the canonical one. `signOut()` stands in for it: same listener
+     * path, same `currentUser == null`, without depending on the emulator honouring a
+     * recent-login check.
+     *
+     * This is coverage of the full cycle, not a proof of the `isReauthenticated` guard in
+     * `FirebaseAuthUI`'s auth-state listener: removing that guard does not fail this test. Real
+     * `FirebaseAuth` posts its listener notification to the looper, so whether the request is
+     * cleared before or after the retry coroutine resumes is not deterministic here. The guard is
+     * pinned by `FirebaseAuthScreenReauthIdleResetTest.an operation that signs the user out is
+     * reported as completed, not interrupted`, which mocks `FirebaseAuth` and fires the listener
+     * synchronously from inside the operation to force the ordering.
+     */
+    @Test
+    fun `an operation that signs the user out completes instead of reporting an interruption`() {
+        val email = "reauth-signout-${System.currentTimeMillis()}@example.com"
+        val password = "test123"
+
+        val user = ensureFreshUser(authUI, email, password)
+        requireNotNull(user) { "Failed to create user" }
+
+        try {
+            verifyEmailInEmulator(authUI, emulatorApi, user)
+        } catch (e: Exception) {
+            Assume.assumeTrue(
+                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
+                false
+            )
+        }
+
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        var currentAuthState: AuthState = AuthState.Idle
+        var retryOperationStarted = false
+        var retryOperationCompleted = false
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false
+        }
+
+        composeAndroidTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                FirebaseAuthScreen(
+                    configuration = configuration,
+                    authUI = authUI,
+                    onSignInSuccess = {},
+                    onSignInFailure = {},
+                    onSignInCancelled = {},
+                ) { state, _ ->
+                    if (state is AuthState.Success) Text("AUTHENTICATED") else Text("NOT AUTHENTICATED")
+                }
+                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+                currentAuthState = authState
+            }
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 1: initial sign-in through the main screen.
+        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
+            .performScrollTo()
+            .performTextInput(email)
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.Success
+        }
+        composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
+
+        val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
+
+        // Step 2: arm a request whose operation signs the user out, as delete() would.
+        authUI.updateAuthState(
+            AuthState.Reauthentication.Required(
+                user = signedInUser,
+                reason = "Please verify your identity to continue",
+                retryOperation = {
+                    retryOperationStarted = true
+                    authUI.auth.signOut()
+                    // The suspension point is what makes a dropped request observable: if the
+                    // sign-out clears the request, this coroutine is cancelled here and never
+                    // reaches the line below.
+                    yield()
+                    retryOperationCompleted = true
+                },
+            )
+        )
+
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailHint)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Step 3: reauthenticate, which runs the signing-out operation.
+        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performScrollTo()
+            .performTextInput(password)
+        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
+            .performScrollTo()
+            .performClick()
+
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            retryOperationStarted && currentAuthState !is AuthState.Reauthentication
+        }
+
+        // Settle before asserting an absence: dropping the request mid-retry surfaces the
+        // interruption a frame or two later, and asserting too early would miss it.
+        repeat(5) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.waitForIdle()
+        }
+
+        // The operation ran to completion, and its sign-out is the outcome — not an interruption.
+        assertThat(retryOperationStarted).isTrue()
+        assertThat(retryOperationCompleted).isTrue()
+        assertThat(authUI.auth.currentUser).isNull()
+        assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
+        composeAndroidTestRule.onAllNodesWithText(stringProvider.errorDialogTitle)
+            .assertCountEquals(0)
+    }
+
+    /**
+     * Reauthentication through the phone sub-flow, which no other e2e case covers. A wrong SMS code
+     * must surface as a failed attempt and leave the pending operation unfired, with the request
+     * still armed rather than torn down.
+     *
+     * Note: the teardown of the underlying verification collection that a failed attempt triggers
+     * is not observable from here — proving it needs a late `onVerificationCompleted` injected into
+     * a still-open collection, which requires mocking `PhoneAuthProvider`. That assertion lives in
+     * `PhoneAuthScreenVerificationLifecycleTest.a failed reauthentication attempt cancels the
+     * in-flight verification`.
+     */
+    @Test
+    fun `a wrong SMS code during phone reauth does not fire the pending retry operation`() {
+        // Fixed US number and defaultCountryCode, matching the one phone e2e case that is not
+        // @Ignore'd: driving the country selector is what makes the others flaky.
+        val phone = "2025550188"
+
+        var currentAuthState: AuthState = AuthState.Idle
+        var retryOperationCalled = false
+
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(
+                    AuthProvider.Phone(
+                        defaultNumber = null,
+                        defaultCountryCode = "US",
+                        allowedCountries = null,
+                        timeout = 60L,
+                    )
+                )
+            }
+            isCredentialManagerEnabled = false
+        }
+
+        composeAndroidTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
+            ) {
+                FirebaseAuthScreen(
+                    configuration = configuration,
+                    authUI = authUI,
+                    onSignInSuccess = {},
+                    onSignInFailure = {},
+                    onSignInCancelled = {},
+                ) { state, _ ->
+                    if (state is AuthState.Success) Text("AUTHENTICATED") else Text("NOT AUTHENTICATED")
+                }
+                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
+                currentAuthState = authState
+            }
+        }
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // Step 1: sign in with phone so the only linked provider is the one reauth will offer.
+        submitPhoneNumber(phone)
+        enterVerificationCode(awaitPhoneCode(phone))
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            currentAuthState is AuthState.Success
+        }
+        composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
+
+        val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
+
+        // Step 2: arm a request. The sheet starts on the phone form, phone being the only
+        // configured provider linked to this user.
+        authUI.updateAuthState(
+            AuthState.Reauthentication.Required(
+                user = signedInUser,
+                reason = "Please verify your identity to continue",
+                retryOperation = { retryOperationCalled = true },
+            )
+        )
+
+        shadowOf(Looper.getMainLooper()).idle()
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.phoneNumberHint)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        // Step 3: request a fresh code, then submit one that cannot match it.
+        submitPhoneNumber(phone)
+        val reauthCode = awaitPhoneCode(phone)
+        enterVerificationCode(if (reauthCode == "000000") "111111" else "000000")
+
+        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeAndroidTestRule.onAllNodesWithText(stringProvider.errorDialogTitle)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeAndroidTestRule.onNodeWithText(stringProvider.dismissAction).performClick()
+        shadowOf(Looper.getMainLooper()).idle()
+
+        // The failed attempt leaves the request armed and the operation unrun.
+        assertThat(retryOperationCalled).isFalse()
+        assertThat(currentAuthState).isInstanceOf(AuthState.Reauthentication::class.java)
+    }
+
+    /** Types [phone] into whichever phone form is on screen and taps send. */
+    private fun submitPhoneNumber(phone: String) {
+        composeAndroidTestRule.onNodeWithText(stringProvider.phoneNumberHint)
+            .performScrollTo()
+            .performTextInput(phone)
+        composeAndroidTestRule.onNodeWithText(stringProvider.sendVerificationCode.uppercase())
+            .performScrollTo()
+            .performClick()
+        composeAndroidTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
+    }
+
+    /** The emulator mints the code asynchronously, so poll for it. */
+    private fun awaitPhoneCode(phone: String): String {
+        var code: String? = null
+        var attempt = 0
+        while (code == null && attempt < 8) {
+            Thread.sleep(if (attempt == 0) 200L else 500L * attempt)
+            shadowOf(Looper.getMainLooper()).idle()
+            code = runCatching { emulatorApi.fetchVerifyPhoneCode(phone) }.getOrNull()
+            attempt++
+        }
+        // Deliberately not an Assume: a silent skip here would make this whole case vacuous.
+        return requireNotNull(code) {
+            "Firebase Auth Emulator minted no verification code for $phone"
+        }
+    }
+
+    /** Types [code] one digit per field and taps verify. */
+    private fun enterVerificationCode(code: String) {
+        val digitFields = composeAndroidTestRule.onAllNodes(hasSetTextAction())
+        code.forEachIndexed { index, digit ->
+            composeAndroidTestRule.waitForIdle()
+            digitFields[index].performTextInput(digit.toString())
+        }
+        composeAndroidTestRule.waitForIdle()
+        composeAndroidTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
+            .performScrollTo()
+            .performClick()
+        composeAndroidTestRule.waitForIdle()
+        shadowOf(Looper.getMainLooper()).idle()
     }
 }
