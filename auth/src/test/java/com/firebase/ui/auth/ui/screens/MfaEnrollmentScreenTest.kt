@@ -22,10 +22,15 @@ import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
+import com.firebase.ui.auth.mfa.SmsEnrollmentHandler
+import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
+import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
+import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreenInternal
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.MultiFactorInfo
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -38,9 +43,14 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import com.google.firebase.auth.TotpSecret as FirebaseTotpSecret
 
 /**
  * Unit tests for [MfaEnrollmentScreen].
@@ -67,6 +77,17 @@ class MfaEnrollmentScreenTest {
     @Mock
     private lateinit var mockMultiFactor: com.google.firebase.auth.MultiFactor
 
+    @Mock
+    private lateinit var mockSmsHandler: SmsEnrollmentHandler
+
+    @Mock
+    private lateinit var mockTotpHandler: TotpEnrollmentHandler
+
+    @Mock
+    private lateinit var mockFirebaseTotpSecret: FirebaseTotpSecret
+
+    private lateinit var totpSecret: TotpSecret
+
     private lateinit var capturedState: MfaEnrollmentContentState
 
     @Before
@@ -78,6 +99,11 @@ class MfaEnrollmentScreenTest {
         `when`(mockUser.email).thenReturn("test@example.com")
         `when`(mockUser.multiFactor).thenReturn(mockMultiFactor)
         `when`(mockMultiFactor.enrolledFactors).thenReturn(emptyList())
+        `when`(mockFirebaseTotpSecret.sharedSecretKey).thenReturn("SECRET")
+        `when`(mockFirebaseTotpSecret.generateQrCodeUrl("test@example.com", "TestApp"))
+            .thenReturn("otpauth://totp/test@example.com?secret=SECRET&issuer=TestApp")
+        totpSecret = TotpSecret.from(mockFirebaseTotpSecret)
+        whenever { mockTotpHandler.generateSecret() }.thenReturn(totpSecret)
     }
 
     @Test
@@ -358,5 +384,148 @@ class MfaEnrollmentScreenTest {
 
         composeTestRule.waitForIdle()
         assertTrue(capturedState.canGoBack)
+    }
+
+    @Test
+    fun `successful TOTP enrollment enrolls the entered code and fires onComplete once`() {
+        val configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Totp))
+        var completeCount = 0
+        val errors = mutableListOf<Exception>()
+
+        val state = driveTotpFlowToVerifyStep(
+            configuration = configuration,
+            onComplete = { completeCount++ },
+            onError = { errors.add(it) }
+        )
+
+        composeTestRule.runOnUiThread {
+            state()?.onVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        // Exact arguments: the enrolled secret and code must be the ones the screen collected.
+        verifyBlocking(mockTotpHandler) {
+            enrollWithVerificationCode(
+                totpSecret = totpSecret,
+                verificationCode = VERIFICATION_CODE,
+                displayName = TOTP_DISPLAY_NAME
+            )
+        }
+        assertEquals(1, completeCount)
+        assertEquals(emptyList<Exception>(), errors)
+        // The screen does not navigate away on success; the host decides via onComplete.
+        assertEquals(MfaEnrollmentStep.VerifyFactor, state()?.step)
+        assertEquals(false, state()?.isLoading)
+        assertNull(state()?.error)
+        assertNull(state()?.exception)
+    }
+
+    @Test
+    fun `successful TOTP enrollment refreshes the enrolled factors from the user`() {
+        val enrolledFactor = mock<MultiFactorInfo>()
+        // First read is the initial state; the second is the post-enrollment refresh.
+        `when`(mockMultiFactor.enrolledFactors)
+            .thenReturn(emptyList(), listOf(enrolledFactor))
+
+        val state = driveTotpFlowToVerifyStep(
+            configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Totp)),
+            onComplete = {}
+        )
+
+        assertEquals(emptyList<MultiFactorInfo>(), state()?.enrolledFactors)
+
+        composeTestRule.runOnUiThread {
+            state()?.onVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(listOf(enrolledFactor), state()?.enrolledFactors)
+    }
+
+    @Test
+    fun `failed TOTP enrollment reports the exception and does not fire onComplete`() {
+        val configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Totp))
+        val failure = IllegalStateException("invalid verification code")
+        whenever {
+            mockTotpHandler.enrollWithVerificationCode(
+                totpSecret = totpSecret,
+                verificationCode = VERIFICATION_CODE,
+                displayName = TOTP_DISPLAY_NAME
+            )
+        }.doThrow(failure)
+
+        var completeCount = 0
+        val errors = mutableListOf<Exception>()
+
+        val state = driveTotpFlowToVerifyStep(
+            configuration = configuration,
+            onComplete = { completeCount++ },
+            onError = { errors.add(it) }
+        )
+
+        composeTestRule.runOnUiThread {
+            state()?.onVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(0, completeCount)
+        assertEquals(listOf<Exception>(failure), errors)
+        assertEquals(failure, state()?.exception)
+        assertEquals("invalid verification code", state()?.error)
+        assertEquals(MfaEnrollmentStep.VerifyFactor, state()?.step)
+        assertEquals(false, state()?.isLoading)
+    }
+
+    /**
+     * Renders [MfaEnrollmentScreenInternal] with the stubbed enrollment handlers and drives the
+     * TOTP route up to (but not including) the verify click.
+     *
+     * @return an accessor for the latest [MfaEnrollmentContentState] emitted by the screen
+     */
+    private fun driveTotpFlowToVerifyStep(
+        configuration: MfaConfiguration,
+        onComplete: () -> Unit,
+        onError: (Exception) -> Unit = {}
+    ): () -> MfaEnrollmentContentState? {
+        var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
+
+        composeTestRule.setContent {
+            MfaEnrollmentScreenInternal(
+                user = mockUser,
+                auth = mockAuth,
+                configuration = configuration,
+                smsHandler = mockSmsHandler,
+                totpHandler = mockTotpHandler,
+                onComplete = onComplete,
+                onError = onError
+            ) { state ->
+                currentState = state
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        // A single allowed factor auto-selects TOTP and generates the secret.
+        assertEquals(MfaEnrollmentStep.ConfigureTotp, currentState?.step)
+        assertEquals(totpSecret, currentState?.totpSecret)
+
+        composeTestRule.runOnUiThread {
+            currentState?.onContinueToVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.runOnUiThread {
+            currentState?.onVerificationCodeChange?.invoke(VERIFICATION_CODE)
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+        assertEquals(VERIFICATION_CODE, currentState?.verificationCode)
+
+        return { currentState }
+    }
+
+    private companion object {
+        const val VERIFICATION_CODE = "123456"
+        const val TOTP_DISPLAY_NAME = "Authenticator App"
     }
 }
