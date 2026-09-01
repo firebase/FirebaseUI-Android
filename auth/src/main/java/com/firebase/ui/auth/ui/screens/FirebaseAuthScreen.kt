@@ -397,16 +397,19 @@ fun FirebaseAuthScreen(
                 }
 
                 composable(AuthRoute.MfaChallenge.route) {
-                    val resolver = pendingResolver.value
+                    // Retained for this back-stack entry: onSuccess clears pendingResolver, and
+                    // reading it directly would blank the screen through the exit transition.
+                    val resolver = remember { pendingResolver.value }
                     if (resolver != null) {
                         MfaChallengeScreen(
                             resolver = resolver,
                             auth = authUI.auth,
                             content = mfaChallengeContent,
-                            onSuccess = {
+                            onSuccess = { result ->
                                 pendingResolver.value = null
-                                // Reset auth state to Idle so the firebaseAuthFlow Success state takes over
-                                authUI.updateAuthState(AuthState.Idle)
+                                // Route through the same path every other provider uses so
+                                // onSignInSuccess receives the resolved AuthResult.
+                                authUI.updateAuthStateWithResult(result)
                             },
                             onCancel = {
                                 pendingResolver.value = null
