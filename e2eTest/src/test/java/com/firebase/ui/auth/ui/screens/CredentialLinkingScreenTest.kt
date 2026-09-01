@@ -248,11 +248,16 @@ class CredentialLinkingScreenTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Step 7: Wait for success
+        // Note: `currentAuthState` may already be `AuthState.Success` from the initial
+        // email/password sign-in, so checking `is AuthState.Success` alone can pass
+        // immediately before the phone link has actually completed. Wait for the
+        // linked provider to actually show up on the (mutated-in-place) user instead.
         println("TEST: Waiting for auth state change after phone verification...")
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state: $currentAuthState")
-            currentAuthState is AuthState.Success
+            val state = currentAuthState
+            state is AuthState.Success && state.user.providerData.any { it.providerId == "phone" }
         }
 
         // Step 8: Verify the UID is preserved (linking happened, not a new account)
@@ -369,11 +374,16 @@ class CredentialLinkingScreenTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Step 6: Wait for linking to complete
+        // Note: `currentAuthState` may already be `AuthState.Success` from the initial
+        // email/password sign-in, so checking `is AuthState.Success` alone can pass
+        // immediately before the Google link has actually completed. Wait for the
+        // linked provider to actually show up on the (mutated-in-place) user instead.
         println("TEST: Waiting for Google linking to complete...")
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state: $currentAuthState")
-            currentAuthState is AuthState.Success
+            val state = currentAuthState
+            state is AuthState.Success && state.user.providerData.any { it.providerId == "google.com" }
         }
 
         // Step 7: Verify the UID is preserved and Google provider is added
