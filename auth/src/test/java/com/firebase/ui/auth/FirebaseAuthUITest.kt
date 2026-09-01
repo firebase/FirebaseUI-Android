@@ -794,6 +794,43 @@ class FirebaseAuthUITest {
         assertThat(controller.configuration.isReauthenticationMode).isTrue()
     }
 
+    /**
+     * Defence in depth alongside the `canLinkCredential` / `canUpgradeAnonymous` guards: forcing
+     * both flags off makes the reauthentication config self-describing, so nothing reading the
+     * configuration alone can conclude that linking a credential is allowed here.
+     */
+    @Test
+    fun `createReauthFlow resulting config forces credential linking and anonymous upgrade off`() {
+        val mockUser = mock(FirebaseUser::class.java)
+        val info = mock(UserInfo::class.java)
+        `when`(info.providerId).thenReturn("password")
+        `when`(mockUser.providerData).thenReturn(listOf(info))
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+        val authUI = FirebaseAuthUI.create(defaultApp, mockAuth)
+
+        val config = authUIConfiguration {
+            this.context = ApplicationProvider.getApplicationContext<Context>()
+            providers {
+                provider(
+                    AuthProvider.Email(
+                        emailLinkActionCodeSettings = null,
+                        passwordValidationRules = emptyList()
+                    )
+                )
+            }
+            isAnonymousUpgradeEnabled = true
+            isCredentialLinkingEnabled = true
+        }
+        assertThat(config.isAnonymousUpgradeEnabled).isTrue()
+        assertThat(config.isCredentialLinkingEnabled).isTrue()
+
+        val controller = authUI.createReauthFlow(config)
+
+        assertThat(controller.configuration.isAnonymousUpgradeEnabled).isFalse()
+        assertThat(controller.configuration.isCredentialLinkingEnabled).isFalse()
+    }
+
 
     @Test
     fun `canHandleIntent returns true when auth validates email link`() {

@@ -72,6 +72,7 @@ fun SignUpUI(
     onGoToSignIn: () -> Unit,
     onSignUpClick: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
+    isEmailLocked: Boolean = false,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val context = LocalContext.current
@@ -155,6 +156,7 @@ fun SignUpUI(
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
+                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },
