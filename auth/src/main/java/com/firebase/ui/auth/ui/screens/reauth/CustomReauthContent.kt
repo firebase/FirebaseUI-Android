@@ -22,11 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
@@ -122,6 +124,7 @@ internal fun CustomReauthContent(
         null -> content(slotState)
 
         AuthRoute.Email -> ModalBottomSheet(
+            modifier = Modifier.exposeTestTagsAsResourceIds(),
             onDismissRequest = closeSubFlow,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         ) {
@@ -138,6 +141,7 @@ internal fun CustomReauthContent(
         }
 
         AuthRoute.Phone -> ModalBottomSheet(
+            modifier = Modifier.exposeTestTagsAsResourceIds(),
             onDismissRequest = closeSubFlow,
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         ) {
@@ -154,6 +158,7 @@ internal fun CustomReauthContent(
 
         AuthRoute.MfaChallenge -> if (mfaResolver != null) {
             ModalBottomSheet(
+                modifier = Modifier.exposeTestTagsAsResourceIds(),
                 onDismissRequest = closeSubFlow,
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             ) {

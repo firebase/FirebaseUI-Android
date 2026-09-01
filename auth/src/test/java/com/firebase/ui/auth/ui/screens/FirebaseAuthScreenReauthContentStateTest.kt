@@ -39,7 +39,7 @@ import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
-import com.firebase.ui.auth.ui.components.ERROR_DIALOG_ACTION_TEST_TAG
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -650,7 +650,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         // Ungated, onRecover would navigate the outer NavHost to the non-reauth email screen.
         // With both callbacks withheld the button has nothing to do, so it must not render.
-        composeTestRule.onNodeWithTag(ERROR_DIALOG_ACTION_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON).assertDoesNotExist()
         composeTestRule.onNodeWithText(stringProvider.dismissAction).assertExists()
         composeTestRule.onAllNodesWithText(stringProvider.passwordHint).assertCountEquals(0)
     }
@@ -685,7 +685,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag(ERROR_DIALOG_ACTION_TEST_TAG).performClick()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON).performClick()
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.passwordHint).assertExists()

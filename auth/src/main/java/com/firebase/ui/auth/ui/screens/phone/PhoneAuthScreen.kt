@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.screens.phone
 import android.content.Context
 import android.util.Log
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -112,9 +113,8 @@ class PhoneAuthContentState(
 )
 
 /**
- * A stateful composable that manages the complete logic for phone number authentication. It handles
- * the multi-step flow of sending and verifying an SMS code, exposing the state for each step to a
- * custom UI via a trailing lambda (slot). This component renders no UI itself.
+ * A stateful composable that manages the complete logic for phone number authentication, exposing
+ * state for each step to a custom UI slot. Contributes no UI beyond its hosting layout node.
  *
  * @param context The Android context.
  * @param configuration The authentication UI configuration containing the phone provider settings.
@@ -122,9 +122,10 @@ class PhoneAuthContentState(
  * @param onSuccess Callback invoked when authentication succeeds with the [AuthResult].
  * @param onError Callback invoked when an authentication error occurs.
  * @param onCancel Callback invoked when the user cancels the authentication flow.
- * @param modifier Optional [Modifier] for the composable.
+ * @param modifier Applied once to the [Box] hosting the rendered content; it propagates minimum
+ * constraints so it doesn't change how content is measured.
  * @param content A composable lambda that receives [PhoneAuthContentState] to render the UI for
- * each step. If null, no UI will be rendered.
+ * each step. If null, the default UI for the current step is rendered.
  */
 @Composable
 fun PhoneAuthScreen(
@@ -473,14 +474,18 @@ fun PhoneAuthScreen(
         }
     )
 
-    if (content != null) {
-        content(state)
-    } else {
-        DefaultPhoneAuthContent(
-            configuration = configuration,
-            state = state,
-            onCancel = onCancel
-        )
+    // propagateMinConstraints keeps this box layout-neutral: content is measured with the same
+    // constraints it would receive without the box.
+    Box(modifier = modifier, propagateMinConstraints = true) {
+        if (content != null) {
+            content(state)
+        } else {
+            DefaultPhoneAuthContent(
+                configuration = configuration,
+                state = state,
+                onCancel = onCancel
+            )
+        }
     }
 }
 

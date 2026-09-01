@@ -90,6 +90,8 @@ import com.firebase.ui.auth.configuration.validators.PasswordValidator
  * @param leadingIcon An optional icon to display at the start of the field.
  * @param trailingIcon An optional icon to display at the start of the field.
  * @param readOnly If the value cannot be edited by the user.
+ * @param visibilityToggleModifier A modifier for the password visibility toggle button, separate
+ * from [modifier] which targets the field itself — e.g. to apply a test tag to the toggle.
  */
 @Composable
 fun AuthTextField(
@@ -108,6 +110,7 @@ fun AuthTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
+    visibilityToggleModifier: Modifier = Modifier,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     val localContext = LocalContext.current
@@ -184,6 +187,7 @@ fun AuthTextField(
         trailingIcon = trailingIcon ?: {
             if (isSecureTextField) {
                 IconButton(
+                    modifier = visibilityToggleModifier,
                     onClick = {
                         passwordVisible = !passwordVisible
                     }

@@ -34,7 +34,7 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import androidx.compose.runtime.CompositionLocalProvider
-import com.firebase.ui.auth.ui.components.ERROR_DIALOG_ACTION_TEST_TAG
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.google.common.truth.Truth.assertThat
@@ -199,7 +199,7 @@ class EmailAuthScreenReauthEmailLockTest {
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.dismissAction).assertExists()
-        composeTestRule.onNodeWithTag(ERROR_DIALOG_ACTION_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON).assertDoesNotExist()
     }
 
     /**

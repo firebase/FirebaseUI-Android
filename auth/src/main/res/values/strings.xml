@@ -74,6 +74,7 @@
     <string name="fui_use_different_method_action" translation_description="Action prompting the user to select a different MFA method.">Use a different method</string>
     <string name="fui_secret_key_label" translation_description="Label for a secret key value.">Secret key</string>
     <string name="fui_verification_code_label" translation_description="Label for verification code input fields.">Verification code</string>
+    <string name="fui_verification_code_digit_description" translation_description="Content description for a single verification code digit box, announced positionally so screen readers can distinguish each box. %1$d is the 1-indexed position of this box; %2$d is the total number of boxes.">Verification code digit %1$d of %2$d</string>
     <string name="fui_identity_verified_message" translation_description="Message shown when identity verification succeeds.">Identity verified. Please try your action again.</string>
 
     <!-- MFA management -->

@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.DialogProperties
 import com.firebase.ui.auth.AuthException
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.GithubAuthProvider
@@ -33,9 +35,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.TwitterAuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
-
-/** Test tag on the dialog's recovery/retry action button, which only renders when it has an action. */
-internal const val ERROR_DIALOG_ACTION_TEST_TAG = "ErrorRecoveryDialogAction"
 
 /**
  * A composable dialog for displaying authentication errors with recovery options.
@@ -106,8 +105,8 @@ fun ErrorRecoveryDialog(
             val action = onRecover ?: onRetry
             if (action != null && isRecoverable(error)) {
                 TextButton(
+                    modifier = Modifier.testTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON),
                     onClick = { action(error) },
-                    modifier = Modifier.testTag(ERROR_DIALOG_ACTION_TEST_TAG),
                 ) {
                     Text(
                         text = getRecoveryActionText(error, stringProvider),
@@ -117,14 +116,17 @@ fun ErrorRecoveryDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.ErrorRecovery.DISMISS_BUTTON),
+                onClick = onDismiss
+            ) {
                 Text(
                     text = stringProvider.dismissAction,
                     style = MaterialTheme.typography.labelLarge
                 )
             }
         },
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         properties = properties
     )
 }

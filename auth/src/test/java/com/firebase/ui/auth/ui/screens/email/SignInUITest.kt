@@ -24,11 +24,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
 import androidx.credentials.CredentialManager
@@ -38,6 +43,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
@@ -473,7 +479,7 @@ class SignInUITest {
             isEmailLocked = true,
         )
 
-        composeTestRule.onNodeWithTag(REAUTH_PASSWORD_NOTICE_TEST_TAG).assertExists()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.REAUTH_PASSWORD_NOTICE).assertExists()
         composeTestRule
             .onNodeWithText(applicationContext.getString(R.string.fui_reauth_password_required_notice))
             .assertExists()
@@ -523,7 +529,7 @@ class SignInUITest {
     fun `no password requirement notice outside reauthentication`() {
         setSignInUIContent(isNewAccountsAllowed = true)
 
-        composeTestRule.onNodeWithTag(REAUTH_PASSWORD_NOTICE_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.REAUTH_PASSWORD_NOTICE).assertDoesNotExist()
     }
 
     /** Control for the test above: outside reauthentication mode the autofill still happens. */
@@ -554,5 +560,68 @@ class SignInUITest {
 
         composeTestRule.onNodeWithText(SAVED_CREDENTIAL_USERNAME).assertExists()
         assertThat(signInClicks).isEqualTo(1)
+    }
+
+    // ---- Modifier contract tests ----
+
+    private fun setSignInUIContent(modifier: Modifier) {
+        val provider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                SignInUI(
+                    modifier = modifier,
+                    configuration = configuration,
+                    isLoading = false,
+                    emailSignInLinkSent = false,
+                    email = "",
+                    password = "",
+                    onEmailChange = { },
+                    onPasswordChange = { },
+                    onSignInClick = { },
+                    onRetrievedCredential = { },
+                    onGoToEmailLinkSignIn = { },
+                    onGoToSignUp = { },
+                    onGoToResetPassword = { },
+                )
+            }
+        }
+    }
+
+    /**
+     * The screen's `modifier` used to also land on the "trouble signing in" `Text`; it must reach
+     * only the screen root.
+     */
+    @Test
+    fun `caller modifier does not reach the trouble signing in label`() {
+        setSignInUIContent(modifier = Modifier.testTag(CALLER_TAG))
+
+        composeTestRule
+            .onNode(
+                hasTestTag(CALLER_TAG) and hasText(stringProvider.troubleSigningIn),
+                useUnmergedTree = true
+            )
+            .assertDoesNotExist()
+    }
+
+    /** The corollary: exactly one node carries what the caller passed. */
+    @Test
+    fun `caller modifier is applied to exactly one node`() {
+        setSignInUIContent(modifier = Modifier.testTag(CALLER_TAG))
+
+        composeTestRule
+            .onAllNodesWithTag(CALLER_TAG, useUnmergedTree = true)
+            .assertCountEquals(1)
+    }
+
+    private companion object {
+        const val CALLER_TAG = "caller_supplied_tag"
     }
 }

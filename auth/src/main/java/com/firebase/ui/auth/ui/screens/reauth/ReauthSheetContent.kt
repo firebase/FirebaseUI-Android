@@ -34,6 +34,7 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
@@ -98,7 +99,9 @@ internal fun ReauthSheetContent(
                     customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
                 }
             } else {
-                Scaffold { innerPadding ->
+                // Same reasoning as FirebaseAuthScreen's Scaffold: flagged even though the
+                // enclosing ModalBottomSheet already covers this subtree.
+                Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                     AuthMethodPicker(
                         modifier = Modifier.padding(innerPadding),
                         providers = reauthConfig.providers,

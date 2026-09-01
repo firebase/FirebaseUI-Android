@@ -45,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -57,8 +58,10 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.google.firebase.auth.actionCodeSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,6 +95,7 @@ fun SignInEmailLinkUI(
 
         if (isDialogVisible.value) {
             AlertDialog(
+                modifier = Modifier.exposeTestTagsAsResourceIds(),
                 title = {
                     Text(
                         text = stringProvider.emailSignInLinkSentDialogTitle,
@@ -107,6 +111,8 @@ fun SignInEmailLinkUI(
                 },
                 confirmButton = {
                     TextButton(
+                        modifier = Modifier
+                            .testTag(FirebaseAuthTestTags.EmailLink.DISMISS_BUTTON),
                         onClick = {
                             isDialogVisible.value = false
                         }
@@ -122,7 +128,7 @@ fun SignInEmailLinkUI(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = {
@@ -133,7 +139,10 @@ fun SignInEmailLinkUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.EmailLink.BACK_BUTTON)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -152,6 +161,7 @@ fun SignInEmailLinkUI(
                 .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.EmailLink.EMAIL_FIELD),
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
@@ -166,7 +176,8 @@ fun SignInEmailLinkUI(
             Spacer(modifier = Modifier.height(16.dp))
             TextButton(
                 modifier = Modifier
-                    .align(Alignment.Start),
+                    .align(Alignment.Start)
+                    .testTag(FirebaseAuthTestTags.EmailLink.FORGOT_PASSWORD_BUTTON),
                 onClick = {
                     onGoToResetPassword()
                 },
@@ -174,7 +185,6 @@ fun SignInEmailLinkUI(
                 contentPadding = PaddingValues.Zero
             ) {
                 Text(
-                    modifier = modifier,
                     text = stringProvider.troubleSigningIn,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
@@ -186,7 +196,9 @@ fun SignInEmailLinkUI(
                 onClick = {
                     onSignInWithEmailLink()
                 },
-                modifier = Modifier.align(Alignment.End),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .testTag(FirebaseAuthTestTags.EmailLink.SEND_LINK_BUTTON),
                 enabled = !isLoading && isFormValid.value,
             ) {
                 if (isLoading) {
@@ -217,7 +229,9 @@ fun SignInEmailLinkUI(
                 onClick = {
                     onGoToSignIn()
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(FirebaseAuthTestTags.EmailLink.PASSWORD_SIGN_IN_BUTTON),
                 enabled = !isLoading
             ) {
                 Text(stringProvider.signInWithPassword.uppercase())

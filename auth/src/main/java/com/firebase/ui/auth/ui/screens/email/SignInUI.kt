@@ -68,12 +68,11 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledExcepti
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundException
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
-
-/** Test tag on the notice explaining that reauthentication here needs the account's password. */
-internal const val REAUTH_PASSWORD_NOTICE_TEST_TAG = "ReauthPasswordRequiredNotice"
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,7 +160,7 @@ fun SignInUI(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = {
@@ -174,7 +173,7 @@ fun SignInUI(
                     if (onNavigateBack != null) {
                         IconButton(
                             onClick = onNavigateBack,
-                            modifier = Modifier.testTag("SignInBackButton"),
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.BACK_BUTTON),
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -194,6 +193,7 @@ fun SignInUI(
                 .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD),
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
@@ -207,6 +207,7 @@ fun SignInUI(
             )
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD),
                 value = password,
                 validator = passwordValidator,
                 enabled = !isLoading,
@@ -216,12 +217,16 @@ fun SignInUI(
                 },
                 onValueChange = { text ->
                     onPasswordChange(text)
-                }
+                },
+                visibilityToggleModifier = Modifier.testTag(
+                    FirebaseAuthTestTags.SignIn.PASSWORD_VISIBILITY_TOGGLE
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(
                 modifier = Modifier
-                    .align(Alignment.Start),
+                    .align(Alignment.Start)
+                    .testTag(FirebaseAuthTestTags.SignIn.FORGOT_PASSWORD_BUTTON),
                 onClick = {
                     onGoToResetPassword()
                 },
@@ -229,7 +234,6 @@ fun SignInUI(
                 contentPadding = PaddingValues.Zero
             ) {
                 Text(
-                    modifier = modifier,
                     text = stringProvider.troubleSigningIn,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
@@ -243,7 +247,7 @@ fun SignInUI(
                 Text(
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .testTag(REAUTH_PASSWORD_NOTICE_TEST_TAG),
+                        .testTag(FirebaseAuthTestTags.SignIn.REAUTH_PASSWORD_NOTICE),
                     text = context.getString(R.string.fui_reauth_password_required_notice),
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -255,6 +259,8 @@ fun SignInUI(
             ) {
                 if (isSignUpOffered) {
                     Button(
+                        modifier = Modifier
+                            .testTag(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON),
                         onClick = {
                             onGoToSignUp()
                         },
@@ -265,6 +271,8 @@ fun SignInUI(
                     Spacer(modifier = Modifier.width(16.dp))
                 }
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON),
                     onClick = {
                         onSignInClick()
                     },
@@ -301,7 +309,9 @@ fun SignInUI(
                     onClick = {
                         onGoToEmailLinkSignIn()
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(FirebaseAuthTestTags.SignIn.EMAIL_LINK_BUTTON),
                     enabled = !isLoading
                 ) {
                     Text(stringProvider.signInWithEmailLink.uppercase())
