@@ -93,9 +93,10 @@ import com.firebase.ui.auth.ui.screens.email.isEmailLinkSignInOffered
 import com.firebase.ui.auth.ui.screens.email.isEmailSignUpOffered
 import com.firebase.ui.auth.ui.screens.email.navigateToEmailStep
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
+import com.firebase.ui.auth.ui.screens.mfa.enterMfaEnrollment
+import com.firebase.ui.auth.ui.screens.mfa.entersMfaEnrollment
 import com.firebase.ui.auth.ui.screens.mfa.exitMfaEnrollment
 import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentDestinations
-import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentStartStep
 import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
@@ -439,7 +440,11 @@ fun FirebaseAuthScreen(
                                 if (reauthState == null) {
                                     if (configuration.isMfaEnabled) {
                                         // pushUnique invariant: Success is one entry — nothing to bury.
-                                        backStack.pushUnique(mfaEnrollmentStartStep(mfaConfiguration))
+                                        backStack.enterMfaEnrollment(
+                                            route = AuthRoute.MfaEnrollment,
+                                            configuration = mfaConfiguration,
+                                            flowState = mfaEnrollmentFlowState,
+                                        )
                                     } else {
                                         val exception = AuthException.AuthCancelledException(
                                             message = "Multi-factor authentication is disabled in the configuration. " +
@@ -479,8 +484,14 @@ fun FirebaseAuthScreen(
                             },
                             onNavigate = { route ->
                                 if (reauthState == null) {
-                                    if (route == AuthRoute.MfaEnrollment) {
-                                        backStack.pushUnique(mfaEnrollmentStartStep(mfaConfiguration))
+                                    // Naming a step of the enrolment flow enters it just as
+                                    // naming the flow does, so both clear the previous attempt.
+                                    if (route.entersMfaEnrollment) {
+                                        backStack.enterMfaEnrollment(
+                                            route = route,
+                                            configuration = mfaConfiguration,
+                                            flowState = mfaEnrollmentFlowState,
+                                        )
                                     } else {
                                         // pushUnique invariant: `route` is consumer-supplied; safe only as Success is one entry.
                                         backStack.pushUnique(route)
