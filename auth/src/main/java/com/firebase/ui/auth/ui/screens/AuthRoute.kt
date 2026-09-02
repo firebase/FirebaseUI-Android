@@ -46,6 +46,7 @@ import kotlinx.serialization.Serializable
 sealed interface AuthRoute {
 
     /** An [AuthRoute] that is a real destination, and therefore a Navigation 3 back-stack key. */
+    @Serializable
     sealed interface Destination : AuthRoute, NavKey
 
     /**
@@ -65,6 +66,23 @@ sealed interface AuthRoute {
 
     @Serializable
     data object MfaChallenge : Destination
+
+    /**
+     * Reauthentication, as an entry on the host's own back stack rather than a separate surface.
+     *
+     * Wraps the [step] it presents instead of duplicating the destination hierarchy: the same key
+     * type in the same stack cannot mean two configurations, and a wrapper is the cheapest way to
+     * say "this step, but in reauthentication mode".
+     *
+     * [requestId] and [userUid] make the entry the arming marker itself, which is why nothing else
+     * has to be saved alongside the stack.
+     */
+    @Serializable
+    data class Reauth(
+        val requestId: String,
+        val userUid: String,
+        val step: Destination,
+    ) : Destination
 
     /** Email and password, password recovery, and email-link sign-in. Starts at [SignIn]. */
     object Email : FlowEntry {
