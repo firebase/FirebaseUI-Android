@@ -42,7 +42,9 @@ import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthStep
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
+import com.firebase.ui.auth.ui.screens.phoneStep
 import com.firebase.ui.auth.ui.screens.rememberOnProviderSelected
 import com.firebase.ui.auth.ui.screens.toKey
 import com.google.firebase.auth.FirebaseUser
@@ -140,6 +142,9 @@ internal fun NavBackStack<NavKey>.navigateReauth(
  * @param surface The one condition for the reauthentication surface. [ReauthSceneStrategy] gates
  * the sheet on it and the entry renders what it resolves to, so an entry with nothing armed is
  * never composed at all.
+ * @param phoneFlowState What the reauthentication phone steps share across a step switch — see
+ * [PhoneAuthFlowState]. Reauthentication's own instance, whose lifetime is the request's: nothing
+ * the host flow typed reaches it, and nothing it holds outlives the request.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun EntryProviderScope<NavKey>.reauthDestinations(
@@ -150,6 +155,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
     configuration: AuthUIConfiguration,
     stringProvider: AuthUIStringProvider,
     surface: State<ReauthSurface?>,
+    phoneFlowState: PhoneAuthFlowState,
     emailContent: (@Composable (EmailAuthContentState) -> Unit)?,
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)?,
     mfaChallengeContent: (@Composable (MfaChallengeContentState) -> Unit)?,
@@ -258,7 +264,17 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                 content = phoneContent,
                 onSuccess = {},
                 onError = {},
+                // onLeaveStep owns pop-vs-dismiss, and cancels the attempt with it.
                 onCancel = { onLeaveStep(key) },
+                step = step.phoneStep,
+                onNavigateToStep = { target ->
+                    backStack.navigateReauth(key, AuthRoute.Phone.stepFor(target))
+                },
+                // Number entry inside the surface: a pop while it is below, a move to it when not.
+                onNavigateBack = {
+                    backStack.navigateReauth(key, AuthRoute.Phone.EnterPhoneNumber)
+                },
+                flowState = phoneFlowState,
             )
 
             // Only the state moves: the host pops the entry off whatever the state becomes, so
