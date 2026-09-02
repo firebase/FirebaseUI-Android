@@ -32,6 +32,7 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.SmsEnrollmentSession
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -42,6 +43,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactor
 import com.google.firebase.auth.MultiFactorSession
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneMultiFactorAssertion
+import com.google.firebase.auth.PhoneMultiFactorGenerator
 import com.google.firebase.auth.TotpMultiFactorGenerator
 import com.google.firebase.auth.TotpSecret as FirebaseTotpSecret
 import org.junit.After
@@ -92,6 +96,9 @@ class MfaEnrollmentRouteNavigationTest {
     private var lastState: MfaEnrollmentContentState? = null
     private var pressBack: (() -> Unit)? = null
     private var reportComplete: (() -> Unit)? = null
+    private var flowState: MfaEnrollmentFlowState? = null
+    private var completions = 0
+    private val errors = mutableListOf<Exception>()
 
     @Before
     fun setUp() {
@@ -122,6 +129,9 @@ class MfaEnrollmentRouteNavigationTest {
         lastState = null
         pressBack = null
         reportComplete = null
+        flowState = null
+        completions = 0
+        errors.clear()
         FirebaseAuthUI.clearInstanceCache()
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         FirebaseApp.getApps(context).forEach {
@@ -418,6 +428,74 @@ class MfaEnrollmentRouteNavigationTest {
         assertThat(backStackRoutes()).containsExactly(AuthRoute.Success.routePattern)
     }
 
+    // Entering the flow clears whatever the last enrolment left behind
+
+    @Test
+    fun `re-entering after a successful enrolment starts at the start step with an empty form`() {
+        startOutsideFlow()
+        selectFactor(MfaFactor.Sms)
+        typePhoneNumber(TYPED_PHONE_NUMBER)
+        pushVerifyFactorDirectly()
+        enrollSuccessfullyWithSms()
+
+        reenterFlow()
+
+        assertThat(currentRoute())
+            .isEqualTo(AuthRoute.MfaEnrollment.SelectFactor.routePattern)
+        val state = requireNotNull(flowState)
+        assertThat(state.phoneNumber.value).isEmpty()
+        assertThat(state.verificationCode.value).isEmpty()
+        assertThat(state.selectedFactor.value).isNull()
+        assertThat(state.smsSession.value).isNull()
+    }
+
+    /** An SMS-only configuration has no `SelectFactor`, so re-entry must land on `ConfigureSms`. */
+    @Test
+    fun `re-entering an SMS-only flow starts at ConfigureSms with an empty form`() {
+        val configuration = smsOnlyConfiguration()
+        startOutsideFlow(configuration)
+        typePhoneNumber(TYPED_PHONE_NUMBER)
+        pushVerifyFactorDirectly()
+        enrollSuccessfullyWithSms()
+
+        reenterFlow(configuration)
+
+        assertThat(currentRoute())
+            .isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
+        assertThat(requireNotNull(lastState).phoneNumber).isEmpty()
+        assertThat(requireNotNull(lastState).verificationCode).isEmpty()
+    }
+
+    /**
+     * Pins the clear to flow *entry*, not completion. Clearing on completion is what sank the
+     * previous fix: it pulls state out from under a step that is still composed for the length of
+     * the exit transition, whose Verify button then throws `"No factor selected"` through
+     * `onError` *after* enrolment has already succeeded.
+     */
+    @Test
+    fun `a successful enrolment reports no error and clears nothing until the flow is re-entered`() {
+        startOutsideFlow()
+        selectFactor(MfaFactor.Sms)
+        typePhoneNumber(TYPED_PHONE_NUMBER)
+        pushVerifyFactorDirectly()
+
+        enrollSuccessfullyWithSms()
+
+        assertThat(completions).isEqualTo(1)
+        assertThat(errors).isEmpty()
+        val state = requireNotNull(flowState)
+        assertThat(state.phoneNumber.value).isEqualTo(TYPED_PHONE_NUMBER)
+        assertThat(state.selectedFactor.value).isEqualTo(MfaFactor.Sms)
+        assertThat(state.verificationCode.value).isEqualTo(SMS_CODE)
+
+        // Only now, with no step of the flow composed, is anything cleared.
+        reenterFlow()
+
+        assertThat(errors).isEmpty()
+        assertThat(state.phoneNumber.value).isEmpty()
+        assertThat(state.verificationCode.value).isEmpty()
+    }
+
     // Every public AuthRoute.MfaEnrollment value is a registered destination
 
     /**
@@ -516,9 +594,22 @@ class MfaEnrollmentRouteNavigationTest {
     /** Enters the flow the way both of `FirebaseAuthScreen`'s entry points do. */
     private fun enterFlow(configuration: MfaConfiguration) {
         composeTestRule.runOnIdle {
-            requireNotNull(navController).navigate(mfaEnrollmentStartStep(configuration).route)
+            requireNotNull(navController)
+                .enterMfaEnrollment(configuration, requireNotNull(flowState))
         }
         composeTestRule.waitForIdle()
+    }
+
+    /**
+     * Enters the flow again, after an enrolment has already left it.
+     *
+     * The route assertion is the point of the helper: entry is only meaningful from outside, so
+     * an exit that stranded the stack on a step — or popped [HOST_ROUTE] itself — would otherwise
+     * leave the re-entry tests silently measuring wherever the exit stopped.
+     */
+    private fun reenterFlow(configuration: MfaConfiguration = twoFactorConfiguration()) {
+        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
+        enterFlow(configuration)
     }
 
     /**
@@ -557,6 +648,44 @@ class MfaEnrollmentRouteNavigationTest {
     private fun continueToVerify() {
         composeTestRule.runOnIdle { requireNotNull(lastState).onContinueToVerifyClick() }
         composeTestRule.waitForIdle()
+    }
+
+    private fun typeVerificationCode(value: String) {
+        composeTestRule.runOnIdle { requireNotNull(lastState).onVerificationCodeChange(value) }
+        composeTestRule.waitForIdle()
+    }
+
+    /**
+     * Drives `onVerifyClick` down the SMS branch to a successful `multiFactor.enroll`.
+     *
+     * Seeds the auto-verified [SmsEnrollmentSession] that `onSendSmsCodeClick` would have stored,
+     * which is the one shape of session that needs no `PhoneAuthProvider.getCredential` call, so
+     * only the assertion factory has to be stubbed.
+     */
+    private fun enrollSuccessfullyWithSms() {
+        val credential = mock(PhoneAuthCredential::class.java)
+        val assertion = mock(PhoneMultiFactorAssertion::class.java)
+        `when`(mockMultiFactor.enroll(assertion, SMS_DISPLAY_NAME))
+            .thenReturn(Tasks.forResult<Void>(null))
+        composeTestRule.runOnIdle {
+            requireNotNull(flowState).smsSession.value = SmsEnrollmentSession(
+                verificationId = "",
+                phoneNumber = "+1$TYPED_PHONE_NUMBER",
+                forceResendingToken = null,
+                sentAt = System.currentTimeMillis(),
+                autoVerifiedCredential = credential,
+            )
+        }
+        typeVerificationCode(SMS_CODE)
+
+        mockStatic(PhoneMultiFactorGenerator::class.java).use { generatorStatic ->
+            generatorStatic.`when`<PhoneMultiFactorAssertion> {
+                PhoneMultiFactorGenerator.getAssertion(credential)
+            }.thenReturn(assertion)
+
+            composeTestRule.runOnIdle { requireNotNull(lastState).onVerifyClick() }
+            composeTestRule.waitForIdle()
+        }
     }
 
     /** Enters [AuthRoute.MfaEnrollment.VerifyFactor] as `onSendSmsCodeClick` does, minus the
@@ -601,12 +730,13 @@ class MfaEnrollmentRouteNavigationTest {
     ) {
         val controller = rememberNavController()
         val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-        val flowState = rememberMfaEnrollmentFlowState()
+        val enrollmentFlowState = rememberMfaEnrollmentFlowState()
         val exit: () -> Unit = { controller.exitMfaEnrollment() }
         SideEffect {
             navController = controller
             pressBack = dispatcher?.let { { it.onBackPressed() } }
             reportComplete = exit
+            flowState = enrollmentFlowState
         }
 
         NavHost(
@@ -626,11 +756,16 @@ class MfaEnrollmentRouteNavigationTest {
                 configuration = configuration,
                 authConfiguration = null,
                 authUI = authUI,
-                flowState = flowState,
+                flowState = enrollmentFlowState,
                 content = { state -> lastState = state },
-                onComplete = exit,
+                // Counted as well as forwarded, to tell a completion that also left the flow
+                // apart from one that never fired.
+                onComplete = {
+                    completions++
+                    exit()
+                },
                 onSkip = exit,
-                onError = {},
+                onError = { errors += it },
             )
         }
     }
@@ -644,6 +779,10 @@ class MfaEnrollmentRouteNavigationTest {
         const val HOST_ROUTE = "host_outside_flow"
 
         const val TYPED_PHONE_NUMBER = "5551234567"
+        const val SMS_CODE = "123456"
+
+        /** `MfaEnrollmentScreen` hard-codes this display name on the SMS enrolment call. */
+        const val SMS_DISPLAY_NAME = "SMS"
         const val FAKE_SHARED_SECRET = "JBSWY3DPEHPK3PXP"
         const val FAKE_QR_URL = "otpauth://totp/test-issuer:user%40example.com?secret=JBSWY3DPEHPK3PXP"
     }

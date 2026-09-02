@@ -32,6 +32,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.SmsEnrollmentSession
 import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -63,6 +64,9 @@ import org.robolectric.annotation.Config
  *
  * Guards the regression where a lost `smsSession` left
  * [MfaEnrollmentContentState.onResendCodeClick] a silent no-op.
+ *
+ * Also covers the same fields from the other side: [MfaEnrollmentFlowState.reset], which has to
+ * name every one of them to put a re-entered flow back at its initial values.
  *
  * @suppress Internal test class
  */
@@ -196,6 +200,56 @@ class MfaEnrollmentFlowStateRestorationTest {
         // totpSecret, totpQrCodeUrl: plain remember, so still lost.
         assertThat(requireNotNull(flowState).totpSecret.value).isNull()
         assertThat(requireNotNull(flowState).totpQrCodeUrl.value).isNull()
+    }
+
+    /**
+     * A field left out of [MfaEnrollmentFlowState.reset] is a field that leaks an old enrolment
+     * into the next one, so this asserts on all nine rather than on the ones a UI happens to show.
+     */
+    @Test
+    fun `reset returns every field to the value rememberMfaEnrollmentFlowState starts it at`() {
+        composeTestRule.setContent { MfaFlowHost() }
+        composeTestRule.waitForIdle()
+
+        // SelectFactor is the one step whose LaunchedEffect writes nothing back.
+        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.SelectFactor.routePattern)
+        composeTestRule.runOnIdle {
+            val state = requireNotNull(flowState)
+            state.selectedFactor.value = MfaFactor.Sms
+            state.phoneNumber.value = TYPED_PHONE_NUMBER
+            state.verificationCode.value = TYPED_VERIFICATION_CODE
+            state.resendTimerSeconds.intValue = 30
+            state.smsSession.value = SmsEnrollmentSession(
+                verificationId = "verification-id",
+                phoneNumber = "+1$TYPED_PHONE_NUMBER",
+                forceResendingToken = null,
+                sentAt = System.currentTimeMillis(),
+            )
+            state.totpSecret.value = TotpSecret.from(mock(FirebaseTotpSecret::class.java))
+            state.totpQrCodeUrl.value = FAKE_QR_URL
+            state.selectedCountry.value = CountryData(
+                name = "United Kingdom",
+                dialCode = "+44",
+                countryCode = "GB",
+                flagEmoji = "🇬🇧",
+            )
+            state.totpSecretExpiredMessage.value = TOTP_SECRET_EXPIRED_MESSAGE
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.runOnIdle { requireNotNull(flowState).reset() }
+        composeTestRule.waitForIdle()
+
+        val state = requireNotNull(flowState)
+        assertThat(state.selectedFactor.value).isNull()
+        assertThat(state.phoneNumber.value).isEmpty()
+        assertThat(state.verificationCode.value).isEmpty()
+        assertThat(state.resendTimerSeconds.intValue).isEqualTo(0)
+        assertThat(state.smsSession.value).isNull()
+        assertThat(state.totpSecret.value).isNull()
+        assertThat(state.totpQrCodeUrl.value).isNull()
+        assertThat(state.selectedCountry.value).isEqualTo(CountryUtils.getDefaultCountry())
+        assertThat(state.totpSecretExpiredMessage.value).isNull()
     }
 
     @Composable
