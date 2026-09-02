@@ -25,7 +25,6 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthMethodPickerUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.AuthenticatedUI
@@ -141,10 +140,14 @@ private fun MainUI(
             modifier = Modifier.fillMaxSize()
         )
         Column(modifier = Modifier.fillMaxSize()) {
-            EmailAuthScreen(
+            // Hosts its own per-mode navigation for the email path; no wrapping EmailAuthScreen
+            // call needed here any more — AuthMethodPickerUI builds one instance per step itself.
+            AuthMethodPickerUI(
                 context = context,
                 configuration = configuration,
                 authUI = authUI,
+                otherProviders = providers.filterNot { it is AuthProvider.Email },
+                onProviderSelected = onProviderSelected,
                 onSuccess = { result ->
                     Log.d("FullCustomizationDemo", "Auth success: ${result.user?.uid}")
                 },
@@ -154,15 +157,7 @@ private fun MainUI(
                 onCancel = {
                     Log.d("FullCustomizationDemo", "Auth cancelled")
                 },
-            ) { state ->
-                AuthMethodPickerUI(
-                    state = state,
-                    otherProviders = providers.filterNot { it is AuthProvider.Email },
-                    onProviderSelected = onProviderSelected,
-                    tosUrl = configuration.tosUrl,
-                    ppUrl = configuration.privacyPolicyUrl,
-                )
-            }
+            )
         }
     }
 }
