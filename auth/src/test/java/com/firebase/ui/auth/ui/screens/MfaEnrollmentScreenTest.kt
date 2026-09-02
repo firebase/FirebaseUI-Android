@@ -30,6 +30,7 @@ import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
 import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreenInternal
+import com.firebase.ui.auth.ui.screens.mfa.TOTP_SECRET_EXPIRED_MESSAGE
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -493,15 +494,14 @@ class MfaEnrollmentScreenTest {
     }
 
     @Test
-    fun `TOTP verification without a secret reports the missing secret and skips onComplete`() {
+    fun `losing the TOTP secret to recreation never silently completes enrolment`() {
         val configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp))
         var completeCount = 0
         val errors = mutableListOf<Exception>()
 
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
-        // Two allowed factors, so nothing is auto-selected: the secret is generated only when the
-        // TOTP factor is picked, which keeps the restore below from regenerating it.
+        // Two allowed factors, so nothing is auto-selected until the TOTP factor is picked.
         val restorationTester = StateRestorationTester(composeTestRule)
         restorationTester.setContent {
             MfaEnrollmentScreenInternal(
@@ -539,30 +539,22 @@ class MfaEnrollmentScreenTest {
         assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
 
         // Reach the verify step without a secret the way production does: across process death.
-        // `currentStep`, `selectedFactor` and `verificationCode` are `rememberSaveable` and are
-        // restored, while `totpSecret` is a plain `remember` and is not. That step/secret mismatch
-        // is what `onVerifyClick`'s null-secret branch guards.
+        // `currentStep` and `selectedFactor` are `rememberSaveable` and are restored, while
+        // `totpSecret` is a plain `remember` and is not.
         restorationTester.emulateSavedInstanceStateRestore()
         composeTestRule.waitForIdle()
-        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+
+        // A restored secret-less VerifyFactor is not a dead end: the screen bounces back to
+        // ConfigureTotp and fetches a fresh secret, which the user must re-scan.
+        assertEquals(MfaEnrollmentStep.ConfigureTotp, currentState?.step)
         assertEquals(MfaFactor.Totp, currentState?.selectedFactor)
-        assertNull(currentState?.totpSecret)
-        // The restore itself must be quiet, so the only error below is the one under test.
-        assertEquals(emptyList<Exception>(), errors)
-
-        composeTestRule.runOnUiThread {
-            currentState?.onVerifyClick?.invoke()
-        }
-        composeTestRule.waitForIdle()
-
-        assertEquals(0, completeCount)
-        assertEquals(1, errors.size)
-        assertTrue(errors.single() is IllegalStateException)
-        assertEquals(NO_TOTP_SECRET_MESSAGE, errors.single().message)
-        assertEquals(errors.single(), currentState?.exception)
-        assertEquals(NO_TOTP_SECRET_MESSAGE, currentState?.error)
-        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+        assertEquals(totpSecret, currentState?.totpSecret)
+        assertEquals(TOTP_SECRET_EXPIRED_MESSAGE, currentState?.error)
         assertEquals(false, currentState?.isLoading)
+
+        // The property that matters either way: a lost secret never enrols anything silently.
+        assertEquals(0, completeCount)
+        assertEquals(emptyList<Exception>(), errors)
     }
 
     @Test
@@ -980,7 +972,6 @@ class MfaEnrollmentScreenTest {
         const val VERIFICATION_CODE = "123456"
         const val TOTP_DISPLAY_NAME = "Authenticator App"
         const val SMS_DISPLAY_NAME = "SMS"
-        const val NO_TOTP_SECRET_MESSAGE = "No TOTP secret available"
         const val NO_SMS_SESSION_MESSAGE = "No SMS session available"
         const val LOCAL_PHONE_NUMBER = "5551234567"
         const val EXPECTED_FULL_PHONE_NUMBER = "+445551234567"
