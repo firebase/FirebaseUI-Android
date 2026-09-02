@@ -17,6 +17,7 @@ import com.firebaseui.android.demo.R
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.EmailEntryStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.LoginStep
 import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.SignUpStep
+import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthEmailStep
 
 /**
  * Custom UI for `FirebaseAuthScreen.emailContent`.
@@ -31,6 +32,14 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.email.pages.Si
  */
 @Composable
 fun EmailAuthUI(state: EmailAuthContentState) {
+    // isEmailLocked is only ever true in reauthentication mode (EmailAuthScreen sets it from
+    // isReauthenticationMode and a prefilled address), and reauth composes this slot inside a modal
+    // bottom sheet, so it needs its own sheet-shaped screen rather than the sign-in page.
+    if (state.isEmailLocked) {
+        ReauthEmailStep(state)
+        return
+    }
+
     var chosen by rememberSaveable { mutableStateOf(state.email.isNotBlank()) }
 
     val onUseDifferentEmail: () -> Unit = {
@@ -54,19 +63,12 @@ fun EmailAuthUI(state: EmailAuthContentState) {
                 email = state.email,
                 onEmailChange = state.onEmailChange,
                 isLoading = state.isLoading,
-                // onGoToSignIn/onGoToSignUp call the library's resetTextValues(), which clears
-                // every field including the address just typed (it only restores one when the
-                // email is locked for reauthentication) — so put it back afterwards.
                 onSignIn = {
-                    val typed = state.email
                     state.onGoToSignIn()
-                    state.onEmailChange(typed)
                     chosen = true
                 },
                 onCreateAccount = {
-                    val typed = state.email
                     state.onGoToSignUp()
-                    state.onEmailChange(typed)
                     chosen = true
                 },
                 // No provider sheet in this slot — the caller already committed to email.
