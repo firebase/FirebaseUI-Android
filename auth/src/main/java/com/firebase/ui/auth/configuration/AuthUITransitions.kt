@@ -16,6 +16,10 @@ package com.firebase.ui.auth.configuration
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.scene.Scene
 
@@ -47,3 +51,18 @@ data class AuthUITransitions(
     val predictivePopTransitionSpec:
     (AnimatedContentTransitionScope<Scene<NavKey>>.(Int) -> ContentTransform)? = null,
 )
+
+private const val DEFAULT_TRANSITION_MILLIS = 700
+
+/** The cross-fade every auth surface animates with when the host configured no spec of its own. */
+internal val DefaultAuthContentTransform:
+    AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform = {
+        fadeIn(animationSpec = tween(DEFAULT_TRANSITION_MILLIS)) togetherWith
+                fadeOut(animationSpec = tween(DEFAULT_TRANSITION_MILLIS))
+    }
+
+/** [DefaultAuthContentTransform] at the predictive-pop arity. */
+internal val DefaultAuthPredictivePopContentTransform:
+    AnimatedContentTransitionScope<Scene<NavKey>>.(Int) -> ContentTransform = {
+        DefaultAuthContentTransform()
+    }

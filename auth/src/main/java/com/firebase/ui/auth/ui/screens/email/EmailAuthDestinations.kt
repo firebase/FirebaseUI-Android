@@ -55,8 +55,8 @@ import com.google.firebase.auth.AuthResult
  * @param backStack The host's back stack, which is what a mode switch mutates.
  * @param onCancel Invoked when the flow is *left*, not when stepping between email steps.
  * @param prefillEmail The address already fixed for this flow (e.g. a reauthenticating user's own),
- * seeding a step entered with no address on its key. Must not be state that changes while a step is
- * on screen, since it is read during that step's composition.
+ * seeding a step entered with no address on its key. A getter, not a value, because an entry's
+ * content lambda is built once per key — the entry rule at `FirebaseAuthScreen`'s entry provider.
  * @param onEmailTyped Reports the address as the user edits it, so a host-driven recovery that does
  * not know the address (e.g. [com.firebase.ui.auth.AuthException.UserNotFoundException]) can carry
  * the live value.
@@ -76,45 +76,94 @@ internal fun EntryProviderScope<NavKey>.emailAuthDestinations(
     onError: (AuthException) -> Unit = {},
 ) {
     val body: @Composable (AuthRoute.Email.Step) -> Unit = { step ->
-        if (!configuration.isEmailStepOffered(step)) {
-            LaunchedEffect(step) {
-                // Push before dropping: no point in this pair leaves the stack empty for a later edit to stop at.
-                backStack.navigateToEmailStep(AuthRoute.Email.SignIn(step.email))
-                backStack.remove(step)
-            }
-            RedirectingStep()
-        } else {
-            EmailAuthScreen(
-                context = context,
-                configuration = configuration,
-                authUI = authUI,
-                prefillEmail = step.email?.ifEmpty { null } ?: prefillEmail(),
-                credentialForLinking = credentialForLinking(),
-                emailLinkFromDifferentDevice = emailLinkFromDifferentDevice(),
-                content = content,
-                mode = step.mode,
-                onNavigateToMode = { targetMode, email ->
-                    backStack.navigateToEmailStep(AuthRoute.Email.stepFor(targetMode, email))
-                },
-                onEmailTyped = onEmailTyped,
-                onSuccess = onSuccess,
-                onError = onError,
-                onCancel = {
-                    val below = backStack.getOrNull(backStack.lastIndex - 1)
-                    if (AuthRoute.Email.isStep(below)) {
-                        backStack.popOrNull()
-                    } else {
-                        onCancel()
-                    }
-                },
-            )
-        }
+        EmailAuthStep(
+            step = step,
+            entryKey = step,
+            backStack = backStack,
+            context = context,
+            configuration = configuration,
+            authUI = authUI,
+            content = content,
+            navigateToStep = { backStack.navigateToEmailStep(it) },
+            isStepBelow = { AuthRoute.Email.isStep(it) },
+            onCancel = onCancel,
+            prefillEmail = prefillEmail,
+            credentialForLinking = credentialForLinking,
+            emailLinkFromDifferentDevice = emailLinkFromDifferentDevice,
+            onEmailTyped = onEmailTyped,
+            onSuccess = onSuccess,
+            onError = onError,
+        )
     }
 
     entry<AuthRoute.Email.SignIn>(metadata = { authRouteMetadata(it) }) { body(it) }
     entry<AuthRoute.Email.SignUp>(metadata = { authRouteMetadata(it) }) { body(it) }
     entry<AuthRoute.Email.ResetPassword>(metadata = { authRouteMetadata(it) }) { body(it) }
     entry<AuthRoute.Email.EmailLinkSignIn>(metadata = { authRouteMetadata(it) }) { body(it) }
+}
+
+/**
+ * One email step, as every host renders it: the reachability bounce, then an [EmailAuthScreen]
+ * pinned to [step]'s mode.
+ *
+ * @param entryKey The key [step] is registered under — [step] itself, or the wrapper carrying it
+ * ([AuthRoute.Reauth]). What the bounce removes, so a wrapped step drops its wrapper.
+ * @param navigateToStep Moves this host to another email step, wrapping it as that host needs. The
+ * bounce goes through it too, so a redirect stays inside the host's own family of keys.
+ * @param isStepBelow Whether a key below the top is an email step of this host's, which is what
+ * back stepping through the flow rather than leaving it turns on.
+ */
+@Composable
+internal fun EmailAuthStep(
+    step: AuthRoute.Email.Step,
+    entryKey: NavKey,
+    backStack: NavBackStack<NavKey>,
+    context: Context,
+    configuration: AuthUIConfiguration,
+    authUI: FirebaseAuthUI,
+    content: (@Composable (EmailAuthContentState) -> Unit)?,
+    navigateToStep: (AuthRoute.Email.Step) -> Unit,
+    isStepBelow: (NavKey?) -> Boolean,
+    onCancel: () -> Unit,
+    prefillEmail: () -> String? = { null },
+    credentialForLinking: () -> AuthCredential? = { null },
+    emailLinkFromDifferentDevice: () -> String? = { null },
+    onEmailTyped: (String) -> Unit = {},
+    onSuccess: (AuthResult) -> Unit = {},
+    onError: (AuthException) -> Unit = {},
+) {
+    if (!configuration.isEmailStepOffered(step)) {
+        LaunchedEffect(entryKey) {
+            // Push before dropping: no point in this pair leaves the stack empty for a later edit to stop at.
+            navigateToStep(AuthRoute.Email.SignIn(step.email))
+            backStack.remove(entryKey)
+        }
+        RedirectingStep()
+    } else {
+        EmailAuthScreen(
+            context = context,
+            configuration = configuration,
+            authUI = authUI,
+            prefillEmail = step.email?.ifEmpty { null } ?: prefillEmail(),
+            credentialForLinking = credentialForLinking(),
+            emailLinkFromDifferentDevice = emailLinkFromDifferentDevice(),
+            content = content,
+            mode = step.mode,
+            onNavigateToMode = { targetMode, email ->
+                navigateToStep(AuthRoute.Email.stepFor(targetMode, email))
+            },
+            onEmailTyped = onEmailTyped,
+            onSuccess = onSuccess,
+            onError = onError,
+            onCancel = {
+                if (isStepBelow(backStack.getOrNull(backStack.lastIndex - 1))) {
+                    backStack.popOrNull()
+                } else {
+                    onCancel()
+                }
+            },
+        )
+    }
 }
 
 /**

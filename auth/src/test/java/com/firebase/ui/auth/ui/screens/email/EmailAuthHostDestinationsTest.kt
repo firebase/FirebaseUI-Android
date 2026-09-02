@@ -28,13 +28,31 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.DefaultAuthContentTransform
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.ui.screens.reauth.ReauthSheetContent
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.popOrNull
+import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
+import com.firebase.ui.auth.ui.screens.reauth.reauthDestinations
+import com.firebase.ui.auth.ui.screens.reauth.toReauthSurface
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -69,6 +87,9 @@ class EmailAuthHostDestinationsTest {
     private lateinit var applicationContext: Context
     private lateinit var stringProvider: DefaultAuthUIStringProvider
     private lateinit var authUI: FirebaseAuthUI
+
+    /** The harness's own stack, for the assertions that are about keys rather than pixels. */
+    private var reauthBackStack: NavBackStack<NavKey>? = null
 
     @Before
     fun setUp() {
@@ -239,23 +260,133 @@ class EmailAuthHostDestinationsTest {
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
     }
 
+    /**
+     * A restored stack, or an `onNavigate` from host code, can name a step reauthentication never
+     * offers — sign-up and email-link are both switched off while proving an existing identity.
+     * The main flow bounces such a step, so the wrapped reauth entry has to bounce it too, or a
+     * reauthentication renders an account-creation form.
+     */
+    @Test
+    fun `the reauthentication entry bounces a step it never offers`() {
+        composeTestRule.setContent {
+            ReauthSheetUnderTest(onDismiss = {}, startStep = AuthRoute.Email.SignUp(TYPED_EMAIL))
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.EMAIL_FIELD).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithText(TYPED_EMAIL).assertIsDisplayed()
+        // Still wrapped, and the bounced step is gone rather than left underneath, where back
+        // would return to it and bounce again.
+        assertThat(reauthBackStack?.toList()).containsExactly(
+            AuthRoute.Success,
+            AuthRoute.Reauth("request-id", "uid", AuthRoute.Email.SignIn(TYPED_EMAIL)),
+        ).inOrder()
+    }
+
+    /** The same exposure for the other step reauthentication switches off. */
+    @Test
+    fun `the reauthentication entry bounces email-link sign-in`() {
+        composeTestRule.setContent {
+            ReauthSheetUnderTest(
+                onDismiss = {},
+                startStep = AuthRoute.Email.EmailLinkSignIn(TYPED_EMAIL),
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+        assertThat(reauthBackStack?.toList()).containsExactly(
+            AuthRoute.Success,
+            AuthRoute.Reauth("request-id", "uid", AuthRoute.Email.SignIn(TYPED_EMAIL)),
+        ).inOrder()
+    }
+
+    /**
+     * The reauthentication surface is no longer a component that can be mounted on its own: it is
+     * an entry on a host's back stack, so the harness is a `NavDisplay` with one non-reauth entry
+     * underneath it.
+     */
     @Composable
-    private fun ReauthSheetUnderTest(onDismiss: () -> Unit) {
-        CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-            ReauthSheetContent(
-                authUI = authUI,
-                reauthConfig = reauthConfiguration(),
+    private fun ReauthSheetUnderTest(
+        onDismiss: () -> Unit,
+        startStep: AuthRoute.Destination = AuthRoute.Email.SignIn(),
+    ) {
+        val config = reauthConfiguration()
+        val user = remember {
+            val info = mock(UserInfo::class.java)
+            `when`(info.providerId).thenReturn("password")
+            mock(FirebaseUser::class.java).also {
+                `when`(it.email).thenReturn(null)
+                `when`(it.uid).thenReturn("uid")
+                `when`(it.providerData).thenReturn(listOf(info))
+            }
+        }
+        val request = remember {
+            AuthState.Reauthentication.Request(
                 requestId = "request-id",
-                activity = null,
-                context = applicationContext,
-                // Nothing prefilled, so the field stays editable and this test can type into it.
-                prefillEmail = null,
-                emailContent = null,
-                phoneContent = null,
-                mfaChallengeContent = null,
-                mfaResolver = null,
-                customMethodPickerLayout = null,
-                onDismiss = onDismiss,
+                user = user,
+                reason = null,
+                retryOperation = null,
+            )
+        }
+        val backStack = rememberNavBackStack(
+            AuthRoute.Success,
+            AuthRoute.Reauth("request-id", "uid", startStep),
+        )
+        SideEffect { reauthBackStack = backStack }
+        val surface = remember {
+            mutableStateOf(
+                AuthState.Reauthentication.Required(request).toReauthSurface(config)
+            )
+        }
+        val strategy = remember {
+            ReauthSceneStrategy(
+                surface = surface,
+                onDismissRequest = onDismiss,
+                transitionSpec = DefaultAuthContentTransform,
+                popTransitionSpec = DefaultAuthContentTransform,
+            )
+        }
+        CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+            NavDisplay(
+                backStack = backStack,
+                sceneStrategies = listOf(strategy),
+                onBack = {
+                    val top = backStack.lastOrNull()
+                    if (top is AuthRoute.Reauth &&
+                        backStack.getOrNull(backStack.lastIndex - 1) !is AuthRoute.Reauth
+                    ) {
+                        onDismiss()
+                    } else {
+                        backStack.popOrNull()
+                    }
+                },
+                entryProvider = entryProvider {
+                    entry<AuthRoute.Success> { Box(modifier = Modifier.fillMaxSize()) {} }
+                    reauthDestinations(
+                        backStack = backStack,
+                        authUI = authUI,
+                        activity = null,
+                        context = applicationContext,
+                        configuration = config,
+                        stringProvider = stringProvider,
+                        surface = surface,
+                        emailContent = null,
+                        phoneContent = null,
+                        mfaChallengeContent = null,
+                        reauthContent = null,
+                        customMethodPickerLayout = null,
+                        onDismiss = onDismiss,
+                        onLeaveStep = { marker ->
+                            if (backStack.getOrNull(backStack.lastIndex - 1) is AuthRoute.Reauth) {
+                                backStack.popOrNull()
+                            } else {
+                                onDismiss()
+                            }
+                        },
+                    )
+                },
             )
         }
     }
