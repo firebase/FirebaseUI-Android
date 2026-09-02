@@ -22,6 +22,7 @@ import androidx.navigation3.runtime.metadata
 import androidx.navigation3.scene.Scene
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
+import com.firebase.ui.auth.ui.screens.phone.PhoneAuthStep
 import kotlinx.serialization.Serializable
 
 /**
@@ -36,9 +37,6 @@ import kotlinx.serialization.Serializable
  *   [FlowEntry.startKey] resolves it to the step the flow opens on, so callers never have to name
  *   a step. Deliberately **not** a [NavKey]: it can never be put on a back stack, and [toKey] is
  *   the one way to turn it into something that can be.
- *
- * [Phone] registers its steps, but [com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen] still
- * drives its own step internally, so every step of that flow renders the same screen.
  *
  * @since 10.0.0
  */
@@ -148,8 +146,9 @@ sealed interface AuthRoute {
         override fun startKey(): Destination = EnterPhoneNumber
 
         /**
-         * One step per screen the phone flow walks through. Public API, and kept even though
-         * [com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen] drives its own step internally.
+         * One step per screen the phone flow walks through. The internal
+         * `AuthRoute.Phone.Step.phoneStep` extension maps a live key to the [PhoneAuthStep]
+         * [com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen] renders.
          */
         @Serializable
         sealed interface Step : Destination
@@ -162,6 +161,9 @@ sealed interface AuthRoute {
 
         internal val steps: List<Step>
             get() = listOf(EnterPhoneNumber, EnterVerificationCode)
+
+        internal fun stepFor(phoneStep: PhoneAuthStep): Step =
+            steps.first { it.phoneStep == phoneStep }
     }
 
     /**
@@ -207,6 +209,13 @@ internal val AuthRoute.Email.Step.mode: EmailAuthMode
         is AuthRoute.Email.SignUp -> EmailAuthMode.SignUp
         is AuthRoute.Email.ResetPassword -> EmailAuthMode.ResetPassword
         is AuthRoute.Email.EmailLinkSignIn -> EmailAuthMode.EmailLinkSignIn
+    }
+
+/** Which [PhoneAuthStep] the hosted screen renders for this step. */
+internal val AuthRoute.Phone.Step.phoneStep: PhoneAuthStep
+    get() = when (this) {
+        AuthRoute.Phone.EnterPhoneNumber -> PhoneAuthStep.EnterPhoneNumber
+        AuthRoute.Phone.EnterVerificationCode -> PhoneAuthStep.EnterVerificationCode
     }
 
 /** Which [MfaEnrollmentStep] the hosted screen renders for this step. */

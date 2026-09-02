@@ -43,6 +43,7 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -254,6 +255,7 @@ class ReauthSurfaceGateTest {
                 popTransitionSpec = DefaultAuthContentTransform,
             )
         }
+        val phoneFlowState = rememberPhoneAuthFlowState(configuration)
         CompositionLocalProvider(
             LocalAuthUIStringProvider provides configuration.stringProvider,
         ) {
@@ -273,6 +275,7 @@ class ReauthSurfaceGateTest {
                         configuration = configuration,
                         stringProvider = DefaultAuthUIStringProvider(context),
                         surface = surface,
+                        phoneFlowState = phoneFlowState,
                         emailContent = null,
                         phoneContent = null,
                         mfaChallengeContent = null,
