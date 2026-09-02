@@ -140,7 +140,7 @@ internal fun NavHostController.navigateToEmailStep(step: AuthRoute.Email.Step, e
     }
 }
 
-/** Shown for as long as a redirect out of an unreachable step takes. */
+/** Shown for as long as a redirect off a step that cannot render itself takes. */
 @Composable
 internal fun RedirectingStep() {
     Box(
