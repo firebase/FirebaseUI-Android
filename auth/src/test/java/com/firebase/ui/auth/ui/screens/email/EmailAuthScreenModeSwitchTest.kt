@@ -47,7 +47,9 @@ import org.robolectric.annotation.Config
  * [EmailAuthScreen] used on its own, with nothing outside it driving the mode — the shape
  * `EmailAuthSlotDemoActivity` and the custom reauthentication content both use.
  *
- * Guards that a mode switch clears only the mode-specific secrets and keeps the typed address.
+ * Switching modes used to blank *every* text field, so a user who typed their address on the
+ * sign-in form and then tapped through to sign-up, password recovery or email-link sign-in had to
+ * type it again. Only the secrets are mode-specific and may be cleared.
  *
  * @suppress Internal test class
  */
@@ -127,7 +129,10 @@ class EmailAuthScreenModeSwitchTest {
         assertThat(state().displayName).isEmpty()
     }
 
-    /** Without a host driving it, the screen owns the mode itself. */
+    /**
+     * Without a host driving it the screen owns the mode itself, which is what keeps standalone
+     * callers working unchanged.
+     */
     @Test
     fun `the unhosted screen drives its own mode from local state`() {
         start()
@@ -142,8 +147,11 @@ class EmailAuthScreenModeSwitchTest {
     }
 
     /**
-     * The screen never moves itself on an error: unhosted, the user stays on the form with
-     * everything they typed, password included.
+     * Signing in with an address that has no account used to hop this screen to sign-up on its
+     * own. That decision now belongs to a host — only a host knows what lies outside the email
+     * flow, and two observers of one shared error event raced each other for the recovery dialog.
+     * Unhosted, the user stays on the form with everything they typed, including the password,
+     * which nothing asked to clear.
      */
     @Test
     fun `an unhosted screen stays put and keeps what was typed when the account is not found`() {
@@ -165,7 +173,7 @@ class EmailAuthScreenModeSwitchTest {
         assertThat(state().password).isEqualTo("hunter2")
     }
 
-    /** The same for an address already taken. */
+    /** The same for an address already taken, which used to hop the other way. */
     @Test
     fun `an unhosted screen stays put when the address is already in use`() {
         start()
@@ -189,8 +197,9 @@ class EmailAuthScreenModeSwitchTest {
     }
 
     /**
-     * `mode` and `onNavigateToMode` are two halves of one contract; either alone leaves every
-     * switch control silently inert, so it is rejected.
+     * `mode` and `onNavigateToMode` are two halves of one contract. Either alone leaves every
+     * switch control silently inert — a fixed mode with nowhere to report a switch to, or a
+     * reported switch that nothing renders — so it is rejected instead of tolerated.
      */
     @Test
     fun `a mode with no way to report a switch is rejected`() {
@@ -198,12 +207,16 @@ class EmailAuthScreenModeSwitchTest {
             startWith(mode = EmailAuthMode.SignUp, onNavigateToMode = null)
         }
 
-        // The message names both halves, so either omission is identifiable.
+        // Both halves are named. A caller who passed one and forgot the other has to be told
+        // which one is missing, and that has to work in either direction.
         assertThat(thrown).hasMessageThat().contains("mode")
         assertThat(thrown).hasMessageThat().contains("onNavigateToMode")
     }
 
-    /** The message is just as usable when it is `mode` that was forgotten. */
+    /**
+     * The direction the message used to point the wrong way: a caller who supplied
+     * `onNavigateToMode` and forgot `mode` was told only about the parameter they *did* pass.
+     */
     @Test
     fun `a switch callback with no mode to render is rejected`() {
         val thrown = assertThrows(IllegalArgumentException::class.java) {
@@ -239,7 +252,9 @@ class EmailAuthScreenModeSwitchTest {
         composeTestRule.waitForIdle()
     }
 
-    // Email-link sign-in configured, so all four modes are actually on offer.
+    // Email-link sign-in configured, so all four modes are actually on offer: a switch to a mode
+    // the provider disables is inert, which is the point of `a provider without email-link
+    // sign-in cannot switch to it` rather than of anything here.
     private fun configuration(): AuthUIConfiguration = authUIConfiguration {
         context = applicationContext
         providers {

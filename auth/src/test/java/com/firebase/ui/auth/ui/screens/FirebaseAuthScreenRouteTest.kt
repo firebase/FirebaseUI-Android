@@ -1,7 +1,7 @@
 package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
-import android.net.Uri
+import androidx.navigation3.runtime.NavKey
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -13,6 +13,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
+import kotlinx.serialization.json.Json
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
@@ -119,66 +121,38 @@ class FirebaseAuthScreenRouteTest {
         assertThat(getStartRoute(configuration)).isEqualTo(AuthRoute.MethodPicker)
     }
 
-    // AuthRoute shape — public API.
+    // =============================================================================================
+    // AuthRoute shape — this is public API, and PR-shaped changes to it break every caller.
+    // =============================================================================================
 
-    /**
-     * Naming a flow means "enter this flow", so its route has to be its start step's — both
-     * `route`, which callers navigate with, and `routePattern`, which the graph registers.
-     */
+    /** Naming a flow means "enter this flow", so it must resolve to that flow's start step. */
     @Test
     fun `every flow entry point resolves to its start step`() {
-        assertThat(AuthRoute.Email.route).isEqualTo(AuthRoute.Email.SignIn.route)
-        assertThat(AuthRoute.Email.routePattern).isEqualTo(AuthRoute.Email.SignIn.routePattern)
-
-        assertThat(AuthRoute.Phone.route).isEqualTo(AuthRoute.Phone.EnterPhoneNumber.route)
-        assertThat(AuthRoute.Phone.routePattern)
-            .isEqualTo(AuthRoute.Phone.EnterPhoneNumber.routePattern)
-
-        assertThat(AuthRoute.MfaEnrollment.route)
-            .isEqualTo(AuthRoute.MfaEnrollment.SelectFactor.route)
-        assertThat(AuthRoute.MfaEnrollment.routePattern)
-            .isEqualTo(AuthRoute.MfaEnrollment.SelectFactor.routePattern)
-    }
-
-    /** Only the email steps take an argument, so only they may differ from their pattern. */
-    @Test
-    fun `routePattern equals route for every destination that takes no argument`() {
-        val argumentless = listOf(
-            AuthRoute.MethodPicker,
-            AuthRoute.Success,
-            AuthRoute.MfaChallenge,
-            AuthRoute.Phone,
-            AuthRoute.Phone.EnterPhoneNumber,
-            AuthRoute.Phone.EnterVerificationCode,
-            AuthRoute.MfaEnrollment.SelectFactor,
-            AuthRoute.MfaEnrollment.ConfigureSms,
-            AuthRoute.MfaEnrollment.ConfigureTotp,
-            AuthRoute.MfaEnrollment.VerifyFactor,
-        )
-
-        argumentless.forEach { route ->
-            assertThat(route.routePattern).isEqualTo(route.route)
-        }
-    }
-
-    @Test
-    fun `every email step registers the optional email argument`() {
-        AuthRoute.Email.steps.forEach { step ->
-            assertThat(step.routePattern).isEqualTo("${step.route}?$EMAIL_ARG={$EMAIL_ARG}")
-        }
+        assertThat(AuthRoute.Email.startKey()).isEqualTo(AuthRoute.Email.SignIn())
+        assertThat(AuthRoute.Phone.startKey()).isEqualTo(AuthRoute.Phone.EnterPhoneNumber)
+        assertThat(AuthRoute.MfaEnrollment.startKey())
+            .isEqualTo(AuthRoute.MfaEnrollment.SelectFactor)
     }
 
     /**
-     * The step lists must be computed getters: stored, they would be built before the nested
-     * objects were assigned and capture them as null. Reading a route off each entry catches that.
+     * A flow entry point names a flow, not a destination: it is not a `NavKey`, so it can never be
+     * pushed onto the back stack in place of the step it resolves to.
      */
     @Test
-    fun `the email step list is fully populated and distinct`() {
-        val routes = AuthRoute.Email.steps.map { it.route }
+    fun `a flow entry point is not itself a destination`() {
+        assertThat(AuthRoute.Email).isNotInstanceOf(NavKey::class.java)
+        assertThat(AuthRoute.Phone).isNotInstanceOf(NavKey::class.java)
+        assertThat(AuthRoute.MfaEnrollment).isNotInstanceOf(NavKey::class.java)
+        assertThat(AuthRoute.Email.SignIn()).isInstanceOf(NavKey::class.java)
+    }
 
-        assertThat(routes).hasSize(EmailAuthMode.entries.size)
-        assertThat(routes).containsNoDuplicates()
-        routes.forEach { route -> assertThat(route).isNotEmpty() }
+    @Test
+    fun `the email step list is fully populated and distinct`() {
+        val steps = AuthRoute.Email.steps
+
+        assertThat(steps).hasSize(EmailAuthMode.entries.size)
+        assertThat(steps.map { it::class }).containsNoDuplicates()
+        assertThat(steps.map { it.mode }).containsExactlyElementsIn(EmailAuthMode.entries)
     }
 
     @Test
@@ -188,24 +162,54 @@ class FirebaseAuthScreenRouteTest {
         }
     }
 
+    /** The address is a field on the key, so `withEmail` is a `copy`. */
     @Test
-    fun `withEmail appends an encoded address and omits an empty one`() {
-        val step = AuthRoute.Email.SignUp
+    fun `withEmail puts the address on the key`() {
+        val step = AuthRoute.Email.SignUp()
 
-        assertThat(step.withEmail(null)).isEqualTo(step.route)
-        assertThat(step.withEmail("")).isEqualTo(step.route)
+        assertThat(step.email).isNull()
+        assertThat(step.withEmail(null)).isEqualTo(AuthRoute.Email.SignUp(null))
         assertThat(step.withEmail("user+tag@example.com"))
-            .isEqualTo("${step.route}?$EMAIL_ARG=user%2Btag%40example.com")
+            .isEqualTo(AuthRoute.Email.SignUp("user+tag@example.com"))
+        // Same step, different address: two DIFFERENT keys. This is the whole reason
+        // navigateToEmailStep has to compare step *types* rather than keys.
+        assertThat(AuthRoute.Email.SignUp("a@b.com"))
+            .isNotEqualTo(AuthRoute.Email.SignUp("c@d.com"))
     }
 
     /**
-     * The address goes into a URI query string, so anything a local part or domain may legally
-     * hold has to come back out unchanged — a raw `#` truncates the URI, a raw space invalidates it.
+     * `SignUp("")` and `SignUp(null)` do not collapse into one destination: they are different
+     * keys, so an empty address is a state the flow can genuinely be in. That is what this asserts
+     * — the keys really are distinct, which is the fact `navigateToEmailStep`'s type comparison
+     * exists for.
+     *
+     * The *consequence* — that an empty address on the key still falls back to the prefill, rather
+     * than blanking a field the host had populated — belongs to `EmailAuthDestinations`, which
+     * reads `step.email?.ifEmpty { null } ?: prefillEmail()`. Asserting that expression here would
+     * only test the Kotlin stdlib: it would keep passing with `?.ifEmpty { null }` deleted from the
+     * product. It is pinned against the destination instead, by
+     * `EmailAuthRouteNavigationTest`'s `a step entered with an empty address falls back to the
+     * prefill`.
      */
     @Test
-    fun `withEmail encodes every address so the argument round-trips`() {
-        val step = AuthRoute.Email.SignUp
+    fun `an empty address is a key distinct from a null one`() {
+        val step = AuthRoute.Email.SignUp()
 
+        assertThat(step.withEmail("")).isEqualTo(AuthRoute.Email.SignUp(""))
+        assertThat(step.withEmail("")).isNotEqualTo(step.withEmail(null))
+        assertThat(AuthRoute.Email.stepFor(EmailAuthMode.SignUp, "")).isEqualTo(
+            AuthRoute.Email.SignUp("")
+        )
+        assertThat(AuthRoute.Email.SignUp(TYPED_ADDRESS))
+            .isNotEqualTo(AuthRoute.Email.SignUp(""))
+    }
+
+    /**
+     * The address reaches saved state through kotlinx.serialization, so that round-trip is the one
+     * place an awkward local part could be lost.
+     */
+    @Test
+    fun `awkward addresses round-trip through the key's serializer`() {
         listOf(
             "user+tag@example.com",
             "user name@example.com",
@@ -215,38 +219,44 @@ class FirebaseAuthScreenRouteTest {
             "ada@königsberg.example",
             "用户@例え.jp",
         ).forEach { address ->
-            val encoded = step.withEmail(address)
+            AuthRoute.Email.steps.forEach { prototype ->
+                val step = prototype.withEmail(address)
+                val encoded = Json.encodeToString(
+                    AuthRoute.Email.Step.serializer(),
+                    step,
+                )
+                val decoded = Json.decodeFromString(AuthRoute.Email.Step.serializer(), encoded)
 
-            assertThat(encoded).startsWith("${step.route}?$EMAIL_ARG=")
-            // The encoded form is what travels; nothing that would break the URI survives in it.
-            assertThat(encoded.substringAfter('=')).doesNotContain("#")
-            assertThat(encoded).doesNotContain(" ")
-            assertThat(Uri.parse(encoded).getQueryParameters(EMAIL_ARG))
-                .containsExactly(address)
+                assertThat(decoded).isEqualTo(step)
+                assertThat(decoded.email).isEqualTo(address)
+            }
         }
     }
 
     @Test
     fun `isStep recognises the email steps and nothing else`() {
         AuthRoute.Email.steps.forEach { step ->
-            assertThat(AuthRoute.Email.isStep(step.routePattern)).isTrue()
+            assertThat(AuthRoute.Email.isStep(step)).isTrue()
         }
 
-        assertThat(AuthRoute.Email.isStep(AuthRoute.MethodPicker.routePattern)).isFalse()
-        assertThat(AuthRoute.Email.isStep(AuthRoute.Phone.routePattern)).isFalse()
-        // A live destination.route is always the pattern, never the bare navigation route.
-        assertThat(AuthRoute.Email.isStep(AuthRoute.Email.SignIn.route)).isFalse()
+        assertThat(AuthRoute.Email.isStep(AuthRoute.MethodPicker)).isFalse()
+        assertThat(AuthRoute.Email.isStep(AuthRoute.Phone.EnterPhoneNumber)).isFalse()
         assertThat(AuthRoute.Email.isStep(null)).isFalse()
     }
 
     /**
-     * `AuthRoute.all` has to name every step the sealed hierarchy declares: one left out of its
-     * flow's `steps` list is registered nowhere and throws at whoever navigates to it. Enumerated
-     * from `sealedSubclasses`, since a hand-written list would agree with itself either way.
+     * `allAuthRoutes` is what the reachability test asserts against, built from the same per-flow
+     * `steps` lists the hosts register from.
+     *
+     * Email steps are `data class`es (they carry the address), so `objectInstance` is null for
+     * them and [declaredSteps] falls back to constructing one with default arguments. That is not
+     * a weakening of the check: `createInstance()` throws `IllegalArgumentException("Class should
+     * have a single no-arg constructor: …")` when no fully-defaulted constructor exists, so a step
+     * that grew a required field errors this test loudly rather than dropping out of it.
      */
     @Test
     fun `the full route list names every step the hierarchy declares`() {
-        val all = AuthRoute.all
+        val all = allAuthRoutes
         val standalone = listOf(
             AuthRoute.MethodPicker,
             AuthRoute.Success,
@@ -257,14 +267,12 @@ class FirebaseAuthScreenRouteTest {
                 declaredSteps(AuthRoute.Phone.Step::class) +
                 declaredSteps(AuthRoute.MfaEnrollment.Step::class)
 
-        // Exactly, not at least: the list must not grow a value no host registers either.
         assertThat(all).containsExactlyElementsIn(standalone + flows + declared)
-        // Each flow entry point shares its start step's route, which is the only duplication the
-        // list is allowed to hold — one collision per flow.
-        assertThat(all.map { it.route }.distinct()).hasSize(all.size - flows.size)
+        // A flow entry point and its start step are separate values, so nothing in the list
+        // aliases anything else in it.
+        assertThat(all).containsNoDuplicates()
     }
 
-    /** The same check from the other side: hosts register a flow from its own `steps` list. */
     @Test
     fun `each flow's step list holds exactly the steps it declares`() {
         assertThat(AuthRoute.Email.steps)
@@ -275,16 +283,19 @@ class FirebaseAuthScreenRouteTest {
             .containsExactlyElementsIn(declaredSteps(AuthRoute.MfaEnrollment.Step::class))
     }
 
-    /** Every step object the sealed [stepType] declares, by reflection rather than a literal list. */
+    /**
+     * Every step the sealed [stepType] declares, in its default (address-free) form.
+     *
+     * `objectInstance` alone does not suffice — see the KDoc above. `createInstance()` returns a
+     * non-null `T` or throws, so there is nothing to null-check here.
+     */
     private fun declaredSteps(stepType: KClass<out AuthRoute>): List<AuthRoute> {
         val subclasses = stepType.sealedSubclasses
         assertThat(subclasses).isNotEmpty()
-        return subclasses.map { subclass ->
-            requireNotNull(subclass.objectInstance) {
-                "${subclass.simpleName} is a step but not an object. Steps are named by identity " +
-                        "(the graph registers them, callers pass them), so each has to be a " +
-                        "singleton."
-            }
-        }
+        return subclasses.map { subclass -> subclass.objectInstance ?: subclass.createInstance() }
+    }
+
+    private companion object {
+        const val TYPED_ADDRESS = "user+tag@example.com"
     }
 }

@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.screens.mfa
 import android.content.Context
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -258,10 +259,11 @@ class MfaEnrollmentHostDestinationsTest {
         isCredentialManagerEnabled = false
         // The default fades would keep the destination being left composed alongside its successor.
         transitions = AuthUITransitions(
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
+            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            predictivePopTransitionSpec = {
+                EnterTransition.None togetherWith ExitTransition.None
+            },
         )
     }
 

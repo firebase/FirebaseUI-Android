@@ -20,15 +20,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.animation.togetherWith
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.popOrNull
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
@@ -57,17 +61,18 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Covers the recovery from `totpSecret`/`totpQrCodeUrl` being lost to Activity recreation — the
- * loss [MfaEnrollmentFlowStateRestorationTest] establishes.
+ * Proves the other half of the TOTP-loss fix [MfaEnrollmentFlowStateRestorationTest] documents:
+ * `totpSecret`/`totpQrCodeUrl` are genuinely lost to Activity recreation (there is no `Saver` to
+ * write for `com.google.firebase.auth.TotpSecret` without reaching into obfuscated SDK internals —
+ * see [MfaEnrollmentFlowState]), and that loss must not become a dead end — `onVerifyClick`
+ * throwing `"No TOTP secret available"` with nowhere to go.
  *
  * Drives the hosted flow to [AuthRoute.MfaEnrollment.VerifyFactor] for TOTP with a live secret,
- * recreates the Activity via [StateRestorationTester], and asserts the executed recovery:
+ * recreates the Activity via [StateRestorationTester], and asserts the actual, executed recovery:
  * [TotpMultiFactorGenerator.generateSecret] is called again, the user lands back on
  * [AuthRoute.MfaEnrollment.ConfigureTotp] with a *new* secret and QR code rather than the stale
- * one, and [MfaEnrollmentContentState.error] explains why.
- *
- * Guards the regression where that loss dead-ended in `onVerifyClick` throwing
- * `"No TOTP secret available"` with nowhere to go.
+ * one, and [MfaEnrollmentContentState.error] explains why — nothing here is asserted from
+ * prediction.
  *
  * @suppress Internal test class
  */
@@ -89,7 +94,7 @@ class MfaEnrollmentTotpRegenerationTest {
 
     private lateinit var authUI: FirebaseAuthUI
 
-    private var navController: NavHostController? = null
+    private var backStack: NavBackStack<NavKey>? = null
     private var flowState: MfaEnrollmentFlowState? = null
     private var lastState: MfaEnrollmentContentState? = null
 
@@ -118,7 +123,7 @@ class MfaEnrollmentTotpRegenerationTest {
 
     @After
     fun tearDown() {
-        navController = null
+        backStack = null
         flowState = null
         lastState = null
         FirebaseAuthUI.clearInstanceCache()
@@ -142,7 +147,13 @@ class MfaEnrollmentTotpRegenerationTest {
         `when`(secondSecret.sharedSecretKey).thenReturn(SECOND_SHARED_SECRET)
         `when`(secondSecret.generateQrCodeUrl(any(), any())).thenReturn(SECOND_QR_URL)
 
-        // Held pending: a completed Task would resolve in the same idle pass as the recomposition.
+        // The second generateSecret call — the regeneration this test is actually about — is
+        // held pending rather than completing immediately, specifically so there is a real,
+        // observable moment where recreation has already dropped totpSecret but the fetch that
+        // replaces it has not yet resolved. Without that, an already-completed Task (as Firebase
+        // Tasks used elsewhere in this suite are) resolves within the same idle pass that runs
+        // the recomposition, and "totpSecret.value is null post-recreation" would only ever be
+        // inferred, not actually observed.
         val secondSecretSource = TaskCompletionSource<FirebaseTotpSecret>()
 
         mockStatic(TotpMultiFactorGenerator::class.java).use { totpStatic ->
@@ -159,8 +170,9 @@ class MfaEnrollmentTotpRegenerationTest {
             composeTestRule.runOnIdle { requireNotNull(lastState).onFactorSelected(MfaFactor.Totp) }
             composeTestRule.waitForIdle()
 
-            // Sanity on the pre-recreation state, so a fixture mistake cannot pass as a loss.
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            // Sanity: the original secret was actually fetched and is what ConfigureTotp shows,
+            // so what follows is provably about recreation's effect and not a fixture mistake.
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(requireNotNull(lastState).totpQrCodeUrl).isEqualTo(FIRST_QR_URL)
             totpStatic.verify(
                 { TotpMultiFactorGenerator.generateSecret(mockSession) },
@@ -169,14 +181,20 @@ class MfaEnrollmentTotpRegenerationTest {
 
             composeTestRule.runOnIdle { requireNotNull(lastState).onContinueToVerifyClick() }
             composeTestRule.waitForIdle()
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
 
             restorationTester.emulateSavedInstanceStateRestore()
             composeTestRule.waitForIdle()
 
-            // Observed before the pending fetch resolves: VerifyFactor has already popped back.
+            // The loss itself, actually observed rather than inferred: unchanged by this fix,
+            // totpSecret is a plain `remember` and is genuinely null right after restore, exactly
+            // as MfaEnrollmentFlowStateRestorationTest proves for the SMS-side fields that *don't*
+            // survive either. VerifyFactor's own LaunchedEffect(currentStep) has already reacted
+            // to that null by queuing the expired-secret message and popping back to
+            // ConfigureTotp — real navigation, so it lands there before the still-pending
+            // regeneration fetch resolves.
             assertThat(requireNotNull(flowState).totpSecret.value).isNull()
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(requireNotNull(lastState).isLoading).isTrue()
 
             // (a) generateSecret was called again — exactly once more, not on every recomposition.
@@ -185,6 +203,7 @@ class MfaEnrollmentTotpRegenerationTest {
                 times(2),
             )
 
+            // Let the regeneration actually resolve.
             secondSecretSource.setResult(secondSecret)
             composeTestRule.waitForIdle()
 
@@ -198,11 +217,28 @@ class MfaEnrollmentTotpRegenerationTest {
     }
 
     /**
-     * The single-allowed-factor variant of the test above: [AuthRoute.MfaEnrollment.ConfigureTotp]
-     * **is** the `NavHost`'s `startDestination`, with no entry beneath it.
+     * The single-allowed-factor variant of the test above. A TOTP-only [MfaConfiguration]
+     * resolves its start step straight to [AuthRoute.MfaEnrollment.ConfigureTotp] —
+     * [mfaEnrollmentStartStep] — so this flow never visits [AuthRoute.MfaEnrollment.SelectFactor]
+     * at all: `ConfigureTotp` **is** the back stack's only initial entry, with nothing beneath it.
      *
-     * With nothing below it, a `popBackStack()` that overshoots or that leaves `VerifyFactor` in
-     * place shows up as a wrong route or a non-root stack, which [isAtBackStackRoot] catches.
+     * That makes the recovery's `onNavigateBack()` step worth checking on its own: with a
+     * `SelectFactor` entry in the stack (the two-factor case above), landing back on
+     * `ConfigureTotp` is unsurprising — it is simply the next entry down. Here there is nothing
+     * below `ConfigureTotp` to reason about, so a real defect (e.g. `popBackStack()` overshooting,
+     * or leaving `VerifyFactor` in place) would show up as either a wrong route or a stack that
+     * still has something beneath the current entry. [isAtBackStackRoot] asserts there is nothing
+     * beneath it, on top of the same recovery sequence
+     * [MfaEnrollmentTotpRegenerationTest] already proves for the two-factor case.
+     *
+     * This is also the harshest back-stack site in the flow. The pop comes from an effect on a
+     * precondition failure, on the first frame after restore, on a stack whose
+     * only entry is the one being popped from — and `NavDisplay` throws
+     * `IllegalArgumentException: NavDisplay backstack cannot be empty` from *recomposition* rather
+     * than from the mutation, so an unguarded `removeLastOrNull()` here would surface as a crash
+     * naming neither this file nor `MfaEnrollmentScreen`. Hence the explicit
+     * [backStackKeys] assertion below: the stack must still hold exactly `ConfigureTotp`, not
+     * merely report it as its top.
      */
     @Test
     fun `losing the TOTP secret to recreation regenerates it and bounces back to ConfigureTotp when TOTP is the only allowed factor`() {
@@ -215,7 +251,9 @@ class MfaEnrollmentTotpRegenerationTest {
         `when`(secondSecret.sharedSecretKey).thenReturn(SECOND_SHARED_SECRET)
         `when`(secondSecret.generateQrCodeUrl(any(), any())).thenReturn(SECOND_QR_URL)
 
-        // Held pending, as in the two-factor test, so the null totpSecret is observed.
+        // Same rationale as the two-factor test: the regeneration fetch is held pending so
+        // "totpSecret.value is null post-recreation" is actually observed, not inferred from an
+        // already-resolved Task.
         val secondSecretSource = TaskCompletionSource<FirebaseTotpSecret>()
 
         mockStatic(TotpMultiFactorGenerator::class.java).use { totpStatic ->
@@ -230,8 +268,9 @@ class MfaEnrollmentTotpRegenerationTest {
             }
             composeTestRule.waitForIdle()
 
-            // Sanity: landed directly on ConfigureTotp, at the back-stack root, with a live secret.
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            // Sanity: the flow landed directly on ConfigureTotp with a live secret — no
+            // SelectFactor visit needed, and it is genuinely the back-stack root.
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(isAtBackStackRoot()).isTrue()
             assertThat(requireNotNull(lastState).totpQrCodeUrl).isEqualTo(FIRST_QR_URL)
             totpStatic.verify(
@@ -241,15 +280,23 @@ class MfaEnrollmentTotpRegenerationTest {
 
             composeTestRule.runOnIdle { requireNotNull(lastState).onContinueToVerifyClick() }
             composeTestRule.waitForIdle()
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
 
             restorationTester.emulateSavedInstanceStateRestore()
             composeTestRule.waitForIdle()
 
-            // With no SelectFactor entry, back-to-ConfigureTotp and back-to-root are one claim.
+            // The loss, actually observed: totpSecret is null right after restore, exactly as the
+            // two-factor case. VerifyFactor's LaunchedEffect(currentStep) has already reacted by
+            // queuing the expired-secret message and popping back — and with no SelectFactor entry
+            // in this stack, "back to ConfigureTotp" and "back to the stack root" are the same
+            // assertion, which isAtBackStackRoot makes explicit rather than assumed.
             assertThat(requireNotNull(flowState).totpSecret.value).isNull()
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(isAtBackStackRoot()).isTrue()
+            // Exactly one entry, and it is ConfigureTotp: the guarded pop declined to mutate a
+            // single-entry stack rather than emptying it.
+            assertThat(backStackKeys())
+                .containsExactly(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(requireNotNull(lastState).isLoading).isTrue()
 
             // (a) generateSecret was called again — exactly once more, not on every recomposition.
@@ -258,6 +305,7 @@ class MfaEnrollmentTotpRegenerationTest {
                 times(2),
             )
 
+            // Let the regeneration actually resolve.
             secondSecretSource.setResult(secondSecret)
             composeTestRule.waitForIdle()
 
@@ -270,51 +318,123 @@ class MfaEnrollmentTotpRegenerationTest {
         }
     }
 
+    /**
+     * The same recovery, but with [AuthRoute.MfaEnrollment.VerifyFactor] as the back stack's
+     * **only** entry — the shape a host produces by entering that step directly through the public
+     * `AuthSuccessUiContext.onNavigate`, and the shape a restored back stack can produce on its
+     * own.
+     *
+     * This is the one place in the flow where the TOTP-loss redirect has nothing to pop to, and it
+     * is only reachable through a real Activity recreation: `totpSecret` is deliberately a plain
+     * `remember` (see [MfaEnrollmentFlowState]), while `selectedFactor` is `rememberSaveable`, so
+     * "TOTP was chosen but the secret is gone" cannot be constructed without one. Popping the last
+     * entry makes `NavDisplay` throw `IllegalArgumentException: NavDisplay backstack cannot be
+     * empty` — and throw it from *recomposition*, naming neither this file nor
+     * `MfaEnrollmentScreen`.
+     *
+     * With nothing underneath, the redirect stays put: the user is left on `VerifyFactor` with the
+     * regenerated secret rather than bounced.
+     */
+    @Test
+    fun `the TOTP-loss redirect does not empty a back stack whose only entry is VerifyFactor`() {
+        val mockSession = mock(MultiFactorSession::class.java)
+        val firstSecret = mock(FirebaseTotpSecret::class.java)
+        val secondSecret = mock(FirebaseTotpSecret::class.java)
+        `when`(mockMultiFactor.session).thenReturn(Tasks.forResult(mockSession))
+        `when`(firstSecret.sharedSecretKey).thenReturn(FIRST_SHARED_SECRET)
+        `when`(firstSecret.generateQrCodeUrl(any(), any())).thenReturn(FIRST_QR_URL)
+        `when`(secondSecret.sharedSecretKey).thenReturn(SECOND_SHARED_SECRET)
+        `when`(secondSecret.generateQrCodeUrl(any(), any())).thenReturn(SECOND_QR_URL)
+
+        mockStatic(TotpMultiFactorGenerator::class.java).use { totpStatic ->
+            totpStatic.`when`<Task<FirebaseTotpSecret>> {
+                TotpMultiFactorGenerator.generateSecret(mockSession)
+            }.thenReturn(Tasks.forResult(firstSecret), Tasks.forResult(secondSecret))
+
+            val restorationTester = StateRestorationTester(composeTestRule)
+            restorationTester.setContent {
+                MfaFlowHost(totpOnlyConfiguration(), AuthRoute.MfaEnrollment.VerifyFactor)
+            }
+            composeTestRule.waitForIdle()
+
+            // The pre-recreation state a real flow would have left behind: TOTP chosen, a live
+            // secret in hand, sitting on VerifyFactor with nothing beneath it. selectedFactor is
+            // rememberSaveable and survives the restore; totpSecret is not and does not.
+            composeTestRule.runOnIdle {
+                val state = requireNotNull(flowState)
+                state.selectedFactor.value = MfaFactor.Totp
+                state.totpSecret.value =
+                    com.firebase.ui.auth.mfa.TotpSecret.from(firstSecret)
+                state.totpQrCodeUrl.value = FIRST_QR_URL
+            }
+            composeTestRule.waitForIdle()
+            assertThat(backStackKeys())
+                .containsExactly(AuthRoute.MfaEnrollment.VerifyFactor)
+
+            restorationTester.emulateSavedInstanceStateRestore()
+            composeTestRule.waitForIdle()
+
+            // The redirect fired (selectedFactor survived as Totp, the secret did not) and found
+            // nothing to pop to. The stack still holds exactly one entry, and it is still
+            // VerifyFactor — not an empty list, and not a crash from NavDisplay.
+            assertThat(backStackKeys())
+                .containsExactly(AuthRoute.MfaEnrollment.VerifyFactor)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
+        }
+    }
+
     @Composable
     private fun MfaFlowHost(
         configuration: MfaConfiguration,
         startStep: AuthRoute.MfaEnrollment.Step,
     ) {
-        val controller = rememberNavController()
+        val stack = rememberNavBackStack(startStep)
         val state = rememberMfaEnrollmentFlowState()
         SideEffect {
-            navController = controller
+            backStack = stack
             flowState = state
         }
 
-        NavHost(
-            navController = controller,
-            startDestination = startStep.routePattern,
-            // Transitions would keep two MFA destinations composed at once.
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
-        ) {
-            mfaEnrollmentDestinations(
-                navController = controller,
-                configuration = configuration,
-                authConfiguration = null,
-                authUI = authUI,
-                flowState = state,
-                content = { contentState -> lastState = contentState },
-                onComplete = {},
-                onSkip = {},
-                onError = {},
-            )
-        }
+        NavDisplay(
+            backStack = stack,
+            onBack = { stack.popOrNull() },
+            // Transitions would keep two MFA destinations composed at once, which has nothing to
+            // do with the state-restoration behavior under test.
+            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            predictivePopTransitionSpec = { _ ->
+                EnterTransition.None togetherWith ExitTransition.None
+            },
+            entryProvider = entryProvider {
+                mfaEnrollmentDestinations(
+                    backStack = stack,
+                    configuration = configuration,
+                    authConfiguration = null,
+                    authUI = authUI,
+                    flowState = state,
+                    content = { contentState -> lastState = contentState },
+                    onComplete = {},
+                    onSkip = {},
+                    onError = {},
+                )
+            },
+        )
     }
 
-    private fun currentRoute(): String? = composeTestRule.runOnIdle {
-        navController?.currentBackStackEntry?.destination?.route
+    private fun currentKey(): NavKey? = composeTestRule.runOnIdle {
+        backStack?.lastOrNull()
     }
+
+    /** The keys on the stack, bottom to top. */
+    private fun backStackKeys(): List<NavKey> =
+        composeTestRule.runOnIdle { backStack?.toList().orEmpty() }
 
     /**
      * Whether the current back-stack entry has nothing beneath it — true only when it is the
-     * `NavHost`'s `startDestination` itself, with no earlier entry to pop to.
+     * back stack's only entry, with no earlier entry to pop to.
      */
     private fun isAtBackStackRoot(): Boolean = composeTestRule.runOnIdle {
-        navController?.previousBackStackEntry == null
+        backStack?.size == 1
     }
 
     private fun twoFactorConfiguration() = MfaConfiguration(
