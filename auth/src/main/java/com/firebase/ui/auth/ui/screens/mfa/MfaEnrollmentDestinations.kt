@@ -43,6 +43,7 @@ import com.firebase.ui.auth.ui.screens.enrollmentStep
 import com.firebase.ui.auth.ui.screens.popOrNull
 import com.firebase.ui.auth.ui.screens.pushUnique
 import com.firebase.ui.auth.ui.screens.resetBackStackTo
+import com.firebase.ui.auth.ui.screens.toKey
 import com.firebase.ui.auth.util.CountryUtils
 
 /**
@@ -74,7 +75,42 @@ class MfaEnrollmentFlowState internal constructor(
     val totpQrCodeUrl: MutableState<String?>,
     val selectedCountry: MutableState<CountryData>,
     val totpSecretExpiredMessage: MutableState<String?>,
-)
+) {
+
+    /**
+     * Puts every field back to the value [rememberMfaEnrollmentFlowState] creates it with.
+     *
+     * Nothing else clears this state: the host remembers one instance above the
+     * [androidx.navigation3.ui.NavDisplay] and hands it to every step, and six of the nine fields
+     * are [rememberSaveable], so a value typed during one enrolment outlives both the step that
+     * took it and the flow it belonged to.
+     *
+     * Called on **entry** to the flow rather than on completion, because completion is not the only
+     * way out — a skip, a back press off the lowest step, a signed-out step redirecting, or a
+     * process death mid-flow all leave state behind, and only entry is reached by every one of
+     * them. Entry is also the point where a stale value is actually harmful: across a sign-out, the
+     * phone number and verification code the next enrolment would open pre-filled with belong to
+     * the previous user.
+     *
+     * Public because an external host driving [MfaEnrollmentScreen] with its own `step` and
+     * `flowState` has the same state to clear and no access to the internal
+     * `NavBackStack.enterMfaEnrollment` helper [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen]
+     * funnels its own entries through.
+     *
+     * @since 10.0.0
+     */
+    fun reset() {
+        selectedFactor.value = null
+        phoneNumber.value = ""
+        verificationCode.value = ""
+        resendTimerSeconds.intValue = 0
+        smsSession.value = null
+        totpSecret.value = null
+        totpQrCodeUrl.value = null
+        selectedCountry.value = CountryUtils.getDefaultCountry()
+        totpSecretExpiredMessage.value = null
+    }
+}
 
 /**
  * Creates and remembers the [MfaEnrollmentFlowState] a host installs [mfaEnrollmentDestinations]
@@ -183,6 +219,48 @@ internal fun EntryProviderScope<NavKey>.mfaEnrollmentDestinations(
  */
 internal fun NavBackStack<NavKey>.navigateToMfaStep(step: AuthRoute.MfaEnrollment.Step) {
     pushUnique(step)
+}
+
+/**
+ * Whether [this] names the MFA enrolment flow — the [AuthRoute.MfaEnrollment] flow entry, or one of
+ * its [AuthRoute.MfaEnrollment.Step]s named directly.
+ *
+ * One clause covers both spellings because [AuthRoute.toKey] already collapses the
+ * [AuthRoute.FlowEntry] / [AuthRoute.Destination] split: a flow entry resolves to its own start
+ * step and a destination resolves to itself, so `MfaEnrollment` and its steps are exactly the
+ * routes whose key is a step of this flow.
+ */
+internal val AuthRoute.entersMfaEnrollment: Boolean
+    get() = toKey() is AuthRoute.MfaEnrollment.Step
+
+/**
+ * Enters the MFA enrolment flow at the step [route] asks for, clearing [flowState] first.
+ *
+ * The reset and the push are one call so that a host cannot enter the flow without clearing it —
+ * the defect this exists for was two entry call sites in
+ * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen] that both pushed a step directly. Call it
+ * for any [route] [entersMfaEnrollment] accepts.
+ *
+ * Honours the step [route] names instead of always resolving through [mfaEnrollmentStartStep]: a
+ * host naming [AuthRoute.MfaEnrollment.SelectFactor] under a single-factor configuration is asking
+ * for the picker, and redirecting it to that factor's configuration step would be a behavior
+ * change. Only [AuthRoute.MfaEnrollment], which names the flow rather than a step, is resolved.
+ *
+ * `pushUnique` invariant: both host call sites enter from a stack that cannot already hold a step
+ * of this flow, so the buried-case trim never fires.
+ */
+internal fun NavBackStack<NavKey>.enterMfaEnrollment(
+    route: AuthRoute,
+    configuration: MfaConfiguration,
+    flowState: MfaEnrollmentFlowState,
+) {
+    flowState.reset()
+    pushUnique(
+        when (route) {
+            is AuthRoute.FlowEntry -> mfaEnrollmentStartStep(configuration)
+            is AuthRoute.Destination -> route
+        }
+    )
 }
 
 /**
