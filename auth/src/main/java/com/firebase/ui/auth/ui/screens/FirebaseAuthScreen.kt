@@ -87,6 +87,7 @@ import com.firebase.ui.auth.ui.components.getRecoveryMessage
 import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
+import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
@@ -97,7 +98,10 @@ import com.firebase.ui.auth.ui.screens.email.isEmailLinkSignInOffered
 import com.firebase.ui.auth.ui.screens.email.isEmailSignUpOffered
 import com.firebase.ui.auth.ui.screens.email.navigateToEmailStep
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
-import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
+import com.firebase.ui.auth.ui.screens.mfa.exitMfaEnrollment
+import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentDestinations
+import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentStartStep
+import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.ui.screens.reauth.CustomReauthContent
@@ -179,6 +183,8 @@ fun FirebaseAuthScreen(
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
+    // Above the NavHost, so a step switch cannot dispose it.
+    val mfaEnrollmentFlowState = rememberMfaEnrollmentFlowState()
     // FirebaseAuthUI only folds ordinary states into an armed request while a drainer is present.
     DisposableEffect(authUI) {
         authUI.addReauthenticationDrainer()
@@ -404,7 +410,9 @@ fun FirebaseAuthScreen(
                                 // Inert while armed: this content stays composed beneath the slot.
                                 if (reauthState == null) {
                                     if (configuration.isMfaEnabled) {
-                                        navController.navigate(AuthRoute.MfaEnrollment.route)
+                                        navController.navigate(
+                                            mfaEnrollmentStartStep(mfaConfiguration).route
+                                        )
                                     } else {
                                         val exception = AuthException.AuthCancelledException(
                                             message = "Multi-factor authentication is disabled in the configuration. " +
@@ -445,7 +453,14 @@ fun FirebaseAuthScreen(
                             onNavigate = { route ->
                                 // Inert while armed: this content stays composed beneath the slot.
                                 if (reauthState == null) {
-                                    navController.navigate(route.route)
+                                    // MfaEnrollment.route names SelectFactor; one factor skips it.
+                                    if (route == AuthRoute.MfaEnrollment) {
+                                        navController.navigate(
+                                            mfaEnrollmentStartStep(mfaConfiguration).route
+                                        )
+                                    } else {
+                                        navController.navigate(route.route)
+                                    }
                                 }
                             }
                         )
@@ -463,28 +478,19 @@ fun FirebaseAuthScreen(
                     }
                 }
 
-                // As with the phone steps: every declared step registered, all one screen.
-                AuthRoute.MfaEnrollment.steps.forEach { step ->
-                    composable(step.routePattern) {
-                        val user = authUI.getCurrentUser()
-                        if (user != null) {
-                            MfaEnrollmentScreen(
-                                user = user,
-                                auth = authUI.auth,
-                                configuration = mfaConfiguration,
-                                authConfiguration = configuration,
-                                content = mfaEnrollmentContent,
-                                onComplete = { navController.popBackStack() },
-                                onSkip = { navController.popBackStack() },
-                                onError = { exception ->
-                                    onSignInFailure(AuthException.from(exception, stringProvider))
-                                }
-                            )
-                        } else {
-                            navController.popBackStack()
-                        }
+                mfaEnrollmentDestinations(
+                    navController = navController,
+                    configuration = mfaConfiguration,
+                    authConfiguration = configuration,
+                    authUI = authUI,
+                    flowState = mfaEnrollmentFlowState,
+                    content = mfaEnrollmentContent,
+                    onComplete = { navController.exitMfaEnrollment() },
+                    onSkip = { navController.exitMfaEnrollment() },
+                    onError = { exception ->
+                        onSignInFailure(AuthException.from(exception, stringProvider))
                     }
-                }
+                )
 
                 composable(AuthRoute.MfaChallenge.routePattern) {
                     // Retained for this entry: onSuccess clears pendingResolver, blanking the exit.
@@ -1103,21 +1109,33 @@ sealed class AuthRoute {
     object MfaEnrollment : AuthRoute() {
         override val route: String get() = SelectFactor.route
 
-        /** One step per screen the enrolment flow walks through. */
-        sealed class Step(private val id: String) : AuthRoute() {
+        /**
+         * One step per screen the enrolment flow walks through. [enrollmentStep] is the
+         * [MfaEnrollmentStep] the screen renders for this destination.
+         */
+        sealed class Step(
+            private val id: String,
+            internal val enrollmentStep: MfaEnrollmentStep,
+        ) : AuthRoute() {
             override val route: String get() = id
         }
 
-        object SelectFactor : Step("auth_mfa_enrollment_select_factor")
+        object SelectFactor : Step("auth_mfa_enrollment_select_factor", MfaEnrollmentStep.SelectFactor)
 
-        object ConfigureSms : Step("auth_mfa_enrollment_configure_sms")
+        object ConfigureSms : Step("auth_mfa_enrollment_configure_sms", MfaEnrollmentStep.ConfigureSms)
 
-        object ConfigureTotp : Step("auth_mfa_enrollment_configure_totp")
+        object ConfigureTotp : Step("auth_mfa_enrollment_configure_totp", MfaEnrollmentStep.ConfigureTotp)
 
-        object VerifyFactor : Step("auth_mfa_enrollment_verify_factor")
+        object VerifyFactor : Step("auth_mfa_enrollment_verify_factor", MfaEnrollmentStep.VerifyFactor)
 
         internal val steps: List<Step>
             get() = listOf(SelectFactor, ConfigureSms, ConfigureTotp, VerifyFactor)
+
+        internal fun stepFor(enrollmentStep: MfaEnrollmentStep): Step =
+            steps.first { it.enrollmentStep == enrollmentStep }
+
+        /** Whether [route] — a live `NavDestination.route` — belongs to this flow. */
+        internal fun isStep(route: String?): Boolean = steps.any { it.routePattern == route }
     }
 
     internal companion object {
