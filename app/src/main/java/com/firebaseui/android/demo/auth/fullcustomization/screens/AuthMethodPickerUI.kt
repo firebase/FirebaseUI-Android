@@ -80,6 +80,15 @@ private val EmailStepTransform: AnimatedContentTransitionScope<Scene<NavKey>>.()
 }
 
 /**
+ * [NavDisplay]'s predictive-back default scales the outgoing step down to 70% while the incoming one
+ * springs in at full size, so a swipe back drew both steps superimposed at different scales. Reuse
+ * the cross-fade above so a gesture back looks like a tapped one.
+ */
+private val EmailStepPredictivePopTransform:
+    AnimatedContentTransitionScope<Scene<NavKey>>.(Int) -> ContentTransform =
+    { EmailStepTransform(this) }
+
+/**
  * Custom UI for `customMethodPickerLayout`'s email path.
  *
  * Hosts its own [NavDisplay] over [AuthRoute.Email]'s public per-mode destinations, the same
@@ -108,6 +117,7 @@ fun AuthMethodPickerUI(
             backStack = backStack,
             transitionSpec = EmailStepTransform,
             popTransitionSpec = EmailStepTransform,
+            predictivePopTransitionSpec = EmailStepPredictivePopTransform,
             entryProvider = entryProvider {
                 entry<EmailEntryKey> {
                     // Local and disposable: this step performs no auth operation of its own, so
