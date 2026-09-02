@@ -15,6 +15,11 @@
 package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -24,16 +29,20 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.scene.Scene
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.AuthUITransitions
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -129,8 +138,11 @@ class FirebaseAuthScreenReauthContentStateTest {
         return user
     }
 
-    private fun emailAndPhoneConfiguration(): AuthUIConfiguration = authUIConfiguration {
+    private fun emailAndPhoneConfiguration(
+        authUITransitions: AuthUITransitions? = null,
+    ): AuthUIConfiguration = authUIConfiguration {
         context = this@FirebaseAuthScreenReauthContentStateTest.context
+        transitions = authUITransitions
         providers {
             provider(
                 AuthProvider.Email(
@@ -1762,6 +1774,220 @@ class FirebaseAuthScreenReauthContentStateTest {
         assertThat(
             composeTestRule.onAllNodesWithText(expectedMessage).fetchSemanticsNodes()
         ).isEmpty()
+    }
+
+    /**
+     * Steps inside the reauthentication surface animate the way the flow underneath does: the
+     * host's configured spec runs for them, so a step change is not a snap.
+     */
+    @Test
+    fun `the configured transition spec runs for a step change inside the reauth surface`() {
+        val user = passwordOnlyUser("linked@example.com")
+        val signedInAuthUI = signedInAuthUI(user)
+        val resolver = totpResolver(Tasks.forResult(mock(AuthResult::class.java)))
+        val transitions = mutableListOf<Pair<AuthRoute?, AuthRoute?>>()
+        val record: AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform = {
+            transitions += initialState.authRoute() to targetState.authRoute()
+            fadeIn() togetherWith fadeOut()
+        }
+        val configuration = emailAndPhoneConfiguration(
+            AuthUITransitions(transitionSpec = record, popTransitionSpec = record)
+        )
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = configuration,
+                authUI = signedInAuthUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                emailContent = {
+                    Text(text = "EMAIL", modifier = Modifier.testTag("reauth_email"))
+                },
+                mfaChallengeContent = {
+                    Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
+                },
+                authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(AuthState.Reauthentication.Required(user))
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("reauth_email").assertIsDisplayed()
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(AuthState.RequiresMfa(resolver, "authenticator"))
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("mfa_challenge").assertIsDisplayed()
+        assertThat(transitions).contains(AuthRoute.Email.SignIn(null) to AuthRoute.MfaChallenge)
+    }
+
+    /**
+     * The challenge is a real entry, so the request leaving
+     * [AuthState.Reauthentication.RequiresMfa] has to take it off the stack — by any path, not
+     * only through the challenge's own callbacks. Nothing else can: a challenge with no resolver
+     * renders nothing at all.
+     */
+    @Test
+    fun `leaving the MFA challenge state returns the reauth surface to its start step`() {
+        val user = passwordOnlyUser("linked@example.com")
+        val signedInAuthUI = signedInAuthUI(user)
+        val resolver = totpResolver(Tasks.forResult(mock(AuthResult::class.java)))
+        var retryCount = 0
+        var cancelledCount = 0
+        val required = AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = signedInAuthUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = { cancelledCount++ },
+                mfaChallengeContent = {
+                    Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
+                },
+                reauthContent = {
+                    Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
+                },
+                authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
+            )
+        }
+
+        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(required) }
+        composeTestRule.waitForIdle()
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(AuthState.RequiresMfa(resolver, "authenticator"))
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("mfa_challenge").assertIsDisplayed()
+
+        // Straight off RequiresMfa, without the challenge's own cancel or error path running.
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateReauthentication(required.requestId) { it.attemptCancelled() }
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("mfa_challenge").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
+        assertThat(cancelledCount).isEqualTo(0)
+        assertThat(retryCount).isEqualTo(0)
+    }
+
+    /**
+     * The surface gates the operation, so it stays up for the retry rather than uncovering the
+     * flow underneath for its duration, and reports the retry as loading — the slot owns the
+     * progress it shows, exactly as it does for a credential attempt.
+     */
+    @Test
+    fun `the reauth slot stays up and reports loading through the retry`() {
+        val user = passwordOnlyUser("linked@example.com")
+        val signedInAuthUI = signedInAuthUI(user)
+        val holdRetry = CompletableDeferred<Unit>()
+        val runs = AtomicInteger(0)
+        var captured: ReauthContentState? = null
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = signedInAuthUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                reauthContent = { state ->
+                    captured = state
+                    Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
+                }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(
+                AuthState.Reauthentication.Required(
+                    user,
+                    retryOperation = {
+                        runs.incrementAndGet()
+                        holdRetry.await()
+                    },
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(
+                AuthState.Success(result = null, user = user, reauthenticatedUid = user.uid)
+            )
+        }
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { runs.get() == 1 }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
+        assertThat(requireNotNull(captured).isLoading).isTrue()
+        // The slot's own progress, not the library's dialog stacked over it.
+        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertDoesNotExist()
+
+        holdRetry.complete(Unit)
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("reauth_slot").fetchSemanticsNodes().isEmpty()
+        }
+    }
+
+    /** The default sheet is the same surface: it holds its step under the loading dialog. */
+    @Test
+    fun `the default reauth sheet stays up through the retry`() {
+        val user = passwordOnlyUser("linked@example.com")
+        val signedInAuthUI = signedInAuthUI(user)
+        val holdRetry = CompletableDeferred<Unit>()
+        val runs = AtomicInteger(0)
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = signedInAuthUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                emailContent = {
+                    Text(text = "EMAIL", modifier = Modifier.testTag("reauth_email"))
+                },
+                authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(
+                AuthState.Reauthentication.Required(
+                    user,
+                    retryOperation = {
+                        runs.incrementAndGet()
+                        holdRetry.await()
+                    },
+                )
+            )
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("reauth_email").assertIsDisplayed()
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(
+                AuthState.Success(result = null, user = user, reauthenticatedUid = user.uid)
+            )
+        }
+        composeTestRule.waitUntil(timeoutMillis = 5_000) { runs.get() == 1 }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("reauth_email").assertIsDisplayed()
+        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertIsDisplayed()
+
+        holdRetry.complete(Unit)
+        composeTestRule.waitUntil(timeoutMillis = 5_000) {
+            composeTestRule.onAllNodesWithTag("reauth_email").fetchSemanticsNodes().isEmpty()
+        }
     }
 
     /** A [FirebaseAuthUI] over a mocked, *signed-out* [FirebaseAuth]: `authStateFlow()` is Idle. */

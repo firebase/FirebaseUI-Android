@@ -16,10 +16,6 @@ package com.firebase.ui.auth.ui.screens
 
 import android.util.Log
 import androidx.activity.compose.LocalActivity
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +28,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -40,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -69,6 +63,8 @@ import com.firebase.ui.auth.FirebaseAuthActivity
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
+import com.firebase.ui.auth.configuration.DefaultAuthContentTransform
+import com.firebase.ui.auth.configuration.DefaultAuthPredictivePopContentTransform
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.auth_provider.filterToLinkedProviders
@@ -103,11 +99,15 @@ import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentStartStep
 import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
-import com.firebase.ui.auth.ui.screens.reauth.CustomReauthContent
 import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
-import com.firebase.ui.auth.ui.screens.reauth.ReauthPresentationState
-import com.firebase.ui.auth.ui.screens.reauth.ReauthPresentationStateSaver
-import com.firebase.ui.auth.ui.screens.reauth.ReauthSheetContent
+import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
+import com.firebase.ui.auth.ui.screens.reauth.armedReauth
+import com.firebase.ui.auth.ui.screens.reauth.clearReauth
+import com.firebase.ui.auth.ui.screens.reauth.navigateReauth
+import com.firebase.ui.auth.ui.screens.reauth.returnToReauthStart
+import com.firebase.ui.auth.ui.screens.reauth.reauthDestinations
+import com.firebase.ui.auth.ui.screens.reauth.toReauthSurface
+import com.firebase.ui.auth.ui.screens.reauth.toReauthConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.firebase.ui.auth.util.displayIdentifier
@@ -118,8 +118,6 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-
-private const val DEFAULT_TRANSITION_DURATION_MS = 700
 
 /**
  * High-level authentication screen that wires together provider selection, individual provider
@@ -188,28 +186,20 @@ fun FirebaseAuthScreen(
         authUI.addReauthenticationDrainer()
         onDispose { authUI.removeReauthenticationDrainer() }
     }
-    val reauthPresentation = rememberSaveable(stateSaver = ReauthPresentationStateSaver) {
-        mutableStateOf<ReauthPresentationState?>(null)
-    }
-    val clearReauthPresentation: () -> Unit = remember {
-        { reauthPresentation.value = null }
-    }
     val reauthState = authState as? AuthState.Reauthentication
     val reauthRequest = reauthState?.request
-    val reauthRequired = reauthRequest?.let { AuthState.Reauthentication.Required(it) }
-    val reauthConfig = reauthRequest?.let { request ->
-        configuration.providers.filterToLinkedProviders(request.user)
-            .takeIf { it.isNotEmpty() }
-            ?.let { linkedProviders ->
-                configuration.copy(
-                    providers = linkedProviders,
-                    isAnonymousUpgradeEnabled = false,
-                    isCredentialLinkingEnabled = false,
-                    isNewEmailAccountsAllowed = false,
-                    isReauthenticationMode = true,
-                )
-            }
+    val reauthConfig = reauthRequest?.let { configuration.toReauthConfiguration(it.user) }
+    /**
+     * The reauthentication surface, or null when there is none. One signal: [ReauthSceneStrategy]
+     * decides whether the sheet exists on it and the entry renders what it resolves to.
+     *
+     * Held as `State` because the entry reads it, and a `NavEntry`'s content lambda is built once
+     * per key — anything passed by value there never updates.
+     */
+    val reauthSurface = remember(reauthState, configuration) {
+        reauthState.toReauthSurface(configuration)
     }
+    val reauthSurfaceHolder = rememberUpdatedState(reauthSurface)
     val reauthException = (reauthState as? AuthState.Reauthentication.AttemptFailed)
         ?.exception
         ?.let { throwable ->
@@ -218,8 +208,6 @@ fun FirebaseAuthScreen(
                 else -> AuthException.from(throwable, stringProvider)
             }
         }
-    val reauthErrorMessage = reauthException?.let { getRecoveryMessage(it, stringProvider) }
-    val reauthMfa = reauthState as? AuthState.Reauthentication.RequiresMfa
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
     val typedEmail = rememberSaveable { mutableStateOf<String?>(null) }
     val reauthPrefillEmail = remember(authUI, configuration.isReauthenticationMode) {
@@ -233,6 +221,55 @@ fun FirebaseAuthScreen(
     }
     val skipsMethodPicker = startRoute != AuthRoute.MethodPicker
     val backStack = rememberNavBackStack(startRoute.toKey())
+    // The stack is the arming marker: a Reauth entry persists with it, across recreation and death.
+    val armedReauth = backStack.armedReauth()
+    val clearReauthPresentation: () -> Unit = remember(backStack) { { backStack.clearReauth() } }
+    val currentOnSignInCancelled = rememberUpdatedState(onSignInCancelled)
+    val onReauthDismiss: () -> Unit = remember(authUI, clearReauthPresentation) {
+        {
+            clearReauthPresentation()
+            authUI.finishReauthentication(AuthState.Idle)
+            currentOnSignInCancelled.value()
+        }
+    }
+    /**
+     * Leaving one reauthentication step. The stack decides which of the two it is: another
+     * reauthentication entry underneath means step back and cancel the attempt; nothing underneath
+     * means the surface itself is being left.
+     */
+    val onLeaveReauthStep: (AuthRoute.Reauth) -> Unit = remember(authUI, backStack, onReauthDismiss) {
+        { marker ->
+            val below = backStack.getOrNull(backStack.lastIndex - 1)
+            if (below is AuthRoute.Reauth) {
+                backStack.popOrNull()
+                authUI.updateReauthentication(marker.requestId) { it.attemptCancelled() }
+            } else {
+                onReauthDismiss()
+            }
+        }
+    }
+    // The slot *is* the provider chooser, even for one provider, so it always starts at the picker
+    // step. The default sheet skips straight into a lone provider's flow, as it always did.
+    val reauthStartStep: AuthRoute.Destination = remember(reauthConfig, reauthContent) {
+        when {
+            reauthContent != null -> AuthRoute.MethodPicker
+            reauthConfig != null -> getStartRoute(reauthConfig).toKey()
+            else -> AuthRoute.MethodPicker
+        }
+    }
+    val stepTransitionSpec = configuration.transitions?.transitionSpec
+        ?: DefaultAuthContentTransform
+    val stepPopTransitionSpec = configuration.transitions?.popTransitionSpec
+        ?: DefaultAuthContentTransform
+    val reauthSceneStrategy =
+        remember(onReauthDismiss, stepTransitionSpec, stepPopTransitionSpec) {
+            ReauthSceneStrategy(
+                surface = reauthSurfaceHolder,
+                onDismissRequest = onReauthDismiss,
+                transitionSpec = stepTransitionSpec,
+                popTransitionSpec = stepPopTransitionSpec,
+            )
+        }
 
     LaunchedEffect(authState) {
         lastSignInPreference.value = SignInPreferenceManager.getLastSignIn(context)
@@ -289,20 +326,20 @@ fun FirebaseAuthScreen(
         ) {
             NavDisplay(
                 backStack = backStack,
-                onBack = { backStack.popOrNull() },
-                transitionSpec = configuration.transitions?.transitionSpec ?: {
-                    fadeIn(animationSpec = tween(DEFAULT_TRANSITION_DURATION_MS)) togetherWith
-                            fadeOut(animationSpec = tween(DEFAULT_TRANSITION_DURATION_MS))
+                sceneStrategies = listOf(reauthSceneStrategy),
+                onBack = {
+                    val top = backStack.lastOrNull()
+                    if (top is AuthRoute.Reauth) onLeaveReauthStep(top) else backStack.popOrNull()
                 },
-                popTransitionSpec = configuration.transitions?.popTransitionSpec ?: {
-                    fadeIn(animationSpec = tween(DEFAULT_TRANSITION_DURATION_MS)) togetherWith
-                            fadeOut(animationSpec = tween(DEFAULT_TRANSITION_DURATION_MS))
-                },
+                transitionSpec = stepTransitionSpec,
+                popTransitionSpec = stepPopTransitionSpec,
                 predictivePopTransitionSpec =
-                    configuration.transitions?.predictivePopTransitionSpec ?: {
-                        fadeIn(animationSpec = tween(DEFAULT_TRANSITION_DURATION_MS)) togetherWith
-                                fadeOut(animationSpec = tween(DEFAULT_TRANSITION_DURATION_MS))
-                    },
+                    configuration.transitions?.predictivePopTransitionSpec
+                        ?: DefaultAuthPredictivePopContentTransform,
+                // Every entry's content lambda below is built once per key: a value passed into
+                // one is captured at that first composition and never updates again. Anything
+                // that changes while an entry is on screen has to arrive as a `State` or a
+                // getter lambda, never by value.
                 entryProvider = entryProvider {
                 entry<AuthRoute.MethodPicker>(
                     metadata = authRouteMetadata(AuthRoute.MethodPicker)
@@ -479,6 +516,23 @@ fun FirebaseAuthScreen(
                     }
                 )
 
+                reauthDestinations(
+                    backStack = backStack,
+                    authUI = authUI,
+                    activity = activity,
+                    context = context,
+                    configuration = configuration,
+                    stringProvider = stringProvider,
+                    surface = reauthSurfaceHolder,
+                    emailContent = emailContent,
+                    phoneContent = phoneContent,
+                    mfaChallengeContent = mfaChallengeContent,
+                    reauthContent = reauthContent,
+                    customMethodPickerLayout = customMethodPickerLayout,
+                    onDismiss = onReauthDismiss,
+                    onLeaveStep = onLeaveReauthStep,
+                )
+
                 entry<AuthRoute.MfaChallenge>(
                     metadata = authRouteMetadata(AuthRoute.MfaChallenge)
                 ) {
@@ -544,7 +598,7 @@ fun FirebaseAuthScreen(
                 previousAuthState.value = state
                 // Guards below use `isAt` (runtime class), not `==`: keys carry arguments, so `==` blanks a live form.
                 val currentKey = backStack.lastOrNull()
-                val savedPresentation = reauthPresentation.value
+                val savedPresentation = armedReauth
 
                 if (savedPresentation != null &&
                     state !is AuthState.Reauthentication &&
@@ -558,6 +612,15 @@ fun FirebaseAuthScreen(
                         )
                     )
                     return@LaunchedEffect
+                }
+
+                // The challenge entry is on the stack exactly while the state is RequiresMfa: it
+                // has no resolver to render otherwise, and this is the only place that pops it, so
+                // no attempt path can strand the user on a dead challenge.
+                if (state !is AuthState.Reauthentication.RequiresMfa &&
+                    backStack.armedReauth()?.step is AuthRoute.MfaChallenge
+                ) {
+                    backStack.returnToReauthStart()
                 }
 
                 when (state) {
@@ -595,11 +658,14 @@ fun FirebaseAuthScreen(
                             )
                             return@LaunchedEffect
                         }
-                        val currentPresentation = reauthPresentation.value
-                        if (currentPresentation?.requestId != state.requestId) {
-                            reauthPresentation.value = ReauthPresentationState(
-                                requestId = state.requestId,
-                                userUid = state.userUid,
+                        if (armedReauth?.requestId != state.requestId) {
+                            backStack.clearReauth()
+                            backStack.add(
+                                AuthRoute.Reauth(
+                                    requestId = state.requestId,
+                                    userUid = state.userUid,
+                                    step = reauthStartStep,
+                                )
                             )
                         }
                     }
@@ -682,12 +748,21 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Reauthentication -> {
-                        val currentPresentation = reauthPresentation.value
-                        if (currentPresentation?.requestId != state.requestId) {
-                            reauthPresentation.value = ReauthPresentationState(
+                        val marker = armedReauth?.takeIf { it.requestId == state.requestId }
+                            ?: AuthRoute.Reauth(
                                 requestId = state.requestId,
                                 userUid = state.userUid,
-                            )
+                                step = reauthStartStep,
+                            ).also {
+                                backStack.clearReauth()
+                                backStack.add(it)
+                            }
+                        // A real entry, so the challenge is pushed rather than derived; the pop
+                        // for every other state is handled above.
+                        if (state is AuthState.Reauthentication.RequiresMfa &&
+                            marker.step !is AuthRoute.MfaChallenge
+                        ) {
+                            backStack.navigateReauth(marker, AuthRoute.MfaChallenge)
                         }
                     }
 
@@ -750,27 +825,10 @@ fun FirebaseAuthScreen(
                 }
             }
 
-            val reauthUiVisible = when (reauthState) {
-                is AuthState.Reauthentication.Required,
-                is AuthState.Reauthentication.Authenticating,
-                is AuthState.Reauthentication.AttemptFailed,
-                is AuthState.Reauthentication.RequiresMfa,
-                is AuthState.Reauthentication.PhoneNumberVerificationRequired,
-                is AuthState.Reauthentication.SmsAutoVerified,
-                is AuthState.Reauthentication.PasswordResetLinkSent,
-                is AuthState.Reauthentication.EmailSignInLinkSent,
-                    -> true
-
-                else -> false
-            }
-            val reauthSubRoute = if (reauthMfa != null) {
-                AuthRoute.MfaChallenge
-            } else {
-                reauthPresentation.value?.subRoute
-            }
+            // The slot owns the error and loading presentation while it is what is on screen.
             val reauthSlotActive = reauthContent != null &&
-                    reauthUiVisible &&
-                    reauthSubRoute == null
+                    reauthSurface != null &&
+                    armedReauth?.step is AuthRoute.MethodPicker
 
             val reauthAttemptFailure =
                 reauthState as? AuthState.Reauthentication.AttemptFailed
@@ -885,79 +943,6 @@ fun FirebaseAuthScreen(
                 LoadingDialog(loadingMessage ?: stringProvider.progressDialogLoading)
             }
 
-            val currentOnSignInCancelled = rememberUpdatedState(onSignInCancelled)
-            val onReauthDismiss: () -> Unit = remember(authUI, clearReauthPresentation) {
-                {
-                    clearReauthPresentation()
-                    authUI.finishReauthentication(AuthState.Idle)
-                    currentOnSignInCancelled.value()
-                }
-            }
-            val onReauthAttemptStarted: () -> Unit = remember(authUI, reauthState?.requestId) {
-                {
-                    reauthState?.requestId?.let { requestId ->
-                        authUI.updateReauthentication(requestId) { it.attemptStarted() }
-                    }
-                }
-            }
-            val onReauthSubRouteChange: (AuthRoute?) -> Unit =
-                remember {
-                    { route ->
-                        reauthPresentation.value = reauthPresentation.value?.copy(subRoute = route)
-                    }
-                }
-            val onReauthMfaError: (Exception) -> Unit = remember(authUI) {
-                { exception ->
-                    reauthPresentation.value = reauthPresentation.value?.copy(subRoute = null)
-                    authUI.updateAuthState(AuthState.Error(exception))
-                }
-            }
-
-            if (reauthConfig != null && reauthRequired != null && reauthUiVisible) {
-                if (reauthContent != null) {
-                    CustomReauthContent(
-                        authUI = authUI,
-                        reauthConfig = reauthConfig,
-                        reauthState = reauthRequired,
-                        activity = activity,
-                        context = context,
-                        emailContent = emailContent,
-                        phoneContent = phoneContent,
-                        mfaChallengeContent = mfaChallengeContent,
-                        mfaResolver = reauthMfa?.resolver,
-                        isLoading = authState is AuthState.Reauthentication.Authenticating,
-                        error = reauthErrorMessage,
-                        exception = reauthException,
-                        activeSubRoute = reauthSubRoute,
-                        onActiveSubRouteChange = onReauthSubRouteChange,
-                        onAttemptStarted = onReauthAttemptStarted,
-                        onMfaError = onReauthMfaError,
-                        onDismiss = onReauthDismiss,
-                        content = reauthContent,
-                    )
-                } else {
-                    ModalBottomSheet(
-                        modifier = Modifier.exposeTestTagsAsResourceIds(),
-                        onDismissRequest = onReauthDismiss,
-                        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                    ) {
-                        ReauthSheetContent(
-                            authUI = authUI,
-                            reauthConfig = reauthConfig,
-                            requestId = reauthRequired.requestId,
-                            activity = activity,
-                            context = context,
-                            prefillEmail = reauthRequired.user.email,
-                            emailContent = emailContent,
-                            phoneContent = phoneContent,
-                            mfaChallengeContent = mfaChallengeContent,
-                            mfaResolver = reauthMfa?.resolver,
-                            customMethodPickerLayout = customMethodPickerLayout,
-                            onDismiss = onReauthDismiss,
-                        )
-                    }
-                }
-            }
         }
     }
 }
