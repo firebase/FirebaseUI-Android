@@ -58,9 +58,8 @@ import org.robolectric.annotation.Config
  * The reauthentication email lock has to survive an [EmailAuthMode] round-trip.
  *
  * [DefaultEmailAuthContent] dispatches modes with a `when`, so leaving [EmailAuthMode.SignIn]
- * *disposes* the [SignInUI] composition group and coming back creates a fresh one. Any lock
- * [SignInUI] inferred from its own (mutable) field value was therefore re-decided on every return —
- * either dropping the lock, or locking an address the library never prefilled.
+ * disposes the [SignInUI] composition group and coming back creates a fresh one. A lock inferred
+ * from the field's own value would be re-decided on every return.
  *
  * @suppress Internal test class
  */
@@ -171,9 +170,8 @@ class EmailAuthScreenReauthEmailLockTest {
     }
 
     /**
-     * Every branch of this screen's `onRetry` is inert in reauthentication mode (sign-up and
-     * mode switches are all vetoed), so an action button on the error dialog could only dismiss —
-     * and it raced the outer screen's `onRetry = null` for the same error.
+     * Unhosted, this screen shows the error but never acts on it, so the dialog explains the
+     * error and renders no action button.
      */
     @Test
     fun `the reauth sub-flow error dialog offers no action button`() {
@@ -202,12 +200,9 @@ class EmailAuthScreenReauthEmailLockTest {
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON).assertDoesNotExist()
     }
 
-    /**
-     * Resetting the text fields (the mode switches all do it) must put the locked address back,
-     * not leave the user on an empty read-only field.
-     */
+    /** A mode switch keeps the address, so it can never leave an empty read-only field. */
     @Test
-    fun `the locked email is restored when the text fields are reset`() {
+    fun `the locked email survives a mode switch`() {
         var email: String? = null
         var isEmailLocked: Boolean? = null
         var goToSignIn: (() -> Unit)? = null
@@ -290,11 +285,9 @@ class EmailAuthScreenReauthEmailLockTest {
     }
 
     /**
-     * The two out-of-band email routes are not equivalent during reauthentication. A password reset
-     * email leaves the sheet up and the request armed, so it stays available — blocking it stranded
-     * a user who had forgotten their password with no route but dismissal. An email *link* reopens
-     * the app with nothing armed, so completing it reports an interruption instead of finishing the
-     * pending operation, and it stays hidden.
+     * The two out-of-band email routes are not equivalent during reauthentication: a password
+     * reset leaves the sheet up and the request armed, so it stays available, while an email link
+     * reopens the app with nothing armed and stays hidden.
      */
     @Test
     fun `password recovery is offered while reauthenticating but email-link sign-in is not`() {
@@ -302,7 +295,7 @@ class EmailAuthScreenReauthEmailLockTest {
             EmailAuthScreenUnderTest(reauthConfigurationWithEmailLink(), prefill = prefillEmail)
         }
 
-        // The password field proves this is the reauth SignIn screen, still usable as intended.
+        // The password field proves this is the reauth SignIn screen.
         composeTestRule.onNodeWithText(stringProvider.passwordHint).assertExists()
         composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).assertExists()
         composeTestRule.onNodeWithText(stringProvider.signInWithEmailLink, ignoreCase = true)
@@ -354,7 +347,7 @@ class EmailAuthScreenReauthEmailLockTest {
 
     /**
      * The mirror case: outside reauthentication nothing is locked, so a round-trip must leave the
-     * field editable (and the "sign in" mode switch keeps clearing it as it always did).
+     * field editable.
      */
     @Test
     fun `the email field stays editable across a round-trip outside reauthentication`() {
