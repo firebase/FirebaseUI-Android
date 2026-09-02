@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -105,10 +106,15 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                 isMfaEnabled = false
                 stringProvider = customStringProvider
                 transitions = AuthUITransitions(
-                    enterTransition = { slideInHorizontally { it } },
-                    exitTransition = { slideOutHorizontally { -it } },
-                    popEnterTransition = { slideInHorizontally { -it } },
-                    popExitTransition = { slideOutHorizontally { it } }
+                    transitionSpec = {
+                        slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+                    },
+                    popTransitionSpec = {
+                        slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+                    },
+                    predictivePopTransitionSpec = { _ ->
+                        slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+                    },
                 )
                 providers {
                     provider(AuthProvider.Anonymous)
@@ -330,8 +336,6 @@ private fun AppAuthenticatedContent(
                             try {
                                 uiContext.authUI.delete(context)
                             } catch (e: AuthException.InvalidCredentialsException) {
-                                // Reauthentication.Required state was emitted —
-                                // FirebaseAuthScreen navigates to the reauth flow automatically.
                                 Log.d("HighLevelApiDemoActivity", "Reauth required before delete")
                             } catch (e: AuthException) {
                                 Log.e("HighLevelApiDemoActivity", "Delete failed", e)

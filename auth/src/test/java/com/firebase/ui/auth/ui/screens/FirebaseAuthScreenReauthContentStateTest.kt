@@ -597,7 +597,7 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
-     * The error dialog's recovery actions navigate the *outer* NavHost to the non-reauth email
+     * The error dialog's recovery actions navigate the *outer* back stack to the non-reauth email
      * screen. While a reauthentication is armed both `onRecover` and `onRetry` are withheld, so the
      * dialog has no action to offer and must not render an action button that silently dismisses
      * instead of recovering. This is the default-sheet path — with a custom slot the error latches
@@ -632,7 +632,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
 
         // The sheet opens on its method picker (two linked providers), so no password field is on
-        // screen yet. The outer NavHost is still on the method-picker route behind it.
+        // screen yet. The outer back stack is still on the method picker behind it.
         composeTestRule.onAllNodesWithText(stringProvider.passwordHint).assertCountEquals(0)
 
         composeTestRule.runOnIdle {
@@ -648,7 +648,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText(stringProvider.errorDialogTitle).assertExists()
 
-        // Ungated, onRecover would navigate the outer NavHost to the non-reauth email screen.
+        // Ungated, onRecover would navigate the outer back stack to the non-reauth email screen.
         // With both callbacks withheld the button has nothing to do, so it must not render.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON).assertDoesNotExist()
         composeTestRule.onNodeWithText(stringProvider.dismissAction).assertExists()
@@ -739,7 +739,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.onAllNodesWithText(stringProvider.passwordHint).assertCountEquals(0)
 
-        // Ungated, selecting email navigates the outer NavHost to its non-reauth email screen,
+        // Ungated, selecting email navigates the outer back stack to its non-reauth email screen,
         // surfacing a password field behind the slot.
         composeTestRule.onNodeWithTag("pick_password").performClick()
         composeTestRule.waitForIdle()
@@ -910,7 +910,7 @@ class FirebaseAuthScreenReauthContentStateTest {
     /**
      * A wrong password for an unverified account ends up here: the consumed Error resets to Idle,
      * the combine falls back to the live session, and that yields RequiresEmailVerification. It
-     * navigates with `popUpTo(inclusive = true)`, which would wipe the stack under the armed slot.
+     * resets the back stack to a single entry, which would wipe the stack under the armed slot.
      */
     @Test
     fun `RequiresEmailVerification does not navigate while reauthentication is armed`() {
@@ -970,7 +970,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * Firebase requires the second factor to complete the reauthentication too, so the challenge
-     * has to be presented *inside* the reauth surface — on the outer NavHost it renders beneath
+     * has to be presented *inside* the reauth surface — on the outer display it renders beneath
      * the modal, unreachable, and the operation stays pending forever.
      */
     @Test
@@ -1027,7 +1027,7 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
-     * The default sheet needs the same sub-flow: its own NavHost, so the challenge replaces the
+     * The default sheet needs the same sub-flow: its own NavDisplay, so the challenge replaces the
      * provider screen inside the modal instead of rendering under it.
      */
     @Test
