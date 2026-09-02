@@ -120,8 +120,8 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorResolver
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 /**
  * High-level authentication screen that wires together provider selection, individual provider
@@ -456,28 +456,21 @@ fun FirebaseAuthScreen(
                             onReloadUser = {
                                 coroutineScope.launch {
                                     try {
-                                        authUI.getCurrentUser()?.let {
-                                            it.reload().await()
-                                            it.getIdToken(true).await()
-                                            if (it.isEmailVerified) {
-                                                authUI.updateAuthState(
-                                                    AuthState.Success(
-                                                        result = null,
-                                                        user = it,
-                                                        isNewUser = false
-                                                    )
-                                                )
-                                            } else {
-                                                authUI.updateAuthState(
-                                                    AuthState.RequiresEmailVerification(
-                                                        user = it,
-                                                        email = it.email ?: ""
-                                                    )
-                                                )
-                                            }
-                                        }
+                                        authUI.reloadUser()
+                                    } catch (e: CancellationException) {
+                                        throw e
                                     } catch (e: Exception) {
-                                        Log.e("FirebaseAuthScreen", "Failed to refresh user", e)
+                                        // Signing out mid-reload fails the token refresh. That is
+                                        // the sign-out landing, not a refresh the user can retry.
+                                        if (authUI.getCurrentUser() == null) {
+                                            Log.d(
+                                                "FirebaseAuthScreen",
+                                                "Reload abandoned, user signed out",
+                                                e
+                                            )
+                                        } else {
+                                            Log.e("FirebaseAuthScreen", "Failed to refresh user", e)
+                                        }
                                     }
                                 }
                             },

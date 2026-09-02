@@ -20,11 +20,13 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import android.content.Context
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GetTokenResult
 import com.google.firebase.auth.MultiFactorResolver
 import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.test.runTest
@@ -317,6 +319,119 @@ class FirebaseAuthUIAuthStateTest {
         // Verify that the listener was added and then removed
         verify(mockFirebaseAuth).addAuthStateListener(listenerCaptor.capture())
         verify(mockFirebaseAuth).removeAuthStateListener(listenerCaptor.value)
+    }
+
+    // =============================================================================================
+    // reloadUser() Tests
+    // =============================================================================================
+
+    /** Completed reload/token tasks, so `reloadUser()` runs straight through. */
+    private fun stubReloadTasks() {
+        `when`(mockFirebaseUser.reload()).thenReturn(Tasks.forResult<Void>(null))
+        `when`(mockFirebaseUser.getIdToken(true))
+            .thenReturn(Tasks.forResult(mock(GetTokenResult::class.java)))
+    }
+
+    /**
+     * Pins the flow to a verification state a phone-only user cannot satisfy. authStateFlow()
+     * prefers any non-Idle internal state, so these tests fail unless reloadUser() republishes.
+     */
+    private fun pinToEmailVerification() {
+        authUI.updateAuthState(
+            AuthState.RequiresEmailVerification(user = mockFirebaseUser, email = "")
+        )
+    }
+
+    @Test
+    fun `reloadUser() republishes Success for phone-only users`() = runTest {
+        // Given a phone-only user stranded on email verification
+        val mockProviderData = mock(UserInfo::class.java)
+        `when`(mockProviderData.providerId).thenReturn("phone")
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        `when`(mockFirebaseUser.uid).thenReturn("test-uid")
+        `when`(mockFirebaseUser.isEmailVerified).thenReturn(false)
+        `when`(mockFirebaseUser.email).thenReturn(null)
+        `when`(mockFirebaseUser.providerData).thenReturn(listOf(mockProviderData))
+        stubReloadTasks()
+        pinToEmailVerification()
+
+        // When reloading the user
+        authUI.reloadUser()
+
+        // Then the stranding state is replaced with Success
+        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.Success::class.java)
+    }
+
+    @Test
+    fun `reloadUser() republishes Success for federated users with an unverified email`() = runTest {
+        // Given a Google user whose email Firebase reports as unverified
+        val mockProviderData = mock(UserInfo::class.java)
+        `when`(mockProviderData.providerId).thenReturn("google.com")
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        `when`(mockFirebaseUser.uid).thenReturn("test-uid")
+        `when`(mockFirebaseUser.isEmailVerified).thenReturn(false)
+        `when`(mockFirebaseUser.email).thenReturn("test@example.com")
+        `when`(mockFirebaseUser.providerData).thenReturn(listOf(mockProviderData))
+        stubReloadTasks()
+        pinToEmailVerification()
+
+        // When reloading the user
+        authUI.reloadUser()
+
+        // Then it is Success - there is no password credential to verify
+        assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.Success::class.java)
+    }
+
+    @Test
+    fun `reloadUser() keeps RequiresEmailVerification for an unverified password user`() = runTest {
+        // Given an unverified password user holding a phone credential too
+        val mockPhoneProvider = mock(UserInfo::class.java)
+        `when`(mockPhoneProvider.providerId).thenReturn("phone")
+        val mockPasswordProvider = mock(UserInfo::class.java)
+        `when`(mockPasswordProvider.providerId).thenReturn("password")
+
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        `when`(mockFirebaseUser.uid).thenReturn("test-uid")
+        `when`(mockFirebaseUser.isEmailVerified).thenReturn(false)
+        `when`(mockFirebaseUser.email).thenReturn("test@example.com")
+        `when`(mockFirebaseUser.providerData)
+            .thenReturn(listOf(mockPhoneProvider, mockPasswordProvider))
+        stubReloadTasks()
+        pinToEmailVerification()
+
+        // When reloading the user
+        authUI.reloadUser()
+
+        // Then verification is still required, and the blank email is replaced with the real one
+        val state = authUI.authStateFlow().first()
+        assertThat(state).isInstanceOf(AuthState.RequiresEmailVerification::class.java)
+        assertThat((state as AuthState.RequiresEmailVerification).email)
+            .isEqualTo("test@example.com")
+    }
+
+    @Test
+    fun `reloadUser() publishes nothing when the user signs out mid-reload`() = runTest {
+        // Given a user who signs out while their reload is in flight. Driving the sign-out from
+        // reload() itself keeps the ordering deterministic instead of dispatcher-dependent.
+        var signedIn = true
+        `when`(mockFirebaseAuth.currentUser).thenAnswer { if (signedIn) mockFirebaseUser else null }
+        `when`(mockFirebaseUser.reload()).thenAnswer {
+            signedIn = false
+            Tasks.forResult<Void>(null)
+        }
+        `when`(mockFirebaseUser.getIdToken(true))
+            .thenReturn(Tasks.forResult(mock(GetTokenResult::class.java)))
+        `when`(mockFirebaseUser.uid).thenReturn("test-uid")
+        `when`(mockFirebaseUser.isEmailVerified).thenReturn(true)
+        `when`(mockFirebaseUser.providerData).thenReturn(emptyList())
+
+        // When the reload finishes after the user is gone
+        authUI.reloadUser()
+
+        // Then no Success is published for the departed user
+        assertThat(authUI.authStateFlow().first()).isEqualTo(AuthState.Idle)
     }
 
     // =============================================================================================

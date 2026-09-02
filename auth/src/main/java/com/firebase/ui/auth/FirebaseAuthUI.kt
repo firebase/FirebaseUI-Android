@@ -535,6 +535,24 @@ class FirebaseAuthUI private constructor(
         }
     }
 
+    /**
+     * Re-reads the signed-in user from the server and republishes the resulting auth state.
+     * No-op when nobody is signed in.
+     */
+    internal suspend fun reloadUser() {
+        val user = auth.currentUser ?: return
+        user.reload().await()
+        user.getIdToken(true).await()
+        // Signing out (or switching account) mid-reload must win: publishing here would pin the
+        // combine in authStateFlow() to a Success for a user who is already gone.
+        if (auth.currentUser?.uid != user.uid) return
+        updateAuthState(handleAuthUserState(user, result = null, isNewUser = false))
+    }
+
+    /**
+     * Single source of truth for whether a signed-in user still owes email verification.
+     * Callers must not re-derive it: only password users with an email can satisfy that screen.
+     */
     private fun handleAuthUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
         return if (!user.isEmailVerified &&
             user.email != null &&
