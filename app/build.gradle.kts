@@ -6,6 +6,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
     id("kotlin-kapt")
+    // The full customization demo hosts its own Navigation 3 back stack for the email flow (see
+    // AuthMethodPickerUI.kt), and its custom NavKey needs the same @Serializable support the auth
+    // module already applies for its own Navigation 3 keys.
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
