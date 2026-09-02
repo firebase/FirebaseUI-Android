@@ -98,9 +98,9 @@ import com.firebase.ui.auth.ui.screens.email.isEmailLinkSignInOffered
 import com.firebase.ui.auth.ui.screens.email.isEmailSignUpOffered
 import com.firebase.ui.auth.ui.screens.email.navigateToEmailStep
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
+import com.firebase.ui.auth.ui.screens.mfa.enterMfaEnrollment
 import com.firebase.ui.auth.ui.screens.mfa.exitMfaEnrollment
 import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentDestinations
-import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentStartStep
 import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
@@ -410,8 +410,9 @@ fun FirebaseAuthScreen(
                                 // Inert while armed: this content stays composed beneath the slot.
                                 if (reauthState == null) {
                                     if (configuration.isMfaEnabled) {
-                                        navController.navigate(
-                                            mfaEnrollmentStartStep(mfaConfiguration).route
+                                        navController.enterMfaEnrollment(
+                                            mfaConfiguration,
+                                            mfaEnrollmentFlowState,
                                         )
                                     } else {
                                         val exception = AuthException.AuthCancelledException(
@@ -453,10 +454,16 @@ fun FirebaseAuthScreen(
                             onNavigate = { route ->
                                 // Inert while armed: this content stays composed beneath the slot.
                                 if (reauthState == null) {
-                                    // MfaEnrollment.route names SelectFactor; one factor skips it.
-                                    if (route == AuthRoute.MfaEnrollment) {
-                                        navController.navigate(
-                                            mfaEnrollmentStartStep(mfaConfiguration).route
+                                    // Naming the flow resolves a start step; naming one of its
+                                    // steps lands there. Either way the flow state is cleared,
+                                    // and MfaEnrollment.route alone cannot tell the two apart.
+                                    if (route == AuthRoute.MfaEnrollment ||
+                                        route is AuthRoute.MfaEnrollment.Step
+                                    ) {
+                                        navController.enterMfaEnrollment(
+                                            mfaConfiguration,
+                                            mfaEnrollmentFlowState,
+                                            step = route as? AuthRoute.MfaEnrollment.Step,
                                         )
                                     } else {
                                         navController.navigate(route.route)

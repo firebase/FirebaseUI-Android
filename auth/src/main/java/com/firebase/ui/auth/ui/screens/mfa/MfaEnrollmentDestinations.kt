@@ -72,7 +72,28 @@ class MfaEnrollmentFlowState internal constructor(
     val totpQrCodeUrl: MutableState<String?>,
     val selectedCountry: MutableState<CountryData>,
     val totpSecretExpiredMessage: MutableState<String?>,
-)
+) {
+    /**
+     * Returns every field to the value [rememberMfaEnrollmentFlowState] starts it at.
+     *
+     * Called on flow *entry* — [enterMfaEnrollment] — not on completion: a flow that has been
+     * left is still composed for the length of the exit transition, and clearing underneath it
+     * leaves a rendered step whose controls act on state that is already gone.
+     *
+     * @since 10.0.0
+     */
+    fun reset() {
+        selectedFactor.value = null
+        phoneNumber.value = ""
+        verificationCode.value = ""
+        resendTimerSeconds.intValue = 0
+        smsSession.value = null
+        totpSecret.value = null
+        totpQrCodeUrl.value = null
+        selectedCountry.value = CountryUtils.getDefaultCountry()
+        totpSecretExpiredMessage.value = null
+    }
+}
 
 /**
  * Creates and remembers the [MfaEnrollmentFlowState] a host installs [mfaEnrollmentDestinations]
@@ -165,6 +186,36 @@ internal fun NavGraphBuilder.mfaEnrollmentDestinations(
 /** Pushes [step] onto the back stack. Always a push, never a pop-then-push. */
 internal fun NavHostController.navigateToMfaStep(step: AuthRoute.MfaEnrollment.Step) {
     navigate(step.route)
+}
+
+/**
+ * Enters the enrolment flow on a cleared [flowState], landing on [step] or, without one, on
+ * [mfaEnrollmentStartStep].
+ *
+ * The clear happens here rather than when the flow completes because [flowState] outlives the
+ * flow — six of its fields are `rememberSaveable`, so an enrolment's phone number and verification
+ * code otherwise survive both the exit and process death, and the next entry lands on a filled-in
+ * form whose Verify button re-submits a code Firebase has already consumed. Clearing on the way
+ * out instead would mutate state a leaving step still reads while it is composed for the exit
+ * transition; on the way in there is no such step.
+ *
+ * Both of the host's flow entry points go through here: `AuthSuccessUiContext.onManageMfa`, and
+ * `onNavigate` given [AuthRoute.MfaEnrollment] or any one of its steps.
+ *
+ * @param step Where a caller that named a step rather than the whole flow asked to land; null
+ * means it named the flow, which resolves through [mfaEnrollmentStartStep]. Entry takes the step
+ * as a parameter rather than leaving that caller to navigate for itself, because
+ * [AuthRoute.MfaEnrollment] and [AuthRoute.MfaEnrollment.SelectFactor] report the same
+ * [AuthRoute.route]: a caller doing its own `navigate` cannot honour a named step without also
+ * skipping the clear.
+ */
+internal fun NavHostController.enterMfaEnrollment(
+    configuration: MfaConfiguration,
+    flowState: MfaEnrollmentFlowState,
+    step: AuthRoute.MfaEnrollment.Step? = null,
+) {
+    flowState.reset()
+    navigate((step ?: mfaEnrollmentStartStep(configuration)).route)
 }
 
 /**
