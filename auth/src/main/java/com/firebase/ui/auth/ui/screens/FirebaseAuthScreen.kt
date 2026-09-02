@@ -42,6 +42,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -99,7 +100,9 @@ import com.firebase.ui.auth.ui.screens.mfa.exitMfaEnrollment
 import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentDestinations
 import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
-import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
+import com.firebase.ui.auth.ui.screens.phone.exitPhoneAuth
+import com.firebase.ui.auth.ui.screens.phone.phoneAuthDestinations
+import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
 import com.firebase.ui.auth.ui.screens.reauth.armedReauth
@@ -183,6 +186,7 @@ fun FirebaseAuthScreen(
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
     val mfaEnrollmentFlowState = rememberMfaEnrollmentFlowState()
+    val phoneAuthFlowState = rememberPhoneAuthFlowState(configuration)
     DisposableEffect(authUI) {
         authUI.addReauthenticationDrainer()
         onDispose { authUI.removeReauthenticationDrainer() }
@@ -190,6 +194,10 @@ fun FirebaseAuthScreen(
     val reauthState = authState as? AuthState.Reauthentication
     val reauthRequest = reauthState?.request
     val reauthConfig = reauthRequest?.let { configuration.toReauthConfiguration(it.user) }
+    // Keyed to the request, never the host flow's: another operation, maybe another user.
+    val reauthPhoneFlowState = key(reauthRequest?.requestId) {
+        rememberPhoneAuthFlowState(reauthConfig ?: configuration)
+    }
     /**
      * The reauthentication surface, or null when there is none. One signal: [ReauthSceneStrategy]
      * decides whether the sheet exists on it and the entry renders what it resolves to.
@@ -394,29 +402,20 @@ fun FirebaseAuthScreen(
                     },
                 )
 
-                val phoneStep: @Composable () -> Unit = {
-                    PhoneAuthScreen(
-                        context = context,
-                        configuration = configuration,
-                        authUI = authUI,
-                        content = phoneContent,
-                        onSuccess = {},
-                        onError = { exception ->
-                            onSignInFailure(exception)
-                        },
-                        onCancel = {
-                            if (!skipsMethodPicker && !backStack.popOrNull()) {
-                                backStack.resetBackStackTo(AuthRoute.MethodPicker)
-                            }
+                phoneAuthDestinations(
+                    backStack = backStack,
+                    context = context,
+                    configuration = configuration,
+                    authUI = authUI,
+                    flowState = phoneAuthFlowState,
+                    content = phoneContent,
+                    onError = { exception -> onSignInFailure(exception) },
+                    onCancel = {
+                        if (!skipsMethodPicker && !backStack.exitPhoneAuth()) {
+                            backStack.resetBackStackTo(AuthRoute.MethodPicker)
                         }
-                    )
-                }
-                entry<AuthRoute.Phone.EnterPhoneNumber>(
-                    metadata = authRouteMetadata(AuthRoute.Phone.EnterPhoneNumber)
-                ) { phoneStep() }
-                entry<AuthRoute.Phone.EnterVerificationCode>(
-                    metadata = authRouteMetadata(AuthRoute.Phone.EnterVerificationCode)
-                ) { phoneStep() }
+                    },
+                )
 
                 entry<AuthRoute.Success>(metadata = authRouteMetadata(AuthRoute.Success)) {
                     val uiContext = remember(authState, stringProvider) {
@@ -535,6 +534,7 @@ fun FirebaseAuthScreen(
                     configuration = configuration,
                     stringProvider = stringProvider,
                     surface = reauthSurfaceHolder,
+                    phoneFlowState = reauthPhoneFlowState,
                     emailContent = emailContent,
                     phoneContent = phoneContent,
                     mfaChallengeContent = mfaChallengeContent,
@@ -826,7 +826,11 @@ fun FirebaseAuthScreen(
                             pendingLinkingCredential.value = null
                             lastSuccessfulUserId.value = null
                             typedEmail.value = null
-                            if (!currentKey.isAt(startRoute)) {
+                            // Number entry is a real position in the flow, so a retraction
+                            // reached there stays put rather than resetting out of it.
+                            if (!currentKey.isAt(startRoute) &&
+                                currentKey !is AuthRoute.Phone.EnterPhoneNumber
+                            ) {
                                 backStack.resetBackStackTo(startRoute)
                             }
                         }
