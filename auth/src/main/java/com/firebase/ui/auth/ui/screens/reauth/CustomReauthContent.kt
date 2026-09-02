@@ -183,7 +183,7 @@ internal fun CustomReauthContent(
             LaunchedEffect(subRoute) {
                 Log.w(
                     "FirebaseAuthScreen",
-                    "No reauth sub-flow for ${subRoute.route}; staying on the slot"
+                    "No reauth sub-flow for $subRoute; staying on the slot"
                 )
                 onActiveSubRouteChange(null)
             }

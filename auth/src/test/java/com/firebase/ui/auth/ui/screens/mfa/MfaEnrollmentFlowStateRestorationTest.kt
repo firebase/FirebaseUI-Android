@@ -20,9 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.animation.togetherWith
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -32,6 +35,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.SmsEnrollmentSession
 import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.popOrNull
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -52,17 +56,31 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Asserts which [MfaEnrollmentFlowState] fields survive an Activity recreation
- * mid-SMS-verification.
+ * Proves, rather than predicts, what an Activity recreation does to
+ * [MfaEnrollmentFlowState] mid-SMS-verification.
  *
- * Drives the hosted flow to [AuthRoute.MfaEnrollment.VerifyFactor] for SMS with a live session,
- * recreates the Activity via [StateRestorationTester], then checks the restored values for
- * equality with what was set before — not merely for non-null. `smsSession` and `selectedCountry`
- * survive via their hand-written `Saver`s; `totpSecret` and `totpQrCodeUrl` do not, and
- * [MfaEnrollmentTotpRegenerationTest] covers how that loss is recovered.
+ * A prior read-only review of [MfaEnrollmentDestinations.kt] concluded that all eight fields —
+ * [smsSession] and [selectedCountry] included — were lost on recreation, [smsSession] leaving
+ * [MfaEnrollmentContentState.onResendCodeClick] a silent no-op. [smsSession] and
+ * [selectedCountry] now have hand-written `Saver`s
+ * ([com.firebase.ui.auth.mfa.SmsEnrollmentSessionSaver],
+ * [com.firebase.ui.auth.data.CountryDataSaver]) and are `rememberSaveable`, so this test asserts
+ * they now *survive* recreation — restored values checked for equality against what was set
+ * before, not just non-null. [totpSecret] and [totpQrCodeUrl] are unaffected by that fix and stay
+ * lost: `com.google.firebase.auth.TotpSecret`'s only concrete implementation is obfuscated SDK
+ * internal plumbing this library must not reference, so there is no `Saver` to write for it — see
+ * [MfaEnrollmentFlowState] and [MfaEnrollmentTotpRegenerationTest] for how that loss is instead
+ * handled by regenerating the secret rather than surviving recreation.
  *
- * Guards the regression where a lost `smsSession` left
- * [MfaEnrollmentContentState.onResendCodeClick] a silent no-op.
+ * This test drives the hosted flow to [AuthRoute.MfaEnrollment.VerifyFactor] for SMS with a live
+ * session, recreates the Activity via [StateRestorationTester], and asserts the actual
+ * post-recreation [MfaEnrollmentFlowState] — nothing here is asserted from prediction. It stops at
+ * asserting the restored field values rather than also invoking `onResendCodeClick`/`onVerifyClick`
+ * as the pre-fix version of this test did: with a real [SmsEnrollmentSession] now present after
+ * restore, either callback would drive [com.firebase.ui.auth.mfa.SmsEnrollmentHandler] into a real
+ * Firebase network call, which is [MfaEnrollmentRouteNavigationTest]'s and this module's SMS
+ * enrollment tests' concern, not this file's — this file's concern is only whether
+ * [MfaEnrollmentFlowState] itself survives.
  *
  * @suppress Internal test class
  */
@@ -84,7 +102,7 @@ class MfaEnrollmentFlowStateRestorationTest {
 
     private lateinit var authUI: FirebaseAuthUI
 
-    private var navController: NavHostController? = null
+    private var backStack: NavBackStack<NavKey>? = null
     private var flowState: MfaEnrollmentFlowState? = null
     private var lastState: MfaEnrollmentContentState? = null
 
@@ -113,7 +131,7 @@ class MfaEnrollmentFlowStateRestorationTest {
 
     @After
     fun tearDown() {
-        navController = null
+        backStack = null
         flowState = null
         lastState = null
         FirebaseAuthUI.clearInstanceCache()
@@ -139,7 +157,11 @@ class MfaEnrollmentFlowStateRestorationTest {
         }
         composeTestRule.waitForIdle()
 
-        // Stands in for onSendSmsCodeClick, which would make a real SMS network call.
+        // Stands in for onSendSmsCodeClick's own network call, the same way
+        // MfaEnrollmentRouteNavigationTest.pushVerifyFactorDirectly avoids it: populates exactly
+        // what a real send populates on flowState, then pushes VerifyFactor. totpSecret and
+        // totpQrCodeUrl are populated too even though this is an SMS run, so the still-lost
+        // plain-`remember` fields are exercised in the same test as the now-surviving ones.
         val fakeSession = SmsEnrollmentSession(
             verificationId = "verification-id",
             phoneNumber = "+1$TYPED_PHONE_NUMBER",
@@ -159,7 +181,7 @@ class MfaEnrollmentFlowStateRestorationTest {
             state.totpSecret.value = fakeTotpSecret
             state.totpQrCodeUrl.value = FAKE_QR_URL
             state.selectedCountry.value = fakeCountry
-            requireNotNull(navController).navigateToMfaStep(AuthRoute.MfaEnrollment.VerifyFactor)
+            requireNotNull(backStack).navigateToMfaStep(AuthRoute.MfaEnrollment.VerifyFactor)
         }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle {
@@ -167,8 +189,9 @@ class MfaEnrollmentFlowStateRestorationTest {
         }
         composeTestRule.waitForIdle()
 
-        // Sanity on the pre-recreation state, so a fixture mistake cannot pass as a loss.
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
+        // Sanity on the pre-recreation state, so what follows is provably about recreation's
+        // effect and not a fixture mistake.
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
         assertThat(requireNotNull(lastState).selectedFactor).isEqualTo(MfaFactor.Sms)
         assertThat(requireNotNull(lastState).phoneNumber).isEqualTo(TYPED_PHONE_NUMBER)
         assertThat(requireNotNull(lastState).verificationCode).isEqualTo(TYPED_VERIFICATION_CODE)
@@ -180,61 +203,71 @@ class MfaEnrollmentFlowStateRestorationTest {
         restorationTester.emulateSavedInstanceStateRestore()
         composeTestRule.waitForIdle()
 
-        // The active route: NavController's own Saver restores the back stack.
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
-        // rememberSaveable fields survive.
+        // currentStep / the active destination: survives — rememberNavBackStack serializes the
+        // AuthRoute keys, fields included.
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
+        // selectedFactor, phoneNumber, verificationCode, resendTimerSeconds: rememberSaveable —
+        // survive.
         assertThat(requireNotNull(lastState).selectedFactor).isEqualTo(MfaFactor.Sms)
         assertThat(requireNotNull(lastState).phoneNumber).isEqualTo(TYPED_PHONE_NUMBER)
         assertThat(requireNotNull(lastState).verificationCode).isEqualTo(TYPED_VERIFICATION_CODE)
         assertThat(requireNotNull(lastState).resendTimer).isEqualTo(0)
-        // smsSession, selectedCountry: restored as the *same* value, not merely a non-null one.
+        // smsSession, selectedCountry: now rememberSaveable via a hand-written Saver — survive,
+        // and survive as the *same* value, not merely a non-null one.
         assertThat(requireNotNull(flowState).smsSession.value).isEqualTo(fakeSession)
         assertThat(requireNotNull(flowState).selectedCountry.value).isEqualTo(fakeCountry)
-        // The control the loss used to leave silently inert.
+        // The control this used to leave silently inert: onResendCodeClick is offered (Sms
+        // survived as the selected factor) and now has a real session to read instead of null —
+        // resending itself is SmsEnrollmentHandler's concern (real Firebase network I/O), not
+        // this file's; the point here is only that flowState no longer hands it null.
         assertThat(requireNotNull(lastState).onResendCodeClick).isNotNull()
 
-        // totpSecret, totpQrCodeUrl: plain remember, so still lost.
+        // totpSecret, totpQrCodeUrl: still plain remember — still lost. Unaffected by this fix;
+        // see MfaEnrollmentTotpRegenerationTest for how that loss is instead handled.
         assertThat(requireNotNull(flowState).totpSecret.value).isNull()
         assertThat(requireNotNull(flowState).totpQrCodeUrl.value).isNull()
     }
 
     @Composable
     private fun MfaFlowHost() {
-        val controller = rememberNavController()
+        val stack = rememberNavBackStack(AuthRoute.MfaEnrollment.SelectFactor)
         val state = rememberMfaEnrollmentFlowState()
         SideEffect {
-            navController = controller
+            backStack = stack
             flowState = state
         }
 
-        NavHost(
-            navController = controller,
-            startDestination = AuthRoute.MfaEnrollment.SelectFactor.routePattern,
-            // Transitions would keep two MFA destinations composed at once.
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
-        ) {
-            mfaEnrollmentDestinations(
-                navController = controller,
-                configuration = MfaConfiguration(
-                    allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
-                    requireEnrollment = false,
-                ),
-                authConfiguration = null,
-                authUI = authUI,
-                flowState = state,
-                content = { contentState -> lastState = contentState },
-                onComplete = {},
-                onSkip = {},
-                onError = {},
-            )
-        }
+        NavDisplay(
+            backStack = stack,
+            onBack = { stack.popOrNull() },
+            // Transitions would keep two MFA destinations composed at once, which has nothing to
+            // do with the state-restoration behavior under test.
+            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            predictivePopTransitionSpec = { _ ->
+                EnterTransition.None togetherWith ExitTransition.None
+            },
+            entryProvider = entryProvider {
+                mfaEnrollmentDestinations(
+                    backStack = stack,
+                    configuration = MfaConfiguration(
+                        allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+                        requireEnrollment = false,
+                    ),
+                    authConfiguration = null,
+                    authUI = authUI,
+                    flowState = state,
+                    content = { contentState -> lastState = contentState },
+                    onComplete = {},
+                    onSkip = {},
+                    onError = {},
+                )
+            },
+        )
     }
 
-    private fun currentRoute(): String? = composeTestRule.runOnIdle {
-        navController?.currentBackStackEntry?.destination?.route
+    private fun currentKey(): NavKey? = composeTestRule.runOnIdle {
+        backStack?.lastOrNull()
     }
 
     private companion object {
