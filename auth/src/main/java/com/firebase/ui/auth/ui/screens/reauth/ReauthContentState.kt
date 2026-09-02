@@ -64,7 +64,7 @@ import com.google.firebase.auth.FirebaseUser
  * @property reason An optional human-readable reason to show the user, as supplied by the caller of the sensitive operation. Will be `null` when no reason was given.
  * @property providers The providers the user may reauthenticate with, already filtered by the library to those both configured and linked to [user].
  * @property onProviderSelected Callback invoked with the provider the user chose. Receives the selected [AuthProvider]; the library owns what happens next.
- * @property isLoading `true` while a reauthentication attempt is in progress. Use this to show loading indicators and disable the provider buttons. The library's own loading dialog is suppressed while this slot is shown.
+ * @property isLoading `true` while a credential attempt, or the sensitive operation it unblocked, is in progress. Use this to show loading indicators and disable the provider buttons. The library's own loading dialog is suppressed while this slot is shown.
  * @property error A localized error message for the last failed attempt, or `null` if it did not fail. Persists until the next credential attempt starts, so it can be rendered inline. Backing out of an attempt is not a failure and leaves this unchanged. Survives Activity recreation.
  * @property onDismiss Callback to abandon reauthentication and drop the pending operation. This is the only way to abandon it — backing out of a single provider attempt returns to this slot with the operation still pending.
  * @property exception The exception behind [error], or `null` if the last attempt did not fail.
@@ -86,7 +86,7 @@ data class ReauthContentState(
     /** Callback invoked with the provider the user chose. The library owns the credential path. */
     val onProviderSelected: (AuthProvider) -> Unit = {},
 
-    /** `true` while a reauthentication attempt is in progress. */
+    /** `true` while a credential attempt, or the operation it unblocked, is in progress. */
     val isLoading: Boolean = false,
 
     /** Localized error message for the last failed attempt. `null` if it did not fail. */
