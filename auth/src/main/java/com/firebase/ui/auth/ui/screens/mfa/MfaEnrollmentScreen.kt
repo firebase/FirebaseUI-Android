@@ -77,11 +77,47 @@ fun MfaEnrollmentScreen(
     val activity = requireNotNull(LocalActivity.current) {
         "MfaEnrollmentScreen must be used within an Activity context for SMS verification"
     }
-    val coroutineScope = rememberCoroutineScope()
-    val applicationContext = LocalContext.current.applicationContext
 
     val smsHandler = remember(activity, auth, user) { SmsEnrollmentHandler(activity, auth, user) }
     val totpHandler = remember(auth, user) { TotpEnrollmentHandler(auth, user) }
+
+    MfaEnrollmentScreenInternal(
+        user = user,
+        auth = auth,
+        configuration = configuration,
+        smsHandler = smsHandler,
+        totpHandler = totpHandler,
+        authConfiguration = authConfiguration,
+        onComplete = onComplete,
+        onSkip = onSkip,
+        onError = onError,
+        content = content
+    )
+}
+
+/**
+ * Handler-injection seam behind [MfaEnrollmentScreen].
+ *
+ * Holds the entire enrollment state machine while taking [smsHandler] and [totpHandler] as
+ * parameters, so unit tests can substitute stubbed handlers instead of hitting real Firebase
+ * statics. The public [MfaEnrollmentScreen] constructs the real handlers and delegates here;
+ * this function exists only so the handlers are injectable and is not part of the public API.
+ */
+@Composable
+internal fun MfaEnrollmentScreenInternal(
+    user: FirebaseUser,
+    auth: FirebaseAuth,
+    configuration: MfaConfiguration,
+    smsHandler: SmsEnrollmentHandler,
+    totpHandler: TotpEnrollmentHandler,
+    authConfiguration: AuthUIConfiguration? = null,
+    onComplete: () -> Unit,
+    onSkip: () -> Unit = {},
+    onError: (Exception) -> Unit = {},
+    content: @Composable ((MfaEnrollmentContentState) -> Unit)? = null
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val applicationContext = LocalContext.current.applicationContext
 
     val currentStep = rememberSaveable { mutableStateOf(MfaEnrollmentStep.SelectFactor) }
     val selectedFactor = rememberSaveable { mutableStateOf<MfaFactor?>(null) }
