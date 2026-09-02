@@ -169,4 +169,7 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    // The suite OOMs the test worker on Gradle's 512m default, killing the run part-way.
+    // Cumulative retention across the module's Robolectric suites, not any one test.
+    maxHeapSize = "2g"
 }

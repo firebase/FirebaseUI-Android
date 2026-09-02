@@ -23,7 +23,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,8 +41,6 @@ import com.firebase.ui.auth.data.CountryData
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.PhoneAuthProvider
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -124,6 +121,16 @@ class PhoneAuthContentState(
  * @param onCancel Callback invoked when the user cancels the authentication flow.
  * @param modifier Applied once to the [Box] hosting the rendered content; it propagates minimum
  * constraints so it doesn't change how content is measured.
+ * @param step The step to render. When null this composable owns the step itself, starting at
+ * [PhoneAuthStep.EnterPhoneNumber]. Goes together with [onNavigateToStep], [onNavigateBack] and
+ * [flowState]: passing any of the four without the rest throws.
+ * @param onNavigateToStep Invoked instead of changing local state when a sent code moves the flow
+ * on to [PhoneAuthStep.EnterVerificationCode]. Always a push. Goes together with [step].
+ * @param onNavigateBack Invoked instead of changing local state when the user asks to change the
+ * number they entered. Hosted, this is a pop back to [PhoneAuthStep.EnterPhoneNumber]. Goes
+ * together with [step].
+ * @param flowState The data a step switch must not dispose — see [PhoneAuthFlowState]. Goes
+ * together with [step].
  * @param content A composable lambda that receives [PhoneAuthContentState] to render the UI for
  * each step. If null, the default UI for the current step is rendered.
  */
@@ -136,39 +143,66 @@ fun PhoneAuthScreen(
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
     modifier: Modifier = Modifier,
+    step: PhoneAuthStep? = null,
+    onNavigateToStep: ((PhoneAuthStep) -> Unit)? = null,
+    onNavigateBack: (() -> Unit)? = null,
+    flowState: PhoneAuthFlowState? = null,
     content: @Composable ((PhoneAuthContentState) -> Unit)? = null,
 ) {
+    require(
+        (step == null) == (onNavigateToStep == null) &&
+            (onNavigateToStep == null) == (onNavigateBack == null) &&
+            (onNavigateBack == null) == (flowState == null)
+    ) {
+        "PhoneAuthScreen's step, onNavigateToStep, onNavigateBack and flowState go together: " +
+            "pass all four to drive the step from outside, or none to let the screen own it. " +
+            "Got step=$step, onNavigateToStep=" +
+            "${if (onNavigateToStep == null) "null" else "a callback"}, onNavigateBack=" +
+            "${if (onNavigateBack == null) "null" else "a callback"}, flowState=" +
+            "${if (flowState == null) "null" else "provided"}."
+    }
+
     val activity = LocalActivity.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
     val stringProvider = LocalAuthUIStringProvider.current
     val dialogController = LocalTopLevelDialogController.current
     val coroutineScope = rememberCoroutineScope()
 
-    val step = rememberSaveable { mutableStateOf(PhoneAuthStep.EnterPhoneNumber) }
-    val phoneNumberValue = rememberSaveable { mutableStateOf(provider.defaultNumber ?: "") }
-    val verificationCodeValue = rememberSaveable { mutableStateOf("") }
-    val selectedCountry = remember {
-        mutableStateOf(
-            provider.defaultCountryCode?.let { code ->
-                CountryUtils.findByCountryCode(code)
-            } ?: CountryUtils.getDefaultCountry()
-        )
+    // Read only when this composable owns the step.
+    val localStep = rememberSaveable { mutableStateOf(PhoneAuthStep.EnterPhoneNumber) }
+    val currentStep = step ?: localStep.value
+    val navigateToStep: (PhoneAuthStep) -> Unit = { target ->
+        if (onNavigateToStep != null) onNavigateToStep(target) else localStep.value = target
     }
+    val navigateBack: () -> Unit = {
+        if (onNavigateBack != null) {
+            onNavigateBack()
+        } else {
+            localStep.value = PhoneAuthStep.EnterPhoneNumber
+        }
+    }
+
+    val effectiveFlowState = flowState ?: rememberPhoneAuthFlowState(configuration)
+    val phoneNumberValue = effectiveFlowState.phoneNumber
+    val verificationCodeValue = effectiveFlowState.verificationCode
+    val selectedCountry = effectiveFlowState.selectedCountry
+    val verificationId = effectiveFlowState.verificationId
+    val forceResendingToken = effectiveFlowState.forceResendingToken
+    val resendTimerSeconds = effectiveFlowState.resendTimerSeconds
+    val pendingVerificationPhoneNumber = effectiveFlowState.pendingVerificationPhoneNumber
+    val verificationStartTime = effectiveFlowState.verificationStartTime
+    val verificationJob = effectiveFlowState.verificationJob
+    val verificationScope = effectiveFlowState.verificationScope
+    val navigatedVerificationId = effectiveFlowState.navigatedVerificationId
+    val consumedAutoCredential = effectiveFlowState.consumedAutoCredential
+
     val fullPhoneNumber = remember(selectedCountry.value, phoneNumberValue.value) {
         CountryUtils.formatPhoneNumber(selectedCountry.value.dialCode, phoneNumberValue.value)
     }
-    val verificationId = rememberSaveable { mutableStateOf<String?>(null) }
-    val forceResendingToken =
-        rememberSaveable { mutableStateOf<PhoneAuthProvider.ForceResendingToken?>(null) }
-    val resendTimerSeconds = rememberSaveable { mutableIntStateOf(0) }
-    val pendingVerificationPhoneNumber = remember { mutableStateOf<String?>(null) }
-    val verificationStartTime = remember { mutableStateOf<Long?>(null) }
 
-    // Verification is a long-lived collection: it stays open until Firebase's auto-retrieval
-    // timeout, so a superseded attempt must be cancelled or it keeps writing auth state.
-    val verificationJob = remember { mutableStateOf<Job?>(null) }
-    // Not rememberSaveable: the coroutine that clears this dies with the composition, so a value
-    // restored after rotation would latch forever and permanently disable auto sign-in.
+    // Transient to code entry, so a step switch resets it. Not rememberSaveable either: the
+    // coroutine that clears this dies with the composition, so a value restored after rotation
+    // would latch forever and permanently disable auto sign-in.
     val isSubmittingCode = remember { mutableStateOf(false) }
 
     // Logged, not silent: which attempt was torn down and why is the first thing needed from a
@@ -227,13 +261,14 @@ fun PhoneAuthScreen(
 
             is AuthState.PhoneNumberVerificationRequired,
             is AuthState.Reauthentication.PhoneNumberVerificationRequired -> {
-                verificationId.value = when (state) {
+                val id = when (state) {
                     is AuthState.PhoneNumberVerificationRequired -> state.verificationId
                     is AuthState.Reauthentication.PhoneNumberVerificationRequired -> {
                         state.verificationId
                     }
                     else -> error("Unreachable phone verification state")
                 }
+                verificationId.value = id
                 forceResendingToken.value = when (state) {
                     is AuthState.PhoneNumberVerificationRequired -> state.forceResendingToken
                     is AuthState.Reauthentication.PhoneNumberVerificationRequired -> {
@@ -241,7 +276,12 @@ fun PhoneAuthScreen(
                     }
                     else -> error("Unreachable phone verification state")
                 }
-                step.value = PhoneAuthStep.EnterVerificationCode
+                // A step re-entered by backing out re-runs this effect on the state it left with,
+                // so the move it already made must not repeat.
+                if (navigatedVerificationId.value != id) {
+                    navigatedVerificationId.value = id
+                    navigateToStep(PhoneAuthStep.EnterVerificationCode)
+                }
                 resendTimerSeconds.intValue = provider.timeout.toInt() // Start 60-second countdown
             }
 
@@ -257,9 +297,13 @@ fun PhoneAuthScreen(
                 pendingVerificationPhoneNumber.value = null
                 verificationStartTime.value = null
 
-                // A manually submitted code is already signing in: auto-verifying now would run a
-                // second concurrent sign-in with the same phone number.
-                if (isSubmittingCode.value) {
+                // Both steps observe this emission while a step transition has them composed
+                // together, and one credential can only be signed in with once.
+                if (consumedAutoCredential.value === credential) {
+                    Log.d("PhoneAuthScreen", "Suppressed auto sign-in: credential already consumed")
+                } else if (isSubmittingCode.value) {
+                    // A manually submitted code is already signing in: auto-verifying now would
+                    // run a second concurrent sign-in with the same phone number.
                     Log.d("PhoneAuthScreen", "Suppressed auto sign-in: manual submit in flight")
                     // Restoring the submit's Loading both consumes the credential (so it can't
                     // leak to a freshly composed screen) and keeps Verify/Resend disabled.
@@ -267,6 +311,7 @@ fun PhoneAuthScreen(
                         AuthState.Loading(configuration.stringProvider.loadingSigningInWithPhone)
                     )
                 } else {
+                    consumedAutoCredential.value = credential
                     // Consumed before the async sign-in call so it can't be clobbered by that
                     // call's own state.
                     if (state is AuthState.Reauthentication.SmsAutoVerified) {
@@ -274,7 +319,9 @@ fun PhoneAuthScreen(
                     } else {
                         authUI.updateAuthState(AuthState.Idle)
                     }
-                    coroutineScope.launch {
+                    // The flow's scope, not this step's: a transition can dispose the step this
+                    // ran from before the sign-in it started has landed.
+                    verificationScope.launch {
                         try {
                             authUI.signInWithPhoneAuthCredential(
                                 context = context,
@@ -342,7 +389,7 @@ fun PhoneAuthScreen(
     }
 
     val state = PhoneAuthContentState(
-        step = step.value,
+        step = currentStep,
         isLoading = isLoading,
         error = errorMessage,
         phoneNumber = phoneNumberValue.value,
@@ -389,7 +436,9 @@ fun PhoneAuthScreen(
                 pendingVerificationPhoneNumber.value = fullPhoneNumber
                 verificationStartTime.value = currentTime
 
-                verificationJob.value = coroutineScope.launch {
+                // The flow's scope, not this step's: this collection stays open past the move
+                // to code entry, and cancelVerification is what ends it.
+                verificationJob.value = verificationScope.launch {
                     try {
                         authUI.verifyPhoneNumber(
                             provider = provider,
@@ -434,7 +483,7 @@ fun PhoneAuthScreen(
         onResendCodeClick = {
             if (resendTimerSeconds.intValue == 0) {
                 cancelVerification("code resent")
-                verificationJob.value = coroutineScope.launch {
+                verificationJob.value = verificationScope.launch {
                     try {
                         // The timer is restarted by the PhoneNumberVerificationRequired branch
                         // above: this call only returns once the verification window closes.
@@ -466,7 +515,7 @@ fun PhoneAuthScreen(
             }
             verificationJob.value = null
             isSubmittingCode.value = false
-            step.value = PhoneAuthStep.EnterPhoneNumber
+            navigateBack()
             verificationCodeValue.value = ""
             verificationId.value = null
             forceResendingToken.value = null

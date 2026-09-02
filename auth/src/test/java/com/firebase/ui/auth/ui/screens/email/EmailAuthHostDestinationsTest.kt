@@ -47,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.firebase.ui.auth.ui.screens.popOrNull
 import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
 import com.firebase.ui.auth.ui.screens.reauth.reauthDestinations
@@ -348,6 +349,7 @@ class EmailAuthHostDestinationsTest {
                 popTransitionSpec = DefaultAuthContentTransform,
             )
         }
+        val phoneFlowState = rememberPhoneAuthFlowState(config)
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
             NavDisplay(
                 backStack = backStack,
@@ -372,6 +374,7 @@ class EmailAuthHostDestinationsTest {
                         configuration = config,
                         stringProvider = stringProvider,
                         surface = surface,
+                        phoneFlowState = phoneFlowState,
                         emailContent = null,
                         phoneContent = null,
                         mfaChallengeContent = null,
