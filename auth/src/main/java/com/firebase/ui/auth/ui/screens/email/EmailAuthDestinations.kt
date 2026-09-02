@@ -24,37 +24,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.ui.screens.AuthRoute
-import com.firebase.ui.auth.ui.screens.EMAIL_ARG
+import com.firebase.ui.auth.ui.screens.authRouteMetadata
+import com.firebase.ui.auth.ui.screens.mode
+import com.firebase.ui.auth.ui.screens.popOrNull
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 
 /**
- * Registers the email flow's steps on [this] graph.
+ * Registers the email flow's steps on [this] entry provider. Every host that offers email sign-in
+ * installs this same extension, so the destinations and the rules for moving between them are
+ * identical in the main [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen] display and in the
+ * reauthentication sheet.
  *
  * Each step hosts an [EmailAuthScreen] pinned to its own [EmailAuthMode], turning mode switches
- * into navigation through [navigateToEmailStep]; the address travels as [EMAIL_ARG] so it survives
- * a switch. Errors are not acted on here: moving the flow on an
- * [com.firebase.ui.auth.AuthState.Error] is the host's job alone.
+ * into navigation through [navigateToEmailStep]; the address travels as a field on the key
+ * ([AuthRoute.Email.Step.email]) so it survives a switch. Errors are not acted on here — moving the
+ * flow on an [com.firebase.ui.auth.AuthState.Error] is the host's job alone.
  *
+ * [authRouteMetadata] is stamped per key rather than per type, because an email step's key carries
+ * the address.
+ *
+ * @param backStack The host's back stack, which is what a mode switch mutates.
  * @param onCancel Invoked when the flow is *left*, not when stepping between email steps.
- * @param prefillEmail The address already fixed for this flow, used to seed a step entered without
- * [EMAIL_ARG]. Read during a step's composition, so it must not be state that changes while that
- * step is on screen.
- * @param onEmailTyped Reports the address as the user edits it, so a host-driven recovery that
- * does not itself know the address can carry the live value.
+ * @param prefillEmail The address already fixed for this flow (e.g. a reauthenticating user's own),
+ * seeding a step entered with no address on its key. Must not be state that changes while a step is
+ * on screen, since it is read during that step's composition.
+ * @param onEmailTyped Reports the address as the user edits it, so a host-driven recovery that does
+ * not know the address (e.g. [com.firebase.ui.auth.AuthException.UserNotFoundException]) can carry
+ * the live value.
  */
-internal fun NavGraphBuilder.emailAuthDestinations(
-    navController: NavHostController,
+internal fun EntryProviderScope<NavKey>.emailAuthDestinations(
+    backStack: NavBackStack<NavKey>,
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
@@ -67,48 +75,34 @@ internal fun NavGraphBuilder.emailAuthDestinations(
     onSuccess: (AuthResult) -> Unit = {},
     onError: (AuthException) -> Unit = {},
 ) {
-    AuthRoute.Email.steps.forEach { step ->
-        composable(
-            route = step.routePattern,
-            arguments = listOf(
-                navArgument(EMAIL_ARG) {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            ),
-        ) { entry ->
-            val routeEmail = entry.arguments?.getString(EMAIL_ARG).orEmpty()
-
-            if (!configuration.isEmailStepOffered(step)) {
-                // Keyed on Unit: the redirect must run at most once per back-stack entry.
-                LaunchedEffect(Unit) {
-                    // Pop first; navigating alone leaves the unreachable step for back to return to.
-                    navController.popBackStack(step.routePattern, inclusive = true)
-                    navController.navigateToEmailStep(AuthRoute.Email.SignIn, routeEmail)
-                }
-                RedirectingStep()
-                return@composable
+    val body: @Composable (AuthRoute.Email.Step) -> Unit = { step ->
+        if (!configuration.isEmailStepOffered(step)) {
+            LaunchedEffect(step) {
+                // Push before dropping: no point in this pair leaves the stack empty for a later edit to stop at.
+                backStack.navigateToEmailStep(AuthRoute.Email.SignIn(step.email))
+                backStack.remove(step)
             }
-
+            RedirectingStep()
+        } else {
             EmailAuthScreen(
                 context = context,
                 configuration = configuration,
                 authUI = authUI,
-                prefillEmail = routeEmail.ifEmpty { prefillEmail() },
+                prefillEmail = step.email?.ifEmpty { null } ?: prefillEmail(),
                 credentialForLinking = credentialForLinking(),
                 emailLinkFromDifferentDevice = emailLinkFromDifferentDevice(),
                 content = content,
                 mode = step.mode,
                 onNavigateToMode = { targetMode, email ->
-                    navController.navigateToEmailStep(AuthRoute.Email.stepFor(targetMode), email)
+                    backStack.navigateToEmailStep(AuthRoute.Email.stepFor(targetMode, email))
                 },
                 onEmailTyped = onEmailTyped,
                 onSuccess = onSuccess,
                 onError = onError,
                 onCancel = {
-                    val previous = navController.previousBackStackEntry
-                    if (previous != null && AuthRoute.Email.isStep(previous.destination.route)) {
-                        navController.popBackStack()
+                    val below = backStack.getOrNull(backStack.lastIndex - 1)
+                    if (AuthRoute.Email.isStep(below)) {
+                        backStack.popOrNull()
                     } else {
                         onCancel()
                     }
@@ -116,31 +110,44 @@ internal fun NavGraphBuilder.emailAuthDestinations(
             )
         }
     }
+
+    entry<AuthRoute.Email.SignIn>(metadata = { authRouteMetadata(it) }) { body(it) }
+    entry<AuthRoute.Email.SignUp>(metadata = { authRouteMetadata(it) }) { body(it) }
+    entry<AuthRoute.Email.ResetPassword>(metadata = { authRouteMetadata(it) }) { body(it) }
+    entry<AuthRoute.Email.EmailLinkSignIn>(metadata = { authRouteMetadata(it) }) { body(it) }
 }
 
 /**
- * Moves the flow to [step], carrying [email] so the typed address survives the step being left.
+ * Moves the flow to [step], carrying the address on the key so the typed value survives the step
+ * being left disposing whatever it held.
  *
- * Pops any existing entry for [step], then pushes a fresh one:
+ * Drops any existing entry *of the same step type* — and everything above it — then leaves a fresh
+ * one on top. So a step already on the stack is replaced, and one that is not is pushed, leaving
+ * the origin reachable. The fresh entry means the address just typed wins over the stale one the
+ * old entry held.
  *
- * * **Already on the stack — replaces.** Toggling sign-in ↔ sign-up cannot grow the stack, and a
- *   recovery removes the form that just failed rather than leaving it for back to return to.
- * * **Not on the stack — pushes.** The origin stays reachable.
- *
- * Pushing rather than only popping means the address just typed wins over the stale one the old
- * entry held, and saved state is not restored, so a mode switch's password clear survives. System
- * back is the one case that does restore it.
- *
- * The push always leaves an entry for [step], so the graph's start destination can never be popped
- * out from under it.
+ * Adds before removing, so no single write leaves the stack empty. Compares the step's *type*, not
+ * the key: a key carries the address, so `SignIn("a@b")` and `SignIn("c@d")` are different keys.
  */
-internal fun NavHostController.navigateToEmailStep(step: AuthRoute.Email.Step, email: String?) {
-    navigate(step.withEmail(email)) {
-        popUpTo(step.routePattern) { inclusive = true }
+internal fun NavBackStack<NavKey>.navigateToEmailStep(step: AuthRoute.Email.Step) {
+    val existing = indexOfFirst { it::class == step::class }
+    add(step)
+    if (existing >= 0) {
+        // Drops the old entry and all above it, stopping below the one just pushed, so a buried step is reached.
+        while (size > existing + 1) removeAt(existing)
     }
 }
 
-/** Shown for as long as a redirect off a step that cannot render itself takes. */
+/** Overload for callers that name the step and the address separately. */
+internal fun NavBackStack<NavKey>.navigateToEmailStep(
+    step: AuthRoute.Email.Step,
+    email: String?,
+) = navigateToEmailStep(step.withEmail(email))
+
+/**
+ * Shown for as long as a redirect off a step that cannot render itself takes. Rendering nothing
+ * leaves a hole on screen for the whole of the configured cross-fade, not for a single frame.
+ */
 @Composable
 internal fun RedirectingStep() {
     Box(
@@ -153,17 +160,22 @@ internal fun RedirectingStep() {
     }
 }
 
-/** Whether [step] is reachable at all in this configuration. */
+/**
+ * Whether [step] is reachable at all in this configuration. Asked of every step rather than only
+ * sign-up, because `AuthSuccessUiContext.onNavigate` accepts any
+ * [com.firebase.ui.auth.ui.screens.AuthRoute].
+ */
 internal fun AuthUIConfiguration.isEmailStepOffered(step: AuthRoute.Email.Step): Boolean =
     when (step) {
-        AuthRoute.Email.SignUp -> isEmailSignUpOffered()
-        AuthRoute.Email.EmailLinkSignIn -> isEmailLinkSignInOffered()
-        AuthRoute.Email.SignIn, AuthRoute.Email.ResetPassword -> true
+        is AuthRoute.Email.SignUp -> isEmailSignUpOffered()
+        is AuthRoute.Email.EmailLinkSignIn -> isEmailLinkSignInOffered()
+        is AuthRoute.Email.SignIn, is AuthRoute.Email.ResetPassword -> true
     }
 
 /**
- * Whether the email flow may offer account creation. False while reauthenticating, and whenever
- * the configuration or the email provider itself disables new accounts.
+ * Whether the email flow may offer account creation. False while reauthenticating — proving an
+ * existing identity can never end in a new account — and whenever the configuration or the email
+ * provider itself disables new accounts.
  */
 internal fun AuthUIConfiguration.isEmailSignUpOffered(): Boolean {
     if (isReauthenticationMode || !isNewEmailAccountsAllowed) return false
@@ -174,7 +186,8 @@ internal fun AuthUIConfiguration.isEmailSignUpOffered(): Boolean {
 
 /**
  * Whether the email flow may offer email-link sign-in. False while reauthenticating: a link
- * reopens the app with nothing armed, so completing one there reports an interruption.
+ * reopens the app with nothing armed, so completing one there reports an interruption instead of
+ * finishing the pending operation.
  */
 internal fun AuthUIConfiguration.isEmailLinkSignInOffered(): Boolean {
     if (isReauthenticationMode) return false

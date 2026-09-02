@@ -50,12 +50,12 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Both hosts of the email flow install the same destinations through the same
+ * Both hosts of the email flow install the same destinations, through the same
  * [emailAuthDestinations] extension: [FirebaseAuthScreen]'s graph and the reauthentication
- * sheet's own one.
+ * sheet's own one. Registering them in only one place is what lets the two drift.
  *
- * These drive the default email UI, so they also pin the back arrow stepping back through the
- * flow rather than leaving it.
+ * These drive the default email UI, so they also pin what the back arrow does: it steps back
+ * through the flow rather than leaving it, even when email is the flow's start destination.
  *
  * @suppress Internal test class
  */
@@ -123,7 +123,8 @@ class EmailAuthHostDestinationsTest {
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.EMAIL_FIELD).assertIsDisplayed()
         composeTestRule.onNodeWithText(TYPED_EMAIL).assertIsDisplayed()
 
-        // Email is this flow's start destination, so sign-in is what lies under sign-up.
+        // Email is this flow's start destination, so before the split there was nothing under
+        // sign-up for the back arrow to reach and it did nothing at all.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.BACK_BUTTON).performClick()
         composeTestRule.waitForIdle()
 
@@ -132,7 +133,9 @@ class EmailAuthHostDestinationsTest {
 
     /**
      * A genuine reset to [com.firebase.ui.auth.AuthState.Idle] sends the flow back to its start
-     * route, which is the sign-in step, so a reset from a sub-step does not keep the sub-step.
+     * route. That start route is now the sign-in *step* rather than the whole email screen, so a
+     * reset from a sub-step no longer silently keeps the sub-step — which is what a multi-provider
+     * flow always did by returning to the method picker.
      */
     @Test
     fun `a genuine idle reset returns to the flow's start step`() {
@@ -151,7 +154,8 @@ class EmailAuthHostDestinationsTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignUp.EMAIL_FIELD).assertIsDisplayed()
 
-        // Loading is not a notification, so the Idle that follows it is a real reset.
+        // Loading is not a notification, so the Idle that follows it is a real reset rather than
+        // a consumed one-shot state.
         composeTestRule.runOnIdle { authUI.updateAuthState(AuthState.Loading()) }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle { authUI.updateAuthState(AuthState.Idle) }
@@ -177,7 +181,8 @@ class EmailAuthHostDestinationsTest {
             .performClick()
         composeTestRule.waitForIdle()
 
-        // Reaching it proves the sheet registered it; the address proves the argument carried.
+        // Reaching this destination at all proves the sheet registered it; the address proves it
+        // was reached through the same argument-carrying navigation.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ResetPassword.EMAIL_FIELD)
             .assertIsDisplayed()
         composeTestRule.onNodeWithText(TYPED_EMAIL).assertIsDisplayed()
@@ -191,12 +196,16 @@ class EmailAuthHostDestinationsTest {
     }
 
     /**
-     * "Which flow is open" and "which step the user is on" are different facts. Exactly one thing
-     * records the step: the sheet's own `rememberNavController`, whose back stack Compose saves
-     * and restores, arguments included. `ReauthPresentationState` records the flow, and the
-     * built-in sheet never reads it.
+     * The sheet registers four email destinations rather than one, so "which flow is open" and
+     * "which step the user is on" are different facts. Exactly one thing records the step: the
+     * sheet's own `rememberNavBackStack`, which serializes its keys — the address each carries
+     * included — across recreation.
      *
-     * Pins that the step, and the address it was entered with, survive a recreation.
+     * `ReauthPresentationState` records the *flow*, and the built-in sheet never reads it — that
+     * marker belongs to the custom reauth slot, whose email sub-flow is an unhosted
+     * `EmailAuthScreen` keeping its own mode in `rememberSaveable`. So the two cannot disagree
+     * about a step. This pins the half nothing covered: that the step, and the address it was
+     * entered with, come back after a recreation rather than resetting to the flow's start step.
      */
     @Test
     fun `the reauthentication sheet keeps its email step across a recreation`() {
@@ -223,7 +232,8 @@ class EmailAuthHostDestinationsTest {
         // And the address it was entered with, which travels as the route argument.
         composeTestRule.onNodeWithText(TYPED_EMAIL).assertIsDisplayed()
 
-        // Back still walks the flow, so what was restored is the real stack.
+        // Back still walks the flow rather than leaving it, so what was restored is the real stack
+        // and not a single freshly created entry.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ResetPassword.BACK_BUTTON).performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()

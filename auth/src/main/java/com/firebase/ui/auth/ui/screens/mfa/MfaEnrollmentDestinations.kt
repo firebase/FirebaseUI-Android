@@ -22,9 +22,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -37,28 +37,30 @@ import com.firebase.ui.auth.mfa.SmsEnrollmentSession
 import com.firebase.ui.auth.mfa.SmsEnrollmentSessionSaver
 import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.authRouteMetadata
 import com.firebase.ui.auth.ui.screens.email.RedirectingStep
+import com.firebase.ui.auth.ui.screens.enrollmentStep
+import com.firebase.ui.auth.ui.screens.popOrNull
+import com.firebase.ui.auth.ui.screens.pushUnique
 import com.firebase.ui.auth.ui.screens.resetBackStackTo
 import com.firebase.ui.auth.util.CountryUtils
 
 /**
  * Everything an [MfaEnrollmentScreen] step needs that must outlive the step being left.
  *
- * Remembered by the host *above* the [androidx.navigation.compose.NavHost] and handed to every
- * step through [mfaEnrollmentDestinations], so a step reads and writes this instead of its own
- * local state and the data is still there when the flow returns to it.
+ * Moving between steps disposes whatever the step being left held in composition, which would
+ * otherwise take the typed phone number and the fetched TOTP secret with it. Remembered by the host
+ * *above* the [androidx.navigation3.ui.NavDisplay] and handed to every step through
+ * [mfaEnrollmentDestinations], this is what a step reads and writes instead of its own local state.
  *
  * [selectedFactor], [phoneNumber], [verificationCode], [resendTimerSeconds], [smsSession] and
  * [selectedCountry] are backed by [rememberSaveable] in [rememberMfaEnrollmentFlowState] and
- * survive Activity recreation. [totpSecret], [totpQrCodeUrl] and [totpSecretExpiredMessage] are
- * backed by plain [remember] and are lost: [TotpSecret] wraps `com.google.firebase.auth.TotpSecret`,
- * an interface with no public reconstruction API, so there is no `Saver` to write for it.
- *
- * That loss is recovered rather than fatal: [MfaEnrollmentScreen]'s `LaunchedEffect(currentStep)`
- * fetches a fresh secret when [totpSecret] is null on [MfaEnrollmentStep.ConfigureTotp], and
- * bounces back to `ConfigureTotp` with [totpSecretExpiredMessage] set when the user was already
- * past it. A new secret means a new QR code, so this is a user-visible re-scan, not a seamless
- * recovery.
+ * survive Activity recreation. [totpSecret] and [totpQrCodeUrl] do not — they are backed by plain
+ * [remember], since `com.google.firebase.auth.TotpSecret` cannot be reconstructed. That loss is
+ * recovered: [MfaEnrollmentScreen] detects a null [totpSecret] on [MfaEnrollmentStep.ConfigureTotp]
+ * or [MfaEnrollmentStep.VerifyFactor] and fetches a fresh one, bouncing back to `ConfigureTotp`
+ * with [totpSecretExpiredMessage] set when the user was already past it, since a new secret means a
+ * new QR code to scan.
  *
  * @since 10.0.0
  */
@@ -76,8 +78,8 @@ class MfaEnrollmentFlowState internal constructor(
 
 /**
  * Creates and remembers the [MfaEnrollmentFlowState] a host installs [mfaEnrollmentDestinations]
- * with. Call once, above the `NavHost`, so the same instance is handed to every step — see
- * [MfaEnrollmentFlowState] for which of its fields survive Activity recreation.
+ * with. Called once, above the `NavDisplay`, so the same instance is handed to every step — see
+ * [MfaEnrollmentFlowState] for which of its fields actually survive Activity recreation.
  */
 @Composable
 fun rememberMfaEnrollmentFlowState(): MfaEnrollmentFlowState {
@@ -112,16 +114,16 @@ fun rememberMfaEnrollmentFlowState(): MfaEnrollmentFlowState {
 /**
  * Registers the MFA enrolment flow's steps on [this] graph.
  *
- * Every move between steps **pushes**; this flow never replaces a destination. No enrolment or
- * verification failure moves the user off the step they are on — each sets
- * [MfaEnrollmentContentState.error] and stays put.
+ * Every move between steps **pushes**; there is no destination this flow ever *replaces* another
+ * with. No enrolment or verification failure here moves the user off the step they are on — every
+ * one sets [MfaEnrollmentContentState.error] and stays put.
  *
  * @param flowState The state that must outlive a step switch — see [MfaEnrollmentFlowState].
  * Shared by every step this registers, and expected to be `remember`-ed by the host once, above
- * the `NavHost`.
+ * the `NavDisplay`.
  */
-internal fun NavGraphBuilder.mfaEnrollmentDestinations(
-    navController: NavHostController,
+internal fun EntryProviderScope<NavKey>.mfaEnrollmentDestinations(
+    backStack: NavBackStack<NavKey>,
     configuration: MfaConfiguration,
     authConfiguration: AuthUIConfiguration?,
     authUI: FirebaseAuthUI,
@@ -131,17 +133,9 @@ internal fun NavGraphBuilder.mfaEnrollmentDestinations(
     onSkip: () -> Unit = {},
     onError: (Exception) -> Unit = {},
 ) {
-    AuthRoute.MfaEnrollment.steps.forEach { step ->
-        composable(route = step.routePattern) {
-            val user = authUI.getCurrentUser()
-            if (user == null) {
-                // Every step is registered, so one reached with no signed-in user leaves the flow.
-                // An effect, since leaving mutates the back stack; Unit runs it once per entry.
-                LaunchedEffect(Unit) { navController.exitMfaEnrollment() }
-                RedirectingStep()
-                return@composable
-            }
-
+    val body: @Composable (AuthRoute.MfaEnrollment.Step) -> Unit = { step ->
+        val user = authUI.getCurrentUser()
+        if (user != null) {
             MfaEnrollmentScreen(
                 user = user,
                 auth = authUI.auth,
@@ -150,45 +144,70 @@ internal fun NavGraphBuilder.mfaEnrollmentDestinations(
                 content = content,
                 step = step.enrollmentStep,
                 onNavigateToStep = { target ->
-                    navController.navigateToMfaStep(AuthRoute.MfaEnrollment.stepFor(target))
+                    backStack.navigateToMfaStep(AuthRoute.MfaEnrollment.stepFor(target))
                 },
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { backStack.popOrNull() },
                 flowState = flowState,
                 onComplete = onComplete,
                 onSkip = onSkip,
                 onError = onError,
             )
+        } else {
+            // A single pop here cascades: the step below composes with a null user and pops again.
+            LaunchedEffect(Unit) { backStack.exitMfaEnrollment() }
+            RedirectingStep()
         }
     }
-}
 
-/** Pushes [step] onto the back stack. Always a push, never a pop-then-push. */
-internal fun NavHostController.navigateToMfaStep(step: AuthRoute.MfaEnrollment.Step) {
-    navigate(step.route)
+    entry<AuthRoute.MfaEnrollment.SelectFactor>(
+        metadata = authRouteMetadata(AuthRoute.MfaEnrollment.SelectFactor)
+    ) { body(it) }
+    entry<AuthRoute.MfaEnrollment.ConfigureSms>(
+        metadata = authRouteMetadata(AuthRoute.MfaEnrollment.ConfigureSms)
+    ) { body(it) }
+    entry<AuthRoute.MfaEnrollment.ConfigureTotp>(
+        metadata = authRouteMetadata(AuthRoute.MfaEnrollment.ConfigureTotp)
+    ) { body(it) }
+    entry<AuthRoute.MfaEnrollment.VerifyFactor>(
+        metadata = authRouteMetadata(AuthRoute.MfaEnrollment.VerifyFactor)
+    ) { body(it) }
 }
 
 /**
- * Leaves the MFA enrolment flow, popping a step at a time until the top of the back stack is not
- * one.
+ * Pushes [step] onto the back stack. Always a push, never a pop-then-push.
  *
- * Pops nothing when the flow is already left, so exiting twice leaves what is underneath — and
- * its entry-scoped state — untouched. Resets to [AuthRoute.Success] only when the flow was the
- * entire back stack and popping it emptied the stack.
+ * Upholds [pushUnique]'s precondition: this flow only ever moves *forward* through here —
+ * `SelectFactor` → a `Configure…` step → `VerifyFactor` — and every backward move goes through
+ * [popOrNull] instead, so a step this pushes is never already buried. A step that could be
+ * re-entered from above would take [pushUnique]'s buried-case trim.
  */
-internal fun NavHostController.exitMfaEnrollment() {
-    var onStep = AuthRoute.MfaEnrollment.isStep(currentDestination?.route)
-    while (onStep && popBackStack()) {
-        onStep = AuthRoute.MfaEnrollment.isStep(currentDestination?.route)
+internal fun NavBackStack<NavKey>.navigateToMfaStep(step: AuthRoute.MfaEnrollment.Step) {
+    pushUnique(step)
+}
+
+/**
+ * Leaves the MFA enrolment flow from whatever depth it reached, in one write: truncates to the
+ * lowest step on the stack rather than popping repeatedly, so it does not matter how deep the flow
+ * went, which step it started on, or whether it was entered more than once.
+ *
+ * A no-op when no step is on the stack, so leaving twice cannot disturb what is underneath. Resets
+ * to [AuthRoute.Success] when the flow is the whole stack — `NavDisplay` throws on an empty one.
+ */
+internal fun NavBackStack<NavKey>.exitMfaEnrollment() {
+    val lowestStep = indexOfFirst { it is AuthRoute.MfaEnrollment.Step }
+    when {
+        lowestStep < 0 -> return
+        lowestStep == 0 -> resetBackStackTo(AuthRoute.Success)
+        else -> while (size > lowestStep) removeAt(size - 1)
     }
-    if (onStep) resetBackStackTo(AuthRoute.Success)
 }
 
 /**
  * Where entering the MFA enrolment flow should land, resolved once at flow entry.
  *
  * A configuration offering exactly one factor has nothing to choose, so the flow starts on that
- * factor's own configuration step directly, never visiting
- * [AuthRoute.MfaEnrollment.SelectFactor].
+ * factor's own configuration step directly. [MfaEnrollmentScreen] still fetches the TOTP secret the
+ * first time [AuthRoute.MfaEnrollment.ConfigureTotp] is entered, whichever way it was reached.
  */
 internal fun mfaEnrollmentStartStep(configuration: MfaConfiguration): AuthRoute.MfaEnrollment.Step {
     return when (configuration.allowedFactors.singleOrNull()) {

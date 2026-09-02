@@ -20,11 +20,12 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 /**
- * The reauthentication marker is all that survives Activity recreation for a request whose retry
- * callback is process-local, so what it round-trips has to be exact.
+ * The reauthentication marker is the only thing that survives Activity recreation for a request
+ * whose retry callback is process-local, so what it round-trips has to be exact.
  *
- * [AuthRoute.route] is not an identity: a flow entry point shares its start step's route string.
- * These tests pin that the saver uses explicit ids instead, and pin the collision itself.
+ * The saver maps each presentable sub-route to an explicit id rather than to anything derived from
+ * the type, so restoring a marker cannot depend on the order candidates are tested in. These tests
+ * pin that mapping.
  *
  * @suppress Internal test class
  */
@@ -43,7 +44,10 @@ class ReauthPresentationStateSaverTest {
         )
     }
 
-    /** Every sub-route the presentation can be restored into comes back as itself. */
+    /**
+     * Every sub-route the presentation can be restored into. Written out per value rather than
+     * looped, because the point is that each one comes back as *itself*.
+     */
     @Test
     fun `each presentable sub-route round-trips as itself`() {
         listOf(AuthRoute.Email, AuthRoute.Phone).forEach { subRoute ->
@@ -62,24 +66,29 @@ class ReauthPresentationStateSaverTest {
     }
 
     /**
-     * The collision the ids exist to survive: a flow and its start step report the same [route],
-     * so a saver keyed on that string cannot tell the two apart.
+     * A flow and its start step are distinct values, and only the flow — the presentable sub-route
+     * — carries an id, so a step can never be restored in place of the flow it belongs to.
+     *
+     * The explicit ids are independent of class names, so renaming a destination cannot change
+     * what an already-saved marker restores to.
      */
     @Test
-    fun `a flow and its start step share a route string but not an id`() {
-        assertThat(AuthRoute.Email.route).isEqualTo(AuthRoute.Email.SignIn.route)
-        assertThat(AuthRoute.Phone.route).isEqualTo(AuthRoute.Phone.EnterPhoneNumber.route)
+    fun `a flow and its start step are distinct, and only the flow has an id`() {
+        assertThat(AuthRoute.Email as Any).isNotEqualTo(AuthRoute.Email.SignIn() as Any)
+        assertThat(AuthRoute.Phone as Any).isNotEqualTo(AuthRoute.Phone.EnterPhoneNumber as Any)
 
         assertThat(AuthRoute.Email.reauthSubRouteId())
             .isNotEqualTo(AuthRoute.Phone.reauthSubRouteId())
-        // A step is not a presentable sub-route at all, so it has no id.
-        assertThat(AuthRoute.Email.SignIn.reauthSubRouteId()).isNull()
+        // The step is not a presentable sub-route at all, so it has no id and cannot be mistaken
+        // for its flow on the way back in.
+        assertThat(AuthRoute.Email.SignIn().reauthSubRouteId()).isNull()
         assertThat(AuthRoute.Phone.EnterPhoneNumber.reauthSubRouteId()).isNull()
     }
 
     /**
-     * The MFA challenge is not restorable: its resolver lives only in the process-local
-     * `AuthState`, so saving it would restore a challenge screen with nothing to challenge.
+     * The MFA challenge is deliberately not restorable: its resolver lives only in the
+     * process-local `AuthState`, so the sub-route is derived from that state on the way back in.
+     * Saving it would restore a challenge screen with nothing to challenge.
      */
     @Test
     fun `the mfa challenge sub-route is not restored`() {

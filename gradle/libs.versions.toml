@@ -10,7 +10,13 @@ facebook = "18.3.0"
 
 compose-bom = "2026.06.01"
 activity-compose = "1.13.0"
-navigation-compose = "2.9.8"
+navigation3 = "1.1.7"
+# Pinned to the kotlinx-serialization-core that navigation3-runtime 1.1.7 declares in both its api
+# and runtime variants, and which consumers therefore resolve transitively. The only use of this
+# entry is auth's test-only `-json`; a higher one there would drag a higher core onto the test
+# classpath (Gradle resolves the highest), leaving the @Serializable round-trip test exercising the
+# key codegen at a version no consumer runs. Raise this only together with `navigation3`.
+kotlinx-serialization = "1.7.3"
 coroutines = "1.11.0"
 zxing = "3.5.4"
 
@@ -86,7 +92,9 @@ compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 
 # Firebase (BOM-managed, no version except BOM itself)
@@ -132,5 +140,6 @@ android-library = { id = "com.android.library", version.ref = "android-gradle-pl
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish-plugin" }

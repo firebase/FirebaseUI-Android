@@ -17,22 +17,24 @@ package com.firebase.ui.auth.ui.screens.mfa
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.get
+import androidx.compose.animation.togetherWith
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.popOrNull
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth.assertThat
@@ -65,8 +67,10 @@ import org.robolectric.annotation.Config
  * [AuthRoute.MfaEnrollment.ConfigureSms], [AuthRoute.MfaEnrollment.ConfigureTotp] and
  * [AuthRoute.MfaEnrollment.VerifyFactor] — onto real navigation destinations.
  *
- * The unit under test is [mfaEnrollmentDestinations], hosted here in a bare `NavHost` so the back
- * stack can be read directly.
+ * The unit under test is [mfaEnrollmentDestinations], the entry-provider extension
+ * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen] installs, hosted here in a bare
+ * `NavDisplay` so the back stack can be read directly — the same shape
+ * `com.firebase.ui.auth.ui.screens.email.EmailAuthRouteNavigationTest` uses for the email flow.
  *
  * @suppress Internal test class
  */
@@ -88,10 +92,9 @@ class MfaEnrollmentRouteNavigationTest {
 
     private lateinit var authUI: FirebaseAuthUI
 
-    private var navController: NavHostController? = null
+    private var backStack: NavBackStack<NavKey>? = null
     private var lastState: MfaEnrollmentContentState? = null
     private var pressBack: (() -> Unit)? = null
-    private var reportComplete: (() -> Unit)? = null
 
     @Before
     fun setUp() {
@@ -118,10 +121,9 @@ class MfaEnrollmentRouteNavigationTest {
 
     @After
     fun tearDown() {
-        navController = null
+        backStack = null
         lastState = null
         pressBack = null
-        reportComplete = null
         FirebaseAuthUI.clearInstanceCache()
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         FirebaseApp.getApps(context).forEach {
@@ -132,11 +134,15 @@ class MfaEnrollmentRouteNavigationTest {
         }
     }
 
-    // A step switch must not dispose what a previous step held
+    // =============================================================================================
+    // The headline bug: a step switch must not dispose what a previous step held
+    // =============================================================================================
 
     /**
-     * Guards the regression where backing out to [AuthRoute.MfaEnrollment.SelectFactor] blanked
-     * the typed phone number.
+     * The ticket's headline bug. `MfaEnrollmentScreen.onBackClick` used to blank the phone number
+     * on the way back to [AuthRoute.MfaEnrollment.SelectFactor] — see the `git show HEAD` version
+     * of `onBackClick`. Hosted, back is real navigation and the flow's data lives in
+     * [MfaEnrollmentFlowState], which the step returned to still holds.
      */
     @Test
     fun `the typed phone number survives a detour through TOTP and back`() {
@@ -145,29 +151,35 @@ class MfaEnrollmentRouteNavigationTest {
         typePhoneNumber(TYPED_PHONE_NUMBER)
 
         back()
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.SelectFactor.routePattern)
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.SelectFactor)
 
-        // A detour, not an immediate re-selection: local state could survive the latter by luck.
+        // A detour through the other factor and back — not just an immediate re-selection —
+        // is what proves the data lives in the shared flowState rather than surviving by luck in
+        // whatever local state a single recomposition happened to keep around.
         selectFactor(MfaFactor.Totp)
         back()
 
         selectFactor(MfaFactor.Sms)
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms)
         assertThat(requireNotNull(lastState).phoneNumber).isEqualTo(TYPED_PHONE_NUMBER)
     }
 
-    // System back walks VerifyFactor back to whichever factor was chosen
+    // =============================================================================================
+    // System back walks VerifyFactor back to whichever factor was actually chosen
+    // =============================================================================================
 
     @Test
     fun `back from VerifyFactor returns to ConfigureSms when SMS was chosen`() {
         start()
         selectFactor(MfaFactor.Sms)
+        // Stands in for onSendSmsCodeClick's own navigation, without the real SMS network call
+        // onSendSmsCodeClick would make.
         pushVerifyFactorDirectly()
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
 
         back()
 
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms)
     }
 
     @Test
@@ -176,15 +188,17 @@ class MfaEnrollmentRouteNavigationTest {
             start()
             selectFactor(MfaFactor.Totp)
             continueToVerify()
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor)
 
             back()
 
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
         }
     }
 
+    // =============================================================================================
     // The TOTP secret is fetched once, not on every visit to ConfigureTotp
+    // =============================================================================================
 
     @Test
     fun `the TOTP secret is fetched once and survives a back-and-forward through SMS`() {
@@ -192,7 +206,7 @@ class MfaEnrollmentRouteNavigationTest {
             start()
 
             selectFactor(MfaFactor.Totp)
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(requireNotNull(lastState).totpSecret).isNotNull()
             assertThat(requireNotNull(lastState).totpQrCodeUrl).isEqualTo(FAKE_QR_URL)
 
@@ -201,7 +215,7 @@ class MfaEnrollmentRouteNavigationTest {
             back()
             selectFactor(MfaFactor.Totp)
 
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(requireNotNull(lastState).totpQrCodeUrl).isEqualTo(FAKE_QR_URL)
             totpStatic.verify(
                 { TotpMultiFactorGenerator.generateSecret(mockSession) },
@@ -210,7 +224,9 @@ class MfaEnrollmentRouteNavigationTest {
         }
     }
 
+    // =============================================================================================
     // A single allowed factor resolves its start step at flow entry
+    // =============================================================================================
 
     @Test
     fun `an SMS-only configuration resolves to ConfigureSms`() {
@@ -235,21 +251,25 @@ class MfaEnrollmentRouteNavigationTest {
         val configuration = smsOnlyConfiguration()
         start(configuration, startStep = mfaEnrollmentStartStep(configuration))
 
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
-        assertThat(backStackRoutes())
-            .containsExactly(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
+        assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms)
+        assertThat(backStackKeys())
+            .containsExactly(AuthRoute.MfaEnrollment.ConfigureSms)
     }
 
-    /** The secret must still be pre-fetched when `ConfigureTotp` is the flow's first destination. */
+    /**
+     * The pre-fetch that used to happen in `MfaEnrollmentScreen`'s own `LaunchedEffect(Unit)`
+     * bounce off `SelectFactor` still has to happen when the host resolves straight to
+     * `ConfigureTotp` instead of routing through `SelectFactor` first.
+     */
     @Test
     fun `a TOTP-only flow fetches the secret without ever visiting SelectFactor`() {
         withMockedTotpSecret { totpStatic, mockSession ->
             val configuration = totpOnlyConfiguration()
             start(configuration, startStep = mfaEnrollmentStartStep(configuration))
 
-            assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
-            assertThat(backStackRoutes())
-                .containsExactly(AuthRoute.MfaEnrollment.ConfigureTotp.routePattern)
+            assertThat(currentKey()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureTotp)
+            assertThat(backStackKeys())
+                .containsExactly(AuthRoute.MfaEnrollment.ConfigureTotp)
             assertThat(requireNotNull(lastState).totpQrCodeUrl).isEqualTo(FAKE_QR_URL)
             totpStatic.verify(
                 { TotpMultiFactorGenerator.generateSecret(mockSession) },
@@ -258,172 +278,22 @@ class MfaEnrollmentRouteNavigationTest {
         }
     }
 
-    // Completing or skipping leaves the flow, from whichever step it happened on
-
-    @Test
-    fun `a successful enrolment three steps deep leaves the flow`() {
-        startOutsideFlow()
-        val hostEntry = hostEntry()
-        selectFactor(MfaFactor.Sms)
-        pushVerifyFactorDirectly()
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.VerifyFactor.routePattern)
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    @Test
-    fun `a skip from a pushed step leaves the flow`() {
-        startOutsideFlow()
-        val hostEntry = hostEntry()
-        selectFactor(MfaFactor.Sms)
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
-
-        skipEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /** The start step is `ConfigureSms`, so an exit pinned to `SelectFactor` would pop nothing. */
-    @Test
-    fun `a successful enrolment leaves an SMS-only flow that never visited SelectFactor`() {
-        startOutsideFlow(smsOnlyConfiguration())
-        val hostEntry = hostEntry()
-        assertThat(currentRoute()).isEqualTo(AuthRoute.MfaEnrollment.ConfigureSms.routePattern)
-        pushVerifyFactorDirectly()
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /**
-     * A host can enter at any step through `AuthSuccessUiContext.onNavigate`, which never pushes
-     * the resolved start step — so an exit that pops up to that start step finds nothing.
-     */
-    @Test
-    fun `a successful enrolment leaves a flow entered at a step that is not its start step`() {
-        startOutsideFlow(enterAtStartStep = false)
-        val hostEntry = hostEntry()
-        navigateDirectlyTo(AuthRoute.MfaEnrollment.ConfigureSms)
-        pushVerifyFactorDirectly()
-        assertThat(backStackRoutes())
-            .doesNotContain(AuthRoute.MfaEnrollment.SelectFactor.routePattern)
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /**
-     * The "Manage MFA" control is an undebounced `Button` and entry is a bare `navigate`, so two
-     * taps in one frame stack the start step twice. An exit popping only the topmost occurrence
-     * would land on the duplicate.
-     */
-    @Test
-    fun `a successful enrolment leaves a flow whose start step was entered twice`() {
-        startOutsideFlow()
-        val hostEntry = hostEntry()
-        enterFlow(twoFactorConfiguration())
-        selectFactor(MfaFactor.Sms)
-        assertThat(backStackRoutes()).containsExactly(
-            HOST_ROUTE,
-            AuthRoute.MfaEnrollment.SelectFactor.routePattern,
-            AuthRoute.MfaEnrollment.SelectFactor.routePattern,
-            AuthRoute.MfaEnrollment.ConfigureSms.routePattern,
-        ).inOrder()
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /**
-     * `onNavigate` accepts any step, so an SMS-only configuration — whose start step is
-     * `ConfigureSms` — can still be entered at `SelectFactor`. An exit inclusive of the resolved
-     * start step would strand the user on the picker it stacked underneath.
-     */
-    @Test
-    fun `a successful enrolment leaves an SMS-only flow entered at SelectFactor`() {
-        startOutsideFlow(smsOnlyConfiguration(), enterAtStartStep = false)
-        val hostEntry = hostEntry()
-        navigateDirectlyTo(AuthRoute.MfaEnrollment.SelectFactor)
-        selectFactor(MfaFactor.Sms)
-        pushVerifyFactorDirectly()
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /**
-     * `onVerifyClick` reports completion from an unguarded coroutine, so a second exit is
-     * reachable. It must not rebuild the host entry the caller's own state is scoped to.
-     */
-    @Test
-    fun `a second exit after the flow has been left changes nothing`() {
-        startOutsideFlow()
-        val hostEntry = hostEntry()
-        selectFactor(MfaFactor.Sms)
-        completeEnrollment()
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /**
-     * A step reached with no signed-in user cannot render, and neither can the step underneath
-     * it. Popping one at a time would walk the flow out a step per frame; leaving does it in one.
-     */
-    @Test
-    fun `a step reached with no signed-in user leaves the whole flow`() {
-        startOutsideFlow()
-        val hostEntry = hostEntry()
-        selectFactor(MfaFactor.Sms)
-        pushVerifyFactorDirectly()
-        `when`(mockAuth.currentUser).thenReturn(null)
-
-        navigateDirectlyTo(AuthRoute.MfaEnrollment.ConfigureTotp)
-
-        assertThat(currentRoute()).isEqualTo(HOST_ROUTE)
-        assertThat(backStackRoutes()).containsExactly(HOST_ROUTE)
-        assertThat(hostEntry()).isSameInstanceAs(hostEntry)
-    }
-
-    /** Nothing to pop back to: the fallback has to put something on the emptied stack. */
-    @Test
-    fun `an exit from a flow that is the whole back stack resets to Success`() {
-        start()
-        selectFactor(MfaFactor.Sms)
-        assertThat(backStackRoutes()).doesNotContain(HOST_ROUTE)
-
-        completeEnrollment()
-
-        assertThat(currentRoute()).isEqualTo(AuthRoute.Success.routePattern)
-        assertThat(backStackRoutes()).containsExactly(AuthRoute.Success.routePattern)
-    }
-
+    // =============================================================================================
     // Every public AuthRoute.MfaEnrollment value is a registered destination
+    // =============================================================================================
 
     /**
-     * Wrapped in [withMockedTotpSecret]: the loop walks `ConfigureTotp` before `VerifyFactor`, so
-     * without a live secret the TOTP-loss recovery would bounce `VerifyFactor` back — correct
-     * behavior, but it would hide whether that step is reachable at all.
+     * Wrapped in [withMockedTotpSecret]: by the time this loop reaches
+     * [AuthRoute.MfaEnrollment.VerifyFactor], the [AuthRoute.MfaEnrollment.ConfigureTotp] step
+     * visited just before it (steps are declared and walked in that order) has already set
+     * `selectedFactor` to TOTP. Without a mocked secret, that fetch fails and leaves `totpSecret`
+     * null — which `MfaEnrollmentScreen`'s TOTP-loss recovery (added alongside
+     * [com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentTotpRegenerationTest]) now correctly reads
+     * as "landed on VerifyFactor with no live secret" and bounces back to `ConfigureTotp` for,
+     * exactly as it should for a genuine loss. That is a real product behavior this test must
+     * account for, not something to route around: mocking the secret is what makes "every step is
+     * directly reachable" true again, the same way [withMockedTotpSecret] already lets the other
+     * TOTP-path tests in this class reach `VerifyFactor` at all.
      */
     @Test
     fun `every declared MFA enrolment step is reachable directly`() {
@@ -432,12 +302,138 @@ class MfaEnrollmentRouteNavigationTest {
 
             AuthRoute.MfaEnrollment.steps.forEach { step ->
                 navigateDirectlyTo(step)
-                assertThat(currentRoute()).isEqualTo(step.routePattern)
+                assertThat(currentKey()).isEqualTo(step)
             }
         }
     }
 
+    // =============================================================================================
+    // Leaving the flow drops every entry it pushed, from any depth
+    // =============================================================================================
+
+    /**
+     * The headline defect: every move between steps is a push, so a single pop from three deep
+     * strands the user on the step before rather than leaving.
+     */
+    @Test
+    fun `leaving from the deepest step drops every entry the flow pushed`() {
+        val stack = stackOf(
+            AuthRoute.MethodPicker,
+            AuthRoute.Success,
+            AuthRoute.MfaEnrollment.SelectFactor,
+            AuthRoute.MfaEnrollment.ConfigureSms,
+            AuthRoute.MfaEnrollment.VerifyFactor,
+        )
+
+        stack.exitMfaEnrollment()
+
+        assertThat(stack.toList())
+            .containsExactly(AuthRoute.MethodPicker, AuthRoute.Success)
+            .inOrder()
+    }
+
+    /**
+     * Entered, left, entered again: the flow's entries need not be one unbroken run at the top, and
+     * a pop loop that stops at the first non-step leaves the earlier ones stranded underneath.
+     * Truncating to the lowest step is what makes the exit independent of how the stack got there.
+     */
+    @Test
+    fun `leaving drops the flow's entries wherever they sit on the stack`() {
+        val stack = stackOf(
+            AuthRoute.Success,
+            AuthRoute.MfaEnrollment.SelectFactor,
+            AuthRoute.MfaChallenge,
+            AuthRoute.MfaEnrollment.ConfigureSms,
+        )
+
+        stack.exitMfaEnrollment()
+
+        assertThat(stack.toList()).containsExactly(AuthRoute.Success)
+    }
+
+    /**
+     * A single-factor configuration resolves its start step to a `Configure…` step, so the flow's
+     * lowest entry is not [AuthRoute.MfaEnrollment.SelectFactor] — see [mfaEnrollmentStartStep].
+     */
+    @Test
+    fun `leaving works when the flow never started on SelectFactor`() {
+        val stack = stackOf(
+            AuthRoute.Success,
+            AuthRoute.MfaEnrollment.ConfigureSms,
+            AuthRoute.MfaEnrollment.VerifyFactor,
+        )
+
+        stack.exitMfaEnrollment()
+
+        assertThat(stack.toList()).containsExactly(AuthRoute.Success)
+    }
+
+    /**
+     * `onComplete` and `onSkip` are both reachable more than once — a second tap in the same frame,
+     * or a completion racing a skip — and the second call must not eat the destination the first
+     * one returned to.
+     */
+    @Test
+    fun `leaving a flow already left changes nothing`() {
+        val stack = stackOf(AuthRoute.MethodPicker, AuthRoute.Success)
+
+        stack.exitMfaEnrollment()
+        stack.exitMfaEnrollment()
+
+        assertThat(stack.toList())
+            .containsExactly(AuthRoute.MethodPicker, AuthRoute.Success)
+            .inOrder()
+    }
+
+    /**
+     * Nothing under the flow to return to: truncating would empty the stack, and `NavDisplay`
+     * throws `IllegalArgumentException: NavDisplay backstack cannot be empty` from recomposition
+     * rather than from the call that emptied it. Same convention as `resetBackStackTo`, which this
+     * delegates to, so the size is checked at every snapshot write rather than only at the end.
+     */
+    @Test
+    fun `leaving never empties the stack, even momentarily`() {
+        val stack = stackOf(
+            AuthRoute.MfaEnrollment.SelectFactor,
+            AuthRoute.MfaEnrollment.ConfigureSms,
+        )
+        val sizes = mutableListOf<Int>()
+
+        Snapshot.observe(writeObserver = { sizes += stack.size }) { stack.exitMfaEnrollment() }
+
+        assertThat(sizes).isNotEmpty()
+        assertThat(sizes.min()).isAtLeast(1)
+        assertThat(stack.toList()).containsExactly(AuthRoute.Success)
+    }
+
+    /**
+     * The second, worse instance of the same defect. A step whose user has gone signs itself out of
+     * the flow from composition; popping one entry there hands the step below the same null user,
+     * which pops again, so the flow eats the stack one recomposition at a time until nothing is
+     * left to pop and the user is stranded on a step that renders nothing. Leaving in one write
+     * cannot cascade.
+     */
+    @Test
+    fun `a step with no signed-in user leaves the flow rather than draining the stack`() {
+        `when`(mockAuth.currentUser).thenReturn(null)
+
+        composeTestRule.setContent {
+            SignedOutFlowHost(
+                AuthRoute.MfaEnrollment.SelectFactor,
+                AuthRoute.MfaEnrollment.ConfigureSms,
+            )
+        }
+        composeTestRule.waitForIdle()
+
+        assertThat(backStackKeys()).containsExactly(AuthRoute.Success)
+    }
+
+    // =============================================================================================
     // Harness
+    // =============================================================================================
+
+    private fun stackOf(vararg keys: NavKey): NavBackStack<NavKey> =
+        NavBackStack<NavKey>().apply { addAll(keys) }
 
     private fun twoFactorConfiguration() = MfaConfiguration(
         allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
@@ -456,8 +452,9 @@ class MfaEnrollmentRouteNavigationTest {
 
     /**
      * Stubs [mockMultiFactor]'s session and [TotpMultiFactorGenerator.generateSecret] to complete
-     * synchronously with a fake secret, for the duration of [block]. Every action and assertion
-     * depending on the stub must run inside [block].
+     * synchronously with a fake secret, for the duration of [block]. A `MockedStatic` is scoped to
+     * `use { }`, so every action and assertion that depends on the stub — starting the flow,
+     * driving it, reading [lastState] — has to run inside [block].
      */
     private fun withMockedTotpSecret(
         block: (
@@ -490,60 +487,6 @@ class MfaEnrollmentRouteNavigationTest {
         composeTestRule.waitForIdle()
     }
 
-    /**
-     * Hosts the flow the way a real host does: [HOST_ROUTE] underneath it. Needed to tell leaving
-     * the flow apart both from landing on one of its steps and from the [AuthRoute.Success]
-     * fallback, which is a separate destination here.
-     *
-     * @param enterAtStartStep false to stay on [HOST_ROUTE], for a caller entering the flow at a
-     * step of its own choosing.
-     */
-    private fun startOutsideFlow(
-        configuration: MfaConfiguration = twoFactorConfiguration(),
-        enterAtStartStep: Boolean = true,
-    ) {
-        composeTestRule.setContent {
-            MfaFlowHost(
-                configuration = configuration,
-                startStep = AuthRoute.MfaEnrollment.SelectFactor,
-                startOutsideFlow = true,
-            )
-        }
-        composeTestRule.waitForIdle()
-        if (enterAtStartStep) enterFlow(configuration)
-    }
-
-    /** Enters the flow the way both of `FirebaseAuthScreen`'s entry points do. */
-    private fun enterFlow(configuration: MfaConfiguration) {
-        composeTestRule.runOnIdle {
-            requireNotNull(navController).navigate(mfaEnrollmentStartStep(configuration).route)
-        }
-        composeTestRule.waitForIdle()
-    }
-
-    /**
-     * The live [HOST_ROUTE] entry, or null once it is gone. Compared by reference: a pop leaves
-     * the same instance, a reset builds a new one and destroys whatever was scoped to the old.
-     */
-    private fun hostEntry(): NavBackStackEntry? = composeTestRule.runOnIdle {
-        navController?.navigatorProvider?.get(ComposeNavigator::class)
-            ?.backStack?.value
-            ?.firstOrNull { it.destination.route == HOST_ROUTE }
-    }
-
-    /** Invokes the host's `onComplete`, as the screen does on a successful enrolment. */
-    private fun completeEnrollment() {
-        composeTestRule.runOnIdle { requireNotNull(reportComplete).invoke() }
-        composeTestRule.waitForIdle()
-    }
-
-    private fun skipEnrollment() {
-        composeTestRule.runOnIdle {
-            requireNotNull(requireNotNull(lastState).onSkipClick).invoke()
-        }
-        composeTestRule.waitForIdle()
-    }
-
     private fun selectFactor(factor: MfaFactor) {
         composeTestRule.runOnIdle { requireNotNull(lastState).onFactorSelected(factor) }
         composeTestRule.waitForIdle()
@@ -559,18 +502,18 @@ class MfaEnrollmentRouteNavigationTest {
         composeTestRule.waitForIdle()
     }
 
-    /** Enters [AuthRoute.MfaEnrollment.VerifyFactor] as `onSendSmsCodeClick` does, minus the
+    /** Enters [AuthRoute.MfaEnrollment.VerifyFactor] the way `onSendSmsCodeClick` does, minus the
      * real SMS network call. */
     private fun pushVerifyFactorDirectly() {
         composeTestRule.runOnIdle {
-            requireNotNull(navController).navigateToMfaStep(AuthRoute.MfaEnrollment.VerifyFactor)
+            requireNotNull(backStack).navigateToMfaStep(AuthRoute.MfaEnrollment.VerifyFactor)
         }
         composeTestRule.waitForIdle()
     }
 
     /** Enters [step] the way a host's `onNavigate` does — bypassing the screen's own guards. */
     private fun navigateDirectlyTo(step: AuthRoute.MfaEnrollment.Step) {
-        composeTestRule.runOnIdle { requireNotNull(navController).navigate(step.route) }
+        composeTestRule.runOnIdle { requireNotNull(backStack).add(step) }
         composeTestRule.waitForIdle()
     }
 
@@ -579,70 +522,84 @@ class MfaEnrollmentRouteNavigationTest {
         composeTestRule.waitForIdle()
     }
 
-    private fun currentRoute(): String? =
-        composeTestRule.runOnIdle { navController?.currentBackStackEntry?.destination?.route }
+    private fun currentKey(): NavKey? =
+        composeTestRule.runOnIdle { backStack?.lastOrNull() }
 
-    /**
-     * The composed destinations on the stack, bottom to top. Reads the `ComposeNavigator`'s own
-     * back stack; `NavController.currentBackStack` is `@RestrictTo`.
-     */
-    private fun backStackRoutes(): List<String?> = composeTestRule.runOnIdle {
-        navController?.navigatorProvider?.get(ComposeNavigator::class)
-            ?.backStack?.value
-            ?.map { it.destination.route }
-            .orEmpty()
-    }
+    /** The keys on the stack, bottom to top. */
+    private fun backStackKeys(): List<NavKey> =
+        composeTestRule.runOnIdle { backStack?.toList().orEmpty() }
 
     @Composable
-    private fun MfaFlowHost(
-        configuration: MfaConfiguration,
-        startStep: AuthRoute.MfaEnrollment.Step,
-        startOutsideFlow: Boolean = false,
-    ) {
-        val controller = rememberNavController()
+    private fun MfaFlowHost(configuration: MfaConfiguration, startStep: AuthRoute.MfaEnrollment.Step) {
+        val stack = rememberNavBackStack(startStep)
         val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
         val flowState = rememberMfaEnrollmentFlowState()
-        val exit: () -> Unit = { controller.exitMfaEnrollment() }
         SideEffect {
-            navController = controller
+            backStack = stack
             pressBack = dispatcher?.let { { it.onBackPressed() } }
-            reportComplete = exit
         }
 
-        NavHost(
-            navController = controller,
-            startDestination =
-                if (startOutsideFlow) HOST_ROUTE else startStep.routePattern,
-            // Transitions would keep two MFA destinations composed at once.
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
-        ) {
-            composable(HOST_ROUTE) {}
-            composable(AuthRoute.Success.routePattern) {}
-            mfaEnrollmentDestinations(
-                navController = controller,
-                configuration = configuration,
-                authConfiguration = null,
-                authUI = authUI,
-                flowState = flowState,
-                content = { state -> lastState = state },
-                onComplete = exit,
-                onSkip = exit,
-                onError = {},
-            )
-        }
+        NavDisplay(
+            backStack = stack,
+            onBack = { stack.popOrNull() },
+            // Transitions would keep two MFA destinations composed at once, which has nothing to
+            // do with the routing under test.
+            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            predictivePopTransitionSpec = { _ ->
+                EnterTransition.None togetherWith ExitTransition.None
+            },
+            entryProvider = entryProvider {
+                mfaEnrollmentDestinations(
+                    backStack = stack,
+                    configuration = configuration,
+                    authConfiguration = null,
+                    authUI = authUI,
+                    flowState = flowState,
+                    content = { state -> lastState = state },
+                    onComplete = {},
+                    onSkip = {},
+                    onError = {},
+                )
+            },
+        )
+    }
+
+    /**
+     * The same graph as [MfaFlowHost], started on [initialSteps] and with an
+     * [AuthRoute.Success] entry registered so the exit's stack-would-be-empty fallback resolves.
+     */
+    @Composable
+    private fun SignedOutFlowHost(vararg initialSteps: AuthRoute.MfaEnrollment.Step) {
+        val stack = rememberNavBackStack(*initialSteps)
+        SideEffect { backStack = stack }
+
+        NavDisplay(
+            backStack = stack,
+            onBack = { stack.popOrNull() },
+            transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+            predictivePopTransitionSpec = { _ ->
+                EnterTransition.None togetherWith ExitTransition.None
+            },
+            entryProvider = entryProvider {
+                entry<AuthRoute.Success> { Text(text = "left-the-flow") }
+                mfaEnrollmentDestinations(
+                    backStack = stack,
+                    configuration = twoFactorConfiguration(),
+                    authConfiguration = null,
+                    authUI = authUI,
+                    flowState = rememberMfaEnrollmentFlowState(),
+                    content = { state -> lastState = state },
+                    onComplete = {},
+                    onSkip = {},
+                    onError = {},
+                )
+            },
+        )
     }
 
     private companion object {
-        /**
-         * Stands in for whatever the host had on the stack before the flow was entered.
-         * Deliberately not [AuthRoute.Success]: that is the exit's fallback target, and the two
-         * outcomes have to be distinguishable.
-         */
-        const val HOST_ROUTE = "host_outside_flow"
-
         const val TYPED_PHONE_NUMBER = "5551234567"
         const val FAKE_SHARED_SECRET = "JBSWY3DPEHPK3PXP"
         const val FAKE_QR_URL = "otpauth://totp/test-issuer:user%40example.com?secret=JBSWY3DPEHPK3PXP"

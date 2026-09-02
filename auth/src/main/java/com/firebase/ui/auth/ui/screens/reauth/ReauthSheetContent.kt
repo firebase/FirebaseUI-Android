@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.screens.reauth
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,9 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -37,12 +39,17 @@ import com.firebase.ui.auth.mfa.MfaChallengeContentState
 import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.authRouteMetadata
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.emailAuthDestinations
 import com.firebase.ui.auth.ui.screens.getStartRoute
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
+import com.firebase.ui.auth.ui.screens.popOrNull
+import com.firebase.ui.auth.ui.screens.pushUnique
 import com.firebase.ui.auth.ui.screens.rememberOnProviderSelected
+import com.firebase.ui.auth.ui.screens.resetBackStackTo
+import com.firebase.ui.auth.ui.screens.toKey
 import com.google.firebase.auth.MultiFactorResolver
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,107 +68,123 @@ internal fun ReauthSheetContent(
     customMethodPickerLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)?,
     onDismiss: () -> Unit,
 ) {
-    val sheetNavController = rememberNavController()
     val startRoute = remember(reauthConfig) { getStartRoute(reauthConfig) }
     val skipsMethodPicker = startRoute != AuthRoute.MethodPicker
+    val sheetBackStack = rememberNavBackStack(startRoute.toKey())
     val onProviderSelected = authUI.rememberOnProviderSelected(
         context = context,
         activity = activity,
         config = reauthConfig,
-        onNavigate = { route -> sheetNavController.navigate(route.route) },
+        // pushUnique invariant: the picker is this stack's only entry, so nothing can be buried.
+        onNavigate = { route -> sheetBackStack.pushUnique(route) },
     )
     val returnToProviderSelection: () -> Unit = {
-        sheetNavController.navigate(startRoute.route) {
-            // popUpTo matches a registered destination, so it takes the pattern, not the route.
-            popUpTo(startRoute.routePattern) { inclusive = true }
-            launchSingleTop = true
-        }
+        sheetBackStack.resetBackStackTo(startRoute)
     }
-    // Must be the sheet's own NavHost: on the outer one the challenge renders under this modal.
     LaunchedEffect(mfaResolver) {
-        if (mfaResolver != null) {
-            sheetNavController.navigate(AuthRoute.MfaChallenge.route) { launchSingleTop = true }
+        // pushUnique invariant: nothing is pushed on top of the challenge here either.
+        if (mfaResolver != null && sheetBackStack.lastOrNull() != AuthRoute.MfaChallenge) {
+            sheetBackStack.pushUnique(AuthRoute.MfaChallenge)
         }
     }
 
-    NavHost(
-        navController = sheetNavController,
-        startDestination = startRoute.routePattern,
-        enterTransition = { fadeIn(animationSpec = tween(700)) },
-        exitTransition = { fadeOut(animationSpec = tween(700)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(700)) },
-        popExitTransition = { fadeOut(animationSpec = tween(700)) },
-    ) {
-        composable(AuthRoute.MethodPicker.routePattern) {
-            if (customMethodPickerLayout != null) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
-                }
-            } else {
-                Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
-                    AuthMethodPicker(
-                        modifier = Modifier.padding(innerPadding),
-                        providers = reauthConfig.providers,
-                        onProviderSelected = onProviderSelected,
-                    )
-                }
-            }
+    /**
+     * Leaving an email or phone sub-flow that has nothing left underneath it.
+     *
+     * The size test sits *above* the branch, and the dismissing branch never pops at all: on this
+     * surface an exhausted stack means the sheet should stop existing, and `NavDisplay` keeps
+     * composing until the dismiss animation finishes, so a list emptied on the way out would throw
+     * during that window.
+     */
+    val leaveOrCancel: () -> Unit = {
+        if (skipsMethodPicker || sheetBackStack.size <= 1) {
+            onDismiss()
+        } else {
+            sheetBackStack.popOrNull()
+            authUI.updateReauthentication(requestId) { it.attemptCancelled() }
         }
+    }
 
-        emailAuthDestinations(
-            navController = sheetNavController,
+    val phoneStep: @Composable () -> Unit = {
+        com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen(
             context = context,
             configuration = reauthConfig,
             authUI = authUI,
-            content = emailContent,
-            prefillEmail = { prefillEmail },
-            onCancel = {
-                if (skipsMethodPicker || !sheetNavController.popBackStack()) {
-                    onDismiss()
-                } else {
-                    authUI.updateReauthentication(requestId) { it.attemptCancelled() }
-                }
-            },
+            content = phoneContent,
+            onSuccess = {},
+            onError = {},
+            onCancel = leaveOrCancel,
         )
-
-        // Every phone step, as on the main graph; registering only the start step strands the rest.
-        AuthRoute.Phone.steps.forEach { step ->
-            composable(step.routePattern) {
-                com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen(
-                    context = context,
-                    configuration = reauthConfig,
-                    authUI = authUI,
-                    content = phoneContent,
-                    onSuccess = {},
-                    onError = {},
-                    onCancel = {
-                        if (skipsMethodPicker || !sheetNavController.popBackStack()) {
-                            onDismiss()
-                        } else {
-                            authUI.updateReauthentication(requestId) { it.attemptCancelled() }
-                        }
-                    }
-                )
-            }
-        }
-
-        composable(AuthRoute.MfaChallenge.routePattern) {
-            if (mfaResolver != null) {
-                MfaChallengeScreen(
-                    resolver = mfaResolver,
-                    auth = authUI.auth,
-                    content = mfaChallengeContent,
-                    onSuccess = { authUI.publishReauthenticationSuccess() },
-                    onCancel = {
-                        returnToProviderSelection()
-                        authUI.updateReauthentication(requestId) { it.attemptCancelled() }
-                    },
-                    onError = { exception ->
-                        returnToProviderSelection()
-                        authUI.updateAuthState(AuthState.Error(exception))
-                    },
-                )
-            }
-        }
     }
+
+    NavDisplay(
+        backStack = sheetBackStack,
+        onBack = { sheetBackStack.popOrNull() },
+        transitionSpec = {
+            fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
+        },
+        popTransitionSpec = {
+            fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
+        },
+        predictivePopTransitionSpec = {
+            fadeIn(animationSpec = tween(700)) togetherWith fadeOut(animationSpec = tween(700))
+        },
+        entryProvider = entryProvider {
+            entry<AuthRoute.MethodPicker>(
+                metadata = authRouteMetadata(AuthRoute.MethodPicker)
+            ) {
+                if (customMethodPickerLayout != null) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
+                    }
+                } else {
+                    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
+                        AuthMethodPicker(
+                            modifier = Modifier.padding(innerPadding),
+                            providers = reauthConfig.providers,
+                            onProviderSelected = onProviderSelected,
+                        )
+                    }
+                }
+            }
+
+            emailAuthDestinations(
+                backStack = sheetBackStack,
+                context = context,
+                configuration = reauthConfig,
+                authUI = authUI,
+                content = emailContent,
+                prefillEmail = { prefillEmail },
+                onCancel = leaveOrCancel,
+            )
+
+            entry<AuthRoute.Phone.EnterPhoneNumber>(
+                metadata = authRouteMetadata(AuthRoute.Phone.EnterPhoneNumber)
+            ) { phoneStep() }
+            entry<AuthRoute.Phone.EnterVerificationCode>(
+                metadata = authRouteMetadata(AuthRoute.Phone.EnterVerificationCode)
+            ) { phoneStep() }
+
+            entry<AuthRoute.MfaChallenge>(
+                metadata = authRouteMetadata(AuthRoute.MfaChallenge)
+            ) {
+                if (mfaResolver != null) {
+                    MfaChallengeScreen(
+                        resolver = mfaResolver,
+                        auth = authUI.auth,
+                        content = mfaChallengeContent,
+                        onSuccess = { authUI.publishReauthenticationSuccess() },
+                        onCancel = {
+                            returnToProviderSelection()
+                            authUI.updateReauthentication(requestId) { it.attemptCancelled() }
+                        },
+                        onError = { exception ->
+                            returnToProviderSelection()
+                            authUI.updateAuthState(AuthState.Error(exception))
+                        },
+                    )
+                }
+            }
+        },
+    )
 }
