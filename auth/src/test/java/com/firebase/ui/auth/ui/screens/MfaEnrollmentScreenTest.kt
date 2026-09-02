@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.screens
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.MfaFactor
@@ -492,6 +493,79 @@ class MfaEnrollmentScreenTest {
     }
 
     @Test
+    fun `TOTP verification without a secret reports the missing secret and skips onComplete`() {
+        val configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp))
+        var completeCount = 0
+        val errors = mutableListOf<Exception>()
+
+        var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
+
+        // Two allowed factors, so nothing is auto-selected: the secret is generated only when the
+        // TOTP factor is picked, which keeps the restore below from regenerating it.
+        val restorationTester = StateRestorationTester(composeTestRule)
+        restorationTester.setContent {
+            MfaEnrollmentScreenInternal(
+                user = mockUser,
+                auth = mockAuth,
+                configuration = configuration,
+                smsHandler = mockSmsHandler,
+                totpHandler = mockTotpHandler,
+                onComplete = { completeCount++ },
+                onError = { errors.add(it) }
+            ) { state ->
+                currentState = state
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        assertEquals(MfaEnrollmentStep.SelectFactor, currentState?.step)
+
+        composeTestRule.runOnUiThread {
+            currentState?.onFactorSelected?.invoke(MfaFactor.Totp)
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(MfaEnrollmentStep.ConfigureTotp, currentState?.step)
+        assertEquals(totpSecret, currentState?.totpSecret)
+
+        composeTestRule.runOnUiThread {
+            currentState?.onContinueToVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.runOnUiThread {
+            currentState?.onVerificationCodeChange?.invoke(VERIFICATION_CODE)
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+
+        // Reach the verify step without a secret the way production does: across process death.
+        // `currentStep`, `selectedFactor` and `verificationCode` are `rememberSaveable` and are
+        // restored, while `totpSecret` is a plain `remember` and is not. That step/secret mismatch
+        // is what `onVerifyClick`'s null-secret branch guards.
+        restorationTester.emulateSavedInstanceStateRestore()
+        composeTestRule.waitForIdle()
+        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+        assertEquals(MfaFactor.Totp, currentState?.selectedFactor)
+        assertNull(currentState?.totpSecret)
+        // The restore itself must be quiet, so the only error below is the one under test.
+        assertEquals(emptyList<Exception>(), errors)
+
+        composeTestRule.runOnUiThread {
+            currentState?.onVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(0, completeCount)
+        assertEquals(1, errors.size)
+        assertTrue(errors.single() is IllegalStateException)
+        assertEquals(NO_TOTP_SECRET_MESSAGE, errors.single().message)
+        assertEquals(errors.single(), currentState?.exception)
+        assertEquals(NO_TOTP_SECRET_MESSAGE, currentState?.error)
+        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+        assertEquals(false, currentState?.isLoading)
+    }
+
+    @Test
     fun `successful SMS enrollment enrolls the entered code and fires onComplete once`() {
         var completeCount = 0
         val errors = mutableListOf<Exception>()
@@ -789,6 +863,11 @@ class MfaEnrollmentScreenTest {
                 displayName = SMS_DISPLAY_NAME
             )
         }
+        // And it must reach the handler cleanly: a resend must not leave the terminal enroll
+        // reporting an error.
+        assertEquals(emptyList<Exception>(), errors)
+        assertNull(state()?.error)
+        assertNull(state()?.exception)
     }
 
     /**
@@ -901,6 +980,7 @@ class MfaEnrollmentScreenTest {
         const val VERIFICATION_CODE = "123456"
         const val TOTP_DISPLAY_NAME = "Authenticator App"
         const val SMS_DISPLAY_NAME = "SMS"
+        const val NO_TOTP_SECRET_MESSAGE = "No TOTP secret available"
         const val NO_SMS_SESSION_MESSAGE = "No SMS session available"
         const val LOCAL_PHONE_NUMBER = "5551234567"
         const val EXPECTED_FULL_PHONE_NUMBER = "+445551234567"
