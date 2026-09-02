@@ -38,6 +38,7 @@ import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
+import com.firebase.ui.auth.ui.screens.email.emailAuthDestinations
 import com.firebase.ui.auth.ui.screens.getStartRoute
 import com.firebase.ui.auth.ui.screens.mfa.MfaChallengeScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
@@ -69,16 +70,14 @@ internal fun ReauthSheetContent(
         config = reauthConfig,
         onNavigate = { route -> sheetNavController.navigate(route.route) },
     )
-    // Provider selection for this sheet, which is where a consumed challenge returns to. With a
-    // single provider that is its own screen, so the credential attempt can simply be repeated.
     val returnToProviderSelection: () -> Unit = {
         sheetNavController.navigate(startRoute.route) {
-            popUpTo(startRoute.route) { inclusive = true }
+            // popUpTo matches a registered destination, so it takes the pattern, not the route.
+            popUpTo(startRoute.routePattern) { inclusive = true }
             launchSingleTop = true
         }
     }
-    // Inside the sheet's own NavHost: on the outer one the challenge would render underneath
-    // this modal, where the user cannot reach it.
+    // Must be the sheet's own NavHost: on the outer one the challenge renders under this modal.
     LaunchedEffect(mfaResolver) {
         if (mfaResolver != null) {
             sheetNavController.navigate(AuthRoute.MfaChallenge.route) { launchSingleTop = true }
@@ -87,20 +86,18 @@ internal fun ReauthSheetContent(
 
     NavHost(
         navController = sheetNavController,
-        startDestination = startRoute.route,
+        startDestination = startRoute.routePattern,
         enterTransition = { fadeIn(animationSpec = tween(700)) },
         exitTransition = { fadeOut(animationSpec = tween(700)) },
         popEnterTransition = { fadeIn(animationSpec = tween(700)) },
         popExitTransition = { fadeOut(animationSpec = tween(700)) },
     ) {
-        composable(AuthRoute.MethodPicker.route) {
+        composable(AuthRoute.MethodPicker.routePattern) {
             if (customMethodPickerLayout != null) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     customMethodPickerLayout(reauthConfig.providers, onProviderSelected)
                 }
             } else {
-                // Same reasoning as FirebaseAuthScreen's Scaffold: flagged even though the
-                // enclosing ModalBottomSheet already covers this subtree.
                 Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
                     AuthMethodPicker(
                         modifier = Modifier.padding(innerPadding),
@@ -111,51 +108,49 @@ internal fun ReauthSheetContent(
             }
         }
 
-        composable(AuthRoute.Email.route) {
-            com.firebase.ui.auth.ui.screens.email.EmailAuthScreen(
-                context = context,
-                configuration = reauthConfig,
-                authUI = authUI,
-                prefillEmail = prefillEmail,
-                content = emailContent,
-                onSuccess = {},
-                onError = {},
-                onCancel = {
-                    if (skipsMethodPicker || !sheetNavController.popBackStack()) {
-                        onDismiss()
-                    } else {
-                        authUI.updateReauthentication(requestId) { it.attemptCancelled() }
-                    }
+        emailAuthDestinations(
+            navController = sheetNavController,
+            context = context,
+            configuration = reauthConfig,
+            authUI = authUI,
+            content = emailContent,
+            prefillEmail = { prefillEmail },
+            onCancel = {
+                if (skipsMethodPicker || !sheetNavController.popBackStack()) {
+                    onDismiss()
+                } else {
+                    authUI.updateReauthentication(requestId) { it.attemptCancelled() }
                 }
-            )
+            },
+        )
+
+        // Every phone step, as on the main graph; registering only the start step strands the rest.
+        AuthRoute.Phone.steps.forEach { step ->
+            composable(step.routePattern) {
+                com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen(
+                    context = context,
+                    configuration = reauthConfig,
+                    authUI = authUI,
+                    content = phoneContent,
+                    onSuccess = {},
+                    onError = {},
+                    onCancel = {
+                        if (skipsMethodPicker || !sheetNavController.popBackStack()) {
+                            onDismiss()
+                        } else {
+                            authUI.updateReauthentication(requestId) { it.attemptCancelled() }
+                        }
+                    }
+                )
+            }
         }
 
-        composable(AuthRoute.Phone.route) {
-            com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen(
-                context = context,
-                configuration = reauthConfig,
-                authUI = authUI,
-                content = phoneContent,
-                onSuccess = {},
-                onError = {},
-                onCancel = {
-                    if (skipsMethodPicker || !sheetNavController.popBackStack()) {
-                        onDismiss()
-                    } else {
-                        authUI.updateReauthentication(requestId) { it.attemptCancelled() }
-                    }
-                }
-            )
-        }
-
-        composable(AuthRoute.MfaChallenge.route) {
+        composable(AuthRoute.MfaChallenge.routePattern) {
             if (mfaResolver != null) {
                 MfaChallengeScreen(
                     resolver = mfaResolver,
                     auth = authUI.auth,
                     content = mfaChallengeContent,
-                    // Resolving the challenge is what completed the reauthentication, so this is
-                    // where the stamped Success for it is published.
                     onSuccess = { authUI.publishReauthenticationSuccess() },
                     onCancel = {
                         returnToProviderSelection()
