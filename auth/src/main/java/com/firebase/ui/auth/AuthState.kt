@@ -277,7 +277,7 @@ abstract class AuthState private constructor() {
             /**
              * Where the caller awaiting this request is parked, or null when nobody is: a
              * standalone flow from [FirebaseAuthUI.createReauthFlow] has no operation behind it.
-             * Resolving it runs the retry in the caller's own coroutine, which is why nothing
+             * Completing it runs the retry in the caller's own coroutine, which is why nothing
              * retains the caller's closure here.
              */
             val resolver: CompletableDeferred<Boolean>? = null,
@@ -293,11 +293,26 @@ abstract class AuthState private constructor() {
             val isResumable: Boolean get() = resolver?.isActive != false
 
             /**
-             * Hands the outcome to the awaiting caller, if any. Idempotent, and a no-op once the
-             * caller is gone, so every terminal path can resolve without checking first.
+             * Credentials were accepted: the awaiting caller resumes and retries its operation.
+             * Idempotent, and a no-op once the caller is gone, so every terminal path can call it
+             * without checking first.
              */
-            fun resolve(retryOperation: Boolean) {
-                resolver?.complete(retryOperation)
+            fun resolve() {
+                resolver?.complete(true)
+            }
+
+            /**
+             * The request ended without proof — the user backed out, or the surface was torn down.
+             *
+             * Completed with a value rather than an exception on purpose. This resolver is
+             * parented to the caller's job so that a dead caller is detectable, and completing a
+             * parented Deferred *exceptionally* propagates the failure to that parent — declining
+             * would cancel the caller's whole scope and take its sibling jobs with it.
+             * [FirebaseAuthUI.withReauth] turns this into a throw in its own frame instead, which
+             * is an ordinary exception the caller can catch.
+             */
+            fun decline() {
+                resolver?.complete(false)
             }
         }
 

@@ -646,7 +646,7 @@ class FirebaseAuthUITest {
 
         // Arms and waits for the reauthentication it needs, rather than throwing a mapped
         // exception the caller had to catch and ignore before showing its own reauth UI.
-        val call = launch { instance.delete(context) }
+        val call = launch { runCatching { instance.delete(context) } }
         runCurrent()
 
         val state = instance.authStateFlow().first() as AuthState.Reauthentication.Required
@@ -654,7 +654,7 @@ class FirebaseAuthUITest {
         assertThat(state.request.hasPendingOperation).isTrue()
         assertThat(call.isActive).isTrue()
 
-        state.request.resolve(false)
+        state.request.decline()
         call.join()
     }
 
