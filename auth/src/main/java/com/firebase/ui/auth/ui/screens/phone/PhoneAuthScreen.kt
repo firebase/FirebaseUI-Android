@@ -228,7 +228,9 @@ fun PhoneAuthScreen(
     // The flow this screen belongs to: the host's when composed on its own, the armed
     // request's when composed inside a reauthentication surface.
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
-    val currentAuthState = remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
+    // This flow's state, not the process-wide channel's: under a reauthentication request
+    // that is the request's own phase.
+    val currentAuthState = authFlowScope.state
     val authState by currentAuthState
     val isLoading = authState is AuthState.Loading ||
         authState is AuthState.Reauthentication.Authenticating
@@ -243,7 +245,7 @@ fun PhoneAuthScreen(
     DisposableEffect(authUI) {
         onDispose {
             if (currentAuthState.value is AuthState.Loading) {
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
         }
     }
@@ -321,14 +323,14 @@ fun PhoneAuthScreen(
                     Log.d("PhoneAuthScreen", "Suppressed auto sign-in: manual submit in flight")
                     // Restoring the submit's Loading both consumes the credential (so it can't
                     // leak to a freshly composed screen) and keeps Verify/Resend disabled.
-                    authUI.updateAuthState(
+                    authFlowScope.emit(
                         AuthState.Loading(configuration.stringProvider.loadingSigningInWithPhone)
                     )
                 } else {
                     consumedAutoCredential.value = credential
                     // Consumed before the async sign-in call so it can't be clobbered by that
                     // call's own state.
-                    onAttemptStarted?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
+                    onAttemptStarted?.invoke() ?: authFlowScope.emit(AuthState.Idle)
                     // The flow's scope, not this step's: a transition can dispose the step this
                     // ran from before the sign-in it started has landed.
                     verificationScope.launch {
@@ -374,13 +376,13 @@ fun PhoneAuthScreen(
                     )
                 }
                 // Consumed immediately so this doesn't leak to a freshly created screen.
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
                 // Consumed so this doesn't leak to a freshly created screen.
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.Reauthentication.AttemptFailed -> {
@@ -428,7 +430,7 @@ fun PhoneAuthScreen(
                 val plural = if (remainingCooldownSeconds != 1L) "s" else ""
                 // Rejected before anything is cancelled: a duplicate tap must not tear down the
                 // healthy in-flight verification it was rejected in favour of.
-                authUI.updateAuthState(
+                authFlowScope.emit(
                     AuthState.Error(
                         AuthException.PhoneVerificationCooldownException(
                             message = "Please wait $remainingCooldownSeconds second$plural " +
@@ -511,7 +513,7 @@ fun PhoneAuthScreen(
             cancelVerification("changing phone number")
             // Nothing replaces the cancelled attempt here, so this handler retracts its Loading -
             // as the armed request's provider-selection phase when one is running, Idle otherwise.
-            onNotificationConsumed?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
+            onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
             verificationJob.value = null
             isSubmittingCode.value = false
             navigateBack()

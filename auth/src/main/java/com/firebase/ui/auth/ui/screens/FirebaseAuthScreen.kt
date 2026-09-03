@@ -192,16 +192,19 @@ fun FirebaseAuthScreen(
     // The host's own flow. Provider code reaches the public state channel only through this sink,
     // which is the whole point of the receiver change: there is no `authUI` on a scope to reach it
     // any other way.
-    val hostScope = remember(authUI, configuration) {
-        hostAuthFlowScope(authUI, configuration)
+    val hostStateHolder = rememberUpdatedState(rawAuthState)
+    val hostScope = remember(authUI, configuration, hostStateHolder) {
+        hostAuthFlowScope(authUI, configuration, hostStateHolder)
     }
     /**
-     * What the host may act on. While a request is armed, an ordinary state published by provider
-     * code belongs to the credential exchange and the phase is what reports it — but `fold` runs
-     * in an effect, so the raw state is on the flow for a frame first. Without this the host's own
-     * dialogs act on it in between, putting a sign-in error dialog, retry action and all, over the
-     * reauthentication sheet. The effects below read `observedAuthState` directly, so the states
-     * `fold` declines still reach them.
+     * What the host may act on. While a request is armed, an ordinary state arriving on the public
+     * flow — from `withReauth`, or from an app writing it directly — belongs to the credential
+     * exchange, and the phase is what reports it. `fold` runs in an effect, so the raw state is on
+     * the flow for a frame first; without this the host's own dialogs act on it in between, putting
+     * a sign-in error dialog, retry action and all, over the reauthentication sheet.
+     *
+     * Provider code under the request's own scope never comes through here at all — that is what
+     * [AuthFlowScope] fixed. This covers the writers that still reach the public flow directly.
      */
     val authState = reauthState?.takeIf { rawAuthState !is AuthState.Reauthentication }
         ?: rawAuthState
@@ -887,13 +890,13 @@ fun FirebaseAuthScreen(
              * The phase's own effect. The effect above is keyed on the flow, so it never sees a
              * transition the destinations make straight on the holder — an MFA proof, a cancelled
              * attempt, a consumed notification. Keying on the phase catches all of them.
-             *
-             * Mirroring the phase onto the flow keeps one story for the sub-screens and for app
-             * code: provider screens read their loading and error state from there, and a phase
-             * that only ever existed in this holder would show them neither.
              */
             LaunchedEffect(reauthFlowState.phase) {
                 val phase = reauthFlowState.phase ?: return@LaunchedEffect
+                // The phase still goes on the public flow. The screens under the request's own
+                // scope no longer need it there, but the host's `fold` path and the flow-driven
+                // navigation both do, so this stays until arming itself stops going through the
+                // flow. It is what an app is expected to ignore: an `AuthState.Reauthentication`.
                 if (observedAuthState != phase) authUI.updateAuthState(phase)
 
                 if (phase is AuthState.Reauthentication.Succeeded) {
