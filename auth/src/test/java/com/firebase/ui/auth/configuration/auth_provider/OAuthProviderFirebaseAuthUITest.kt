@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import com.firebase.ui.auth.flowScope
 import android.app.Activity
 import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -137,12 +138,10 @@ class OAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithProvider(
+        instance.flowScope(config).signInWithProvider(
             applicationContext,
-            config = config,
             activity = mockActivity,
-            provider = githubProvider,
-        )
+            provider = githubProvider)
 
         // Verify OAuth provider was built and used
         verify(mockFirebaseAuth).startActivityForSignInWithProvider(
@@ -196,12 +195,10 @@ class OAuthProviderFirebaseAuthUITest {
             providers { provider(appleProvider) }
         }.copy(isReauthenticationMode = true)
 
-        instance.signInWithProvider(
+        instance.flowScope(config).signInWithProvider(
             applicationContext,
-            config = config,
             activity = mockActivity,
-            provider = appleProvider,
-        )
+            provider = appleProvider)
 
         verify(mockUser).startActivityForReauthenticateWithProvider(
             eq(mockActivity),
@@ -258,12 +255,10 @@ class OAuthProviderFirebaseAuthUITest {
         }.copy(isReauthenticationMode = true)
 
         try {
-            instance.signInWithProvider(
+            instance.flowScope(config).signInWithProvider(
                 applicationContext,
-                config = config,
                 activity = mockActivity,
-                provider = githubProvider,
-            )
+                provider = githubProvider)
             assertWithMessage("expected a null currentUser after reauth to throw").fail()
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(AuthException.UserNotFoundException::class.java)
@@ -310,9 +305,8 @@ class OAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithProvider(
+        instance.flowScope(config).signInWithProvider(
             applicationContext,
-            config = config,
             activity = mockActivity,
             provider = yahooProvider
         )
@@ -356,9 +350,8 @@ class OAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithProvider(
+            instance.flowScope(config).signInWithProvider(
                 applicationContext,
-                config = config,
                 activity = mockActivity,
                 provider = githubProvider
             )
@@ -397,9 +390,8 @@ class OAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithProvider(
+            instance.flowScope(config).signInWithProvider(
                 applicationContext,
-                config = config,
                 activity = mockActivity,
                 provider = microsoftProvider
             )
@@ -439,10 +431,9 @@ class OAuthProviderFirebaseAuthUITest {
         var launcher: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            launcher = instance.rememberOAuthSignInHandler(
+            launcher = instance.flowScope(config).rememberOAuthSignInHandler(
                 context = applicationContext,
                 activity = mockActivity,
-                config = config,
                 provider = microsoftProvider,
                 onSignInFailure = { reportedFailures.add(it) },
             )

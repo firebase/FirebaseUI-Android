@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import com.google.firebase.auth.FirebaseAuth
 import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -29,9 +30,9 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -56,9 +57,8 @@ import kotlinx.coroutines.launch
  * @see signInWithFacebook
  */
 @Composable
-internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
+internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
     context: Context,
-    config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
     onSignInFailure: (AuthException) -> Unit = {},
@@ -67,7 +67,11 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     val callbackManager = remember { CallbackManager.Factory.create() }
     val loginManager = LoginManager.getInstance()
     val currentContext by rememberUpdatedState(context)
-    val currentConfig by rememberUpdatedState(config)
+    // The receiver, through a snapshot, exactly where `config` used to be read this way: the
+    // callback below is registered once under `DisposableEffect(Unit)` — re-registering it on a
+    // recomposition would be the expensive mistake — so it must not close over the scope this
+    // composition happened to have.
+    val currentScope by rememberUpdatedState(this)
     val currentProvider by rememberUpdatedState(provider)
     val currentOnSignInFailure by rememberUpdatedState(onSignInFailure)
 
@@ -86,32 +90,31 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
                 override fun onSuccess(result: LoginResult) {
                     coroutineScope.launch {
                         try {
-                            signInWithFacebook(
+                            currentScope.signInWithFacebook(
                                 context = currentContext,
-                                config = currentConfig,
                                 provider = currentProvider,
                                 accessToken = result.accessToken,
                             )
                         } catch (e: AuthException) {
                             // Already an AuthException, don't re-wrap it
-                            updateAuthState(AuthState.Error(e))
+                            currentScope.emit(AuthState.Error(e))
                             if (e !is AuthException.AuthCancelledException) currentOnSignInFailure(e)
                         } catch (e: Exception) {
                             val authException = AuthException.from(e, currentContext)
-                            updateAuthState(AuthState.Error(authException))
+                            currentScope.emit(AuthState.Error(authException))
                             if (authException !is AuthException.AuthCancelledException) currentOnSignInFailure(authException)
                         }
                     }
                 }
 
                 override fun onCancel() {
-                    updateAuthState(AuthState.Idle)
+                    currentScope.emit(AuthState.Idle)
                 }
 
                 override fun onError(error: FacebookException) {
                     Log.e("FacebookAuthProvider", "Error during Facebook sign in", error)
                     val authException = AuthException.from(error, currentContext)
-                    updateAuthState(
+                    currentScope.emit(
                         AuthState.Error(
                             authException
                         )
@@ -124,11 +127,11 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     }
 
     return {
-        updateAuthState(
+        emit(
             AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         try {
-            (testLoginManagerProvider ?: loginManagerProvider).logOut()
+            (this.loginManagerProvider ?: loginManagerProvider).logOut()
         } catch (e: Exception) {
             Log.w("FacebookAuthProvider", "Failed to clear Facebook session before sign in", e)
         }
@@ -157,21 +160,19 @@ internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
  * @see rememberSignInWithFacebookLauncher
  * @see signInAndLinkWithCredential
  */
-internal suspend fun FirebaseAuthUI.signInWithFacebook(
+internal suspend fun AuthFlowScope.signInWithFacebook(
     context: Context,
-    config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     accessToken: AccessToken,
     credentialProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ) {
     try {
-        updateAuthState(
+        emit(
             AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         val profileData = provider.fetchFacebookProfile(accessToken)
         val credential = credentialProvider.getCredential(accessToken.token)
         signInAndLinkWithCredential(
-            config = config,
             credential = credential,
             provider = provider,
             displayName = profileData?.displayName,
@@ -205,25 +206,25 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
         )
 
         // Re-throw to let UI handle the account linking flow
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: FacebookException) {
         val authException = AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with facebook was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
@@ -238,12 +239,13 @@ internal suspend fun FirebaseAuthUI.signInWithFacebook(
  * This is typically called as part of the overall sign-out flow when a user signs out
  * from Firebase Authentication.
  */
-internal fun FirebaseAuthUI.signOutFromFacebook(
+internal fun signOutFromFacebook(
+    auth: FirebaseAuth,
     loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ) {
     try {
-        if (Provider.fromId(getCurrentUser()?.providerId) != Provider.FACEBOOK) return
-        (testLoginManagerProvider ?: loginManagerProvider).logOut()
+        if (Provider.fromId(auth.currentUser?.providerId) != Provider.FACEBOOK) return
+        loginManagerProvider.logOut()
     } catch (e: Exception) {
         Log.e("FacebookAuthProvider", "Error during Facebook sign out", e)
     }
