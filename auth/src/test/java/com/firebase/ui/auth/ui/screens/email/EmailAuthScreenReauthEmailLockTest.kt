@@ -293,9 +293,9 @@ class EmailAuthScreenReauthEmailLockTest {
 
     /**
      * The two out-of-band email routes are not equivalent during reauthentication. A password reset
-     * email leaves the sheet up and the request armed, so it stays available — blocking it stranded
+     * email leaves the sheet up and the request outstanding, so it stays available — blocking it stranded
      * a user who had forgotten their password with no route but dismissal. An email *link* reopens
-     * the app with nothing armed, so completing it reports an interruption instead of finishing the
+     * the app with no request outstanding, so completing it reports an interruption instead of finishing the
      * pending operation, and it stays hidden.
      */
     @Test

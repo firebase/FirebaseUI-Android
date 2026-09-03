@@ -753,7 +753,7 @@ class EmailAuthProviderFirebaseAuthUITest {
     /**
      * Only the null-`currentUser` failure was covered, so the *value* of the stamp was free: a
      * `reauthenticatedUid = null` would still have published a Success, which the screen accepts
-     * as a completed sign-in while refusing to resume the operation it was armed for.
+     * as a completed sign-in while refusing to resume the operation it was outstanding for.
      */
     @Test
     fun `signInAndLinkWithCredential - reauth success stamps the reauthenticated uid`() = runTest {

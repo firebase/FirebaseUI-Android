@@ -107,7 +107,7 @@ import com.firebase.ui.auth.ui.screens.phone.phoneAuthDestinations
 import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
-import com.firebase.ui.auth.ui.screens.reauth.armedReauth
+import com.firebase.ui.auth.ui.screens.reauth.presentedReauth
 import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.clearReauth
 import com.firebase.ui.auth.ui.screens.reauth.navigateReauth
@@ -145,7 +145,7 @@ import kotlinx.coroutines.launch
  * footer for the *default* method-picker layout. Ignored when [customMethodPickerLayout] is
  * provided, since that slot takes over the whole screen.
  * @param reauthContent Optional slot that replaces the default reauthentication bottom sheet,
- * receiving a [ReauthContentState]. The library owns the credential exchange. An armed
+ * receiving a [ReauthContentState]. The library owns the credential exchange. An outstanding
  * reauthentication survives Activity recreation (rotation) but not process death; if it is lost
  * the flow surfaces an error rather than dropping the pending operation silently. An enrolled
  * second factor is challenged over the slot, honouring [mfaChallengeContent].
@@ -185,8 +185,8 @@ fun FirebaseAuthScreen(
         .collectAsState(initial = null as AuthState?)
     val rawAuthState = observedAuthState ?: AuthState.Idle
     // Composition-scoped, so its existence *is* the answer to "is there a screen able to drive an
-    // armed request to completion?" — no counter on the singleton, and a phase that cannot outlive
-    // the Activity and re-arm an unrelated sign-in.
+    // outstanding request to completion?" — no counter on the singleton, and a phase that cannot outlive
+    // the Activity and be accepted into an unrelated sign-in.
     val reauthFlowState = rememberReauthFlowState()
     val reauthState = reauthFlowState.phase
     // The host's own flow. Provider code reaches the public state channel only through this sink,
@@ -197,7 +197,7 @@ fun FirebaseAuthScreen(
         hostAuthFlowScope(authUI, configuration, hostStateHolder)
     }
     /**
-     * What the host may act on. While a request is armed, an ordinary state arriving on the public
+     * What the host may act on. While a request is outstanding, an ordinary state arriving on the public
      * flow — from `withReauth`, or from an app writing it directly — belongs to the credential
      * exchange, and the phase is what reports it. `fold` runs in an effect, so the raw state is on
      * the flow for a frame first; without this the host's own dialogs act on it in between, putting
@@ -252,11 +252,11 @@ fun FirebaseAuthScreen(
     }
     val skipsMethodPicker = startRoute != AuthRoute.MethodPicker
     val backStack = rememberNavBackStack(startRoute.toKey())
-    // The stack is the arming marker: a Reauth entry persists with it, across recreation and death.
-    val armedReauth = backStack.armedReauth()
+    // The stack is the presentation marker: a Reauth entry persists with it, across recreation and death.
+    val presentedReauth = backStack.presentedReauth()
     val clearReauthPresentation: () -> Unit = remember(backStack) { { backStack.clearReauth() } }
     /**
-     * Ends the armed request: clears its presentation, clears the phase, publishes [terminal], and
+     * Ends the outstanding request: clears its presentation, clears the phase, publishes [terminal], and
      * only then resolves the caller waiting on it.
      *
      * One helper because every terminal site does the same four things in the same order, and the
@@ -373,7 +373,7 @@ fun FirebaseAuthScreen(
         LocalTopLevelDialogController provides dialogController,
         LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current),
         // The host's flow, for every sub-screen composed below. `reauthDestinations` overrides it
-        // with the armed request's, which is what puts a credential exchange's states on the phase
+        // with the outstanding request's, which is what puts a credential exchange's states on the phase
         // instead of on the public channel.
         LocalAuthFlowScope provides hostScope,
     ) {
@@ -655,10 +655,10 @@ fun FirebaseAuthScreen(
                 // before. Recomposition happens to land between runs today, which is why the
                 // composition value also worked — but the guards below are about what is on the
                 // stack now, so they read it now.
-                val savedPresentation = backStack.armedReauth()
+                val savedPresentation = backStack.presentedReauth()
 
                 // A marker that outlived its phase: the Activity was recreated with the request
-                // still armed. Nothing here can be driven, so report it and clear up.
+                // still outstanding. Nothing here can be driven, so report it and clear up.
                 if (savedPresentation != null &&
                     reauthFlowState.phase == null &&
                     state !is AuthState.Reauthentication &&
@@ -676,8 +676,8 @@ fun FirebaseAuthScreen(
                 }
 
                 // A latched reauthentication state with no phase: this screen was recreated while
-                // the request was armed. The phase is composition-scoped and gone, but its value
-                // is still on the flow, so the exchange is re-armed from it rather than abandoned.
+                // the request was outstanding. The phase is composition-scoped and gone, but its value
+                // is still on the flow, so the exchange is accepted again from it rather than abandoned.
                 if (state is AuthState.Reauthentication && reauthFlowState.phase == null) {
                     val request = state.request
                     if (request == null || !request.isResumable) {
@@ -703,13 +703,13 @@ fun FirebaseAuthScreen(
                             AuthState.Reauthentication.Required(request)
                         )
 
-                        is AuthState.Reauthentication.Required -> reauthFlowState.arm(state)
+                        is AuthState.Reauthentication.Required -> reauthFlowState.accept(state)
 
                         else -> reauthFlowState.moveTo(state)
                     }
                 }
 
-                // Ordinary states published by provider code while a request is armed belong to
+                // Ordinary states published by provider code while a request is outstanding belong to
                 // the credential exchange, not to the host flow. The holder folds them into its
                 // phase and publishes that, which is what the setter used to do on the singleton's
                 // behalf; the branches below then only ever see states that are the host's.
@@ -722,7 +722,7 @@ fun FirebaseAuthScreen(
                 // has no resolver to render otherwise, and this is the only place that pops it, so
                 // no attempt path can strand the user on a dead challenge.
                 if (state !is AuthState.Reauthentication.RequiresMfa &&
-                    backStack.armedReauth()?.step is AuthRoute.MfaChallenge
+                    backStack.presentedReauth()?.step is AuthRoute.MfaChallenge
                 ) {
                     backStack.returnToReauthStart()
                 }
@@ -776,14 +776,14 @@ fun FirebaseAuthScreen(
                             )
                             return@LaunchedEffect
                         }
-                        reauthFlowState.arm(state)
-                        if (backStack.armedReauth()?.requestId != state.requestId) {
+                        reauthFlowState.accept(state)
+                        if (backStack.presentedReauth()?.requestId != state.requestId) {
                             backStack.clearReauth()
                             backStack.add(
                                 AuthRoute.Reauth(
                                     requestId = state.requestId,
                                     userUid = state.userUid,
-                                    // From the arming state, not the composition value: this
+                                    // From the request itself, not the composition value: this
                                     // effect is what writes the phase, so anything derived from
                                     // it in composition is still a frame behind here.
                                     step = reauthStartStepFor(armingConfig),
@@ -793,7 +793,7 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Reauthentication -> {
-                        val marker = backStack.armedReauth()
+                        val marker = backStack.presentedReauth()
                             ?.takeIf { it.requestId == state.requestId }
                             ?: AuthRoute.Reauth(
                                 requestId = state.requestId,
@@ -850,7 +850,7 @@ fun FirebaseAuthScreen(
                         // Outside the host guard on purpose. `fold` declines Aborted, so nothing
                         // else clears the phase or resolves the caller — and under the activity
                         // host FirebaseAuthActivity owns the rest of the teardown, so a clear
-                        // placed inside the guard would leave that host holding an armed request
+                        // placed inside the guard would leave that host holding an outstanding request
                         // and a caller suspended forever. An activity-scoped caller has its own
                         // cancellation to fall back on, an unscoped one has nothing, and this
                         // cannot tell them apart, so it resolves unconditionally.
@@ -895,7 +895,7 @@ fun FirebaseAuthScreen(
                 val phase = reauthFlowState.phase ?: return@LaunchedEffect
                 // The phase still goes on the public flow. The screens under the request's own
                 // scope no longer need it there, but the host's `fold` path and the flow-driven
-                // navigation both do, so this stays until arming itself stops going through the
+                // navigation both do, so this stays until requests stop being raised through the
                 // flow. It is what an app is expected to ignore: an `AuthState.Reauthentication`.
                 if (observedAuthState != phase) authUI.updateAuthState(phase)
 
@@ -935,7 +935,7 @@ fun FirebaseAuthScreen(
             // The slot owns the error and loading presentation while it is what is on screen.
             val reauthSlotActive = reauthContent != null &&
                     reauthSurface != null &&
-                    armedReauth?.step is AuthRoute.MethodPicker
+                    presentedReauth?.step is AuthRoute.MethodPicker
 
             val reauthAttemptFailure =
                 reauthState as? AuthState.Reauthentication.AttemptFailed
