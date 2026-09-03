@@ -269,6 +269,56 @@ class ReauthFlowStateTest {
         assertThat((folded as AuthState.Reauthentication.AttemptFailed).exception).isEqualTo(cause)
     }
 
+    // =============================================================================================
+    // Sink isolation
+    // =============================================================================================
+
+    /**
+     * The point of giving the request its own sink: provider code driving a credential exchange
+     * publishes into the phase, and an app collecting `authStateFlow()` never sees a failure that
+     * belongs to a conversation it is not part of.
+     */
+    @Test
+    fun `the request's sink keeps the exchange off the host flow`() {
+        val holder = holder()
+        holder.armed()
+        val host = mutableListOf<AuthState>()
+        val sink = holder.sink(hostFallback = { host += it })
+
+        sink.emit(AuthState.Loading("Signing in"))
+        sink.emit(AuthState.Error(AuthException.UnknownException("wrong password")))
+
+        assertThat(host).isEmpty()
+        assertThat(holder.phase).isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+    }
+
+    /** What the exchange does not own is still the host's, so the sink forwards it rather than eating it. */
+    @Test
+    fun `the request's sink forwards what the exchange does not own`() {
+        val holder = holder()
+        holder.armed()
+        val host = mutableListOf<AuthState>()
+        val sink = holder.sink(hostFallback = { host += it })
+
+        sink.emit(AuthState.Aborted)
+
+        assertThat(host).hasSize(1)
+        assertThat(host.single()).isInstanceOf(AuthState.Aborted::class.java)
+    }
+
+    /** With nothing armed there is no exchange to absorb into, so everything is the host's. */
+    @Test
+    fun `the sink forwards everything while nothing is armed`() {
+        val holder = holder()
+        val host = mutableListOf<AuthState>()
+        val sink = holder.sink(hostFallback = { host += it })
+
+        sink.emit(AuthState.Loading("Signing in"))
+
+        assertThat(host).hasSize(1)
+        assertThat(host.single()).isInstanceOf(AuthState.Loading::class.java)
+    }
+
     /** A cancellation is the user backing out of a sub-flow, not a failure to report. */
     @Test
     fun `a cancelled attempt returns to provider selection rather than surfacing`() {

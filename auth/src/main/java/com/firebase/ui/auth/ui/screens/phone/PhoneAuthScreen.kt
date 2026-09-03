@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
+import com.firebase.ui.auth.rememberAuthFlowScope
 import android.content.Context
 import android.util.Log
 import androidx.activity.compose.LocalActivity
@@ -224,6 +225,9 @@ fun PhoneAuthScreen(
         }
     }
 
+    // The flow this screen belongs to: the host's when composed on its own, the armed
+    // request's when composed inside a reauthentication surface.
+    val authFlowScope = rememberAuthFlowScope(authUI, configuration)
     val currentAuthState = remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val authState by currentAuthState
     val isLoading = authState is AuthState.Loading ||
@@ -329,9 +333,8 @@ fun PhoneAuthScreen(
                     // ran from before the sign-in it started has landed.
                     verificationScope.launch {
                         try {
-                            authUI.signInWithPhoneAuthCredential(
+                            authFlowScope.signInWithPhoneAuthCredential(
                                 context = context,
-                                config = configuration,
                                 credential = credential
                             )
                         } catch (e: Exception) {
@@ -446,11 +449,10 @@ fun PhoneAuthScreen(
                 // to code entry, and cancelVerification is what ends it.
                 verificationJob.value = verificationScope.launch {
                     try {
-                        authUI.verifyPhoneNumber(
+                        authFlowScope.verifyPhoneNumber(
                             provider = provider,
                             activity = activity,
                             phoneNumber = fullPhoneNumber,
-                            config = configuration,
                         )
                     } catch (e: Exception) {
                         // Error will be handled by authState flow
@@ -469,9 +471,8 @@ fun PhoneAuthScreen(
             coroutineScope.launch {
                 try {
                     verificationId.value?.let { id ->
-                        authUI.submitVerificationCode(
+                        authFlowScope.submitVerificationCode(
                             context = context,
-                            config = configuration,
                             verificationId = id,
                             code = verificationCodeValue.value
                         )
@@ -493,11 +494,10 @@ fun PhoneAuthScreen(
                     try {
                         // The timer is restarted by the PhoneNumberVerificationRequired branch
                         // above: this call only returns once the verification window closes.
-                        authUI.verifyPhoneNumber(
+                        authFlowScope.verifyPhoneNumber(
                             activity = activity,
                             provider = provider,
                             phoneNumber = fullPhoneNumber,
-                            config = configuration,
                             forceResendingToken = forceResendingToken.value,
                         )
                     } catch (e: Exception) {

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import com.firebase.ui.auth.flowScope
 import android.content.Context
 import android.util.Log
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -168,9 +169,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -238,9 +238,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -313,9 +312,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -381,9 +379,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -429,9 +426,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithGoogle(
+            instance.flowScope(config).signInWithGoogle(
                 context = applicationContext,
-                config = config,
                 provider = googleProvider,
                 authorizationProvider = mockAuthorizationProvider,
                 credentialManagerProvider = mockCredentialManagerProvider
@@ -486,9 +482,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithGoogle(
+            instance.flowScope(config).signInWithGoogle(
                 context = applicationContext,
-                config = config,
                 provider = googleProvider,
                 authorizationProvider = mockAuthorizationProvider,
                 credentialManagerProvider = mockCredentialManagerProvider
@@ -547,9 +542,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithGoogle(
+            instance.flowScope(config).signInWithGoogle(
                 context = applicationContext,
-                config = config,
                 provider = googleProvider,
                 authorizationProvider = mockAuthorizationProvider,
                 credentialManagerProvider = mockCredentialManagerProvider
@@ -590,9 +584,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithGoogle(
+            instance.flowScope(config).signInWithGoogle(
                 context = applicationContext,
-                config = config,
                 provider = googleProvider,
                 authorizationProvider = mockAuthorizationProvider,
                 credentialManagerProvider = mockCredentialManagerProvider
@@ -636,9 +629,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         }
 
         // Should not throw - user cancellation is not an error
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -699,9 +691,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -762,9 +753,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -823,9 +813,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -886,9 +875,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -949,9 +937,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -1018,9 +1005,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         // Verify initial state
         assertThat(instance.authStateFlow().first()).isEqualTo(AuthState.Idle)
 
-        instance.signInWithGoogle(
+        instance.flowScope(config).signInWithGoogle(
             context = applicationContext,
-            config = config,
             provider = googleProvider,
             authorizationProvider = mockAuthorizationProvider,
             credentialManagerProvider = mockCredentialManagerProvider
@@ -1071,9 +1057,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         var launcher: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            launcher = instance.rememberGoogleSignInHandler(
+            launcher = instance.flowScope(config).rememberGoogleSignInHandler(
                 context = applicationContext,
-                config = config,
                 provider = googleProvider,
                 onSignInFailure = { reportedFailures.add(it) },
             )
@@ -1118,9 +1103,8 @@ class GoogleAuthProviderFirebaseAuthUITest {
         var launcher: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            launcher = instance.rememberGoogleSignInHandler(
+            launcher = instance.flowScope(config).rememberGoogleSignInHandler(
                 context = applicationContext,
-                config = config,
                 provider = googleProvider,
                 onSignInFailure = { reportedFailures.add(it) },
             )

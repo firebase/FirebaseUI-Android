@@ -14,6 +14,10 @@
 
 package com.firebase.ui.auth.ui.screens.reauth
 
+import com.firebase.ui.auth.LocalAuthFlowScope
+import com.firebase.ui.auth.AuthFlowScope
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -188,13 +192,26 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
             ?.let { if (it is AuthException) it else AuthException.from(it, stringProvider) }
         val error = exception?.let { getRecoveryMessage(it, stringProvider) }
 
-        val onProviderSelected = authUI.rememberOnProviderSelected(
+        // This request's own flow. Everything the credential exchange publishes lands on the
+        // phase rather than on the public state channel, so an app collecting `authStateFlow()`
+        // never sees a Loading or an Error belonging to a conversation that is not theirs.
+        val reauthScope = remember(authUI, reauthConfig, reauthFlowState) {
+            AuthFlowScope(
+                auth = authUI.auth,
+                config = reauthConfig,
+                credentialManagerProvider = authUI.testCredentialManagerProvider,
+                loginManagerProvider = authUI.testLoginManagerProvider,
+                sink = reauthFlowState.sink(hostFallback = { authUI.updateAuthState(it) }),
+            )
+        }
+
+        val onProviderSelected = reauthScope.rememberOnProviderSelected(
             context = context,
             activity = activity,
-            config = reauthConfig,
             onNavigate = { route -> backStack.navigateReauth(key, route.toKey()) },
         )
 
+        CompositionLocalProvider(LocalAuthFlowScope provides reauthScope) {
         when (val step = key.step) {
             is AuthRoute.MethodPicker -> {
                 if (reauthContent != null) {
@@ -321,6 +338,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
             }
 
             else -> Unit
+        }
         }
     }
 }

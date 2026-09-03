@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.AuthStateSink
 
 /**
  * The reauthentication phase machine of one
@@ -78,6 +79,18 @@ internal class ReauthFlowState internal constructor(
     /** Moves the live phase to [phase] unconditionally. */
     fun moveTo(phase: AuthState.Reauthentication) {
         phaseState.value = phase
+    }
+
+    /**
+     * This request's own state sink, for the provider code driving its credential exchange.
+     *
+     * Everything the exchange publishes becomes a phase here rather than a state on the public
+     * flow, which is what stops an app's collector acting on a `Loading` or `Error` belonging to a
+     * conversation that is not theirs. [hostFallback] takes what [fold] declines: those states are
+     * not part of the exchange, so they are still the host's to handle.
+     */
+    fun sink(hostFallback: AuthStateSink): AuthStateSink = AuthStateSink { state ->
+        if (fold(state) == null) hostFallback.emit(state)
     }
 
     /**

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import com.firebase.ui.auth.flowScope
 import android.app.Activity
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -180,7 +181,7 @@ class SignInStateSequenceTest {
         val states = record(instance)
         val config = configOf(AuthProvider.Anonymous, emailProvider())
 
-        val job = launch { runCatching { instance.signInAnonymously(config) } }
+        val job = launch { runCatching { instance.flowScope(config).signInAnonymously() } }
         runCurrent()
         task.setResult(result)
         runCurrent()
@@ -198,7 +199,7 @@ class SignInStateSequenceTest {
         val states = record(instance)
         val config = configOf(AuthProvider.Anonymous, emailProvider())
 
-        val job = launch { runCatching { instance.signInAnonymously(config) } }
+        val job = launch { runCatching { instance.flowScope(config).signInAnonymously() } }
         runCurrent()
         task.setException(FirebaseNetworkException("Network error"))
         runCurrent()
@@ -224,16 +225,14 @@ class SignInStateSequenceTest {
 
         val job = launch {
             runCatching {
-                instance.signInWithEmailAndPassword(
+                instance.flowScope(config).signInWithEmailAndPassword(
                     context = applicationContext,
-                    config = config,
                     email = "a@b.com",
                     password = "pw1",
                     // The credential-manager save is unavailable under Robolectric and throws
                     // past this path's own handlers, which is its own bug and not this one's.
                     // Skipped here so the sequence recorded is the state machine's.
-                    skipCredentialSave = true,
-                )
+                    skipCredentialSave = true)
             }
         }
         runCurrent()
@@ -256,12 +255,10 @@ class SignInStateSequenceTest {
 
         val job = launch {
             runCatching {
-                instance.signInWithEmailAndPassword(
+                instance.flowScope(config).signInWithEmailAndPassword(
                     context = applicationContext,
-                    config = config,
                     email = "a@b.com",
-                    password = "wrong",
-                )
+                    password = "wrong")
             }
         }
         runCurrent()
@@ -298,12 +295,10 @@ class SignInStateSequenceTest {
 
         val job = launch {
             runCatching {
-                instance.signInWithProvider(
+                instance.flowScope(config).signInWithProvider(
                     applicationContext,
-                    config = config,
                     activity = activity,
-                    provider = github,
-                )
+                    provider = github)
             }
         }
         runCurrent()
@@ -349,13 +344,11 @@ class SignInStateSequenceTest {
         val states = record(instance)
         val config = configOf(phone)
 
-        instance.verifyPhoneNumber(
+        instance.flowScope(config).verifyPhoneNumber(
             provider = phone,
             activity = null,
             phoneNumber = "+1234567890",
-            config = config,
-            verifier = verifier,
-        )
+            verifier = verifier)
         runCurrent()
 
         // The verifier's flow is cold and already has its emission, so Loading and the prompt land
@@ -381,11 +374,9 @@ class SignInStateSequenceTest {
 
         val job = launch {
             runCatching {
-                instance.signInWithPhoneAuthCredential(
+                instance.flowScope(config).signInWithPhoneAuthCredential(
                     context = applicationContext,
-                    config = config,
-                    credential = credential,
-                )
+                    credential = credential)
             }
         }
         runCurrent()
