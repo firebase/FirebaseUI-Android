@@ -120,7 +120,7 @@ class PhoneAuthHostDestinationsTest {
      */
     private var reauthHolder: ReauthFlowState? = null
 
-    /** The request the reauthentication harness armed, which its own emissions have to carry. */
+    /** The request the reauthentication harness raised, which its own emissions have to carry. */
     private var reauthRequest: AuthState.Reauthentication.Request? = null
 
     private var reauthDismissals = 0
@@ -462,7 +462,7 @@ class PhoneAuthHostDestinationsTest {
         val reauthFlowState = rememberReauthFlowState()
         SideEffect {
             reauthHolder = reauthFlowState
-            reauthFlowState.arm(AuthState.Reauthentication.Required(request))
+            reauthFlowState.accept(AuthState.Reauthentication.Required(request))
         }
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
             NavDisplay(

@@ -248,7 +248,7 @@ class FirebaseAuthUI private constructor(
                 message = "No user is currently signed in"
             )
         // One definition of what a reauthentication configuration is, shared with the screen's
-        // own arming path: a linked credential is not a proof of identity, so neither enables
+        // own path for raising one: a linked credential is not a proof of identity, so neither enables
         // linking or upgrade.
         val reauthConfig = configuration.toReauthConfiguration(currentUser)
         checkNotNull(reauthConfig) {
@@ -331,7 +331,7 @@ class FirebaseAuthUI private constructor(
                             -> true
                         // Nothing to protect here any more: the retry runs in the caller's own
                         // coroutine, after the screen has already ended the request. A signed-out
-                        // user cannot reauthenticate, so an armed request is stale by definition.
+                        // user cannot reauthenticate, so an outstanding request is stale by definition.
                         is AuthState.Reauthentication -> true
                         else -> false
                     }
@@ -549,7 +549,7 @@ class FirebaseAuthUI private constructor(
      */
     suspend fun delete(context: Context) {
         try {
-            // The whole reauthentication dance is withReauth's: arm once, retry once, and no
+            // The whole reauthentication dance is withReauth's: raise once, retry once, and no
             // branch here that both emits Required and throws for the same condition.
             withReauth(context) {
                 val currentUser = auth.currentUser

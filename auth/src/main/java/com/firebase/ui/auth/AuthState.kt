@@ -363,7 +363,7 @@ abstract class AuthState private constructor() {
             override val userUid: String get() = request.user.uid
         }
 
-        /** The most recent credential attempt failed, but the request remains armed. */
+        /** The most recent credential attempt failed, but the request remains outstanding. */
         internal class AttemptFailed(
             override val request: Request,
             val exception: Exception,

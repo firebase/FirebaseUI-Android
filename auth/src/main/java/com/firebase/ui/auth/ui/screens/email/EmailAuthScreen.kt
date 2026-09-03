@@ -208,7 +208,7 @@ fun EmailAuthScreen(
         )
     }
 
-    // The flow this screen belongs to: the host's when composed on its own, the armed
+    // The flow this screen belongs to: the host's when composed on its own, the outstanding
     // request's when composed inside a reauthentication surface.
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
     // This flow's state, not the process-wide channel's: under a reauthentication request

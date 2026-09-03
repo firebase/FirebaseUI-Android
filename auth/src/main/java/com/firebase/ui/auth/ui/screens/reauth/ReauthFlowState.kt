@@ -27,9 +27,9 @@ import com.firebase.ui.auth.AuthStateSink
  * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen].
  *
  * Scoped to the composition that created it, which is what makes it the answer to "is there a
- * screen able to drive an armed request to completion?" — the question
+ * screen able to drive an outstanding request to completion?" — the question
  * `FirebaseAuthUI.addReauthenticationDrainer` used to answer with a counter on the singleton.
- * Every transition below runs from a composed screen, so an arming with nothing composed stays
+ * Every transition below runs from a composed screen, so a request nothing has accepted stays
  * inert without anything having to count screens.
  *
  * @since 10.0.0
@@ -37,19 +37,19 @@ import com.firebase.ui.auth.AuthStateSink
 internal class ReauthFlowState internal constructor(
     private val phaseState: MutableState<AuthState.Reauthentication?>,
 ) {
-    /** The live phase, or null when no request is armed. */
+    /** The live phase, or null when no request is outstanding. */
     val phase: AuthState.Reauthentication? get() = phaseState.value
 
-    /** The live request, or null when none is armed. */
+    /** The live request, or null when none is outstanding. */
     val request: AuthState.Reauthentication.Request? get() = phaseState.value?.request
 
     /** Arms [required], replacing any request already held. */
-    fun arm(required: AuthState.Reauthentication.Required) {
+    fun accept(required: AuthState.Reauthentication.Required) {
         phaseState.value = required
     }
 
     /**
-     * Drops the armed request and tells its awaiting caller whether to retry.
+     * Drops the outstanding request and tells its awaiting caller whether to retry.
      *
      * Resolving here rather than at each call site is what stops a caller being left suspended
      * forever: every way a request ends comes through this, including the ones that end it because
@@ -147,7 +147,7 @@ internal class ReauthFlowState internal constructor(
                     current
                 }
 
-            // Ambient emissions and notification cleanup while a request is armed. They must not
+            // Ambient emissions and notification cleanup while a request is outstanding. They must not
             // detach the request from the caller waiting on it.
             is AuthState.Idle,
             is AuthState.RequiresEmailVerification,
@@ -168,10 +168,10 @@ internal class ReauthFlowState internal constructor(
  *
  * Called once, above the `NavDisplay`, alongside `rememberPhoneAuthFlowState` and
  * `rememberMfaEnrollmentFlowState`, and composition-scoped like both: a phase that outlived its
- * Activity would let the next screen re-arm from it, putting a reauthentication sheet into an
+ * Activity would let the next screen accept it, putting a reauthentication sheet into an
  * unrelated sign-in. What survives recreation is the back stack's
- * [com.firebase.ui.auth.ui.screens.AuthRoute.Reauth] marker and the armed
- * [AuthState.Reauthentication.Required] itself, which is enough to arm again — and the request's
+ * [com.firebase.ui.auth.ui.screens.AuthRoute.Reauth] marker and the raised
+ * [AuthState.Reauthentication.Required] itself, which is enough to accept it again — and the request's
  * resolver is what says whether the caller behind it is still there to resume.
  */
 @Composable

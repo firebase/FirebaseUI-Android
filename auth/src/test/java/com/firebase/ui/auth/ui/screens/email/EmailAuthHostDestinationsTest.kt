@@ -387,7 +387,7 @@ class EmailAuthHostDestinationsTest {
             )
         }
         val reauthFlowState = rememberReauthFlowState()
-        SideEffect { reauthFlowState.arm(AuthState.Reauthentication.Required(request)) }
+        SideEffect { reauthFlowState.accept(AuthState.Reauthentication.Required(request)) }
         val backStack = rememberNavBackStack(
             AuthRoute.Success,
             AuthRoute.Reauth("request-id", "uid", startStep),
