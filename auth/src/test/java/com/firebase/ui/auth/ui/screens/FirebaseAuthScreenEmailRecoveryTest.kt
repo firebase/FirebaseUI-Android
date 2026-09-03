@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.retryingReauth
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -562,7 +563,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = {})
+                retryingReauth(user) {}
             )
         }
         composeTestRule.waitForIdle()

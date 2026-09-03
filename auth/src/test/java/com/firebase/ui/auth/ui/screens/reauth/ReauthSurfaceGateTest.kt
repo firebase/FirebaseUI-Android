@@ -329,6 +329,7 @@ class ReauthSurfaceGateTest {
             )
         }
         val phoneFlowState = rememberPhoneAuthFlowState(configuration)
+        val reauthFlowState = rememberReauthFlowState()
         CompositionLocalProvider(
             LocalAuthUIStringProvider provides configuration.stringProvider,
         ) {
@@ -348,6 +349,7 @@ class ReauthSurfaceGateTest {
                         configuration = configuration,
                         stringProvider = DefaultAuthUIStringProvider(context),
                         surface = surface,
+                        reauthFlowState = reauthFlowState,
                         phoneFlowState = phoneFlowState,
                         emailContent = null,
                         phoneContent = null,

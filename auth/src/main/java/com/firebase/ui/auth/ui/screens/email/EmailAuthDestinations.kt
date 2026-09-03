@@ -74,6 +74,8 @@ internal fun EntryProviderScope<NavKey>.emailAuthDestinations(
     onEmailTyped: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit = {},
     onError: (AuthException) -> Unit = {},
+    /** Passed through to [EmailAuthScreen]: where a consumed notification leaves the flow. */
+    onNotificationConsumed: (() -> Unit)? = null,
 ) {
     val body: @Composable (AuthRoute.Email.Step) -> Unit = { step ->
         EmailAuthStep(
@@ -91,6 +93,7 @@ internal fun EntryProviderScope<NavKey>.emailAuthDestinations(
             credentialForLinking = credentialForLinking,
             emailLinkFromDifferentDevice = emailLinkFromDifferentDevice,
             onEmailTyped = onEmailTyped,
+            onNotificationConsumed = onNotificationConsumed,
             onSuccess = onSuccess,
             onError = onError,
         )
@@ -131,6 +134,8 @@ internal fun EmailAuthStep(
     onEmailTyped: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit = {},
     onError: (AuthException) -> Unit = {},
+    /** Passed through to [EmailAuthScreen]: where a consumed notification leaves the flow. */
+    onNotificationConsumed: (() -> Unit)? = null,
 ) {
     if (!configuration.isEmailStepOffered(step)) {
         LaunchedEffect(entryKey) {
@@ -153,6 +158,7 @@ internal fun EmailAuthStep(
                 navigateToStep(AuthRoute.Email.stepFor(targetMode, email))
             },
             onEmailTyped = onEmailTyped,
+            onNotificationConsumed = onNotificationConsumed,
             onSuccess = onSuccess,
             onError = onError,
             onCancel = {
