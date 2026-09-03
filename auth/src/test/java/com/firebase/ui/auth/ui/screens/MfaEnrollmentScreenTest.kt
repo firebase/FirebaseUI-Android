@@ -31,6 +31,7 @@ import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreenInternal
 import com.firebase.ui.auth.ui.screens.mfa.TOTP_SECRET_EXPIRED_MESSAGE
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -427,8 +428,9 @@ class MfaEnrollmentScreenTest {
         }
         assertEquals(1, completeCount)
         assertEquals(emptyList<Exception>(), errors)
-        // The screen does not navigate away on success; the host decides via onComplete.
-        assertEquals(MfaEnrollmentStep.VerifyFactor, state()?.step)
+        // Un-hosted, success puts the screen back to its start step — here the single allowed
+        // factor's own configure step. See `a completed enrolment leaves the un-hosted screen…`.
+        assertEquals(MfaEnrollmentStep.ConfigureTotp, state()?.step)
         assertEquals(false, state()?.isLoading)
         assertNull(state()?.error)
         assertNull(state()?.exception)
@@ -583,12 +585,95 @@ class MfaEnrollmentScreenTest {
         }
         assertEquals(1, completeCount)
         assertEquals(emptyList<Exception>(), errors)
-        // The screen does not navigate away on success; the host decides via onComplete.
-        // onComplete lives after the `when`, so this is the call site shared with the TOTP route.
-        assertEquals(MfaEnrollmentStep.VerifyFactor, state()?.step)
+        // Un-hosted, success puts the screen back to its start step — here the single allowed
+        // factor's own configure step. The reset lives after the `when`, so this is the same call
+        // site the TOTP route goes through.
+        assertEquals(MfaEnrollmentStep.ConfigureSms, state()?.step)
         assertEquals(false, state()?.isLoading)
         assertNull(state()?.error)
         assertNull(state()?.exception)
+    }
+
+    /**
+     * Un-hosted, nothing outside this screen clears its state: the step is its own
+     * `rememberSaveable`, and the flow state is the one it remembers itself rather than one a host
+     * passes in and clears on the next entry. A caller that leaves the screen composed after
+     * `onComplete` must not go on showing the number and code that were just enrolled.
+     */
+    @Test
+    fun `a completed enrolment leaves the un-hosted screen on a blank start step`() {
+        val state = driveSmsFlowToVerifyStep(onComplete = {})
+
+        composeTestRule.runOnUiThread {
+            state()?.onVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(MfaEnrollmentStep.ConfigureSms, state()?.step)
+        assertEquals("", state()?.phoneNumber)
+        assertEquals("", state()?.verificationCode)
+        assertEquals(CountryUtils.getDefaultCountry(), state()?.selectedCountry)
+        assertNull(state()?.totpSecret)
+        assertNull(state()?.totpQrCodeUrl)
+    }
+
+    /**
+     * The same reset with more than one factor allowed, where the start step is the picker: the
+     * factor chosen for the completed enrolment must not still be selected, or the next enrolment
+     * would begin already committed to it.
+     */
+    @Test
+    fun `a completed enrolment returns the un-hosted screen to the picker when a factor was chosen`() {
+        whenever { mockSmsHandler.sendVerificationCode(EXPECTED_FULL_PHONE_NUMBER) }
+            .thenReturn(smsSession)
+        var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
+
+        composeTestRule.setContent {
+            MfaEnrollmentScreenInternal(
+                user = mockUser,
+                auth = mockAuth,
+                configuration = MfaConfiguration(
+                    allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp)
+                ),
+                smsHandler = mockSmsHandler,
+                totpHandler = mockTotpHandler,
+                onComplete = {}
+            ) { state ->
+                currentState = state
+            }
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(MfaEnrollmentStep.SelectFactor, currentState?.step)
+
+        composeTestRule.runOnUiThread {
+            currentState?.onFactorSelected?.invoke(MfaFactor.Sms)
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.runOnUiThread {
+            currentState?.onCountrySelected?.invoke(TEST_COUNTRY)
+            currentState?.onPhoneNumberChange?.invoke(LOCAL_PHONE_NUMBER)
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.runOnUiThread {
+            currentState?.onSendSmsCodeClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.runOnUiThread {
+            currentState?.onVerificationCodeChange?.invoke(VERIFICATION_CODE)
+        }
+        composeTestRule.waitForIdle()
+        assertEquals(MfaEnrollmentStep.VerifyFactor, currentState?.step)
+        assertEquals(MfaFactor.Sms, currentState?.selectedFactor)
+
+        composeTestRule.runOnUiThread {
+            currentState?.onVerifyClick?.invoke()
+        }
+        composeTestRule.waitForIdle()
+
+        assertEquals(MfaEnrollmentStep.SelectFactor, currentState?.step)
+        assertNull(currentState?.selectedFactor)
+        assertEquals("", currentState?.phoneNumber)
+        assertEquals("", currentState?.verificationCode)
     }
 
     @Test
