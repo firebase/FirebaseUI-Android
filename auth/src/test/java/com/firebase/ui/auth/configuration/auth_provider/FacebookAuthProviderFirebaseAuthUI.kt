@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import com.firebase.ui.auth.flowScope
 import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -128,9 +129,8 @@ class FacebookAuthProviderFirebaseAuthUITest {
         var launcher: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            launcher = instance.rememberSignInWithFacebookLauncher(
+            launcher = instance.flowScope(config).rememberSignInWithFacebookLauncher(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 loginManagerProvider = mockFBAuthCredentialProvider,
             )
@@ -167,9 +167,8 @@ class FacebookAuthProviderFirebaseAuthUITest {
         var thrownException: Exception? = null
 
         composeTestRule.setContent {
-            launcher = instance.rememberSignInWithFacebookLauncher(
+            launcher = instance.flowScope(config).rememberSignInWithFacebookLauncher(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 loginManagerProvider = mockFBAuthCredentialProvider,
             )
@@ -243,9 +242,8 @@ class FacebookAuthProviderFirebaseAuthUITest {
             instance.authStateFlow().first { it is AuthState.Success }
         }
 
-        instance.signInWithFacebook(
+        instance.flowScope(config).signInWithFacebook(
             context = applicationContext,
-            config = config,
             provider = provider,
             accessToken = mockAccessToken,
             credentialProvider = mockFBAuthCredentialProvider
@@ -299,9 +297,8 @@ class FacebookAuthProviderFirebaseAuthUITest {
             .thenReturn(mockCredential)
 
         try {
-            instance.signInWithFacebook(
+            instance.flowScope(config).signInWithFacebook(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 accessToken = mockAccessToken,
                 credentialProvider = mockFBAuthCredentialProvider
@@ -344,9 +341,8 @@ class FacebookAuthProviderFirebaseAuthUITest {
         }.whenever(provider).fetchFacebookProfile(any())
 
         try {
-            instance.signInWithFacebook(
+            instance.flowScope(config).signInWithFacebook(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 accessToken = mockAccessToken,
                 credentialProvider = mockFBAuthCredentialProvider

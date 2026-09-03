@@ -18,9 +18,9 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canLinkCredential
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
@@ -54,9 +54,8 @@ private const val TAG = "EmailAuthProvider"
  * - Reauth mode: [com.google.firebase.auth.FirebaseUser.reauthenticate] (Task<Void>), returns null.
  *   Callers must reconstruct auth state from [com.google.firebase.auth.FirebaseAuth.currentUser].
  */
-internal suspend fun FirebaseAuthUI.signInOrReauth(
+internal suspend fun AuthFlowScope.signInOrReauth(
     credential: AuthCredential,
-    config: AuthUIConfiguration,
 ): AuthResult? = if (config.isReauthenticationMode) {
     val currentUser = auth.currentUser
         ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in for reauthentication")
@@ -137,9 +136,8 @@ internal suspend fun FirebaseAuthUI.signInOrReauth(
  * }
  * ```
  */
-internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
+internal suspend fun AuthFlowScope.createOrLinkUserWithEmailAndPassword(
     context: Context,
-    config: AuthUIConfiguration,
     provider: AuthProvider.Email,
     name: String?,
     email: String,
@@ -184,7 +182,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             }
         }
 
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingCreatingUser))
+        emit(AuthState.Loading(config.stringProvider.loadingCreatingUser))
         val result = if (shouldLinkCredential) {
             auth.currentUser?.linkWithCredential(requireNotNull(pendingCredential))?.await()
         } else {
@@ -226,7 +224,7 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             }
         }
 
-        updateAuthStateWithResult(result, defaultIsNewUser = true)
+        emitResult(result, defaultIsNewUser = true)
         return result
     } catch (e: FirebaseAuthUserCollisionException) {
         // Account collision: email already exists
@@ -241,21 +239,21 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
             },
             cause = e
         )
-        updateAuthState(AuthState.Error(accountLinkingException))
+        emit(AuthState.Error(accountLinkingException))
         throw accountLinkingException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Create or link user with email and password was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
@@ -341,21 +339,19 @@ internal suspend fun FirebaseAuthUI.createOrLinkUserWithEmailAndPassword(
  * }
  * ```
  */
-internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
+internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
     context: Context,
-    config: AuthUIConfiguration,
     email: String,
     password: String,
     credentialForLinking: AuthCredential? = null,
     skipCredentialSave: Boolean = false,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningIn))
+        emit(AuthState.Loading(config.stringProvider.loadingSigningIn))
         // In reauth mode build a credential and go through signInAndLinkWithCredential so
         // signInOrReauth routes to FirebaseUser.reauthenticate() instead of signInWithCredential().
         if (config.isReauthenticationMode) {
             return signInAndLinkWithCredential(
-                config = config,
                 credential = EmailAuthProvider.getCredential(email, password),
             )
         }
@@ -390,7 +386,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                             credential = credentialToValidate,
                             cause = null
                         )
-                        updateAuthState(AuthState.Error(accountLinkingException))
+                        emit(AuthState.Error(accountLinkingException))
                         throw accountLinkingException
                     }
             } else {
@@ -408,7 +404,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                             credential = credentialToValidate,
                             cause = null
                         )
-                        updateAuthState(AuthState.Error(accountLinkingException))
+                        emit(AuthState.Error(accountLinkingException))
                         throw accountLinkingException
                     }
             }
@@ -468,34 +464,33 @@ internal suspend fun FirebaseAuthUI.signInWithEmailAndPassword(
                 }
             }
 
-            updateAuthStateWithResult(result)
+            emitResult(result)
         }
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
         val resolver = e.resolver
         val hint = resolver.hints.firstOrNull()?.displayName
-        updateAuthState(AuthState.RequiresMfa(resolver, hint))
+        emit(AuthState.RequiresMfa(resolver, hint))
         return null
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with email and password was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
-        val authException = recoverLegacyDifferentSignInMethod(config, email, e)
+        val authException = recoverLegacyDifferentSignInMethod(email, e)
             ?: AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
 
-private suspend fun FirebaseAuthUI.recoverLegacyDifferentSignInMethod(
-    config: AuthUIConfiguration,
+private suspend fun AuthFlowScope.recoverLegacyDifferentSignInMethod(
     email: String,
     cause: Exception,
 ): AuthException.DifferentSignInMethodRequiredException? {
@@ -545,7 +540,7 @@ private fun selectSuggestedLegacySignInMethod(
     }
 }
 
-private suspend fun FirebaseAuthUI.fetchLegacySignInMethods(email: String): List<String> {
+private suspend fun AuthFlowScope.fetchLegacySignInMethods(email: String): List<String> {
     return try {
         @Suppress("DEPRECATION")
         auth.fetchSignInMethodsForEmail(email)
@@ -643,19 +638,18 @@ private fun SignInMethodQueryResult?.toSignInMethods(): List<String> =
  * // User signed in with email link (passwordless)
  * ```
  */
-internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
-    config: AuthUIConfiguration,
+internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
     credential: AuthCredential,
     provider: AuthProvider? = null,
     displayName: String? = null,
     photoUrl: Uri? = null,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingLinkingCredential))
+        emit(AuthState.Loading(config.stringProvider.loadingLinkingCredential))
         val result = if (canUpgradeAnonymous(config, auth) || canLinkCredential(config, auth)) {
             auth.currentUser?.linkWithCredential(credential)?.await()
         } else {
-            signInOrReauth(credential, config)
+            signInOrReauth(credential)
         }
         // signInOrReauth returns null in reauth mode (Task<Void> has no AuthResult).
         // Reconstruct success state from the now-reauthenticated current user.
@@ -664,7 +658,7 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
                 ?: throw AuthException.UserNotFoundException(
                     message = "No user is currently signed in for reauthentication"
                 )
-            updateAuthState(
+            emit(
                 AuthState.Success(
                     result = null,
                     user = reauthenticatedUser,
@@ -674,13 +668,13 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             return null
         }
         result?.user?.let { mergeProfile(auth, displayName, photoUrl) }
-        updateAuthStateWithResult(result)
+        emitResult(result)
         return result
     } catch (e: FirebaseAuthMultiFactorException) {
         // MFA required - extract resolver and update state
         val resolver = e.resolver
         val hint = resolver.hints.firstOrNull()?.displayName
-        updateAuthState(AuthState.RequiresMfa(resolver, hint))
+        emit(AuthState.RequiresMfa(resolver, hint))
         return null
     } catch (e: FirebaseAuthUserCollisionException) {
         // Account collision: account already exists with different sign-in method
@@ -702,21 +696,21 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
             credential = credentialForException,
             cause = e
         )
-        updateAuthState(AuthState.Error(accountLinkingException))
+        emit(AuthState.Error(accountLinkingException))
         throw accountLinkingException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in and link with credential was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
@@ -835,16 +829,15 @@ internal suspend fun FirebaseAuthUI.signInAndLinkWithCredential(
  * @see EmailLinkPersistenceManager
  * @see com.google.firebase.auth.FirebaseAuth.sendSignInLinkToEmail
  */
-internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
+internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
     context: Context,
-    config: AuthUIConfiguration,
     provider: AuthProvider.Email,
     email: String,
     credentialForLinking: AuthCredential?,
     persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ) {
     try {
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingEmailLink))
+        emit(AuthState.Loading(config.stringProvider.loadingSendingEmailLink))
 
         // Get anonymousUserId if can upgrade anonymously else default to empty string.
         // NOTE: check for empty string instead of null to validate anonymous user ID matches
@@ -871,20 +864,20 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
         // Save Email to dataStore for use in signInWithEmailLink
         persistenceManager.saveEmail(context, email, sessionId, anonymousUserId)
 
-        updateAuthState(AuthState.EmailSignInLinkSent())
+        emit(AuthState.EmailSignInLinkSent())
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Send sign in link to email was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
@@ -993,16 +986,15 @@ internal suspend fun FirebaseAuthUI.sendSignInLinkToEmail(
  * @see sendSignInLinkToEmail for sending the initial email link
  * @see EmailLinkPersistenceManager for session data management
  */
-internal suspend fun FirebaseAuthUI.signInWithEmailLink(
+internal suspend fun AuthFlowScope.signInWithEmailLink(
     context: Context,
-    config: AuthUIConfiguration,
     provider: AuthProvider.Email,
     email: String,
     emailLink: String,
     persistenceManager: PersistenceManager = EmailLinkPersistenceManager.default,
 ): AuthResult? {
     try {
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithEmailLink))
+        emit(AuthState.Loading(config.stringProvider.loadingSigningInWithEmailLink))
 
         // Validate link format
         if (!auth.isSignInWithEmailLink(emailLink)) {
@@ -1032,14 +1024,14 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
             // Session ID must always be present in the link
             if (sessionIdFromLink.isNullOrEmpty()) {
                 val exception = AuthException.InvalidEmailLinkException()
-                updateAuthState(AuthState.Error(exception))
+                emit(AuthState.Error(exception))
                 throw exception
             }
 
             // These scenarios require same-device flow
             if (isEmailLinkForceSameDeviceEnabled || !anonymousUserIdFromLink.isNullOrEmpty()) {
                 val exception = AuthException.EmailLinkWrongDeviceException()
-                updateAuthState(AuthState.Error(exception))
+                emit(AuthState.Error(exception))
                 throw exception
             }
 
@@ -1067,7 +1059,7 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
                 || currentUser.uid != anonymousUserIdFromLink
             ) {
                 val exception = AuthException.EmailLinkDifferentAnonymousUserException()
-                updateAuthState(AuthState.Error(exception))
+                emit(AuthState.Error(exception))
                 throw exception
             }
         }
@@ -1078,12 +1070,11 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
 
         val result = if (storedCredentialForLink == null) {
             // Normal Flow: Just sign in with email link
-            handleEmailLinkNormalFlow(config, emailLinkCredential)
+            handleEmailLinkNormalFlow(emailLinkCredential)
         } else {
             // Linking Flow: Sign in with email link, then link the social credential
             handleEmailLinkCredentialLinkingFlow(
                 context = context,
-                config = config,
                 email = email,
                 emailLinkCredential = emailLinkCredential,
                 storedCredentialForLink = storedCredentialForLink,
@@ -1092,30 +1083,30 @@ internal suspend fun FirebaseAuthUI.signInWithEmailLink(
         // Clear DataStore after success
         persistenceManager.clear(context)
         // In reauth mode the stamped Success is already published and there is no AuthResult, so
-        // updateAuthStateWithResult would overwrite the stamp with Idle and orphan the operation.
+        // emitResult would overwrite the stamp with Idle and orphan the operation.
         if (result == null && config.isReauthenticationMode) {
             return null
         }
-        updateAuthStateWithResult(result)
+        emitResult(result)
         return result
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with email link was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
 
-private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
+private suspend fun AuthFlowScope.handleDifferentDeviceErrorFlow(
     oobCode: String,
     providerIdFromLink: String?,
     emailLink: String
@@ -1126,7 +1117,7 @@ private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
     } catch (e: Exception) {
         // Invalid action code
         val exception = AuthException.InvalidEmailLinkException(cause = e)
-        updateAuthState(AuthState.Error(exception))
+        emit(AuthState.Error(exception))
         throw exception
     }
 
@@ -1138,7 +1129,7 @@ private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
             providerName = providerNameForMessage,
             emailLink = emailLink
         )
-        updateAuthState(AuthState.Error(exception))
+        emit(AuthState.Error(exception))
         throw exception
     }
 
@@ -1147,20 +1138,18 @@ private suspend fun FirebaseAuthUI.handleDifferentDeviceErrorFlow(
         cause = null,
         emailLink = emailLink
     )
-    updateAuthState(AuthState.Error(exception))
+    emit(AuthState.Error(exception))
     throw exception
 }
 
-private suspend fun FirebaseAuthUI.handleEmailLinkNormalFlow(
-    config: AuthUIConfiguration,
+private suspend fun AuthFlowScope.handleEmailLinkNormalFlow(
     emailLinkCredential: AuthCredential,
 ): AuthResult? {
-    return signInAndLinkWithCredential(config, emailLinkCredential)
+    return signInAndLinkWithCredential(emailLinkCredential)
 }
 
-private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
+private suspend fun AuthFlowScope.handleEmailLinkCredentialLinkingFlow(
     context: Context,
-    config: AuthUIConfiguration,
     email: String,
     emailLinkCredential: AuthCredential,
     storedCredentialForLink: AuthCredential,
@@ -1188,7 +1177,7 @@ private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
                     credential = storedCredentialForLink,
                     cause = null
                 )
-                updateAuthState(AuthState.Error(accountLinkingException))
+                emit(AuthState.Error(accountLinkingException))
                 throw accountLinkingException
             }
     } else {
@@ -1273,28 +1262,27 @@ private suspend fun FirebaseAuthUI.handleEmailLinkCredentialLinkingFlow(
  *
  * @see com.google.firebase.auth.ActionCodeSettings
  */
-internal suspend fun FirebaseAuthUI.sendPasswordResetEmail(
+internal suspend fun AuthFlowScope.sendPasswordResetEmail(
     email: String,
-    config: AuthUIConfiguration,
     actionCodeSettings: ActionCodeSettings? = null,
 ) {
     try {
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingSendingPasswordResetEmail))
+        emit(AuthState.Loading(config.stringProvider.loadingSendingPasswordResetEmail))
         auth.sendPasswordResetEmail(email, actionCodeSettings).await()
-        updateAuthState(AuthState.PasswordResetLinkSent())
+        emit(AuthState.PasswordResetLinkSent())
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Send password reset email was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }

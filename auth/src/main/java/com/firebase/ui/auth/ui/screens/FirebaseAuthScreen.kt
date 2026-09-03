@@ -14,6 +14,9 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.AuthFlowScope
+import com.firebase.ui.auth.LocalAuthFlowScope
+import com.firebase.ui.auth.hostAuthFlowScope
 import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
@@ -186,6 +189,12 @@ fun FirebaseAuthScreen(
     // the Activity and re-arm an unrelated sign-in.
     val reauthFlowState = rememberReauthFlowState()
     val reauthState = reauthFlowState.phase
+    // The host's own flow. Provider code reaches the public state channel only through this sink,
+    // which is the whole point of the receiver change: there is no `authUI` on a scope to reach it
+    // any other way.
+    val hostScope = remember(authUI, configuration) {
+        hostAuthFlowScope(authUI, configuration)
+    }
     /**
      * What the host may act on. While a request is armed, an ordinary state published by provider
      * code belongs to the credential exchange and the phase is what reports it — but `fold` runs
@@ -320,10 +329,9 @@ fun FirebaseAuthScreen(
 
     val emailProvider = configuration.providers.filterIsInstance<AuthProvider.Email>().firstOrNull()
     val logoAsset = configuration.logo
-    val onOuterProviderSelected = authUI.rememberOnProviderSelected(
+    val onOuterProviderSelected = hostScope.rememberOnProviderSelected(
         context = context,
         activity = activity,
-        config = configuration,
         onNavigate = { route ->
             if (route == AuthRoute.Email) {
                 backStack.navigateToEmailStep(AuthRoute.Email.SignIn(typedEmail.value))
@@ -360,7 +368,11 @@ fun FirebaseAuthScreen(
     CompositionLocalProvider(
         LocalAuthUIStringProvider provides configuration.stringProvider,
         LocalTopLevelDialogController provides dialogController,
-        LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current)
+        LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current),
+        // The host's flow, for every sub-screen composed below. `reauthDestinations` overrides it
+        // with the armed request's, which is what puts a credential exchange's states on the phase
+        // instead of on the public channel.
+        LocalAuthFlowScope provides hostScope,
     ) {
         Surface(
             modifier = modifier
@@ -583,7 +595,7 @@ fun FirebaseAuthScreen(
                             content = mfaChallengeContent,
                             onSuccess = { result ->
                                 pendingResolver.value = null
-                                authUI.updateAuthStateWithResult(result)
+                                hostScope.emitResult(result)
                             },
                             // Load-bearing pop: Cancelled below then sees the start step, so it skips a reset that blanks the address.
                             onCancel = {
@@ -609,17 +621,15 @@ fun FirebaseAuthScreen(
                             EmailLinkPersistenceManager.default.retrieveSessionRecord(context)?.email
 
                         if (savedEmail != null) {
-                            authUI.signInWithEmailLink(
+                            hostScope.signInWithEmailLink(
                                 context = context,
-                                config = configuration,
                                 provider = emailProvider,
                                 email = savedEmail,
                                 emailLink = emailLink
                             )
                         } else {
-                            authUI.signInWithEmailLink(
+                            hostScope.signInWithEmailLink(
                                 context = context,
-                                config = configuration,
                                 provider = emailProvider,
                                 email = "",
                                 emailLink = emailLink
@@ -1247,10 +1257,9 @@ private fun LoadingDialog(message: String) {
 }
 
 @Composable
-internal fun FirebaseAuthUI.rememberOnProviderSelected(
+internal fun AuthFlowScope.rememberOnProviderSelected(
     context: android.content.Context,
     activity: android.app.Activity?,
-    config: AuthUIConfiguration,
     onNavigate: (AuthRoute) -> Unit,
     onUnknownProvider: ((AuthProvider) -> Unit)? = null,
     onSignInFailure: (AuthException) -> Unit = {},
@@ -1265,18 +1274,18 @@ internal fun FirebaseAuthUI.rememberOnProviderSelected(
     val twitterProvider = config.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
     val genericOAuthProviders = config.providers.filterIsInstance<AuthProvider.GenericOAuth>()
 
-    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(config, onSignInFailure) }
-    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it, onSignInFailure) }
+    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(onSignInFailure) }
+    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, it, onSignInFailure) }
     val onSignInWithFacebook = facebookProvider?.let {
-        rememberSignInWithFacebookLauncher(context, config, it, onSignInFailure = onSignInFailure)
+        rememberSignInWithFacebookLauncher(context, it, onSignInFailure = onSignInFailure)
     }
-    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
-    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
-    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
-    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
-    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, it, onSignInFailure) }
+    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, it, onSignInFailure) }
+    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, it, onSignInFailure) }
+    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, it, onSignInFailure) }
+    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, it, onSignInFailure) }
     val genericOAuthHandlers = genericOAuthProviders.associateWith {
-        rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure)
+        rememberOAuthSignInHandler(context, activity, it, onSignInFailure)
     }
 
     return { provider ->
