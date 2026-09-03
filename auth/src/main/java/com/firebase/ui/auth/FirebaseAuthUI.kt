@@ -307,7 +307,7 @@ class FirebaseAuthUI private constructor(
         val firebaseAuthFlow = callbackFlow {
             fun buildState(currentUser: FirebaseUser?): AuthState {
                 return if (currentUser != null) {
-                    handleAuthUserState(currentUser, result = null, isNewUser = false)
+                    authUserState(currentUser, result = null, isNewUser = false)
                 } else {
                     AuthState.Idle
                 }
@@ -378,21 +378,6 @@ class FirebaseAuthUI private constructor(
         _authStateFlow.value = state
     }
 
-    internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
-        val user = result?.user
-        if (user != null) {
-            updateAuthState(
-                handleAuthUserState(
-                    user = user,
-                    result = result,
-                    isNewUser = result.additionalUserInfo?.isNewUser ?: defaultIsNewUser
-                )
-            )
-        } else {
-            updateAuthState(AuthState.Idle)
-        }
-    }
-
     /**
      * Re-reads the signed-in user from the server and republishes the resulting auth state.
      * No-op when nobody is signed in.
@@ -404,22 +389,7 @@ class FirebaseAuthUI private constructor(
         // Signing out (or switching account) mid-reload must win: publishing here would pin the
         // combine in authStateFlow() to a Success for a user who is already gone.
         if (auth.currentUser?.uid != user.uid) return
-        updateAuthState(handleAuthUserState(user, result = null, isNewUser = false))
-    }
-
-    /**
-     * Single source of truth for whether a signed-in user still owes email verification.
-     * Callers must not re-derive it: only password users with an email can satisfy that screen.
-     */
-    private fun handleAuthUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
-        return if (!user.isEmailVerified &&
-            user.email != null &&
-            user.providerData.any { it.providerId == "password" }
-        ) {
-            AuthState.RequiresEmailVerification(user = user, email = user.email!!)
-        } else {
-            AuthState.Success(result = result, user = user, isNewUser = isNewUser)
-        }
+        updateAuthState(authUserState(user, result = null, isNewUser = false))
     }
 
     /**
@@ -463,8 +433,20 @@ class FirebaseAuthUI private constructor(
             // Sign out from Firebase Auth
             auth.signOut()
                 .also {
-                    signOutFromGoogle(context)
-                    signOutFromFacebook()
+                    // These two publish nothing, so they take no sink and no configuration —
+                    // signOut has none to give. The test seams are resolved here rather than
+                    // inside them, which is the last thing either needed this receiver for.
+                    signOutFromGoogle(
+                        auth = auth,
+                        context = context,
+                        credentialManagerProvider = testCredentialManagerProvider
+                            ?: AuthProvider.Google.DefaultCredentialManagerProvider(),
+                    )
+                    signOutFromFacebook(
+                        auth = auth,
+                        loginManagerProvider = testLoginManagerProvider
+                            ?: AuthProvider.Facebook.DefaultLoginManagerProvider(),
+                    )
                 }
 
             // Update state to idle (user signed out)

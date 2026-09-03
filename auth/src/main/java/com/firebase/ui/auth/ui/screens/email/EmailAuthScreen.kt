@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.email
 
+import com.firebase.ui.auth.rememberAuthFlowScope
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -207,6 +208,9 @@ fun EmailAuthScreen(
         )
     }
 
+    // The flow this screen belongs to: the host's when composed on its own, the armed
+    // request's when composed inside a reauthentication surface.
+    val authFlowScope = rememberAuthFlowScope(authUI, configuration)
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading ||
         authState is AuthState.Reauthentication.Authenticating
@@ -327,9 +331,8 @@ fun EmailAuthScreen(
                         email == emailTextValue.value && password == passwordTextValue.value
                     } ?: false
 
-                    authUI.signInWithEmailAndPassword(
+                    authFlowScope.signInWithEmailAndPassword(
                         context = context,
-                        config = configuration,
                         email = emailTextValue.value,
                         password = passwordTextValue.value,
                         credentialForLinking = authCredentialForLinking,
@@ -345,17 +348,15 @@ fun EmailAuthScreen(
             coroutineScope.launch {
                 try {
                     if (emailLinkFromDifferentDevice != null) {
-                        authUI.signInWithEmailLink(
+                        authFlowScope.signInWithEmailLink(
                             context = context,
-                            config = configuration,
                             provider = provider,
                             email = emailTextValue.value,
                             emailLink = emailLinkFromDifferentDevice,
                         )
                     } else {
-                        authUI.sendSignInLinkToEmail(
+                        authFlowScope.sendSignInLinkToEmail(
                             context = context,
-                            config = configuration,
                             provider = provider,
                             email = emailTextValue.value,
                             credentialForLinking = authCredentialForLinking,
@@ -369,9 +370,8 @@ fun EmailAuthScreen(
         onSignUpClick = {
             coroutineScope.launch {
                 try {
-                    authUI.createOrLinkUserWithEmailAndPassword(
+                    authFlowScope.createOrLinkUserWithEmailAndPassword(
                         context = context,
-                        config = configuration,
                         provider = provider,
                         name = displayNameValue.value,
                         email = emailTextValue.value,
@@ -386,9 +386,8 @@ fun EmailAuthScreen(
             resetLinkSentLocal = false
             coroutineScope.launch {
                 try {
-                    authUI.sendPasswordResetEmail(
+                    authFlowScope.sendPasswordResetEmail(
                         email = emailTextValue.value,
-                        config = configuration,
                         actionCodeSettings = configuration.passwordResetActionCodeSettings,
                     )
                 } catch (e: Exception) {

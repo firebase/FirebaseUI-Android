@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -50,10 +50,9 @@ import kotlinx.coroutines.tasks.await
  * @see signInWithProvider
  */
 @Composable
-internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
+internal fun AuthFlowScope.rememberOAuthSignInHandler(
     context: Context,
     activity: Activity?,
-    config: AuthUIConfiguration,
     provider: AuthProvider.OAuth,
     onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
@@ -68,16 +67,15 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
             try {
                 signInWithProvider(
                     context = context,
-                    config = config,
                     activity = activity,
                     provider = provider
                 )
             } catch (e: AuthException) {
-                updateAuthState(AuthState.Error(e))
+                emit(AuthState.Error(e))
                 if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
                 val authException = AuthException.from(e, context)
-                updateAuthState(AuthState.Error(authException))
+                emit(AuthState.Error(authException))
                 if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
@@ -124,14 +122,13 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
  * @see AuthProvider.OAuth
  * @see signInAndLinkWithCredential
  */
-internal suspend fun FirebaseAuthUI.signInWithProvider(
+internal suspend fun AuthFlowScope.signInWithProvider(
     context: Context,
-    config: AuthUIConfiguration,
     activity: Activity,
     provider: AuthProvider.OAuth,
 ) {
     try {
-        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithProvider(provider.providerName)))
+        emit(AuthState.Loading(config.stringProvider.loadingSigningInWithProvider(provider.providerName)))
 
         // Build OAuth provider with scopes and custom parameters
         val oauthProvider = OAuthProvider
@@ -157,7 +154,6 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
             if (credential != null) {
                 // Complete the pending sign-in/link flow
                 signInAndLinkWithCredential(
-                    config = config,
                     credential = credential,
                     provider = provider,
                     displayName = authResult.user?.displayName,
@@ -207,7 +203,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                     ?: throw AuthException.UserNotFoundException(
                         message = "No user is currently signed in for reauthentication"
                     )
-                updateAuthState(
+                emit(
                     AuthState.Success(
                         result = authResult,
                         user = reauthenticatedUser,
@@ -215,7 +211,7 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
                     )
                 )
             } else {
-                updateAuthStateWithResult(authResult)
+                emitResult(authResult)
             }
         } else {
             throw AuthException.UnknownException(
@@ -236,23 +232,23 @@ internal suspend fun FirebaseAuthUI.signInWithProvider(
             credential = credential,
             cause = e
         )
-        updateAuthState(AuthState.Error(accountLinkingException))
+        emit(AuthState.Error(accountLinkingException))
         throw accountLinkingException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Signing in with ${provider.providerName} was cancelled",
             cause = e
         )
-        updateAuthState(AuthState.Error(cancelledException))
+        emit(AuthState.Error(cancelledException))
         throw cancelledException
 
     } catch (e: AuthException) {
-        updateAuthState(AuthState.Error(e))
+        emit(AuthState.Error(e))
         throw e
 
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        updateAuthState(AuthState.Error(authException))
+        emit(AuthState.Error(authException))
         throw authException
     }
 }
