@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.firebase.ui.auth.AuthException
@@ -334,9 +335,10 @@ private fun AppAuthenticatedContent(
                         lifecycleOwner.lifecycleScope.launch {
                             isDeletingAccount = true
                             try {
+                                // Reauthentication, if it is needed, happens inside this call:
+                                // the progress indicator below covers it, and the deletion is
+                                // retried here rather than needing anything from this caller.
                                 uiContext.authUI.delete(context)
-                            } catch (e: AuthException.InvalidCredentialsException) {
-                                Log.d("HighLevelApiDemoActivity", "Reauth required before delete")
                             } catch (e: AuthException) {
                                 Log.e("HighLevelApiDemoActivity", "Delete failed", e)
                             } finally {
@@ -567,6 +569,11 @@ private fun ChangePasswordDialog(
                                 Log.d("HighLevelApiDemoActivity", "Password changed successfully")
                                 onDismiss()
                             }
+                        } catch (e: CancellationException) {
+                            // withReauth suspends across the reauthentication sheet, so this
+                            // scope really can be cancelled mid-call. Never report that as a
+                            // failure the user can retry.
+                            throw e
                         } catch (e: Exception) {
                             updateError = "Failed to update password. Please try again."
                         } finally {

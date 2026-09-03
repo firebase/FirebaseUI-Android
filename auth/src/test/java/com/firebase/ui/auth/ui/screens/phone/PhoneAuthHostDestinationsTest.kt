@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
+import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.EnterTransition
@@ -426,7 +427,6 @@ class PhoneAuthHostDestinationsTest {
                 requestId = REQUEST_ID,
                 user = user,
                 reason = null,
-                retryOperation = null,
             ).also { reauthRequest = it }
         }
         val backStack = rememberNavBackStack(
@@ -451,6 +451,8 @@ class PhoneAuthHostDestinationsTest {
         val stringProvider = remember { DefaultAuthUIStringProvider(applicationContext) }
         // Above the display, like the host: a step switch disposes whatever the step it left held.
         val phoneFlowState = rememberPhoneAuthFlowState(config)
+        val reauthFlowState = rememberReauthFlowState()
+        SideEffect { reauthFlowState.arm(AuthState.Reauthentication.Required(request)) }
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
             NavDisplay(
                 backStack = backStack,
@@ -475,6 +477,7 @@ class PhoneAuthHostDestinationsTest {
                         configuration = config,
                         stringProvider = stringProvider,
                         surface = surface,
+                        reauthFlowState = reauthFlowState,
                         phoneFlowState = phoneFlowState,
                         emailContent = null,
                         phoneContent = null,

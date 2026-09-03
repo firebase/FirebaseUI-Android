@@ -147,6 +147,16 @@ fun PhoneAuthScreen(
     onNavigateToStep: ((PhoneAuthStep) -> Unit)? = null,
     onNavigateBack: (() -> Unit)? = null,
     flowState: PhoneAuthFlowState? = null,
+    /**
+     * Where a consumed one-off notification leaves the flow. Null retracts to [AuthState.Idle];
+     * reauthentication passes its own, returning the request to provider selection.
+     */
+    onNotificationConsumed: (() -> Unit)? = null,
+    /**
+     * A credential attempt is starting. Null retracts to [AuthState.Idle]; reauthentication passes
+     * its own, moving the request to its authenticating phase.
+     */
+    onAttemptStarted: (() -> Unit)? = null,
     content: @Composable ((PhoneAuthContentState) -> Unit)? = null,
 ) {
     require(
@@ -314,11 +324,7 @@ fun PhoneAuthScreen(
                     consumedAutoCredential.value = credential
                     // Consumed before the async sign-in call so it can't be clobbered by that
                     // call's own state.
-                    if (state is AuthState.Reauthentication.SmsAutoVerified) {
-                        authUI.updateReauthentication(state.requestId) { it.attemptStarted() }
-                    } else {
-                        authUI.updateAuthState(AuthState.Idle)
-                    }
+                    onAttemptStarted?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
                     // The flow's scope, not this step's: a transition can dispose the step this
                     // ran from before the sign-in it started has landed.
                     verificationScope.launch {
@@ -505,14 +511,7 @@ fun PhoneAuthScreen(
             cancelVerification("changing phone number")
             // Nothing replaces the cancelled attempt here, so this handler retracts its Loading -
             // as the armed request's provider-selection phase when one is running, Idle otherwise.
-            val currentReauthentication = authState as? AuthState.Reauthentication
-            if (currentReauthentication != null) {
-                authUI.updateReauthentication(currentReauthentication.requestId) {
-                    it.returnedToProviderSelection()
-                }
-            } else {
-                authUI.updateAuthState(AuthState.Idle)
-            }
+            onNotificationConsumed?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
             verificationJob.value = null
             isSubmittingCode.value = false
             navigateBack()

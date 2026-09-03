@@ -160,6 +160,12 @@ fun EmailAuthScreen(
     mode: EmailAuthMode? = null,
     onNavigateToMode: ((mode: EmailAuthMode, email: String) -> Unit)? = null,
     onEmailTyped: (String) -> Unit = {},
+    /**
+     * Where a consumed one-off notification leaves the flow. Null retracts to [AuthState.Idle];
+     * reauthentication passes its own, returning the request to provider selection. Explicit
+     * because this screen no longer decides which flow it is in by reading a relabelled state.
+     */
+    onNotificationConsumed: (() -> Unit)? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
     require((mode == null) == (onNavigateToMode == null)) {
@@ -273,22 +279,12 @@ fun EmailAuthScreen(
 
             is AuthState.PasswordResetLinkSent -> {
                 resetLinkSentLocal = true
-                authUI.updateAuthState(AuthState.Idle)
-            }
-
-            is AuthState.Reauthentication.PasswordResetLinkSent -> {
-                resetLinkSentLocal = true
-                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
+                onNotificationConsumed?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.EmailSignInLinkSent -> {
                 emailSignInLinkSentLocal = true
-                authUI.updateAuthState(AuthState.Idle)
-            }
-
-            is AuthState.Reauthentication.EmailSignInLinkSent -> {
-                emailSignInLinkSentLocal = true
-                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
+                onNotificationConsumed?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
             }
 
             else -> Unit

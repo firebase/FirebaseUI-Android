@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
+import com.firebase.ui.auth.ui.screens.reauth.ReauthFlowState
+import androidx.compose.runtime.mutableStateOf
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -572,13 +574,18 @@ class PhoneAuthScreenVerificationLifecycleTest {
         val credential = mock(PhoneAuthCredential::class.java)
 
         val observed = mutableListOf<AuthState>()
+        // Stands in for the composed FirebaseAuthScreen, which is what owns folding now: fold each
+        // ordinary provider state into the armed request and publish the phase this screen reads.
+        val required = AuthState.Reauthentication.Required(user)
+        val reauthFlowState = ReauthFlowState(mutableStateOf(null))
+        reauthFlowState.arm(required)
         val collector = CoroutineScope(Dispatchers.Main.immediate).launch {
-            authUI.authStateFlow().collect { observed += it }
+            authUI.authStateFlow().collect { state ->
+                observed += state
+                reauthFlowState.fold(state)?.let { authUI.updateAuthState(it) }
+            }
         }
-        // What FirebaseAuthScreen does: register a drainer so ordinary states are folded into the
-        // armed request, then arm it.
-        authUI.addReauthenticationDrainer()
-        authUI.updateAuthState(AuthState.Reauthentication.Required(user))
+        authUI.updateAuthState(required)
 
         mockStatic(PhoneAuthProvider::class.java).use { statics ->
             stubGetCredential(statics, credential)
