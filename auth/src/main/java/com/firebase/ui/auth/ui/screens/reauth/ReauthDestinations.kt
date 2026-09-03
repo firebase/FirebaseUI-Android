@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.screens.reauth
 
 import com.firebase.ui.auth.LocalAuthFlowScope
 import com.firebase.ui.auth.AuthFlowScope
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.foundation.layout.Box
@@ -195,12 +196,18 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
         // This request's own flow. Everything the credential exchange publishes lands on the
         // phase rather than on the public state channel, so an app collecting `authStateFlow()`
         // never sees a Loading or an Error belonging to a conversation that is not theirs.
-        val reauthScope = remember(authUI, reauthConfig, reauthFlowState) {
+        // The phase is both what this scope publishes into and what the screens under it render,
+        // so the request's conversation never has to travel the public channel to be seen.
+        val reauthStateHolder = remember(reauthFlowState) {
+            derivedStateOf { reauthFlowState.phase ?: AuthState.Idle }
+        }
+        val reauthScope = remember(authUI, reauthConfig, reauthFlowState, reauthStateHolder) {
             AuthFlowScope(
                 auth = authUI.auth,
                 config = reauthConfig,
                 credentialManagerProvider = authUI.testCredentialManagerProvider,
                 loginManagerProvider = authUI.testLoginManagerProvider,
+                state = reauthStateHolder,
                 sink = reauthFlowState.sink(hostFallback = { authUI.updateAuthState(it) }),
             )
         }

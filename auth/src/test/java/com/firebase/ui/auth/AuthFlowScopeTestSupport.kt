@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth
 
+import androidx.compose.runtime.mutableStateOf
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 
 /**
@@ -28,7 +29,7 @@ import com.firebase.ui.auth.configuration.AuthUIConfiguration
  * Use [recordingScope] where the point is isolation: that a state does *not* reach the host flow.
  */
 internal fun FirebaseAuthUI.flowScope(config: AuthUIConfiguration): AuthFlowScope =
-    hostAuthFlowScope(this, config)
+    hostAuthFlowScope(this, config, mutableStateOf(AuthState.Idle))
 
 /** A scope whose states are collected in [recorded] and go nowhere else. */
 internal fun FirebaseAuthUI.recordingScope(
@@ -39,5 +40,6 @@ internal fun FirebaseAuthUI.recordingScope(
     config = config,
     credentialManagerProvider = testCredentialManagerProvider,
     loginManagerProvider = testLoginManagerProvider,
+    state = mutableStateOf(AuthState.Idle),
     sink = { recorded += it },
 )
