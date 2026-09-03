@@ -211,7 +211,10 @@ fun EmailAuthScreen(
     // The flow this screen belongs to: the host's when composed on its own, the armed
     // request's when composed inside a reauthentication surface.
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
-    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
+    // This flow's state, not the process-wide channel's: under a reauthentication request
+    // that is the request's own phase, so the loading and error below describe the
+    // conversation this screen is actually part of.
+    val authState by authFlowScope.state
     val isLoading = authState is AuthState.Loading ||
         authState is AuthState.Reauthentication.Authenticating
     val authCredentialForLinking = remember { credentialForLinking }
@@ -273,22 +276,22 @@ fun EmailAuthScreen(
                     )
                 }
                 // Consumed so the error doesn't leak into a freshly created screen.
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.PasswordResetLinkSent -> {
                 resetLinkSentLocal = true
-                onNotificationConsumed?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
+                onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.EmailSignInLinkSent -> {
                 emailSignInLinkSentLocal = true
-                onNotificationConsumed?.invoke() ?: authUI.updateAuthState(AuthState.Idle)
+                onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
             }
 
             else -> Unit

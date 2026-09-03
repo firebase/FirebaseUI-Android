@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
+import com.firebase.ui.auth.ui.screens.reauth.ReauthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -111,6 +112,13 @@ class PhoneAuthHostDestinationsTest {
 
     /** The reauthentication harness's own stack, for the assertions that are about keys. */
     private var reauthBackStack: NavBackStack<NavKey>? = null
+
+    /**
+     * The sheet's phase holder. A reauthentication phase is the request's own state now, not
+     * something published to the public flow, so a test that wants to stand at a particular step
+     * puts it here — which is where the sink's fold would have put it.
+     */
+    private var reauthHolder: ReauthFlowState? = null
 
     /** The request the reauthentication harness armed, which its own emissions have to carry. */
     private var reauthRequest: AuthState.Reauthentication.Request? = null
@@ -452,7 +460,10 @@ class PhoneAuthHostDestinationsTest {
         // Above the display, like the host: a step switch disposes whatever the step it left held.
         val phoneFlowState = rememberPhoneAuthFlowState(config)
         val reauthFlowState = rememberReauthFlowState()
-        SideEffect { reauthFlowState.arm(AuthState.Reauthentication.Required(request)) }
+        SideEffect {
+            reauthHolder = reauthFlowState
+            reauthFlowState.arm(AuthState.Reauthentication.Required(request))
+        }
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
             NavDisplay(
                 backStack = backStack,
@@ -501,7 +512,7 @@ class PhoneAuthHostDestinationsTest {
     /** The reauthentication phase Firebase's `onCodeSent` callback ends up published as. */
     private fun sendReauthCode(verificationId: String = "reauth-verification-id") {
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
+            requireNotNull(reauthHolder).moveTo(
                 AuthState.Reauthentication.PhoneNumberVerificationRequired(
                     request = requireNotNull(reauthRequest),
                     verificationId = verificationId,
