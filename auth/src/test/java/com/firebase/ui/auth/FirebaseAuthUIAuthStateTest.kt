@@ -265,12 +265,12 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     /**
-     * A host calling raw `auth.signOut()` while a reauthentication is armed used to leave the
+     * A host calling raw `auth.signOut()` while a reauthentication is outstanding used to leave the
      * internal state at Reauthentication.Required: the combine keeps preferring it, so the reauth UI
      * stays up over a signed-out session and every provider fails with an untranslated "no user".
      */
     @Test
-    fun `authStateFlow() clears an armed Reauthentication Required when the user signs out`() =
+    fun `authStateFlow() clears an outstanding Reauthentication Required when the user signs out`() =
         runBlocking {
             `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
             `when`(mockFirebaseUser.isEmailVerified).thenReturn(true)
@@ -639,7 +639,8 @@ class FirebaseAuthUIAuthStateTest {
         val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(state.request.hasPendingOperation).isTrue()
         assertThat(state.request.isResumable).isTrue()
-        // One path for this condition now: it arms and waits, where it used to arm *and* throw an
+        // One path for this condition now: it raises a request and waits, where it used to raise one
+        // *and* throw an
         // InvalidCredentialsException the caller had to catch and ignore.
         assertThat(call.isActive).isTrue()
 
@@ -651,12 +652,12 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     /**
-     * `withReauth`/`delete` are public and can arm a request with no [FirebaseAuthScreen]
+     * `withReauth`/`delete` are public and can raise a request with no [FirebaseAuthScreen]
      * composed. Folding is the composed screen's, so the setter stays a plain setter and the app's
      * own collector keeps seeing ordinary states.
      */
     @Test
-    fun `a Success reaches collectors while an undrainable request is armed`() = runTest {
+    fun `a Success reaches collectors while nothing can accept the request`() = runTest {
         `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
         authUI.updateAuthState(AuthState.Reauthentication.Required(mockFirebaseUser))
@@ -670,9 +671,9 @@ class FirebaseAuthUIAuthStateTest {
         assertThat(observed).isNotInstanceOf(AuthState.Reauthentication::class.java)
     }
 
-    /** The same for Idle: an undrainable arming is replaced, not made permanent. */
+    /** The same for Idle: a request nothing can accept is replaced, not made permanent. */
     @Test
-    fun `an Idle write clears an undrainable armed request`() = runTest {
+    fun `an Idle write clears a request nothing can accept`() = runTest {
         `when`(mockFirebaseUser.uid).thenReturn("uid-reauth")
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
         authUI.updateAuthState(AuthState.Reauthentication.Required(mockFirebaseUser))

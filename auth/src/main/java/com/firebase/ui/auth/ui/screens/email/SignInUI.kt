@@ -114,7 +114,7 @@ fun SignInUI(
             configuration.isNewEmailAccountsAllowed &&
             !configuration.isReauthenticationMode
 
-    // An email link reopens the app with nothing armed, so completing it reports an interruption
+    // An email link reopens the app with no request outstanding, so completing it reports an interruption
     // instead of the operation; a reset email leaves the reauth sheet and its request intact.
     val isEmailLinkSignInOffered =
         provider.isEmailLinkSignInEnabled && !configuration.isReauthenticationMode

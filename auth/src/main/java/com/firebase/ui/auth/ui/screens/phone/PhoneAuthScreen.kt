@@ -225,7 +225,7 @@ fun PhoneAuthScreen(
         }
     }
 
-    // The flow this screen belongs to: the host's when composed on its own, the armed
+    // The flow this screen belongs to: the host's when composed on its own, the outstanding
     // request's when composed inside a reauthentication surface.
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
     // This flow's state, not the process-wide channel's: under a reauthentication request
@@ -240,7 +240,7 @@ fun PhoneAuthScreen(
     //
     // Only an ordinary Loading is retracted here. Under a reauthentication request the pending
     // Loading is published as Reauthentication.Authenticating, which the reauth flow's own teardown
-    // owns; and were this to write anyway, updateAuthState folds Idle back into the armed request
+    // owns; and were this to write anyway, updateAuthState folds Idle back into the outstanding request
     // rather than dropping it.
     DisposableEffect(authUI) {
         onDispose {
@@ -512,7 +512,7 @@ fun PhoneAuthScreen(
         onChangeNumberClick = {
             cancelVerification("changing phone number")
             // Nothing replaces the cancelled attempt here, so this handler retracts its Loading -
-            // as the armed request's provider-selection phase when one is running, Idle otherwise.
+            // as the outstanding request's provider-selection phase when one is running, Idle otherwise.
             onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
             verificationJob.value = null
             isSubmittingCode.value = false

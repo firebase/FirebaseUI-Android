@@ -19,7 +19,7 @@ import kotlinx.coroutines.CompletableDeferred
 import java.util.UUID
 
 /**
- * An armed request standing in for one a caller is waiting on, running [operation] if and when the
+ * An outstanding request standing in for one a caller is waiting on, running [operation] if and when the
  * screen resolves it with a retry.
  *
  * The resolver is completed from the screen's own effect, and `invokeOnCompletion` runs on the
@@ -35,11 +35,11 @@ internal fun retryingReauth(
     resolver.invokeOnCompletion { cause ->
         if (cause == null && resolver.getCompleted()) operation()
     }
-    return armedReauthRequest(user, reason, resolver)
+    return raisedReauth(user, reason, resolver)
 }
 
-/** An armed request with a caller waiting on [resolver], for asserting the decision itself. */
-internal fun armedReauthRequest(
+/** An outstanding request with a caller waiting on [resolver], for asserting the decision itself. */
+internal fun raisedReauth(
     user: FirebaseUser,
     reason: String? = null,
     resolver: CompletableDeferred<Boolean>? = null,
@@ -54,11 +54,11 @@ internal fun armedReauthRequest(
     )
 
 /**
- * An armed request whose caller is already gone — the shape a recreation leaves behind when the
+ * An outstanding request whose caller is already gone — the shape a recreation leaves behind when the
  * scope that launched the operation did not survive it.
  */
 internal fun abandonedReauth(user: FirebaseUser): AuthState.Reauthentication.Required {
     val resolver = CompletableDeferred<Boolean>()
     resolver.cancel()
-    return armedReauthRequest(user, resolver = resolver)
+    return raisedReauth(user, resolver = resolver)
 }

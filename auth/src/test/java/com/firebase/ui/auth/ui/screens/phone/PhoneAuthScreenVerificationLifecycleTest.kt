@@ -559,7 +559,7 @@ class PhoneAuthScreenVerificationLifecycleTest {
     }
 
     /**
-     * The same teardown, but while a reauthentication request is armed. The failure is folded into
+     * The same teardown, but while a reauthentication request is outstanding. The failure is folded into
      * [AuthState.Reauthentication.AttemptFailed], so a `when` that only tears down on
      * [AuthState.Error] leaves the verification open and the late auto-retrieval below starts a
      * second reauthentication the user never asked for. `resend cancels the superseded
@@ -575,10 +575,10 @@ class PhoneAuthScreenVerificationLifecycleTest {
 
         val observed = mutableListOf<AuthState>()
         // Stands in for the composed FirebaseAuthScreen, which is what owns folding now: fold each
-        // ordinary provider state into the armed request and publish the phase this screen reads.
+        // ordinary provider state into the outstanding request and publish the phase this screen reads.
         val required = AuthState.Reauthentication.Required(user)
         val reauthFlowState = ReauthFlowState(mutableStateOf(null))
-        reauthFlowState.arm(required)
+        reauthFlowState.accept(required)
         val collector = CoroutineScope(Dispatchers.Main.immediate).launch {
             authUI.authStateFlow().collect { state ->
                 observed += state

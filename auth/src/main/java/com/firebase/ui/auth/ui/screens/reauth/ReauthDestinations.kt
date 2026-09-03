@@ -98,8 +98,8 @@ internal fun AuthState.Reauthentication?.toReauthSurface(
 internal fun NavBackStack<NavKey>.reauthEntries(): List<AuthRoute.Reauth> =
     filterIsInstance<AuthRoute.Reauth>()
 
-/** The armed reauthentication, or null. The back stack *is* the arming marker. */
-internal fun NavBackStack<NavKey>.armedReauth(): AuthRoute.Reauth? =
+/** The reauthentication currently presented, or null. The back stack *is* the presentation marker. */
+internal fun NavBackStack<NavKey>.presentedReauth(): AuthRoute.Reauth? =
     reauthEntries().lastOrNull()
 
 /** Removes every reauthentication entry. Index 0 is always a non-reauth entry, so never empties. */
@@ -139,7 +139,7 @@ internal fun NavBackStack<NavKey>.navigateReauth(
  * leaves it bare when [reauthContent] owns presentation.
  *
  * @param surface The one condition for the reauthentication surface. [ReauthSceneStrategy] gates
- * the sheet on it and the entry renders what it resolves to, so an entry with nothing armed is
+ * the sheet on it and the entry renders what it resolves to, so an entry with no request outstanding is
  * never composed at all.
  * @param phoneFlowState What the reauthentication phone steps share across a step switch — see
  * [PhoneAuthFlowState]. Reauthentication's own instance, whose lifetime is the request's: nothing
@@ -176,7 +176,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
         },
     ) { key ->
         // Read through the snapshot, never through captured values — the entry rule at
-        // FirebaseAuthScreen's entryProvider. Nothing armed is the same condition the sheet exists
+        // FirebaseAuthScreen's entryProvider. No request outstanding is the same condition the sheet exists
         // on; a key naming an older request is the host's stack one composition behind the state,
         // and this entry writes to the id it names, so it renders nothing rather than the wrong one.
         val reauthSurface = surface.value ?: return@entry

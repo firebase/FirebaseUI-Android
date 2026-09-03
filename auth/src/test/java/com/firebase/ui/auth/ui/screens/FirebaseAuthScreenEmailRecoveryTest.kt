@@ -526,14 +526,14 @@ class FirebaseAuthScreenEmailRecoveryTest {
      * The invariant the recovery veto above rests on. `onRecover` is withheld on
      * `configuration.isReauthenticationMode` alone, which does not cover a reauthentication this
      * screen is *presenting* — there the outer configuration is an ordinary one. It does not need
-     * to: while a request is armed, `FirebaseAuthUI.contextualizeReauthenticationState` folds every
+     * to: while a request is outstanding, `FirebaseAuthUI.contextualizeReauthenticationState` folds every
      * `AuthState.Error` into `AuthState.Reauthentication.AttemptFailed`, so the branch that offers
      * recovery is unreachable while a reauthentication surface is up. If that folding ever stopped,
      * a recovery could navigate the outer graph out from under the sheet with the request still
-     * armed — so the folding is asserted here rather than guarded against with a dead branch.
+     * outstanding — so the folding is asserted here rather than guarded against with a dead branch.
      */
     @Test
-    fun `an error raised while a reauth request is armed never surfaces as an error state`() {
+    fun `an error raised while a reauth request is outstanding never surfaces as an error state`() {
         val passwordInfo = mock(UserInfo::class.java)
         `when`(passwordInfo.providerId).thenReturn(EmailAuthProvider.PROVIDER_ID)
         val user = mock(FirebaseUser::class.java)

@@ -241,7 +241,7 @@ internal fun AuthUIConfiguration.isEmailSignUpOffered(): Boolean {
 
 /**
  * Whether the email flow may offer email-link sign-in. False while reauthenticating: a link
- * reopens the app with nothing armed, so completing one there reports an interruption instead of
+ * reopens the app with no request outstanding, so completing one there reports an interruption instead of
  * finishing the pending operation.
  */
 internal fun AuthUIConfiguration.isEmailLinkSignInOffered(): Boolean {

@@ -285,12 +285,12 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * A dismissed provider sheet (Credential Manager, an OAuth web flow, …) emits
-     * [AuthState.Cancelled]. While reauthentication is armed that only cancels *that attempt*: the
+     * [AuthState.Cancelled]. While a reauthentication is outstanding that only cancels *that attempt*: the
      * slot must stay up, the flow must not report itself cancelled, and the pending sensitive
      * operation must survive so a later successful reauthentication still runs it.
      */
     @Test
-    fun `cancelling a provider attempt keeps the reauth slot armed`() {
+    fun `cancelling a provider attempt keeps the reauth slot open`() {
         val user = passwordOnlyUser("linked@example.com")
         var cancelledCount = 0
         var retryRan = false
@@ -338,7 +338,7 @@ class FirebaseAuthScreenReauthContentStateTest {
      * report the flow as cancelled nor drop the pending operation.
      */
     @Test
-    fun `cancelling a provider attempt in the default reauth sheet keeps it armed`() {
+    fun `cancelling a provider attempt in the default reauth sheet keeps it open`() {
         val phoneInfo = mock(UserInfo::class.java)
         `when`(phoneInfo.providerId).thenReturn("phone")
         val passwordInfo = mock(UserInfo::class.java)
@@ -453,11 +453,11 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * When no configured provider is linked to the user there is no reauth UI to show, so nothing
-     * may stay armed — otherwise a later Loading → Success would consume the pending operation and
+     * may stay outstanding — otherwise a later Loading → Success would consume the pending operation and
      * run the sensitive action with no reauthentication at all.
      */
     @Test
-    fun `no linked providers leaves nothing armed`() {
+    fun `no linked providers leaves no request outstanding`() {
         val user = googleOnlyUser("federated@example.com")
         var slotComposed = false
         var retryRan = false
@@ -612,13 +612,13 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * The error dialog's recovery actions navigate the *outer* back stack to the non-reauth email
-     * screen. While a reauthentication is armed both `onRecover` and `onRetry` are withheld, so the
+     * screen. While a reauthentication is outstanding both `onRecover` and `onRetry` are withheld, so the
      * dialog has no action to offer and must not render an action button that silently dismisses
      * instead of recovering. This is the default-sheet path — with a custom slot the error latches
      * into the slot and no dialog is shown at all.
      */
     @Test
-    fun `a recoverable error offers no action while reauthentication is armed`() {
+    fun `a recoverable error offers no action while reauthentication is outstanding`() {
         val phoneInfo = mock(UserInfo::class.java)
         `when`(phoneInfo.providerId).thenReturn("phone")
         val passwordInfo = mock(UserInfo::class.java)
@@ -711,7 +711,7 @@ class FirebaseAuthScreenReauthContentStateTest {
      * is pending, so provider selection has to be inert.
      */
     @Test
-    fun `provider selection is inert while reauthentication is armed`() {
+    fun `provider selection is inert while reauthentication is outstanding`() {
         val user = passwordOnlyUser("linked@example.com")
         var retryRan = false
         var captured: ReauthContentState? = null
@@ -770,7 +770,7 @@ class FirebaseAuthScreenReauthContentStateTest {
      * *first* lambda and ran the wrong sensitive operation after reauthentication.
      */
     @Test
-    fun `arming a second operation for the same user replaces the first`() {
+    fun `raising a second operation for the same user replaces the first`() {
         val user = passwordOnlyUser("linked@example.com")
         val ran = mutableListOf<String>()
 
@@ -868,12 +868,12 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * The uid comparison is the whole guarantee: a stamped success for *another* account is not
-     * evidence that the armed user re-proved anything, so the operation must not run and the slot
+     * evidence that the outstanding user re-proved anything, so the operation must not run and the slot
      * must stay up. Without this the comparison could be weakened to a null check unnoticed.
      */
     @Test
     fun `a stamped Success for a different uid does not run the pending operation`() {
-        val armedUser = passwordOnlyUser("armed@example.com")
+        val requestUser = passwordOnlyUser("outstanding@example.com")
         val otherUser = userLinkedTo("google.com", "other@example.com")
         var retryRan = false
         var captured: ReauthContentState? = null
@@ -894,12 +894,12 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                retryingReauth(armedUser) { retryRan = true }
+                retryingReauth(requestUser) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
-        assertThat(armedUser.uid).isNotEqualTo(otherUser.uid)
+        assertThat(requestUser.uid).isNotEqualTo(otherUser.uid)
 
         composeTestRule.runOnIdle { authUI.updateAuthState(AuthState.Loading()) }
         composeTestRule.waitForIdle()
@@ -924,10 +924,10 @@ class FirebaseAuthScreenReauthContentStateTest {
     /**
      * A wrong password for an unverified account ends up here: the consumed Error resets to Idle,
      * the combine falls back to the live session, and that yields RequiresEmailVerification. It
-     * resets the back stack to a single entry, which would wipe the stack under the armed slot.
+     * resets the back stack to a single entry, which would wipe the stack under the outstanding slot.
      */
     @Test
-    fun `RequiresEmailVerification does not navigate while reauthentication is armed`() {
+    fun `RequiresEmailVerification does not navigate while reauthentication is outstanding`() {
         val user = passwordOnlyUser("linked@example.com")
         var retryRan = false
 
@@ -1093,11 +1093,11 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
-     * Backing out of the challenge is not abandoning reauthentication: the request stays armed, so
+     * Backing out of the challenge is not abandoning reauthentication: the request stays outstanding, so
      * the host must not be told the flow was cancelled and the operation must still be runnable.
      */
     @Test
-    fun `cancelling the MFA challenge returns to provider selection with the request still armed`() {
+    fun `cancelling the MFA challenge returns to provider selection with the request still outstanding`() {
         val user = passwordOnlyUser("linked@example.com")
         val signedInAuthUI = signedInAuthUI(user)
         val resolver = totpResolver(Tasks.forResult(mock(AuthResult::class.java)))
@@ -1144,7 +1144,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         assertThat(cancelledCount).isEqualTo(0)
         assertThat(retryCount).isEqualTo(0)
 
-        // Still armed: a later genuine reauthentication of the same user still runs the operation.
+        // Still outstanding: a later genuine reauthentication of the same user still runs the operation.
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
                 AuthState.Success(result = null, user = user, reauthenticatedUid = user.uid)
@@ -1362,7 +1362,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * Rotating part-way through the library's own email sub-flow must not bounce the user back to
-     * the provider chooser: the active sub-route is saved alongside the arming.
+     * the provider chooser: the active sub-route is saved alongside the request.
      */
     @Test
     fun `an active email sub-flow survives Activity recreation`() {
@@ -1411,8 +1411,8 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * The likeliest moment to rotate is right after a cancelled or failed attempt. Resetting the
-     * flow to [AuthState.Idle] there would drop the arming from the process-cached [FirebaseAuthUI]
-     * and lose the pending operation silently; the arming is re-emitted instead, so a recreation
+     * flow to [AuthState.Idle] there would drop the request from the process-cached [FirebaseAuthUI]
+     * and lose the pending operation silently; the request is re-emitted instead, so a recreation
      * re-derives both it and the operation, and a later genuine reauthentication still runs it.
      */
     @Test
@@ -1462,7 +1462,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * Recreation during an in-flight attempt. Nothing retains the caller, so what survives is the
-     * request latched on the flow — enough to re-arm the same request and complete it. The attempt
+     * request latched on the flow — enough to accept the same request again and complete it. The attempt
      * itself does not come back: its network call died with the Activity, so the restored screen
      * restarts at provider selection rather than showing progress for nothing.
      */
@@ -1517,12 +1517,12 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * Process death, unlike rotation, also takes the process-cached [FirebaseAuthUI] holding the
-     * arming: the restored screen's first state comes from the persisted session, so it is an
+     * request: the restored screen's first state comes from the persisted session, so it is an
      * [AuthState.Success] and no [AuthState.Reauthentication.Required] is ever available to
      * re-derive from. The pending operation is gone and must still be reported, not dropped.
      */
     @Test
-    fun `an arming lost to process death is reported rather than dropped`() {
+    fun `a request lost to process death is reported rather than dropped`() {
         val user = passwordOnlyUser("linked@example.com")
         var retryCount = 0
         // Read on every composition, so the restore below observes the replacement instance.
@@ -1577,10 +1577,10 @@ class FirebaseAuthScreenReauthContentStateTest {
 
     /**
      * The mirror image, and the regression the broadened guard risks: rotation keeps the cached
-     * [FirebaseAuthUI], so the arming re-derives and must not be reported as interrupted.
+     * [FirebaseAuthUI], so the request re-derives and must not be reported as interrupted.
      */
     @Test
-    fun `recreation that can re-derive the arming reports no interruption`() {
+    fun `recreation that can re-derive the request reports no interruption`() {
         val user = passwordOnlyUser("linked@example.com")
         val signedInAuthUI = signedInAuthUI(user)
         var retryCount = 0
@@ -1668,11 +1668,11 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
-     * One request, one surface, however many times its arming state comes round again — an attempt
-     * and a back-out both re-enter the arming branch for the same request id.
+     * One request, one surface, however many times its raised state comes round again — an attempt
+     * and a back-out both re-enter the raising branch for the same request id.
      */
     @Test
-    fun `re-arming the same request does not stack a second surface`() {
+    fun `raising the same request twice does not stack a second surface`() {
         val user = passwordOnlyUser("linked@example.com")
         val signedInAuthUI = signedInAuthUI(user)
 
@@ -1696,7 +1696,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
 
         // An attempt, then the user backing out of it: the phase returns to provider selection for
-        // the same request, which re-enters the arming branch.
+        // the same request, which re-enters the raising branch.
         composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Loading("Signing in")) }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Cancelled) }
@@ -1717,7 +1717,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         val signedInAuthUI = signedInAuthUI(user)
         val runs = AtomicInteger(0)
         val restorationTester = StateRestorationTester(composeTestRule)
-        val armed = retryingReauth(user) { runs.incrementAndGet() }
+        val raised = retryingReauth(user) { runs.incrementAndGet() }
 
         restorationTester.setContent {
             FirebaseAuthScreen(
@@ -1732,7 +1732,7 @@ class FirebaseAuthScreenReauthContentStateTest {
             )
         }
 
-        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(armed) }
+        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(raised) }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
@@ -1750,13 +1750,13 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
         assertThat(runs.get()).isEqualTo(1)
 
-        armed.request.resolve()
+        raised.request.resolve()
         composeTestRule.waitForIdle()
         assertThat(runs.get()).isEqualTo(1)
     }
 
     /**
-     * A recreation that outlived the caller: the request is still armed and still latched, but the
+     * A recreation that outlived the caller: the request is still outstanding and still latched, but the
      * coroutine that would run the operation is gone. Presenting the sheet would take credentials
      * and then report a success for an operation that can never run, so it is reported instead.
      */
