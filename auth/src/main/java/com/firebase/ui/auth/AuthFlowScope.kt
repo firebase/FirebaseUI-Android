@@ -15,6 +15,8 @@
 package com.firebase.ui.auth
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -47,6 +49,15 @@ internal class AuthFlowScope(
     val config: AuthUIConfiguration,
     val credentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null,
     val loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider? = null,
+    /**
+     * What this flow is currently doing, for the screens rendering it.
+     *
+     * The read side of [sink], and the reason a reauthentication phase no longer has to be
+     * published to the public channel for the sub-screens to see it: under a request's scope this
+     * *is* the phase, so `EmailAuthScreen` and `PhoneAuthScreen` read their spinner and their
+     * inline error from the conversation they are actually part of.
+     */
+    val state: State<AuthState>,
     private val sink: AuthStateSink,
 ) {
     fun emit(state: AuthState) = sink.emit(state)
@@ -111,19 +122,23 @@ internal fun rememberAuthFlowScope(
     configuration: AuthUIConfiguration,
 ): AuthFlowScope {
     val ambient = LocalAuthFlowScope.current
-    return remember(ambient, authUI, configuration) {
-        ambient ?: hostAuthFlowScope(authUI, configuration)
+    val hostState = remember(authUI) { authUI.authStateFlow() }
+        .collectAsState(AuthState.Idle)
+    return remember(ambient, authUI, configuration, hostState) {
+        ambient ?: hostAuthFlowScope(authUI, configuration, hostState)
     }
 }
 
-/** An [AuthFlowScope] whose states go to [authUI]'s public flow. */
+/** An [AuthFlowScope] over [authUI]'s public flow, in both directions. */
 internal fun hostAuthFlowScope(
     authUI: FirebaseAuthUI,
     configuration: AuthUIConfiguration,
+    state: State<AuthState>,
 ): AuthFlowScope = AuthFlowScope(
     auth = authUI.auth,
     config = configuration,
     credentialManagerProvider = authUI.testCredentialManagerProvider,
     loginManagerProvider = authUI.testLoginManagerProvider,
+    state = state,
     sink = { authUI.updateAuthState(it) },
 )
