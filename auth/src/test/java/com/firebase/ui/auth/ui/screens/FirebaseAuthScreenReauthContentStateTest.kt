@@ -1668,6 +1668,45 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
+     * One request, one surface, however many times its arming state comes round again — an attempt
+     * and a back-out both re-enter the arming branch for the same request id.
+     */
+    @Test
+    fun `re-arming the same request does not stack a second surface`() {
+        val user = passwordOnlyUser("linked@example.com")
+        val signedInAuthUI = signedInAuthUI(user)
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = signedInAuthUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                reauthContent = {
+                    Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
+                }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(retryingReauth(user) {})
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
+
+        // An attempt, then the user backing out of it: the phase returns to provider selection for
+        // the same request, which re-enters the arming branch.
+        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Loading("Signing in")) }
+        composeTestRule.waitForIdle()
+        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Cancelled) }
+        composeTestRule.waitForIdle()
+
+        // assertIsDisplayed fails outright on more than one match, so this pins the invariant.
+        composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
+    }
+
+    /**
      * The sensitive operation must run at most once. It runs on the caller's own coroutine now, so
      * neither a recreation nor a second resolution can start it again: there is no closure on the
      * state for a restored screen to claim, and a resolved request ignores being resolved.
