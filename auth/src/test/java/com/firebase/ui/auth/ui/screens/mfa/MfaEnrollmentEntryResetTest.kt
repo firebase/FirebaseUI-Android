@@ -82,7 +82,10 @@ import org.robolectric.annotation.Config
  * * an entry naming a specific step clearing **and still landing on that step**, including the
  *   single-factor case where the named step is not the one [mfaEnrollmentStartStep] resolves to;
  * * every one of the nine fields going back to what [rememberMfaEnrollmentFlowState] created it
- *   with, asserted against the factory's own values rather than against restated literals.
+ *   with, asserted against the factory's own values rather than against restated literals;
+ * * a sign-out and a second user in between, the case the clear is actually there for;
+ * * entry arriving *from inside* the flow doing nothing, since the clear would there take the
+ *   enrolment in progress rather than the previous one.
  *
  * The emulator cannot perform a real TOTP enrolment, so the secret and the assertion are mocked —
  * the same approach [MfaEnrollmentHostDestinationsTest] takes.
@@ -104,6 +107,13 @@ class MfaEnrollmentEntryResetTest {
 
     @Mock
     private lateinit var mockMultiFactor: MultiFactor
+
+    /** The user the flow state must not carry anything of the first user's into. */
+    @Mock
+    private lateinit var secondUser: FirebaseUser
+
+    @Mock
+    private lateinit var secondUserMultiFactor: MultiFactor
 
     private lateinit var applicationContext: Context
     private lateinit var authUI: FirebaseAuthUI
@@ -133,6 +143,11 @@ class MfaEnrollmentEntryResetTest {
         `when`(mockUser.isEmailVerified).thenReturn(true)
         `when`(mockUser.multiFactor).thenReturn(mockMultiFactor)
         `when`(mockMultiFactor.enrolledFactors).thenReturn(emptyList())
+        `when`(secondUser.uid).thenReturn("mfa-entry-reset-second-user")
+        `when`(secondUser.email).thenReturn("second@example.com")
+        `when`(secondUser.isEmailVerified).thenReturn(true)
+        `when`(secondUser.multiFactor).thenReturn(secondUserMultiFactor)
+        `when`(secondUserMultiFactor.enrolledFactors).thenReturn(emptyList())
         authUI = FirebaseAuthUI.create(app, mockAuth)
     }
 
@@ -187,6 +202,69 @@ class MfaEnrollmentEntryResetTest {
 
             assertEnteredBlankOn(MfaEnrollmentStep.SelectFactor)
         }
+    }
+
+    /**
+     * The case the reset exists for. Six of the nine fields are `rememberSaveable` and the
+     * instance holding them is remembered by [FirebaseAuthScreen] above the `NavDisplay`, so it
+     * outlives the signed-in session that filled it — the second user would otherwise open the
+     * form on the first user's phone number and verification code.
+     */
+    @Test
+    fun `a second user after a sign-out enters on a blank form`() {
+        withMockedTotpEnrollment {
+            renderSignedIn()
+            enterThroughManageMfa()
+            dirtyEveryReachableFieldAndEnroll()
+
+            signOutAndSignIn(secondUser)
+            enterThroughManageMfa()
+
+            assertEnteredBlankOn(MfaEnrollmentStep.SelectFactor)
+        }
+    }
+
+    // =============================================================================================
+    // Entering while already in the flow
+    // =============================================================================================
+
+    /**
+     * The success destination stays composed while the push onto it runs, so a second
+     * `onManageMfa` can arrive after the flow is already entered — and the reset, which is there
+     * to clear the *previous* enrolment, would clear the one in progress. Entry while a step of
+     * the flow is on the stack must do nothing at all.
+     */
+    @Test
+    fun `entering again from inside the flow keeps what is already typed`() {
+        renderSignedIn()
+        enterThroughManageMfa()
+        selectFactor(MfaFactor.Sms)
+        typePhoneNumber()
+
+        composeTestRule.runOnIdle { requireNotNull(uiContext).onManageMfa() }
+        composeTestRule.waitForIdle()
+
+        assertStep(MfaEnrollmentStep.ConfigureSms)
+        assertThat(requireNotNull(mfaState).phoneNumber).isEqualTo(TYPED_PHONE_NUMBER)
+        assertThat(requireNotNull(mfaState).selectedFactor).isEqualTo(MfaFactor.Sms)
+    }
+
+    /**
+     * The same guard through the other entry site, and naming a *different* step: `onNavigate`
+     * takes any [AuthRoute], so a host can name a step of the flow while the flow is already on
+     * the stack. That must not move the user off the step they are filling in either.
+     */
+    @Test
+    fun `naming a step from inside the flow does not move or clear it`() {
+        renderSignedIn()
+        enterThroughManageMfa()
+        selectFactor(MfaFactor.Sms)
+        typePhoneNumber()
+
+        enterThroughNavigate(AuthRoute.MfaEnrollment.SelectFactor)
+
+        assertStep(MfaEnrollmentStep.ConfigureSms)
+        assertThat(requireNotNull(mfaState).phoneNumber).isEqualTo(TYPED_PHONE_NUMBER)
     }
 
     // =============================================================================================
@@ -341,6 +419,23 @@ class MfaEnrollmentEntryResetTest {
             authUI.updateAuthState(
                 AuthState.Success(result = null, user = mockUser, isNewUser = false)
             )
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(AUTHENTICATED_TAG).assertIsDisplayed()
+    }
+
+    /**
+     * Signs the current user out through the success destination's own control, then signs [user]
+     * in — the whole point being that [FirebaseAuthScreen] is never left, so the flow state it
+     * remembers survives the change of user.
+     */
+    private fun signOutAndSignIn(user: FirebaseUser) {
+        composeTestRule.runOnIdle { requireNotNull(uiContext).onSignOut() }
+        composeTestRule.waitForIdle()
+
+        `when`(mockAuth.currentUser).thenReturn(user)
+        composeTestRule.runOnIdle {
+            authUI.updateAuthState(AuthState.Success(result = null, user = user, isNewUser = false))
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(AUTHENTICATED_TAG).assertIsDisplayed()

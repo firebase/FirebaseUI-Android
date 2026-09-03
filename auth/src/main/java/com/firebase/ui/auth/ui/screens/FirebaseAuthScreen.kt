@@ -438,7 +438,8 @@ fun FirebaseAuthScreen(
                             onManageMfa = {
                                 if (reauthState == null) {
                                     if (configuration.isMfaEnabled) {
-                                        // pushUnique invariant: Success is one entry — nothing to bury.
+                                        // A second tap while the flow is already entered is a
+                                        // no-op: enterMfaEnrollment guards its own reset.
                                         backStack.enterMfaEnrollment(
                                             route = AuthRoute.MfaEnrollment,
                                             configuration = mfaConfiguration,

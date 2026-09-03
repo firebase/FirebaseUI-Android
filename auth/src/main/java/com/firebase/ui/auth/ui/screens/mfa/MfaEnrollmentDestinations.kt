@@ -246,14 +246,20 @@ internal val AuthRoute.entersMfaEnrollment: Boolean
  * for the picker, and redirecting it to that factor's configuration step would be a behavior
  * change. Only [AuthRoute.MfaEnrollment], which names the flow rather than a step, is resolved.
  *
- * `pushUnique` invariant: both host call sites enter from a stack that cannot already hold a step
- * of this flow, so the buried-case trim never fires.
+ * A no-op when a step of this flow is already on the stack. Entry is reachable from a destination
+ * that stays composed while the push runs, so a second tap can arrive mid-flow — and the reset,
+ * which exists to clear the *previous* enrolment, would there clear the one in progress. Nothing
+ * is left to do in that case: the flow is already entered.
+ *
+ * `pushUnique` invariant: that guard is also what keeps the buried-case trim from firing, since
+ * the only key this pushes is a step of a flow the stack has just been shown not to hold.
  */
 internal fun NavBackStack<NavKey>.enterMfaEnrollment(
     route: AuthRoute,
     configuration: MfaConfiguration,
     flowState: MfaEnrollmentFlowState,
 ) {
+    if (any { it is AuthRoute.MfaEnrollment.Step }) return
     flowState.reset()
     pushUnique(
         when (route) {
