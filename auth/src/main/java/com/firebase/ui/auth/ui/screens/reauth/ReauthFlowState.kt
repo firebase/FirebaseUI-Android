@@ -58,7 +58,7 @@ internal class ReauthFlowState internal constructor(
     fun finish(retryOperation: Boolean) {
         val request = phaseState.value?.request
         phaseState.value = null
-        request?.resolve(retryOperation)
+        if (retryOperation) request?.resolve() else request?.decline()
     }
 
     /**

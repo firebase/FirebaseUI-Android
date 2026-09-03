@@ -605,7 +605,7 @@ class FirebaseAuthUIAuthStateTest {
 
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        val call = launch { authUI.delete(context) }
+        val call = launch { runCatching { authUI.delete(context) } }
         runCurrent()
 
         assertThat(authUI.authStateFlow().first())
@@ -613,7 +613,7 @@ class FirebaseAuthUIAuthStateTest {
         val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(state.user).isEqualTo(mockUser)
 
-        state.request.resolve(false)
+        state.request.decline()
         call.join()
     }
 
@@ -630,7 +630,10 @@ class FirebaseAuthUIAuthStateTest {
         `when`(mockUser.delete()).thenReturn(tcs.task)
 
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val call = launch { authUI.delete(context) }
+        var thrown: Exception? = null
+        val call = launch {
+            try { authUI.delete(context) } catch (e: Exception) { thrown = e }
+        }
         runCurrent()
 
         val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
@@ -640,8 +643,11 @@ class FirebaseAuthUIAuthStateTest {
         // InvalidCredentialsException the caller had to catch and ignore.
         assertThat(call.isActive).isTrue()
 
-        state.request.resolve(false)
+        state.request.decline()
         call.join()
+
+        // Declining is reported, so the caller knows the account was not deleted.
+        assertThat(thrown).isInstanceOf(AuthException.AuthCancelledException::class.java)
     }
 
     /**
@@ -698,10 +704,12 @@ class FirebaseAuthUIAuthStateTest {
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
 
         val call = launch {
-            authUI.withReauth(context, reason = "Verify identity to change email") {
-                throw FirebaseAuthRecentLoginRequiredException(
-                    "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                )
+            runCatching {
+                authUI.withReauth(context, reason = "Verify identity to change email") {
+                    throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+                }
             }
         }
         runCurrent()
@@ -714,7 +722,7 @@ class FirebaseAuthUIAuthStateTest {
         // the library would have to hold on to it.
         assertThat(call.isActive).isTrue()
 
-        state.request.resolve(false)
+        state.request.decline()
         call.join()
     }
 
@@ -736,35 +744,45 @@ class FirebaseAuthUIAuthStateTest {
         val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
         assertThat(callCount).isEqualTo(1)
 
-        state.request.resolve(true)
+        state.request.resolve()
         call.join()
 
         assertThat(callCount).isEqualTo(2)
     }
 
+    /**
+     * A decline reaches the caller as a throw rather than a quiet return. "You backed out" and
+     * "your operation ran" are different outcomes, and a caller that cannot tell them apart has to
+     * guess whether its work happened.
+     */
     @Test
-    fun `withReauth() leaves the operation alone when its request resolves without a retry`() =
-        runTest {
-            val context = ApplicationProvider.getApplicationContext<Context>()
-            `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
-            var callCount = 0
+    fun `withReauth() reports a declined request rather than returning quietly`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        var callCount = 0
+        var thrown: Exception? = null
 
-            val call = launch {
+        val call = launch {
+            try {
                 authUI.withReauth(context) {
                     callCount++
                     if (callCount == 1) throw FirebaseAuthRecentLoginRequiredException(
                         "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
                     )
                 }
+            } catch (e: Exception) {
+                thrown = e
             }
-            runCurrent()
-            val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
-
-            state.request.resolve(false)
-            call.join()
-
-            assertThat(callCount).isEqualTo(1)
         }
+        runCurrent()
+        val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
+
+        state.request.decline()
+        call.join()
+
+        assertThat(callCount).isEqualTo(1)
+        assertThat(thrown).isInstanceOf(AuthException.AuthCancelledException::class.java)
+    }
 
     /**
      * The caller's scope died while the sheet was up. Nothing can resume the operation, and the
@@ -793,7 +811,7 @@ class FirebaseAuthUIAuthStateTest {
 
         assertThat(state.request.isResumable).isFalse()
         // Resolving a dead request is a no-op, not a crash, and runs nothing.
-        state.request.resolve(true)
+        state.request.resolve()
         assertThat(callCount).isEqualTo(1)
     }
 
@@ -836,7 +854,7 @@ class FirebaseAuthUIAuthStateTest {
         runCurrent()
 
         val state = authUI.authStateFlow().first() as AuthState.Reauthentication.Required
-        state.request.resolve(true)
+        state.request.resolve()
         call.join()
 
         verify(mockUser, times(2)).delete()

@@ -339,6 +339,9 @@ private fun AppAuthenticatedContent(
                                 // the progress indicator below covers it, and the deletion is
                                 // retried here rather than needing anything from this caller.
                                 uiContext.authUI.delete(context)
+                            } catch (e: AuthException.AuthCancelledException) {
+                                // Declined at the identity check; the account is untouched.
+                                Log.d("HighLevelApiDemoActivity", "Delete cancelled", e)
                             } catch (e: AuthException) {
                                 Log.e("HighLevelApiDemoActivity", "Delete failed", e)
                             } finally {
@@ -574,6 +577,10 @@ private fun ChangePasswordDialog(
                             // scope really can be cancelled mid-call. Never report that as a
                             // failure the user can retry.
                             throw e
+                        } catch (e: AuthException.AuthCancelledException) {
+                            // The user backed out of confirming their identity. Nothing failed,
+                            // and the password was not changed — so say neither.
+                            Log.d("HighLevelApiDemoActivity", "Reauthentication declined", e)
                         } catch (e: Exception) {
                             updateError = "Failed to update password. Please try again."
                         } finally {
