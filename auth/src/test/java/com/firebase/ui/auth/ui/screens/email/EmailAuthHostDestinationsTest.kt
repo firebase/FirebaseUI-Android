@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.email
 
+import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -328,9 +329,10 @@ class EmailAuthHostDestinationsTest {
                 requestId = "request-id",
                 user = user,
                 reason = null,
-                retryOperation = null,
             )
         }
+        val reauthFlowState = rememberReauthFlowState()
+        SideEffect { reauthFlowState.arm(AuthState.Reauthentication.Required(request)) }
         val backStack = rememberNavBackStack(
             AuthRoute.Success,
             AuthRoute.Reauth("request-id", "uid", startStep),
@@ -375,6 +377,7 @@ class EmailAuthHostDestinationsTest {
                         stringProvider = stringProvider,
                         surface = surface,
                         phoneFlowState = phoneFlowState,
+                        reauthFlowState = reauthFlowState,
                         emailContent = null,
                         phoneContent = null,
                         mfaChallengeContent = null,

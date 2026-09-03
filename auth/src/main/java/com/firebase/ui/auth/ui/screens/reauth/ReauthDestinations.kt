@@ -80,16 +80,10 @@ internal fun AuthState.Reauthentication?.toReauthSurface(
         is AuthState.Reauthentication.SmsAutoVerified,
         is AuthState.Reauthentication.PasswordResetLinkSent,
         is AuthState.Reauthentication.EmailSignInLinkSent,
-        // The surface gates the operation, so it stays up for the retry rather than uncovering
-        // the flow underneath for the length of it.
+        // Momentary: the screen validates the proof and ends the request on it. The surface stays
+        // up for that rather than flashing the flow underneath.
         is AuthState.Reauthentication.Succeeded,
-        is AuthState.Reauthentication.RetryingOperation,
             -> state.request
-
-        // The outcome is already in, or the request's retry callback was lost with the process.
-        is AuthState.Reauthentication.OperationFinished,
-        is AuthState.Reauthentication.Interrupted,
-            -> null
     } ?: return null
     val reauthConfiguration = configuration.toReauthConfiguration(request.user) ?: return null
     return ReauthSurface(state, request, reauthConfiguration)
@@ -155,6 +149,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
     configuration: AuthUIConfiguration,
     stringProvider: AuthUIStringProvider,
     surface: State<ReauthSurface?>,
+    reauthFlowState: ReauthFlowState,
     phoneFlowState: PhoneAuthFlowState,
     emailContent: (@Composable (EmailAuthContentState) -> Unit)?,
     phoneContent: (@Composable (PhoneAuthContentState) -> Unit)?,
@@ -186,10 +181,8 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
         val reauthConfig = reauthSurface.configuration
         val reauthRequired = AuthState.Reauthentication.Required(request)
         val mfaResolver = (reauthState as? AuthState.Reauthentication.RequiresMfa)?.resolver
-        // The retry counts as loading: the surface stays up for it, so it has to say it is busy.
         val isLoading = reauthState is AuthState.Reauthentication.Authenticating ||
-                reauthState is AuthState.Reauthentication.Succeeded ||
-                reauthState is AuthState.Reauthentication.RetryingOperation
+                reauthState is AuthState.Reauthentication.Succeeded
         val exception = (reauthState as? AuthState.Reauthentication.AttemptFailed)
             ?.exception
             ?.let { if (it is AuthException) it else AuthException.from(it, stringProvider) }
@@ -214,7 +207,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                                 if (provider !is AuthProvider.Email &&
                                     provider !is AuthProvider.Phone
                                 ) {
-                                    authUI.updateReauthentication(key.requestId) {
+                                    reauthFlowState.update(key.requestId) {
                                         it.attemptStarted()
                                     }
                                 }
@@ -255,6 +248,9 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                 isStepBelow = { false },
                 onCancel = { onLeaveStep(key) },
                 prefillEmail = { reauthRequired.user.email },
+                onNotificationConsumed = {
+                    reauthFlowState.update(key.requestId) { it.returnedToProviderSelection() }
+                },
             )
 
             is AuthRoute.Phone.Step -> PhoneAuthScreen(
@@ -275,6 +271,12 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                     backStack.navigateReauth(key, AuthRoute.Phone.EnterPhoneNumber)
                 },
                 flowState = phoneFlowState,
+                onNotificationConsumed = {
+                    reauthFlowState.update(key.requestId) { it.returnedToProviderSelection() }
+                },
+                onAttemptStarted = {
+                    reauthFlowState.update(key.requestId) { it.attemptStarted() }
+                },
             )
 
             // Only the state moves: the host pops the entry off whatever the state becomes, so
@@ -284,9 +286,35 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                     resolver = mfaResolver,
                     auth = authUI.auth,
                     content = mfaChallengeContent,
-                    onSuccess = { authUI.publishReauthenticationSuccess() },
+                    // The one credential exchange no provider owns, so the stamp is made here:
+                    // no current user means nothing was re-proved, and the attempt is reported as
+                    // a failure rather than moved on as an unstamped success.
+                    onSuccess = {
+                        val reauthenticated = authUI.auth.currentUser
+                        if (reauthenticated == null) {
+                            reauthFlowState.update(key.requestId) {
+                                AuthState.Reauthentication.AttemptFailed(
+                                    request,
+                                    AuthException.UserNotFoundException(
+                                        message = "No user is currently signed in for reauthentication"
+                                    ),
+                                )
+                            }
+                        } else {
+                            reauthFlowState.update(key.requestId) {
+                                AuthState.Reauthentication.Succeeded(
+                                    request,
+                                    AuthState.Success(
+                                        result = null,
+                                        user = reauthenticated,
+                                        reauthenticatedUid = reauthenticated.uid,
+                                    ),
+                                )
+                            }
+                        }
+                    },
                     onCancel = {
-                        authUI.updateReauthentication(key.requestId) { it.attemptCancelled() }
+                        reauthFlowState.update(key.requestId) { it.attemptCancelled() }
                     },
                     onError = { e -> authUI.updateAuthState(AuthState.Error(e)) },
                 )
