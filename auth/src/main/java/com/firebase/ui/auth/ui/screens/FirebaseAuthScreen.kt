@@ -647,7 +647,12 @@ fun FirebaseAuthScreen(
                 previousAuthState.value = state
                 // Guards below use `isAt` (runtime class), not `==`: keys carry arguments, so `==` blanks a live form.
                 val currentKey = backStack.lastOrNull()
-                val savedPresentation = armedReauth
+                // The stack itself, not the composition value derived from it: this effect is
+                // what writes the stack, so anything derived in composition describes the frame
+                // before. Recomposition happens to land between runs today, which is why the
+                // composition value also worked — but the guards below are about what is on the
+                // stack now, so they read it now.
+                val savedPresentation = backStack.armedReauth()
 
                 // A marker that outlived its phase: the Activity was recreated with the request
                 // still armed. Nothing here can be driven, so report it and clear up.
@@ -769,7 +774,7 @@ fun FirebaseAuthScreen(
                             return@LaunchedEffect
                         }
                         reauthFlowState.arm(state)
-                        if (armedReauth?.requestId != state.requestId) {
+                        if (backStack.armedReauth()?.requestId != state.requestId) {
                             backStack.clearReauth()
                             backStack.add(
                                 AuthRoute.Reauth(
@@ -785,7 +790,8 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Reauthentication -> {
-                        val marker = armedReauth?.takeIf { it.requestId == state.requestId }
+                        val marker = backStack.armedReauth()
+                            ?.takeIf { it.requestId == state.requestId }
                             ?: AuthRoute.Reauth(
                                 requestId = state.requestId,
                                 userUid = state.userUid,
