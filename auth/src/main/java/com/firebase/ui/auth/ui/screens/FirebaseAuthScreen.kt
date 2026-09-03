@@ -68,7 +68,6 @@ import com.firebase.ui.auth.configuration.DefaultAuthContentTransform
 import com.firebase.ui.auth.configuration.DefaultAuthPredictivePopContentTransform
 import com.firebase.ui.auth.configuration.MfaConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
-import com.firebase.ui.auth.configuration.auth_provider.filterToLinkedProviders
 import com.firebase.ui.auth.configuration.auth_provider.rememberAnonymousSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberGoogleSignInHandler
 import com.firebase.ui.auth.configuration.auth_provider.rememberOAuthSignInHandler
@@ -106,6 +105,7 @@ import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
 import com.firebase.ui.auth.ui.screens.reauth.armedReauth
+import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.clearReauth
 import com.firebase.ui.auth.ui.screens.reauth.navigateReauth
 import com.firebase.ui.auth.ui.screens.reauth.returnToReauthStart
@@ -180,18 +180,28 @@ fun FirebaseAuthScreen(
 
     val observedAuthState by remember(authUI) { authUI.authStateFlow() }
         .collectAsState(initial = null as AuthState?)
-    val authState = observedAuthState ?: AuthState.Idle
+    val rawAuthState = observedAuthState ?: AuthState.Idle
+    // Composition-scoped, so its existence *is* the answer to "is there a screen able to drive an
+    // armed request to completion?" — no counter on the singleton, and a phase that cannot outlive
+    // the Activity and re-arm an unrelated sign-in.
+    val reauthFlowState = rememberReauthFlowState()
+    val reauthState = reauthFlowState.phase
+    /**
+     * What the host may act on. While a request is armed, an ordinary state published by provider
+     * code belongs to the credential exchange and the phase is what reports it — but `fold` runs
+     * in an effect, so the raw state is on the flow for a frame first. Without this the host's own
+     * dialogs act on it in between, putting a sign-in error dialog, retry action and all, over the
+     * reauthentication sheet. The effects below read `observedAuthState` directly, so the states
+     * `fold` declines still reach them.
+     */
+    val authState = reauthState?.takeIf { rawAuthState !is AuthState.Reauthentication }
+        ?: rawAuthState
     val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
     val mfaEnrollmentFlowState = rememberMfaEnrollmentFlowState()
     val phoneAuthFlowState = rememberPhoneAuthFlowState(configuration)
-    DisposableEffect(authUI) {
-        authUI.addReauthenticationDrainer()
-        onDispose { authUI.removeReauthenticationDrainer() }
-    }
-    val reauthState = authState as? AuthState.Reauthentication
     val reauthRequest = reauthState?.request
     val reauthConfig = reauthRequest?.let { configuration.toReauthConfiguration(it.user) }
     // Keyed to the request, never the host flow's: another operation, maybe another user.
@@ -233,11 +243,28 @@ fun FirebaseAuthScreen(
     // The stack is the arming marker: a Reauth entry persists with it, across recreation and death.
     val armedReauth = backStack.armedReauth()
     val clearReauthPresentation: () -> Unit = remember(backStack) { { backStack.clearReauth() } }
+    /**
+     * Ends the armed request: clears its presentation, clears the phase, publishes [terminal], and
+     * only then resolves the caller waiting on it.
+     *
+     * One helper because every terminal site does the same four things in the same order, and the
+     * order carries two rules. The phase goes before [terminal] is published, or `fold` folds the
+     * terminal state straight back into the request it is ending. The caller is resolved last, or
+     * a fast-resuming retry's real outcome is overwritten by this stale one.
+     */
+    val finishReauth: (AuthState, Boolean) -> Unit =
+        remember(authUI, clearReauthPresentation, reauthFlowState) {
+            { terminal, retryOperation ->
+                clearReauthPresentation()
+                reauthFlowState.finish(retryOperation)
+                authUI.updateAuthState(terminal)
+            }
+        }
     val currentOnSignInCancelled = rememberUpdatedState(onSignInCancelled)
-    val onReauthDismiss: () -> Unit = remember(authUI, clearReauthPresentation) {
+    val onReauthDismiss: () -> Unit = remember(finishReauth) {
         {
-            clearReauthPresentation()
-            authUI.finishReauthentication(AuthState.Idle)
+            // The user backed out, so the pending operation is not retried.
+            finishReauth(AuthState.Idle, false)
             currentOnSignInCancelled.value()
         }
     }
@@ -246,12 +273,13 @@ fun FirebaseAuthScreen(
      * reauthentication entry underneath means step back and cancel the attempt; nothing underneath
      * means the surface itself is being left.
      */
-    val onLeaveReauthStep: (AuthRoute.Reauth) -> Unit = remember(authUI, backStack, onReauthDismiss) {
+    val onLeaveReauthStep: (AuthRoute.Reauth) -> Unit =
+        remember(reauthFlowState, backStack, onReauthDismiss) {
         { marker ->
             val below = backStack.getOrNull(backStack.lastIndex - 1)
             if (below is AuthRoute.Reauth) {
                 backStack.popOrNull()
-                authUI.updateReauthentication(marker.requestId) { it.attemptCancelled() }
+                reauthFlowState.update(marker.requestId) { it.attemptCancelled() }
             } else {
                 onReauthDismiss()
             }
@@ -259,13 +287,19 @@ fun FirebaseAuthScreen(
     }
     // The slot *is* the provider chooser, even for one provider, so it always starts at the picker
     // step. The default sheet skips straight into a lone provider's flow, as it always did.
-    val reauthStartStep: AuthRoute.Destination = remember(reauthConfig, reauthContent) {
-        when {
-            reauthContent != null -> AuthRoute.MethodPicker
-            reauthConfig != null -> getStartRoute(reauthConfig).toKey()
-            else -> AuthRoute.MethodPicker
+    val reauthStartStepFor: (AuthUIConfiguration?) -> AuthRoute.Destination =
+        remember(reauthContent) {
+            { config ->
+                when {
+                    // The slot *is* the provider chooser, even for one provider, so it always
+                    // starts at the picker step. The default sheet skips straight into a lone
+                    // provider's flow, as it always did.
+                    reauthContent != null -> AuthRoute.MethodPicker
+                    config != null -> getStartRoute(config).toKey()
+                    else -> AuthRoute.MethodPicker
+                }
+            }
         }
-    }
     val stepTransitionSpec = configuration.transitions?.transitionSpec
         ?: DefaultAuthContentTransform
     val stepPopTransitionSpec = configuration.transitions?.popTransitionSpec
@@ -526,6 +560,7 @@ fun FirebaseAuthScreen(
                     context = context,
                     configuration = configuration,
                     stringProvider = stringProvider,
+                    reauthFlowState = reauthFlowState,
                     surface = reauthSurfaceHolder,
                     phoneFlowState = reauthPhoneFlowState,
                     emailContent = emailContent,
@@ -604,17 +639,64 @@ fun FirebaseAuthScreen(
                 val currentKey = backStack.lastOrNull()
                 val savedPresentation = armedReauth
 
+                // A marker that outlived its phase: the Activity was recreated with the request
+                // still armed. Nothing here can be driven, so report it and clear up.
                 if (savedPresentation != null &&
+                    reauthFlowState.phase == null &&
                     state !is AuthState.Reauthentication &&
                     state !is AuthState.Aborted
                 ) {
                     clearReauthPresentation()
                     authUI.updateAuthState(
-                        AuthState.Reauthentication.Interrupted(
-                            requestId = savedPresentation.requestId,
-                            userUid = savedPresentation.userUid,
+                        AuthState.Error(
+                            AuthException.UnknownException(
+                                context.getString(R.string.fui_error_reauth_interrupted)
+                            )
                         )
                     )
+                    return@LaunchedEffect
+                }
+
+                // A latched reauthentication state with no phase: this screen was recreated while
+                // the request was armed. The phase is composition-scoped and gone, but its value
+                // is still on the flow, so the exchange is re-armed from it rather than abandoned.
+                if (state is AuthState.Reauthentication && reauthFlowState.phase == null) {
+                    val request = state.request
+                    if (request == null || !request.isResumable) {
+                        clearReauthPresentation()
+                        authUI.updateAuthState(
+                            AuthState.Error(
+                                AuthException.UnknownException(
+                                    context.getString(R.string.fui_error_reauth_interrupted)
+                                )
+                            )
+                        )
+                        return@LaunchedEffect
+                    }
+                    // Two phases must not come back: `Authenticating`'s network call died with the
+                    // Activity, and re-entering `Succeeded` would resolve the caller a second time
+                    // for an operation that may already have committed. Both restart at provider
+                    // selection. Everything else is the user's own position in the exchange, and a
+                    // surfaced failure is the only report they got, so it is restored as it was.
+                    when (state) {
+                        is AuthState.Reauthentication.Authenticating,
+                        is AuthState.Reauthentication.Succeeded,
+                            -> authUI.updateAuthState(
+                            AuthState.Reauthentication.Required(request)
+                        )
+
+                        is AuthState.Reauthentication.Required -> reauthFlowState.arm(state)
+
+                        else -> reauthFlowState.moveTo(state)
+                    }
+                }
+
+                // Ordinary states published by provider code while a request is armed belong to
+                // the credential exchange, not to the host flow. The holder folds them into its
+                // phase and publishes that, which is what the setter used to do on the singleton's
+                // behalf; the branches below then only ever see states that are the host's.
+                reauthFlowState.fold(state)?.let { folded ->
+                    authUI.updateAuthState(folded)
                     return@LaunchedEffect
                 }
 
@@ -650,105 +732,46 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Reauthentication.Required -> {
-                        val linked = configuration.providers.filterToLinkedProviders(state.user)
-                        if (linked.isEmpty()) {
-                            clearReauthPresentation()
-                            authUI.finishReauthentication(
+                        val armingConfig = configuration.toReauthConfiguration(state.user)
+                        if (armingConfig == null) {
+                            finishReauth(
                                 AuthState.Error(
                                     AuthException.UnknownException(
                                         context.getString(R.string.fui_error_reauth_no_linked_providers)
                                     )
-                                )
+                                ),
+                                false,
                             )
                             return@LaunchedEffect
                         }
+                        // A request whose caller died with its scope cannot be completed however
+                        // well the exchange goes, so it is reported rather than presented. This is
+                        // what tells a rotation that kept its caller from one that lost it.
+                        if (!state.request.isResumable) {
+                            finishReauth(
+                                AuthState.Error(
+                                    AuthException.UnknownException(
+                                        context.getString(R.string.fui_error_reauth_interrupted)
+                                    )
+                                ),
+                                false,
+                            )
+                            return@LaunchedEffect
+                        }
+                        reauthFlowState.arm(state)
                         if (armedReauth?.requestId != state.requestId) {
                             backStack.clearReauth()
                             backStack.add(
                                 AuthRoute.Reauth(
                                     requestId = state.requestId,
                                     userUid = state.userUid,
-                                    step = reauthStartStep,
+                                    // From the arming state, not the composition value: this
+                                    // effect is what writes the phase, so anything derived from
+                                    // it in composition is still a frame behind here.
+                                    step = reauthStartStepFor(armingConfig),
                                 )
                             )
                         }
-                    }
-
-                    is AuthState.Reauthentication.Succeeded -> {
-                        val success = state.success
-                        if (success.reauthenticatedUid != state.userUid ||
-                            success.user.uid != state.userUid
-                        ) {
-                            authUI.updateAuthState(
-                                AuthState.Error(
-                                    AuthException.UnknownException(
-                                        context.getString(R.string.fui_error_reauth_incomplete)
-                                    )
-                                )
-                            )
-                        } else {
-                            authUI.updateAuthState(
-                                AuthState.Reauthentication.RetryingOperation(state.request)
-                            )
-                        }
-                    }
-
-                    is AuthState.Reauthentication.RetryingOperation -> {
-                        val request = state.request
-                        if (!request.hasRetryOperation) {
-                            clearReauthPresentation()
-                            authUI.finishReauthentication(
-                                AuthState.Success(
-                                    result = null,
-                                    user = request.user,
-                                )
-                            )
-                            return@LaunchedEffect
-                        }
-                        val retry = request.claimRetryOperation()
-                        if (retry == null) {
-                            clearReauthPresentation()
-                            authUI.finishReauthentication(
-                                AuthState.Error(
-                                    AuthException.UnknownException(
-                                        context.getString(R.string.fui_error_reauth_interrupted)
-                                    )
-                                )
-                            )
-                            return@LaunchedEffect
-                        }
-                        try {
-                            retry(context)
-                            val currentUser = authUI.auth.currentUser
-                            val outcome = if (currentUser != null) {
-                                AuthState.Success(result = null, user = currentUser)
-                            } else {
-                                AuthState.Idle
-                            }
-                            authUI.updateReauthentication(state.requestId) {
-                                it.operationFinished(outcome)
-                            }
-                        } catch (e: kotlinx.coroutines.CancellationException) {
-                            throw e
-                        } catch (e: Exception) {
-                            authUI.updateAuthState(AuthState.Error(e))
-                        }
-                    }
-
-                    is AuthState.Reauthentication.OperationFinished -> {
-                        clearReauthPresentation()
-                        authUI.finishReauthentication(state.outcome)
-                    }
-
-                    is AuthState.Reauthentication.Interrupted -> {
-                        clearReauthPresentation()
-                        authUI.finishReauthentication(
-                            AuthState.Error(
-                                AuthException.UnknownException(
-                                    context.getString(R.string.fui_error_reauth_interrupted)
-                                )
-                            )
-                        )
                     }
 
                     is AuthState.Reauthentication -> {
@@ -756,7 +779,10 @@ fun FirebaseAuthScreen(
                             ?: AuthRoute.Reauth(
                                 requestId = state.requestId,
                                 userUid = state.userUid,
-                                step = reauthStartStep,
+                                step = state.request
+                                    ?.let { configuration.toReauthConfiguration(it.user) }
+                                    ?.let { reauthStartStepFor(it) }
+                                    ?: AuthRoute.MethodPicker,
                             ).also {
                                 backStack.clearReauth()
                                 backStack.add(it)
@@ -802,8 +828,16 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Aborted -> {
+                        // Outside the host guard on purpose. `fold` declines Aborted, so nothing
+                        // else clears the phase or resolves the caller — and under the activity
+                        // host FirebaseAuthActivity owns the rest of the teardown, so a clear
+                        // placed inside the guard would leave that host holding an armed request
+                        // and a caller suspended forever. An activity-scoped caller has its own
+                        // cancellation to fall back on, an unscoped one has nothing, and this
+                        // cannot tell them apart, so it resolves unconditionally.
+                        clearReauthPresentation()
+                        reauthFlowState.finish(false)
                         if (activity !is FirebaseAuthActivity) {
-                            clearReauthPresentation()
                             pendingResolver.value = null
                             pendingLinkingCredential.value = null
                             lastSuccessfulUserId.value = null
@@ -830,6 +864,52 @@ fun FirebaseAuthScreen(
                     }
 
                     else -> Unit
+                }
+            }
+
+            /**
+             * The phase's own effect. The effect above is keyed on the flow, so it never sees a
+             * transition the destinations make straight on the holder — an MFA proof, a cancelled
+             * attempt, a consumed notification. Keying on the phase catches all of them.
+             *
+             * Mirroring the phase onto the flow keeps one story for the sub-screens and for app
+             * code: provider screens read their loading and error state from there, and a phase
+             * that only ever existed in this holder would show them neither.
+             */
+            LaunchedEffect(reauthFlowState.phase) {
+                val phase = reauthFlowState.phase ?: return@LaunchedEffect
+                if (observedAuthState != phase) authUI.updateAuthState(phase)
+
+                if (phase is AuthState.Reauthentication.Succeeded) {
+                    val request = phase.request
+                    val success = phase.success
+                    if (success.reauthenticatedUid != phase.userUid ||
+                        success.user.uid != phase.userUid
+                    ) {
+                        // Proof for the wrong user is a failed attempt, not a dead request: the
+                        // surface stays up reporting it so the user can try the right account.
+                        reauthFlowState.update(phase.requestId) {
+                            AuthState.Reauthentication.AttemptFailed(
+                                request,
+                                AuthException.UnknownException(
+                                    context.getString(R.string.fui_error_reauth_incomplete)
+                                ),
+                            )
+                        }
+                        return@LaunchedEffect
+                    }
+                    // The retry runs on the caller's own coroutine, so this publishes the handover
+                    // rather than an outcome: a Success here would claim the pending operation had
+                    // already succeeded. A standalone flow has no operation behind it, so for that
+                    // one reauthenticating *is* the outcome.
+                    val terminal = if (request.hasPendingOperation) {
+                        AuthState.Loading(
+                            context.getString(R.string.fui_loading_reauth_retrying)
+                        )
+                    } else {
+                        AuthState.Success(result = null, user = request.user)
+                    }
+                    finishReauth(terminal, true)
                 }
             }
 
@@ -941,12 +1021,10 @@ fun FirebaseAuthScreen(
             val loadingMessage = when (val state = authState) {
                 is AuthState.Loading -> state.message
                 is AuthState.Reauthentication.Authenticating -> state.message
-                is AuthState.Reauthentication.RetryingOperation -> null
                 else -> null
             }
             val isLoading = authState is AuthState.Loading ||
-                    authState is AuthState.Reauthentication.Authenticating ||
-                    authState is AuthState.Reauthentication.RetryingOperation
+                    authState is AuthState.Reauthentication.Authenticating
             if (isLoading && !reauthSlotActive) {
                 LoadingDialog(loadingMessage ?: stringProvider.progressDialogLoading)
             }

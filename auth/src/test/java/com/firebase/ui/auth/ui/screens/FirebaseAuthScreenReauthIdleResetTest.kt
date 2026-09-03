@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.retryingReauth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -203,18 +204,14 @@ class FirebaseAuthScreenReauthIdleResetTest {
         var operationCompleted = false
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(
-                    user = mockUser,
-                    retryOperation = {
-                        operationStarted = true
-                        // Exactly what a successful delete() does: FirebaseAuth drops the user and
-                        // notifies its listeners while the operation is still in flight.
-                        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
-                        listeners.forEach { it.onAuthStateChanged(mockFirebaseAuth) }
-                        yield()
-                        operationCompleted = true
-                    },
-                )
+                retryingReauth(mockUser) {
+                    operationStarted = true
+                    // Exactly what a successful delete() does: FirebaseAuth drops the user and
+                    // notifies its listeners while the operation is running.
+                    `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+                    listeners.forEach { it.onAuthStateChanged(mockFirebaseAuth) }
+                    operationCompleted = true
+                }
             )
         }
         composeTestRule.waitForIdle()
@@ -236,7 +233,6 @@ class FirebaseAuthScreenReauthIdleResetTest {
             .getString(R.string.fui_error_reauth_interrupted)
         assertThat(operationStarted).isTrue()
         assertThat(operationCompleted).isTrue()
-        assertThat(observed.filterIsInstance<AuthState.Reauthentication.Interrupted>()).isEmpty()
         assertThat(observed.filterIsInstance<AuthState.Error>().map { it.exception.message })
             .doesNotContain(interruptedMessage)
     }

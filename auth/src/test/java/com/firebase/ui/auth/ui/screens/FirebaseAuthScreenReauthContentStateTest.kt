@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.abandonedReauth
+import com.firebase.ui.auth.retryingReauth
 import android.content.Context
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ContentTransform
@@ -308,7 +310,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -361,7 +363,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -476,7 +478,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -542,7 +544,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -589,7 +591,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -638,7 +640,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = {})
+                retryingReauth(user) {}
             )
         }
         composeTestRule.waitForIdle()
@@ -742,7 +744,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -788,13 +790,13 @@ class FirebaseAuthScreenReauthContentStateTest {
         // Same user, same (absent) reason: the two states differ only in the attached operation.
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { ran.add("first") })
+                retryingReauth(user) { ran.add("first") }
             )
         }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { ran.add("second") })
+                retryingReauth(user) { ran.add("second") }
             )
         }
         composeTestRule.waitForIdle()
@@ -841,7 +843,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         }
 
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(AuthState.Reauthentication.Required(user, retryOperation = null))
+            authUI.updateAuthState(AuthState.Reauthentication.Required(user))
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
@@ -892,7 +894,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(armedUser, retryOperation = { retryRan = true })
+                retryingReauth(armedUser) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -947,7 +949,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -1013,7 +1015,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1067,7 +1069,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1123,7 +1125,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1185,7 +1187,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1244,7 +1246,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1297,7 +1299,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryRan = true })
+                retryingReauth(user) { retryRan = true }
             )
         }
         composeTestRule.waitForIdle()
@@ -1312,7 +1314,11 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.onNodeWithTag("dismiss_reauth").assertDoesNotExist()
     }
 
-    /** Rotating preserves the request-owned failure, including its typed exception. */
+    /**
+     * The phase is composition-scoped, so rotating destroys it — but its value is still latched on
+     * the flow, and a surfaced failure is the only report the user got, so the restored screen
+     * re-arms from it rather than restarting them at provider selection with nothing said.
+     */
     @Test
     fun `a latched slot error survives Activity recreation`() {
         val user = passwordOnlyUser("linked@example.com")
@@ -1431,7 +1437,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1454,7 +1460,12 @@ class FirebaseAuthScreenReauthContentStateTest {
         assertThat(retryCount).isEqualTo(1)
     }
 
-    /** Activity recreation keeps the request and retry callback in the process-owned AuthState. */
+    /**
+     * Recreation during an in-flight attempt. Nothing retains the caller, so what survives is the
+     * request latched on the flow — enough to re-arm the same request and complete it. The attempt
+     * itself does not come back: its network call died with the Activity, so the restored screen
+     * restarts at provider selection rather than showing progress for nothing.
+     */
     @Test
     fun `an attempt survives Activity recreation and completes the same request`() {
         val user = passwordOnlyUser("linked@example.com")
@@ -1477,7 +1488,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1533,7 +1544,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             currentAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1590,7 +1601,7 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+                retryingReauth(user) { retryCount++ }
             )
         }
         composeTestRule.waitForIdle()
@@ -1657,19 +1668,17 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
-     * The sensitive operation must run at most once. Its retry is composition-scoped, so a
-     * recreation while it is suspended on the network kills it without any outcome being published
-     * — leaving [AuthState.Reauthentication.RetryingOperation] as the restored screen's first state.
-     * Firebase `Task`s are not cancellable, so the killed attempt may well have committed already:
-     * re-running it is the one outcome worse than losing it, which is reported instead.
+     * The sensitive operation must run at most once. It runs on the caller's own coroutine now, so
+     * neither a recreation nor a second resolution can start it again: there is no closure on the
+     * state for a restored screen to claim, and a resolved request ignores being resolved.
      */
     @Test
-    fun `recreation during the retry never runs the operation twice`() {
+    fun `the operation runs once however often its request is resolved`() {
         val user = passwordOnlyUser("linked@example.com")
         val signedInAuthUI = signedInAuthUI(user)
         val runs = AtomicInteger(0)
-        val hangForever = CompletableDeferred<Unit>()
         val restorationTester = StateRestorationTester(composeTestRule)
+        val armed = retryingReauth(user) { runs.incrementAndGet() }
 
         restorationTester.setContent {
             FirebaseAuthScreen(
@@ -1684,17 +1693,7 @@ class FirebaseAuthScreenReauthContentStateTest {
             )
         }
 
-        composeTestRule.runOnIdle {
-            signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(
-                    user,
-                    retryOperation = {
-                        runs.incrementAndGet()
-                        hangForever.await()
-                    },
-                )
-            )
-        }
+        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(armed) }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
@@ -1702,23 +1701,55 @@ class FirebaseAuthScreenReauthContentStateTest {
             )
         }
         composeTestRule.waitUntil(timeoutMillis = 5_000) { runs.get() == 1 }
+        composeTestRule.waitForIdle()
 
-        // Rotate while the operation is still in flight.
+        // The request is over, so the surface comes down rather than covering the retry.
+        composeTestRule.onNodeWithTag("reauth_slot").assertDoesNotExist()
+
         restorationTester.emulateSavedInstanceStateRestore()
         composeTestRule.waitForIdle()
         composeTestRule.waitForIdle()
-
         assertThat(runs.get()).isEqualTo(1)
+
+        armed.request.resolve(true)
+        composeTestRule.waitForIdle()
+        assertThat(runs.get()).isEqualTo(1)
+    }
+
+    /**
+     * A recreation that outlived the caller: the request is still armed and still latched, but the
+     * coroutine that would run the operation is gone. Presenting the sheet would take credentials
+     * and then report a success for an operation that can never run, so it is reported instead.
+     */
+    @Test
+    fun `a request whose caller is gone is reported instead of presented`() {
+        val user = passwordOnlyUser("linked@example.com")
+        val signedInAuthUI = signedInAuthUI(user)
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = signedInAuthUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+                reauthContent = {
+                    Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
+                }
+            )
+        }
+
+        composeTestRule.runOnIdle {
+            signedInAuthUI.updateAuthState(abandonedReauth(user))
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("reauth_slot").assertDoesNotExist()
         composeTestRule.waitUntil(timeoutMillis = 5_000) {
             composeTestRule
                 .onAllNodesWithText(context.getString(R.string.fui_error_reauth_interrupted))
                 .fetchSemanticsNodes().isNotEmpty()
         }
-        composeTestRule.onNodeWithTag("reauth_slot").assertDoesNotExist()
-
-        hangForever.complete(Unit)
-        composeTestRule.waitForIdle()
-        assertThat(runs.get()).isEqualTo(1)
     }
 
     /**
@@ -1839,7 +1870,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         val resolver = totpResolver(Tasks.forResult(mock(AuthResult::class.java)))
         var retryCount = 0
         var cancelledCount = 0
-        val required = AuthState.Reauthentication.Required(user, retryOperation = { retryCount++ })
+        val required = retryingReauth(user) { retryCount++ }
 
         composeTestRule.setContent {
             FirebaseAuthScreen(
@@ -1866,10 +1897,9 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("mfa_challenge").assertIsDisplayed()
 
-        // Straight off RequiresMfa, without the challenge's own cancel or error path running.
-        composeTestRule.runOnIdle {
-            signedInAuthUI.updateReauthentication(required.requestId) { it.attemptCancelled() }
-        }
+        // Straight off RequiresMfa, without the challenge's own cancel or error path running:
+        // an ordinary Cancelled folds to provider selection, which is the phase leaving RequiresMfa.
+        composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Cancelled) }
         composeTestRule.waitForIdle()
         composeTestRule.waitForIdle()
 
@@ -1880,17 +1910,15 @@ class FirebaseAuthScreenReauthContentStateTest {
     }
 
     /**
-     * The surface gates the operation, so it stays up for the retry rather than uncovering the
-     * flow underneath for its duration, and reports the retry as loading — the slot owns the
-     * progress it shows, exactly as it does for a credential attempt.
+     * The surface no longer covers the retry. The operation runs on the caller's coroutine after
+     * the request ends, so the sheet comes down on the proof and the host publishes its own
+     * handover progress — which is what stops a `Success` being claimed before the operation runs.
      */
     @Test
-    fun `the reauth slot stays up and reports loading through the retry`() {
+    fun `the reauth slot comes down when the credential proof lands`() {
         val user = passwordOnlyUser("linked@example.com")
         val signedInAuthUI = signedInAuthUI(user)
-        val holdRetry = CompletableDeferred<Unit>()
         val runs = AtomicInteger(0)
-        var captured: ReauthContentState? = null
 
         composeTestRule.setContent {
             FirebaseAuthScreen(
@@ -1899,25 +1927,18 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
-                reauthContent = { state ->
-                    captured = state
+                reauthContent = {
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
         }
 
         composeTestRule.runOnIdle {
-            signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(
-                    user,
-                    retryOperation = {
-                        runs.incrementAndGet()
-                        holdRetry.await()
-                    },
-                )
-            )
+            signedInAuthUI.updateAuthState(retryingReauth(user) { runs.incrementAndGet() })
         }
         composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
+
         composeTestRule.runOnIdle {
             signedInAuthUI.updateAuthState(
                 AuthState.Success(result = null, user = user, reauthenticatedUid = user.uid)
@@ -1926,23 +1947,14 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitUntil(timeoutMillis = 5_000) { runs.get() == 1 }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
-        assertThat(requireNotNull(captured).isLoading).isTrue()
-        // The slot's own progress, not the library's dialog stacked over it.
-        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertDoesNotExist()
-
-        holdRetry.complete(Unit)
-        composeTestRule.waitUntil(timeoutMillis = 5_000) {
-            composeTestRule.onAllNodesWithTag("reauth_slot").fetchSemanticsNodes().isEmpty()
-        }
+        composeTestRule.onNodeWithTag("reauth_slot").assertDoesNotExist()
     }
 
-    /** The default sheet is the same surface: it holds its step under the loading dialog. */
+    /** The default sheet is the same surface, and comes down on the same condition. */
     @Test
-    fun `the default reauth sheet stays up through the retry`() {
+    fun `the default reauth sheet comes down when the credential proof lands`() {
         val user = passwordOnlyUser("linked@example.com")
         val signedInAuthUI = signedInAuthUI(user)
-        val holdRetry = CompletableDeferred<Unit>()
         val runs = AtomicInteger(0)
 
         composeTestRule.setContent {
@@ -1960,15 +1972,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         }
 
         composeTestRule.runOnIdle {
-            signedInAuthUI.updateAuthState(
-                AuthState.Reauthentication.Required(
-                    user,
-                    retryOperation = {
-                        runs.incrementAndGet()
-                        holdRetry.await()
-                    },
-                )
-            )
+            signedInAuthUI.updateAuthState(retryingReauth(user) { runs.incrementAndGet() })
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_email").assertIsDisplayed()
@@ -1981,13 +1985,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitUntil(timeoutMillis = 5_000) { runs.get() == 1 }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag("reauth_email").assertIsDisplayed()
-        composeTestRule.onNodeWithText(stringProvider.progressDialogLoading).assertIsDisplayed()
-
-        holdRetry.complete(Unit)
-        composeTestRule.waitUntil(timeoutMillis = 5_000) {
-            composeTestRule.onAllNodesWithTag("reauth_email").fetchSemanticsNodes().isEmpty()
-        }
+        composeTestRule.onNodeWithTag("reauth_email").assertDoesNotExist()
     }
 
     /** A [FirebaseAuthUI] over a mocked, *signed-out* [FirebaseAuth]: `authStateFlow()` is Idle. */
