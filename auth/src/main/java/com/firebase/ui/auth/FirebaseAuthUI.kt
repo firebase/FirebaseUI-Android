@@ -480,9 +480,9 @@ class FirebaseAuthUI private constructor(
      * and presents a reauthentication sheet; once credentials are accepted the [operation] runs
      * again on this same coroutine, so nothing about the caller is retained by the library.
      *
-     * If the user backs out, or this coroutine's scope is cancelled while the sheet is up, the
-     * operation is not retried. A caller that must survive Activity recreation should launch from
-     * a scope that does too.
+     * If the user backs out, this throws [AuthException.AuthCancelledException] and the operation
+     * is not retried — so a caller can always tell a decline from a completed operation. A caller
+     * that must survive Activity recreation should launch from a scope that does too.
      *
      * All other exceptions propagate normally.
      *
@@ -498,6 +498,7 @@ class FirebaseAuthUI private constructor(
      * @param context Android [Context]
      * @param reason Optional message shown to the user explaining why reauthentication is needed
      * @param operation The sensitive operation to attempt
+     * @throws AuthException.AuthCancelledException if the user declines reauthentication
      * @since 10.0.0
      */
     suspend fun withReauth(
@@ -524,7 +525,15 @@ class FirebaseAuthUI private constructor(
                     )
                 )
             )
-            if (resolver.await()) operation()
+            // Thrown from this frame rather than out of the resolver: the resolver is parented to
+            // the caller's job, so failing it would cancel the caller's whole scope instead of
+            // just this call. A caller always learns whether its operation ran.
+            if (!resolver.await()) {
+                throw AuthException.AuthCancelledException(
+                    message = "Reauthentication was cancelled"
+                )
+            }
+            operation()
         }
     }
 
@@ -554,6 +563,11 @@ class FirebaseAuthUI private constructor(
                 // The user is deleted and therefore signed out.
                 updateAuthState(AuthState.Idle)
             }
+        } catch (e: AuthException.AuthCancelledException) {
+            // The user declined the reauthentication. The screen already published the terminal
+            // state for that, so republishing it as an Error would put a dialog over a flow the
+            // user deliberately left.
+            throw e
         } catch (e: CancellationException) {
             // Handle coroutine cancellation
             val cancelledException = AuthException.AuthCancelledException(

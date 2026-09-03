@@ -1750,7 +1750,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
         assertThat(runs.get()).isEqualTo(1)
 
-        armed.request.resolve(true)
+        armed.request.resolve()
         composeTestRule.waitForIdle()
         assertThat(runs.get()).isEqualTo(1)
     }

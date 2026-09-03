@@ -204,8 +204,13 @@ class ReauthFlowStateTest {
         assertThat(resolver.getCompleted()).isTrue()
     }
 
+    /**
+     * A decline resumes the caller by throwing. "You backed out" and "your operation ran" are
+     * different outcomes, and a caller that cannot tell them apart has to guess whether its work
+     * happened.
+     */
     @Test
-    fun `finish without a retry unblocks the caller rather than abandoning it`() {
+    fun `finish without a retry fails the caller rather than returning quietly`() {
         val holder = holder()
         val resolver = CompletableDeferred<Boolean>()
         holder.armed(resolver)
@@ -232,8 +237,8 @@ class ReauthFlowStateTest {
         val resolver = CompletableDeferred<Boolean>()
         val request = request(resolver)
 
-        request.resolve(true)
-        request.resolve(false)
+        request.resolve()
+        request.decline()
 
         assertThat(resolver.getCompleted()).isTrue()
     }
@@ -248,7 +253,7 @@ class ReauthFlowStateTest {
 
         assertThat(request.isResumable).isFalse()
         // No crash, and nothing to hand back to.
-        request.resolve(true)
+        request.resolve()
     }
 
     /** No caller means nothing to lose, so a standalone request is always presentable. */
