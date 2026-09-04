@@ -327,6 +327,10 @@ abstract class AuthState private constructor() {
             val user: FirebaseUser get() = request.user
             val reason: String? get() = request.reason
 
+            /**
+             * Identity is the request. Snapshot state and [FirebaseAuthUI.pendingReauth] both
+             * conflate equal values, so a transition that must be observed changes the phase type.
+             */
             override fun equals(other: Any?): Boolean =
                 other is Required && requestId == other.requestId
 
