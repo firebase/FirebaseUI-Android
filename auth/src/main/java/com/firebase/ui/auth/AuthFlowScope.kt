@@ -70,15 +70,17 @@ internal class AuthFlowScope(
  * still owe email verification. Callers must not re-derive it — only password users with an email
  * can satisfy that screen.
  */
-internal fun authUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState =
-    if (!user.isEmailVerified &&
-        user.email != null &&
+internal fun authUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
+    val email = user.email
+    return if (!user.isEmailVerified &&
+        email != null &&
         user.providerData.any { it.providerId == "password" }
     ) {
-        AuthState.RequiresEmailVerification(user = user, email = user.email!!)
+        AuthState.RequiresEmailVerification(user = user, email = email)
     } else {
         AuthState.Success(result = result, user = user, isNewUser = isNewUser)
     }
+}
 
 /** The auth flow the current composition belongs to, or null outside one. */
 internal val LocalAuthFlowScope = staticCompositionLocalOf<AuthFlowScope?> { null }
