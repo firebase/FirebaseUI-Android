@@ -1675,7 +1675,7 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Email())
     }
     transitions = AuthUITransitions(
-        // Slide up on the way in, slide down on the way out
+        // A vertical push: the new step rises from the bottom as the old one leaves via the top
         transitionSpec = { slideInVertically { it } togetherWith slideOutVertically { -it } }
     )
 }
