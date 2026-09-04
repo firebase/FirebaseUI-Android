@@ -14,6 +14,9 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
+import com.firebase.ui.auth.ReauthScopeProbe
+import com.firebase.ui.auth.retryingReauth
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -522,17 +525,13 @@ class FirebaseAuthScreenEmailRecoveryTest {
     // =============================================================================================
 
     /**
-     * The invariant the recovery veto above rests on. `onRecover` is withheld on
-     * `configuration.isReauthenticationMode` alone, which does not cover a reauthentication this
-     * screen is *presenting* — there the outer configuration is an ordinary one. It does not need
-     * to: while a request is armed, `FirebaseAuthUI.contextualizeReauthenticationState` folds every
-     * `AuthState.Error` into `AuthState.Reauthentication.AttemptFailed`, so the branch that offers
-     * recovery is unreachable while a reauthentication surface is up. If that folding ever stopped,
-     * a recovery could navigate the outer graph out from under the sheet with the request still
-     * armed — so the folding is asserted here rather than guarded against with a dead branch.
+     * The invariant the recovery veto above rests on: an exchange's failure never reaches the
+     * public flow, so the branch offering recovery is unreachable while a surface is up. Were it
+     * to, a recovery could navigate the outer graph out from under the sheet.
      */
     @Test
-    fun `an error raised while a reauth request is armed never surfaces as an error state`() {
+    fun `an error raised while a reauth request is outstanding never surfaces as an error state`() {
+        val probe = ReauthScopeProbe()
         val passwordInfo = mock(UserInfo::class.java)
         `when`(passwordInfo.providerId).thenReturn(EmailAuthProvider.PROVIDER_ID)
         val user = mock(FirebaseUser::class.java)
@@ -540,8 +539,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
         `when`(user.email).thenReturn(TYPED_EMAIL)
         `when`(user.uid).thenReturn("reauth-user-uid")
 
-        // A second collector on the same flow, so the folded state can be read directly rather
-        // than inferred from what the dialog happens to render.
+        // A second collector, to prove directly that nothing from the exchange lands on it.
         val seen = mutableListOf<AuthState>()
         composeTestRule.setContent {
             LaunchedEffect(authUI) { authUI.authStateFlow().collect { seen += it } }
@@ -551,26 +549,26 @@ class FirebaseAuthScreenEmailRecoveryTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
+                // One provider, so the sheet opens at the email step and the picker never composes.
+                emailContent = { probe.capture() },
             )
         }
         composeTestRule.waitForIdle()
 
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
-                AuthState.Reauthentication.Required(user, retryOperation = {})
-            )
+            authUI.pendingReauth.value = retryingReauth(user) {}
         }
         composeTestRule.waitForIdle()
 
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
+            probe.emit(
                 AuthState.Error(AuthException.UserNotFoundException(message = "no such user"))
             )
         }
         composeTestRule.waitForIdle()
 
-        assertThat(composeTestRule.runOnIdle { seen.lastOrNull() })
-            .isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+        // The exchange's failure never reaches the public flow at all.
+        assertThat(composeTestRule.runOnIdle { seen.filterIsInstance<AuthState.Error>() }).isEmpty()
         // Which is what keeps the recovery out of reach: no action button on the dialog, and the
         // outer graph was not moved to a sign-up form behind the sheet.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)

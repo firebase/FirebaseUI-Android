@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import com.firebase.ui.auth.flowScope
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
@@ -148,9 +149,8 @@ class EmailAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.createOrLinkUserWithEmailAndPassword(
+        instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
             context = applicationContext,
-            config = config,
             provider = emailProvider,
             name = null,
             email = "test@example.com",
@@ -189,9 +189,8 @@ class EmailAuthProviderFirebaseAuthUITest {
             isAnonymousUpgradeEnabled = true
         }
 
-        instance.createOrLinkUserWithEmailAndPassword(
+        instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
             context = applicationContext,
-            config = config,
             provider = emailProvider,
             name = null,
             email = "test@example.com",
@@ -218,9 +217,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.createOrLinkUserWithEmailAndPassword(
+            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "test@example.com",
@@ -254,9 +252,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.createOrLinkUserWithEmailAndPassword(
+            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "test@example.com",
@@ -291,9 +288,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }.copy(isReauthenticationMode = true)
 
         try {
-            instance.createOrLinkUserWithEmailAndPassword(
+            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "brand-new@example.com",
@@ -327,9 +323,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }.copy(isNewEmailAccountsAllowed = false)
 
         try {
-            instance.createOrLinkUserWithEmailAndPassword(
+            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "test@example.com",
@@ -360,9 +355,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.createOrLinkUserWithEmailAndPassword(
+            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "test@example.com",
@@ -405,9 +399,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.createOrLinkUserWithEmailAndPassword(
+            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "test@example.com",
@@ -452,9 +445,8 @@ class EmailAuthProviderFirebaseAuthUITest {
             }
         }
 
-        val result = instance.signInWithEmailAndPassword(
+        val result = instance.flowScope(config).signInWithEmailAndPassword(
             context = applicationContext,
-            config = config,
             email = "test@example.com",
             password = "Pass@123"
         )
@@ -488,9 +480,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithEmailAndPassword(
+            instance.flowScope(config).signInWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 email = "test@example.com",
                 password = "Pass@123"
             )
@@ -538,9 +529,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithEmailAndPassword(
+            instance.flowScope(config).signInWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 email = "test@example.com",
                 password = "Pass@123"
             )
@@ -592,9 +582,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithEmailAndPassword(
+            instance.flowScope(config).signInWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 email = "test@example.com",
                 password = "Pass@123"
             )
@@ -636,9 +625,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithEmailAndPassword(
+            instance.flowScope(config).signInWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 email = "test@example.com",
                 password = "Pass@123"
             )
@@ -674,9 +662,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInWithEmailAndPassword(
+            instance.flowScope(config).signInWithEmailAndPassword(
                 context = applicationContext,
-                config = config,
                 email = "test@example.com",
                 password = "Pass@123"
             )
@@ -717,9 +704,8 @@ class EmailAuthProviderFirebaseAuthUITest {
             }
         }
 
-        instance.signInWithEmailAndPassword(
+        instance.flowScope(config).signInWithEmailAndPassword(
             context = applicationContext,
-            config = config,
             email = "test@example.com",
             password = "Pass@123",
             credentialForLinking = googleCredential
@@ -755,8 +741,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             }
         }
 
-        val result = instance.signInAndLinkWithCredential(
-            config = config,
+        val result = instance.flowScope(config).signInAndLinkWithCredential(
             credential = credential
         )
 
@@ -768,7 +753,7 @@ class EmailAuthProviderFirebaseAuthUITest {
     /**
      * Only the null-`currentUser` failure was covered, so the *value* of the stamp was free: a
      * `reauthenticatedUid = null` would still have published a Success, which the screen accepts
-     * as a completed sign-in while refusing to resume the operation it was armed for.
+     * as a completed sign-in while refusing to resume the operation it was outstanding for.
      */
     @Test
     fun `signInAndLinkWithCredential - reauth success stamps the reauthenticated uid`() = runTest {
@@ -793,7 +778,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             providers { provider(emailProvider) }
         }.copy(isReauthenticationMode = true)
 
-        val result = instance.signInAndLinkWithCredential(config = config, credential = credential)
+        val result = instance.flowScope(config).signInAndLinkWithCredential( credential = credential)
 
         assertThat(result).isNull()
         verify(user).reauthenticate(credential)
@@ -836,7 +821,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             }.copy(isReauthenticationMode = true)
             assertThat(config.isCredentialLinkingEnabled).isTrue()
 
-            instance.signInAndLinkWithCredential(config = config, credential = credential)
+            instance.flowScope(config).signInAndLinkWithCredential( credential = credential)
 
             verify(user).reauthenticate(credential)
             verify(user, never()).linkWithCredential(any())
@@ -878,7 +863,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         }.copy(isReauthenticationMode = true)
 
         try {
-            instance.signInAndLinkWithCredential(config = config, credential = credential)
+            instance.flowScope(config).signInAndLinkWithCredential( credential = credential)
             assertWithMessage("expected a null currentUser after reauth to throw").fail()
         } catch (e: Exception) {
             assertThat(e).isInstanceOf(AuthException.UserNotFoundException::class.java)
@@ -914,8 +899,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             isAnonymousUpgradeEnabled = true
         }
 
-        val result = instance.signInAndLinkWithCredential(
-            config = config,
+        val result = instance.flowScope(config).signInAndLinkWithCredential(
             credential = credential
         )
 
@@ -957,8 +941,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.signInAndLinkWithCredential(
-                config = config,
+            instance.flowScope(config).signInAndLinkWithCredential(
                 credential = credential
             )
             assertThat(false).isTrue() // Should not reach here
@@ -1000,8 +983,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             isCredentialLinkingEnabled = true
         }
 
-        val result = instance.signInAndLinkWithCredential(
-            config = config,
+        val result = instance.flowScope(config).signInAndLinkWithCredential(
             credential = credential
         )
 
@@ -1025,7 +1007,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendPasswordResetEmail("test@example.com", emailConfig)
+        instance.flowScope(emailConfig).sendPasswordResetEmail("test@example.com")
 
         verify(mockFirebaseAuth).sendPasswordResetEmail(
             ArgumentMatchers.eq("test@example.com"),
@@ -1049,7 +1031,7 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendPasswordResetEmail("test@example.com", emailConfig, actionCodeSettings)
+        instance.flowScope(emailConfig).sendPasswordResetEmail("test@example.com", actionCodeSettings)
 
         verify(mockFirebaseAuth).sendPasswordResetEmail("test@example.com", actionCodeSettings)
 
@@ -1073,7 +1055,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com", emailConfig)
+            instance.flowScope(emailConfig).sendPasswordResetEmail("test@example.com")
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.UserNotFoundException) {
             assertThat(e.cause).isEqualTo(userNotFoundException)
@@ -1096,7 +1078,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com", emailConfig)
+            instance.flowScope(emailConfig).sendPasswordResetEmail("test@example.com")
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.InvalidCredentialsException) {
             assertThat(e.cause).isEqualTo(invalidEmailException)
@@ -1116,7 +1098,7 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendPasswordResetEmail("test@example.com", emailConfig)
+            instance.flowScope(emailConfig).sendPasswordResetEmail("test@example.com")
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.AuthCancelledException) {
             assertThat(e.message).contains("cancelled")
@@ -1161,9 +1143,8 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendSignInLinkToEmail(
+        instance.flowScope(config).sendSignInLinkToEmail(
             context = applicationContext,
-            config = config,
             provider = provider,
             email = "test@example.com",
             credentialForLinking = null
@@ -1213,9 +1194,8 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendSignInLinkToEmail(
+        instance.flowScope(config).sendSignInLinkToEmail(
             context = applicationContext,
-            config = config,
             provider = provider,
             email = "test@example.com",
             credentialForLinking = null
@@ -1265,9 +1245,8 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.sendSignInLinkToEmail(
+        instance.flowScope(config).sendSignInLinkToEmail(
             context = applicationContext,
-            config = config,
             provider = provider,
             email = "test@example.com",
             credentialForLinking = googleCredential
@@ -1317,9 +1296,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.sendSignInLinkToEmail(
+            instance.flowScope(config).sendSignInLinkToEmail(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "test@example.com",
                 credentialForLinking = null
@@ -1357,9 +1335,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "test@example.com",
                 emailLink = "https://invalid-link.com"
@@ -1419,9 +1396,8 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123"
 
-        val result = instance.signInWithEmailLink(
+        val result = instance.flowScope(config).signInWithEmailLink(
             context = applicationContext,
-            config = config,
             provider = provider,
             email = "test@example.com",
             emailLink = emailLink,
@@ -1487,9 +1463,8 @@ class EmailAuthProviderFirebaseAuthUITest {
 
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123&ui_auid=anon-uid-123"
 
-        val result = instance.signInWithEmailLink(
+        val result = instance.flowScope(config).signInWithEmailLink(
             context = applicationContext,
-            config = config,
             provider = provider,
             email = "test@example.com",
             emailLink = emailLink,
@@ -1538,9 +1513,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code123&continueUrl=https://example.com?ui_sid=different-session"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "", // Empty email triggers prompt
                 emailLink = emailLink,
@@ -1588,9 +1562,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code123&continueUrl=https://example.com?ui_sid=different-session&ui_pid=google.com"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "", // Empty email triggers prompt (which detects provider linking)
                 emailLink = emailLink,
@@ -1633,9 +1606,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=different-session&ui_sd=1"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "test@example.com",
                 emailLink = emailLink
@@ -1688,9 +1660,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123&ui_auid=different-anon-uid"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "test@example.com",
                 emailLink = emailLink,
@@ -1739,9 +1710,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "", // Empty email
                 emailLink = emailLink,
@@ -1794,9 +1764,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=invalid-code&continueUrl=https://example.com?ui_sid=different-session"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "", // Empty email triggers validation which will fail
                 emailLink = emailLink,
@@ -1839,9 +1808,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink = "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com"
 
         try {
-            instance.signInWithEmailLink(
+            instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "test@example.com",
                 emailLink = emailLink,
@@ -1873,9 +1841,8 @@ class EmailAuthProviderFirebaseAuthUITest {
             providers { provider(emailProvider) }
         }
 
-        instance.signInWithEmailAndPassword(
+        instance.flowScope(config).signInWithEmailAndPassword(
             context = applicationContext,
-            config = config,
             email = "test@example.com",
             password = "Pass@123"
         )
@@ -1905,7 +1872,7 @@ class EmailAuthProviderFirebaseAuthUITest {
             providers { provider(emailProvider) }
         }
 
-        instance.signInAndLinkWithCredential(config = config, credential = credential)
+        instance.flowScope(config).signInAndLinkWithCredential( credential = credential)
 
         val state = instance.authStateFlow().first { it !is AuthState.Loading }
         assertThat(state).isEqualTo(AuthState.Success(result = mockAuthResult, user = mockUser, isNewUser = false))
@@ -1931,9 +1898,8 @@ class EmailAuthProviderFirebaseAuthUITest {
             providers { provider(emailProvider) }
         }
 
-        instance.createOrLinkUserWithEmailAndPassword(
+        instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
             context = applicationContext,
-            config = config,
             provider = emailProvider,
             name = null,
             email = "new@example.com",
@@ -1995,9 +1961,8 @@ class EmailAuthProviderFirebaseAuthUITest {
                 "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code" +
                         "&continueUrl=https://example.com?ui_sid=session123"
 
-            val result = instance.signInWithEmailLink(
+            val result = instance.flowScope(config).signInWithEmailLink(
                 context = applicationContext,
-                config = config,
                 provider = provider,
                 email = "test@example.com",
                 emailLink = emailLink,
@@ -2054,9 +2019,8 @@ class EmailAuthProviderFirebaseAuthUITest {
         val emailLink =
             "https://example.com/__/auth/action?apiKey=key&mode=signIn&oobCode=code&continueUrl=https://example.com?ui_sid=session123"
 
-        instance.signInWithEmailLink(
+        instance.flowScope(config).signInWithEmailLink(
             context = applicationContext,
-            config = config,
             provider = provider,
             email = "test@example.com",
             emailLink = emailLink,

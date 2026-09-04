@@ -74,7 +74,7 @@ private fun NavEntry<NavKey>.reauthOverlay(): ReauthOverlay? = metadata[ReauthOv
  * owned by the scene so `NavDisplay` keeps their saveable state.
  *
  * @param surface The one condition for the surface: the sheet composes only while this resolves,
- * so a reauthentication entry with nothing armed shows neither sheet nor scrim, and the entry it
+ * so a reauthentication entry with no request outstanding shows neither sheet nor scrim, and the entry it
  * would have composed is never reached.
  * @param transitionSpec Applied to step changes inside the overlay, so they animate the way the
  * flow underneath animates. There is no predictive-pop counterpart: that gesture drives
@@ -146,9 +146,9 @@ private data class ReauthScene(
         // Existence and content answer to one condition: no surface, no sheet and no scrim.
         // Latched for the same reason the run is kept — the surface is released as the entries
         // are popped, and dropping the sheet there would cut its hide short.
-        val armed = remember { mutableStateOf(false) }
-        if (surface.value != null) armed.value = true
-        val presentation = top?.reauthOverlay()?.presentation?.takeIf { armed.value }
+        val hasPresented = remember { mutableStateOf(false) }
+        if (surface.value != null) hasPresented.value = true
+        val presentation = top?.reauthOverlay()?.presentation?.takeIf { hasPresented.value }
         when (presentation) {
             ReauthPresentation.Sheet -> {
                 val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)

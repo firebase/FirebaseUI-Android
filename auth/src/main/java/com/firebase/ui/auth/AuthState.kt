@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.CompletableDeferred
 import java.util.UUID
 
 /**
@@ -256,11 +257,8 @@ abstract class AuthState private constructor() {
     }
 
     /**
-     * A state in the lifecycle of one reauthentication request.
-     *
-     * Every state carries a stable [requestId], so Activity recreation can distinguish a
-     * continuation of the same sensitive operation from a new operation for the same user. The
-     * request itself is process-local because its retry callback cannot be serialized.
+     * A state in the lifecycle of one reauthentication request. Every state carries a stable
+     * [requestId], so recreation can tell a continuation from a new operation for the same user.
      */
     sealed class Reauthentication : AuthState() {
         abstract val requestId: String
@@ -273,21 +271,31 @@ abstract class AuthState private constructor() {
             val requestId: String,
             val user: FirebaseUser,
             val reason: String?,
-            retryOperation: (suspend (android.content.Context) -> Unit)?,
+            /**
+             * Where the caller awaiting this request is parked, or null when nobody is — a
+             * standalone flow from [FirebaseAuthUI.createReauthFlow] has no operation behind it.
+             */
+            val resolver: CompletableDeferred<Boolean>? = null,
         ) {
-            /** Null once [claimRetryOperation] consumed it, so no recreation can re-run it. */
-            var retryOperation: (suspend (android.content.Context) -> Unit)? = retryOperation
-                private set
+            /** Whether a caller is waiting on this request to decide a pending operation. */
+            val hasPendingOperation: Boolean get() = resolver != null
 
-            /** Whether this request ever carried an operation, even after it was claimed. */
-            val hasRetryOperation: Boolean = retryOperation != null
+            /** Whether the awaiting caller is still there to resume. */
+            val isResumable: Boolean get() = resolver?.isActive != false
+
+            /** Credentials were accepted: the caller resumes and retries. Idempotent. */
+            fun resolve() {
+                resolver?.complete(true)
+            }
 
             /**
-             * Hands the operation out exactly once. A second claim means the first run was lost,
-             * which must be reported rather than retried: the operation may have committed already.
+             * The request ended without proof. Completed with a value, not an exception: failing a
+             * parented Deferred would cancel the caller's scope, so [FirebaseAuthUI.withReauth]
+             * throws in its own frame instead.
              */
-            fun claimRetryOperation(): (suspend (android.content.Context) -> Unit)? =
-                retryOperation.also { retryOperation = null }
+            fun decline() {
+                resolver?.complete(false)
+            }
         }
 
         /**
@@ -302,16 +310,15 @@ abstract class AuthState private constructor() {
         class Required internal constructor(
             override val request: Request,
         ) : Reauthentication() {
-            constructor(
+            /** A request with nobody waiting on it, as a standalone reauthentication flow has. */
+            internal constructor(
                 user: FirebaseUser,
                 reason: String? = null,
-                retryOperation: (suspend (android.content.Context) -> Unit)? = null,
             ) : this(
                 Request(
                     requestId = UUID.randomUUID().toString(),
                     user = user,
                     reason = reason,
-                    retryOperation = retryOperation,
                 )
             )
 
@@ -319,9 +326,11 @@ abstract class AuthState private constructor() {
             override val userUid: String get() = request.user.uid
             val user: FirebaseUser get() = request.user
             val reason: String? get() = request.reason
-            val retryOperation: (suspend (android.content.Context) -> Unit)?
-                get() = request.retryOperation
 
+            /**
+             * Identity is the request. Snapshot state and [FirebaseAuthUI.pendingReauth] both
+             * conflate equal values, so a transition that must be observed changes the phase type.
+             */
             override fun equals(other: Any?): Boolean =
                 other is Required && requestId == other.requestId
 
@@ -341,7 +350,7 @@ abstract class AuthState private constructor() {
             override val userUid: String get() = request.user.uid
         }
 
-        /** The most recent credential attempt failed, but the request remains armed. */
+        /** The most recent credential attempt failed, but the request remains outstanding. */
         internal class AttemptFailed(
             override val request: Request,
             val exception: Exception,
@@ -395,7 +404,7 @@ abstract class AuthState private constructor() {
             override val userUid: String get() = request.user.uid
         }
 
-        /** Credentials were accepted for the request's user. */
+        /** Credentials were accepted for the request's user. Terminal for the exchange. */
         internal class Succeeded(
             override val request: Request,
             val success: Success,
@@ -404,43 +413,9 @@ abstract class AuthState private constructor() {
             override val userUid: String get() = request.user.uid
         }
 
-        /** The sensitive operation is being retried after credentials were accepted. */
-        internal class RetryingOperation(
-            override val request: Request,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** The retry completed and [outcome] is ready to become the ordinary auth state. */
-        internal class OperationFinished(
-            override val request: Request,
-            val outcome: AuthState,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /**
-         * Saved UI state proved a request existed, but its process-local retry callback was lost.
-         */
-        internal class Interrupted(
-            override val requestId: String,
-            override val userUid: String,
-        ) : Reauthentication() {
-            override val request: Request? = null
-        }
-
-        /**
-         * Whether this request's reauthentication already succeeded. A sign-out must not clear such
-         * a phase, because the pending operation succeeding can be what signed the user out.
-         */
-        internal val isReauthenticated: Boolean
-            get() = this is Succeeded || this is RetryingOperation || this is OperationFinished
-
         /**
          * A provider attempt is about to run, clearing any previously surfaced failure. Null once
-         * credentials were accepted, so a late attempt cannot rewind a running operation.
+         * credentials were accepted, so a late attempt cannot rewind a finished request.
          */
         internal fun attemptStarted(): AuthState? = when (this) {
             is Required,
@@ -484,11 +459,6 @@ abstract class AuthState private constructor() {
 
             else -> null
         }
-
-        /** The retried sensitive operation produced [outcome]. Null unless a retry is in flight. */
-        internal fun operationFinished(outcome: AuthState): AuthState? =
-            (this as? RetryingOperation)
-                ?.let { OperationFinished(it.request, outcome) }
     }
 
     /**

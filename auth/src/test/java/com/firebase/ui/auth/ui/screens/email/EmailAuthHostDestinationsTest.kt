@@ -14,6 +14,14 @@
 
 package com.firebase.ui.auth.ui.screens.email
 
+import androidx.compose.runtime.derivedStateOf
+import com.firebase.ui.auth.LocalAuthFlowScope
+import com.firebase.ui.auth.AuthFlowScope
+import org.mockito.Mockito.verify
+import com.google.firebase.FirebaseNetworkException
+import com.google.android.gms.tasks.Tasks
+import androidx.compose.runtime.LaunchedEffect
+import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -88,6 +96,7 @@ class EmailAuthHostDestinationsTest {
     private lateinit var applicationContext: Context
     private lateinit var stringProvider: DefaultAuthUIStringProvider
     private lateinit var authUI: FirebaseAuthUI
+    private lateinit var auth: FirebaseAuth
 
     /** The harness's own stack, for the assertions that are about keys rather than pixels. */
     private var reauthBackStack: NavBackStack<NavKey>? = null
@@ -106,7 +115,7 @@ class EmailAuthHostDestinationsTest {
                 .setProjectId("fake-project-id")
                 .build()
         )
-        val auth = mock(FirebaseAuth::class.java)
+        auth = mock(FirebaseAuth::class.java)
         `when`(auth.app).thenReturn(app)
         authUI = FirebaseAuthUI.create(app, auth)
     }
@@ -215,6 +224,54 @@ class EmailAuthHostDestinationsTest {
         // Back inside the flow: the sheet stays up and the reauthentication is not abandoned.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
         assertThat(dismissed).isEqualTo(0)
+    }
+
+    /**
+     * The point of giving a reauthentication request its own scope: a sub-screen's writes follow
+     * the flow it is composed in, not the singleton it was handed.
+     *
+     * `EmailAuthScreen` is a public composable, so it cannot be given an internal scope as a
+     * parameter — it reads the ambient one. This pins that: composed under a recording scope, the
+     * notification it consumes here lands there. Before provider code moved off the
+     * [FirebaseAuthUI] receiver this same write went to the process-wide channel, where an app
+     * collecting `authStateFlow()` would have acted on a retraction belonging to a reauthentication
+     * it was not part of. `ReauthFlowStateTest` covers the other half: what a request's sink does
+     * with the states it absorbs, and which ones it forwards to the host.
+     */
+    @Test
+    fun `a sub-screen consumes its notification into the flow it is composed in`() {
+        val recorded = mutableListOf<AuthState>()
+        val config = emailConfiguration()
+        // A one-off notification is the state, so consuming it needs no interaction at all.
+        val scope = AuthFlowScope(
+            auth = auth,
+            config = config,
+            state = mutableStateOf(AuthState.PasswordResetLinkSent()),
+            sink = { recorded += it },
+        )
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(
+                LocalAuthUIStringProvider provides stringProvider,
+                LocalAuthFlowScope provides scope,
+            ) {
+                EmailAuthScreen(
+                    context = applicationContext,
+                    configuration = config,
+                    authUI = authUI,
+                    mode = EmailAuthMode.SignIn,
+                    onNavigateToMode = { _, _ -> },
+                    onSuccess = {},
+                    onError = {},
+                    onCancel = {},
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        // Empty would mean it wrote to the singleton instead, which is the regression.
+        assertThat(recorded).isNotEmpty()
+        assertThat(recorded.last()).isInstanceOf(AuthState.Idle::class.java)
     }
 
     /**
@@ -328,9 +385,10 @@ class EmailAuthHostDestinationsTest {
                 requestId = "request-id",
                 user = user,
                 reason = null,
-                retryOperation = null,
             )
         }
+        val reauthFlowState = rememberReauthFlowState()
+        SideEffect { reauthFlowState.accept(AuthState.Reauthentication.Required(request)) }
         val backStack = rememberNavBackStack(
             AuthRoute.Success,
             AuthRoute.Reauth("request-id", "uid", startStep),
@@ -375,6 +433,7 @@ class EmailAuthHostDestinationsTest {
                         stringProvider = stringProvider,
                         surface = surface,
                         phoneFlowState = phoneFlowState,
+                        reauthFlowState = reauthFlowState,
                         emailContent = null,
                         phoneContent = null,
                         mfaChallengeContent = null,

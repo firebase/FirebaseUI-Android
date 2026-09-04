@@ -72,7 +72,7 @@ sealed interface AuthRoute {
      * type in the same stack cannot mean two configurations, and a wrapper is the cheapest way to
      * say "this step, but in reauthentication mode".
      *
-     * [requestId] and [userUid] make the entry the arming marker itself, which is why nothing else
+     * [requestId] and [userUid] make the entry the presentation marker itself, which is why nothing else
      * has to be saved alongside the stack.
      */
     @Serializable

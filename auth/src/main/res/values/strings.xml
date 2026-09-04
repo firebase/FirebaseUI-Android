@@ -21,6 +21,7 @@
     <string name="fui_loading_signing_in_with_email_link" translation_description="Progress message while completing email link sign-in">Signing in with email link...</string>
     <string name="fui_loading_sending_password_reset" translation_description="Progress message while sending the password reset email">Sending password reset email...</string>
     <string name="fui_loading_signing_out" translation_description="Progress message while signing the user out">Signing out...</string>
+    <string name="fui_loading_reauth_retrying" translation_description="Progress message shown after the user confirms their identity, while the action they originally asked for is retried">Finishing that action...</string>
     <string name="fui_loading_deleting_account" translation_description="Progress message while deleting the user\'s account">Deleting account...</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="fui_continue" translation_description="Button text to continue">Continue</string>

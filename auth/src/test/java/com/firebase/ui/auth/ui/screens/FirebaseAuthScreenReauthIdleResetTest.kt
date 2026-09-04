@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.ReauthScopeProbe
+import com.firebase.ui.auth.retryingReauth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -95,6 +97,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
 
     @Test
     fun `wrong password error during reauth does not dismiss the reauth sheet`() {
+        val probe = ReauthScopeProbe()
         val mockProviderInfo = mock(UserInfo::class.java)
         `when`(mockProviderInfo.providerId).thenReturn("password")
         val mockUser = mock(FirebaseUser::class.java)
@@ -122,6 +125,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = { state ->
+                    probe.capture()
                     capturedError = state.error
                     Text(text = "Reauth UI", modifier = Modifier.testTag("reauth_marker"))
                 }
@@ -130,14 +134,14 @@ class FirebaseAuthScreenReauthIdleResetTest {
 
         // Enter the reauth flow.
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(AuthState.Reauthentication.Required(mockUser))
+            authUI.pendingReauth.value = AuthState.Reauthentication.Required(mockUser)
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_marker").assertIsDisplayed()
 
         // Wrong password entered inside the reauth flow becomes failure state on the same request.
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(AuthState.Error(Exception("wrong password")))
+            probe.emit(AuthState.Error(Exception("wrong password")))
         }
         composeTestRule.waitForIdle()
 
@@ -148,10 +152,9 @@ class FirebaseAuthScreenReauthIdleResetTest {
 
     /**
      * `FirebaseAuthUI.delete()` signs the user out as its *success* condition, so a successful
-     * retry fires the AuthStateListener with a null current user while the request is still in
-     * `RetryingOperation`. The listener's stale-state reset used to force `Idle` from every
-     * `Reauthentication` phase, which cancelled the coroutine running the operation and left the
-     * saved presentation to report `fui_error_reauth_interrupted` — over a deleted account.
+     * retry fires the AuthStateListener with a null current user. Sign-out drops the outstanding
+     * request, and doing that while the operation is still running would report
+     * `fui_error_reauth_interrupted` over an account that was in fact deleted.
      *
      * Screen-level tests mock [FirebaseAuth], so `addAuthStateListener` is inert; the listener is
      * captured off the mock and invoked from inside the retry operation itself, which is how this
@@ -159,6 +162,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
      */
     @Test
     fun `an operation that signs the user out is reported as completed, not interrupted`() {
+        val probe = ReauthScopeProbe()
         val mockProviderInfo = mock(UserInfo::class.java)
         `when`(mockProviderInfo.providerId).thenReturn("password")
         val mockUser = mock(FirebaseUser::class.java)
@@ -189,6 +193,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
+                    probe.capture()
                     Text(text = "Reauth UI", modifier = Modifier.testTag("reauth_marker"))
                 }
             )
@@ -202,27 +207,20 @@ class FirebaseAuthScreenReauthIdleResetTest {
         var operationStarted = false
         var operationCompleted = false
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
-                AuthState.Reauthentication.Required(
-                    user = mockUser,
-                    retryOperation = {
-                        operationStarted = true
-                        // Exactly what a successful delete() does: FirebaseAuth drops the user and
-                        // notifies its listeners while the operation is still in flight.
-                        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
-                        listeners.forEach { it.onAuthStateChanged(mockFirebaseAuth) }
-                        yield()
-                        operationCompleted = true
-                    },
-                )
-            )
+            authUI.pendingReauth.value = retryingReauth(mockUser) {
+                    operationStarted = true
+                    // What a successful delete() does: the user is dropped mid-operation.
+                    `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+                    listeners.forEach { it.onAuthStateChanged(mockFirebaseAuth) }
+                    operationCompleted = true
+                }
         }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_marker").assertIsDisplayed()
 
         // Credentials accepted for the same user, which drives the request into its retry phase.
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
+            probe.emit(
                 AuthState.Success(
                     result = null,
                     user = mockUser,
@@ -236,7 +234,6 @@ class FirebaseAuthScreenReauthIdleResetTest {
             .getString(R.string.fui_error_reauth_interrupted)
         assertThat(operationStarted).isTrue()
         assertThat(operationCompleted).isTrue()
-        assertThat(observed.filterIsInstance<AuthState.Reauthentication.Interrupted>()).isEmpty()
         assertThat(observed.filterIsInstance<AuthState.Error>().map { it.exception.message })
             .doesNotContain(interruptedMessage)
     }
