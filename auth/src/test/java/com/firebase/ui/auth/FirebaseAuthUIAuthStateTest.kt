@@ -286,9 +286,7 @@ class FirebaseAuthUIAuthStateTest {
             delay(100)
             verify(mockFirebaseAuth).addAuthStateListener(listenerCaptor.capture())
 
-            // The request travels its own channel now, so nothing about it reaches the state
-            // flow — which is the point: an app collecting `authStateFlow()` is not part of this
-            // conversation.
+            // Nothing about the request reaches the state flow.
             val resolver = CompletableDeferred<Boolean>()
             authUI.pendingReauth.value = raisedReauth(
                 mockFirebaseUser,
@@ -304,8 +302,7 @@ class FirebaseAuthUIAuthStateTest {
             delay(200)
             job.cancel()
 
-            // A signed-out user cannot reauthenticate, so the request is dropped and the caller
-            // waiting on it is told rather than left suspended.
+            // Dropped, and the caller waiting on it told rather than left suspended.
             assertThat(authUI.pendingReauth.value).isNull()
             assertThat(resolver.isCompleted).isTrue()
             assertThat(resolver.getCompleted()).isFalse()
@@ -648,9 +645,7 @@ class FirebaseAuthUIAuthStateTest {
         val state = requireNotNull(authUI.pendingReauth.value)
         assertThat(state.request.hasPendingOperation).isTrue()
         assertThat(state.request.isResumable).isTrue()
-        // One path for this condition now: it raises a request and waits, where it used to raise one
-        // *and* throw an
-        // InvalidCredentialsException the caller had to catch and ignore.
+        // One path now: it raises a request and waits, rather than raising one *and* throwing.
         assertThat(call.isActive).isTrue()
 
         state.request.decline()
@@ -727,8 +722,7 @@ class FirebaseAuthUIAuthStateTest {
         assertThat(state.user).isEqualTo(mockFirebaseUser)
         assertThat(state.reason).isEqualTo("Verify identity to change email")
         assertThat(state.request.hasPendingOperation).isTrue()
-        // Parked on its own half of the request, so the retry will run here rather than anywhere
-        // the library would have to hold on to it.
+        // Parked on its own half of the request, so the retry runs here.
         assertThat(call.isActive).isTrue()
 
         state.request.decline()

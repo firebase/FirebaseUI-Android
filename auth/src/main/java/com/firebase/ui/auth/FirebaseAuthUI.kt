@@ -86,15 +86,8 @@ class FirebaseAuthUI private constructor(
     private val _authStateFlow = MutableStateFlow<AuthState>(AuthState.Idle)
 
     /**
-     * The reauthentication request waiting for a screen to take it on, or null.
-     *
-     * A dedicated channel rather than a lane on [_authStateFlow]. Raising a request and reporting
-     * auth state are different conversations, and sharing one channel is what forced every reader
-     * to work out whose states it was looking at — an `AuthState.Error` that meant "sign-in failed"
-     * or "the reauthentication attempt failed" depending on context nothing carried.
-     *
-     * Process-scoped because the caller is: it outlives the screen that presents it, which is what
-     * lets a recreated screen pick the same request up rather than reconstruct it.
+     * The reauthentication request waiting for a screen to take it on, or null. Process-scoped
+     * like the caller awaiting it, so a recreated screen picks up the same request.
      */
     internal val pendingReauth = MutableStateFlow<AuthState.Reauthentication.Required?>(null)
 
@@ -248,8 +241,6 @@ class FirebaseAuthUI private constructor(
      *
      * @param configuration Base [AuthUIConfiguration] whose provider list is filtered to
      *   the user's linked providers. All other settings are preserved.
-     * @param reason Optional human-readable string shown to the user explaining why
-     *   reauthentication is needed (e.g. "To delete your account we need to verify it's you").
      * @return An [AuthFlowController] configured for reauthentication
      * @throws AuthException.UserNotFoundException if no user is currently signed in
      * @throws IllegalStateException if none of the configured providers are linked to the
@@ -261,9 +252,6 @@ class FirebaseAuthUI private constructor(
             ?: throw AuthException.UserNotFoundException(
                 message = "No user is currently signed in"
             )
-        // One definition of what a reauthentication configuration is, shared with the screen's
-        // own path for raising one: a linked credential is not a proof of identity, so neither enables
-        // linking or upgrade.
         val reauthConfig = configuration.toReauthConfiguration(currentUser)
         checkNotNull(reauthConfig) {
             "No configured providers are linked to the current user"
@@ -346,8 +334,7 @@ class FirebaseAuthUI private constructor(
                         else -> false
                     }
                     if (isStale) updateAuthState(AuthState.Idle)
-                    // A signed-out user cannot reauthenticate, so an outstanding request is stale
-                    // by definition — and its caller is told rather than left waiting.
+                    // A signed-out user cannot reauthenticate; the caller is told, not dropped.
                     pendingReauth.getAndUpdate { null }?.request?.decline()
                 }
                 trySend(buildState(firebaseAuth.currentUser))
@@ -446,9 +433,6 @@ class FirebaseAuthUI private constructor(
             // Sign out from Firebase Auth
             auth.signOut()
                 .also {
-                    // These two publish nothing, so they take no sink and no configuration —
-                    // signOut has none to give. The test seams are resolved here rather than
-                    // inside them, which is the last thing either needed this receiver for.
                     signOutFromGoogle(
                         auth = auth,
                         context = context,
@@ -488,14 +472,13 @@ class FirebaseAuthUI private constructor(
     /**
      * Executes a sensitive operation, automatically handling reauthentication if required.
      *
-     * If the [operation] throws [FirebaseAuthRecentLoginRequiredException], this method emits
-     * [AuthState.Reauthentication.Required] and suspends. [FirebaseAuthScreen] observes that state
-     * and presents a reauthentication sheet; once credentials are accepted the [operation] runs
-     * again on this same coroutine, so nothing about the caller is retained by the library.
+     * If the [operation] throws [FirebaseAuthRecentLoginRequiredException], this raises a
+     * reauthentication request and suspends. [FirebaseAuthScreen] presents a sheet for it; once
+     * credentials are accepted the [operation] runs again on this same coroutine.
      *
      * If the user backs out, this throws [AuthException.AuthCancelledException] and the operation
-     * is not retried — so a caller can always tell a decline from a completed operation. A caller
-     * that must survive Activity recreation should launch from a scope that does too.
+     * is not retried. A caller that must survive Activity recreation should launch from a scope
+     * that does too.
      *
      * All other exceptions propagate normally.
      *
@@ -524,9 +507,7 @@ class FirebaseAuthUI private constructor(
         } catch (e: FirebaseAuthRecentLoginRequiredException) {
             val user = auth.currentUser
                 ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in")
-            // The caller's half of the request, parented to the caller's own job: a scope that
-            // dies cancels this with it, which is how the screen tells a request it can still
-            // complete from one whose operation can never run again.
+            // Parented to the caller's job, so a dying scope makes this unresumable.
             val resolver = CompletableDeferred<Boolean>(parent = coroutineContext[Job])
             val required = AuthState.Reauthentication.Required(
                 AuthState.Reauthentication.Request(
@@ -536,17 +517,14 @@ class FirebaseAuthUI private constructor(
                     resolver = resolver,
                 )
             )
-            // One request at a time. A second one replaces the first, and the caller it displaces
-            // is told so rather than left waiting on a request no screen will ever present.
+            // One at a time; the caller this displaces is told rather than left waiting.
             pendingReauth.getAndUpdate { required }?.request?.decline()
             val retry = try {
                 resolver.await()
             } finally {
                 pendingReauth.compareAndSet(required, null)
             }
-            // Thrown from this frame rather than out of the resolver: the resolver is parented to
-            // the caller's job, so failing it would cancel the caller's whole scope instead of
-            // just this call. A caller always learns whether its operation ran.
+            // Not through the resolver: failing a parented Deferred cancels the caller's scope.
             if (!retry) {
                 throw AuthException.AuthCancelledException(
                     message = "Reauthentication was cancelled"
@@ -568,8 +546,6 @@ class FirebaseAuthUI private constructor(
      */
     suspend fun delete(context: Context) {
         try {
-            // The whole reauthentication dance is withReauth's: raise once, retry once, and no
-            // branch here that both emits Required and throws for the same condition.
             withReauth(context) {
                 val currentUser = auth.currentUser
                     ?: throw AuthException.UserNotFoundException(
@@ -583,9 +559,7 @@ class FirebaseAuthUI private constructor(
                 updateAuthState(AuthState.Idle)
             }
         } catch (e: AuthException.AuthCancelledException) {
-            // The user declined the reauthentication. The screen already published the terminal
-            // state for that, so republishing it as an Error would put a dialog over a flow the
-            // user deliberately left.
+            // Declined, not failed: the screen already published the terminal state.
             throw e
         } catch (e: CancellationException) {
             // Handle coroutine cancellation

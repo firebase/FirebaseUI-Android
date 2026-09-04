@@ -85,8 +85,7 @@ internal fun AuthState.Reauthentication?.toReauthSurface(
         is AuthState.Reauthentication.SmsAutoVerified,
         is AuthState.Reauthentication.PasswordResetLinkSent,
         is AuthState.Reauthentication.EmailSignInLinkSent,
-        // Momentary: the screen validates the proof and ends the request on it. The surface stays
-        // up for that rather than flashing the flow underneath.
+        // Momentary, but the surface stays up rather than flashing the flow underneath.
         is AuthState.Reauthentication.Succeeded,
             -> state.request
     } ?: return null
@@ -193,9 +192,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
             ?.let { if (it is AuthException) it else AuthException.from(it, stringProvider) }
         val error = exception?.let { getRecoveryMessage(it, stringProvider) }
 
-        // This request's own flow, built where the configuration it needs is guaranteed to exist:
-        // the entry returns early when there is no surface, so the scope can never fall back to
-        // the host's and put a credential exchange's states on the public channel.
+        // Built here, where the entry's early return guarantees the configuration exists.
         val reauthStateHolder = remember(reauthFlowState) {
             derivedStateOf { reauthFlowState.phase ?: AuthState.Idle }
         }
@@ -308,9 +305,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                     resolver = mfaResolver,
                     auth = authUI.auth,
                     content = mfaChallengeContent,
-                    // The one credential exchange no provider owns, so the stamp is made here:
-                    // no current user means nothing was re-proved, and the attempt is reported as
-                    // a failure rather than moved on as an unstamped success.
+                    // The one exchange no provider owns, so the stamp is made here.
                     onSuccess = {
                         val reauthenticated = authUI.auth.currentUser
                         if (reauthenticated == null) {
@@ -338,9 +333,7 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                     onCancel = {
                         reauthFlowState.update(key.requestId) { it.attemptCancelled() }
                     },
-                    // The request's own flow, like every other outcome of this exchange. Writing
-                    // the public channel here would report a failed second factor as an ordinary
-                    // sign-in error to anything collecting `authStateFlow()`.
+                    // The request's flow: the public channel would report this as a sign-in error.
                     onError = { e -> reauthScope.emit(AuthState.Error(e)) },
                 )
             }

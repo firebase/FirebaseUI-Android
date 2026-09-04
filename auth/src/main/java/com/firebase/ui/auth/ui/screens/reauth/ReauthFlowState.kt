@@ -24,13 +24,7 @@ import com.firebase.ui.auth.AuthStateSink
 
 /**
  * The reauthentication phase machine of one
- * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen].
- *
- * Scoped to the composition that created it, which is what makes it the answer to "is there a
- * screen able to drive an outstanding request to completion?" — the question
- * `FirebaseAuthUI.addReauthenticationDrainer` used to answer with a counter on the singleton.
- * Every transition below runs from a composed screen, so a request nothing has accepted stays
- * inert without anything having to count screens.
+ * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen], scoped to its composition.
  *
  * @since 10.0.0
  */
@@ -49,11 +43,8 @@ internal class ReauthFlowState internal constructor(
     }
 
     /**
-     * Drops the outstanding request and tells its awaiting caller whether to retry.
-     *
-     * Resolving here rather than at each call site is what stops a caller being left suspended
-     * forever: every way a request ends comes through this, including the ones that end it because
-     * the user backed out.
+     * Drops the request and tells its awaiting caller whether to retry. Every way a request ends
+     * comes through here, so no caller is left suspended.
      */
     fun finish(retryOperation: Boolean) {
         val request = phaseState.value?.request
@@ -62,12 +53,8 @@ internal class ReauthFlowState internal constructor(
     }
 
     /**
-     * Applies [transition] to the live phase while [requestId] still names it.
-     *
-     * The id check is what `FirebaseAuthUI.updateReauthentication` needed against a shared flow
-     * any caller could have overwritten. Here it only guards a back stack entry one composition
-     * behind the phase, so it compares a key the caller already holds rather than arbitrating
-     * between writers.
+     * Applies [transition] to the live phase while [requestId] still names it — the caller's key
+     * may be a composition behind. A null transition result is a no-op.
      */
     fun update(requestId: String, transition: (AuthState.Reauthentication) -> AuthState?) {
         val current = phaseState.value ?: return
@@ -82,12 +69,8 @@ internal class ReauthFlowState internal constructor(
     }
 
     /**
-     * This request's own state sink, for the provider code driving its credential exchange.
-     *
-     * Everything the exchange publishes becomes a phase here rather than a state on the public
-     * flow, which is what stops an app's collector acting on a `Loading` or `Error` belonging to a
-     * conversation that is not theirs. [hostFallback] takes what [fold] declines: those states are
-     * not part of the exchange, so they are still the host's to handle.
+     * This request's state sink, for the provider code driving its credential exchange. Everything
+     * [fold] absorbs becomes a phase; [hostFallback] takes what it declines.
      */
     fun sink(hostFallback: AuthStateSink): AuthStateSink = AuthStateSink { state ->
         if (fold(state) == null) hostFallback.emit(state)
@@ -96,11 +79,6 @@ internal class ReauthFlowState internal constructor(
     /**
      * Folds an ordinary [state] published by provider code into the live phase, returning the
      * phase it became, or null when [state] is not part of the credential exchange.
-     *
-     * This is `FirebaseAuthUI.contextualizeReauthenticationState` relocated off the singleton's
-     * setter. Provider implementations still publish only ordinary states and still need no
-     * parallel session storage of their own, but the mapping now reads the phase it owns instead
-     * of read-modify-writing the flow it is being written to.
      */
     fun fold(state: AuthState): AuthState.Reauthentication? {
         if (state is AuthState.Reauthentication) return null
@@ -138,8 +116,7 @@ internal class ReauthFlowState internal constructor(
             is AuthState.EmailSignInLinkSent ->
                 AuthState.Reauthentication.EmailSignInLinkSent(request)
 
-            // Only a stamped Success proves this user was re-verified. An unstamped one is an
-            // ambient FirebaseAuth emission and leaves the phase alone.
+            // Only a stamped Success proves this user was re-verified.
             is AuthState.Success ->
                 if (state.reauthenticatedUid != null) {
                     AuthState.Reauthentication.Succeeded(request, state)
@@ -147,8 +124,7 @@ internal class ReauthFlowState internal constructor(
                     current
                 }
 
-            // Ambient emissions and notification cleanup while a request is outstanding. They must not
-            // detach the request from the caller waiting on it.
+            // Must not detach the request from the caller waiting on it.
             is AuthState.Idle,
             is AuthState.RequiresEmailVerification,
             is AuthState.RequiresProfileCompletion,
@@ -163,16 +139,9 @@ internal class ReauthFlowState internal constructor(
 }
 
 /**
- * Creates and remembers the [ReauthFlowState] for one
- * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen].
- *
- * Called once, above the `NavDisplay`, alongside `rememberPhoneAuthFlowState` and
- * `rememberMfaEnrollmentFlowState`, and composition-scoped like both: a phase that outlived its
- * Activity would let the next screen accept it, putting a reauthentication sheet into an
- * unrelated sign-in. What survives recreation is the back stack's
- * [com.firebase.ui.auth.ui.screens.AuthRoute.Reauth] marker and the raised
- * [AuthState.Reauthentication.Required] itself, which is enough to accept it again — and the request's
- * resolver is what says whether the caller behind it is still there to resume.
+ * Creates and remembers the [ReauthFlowState] for one screen, alongside
+ * `rememberPhoneAuthFlowState` and `rememberMfaEnrollmentFlowState`. The phase does not survive
+ * recreation; the request on `FirebaseAuthUI.pendingReauth` does.
  */
 @Composable
 internal fun rememberReauthFlowState(): ReauthFlowState =

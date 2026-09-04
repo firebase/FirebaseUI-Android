@@ -210,8 +210,7 @@ class FirebaseAuthScreenReauthIdleResetTest {
         composeTestRule.runOnIdle {
             authUI.pendingReauth.value = retryingReauth(mockUser) {
                     operationStarted = true
-                    // Exactly what a successful delete() does: FirebaseAuth drops the user and
-                    // notifies its listeners while the operation is running.
+                    // What a successful delete() does: the user is dropped mid-operation.
                     `when`(mockFirebaseAuth.currentUser).thenReturn(null)
                     listeners.forEach { it.onAuthStateChanged(mockFirebaseAuth) }
                     operationCompleted = true

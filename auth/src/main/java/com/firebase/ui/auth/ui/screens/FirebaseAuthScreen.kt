@@ -184,17 +184,9 @@ fun FirebaseAuthScreen(
     val observedAuthState by remember(authUI) { authUI.authStateFlow() }
         .collectAsState(initial = null as AuthState?)
     val rawAuthState = observedAuthState ?: AuthState.Idle
-    // Composition-scoped, so its existence *is* the answer to "is there a screen able to drive an
-    // outstanding request to completion?" — no counter on the singleton, and a phase that cannot outlive
-    // the Activity and be accepted into an unrelated sign-in.
     val reauthFlowState = rememberReauthFlowState()
     val reauthState = reauthFlowState.phase
-    // The request waiting to be taken on, watched on its own channel rather than picked out of the
-    // state flow. Process-scoped, so a recreated screen sees the same one and takes it on again.
     val pendingReauth by authUI.pendingReauth.collectAsState()
-    // The host's own flow. Provider code reaches the public state channel only through this sink,
-    // which is the whole point of the receiver change: there is no `authUI` on a scope to reach it
-    // any other way.
     val hostStateHolder = rememberUpdatedState(rawAuthState)
     val hostScope = remember(authUI, configuration, hostStateHolder) {
         hostAuthFlowScope(authUI, configuration, hostStateHolder)
@@ -248,13 +240,8 @@ fun FirebaseAuthScreen(
     val presentedReauth = backStack.presentedReauth()
     val clearReauthPresentation: () -> Unit = remember(backStack) { { backStack.clearReauth() } }
     /**
-     * Ends the outstanding request: clears its presentation, clears the phase, publishes [terminal], and
-     * only then resolves the caller waiting on it.
-     *
-     * One helper because every terminal site does the same four things in the same order, and the
-     * order carries two rules. The phase goes before [terminal] is published, or `fold` folds the
-     * terminal state straight back into the request it is ending. The caller is resolved last, or
-     * a fast-resuming retry's real outcome is overwritten by this stale one.
+     * Ends the request: clears presentation, clears the phase, publishes [terminal], then resolves
+     * the caller. The order matters — the caller resolves last so a fast retry's outcome stands.
      */
     val finishReauth: (AuthState, Boolean) -> Unit =
         remember(authUI, clearReauthPresentation, reauthFlowState) {
@@ -295,9 +282,7 @@ fun FirebaseAuthScreen(
         remember(reauthContent) {
             { config ->
                 when {
-                    // The slot *is* the provider chooser, even for one provider, so it always
-                    // starts at the picker step. The default sheet skips straight into a lone
-                    // provider's flow, as it always did.
+                    // The slot is the provider chooser, so it starts at the picker even for one.
                     reauthContent != null -> AuthRoute.MethodPicker
                     config != null -> getStartRoute(config).toKey()
                     else -> AuthRoute.MethodPicker
@@ -364,9 +349,7 @@ fun FirebaseAuthScreen(
         LocalAuthUIStringProvider provides configuration.stringProvider,
         LocalTopLevelDialogController provides dialogController,
         LocalAuthUITheme provides (configuration.theme ?: LocalAuthUITheme.current),
-        // The host's flow, for every sub-screen composed below. `reauthDestinations` overrides it
-        // with the outstanding request's, which is what puts a credential exchange's states on the phase
-        // instead of on the public channel.
+        // reauthDestinations overrides this with the outstanding request's own flow.
         LocalAuthFlowScope provides hostScope,
     ) {
         Surface(
@@ -642,14 +625,7 @@ fun FirebaseAuthScreen(
                 previousAuthState.value = state
                 // Guards below use `isAt` (runtime class), not `==`: keys carry arguments, so `==` blanks a live form.
                 val currentKey = backStack.lastOrNull()
-                // A reauthentication owns the screen while it is up. The host must not navigate or
-                // tear down underneath a modal sheet, and an ambient Success from the signed-in
-                // session is not this flow's to act on. `Aborted` is the exception: it is how the
-                // host itself is dismissed, and it ends the request on the way out.
-                //
-                // This one rule replaces what `contextualizeReauthenticationState` and then `fold`
-                // did by mapping every state onto a phase — the exchange's own states no longer
-                // arrive here at all, so all that is left to say is who owns the screen.
+                // A modal reauthentication owns the screen; Aborted is how the host is dismissed.
                 if (reauthFlowState.phase != null && state !is AuthState.Aborted) {
                     return@LaunchedEffect
                 }
@@ -708,13 +684,7 @@ fun FirebaseAuthScreen(
                     }
 
                     is AuthState.Aborted -> {
-                        // Outside the host guard on purpose. `fold` declines Aborted, so nothing
-                        // else clears the phase or resolves the caller — and under the activity
-                        // host FirebaseAuthActivity owns the rest of the teardown, so a clear
-                        // placed inside the guard would leave that host holding an outstanding request
-                        // and a caller suspended forever. An activity-scoped caller has its own
-                        // cancellation to fall back on, an unscoped one has nothing, and this
-                        // cannot tell them apart, so it resolves unconditionally.
+                        // Outside the guard below: the activity host ends nothing itself.
                         clearReauthPresentation()
                         reauthFlowState.finish(false)
                         if (activity !is FirebaseAuthActivity) {
@@ -747,12 +717,7 @@ fun FirebaseAuthScreen(
                 }
             }
 
-            /**
-             * A presentation marker with no request behind it: the process died while a
-             * reauthentication was outstanding, and the request went with it — it was never
-             * serializable. The back stack survives, so without this the restored screen would
-             * render an empty sheet over a flow with nothing to drive it.
-             */
+            // A marker with no request behind it: the process died and took the request with it.
             LaunchedEffect(pendingReauth, backStack.presentedReauth()) {
                 if (backStack.presentedReauth() == null) return@LaunchedEffect
                 if (pendingReauth != null || reauthFlowState.phase != null) return@LaunchedEffect
@@ -766,13 +731,7 @@ fun FirebaseAuthScreen(
                 )
             }
 
-            /**
-             * Takes on the request waiting on [FirebaseAuthUI.pendingReauth].
-             *
-             * This is what the `Reauthentication.Required` branch of the state effect used to do,
-             * moved onto the request's own channel. A recreated screen runs it again against the
-             * same request, which is why nothing has to reconstruct one from a latched state.
-             */
+            // Takes on the request waiting on pendingReauth; a recreated screen re-runs it.
             LaunchedEffect(pendingReauth) {
                 val required = pendingReauth ?: return@LaunchedEffect
                 if (reauthFlowState.phase?.requestId == required.requestId) return@LaunchedEffect
@@ -789,9 +748,7 @@ fun FirebaseAuthScreen(
                     )
                     return@LaunchedEffect
                 }
-                // A request whose caller died with its scope cannot be completed however well the
-                // exchange goes, so it is reported rather than presented. This is what tells a
-                // rotation that kept its caller from one that lost it.
+                // A request whose caller is gone can never complete, so it is reported.
                 if (!required.request.isResumable) {
                     finishReauth(
                         AuthState.Error(
@@ -816,17 +773,11 @@ fun FirebaseAuthScreen(
                 }
             }
 
-            /**
-             * The phase's own effect. The effect above is keyed on the flow, so it never sees a
-             * transition the destinations make straight on the holder — an MFA proof, a cancelled
-             * attempt, a consumed notification. Keying on the phase catches all of them.
-             */
+            // Keyed on the phase, so it also sees transitions the destinations make directly.
             LaunchedEffect(reauthFlowState.phase) {
                 val phase = reauthFlowState.phase ?: return@LaunchedEffect
 
-                // The challenge entry is on the stack exactly while the phase is RequiresMfa: it
-                // has no resolver to render otherwise, and this is the only place that moves it,
-                // so no attempt path can strand the user on a dead challenge.
+                // The challenge entry is on the stack exactly while the phase is RequiresMfa.
                 val marker = backStack.presentedReauth()?.takeIf { it.requestId == phase.requestId }
                 if (marker != null) {
                     if (phase is AuthState.Reauthentication.RequiresMfa) {
@@ -844,8 +795,7 @@ fun FirebaseAuthScreen(
                     if (success.reauthenticatedUid != phase.userUid ||
                         success.user.uid != phase.userUid
                     ) {
-                        // Proof for the wrong user is a failed attempt, not a dead request: the
-                        // surface stays up reporting it so the user can try the right account.
+                        // Wrong user is a failed attempt, not a dead request.
                         reauthFlowState.update(phase.requestId) {
                             AuthState.Reauthentication.AttemptFailed(
                                 request,
@@ -856,10 +806,7 @@ fun FirebaseAuthScreen(
                         }
                         return@LaunchedEffect
                     }
-                    // The retry runs on the caller's own coroutine, so this publishes the handover
-                    // rather than an outcome: a Success here would claim the pending operation had
-                    // already succeeded. A standalone flow has no operation behind it, so for that
-                    // one reauthenticating *is* the outcome.
+                    // A Success here would claim the pending operation had already succeeded.
                     val terminal = if (request.hasPendingOperation) {
                         AuthState.Loading(
                             context.getString(R.string.fui_loading_reauth_retrying)

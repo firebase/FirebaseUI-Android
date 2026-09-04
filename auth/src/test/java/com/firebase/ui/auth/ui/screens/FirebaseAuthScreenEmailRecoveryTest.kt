@@ -544,8 +544,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
         `when`(user.email).thenReturn(TYPED_EMAIL)
         `when`(user.uid).thenReturn("reauth-user-uid")
 
-        // A second collector on the same flow, to prove directly that nothing from the exchange
-        // lands on it rather than inferring it from what the dialog happens to render.
+        // A second collector, to prove directly that nothing from the exchange lands on it.
         val seen = mutableListOf<AuthState>()
         composeTestRule.setContent {
             LaunchedEffect(authUI) { authUI.authStateFlow().collect { seen += it } }
@@ -555,10 +554,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
-                // One linked provider, so the sheet opens straight at the email step and the
-                // method picker is never composed — the probe hooks in there instead. The slot
-                // is not `reauthContent`, so `reauthSlotActive` is unaffected and the dialog
-                // behaviour these assertions are about is unchanged.
+                // One provider, so the sheet opens at the email step and the picker never composes.
                 emailContent = { probe.capture() },
             )
         }
@@ -576,9 +572,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
         }
         composeTestRule.waitForIdle()
 
-        // The exchange's failure never reaches the public flow at all now — a stronger property
-        // than the folded phase this used to assert, and the reason the recovery stays out of
-        // reach below.
+        // The exchange's failure never reaches the public flow at all.
         assertThat(composeTestRule.runOnIdle { seen.filterIsInstance<AuthState.Error>() }).isEmpty()
         // Which is what keeps the recovery out of reach: no action button on the dialog, and the
         // outer graph was not moved to a sign-up form behind the sheet.
