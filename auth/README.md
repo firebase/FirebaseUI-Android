@@ -1585,13 +1585,16 @@ If left unset (`null`), the top app bar falls back to colors derived from `color
 
 ### Screen Transitions
 
-Customize the animations when navigating between screens using the `AuthUITransitions` object:
+Customize the animations when navigating between screens using the `AuthUITransitions` object.
+Each spec is an `AnimatedContentTransitionScope<Scene<NavKey>>` receiver returning one
+`ContentTransform`, so the enter and exit halves are paired with `togetherWith`:
 
 **Slide animations:**
 
 ```kotlin
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
@@ -1600,10 +1603,14 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Google())
     }
     transitions = AuthUITransitions(
-        enterTransition = { slideInHorizontally { it } },  // Slide in from right
-        exitTransition = { slideOutHorizontally { -it } },  // Slide out to left
-        popEnterTransition = { slideInHorizontally { -it } },  // Slide in from left
-        popExitTransition = { slideOutHorizontally { it } }  // Slide out to right
+        // Slide in from right, slide out to left
+        transitionSpec = { slideInHorizontally { it } togetherWith slideOutHorizontally { -it } },
+        // Slide in from left, slide out to right
+        popTransitionSpec = { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } },
+        // Predictive back falls back to the default cross-fade if left unset, so mirror the pop
+        predictivePopTransitionSpec = {
+            slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+        }
     )
 }
 ```
@@ -1613,6 +1620,7 @@ val configuration = authUIConfiguration {
 ```kotlin
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
@@ -1620,10 +1628,9 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Phone())
     }
     transitions = AuthUITransitions(
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() }
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        popTransitionSpec = { fadeIn() togetherWith fadeOut() },
+        predictivePopTransitionSpec = { fadeIn() togetherWith fadeOut() }
     )
 }
 ```
@@ -1635,6 +1642,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
@@ -1642,10 +1650,14 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Facebook())
     }
     transitions = AuthUITransitions(
-        enterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
-        exitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) },
-        popEnterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
-        popExitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) }
+        transitionSpec = {
+            fadeIn() + scaleIn(initialScale = 0.9f) togetherWith
+                    fadeOut() + scaleOut(targetScale = 0.9f)
+        },
+        popTransitionSpec = {
+            fadeIn() + scaleIn(initialScale = 0.9f) togetherWith
+                    fadeOut() + scaleOut(targetScale = 0.9f)
+        }
     )
 }
 ```
@@ -1655,6 +1667,7 @@ val configuration = authUIConfiguration {
 ```kotlin
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
@@ -1662,13 +1675,48 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Email())
     }
     transitions = AuthUITransitions(
-        enterTransition = { slideInVertically { it } },  // Slide up
-        exitTransition = { slideOutVertically { -it } }  // Slide down
+        // A vertical push: the new step rises from the bottom as the old one leaves via the top
+        transitionSpec = { slideInVertically { it } togetherWith slideOutVertically { -it } }
     )
 }
 ```
 
-> **Note:** If not specified, default fade in/out transitions with 700ms duration are used.
+**Per-destination animations:**
+
+Read `authRoute()` off `initialState` / `targetState` to vary the animation by the screen being
+navigated to or from:
+
+```kotlin
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import com.firebase.ui.auth.configuration.AuthUITransitions
+import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.authRoute
+
+val configuration = authUIConfiguration {
+    providers {
+        provider(AuthProvider.Email())
+    }
+    transitions = AuthUITransitions(
+        transitionSpec = {
+            if (targetState.authRoute() is AuthRoute.Success) {
+                fadeIn() togetherWith fadeOut()
+            } else {
+                slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+            }
+        }
+    )
+}
+```
+
+> **Note:** Each spec is independent. Any one left unset falls back to the library's default
+> 700ms cross-fade — `predictivePopTransitionSpec` included, which does *not* fall back to
+> `popTransitionSpec`. `predictivePopTransitionSpec` also receives the swipe edge
+> (`NavigationEvent.EDGE_LEFT`, `EDGE_RIGHT` or `EDGE_NONE`) and runs when the gesture *starts*,
+> so a side effect placed in it fires even for gestures the user goes on to cancel.
 
 ## Advanced Features
 
