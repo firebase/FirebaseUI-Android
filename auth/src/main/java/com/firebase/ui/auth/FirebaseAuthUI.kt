@@ -41,6 +41,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 import kotlin.coroutines.coroutineContext
@@ -83,6 +84,19 @@ class FirebaseAuthUI private constructor(
 ) {
 
     private val _authStateFlow = MutableStateFlow<AuthState>(AuthState.Idle)
+
+    /**
+     * The reauthentication request waiting for a screen to take it on, or null.
+     *
+     * A dedicated channel rather than a lane on [_authStateFlow]. Raising a request and reporting
+     * auth state are different conversations, and sharing one channel is what forced every reader
+     * to work out whose states it was looking at — an `AuthState.Error` that meant "sign-in failed"
+     * or "the reauthentication attempt failed" depending on context nothing carried.
+     *
+     * Process-scoped because the caller is: it outlives the screen that presents it, which is what
+     * lets a recreated screen pick the same request up rather than reconstruct it.
+     */
+    internal val pendingReauth = MutableStateFlow<AuthState.Reauthentication.Required?>(null)
 
     /** How many composed [FirebaseAuthScreen]s can currently drive a reauthentication request. */
 
@@ -329,13 +343,12 @@ class FirebaseAuthUI private constructor(
                         is AuthState.RequiresEmailVerification,
                         is AuthState.RequiresProfileCompletion,
                             -> true
-                        // Nothing to protect here any more: the retry runs in the caller's own
-                        // coroutine, after the screen has already ended the request. A signed-out
-                        // user cannot reauthenticate, so an outstanding request is stale by definition.
-                        is AuthState.Reauthentication -> true
                         else -> false
                     }
                     if (isStale) updateAuthState(AuthState.Idle)
+                    // A signed-out user cannot reauthenticate, so an outstanding request is stale
+                    // by definition — and its caller is told rather than left waiting.
+                    pendingReauth.getAndUpdate { null }?.request?.decline()
                 }
                 trySend(buildState(firebaseAuth.currentUser))
             }
@@ -515,20 +528,26 @@ class FirebaseAuthUI private constructor(
             // dies cancels this with it, which is how the screen tells a request it can still
             // complete from one whose operation can never run again.
             val resolver = CompletableDeferred<Boolean>(parent = coroutineContext[Job])
-            updateAuthState(
-                AuthState.Reauthentication.Required(
-                    AuthState.Reauthentication.Request(
-                        requestId = UUID.randomUUID().toString(),
-                        user = user,
-                        reason = reason,
-                        resolver = resolver,
-                    )
+            val required = AuthState.Reauthentication.Required(
+                AuthState.Reauthentication.Request(
+                    requestId = UUID.randomUUID().toString(),
+                    user = user,
+                    reason = reason,
+                    resolver = resolver,
                 )
             )
+            // One request at a time. A second one replaces the first, and the caller it displaces
+            // is told so rather than left waiting on a request no screen will ever present.
+            pendingReauth.getAndUpdate { required }?.request?.decline()
+            val retry = try {
+                resolver.await()
+            } finally {
+                pendingReauth.compareAndSet(required, null)
+            }
             // Thrown from this frame rather than out of the resolver: the resolver is parented to
             // the caller's job, so failing it would cancel the caller's whole scope instead of
             // just this call. A caller always learns whether its operation ran.
-            if (!resolver.await()) {
+            if (!retry) {
                 throw AuthException.AuthCancelledException(
                     message = "Reauthentication was cancelled"
                 )

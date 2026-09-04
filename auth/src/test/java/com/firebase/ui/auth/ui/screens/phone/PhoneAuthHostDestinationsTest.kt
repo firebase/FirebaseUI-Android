@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
+import androidx.compose.runtime.derivedStateOf
+import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.ui.screens.reauth.ReauthFlowState
 import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import android.content.Context

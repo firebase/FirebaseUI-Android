@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth
 
+import androidx.compose.runtime.Composable
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CompletableDeferred
 import java.util.UUID
@@ -61,4 +62,28 @@ internal fun abandonedReauth(user: FirebaseUser): AuthState.Reauthentication.Req
     val resolver = CompletableDeferred<Boolean>()
     resolver.cancel()
     return raisedReauth(user, resolver = resolver)
+}
+
+/**
+ * Captures the flow a reauthentication surface composes its content in.
+ *
+ * The request's own [AuthFlowScope] is what provider code emits into during a credential exchange,
+ * and every content slot — `reauthContent`, `emailContent`, `phoneContent` — is composed inside it.
+ * So a test standing in for provider code emits here, exactly where the real thing would, instead
+ * of writing the process-wide state channel and relying on the host to work out whose state it was.
+ */
+internal class ReauthScopeProbe {
+    var scope: AuthFlowScope? = null
+        private set
+
+    /** Call from inside a content slot. */
+    @Composable
+    fun capture() {
+        scope = LocalAuthFlowScope.current
+    }
+
+    /** Emits [state] as the exchange's provider code would. */
+    fun emit(state: AuthState) {
+        requireNotNull(scope) { "No reauthentication surface has been composed yet" }.emit(state)
+    }
 }
