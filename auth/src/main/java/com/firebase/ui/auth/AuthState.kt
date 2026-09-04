@@ -310,7 +310,8 @@ abstract class AuthState private constructor() {
         class Required internal constructor(
             override val request: Request,
         ) : Reauthentication() {
-            constructor(
+            /** A request with nobody waiting on it, as a standalone reauthentication flow has. */
+            internal constructor(
                 user: FirebaseUser,
                 reason: String? = null,
             ) : this(
