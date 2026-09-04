@@ -644,8 +644,7 @@ class FirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        // Arms and waits for the reauthentication it needs, rather than throwing a mapped
-        // exception the caller had to catch and ignore before showing its own reauth UI.
+        // Raises a request and waits, rather than throwing a mapped exception.
         val call = launch { runCatching { instance.delete(context) } }
         runCurrent()
 

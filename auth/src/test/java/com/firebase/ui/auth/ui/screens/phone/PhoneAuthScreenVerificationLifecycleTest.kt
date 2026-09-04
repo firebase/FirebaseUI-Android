@@ -574,8 +574,7 @@ class PhoneAuthScreenVerificationLifecycleTest {
         val credential = mock(PhoneAuthCredential::class.java)
 
         val observed = mutableListOf<AuthState>()
-        // Stands in for the composed FirebaseAuthScreen, which is what owns folding now: fold each
-        // ordinary provider state into the outstanding request and publish the phase this screen reads.
+        // Stands in for the composed FirebaseAuthScreen, which owns folding.
         val required = AuthState.Reauthentication.Required(user)
         val reauthFlowState = ReauthFlowState(mutableStateOf(null))
         reauthFlowState.accept(required)
