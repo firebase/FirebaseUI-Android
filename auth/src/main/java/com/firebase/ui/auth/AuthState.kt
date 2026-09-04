@@ -257,11 +257,8 @@ abstract class AuthState private constructor() {
     }
 
     /**
-     * A state in the lifecycle of one reauthentication request.
-     *
-     * Every state carries a stable [requestId], so Activity recreation can distinguish a
-     * continuation of the same sensitive operation from a new operation for the same user. The
-     * request itself is process-local because the caller it resolves to cannot be serialized.
+     * A state in the lifecycle of one reauthentication request. Every state carries a stable
+     * [requestId], so recreation can tell a continuation from a new operation for the same user.
      */
     sealed class Reauthentication : AuthState() {
         abstract val requestId: String
@@ -275,41 +272,26 @@ abstract class AuthState private constructor() {
             val user: FirebaseUser,
             val reason: String?,
             /**
-             * Where the caller awaiting this request is parked, or null when nobody is: a
+             * Where the caller awaiting this request is parked, or null when nobody is — a
              * standalone flow from [FirebaseAuthUI.createReauthFlow] has no operation behind it.
-             * Completing it runs the retry in the caller's own coroutine, which is why nothing
-             * retains the caller's closure here.
              */
             val resolver: CompletableDeferred<Boolean>? = null,
         ) {
             /** Whether a caller is waiting on this request to decide a pending operation. */
             val hasPendingOperation: Boolean get() = resolver != null
 
-            /**
-             * Whether the awaiting caller is still there to resume. False once its coroutine died
-             * with the scope that launched it, which is a request that can no longer complete
-             * however well the credential exchange goes.
-             */
+            /** Whether the awaiting caller is still there to resume. */
             val isResumable: Boolean get() = resolver?.isActive != false
 
-            /**
-             * Credentials were accepted: the awaiting caller resumes and retries its operation.
-             * Idempotent, and a no-op once the caller is gone, so every terminal path can call it
-             * without checking first.
-             */
+            /** Credentials were accepted: the caller resumes and retries. Idempotent. */
             fun resolve() {
                 resolver?.complete(true)
             }
 
             /**
-             * The request ended without proof — the user backed out, or the surface was torn down.
-             *
-             * Completed with a value rather than an exception on purpose. This resolver is
-             * parented to the caller's job so that a dead caller is detectable, and completing a
-             * parented Deferred *exceptionally* propagates the failure to that parent — declining
-             * would cancel the caller's whole scope and take its sibling jobs with it.
-             * [FirebaseAuthUI.withReauth] turns this into a throw in its own frame instead, which
-             * is an ordinary exception the caller can catch.
+             * The request ended without proof. Completed with a value, not an exception: failing a
+             * parented Deferred would cancel the caller's scope, so [FirebaseAuthUI.withReauth]
+             * throws in its own frame instead.
              */
             fun decline() {
                 resolver?.complete(false)
@@ -417,11 +399,7 @@ abstract class AuthState private constructor() {
             override val userUid: String get() = request.user.uid
         }
 
-        /**
-         * Credentials were accepted for the request's user. Terminal for the credential exchange:
-         * the screen validates the proof, resolves the awaiting caller and ends the request, and
-         * the caller's own retry publishes ordinary states from there.
-         */
+        /** Credentials were accepted for the request's user. Terminal for the exchange. */
         internal class Succeeded(
             override val request: Request,
             val success: Success,

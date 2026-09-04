@@ -229,9 +229,7 @@ class SignInStateSequenceTest {
                     context = applicationContext,
                     email = "a@b.com",
                     password = "pw1",
-                    // The credential-manager save is unavailable under Robolectric and throws
-                    // past this path's own handlers, which is its own bug and not this one's.
-                    // Skipped here so the sequence recorded is the state machine's.
+                    // Unavailable under Robolectric, and its own bug — see task_7f7cc65a.
                     skipCredentialSave = true)
             }
         }
@@ -351,8 +349,7 @@ class SignInStateSequenceTest {
             verifier = verifier)
         runCurrent()
 
-        // The verifier's flow is cold and already has its emission, so Loading and the prompt land
-        // in the same turn: conflation means a consumer sees only the prompt.
+        // Cold flow, so Loading and the prompt land in one turn and conflation hides Loading.
         assertThat(states).containsExactly("Idle", "PhoneNumberVerificationRequired").inOrder()
     }
 

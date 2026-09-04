@@ -208,12 +208,8 @@ fun EmailAuthScreen(
         )
     }
 
-    // The flow this screen belongs to: the host's when composed on its own, the outstanding
-    // request's when composed inside a reauthentication surface.
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
-    // This flow's state, not the process-wide channel's: under a reauthentication request
-    // that is the request's own phase, so the loading and error below describe the
-    // conversation this screen is actually part of.
+    // Under a reauthentication request this is that request's phase, not the host's state.
     val authState by authFlowScope.state
     val isLoading = authState is AuthState.Loading ||
         authState is AuthState.Reauthentication.Authenticating
