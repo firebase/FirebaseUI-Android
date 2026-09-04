@@ -530,7 +530,15 @@ class FirebaseAuthUI private constructor(
                     message = "Reauthentication was cancelled"
                 )
             }
-            operation()
+            // The screen handed over on a loading state, so it goes however the retry ends.
+            try {
+                operation()
+            } finally {
+                updateAuthState(
+                    auth.currentUser?.let { authUserState(it, result = null, isNewUser = false) }
+                        ?: AuthState.Idle
+                )
+            }
         }
     }
 
