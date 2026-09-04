@@ -31,6 +31,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.SmsEnrollmentHandler
 import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
+import com.firebase.ui.auth.ui.screens.enrollmentStep
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
@@ -58,7 +59,10 @@ import kotlinx.coroutines.launch
  * @param user The currently authenticated [FirebaseUser] to enroll in MFA
  * @param auth The [FirebaseAuth] instance
  * @param configuration MFA configuration controlling available factors and behavior
- * @param onComplete Callback invoked when enrollment completes successfully
+ * @param onComplete Callback invoked when enrollment completes successfully. Un-hosted, the
+ * screen puts itself back to its start step with a blank form afterwards, so a caller that leaves
+ * it composed does not go on showing the enrolled code; hosted, the host leaves the flow instead
+ * and the next entry clears it.
  * @param onSkip Callback invoked when user skips enrollment (only if not required)
  * @param onError Callback invoked when an error occurs during enrollment
  * @param step The step to render. When null this composable owns the step itself, starting at
@@ -205,10 +209,7 @@ internal fun MfaEnrollmentScreenInternal(
     if (step == null) {
         LaunchedEffect(Unit) {
             if (configuration.allowedFactors.size == 1) {
-                localStep.value = when (configuration.allowedFactors.first()) {
-                    MfaFactor.Sms -> MfaEnrollmentStep.ConfigureSms
-                    MfaFactor.Totp -> MfaEnrollmentStep.ConfigureTotp
-                }
+                localStep.value = unhostedStartStep(configuration)
             }
         }
     }
@@ -412,6 +413,14 @@ internal fun MfaEnrollmentScreenInternal(
                     onComplete()
                     error.value = null
                     lastException.value = null
+                    // Hosted, the reset happens on the next entry through enterMfaEnrollment, and
+                    // the flow leaves the back stack in between. Un-hosted there is no entry to
+                    // clear on and nowhere to navigate to, so a caller that stays composed would
+                    // otherwise sit on VerifyFactor with the enrolled code still in the field.
+                    if (step == null) {
+                        effectiveFlowState.reset()
+                        localStep.value = unhostedStartStep(configuration)
+                    }
                 } catch (e: Exception) {
                     error.value = e.message
                     lastException.value = e
@@ -460,6 +469,14 @@ internal fun MfaEnrollmentScreenInternal(
         )
     }
 }
+
+/**
+ * Where the un-hosted flow starts, and where a completed enrolment puts it back: the single
+ * allowed factor's own configuration step, or the picker. Goes through [mfaEnrollmentStartStep]
+ * rather than restating it, so the two hosts cannot start the flow in different places.
+ */
+private fun unhostedStartStep(configuration: MfaConfiguration): MfaEnrollmentStep =
+    mfaEnrollmentStartStep(configuration).enrollmentStep
 
 /**
  * Surfaced via [MfaEnrollmentContentState.error] on [MfaEnrollmentStep.ConfigureTotp] after the
