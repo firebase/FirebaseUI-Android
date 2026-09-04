@@ -187,6 +187,21 @@ class ReauthFlowStateTest {
         assertThat(holder.fold(AuthState.Reauthentication.Required(request))).isNull()
     }
 
+    /**
+     * Both channels the phase travels on conflate equal values, so this is what decides whether a
+     * write lands. Re-raising a live request is deliberately inert; a transition that has to be
+     * seen changes the phase type instead.
+     */
+    @Test
+    fun `Required identifies its request, so only a different request is a different state`() {
+        val request = request()
+
+        assertThat(AuthState.Reauthentication.Required(request))
+            .isEqualTo(AuthState.Reauthentication.Required(request))
+        assertThat(AuthState.Reauthentication.Required(request))
+            .isNotEqualTo(AuthState.Reauthentication.Required(request()))
+    }
+
     @Test
     fun `finish resolves the waiting caller with the retry decision`() {
         val holder = holder()
