@@ -152,10 +152,9 @@ class FirebaseAuthScreenReauthIdleResetTest {
 
     /**
      * `FirebaseAuthUI.delete()` signs the user out as its *success* condition, so a successful
-     * retry fires the AuthStateListener with a null current user while the request is still in
-     * `RetryingOperation`. The listener's stale-state reset used to force `Idle` from every
-     * `Reauthentication` phase, which cancelled the coroutine running the operation and left the
-     * saved presentation to report `fui_error_reauth_interrupted` — over a deleted account.
+     * retry fires the AuthStateListener with a null current user. Sign-out drops the outstanding
+     * request, and doing that while the operation is still running would report
+     * `fui_error_reauth_interrupted` over an account that was in fact deleted.
      *
      * Screen-level tests mock [FirebaseAuth], so `addAuthStateListener` is inert; the listener is
      * captured off the mock and invoked from inside the retry operation itself, which is how this
