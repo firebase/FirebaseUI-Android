@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Nastavite preverjanje prek SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Nastavite aplikacijo za preverjanje pristnosti</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Preverite svojo kodo</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Shranite kode za obnovitev</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Izberite drug način preverjanja pristnosti za zaščito računa</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Vnesite telefonsko številko za prejemanje kod za preverjanje</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Vnesite kodo, poslano na vaš telefon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Vnesite kodo iz aplikacije za preverjanje pristnosti</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Vnesite kodo za preverjanje</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Shranite te kode na varno mesto. Uporabite jih lahko za prijavo, če izgubite dostop do načina preverjanja pristnosti.</string>
 
     <string name="fui_confirm_password_hint">Potrdite geslo</string>
     <string name="fui_passwords_do_not_match">Gesli se ne ujemata</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Zahtevano je ponovno preverjanje pristnosti</string>
     <string name="fui_reauth_success_message">Ponovno preverjanje pristnosti uspešno</string>
     <string name="fui_reauthenticate_action">Ponovno preveri pristnost</string>
-    <string name="fui_recovery_codes_saved_action">Shranil sem kode za obnovitev</string>
     <string name="fui_remove_action">Odstrani</string>
     <string name="fui_resend_verification_email_action">Znova pošlji e-sporočilo za preverjanje</string>
     <string name="fui_secret_key_label">Skrivni ključ</string>

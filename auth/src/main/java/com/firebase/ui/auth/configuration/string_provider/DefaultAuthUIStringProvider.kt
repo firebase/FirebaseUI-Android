@@ -373,14 +373,18 @@ class DefaultAuthUIStringProvider(
     override val useDifferentMethodAction: String
         get() = localizedContext.getString(R.string.fui_use_different_method_action)
 
-    override val recoveryCodesSavedAction: String
-        get() = localizedContext.getString(R.string.fui_recovery_codes_saved_action)
-
     override val secretKeyLabel: String
         get() = localizedContext.getString(R.string.fui_secret_key_label)
 
     override val verificationCodeLabel: String
         get() = localizedContext.getString(R.string.fui_verification_code_label)
+
+    override fun verificationCodeDigitDescription(position: Int, total: Int): String =
+        localizedContext.getString(
+            R.string.fui_verification_code_digit_description,
+            position,
+            total
+        )
 
     override val identityVerifiedMessage: String
         get() = localizedContext.getString(R.string.fui_identity_verified_message)
@@ -462,8 +466,6 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_mfa_step_configure_totp_title)
     override val mfaStepVerifyFactorTitle: String
         get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_title)
-    override val mfaStepShowRecoveryCodesTitle: String
-        get() = localizedContext.getString(R.string.fui_mfa_step_show_recovery_codes_title)
 
     /**
      * MFA Enrollment Helper Text
@@ -480,8 +482,6 @@ class DefaultAuthUIStringProvider(
         get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_totp_helper)
     override val mfaStepVerifyFactorGenericHelper: String
         get() = localizedContext.getString(R.string.fui_mfa_step_verify_factor_generic_helper)
-    override val mfaStepShowRecoveryCodesHelper: String
-        get() = localizedContext.getString(R.string.fui_mfa_step_show_recovery_codes_helper)
 
     // MFA Enrollment Screen Titles
     override val mfaEnrollmentEnterPhoneNumber: String

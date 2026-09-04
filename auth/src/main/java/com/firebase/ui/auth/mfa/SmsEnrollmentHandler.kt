@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.mfa
 
 import android.app.Activity
+import androidx.compose.runtime.saveable.Saver
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.mfa.SmsEnrollmentHandler.Companion.RESEND_DELAY_SECONDS
 import com.google.firebase.auth.FirebaseAuth
@@ -337,6 +338,33 @@ data class SmsEnrollmentSession(
 }
 
 /**
+ * Round-trips [SmsEnrollmentSession] through `rememberSaveable` as a positional list; every field
+ * it carries is `Parcelable` or a primitive.
+ */
+internal val SmsEnrollmentSessionSaver: Saver<SmsEnrollmentSession?, List<Any?>> = Saver(
+    save = { session ->
+        session?.let {
+            listOf(
+                it.verificationId,
+                it.phoneNumber,
+                it.forceResendingToken,
+                it.sentAt,
+                it.autoVerifiedCredential,
+            )
+        }
+    },
+    restore = { saved ->
+        SmsEnrollmentSession(
+            verificationId = saved[0] as String,
+            phoneNumber = saved[1] as String,
+            forceResendingToken = saved[2] as PhoneAuthProvider.ForceResendingToken?,
+            sentAt = saved[3] as Long,
+            autoVerifiedCredential = saved[4] as PhoneAuthCredential?,
+        )
+    },
+)
+
+/**
  * Masks the middle digits of a phone number for privacy.
  *
  * The function keeps the country code (first 1-3 characters after +) and
@@ -357,20 +385,19 @@ fun maskPhoneNumber(phoneNumber: String): String {
         return phoneNumber
     }
 
-    // Determine country code length (typically 1-3 digits after +)
-    val digitsOnly = phoneNumber.substring(1) // Remove +
+    // Country-code length is a heuristic: NANP (+1) is one digit, most others two.
+    val digitsOnly = phoneNumber.substring(1)
     val countryCodeLength = when {
-        digitsOnly.length > 10 -> 2 // Likely 2-digit country code
-        digitsOnly[0] == '1' -> 1 // North America
-        else -> 2 // Most other countries
+        digitsOnly.length > 10 -> 2
+        digitsOnly[0] == '1' -> 1
+        else -> 2
     }
 
-    val countryCode = phoneNumber.substring(0, countryCodeLength + 1) // Include +
-    // Keep last 3-4 digits visible, with longer numbers showing more
+    val countryCode = phoneNumber.substring(0, countryCodeLength + 1)
     val lastDigitsCount = when {
-        phoneNumber.length >= 14 -> 4 // Long numbers show 4 digits
-        phoneNumber.length >= 11 -> 3 // Medium numbers show 3 digits
-        else -> 2 // Short numbers show 2 digits
+        phoneNumber.length >= 14 -> 4
+        phoneNumber.length >= 11 -> 3
+        else -> 2
     }
     val lastDigits = phoneNumber.takeLast(lastDigitsCount)
     val maskedLength = phoneNumber.length - countryCode.length - lastDigitsCount

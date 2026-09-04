@@ -70,9 +70,6 @@ import com.google.firebase.auth.MultiFactorInfo
  * @property resendTimer (Step: [MfaEnrollmentStep.VerifyFactor], SMS only) The number of seconds remaining before the "Resend" action is available. Will be 0 when resend is allowed.
  * @property onResendCodeClick (Step: [MfaEnrollmentStep.VerifyFactor], SMS only) Callback to resend the SMS verification code. Will be `null` for TOTP verification.
  *
- * @property recoveryCodes (Step: [MfaEnrollmentStep.ShowRecoveryCodes]) A list of one-time backup codes the user should save. Only present if [com.firebase.ui.auth.configuration.MfaConfiguration.enableRecoveryCodes] is `true`.
- * @property onCodesSavedClick (Step: [MfaEnrollmentStep.ShowRecoveryCodes]) Callback invoked when the user confirms they have saved their recovery codes. Completes the enrollment flow.
- *
  * @since 10.0.0
  */
 data class MfaEnrollmentContentState(
@@ -131,12 +128,7 @@ data class MfaEnrollmentContentState(
 
     val resendTimer: Int = 0,
 
-    val onResendCodeClick: (() -> Unit)? = null,
-
-    // ShowRecoveryCodes step
-    val recoveryCodes: List<String>? = null,
-
-    val onCodesSavedClick: () -> Unit = {}
+    val onResendCodeClick: (() -> Unit)? = null
 ) {
     /**
      * Returns true if the current state is valid for the current step.
@@ -149,7 +141,6 @@ data class MfaEnrollmentContentState(
             MfaEnrollmentStep.ConfigureSms -> phoneNumber.isNotBlank()
             MfaEnrollmentStep.ConfigureTotp -> totpSecret != null && totpQrCodeUrl != null
             MfaEnrollmentStep.VerifyFactor -> verificationCode.length == 6
-            MfaEnrollmentStep.ShowRecoveryCodes -> !recoveryCodes.isNullOrEmpty()
         }
 
     /**

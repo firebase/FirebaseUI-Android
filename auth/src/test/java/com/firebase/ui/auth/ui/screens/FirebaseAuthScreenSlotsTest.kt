@@ -27,6 +27,7 @@ import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -137,7 +138,7 @@ class FirebaseAuthScreenSlotsTest {
             )
         }
 
-        composeTestRule.onNodeWithTag("AuthMethodPicker LazyColumn").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST).assertIsDisplayed()
     }
 
     @Test
@@ -169,7 +170,7 @@ class FirebaseAuthScreenSlotsTest {
         composeTestRule.onNodeWithTag("custom_method_picker").assertIsDisplayed()
         // AuthMethodPicker (and with it, the logo/ToS footer it renders) must not exist at all —
         // customMethodPickerLayout now takes over the entire screen, it doesn't sit alongside them.
-        composeTestRule.onNodeWithTag("AuthMethodPicker LazyColumn").assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST).assertDoesNotExist()
     }
 
     @Test
@@ -216,6 +217,7 @@ class FirebaseAuthScreenSlotsTest {
         val mockProviderInfo = mock(UserInfo::class.java)
         `when`(mockProviderInfo.providerId).thenReturn("password")
         val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn("uid-custom-picker")
         `when`(mockUser.providerData).thenReturn(listOf(mockProviderInfo))
 
         val configuration = authUIConfiguration {
@@ -242,11 +244,11 @@ class FirebaseAuthScreenSlotsTest {
             )
         }
 
-        authUI.updateAuthState(AuthState.ReauthenticationRequired(mockUser))
+        authUI.updateAuthState(AuthState.Reauthentication.Required(mockUser))
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("custom_reauth_picker").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("AuthMethodPicker LazyColumn").assertDoesNotExist()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST).assertDoesNotExist()
     }
 
     // =============================================================================================

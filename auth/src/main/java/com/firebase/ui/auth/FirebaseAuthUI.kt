@@ -41,7 +41,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicLong
 
 /**
  * The central class that coordinates all authentication operations for Firebase Auth UI Compose.
@@ -80,7 +79,9 @@ class FirebaseAuthUI private constructor(
 ) {
 
     private val _authStateFlow = MutableStateFlow<AuthState>(AuthState.Idle)
-    private val authStateRevision = AtomicLong(0)
+
+    /** How many composed [FirebaseAuthScreen]s can currently drive a reauthentication request. */
+    private var reauthenticationDrainers = 0
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     var testCredentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null
@@ -249,6 +250,10 @@ class FirebaseAuthUI private constructor(
         }
         val reauthConfig = configuration.copy(
             providers = linked,
+            // Belt and braces with the canLinkCredential/canUpgradeAnonymous guards: a linked
+            // credential is not a proof of identity, so a reauth config never enables either.
+            isAnonymousUpgradeEnabled = false,
+            isCredentialLinkingEnabled = false,
             isNewEmailAccountsAllowed = false,
             isReauthenticationMode = true,
         )
@@ -267,6 +272,8 @@ class FirebaseAuthUI private constructor(
      * - [AuthState.Cancelled] when authentication is cancelled
      * - [AuthState.RequiresMfa] when multi-factor authentication is needed
      * - [AuthState.RequiresEmailVerification] when email verification is needed
+     * - [AuthState.Reauthentication] for the whole of a reauthentication [FirebaseAuthScreen] is
+     *   driving: the states above are then reported as its library-owned phases instead
      *
      * The flow automatically emits [AuthState.Success] or [AuthState.Idle] based on
      * the current authentication state when collection starts.
@@ -320,12 +327,19 @@ class FirebaseAuthUI private constructor(
                 // doesn't return Success/RequiresEmailVerification after the user is gone.
                 if (firebaseAuth.currentUser == null) {
                     val current = _authStateFlow.value
-                    if (current is AuthState.Success ||
-                        current is AuthState.RequiresEmailVerification ||
-                        current is AuthState.RequiresProfileCompletion
-                    ) {
-                        _authStateFlow.value = AuthState.Idle
+                    val isStale = when (current) {
+                        is AuthState.Success,
+                        is AuthState.RequiresEmailVerification,
+                        is AuthState.RequiresProfileCompletion,
+                            -> true
+                        // A sensitive operation such as delete() signs the user out as its own
+                        // success condition, so phases owning that operation must survive this.
+                        is AuthState.Reauthentication -> !current.isReauthenticated
+                        else -> false
                     }
+                    // Via the session helper so a cleared request leaves the state machine outright
+                    // instead of being written past contextualizeReauthenticationState().
+                    if (isStale) finishReauthentication(AuthState.Idle)
                 }
                 trySend(buildState(firebaseAuth.currentUser))
             }
@@ -365,28 +379,146 @@ class FirebaseAuthUI private constructor(
      */
     @MainThread
     fun updateAuthState(state: AuthState) {
-        authStateRevision.incrementAndGet()
+        _authStateFlow.value = contextualizeReauthenticationState(state)
+    }
+
+    /** Ends the current reauthentication session without preserving its request context. */
+    @MainThread
+    internal fun finishReauthentication(state: AuthState) {
         _authStateFlow.value = state
     }
 
     /**
-     * Retracts a pending [AuthState.Loading] by resetting to [AuthState.Idle], but only while
-     * [revision] is still the most recent write. Any state emitted since is left untouched.
-     *
-     * The revision is what makes this precise: [AuthState.Loading] compares equal whenever the
-     * message matches, and [MutableStateFlow] drops a write equal to the current value without
-     * replacing the stored reference - so neither equality nor identity can tell a concurrent
-     * operation's Loading apart from the caller's.
-     *
-     * @param revision The value [currentAuthStateRevision] returned right after the caller emitted
-     * the [AuthState.Loading] it now wants to retract
+     * Registers a screen that can drive an armed reauthentication request to completion.
+     * Call [removeReauthenticationDrainer] when it leaves the composition.
      */
-    internal fun clearLoadingState(revision: Long) {
-        if (authStateRevision.get() == revision) updateAuthState(AuthState.Idle)
+    @MainThread
+    internal fun addReauthenticationDrainer() {
+        reauthenticationDrainers++
     }
 
-    /** Identifies the most recent [updateAuthState] write. See [clearLoadingState]. */
-    internal fun currentAuthStateRevision(): Long = authStateRevision.get()
+    /** Unregisters a drainer added by [addReauthenticationDrainer]. */
+    @MainThread
+    internal fun removeReauthenticationDrainer() {
+        if (reauthenticationDrainers > 0) reauthenticationDrainers--
+    }
+
+    /**
+     * Applies a reauthentication [transition] only while [requestId] is still the armed request.
+     * A null transition result is a no-op, which is how phases reject a transition they disallow.
+     */
+    @MainThread
+    internal fun updateReauthentication(
+        requestId: String,
+        transition: (AuthState.Reauthentication) -> AuthState?,
+    ) {
+        val current = _authStateFlow.value as? AuthState.Reauthentication ?: return
+        if (current.requestId != requestId) return
+        transition(current)?.let { updateAuthState(it) }
+    }
+
+    /**
+     * Publishes the [AuthState.Success] that proves a genuine reauthentication of the signed-in
+     * user, for the one exchange no provider owns: a resolved second factor. Call only on success.
+     */
+    @MainThread
+    internal fun publishReauthenticationSuccess() {
+        // Matches the provider stamp sites: no current user means nothing was re-proved, so the
+        // attempt is reported as a failure rather than published as an unstamped Success.
+        val reauthenticatedUser = auth.currentUser
+        if (reauthenticatedUser == null) {
+            updateAuthState(
+                AuthState.Error(
+                    AuthException.UserNotFoundException(
+                        message = "No user is currently signed in for reauthentication"
+                    )
+                )
+            )
+            return
+        }
+        updateAuthState(
+            AuthState.Success(
+                result = null,
+                user = reauthenticatedUser,
+                reauthenticatedUid = reauthenticatedUser.uid,
+            )
+        )
+    }
+
+    /**
+     * Keeps one reauthentication request attached while provider code publishes ordinary auth
+     * states. Provider implementations therefore do not need their own parallel session storage.
+     *
+     * Scoped to a registered drainer: with no screen to end a request, an arming from public API
+     * alone stays inert rather than swallowing every later state and capturing [authStateFlow].
+     */
+    private fun contextualizeReauthenticationState(state: AuthState): AuthState {
+        if (state is AuthState.Reauthentication) return state
+        if (reauthenticationDrainers == 0) return state
+
+        val current = _authStateFlow.value as? AuthState.Reauthentication ?: return state
+        val request = current.request ?: return state
+
+        if (current is AuthState.Reauthentication.RetryingOperation) {
+            return when (state) {
+                // Sensitive operations such as delete() publish their own Loading before the
+                // final result. Keep the retry phase and its callback attached in the meantime.
+                is AuthState.Loading -> current
+                else -> AuthState.Reauthentication.OperationFinished(request, state)
+            }
+        }
+
+        return when (state) {
+            is AuthState.Loading ->
+                AuthState.Reauthentication.Authenticating(request, state.message)
+
+            is AuthState.Error -> {
+                if (state.exception is AuthException.AuthCancelledException) {
+                    AuthState.Reauthentication.Required(request)
+                } else {
+                    AuthState.Reauthentication.AttemptFailed(request, state.exception)
+                }
+            }
+
+            is AuthState.Cancelled -> AuthState.Reauthentication.Required(request)
+
+            is AuthState.RequiresMfa ->
+                AuthState.Reauthentication.RequiresMfa(request, state.resolver, state.hint)
+
+            is AuthState.PhoneNumberVerificationRequired ->
+                AuthState.Reauthentication.PhoneNumberVerificationRequired(
+                    request = request,
+                    verificationId = state.verificationId,
+                    forceResendingToken = state.forceResendingToken,
+                )
+
+            is AuthState.SMSAutoVerified ->
+                AuthState.Reauthentication.SmsAutoVerified(request, state.credential)
+
+            is AuthState.PasswordResetLinkSent ->
+                AuthState.Reauthentication.PasswordResetLinkSent(request)
+
+            is AuthState.EmailSignInLinkSent ->
+                AuthState.Reauthentication.EmailSignInLinkSent(request)
+
+            is AuthState.Success -> {
+                if (state.reauthenticatedUid != null) {
+                    AuthState.Reauthentication.Succeeded(request, state)
+                } else {
+                    current
+                }
+            }
+
+            // These states can be ambient FirebaseAuth emissions or notification cleanup while a
+            // request is armed. They must not detach the process-local retry callback.
+            is AuthState.Idle,
+            is AuthState.RequiresEmailVerification,
+            is AuthState.RequiresProfileCompletion,
+                -> current
+
+            else -> state
+        }
+    }
 
     internal fun updateAuthStateWithResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
         val user = result?.user
@@ -403,6 +535,24 @@ class FirebaseAuthUI private constructor(
         }
     }
 
+    /**
+     * Re-reads the signed-in user from the server and republishes the resulting auth state.
+     * No-op when nobody is signed in.
+     */
+    internal suspend fun reloadUser() {
+        val user = auth.currentUser ?: return
+        user.reload().await()
+        user.getIdToken(true).await()
+        // Signing out (or switching account) mid-reload must win: publishing here would pin the
+        // combine in authStateFlow() to a Success for a user who is already gone.
+        if (auth.currentUser?.uid != user.uid) return
+        updateAuthState(handleAuthUserState(user, result = null, isNewUser = false))
+    }
+
+    /**
+     * Single source of truth for whether a signed-in user still owes email verification.
+     * Callers must not re-derive it: only password users with an email can satisfy that screen.
+     */
     private fun handleAuthUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState {
         return if (!user.isEmailVerified &&
             user.email != null &&
@@ -516,7 +666,8 @@ class FirebaseAuthUI private constructor(
      * Executes a sensitive operation, automatically handling reauthentication if required.
      *
      * If the [operation] throws [FirebaseAuthRecentLoginRequiredException], this method emits
-     * [AuthState.ReauthenticationRequired] with the operation attached as [AuthState.ReauthenticationRequired.retryOperation].
+     * [AuthState.Reauthentication.Required] with the operation attached as its
+     * [AuthState.Reauthentication.Required.retryOperation].
      * [FirebaseAuthScreen] observes this state and presents a reauthentication sheet; on success
      * the operation is retried automatically without any further action from the caller.
      *
@@ -547,7 +698,7 @@ class FirebaseAuthUI private constructor(
             val user = auth.currentUser
                 ?: throw AuthException.UserNotFoundException(message = "No user is currently signed in")
             updateAuthState(
-                AuthState.ReauthenticationRequired(
+                AuthState.Reauthentication.Required(
                     user = user,
                     reason = reason,
                     retryOperation = {
@@ -557,7 +708,7 @@ class FirebaseAuthUI private constructor(
                             throw e
                         } catch (e: Exception) {
                             updateAuthState(AuthState.Error(e))
-                            return@ReauthenticationRequired
+                            return@Required
                         }
                         val currentUser = auth.currentUser
                         if (currentUser != null) {
@@ -590,7 +741,7 @@ class FirebaseAuthUI private constructor(
         } catch (e: FirebaseAuthRecentLoginRequiredException) {
             auth.currentUser?.let {
                 updateAuthState(
-                    AuthState.ReauthenticationRequired(
+                    AuthState.Reauthentication.Required(
                         user = it,
                         retryOperation = { ctx -> delete(ctx) },
                     )

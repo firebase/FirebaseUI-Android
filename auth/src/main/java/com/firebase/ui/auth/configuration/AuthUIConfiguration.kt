@@ -237,6 +237,8 @@ class AuthUIConfiguration(
 ) {
     internal fun copy(
         providers: List<AuthProvider> = this.providers,
+        isAnonymousUpgradeEnabled: Boolean = this.isAnonymousUpgradeEnabled,
+        isCredentialLinkingEnabled: Boolean = this.isCredentialLinkingEnabled,
         isNewEmailAccountsAllowed: Boolean = this.isNewEmailAccountsAllowed,
         isReauthenticationMode: Boolean = this.isReauthenticationMode,
     ): AuthUIConfiguration = AuthUIConfiguration(
@@ -247,7 +249,8 @@ class AuthUIConfiguration(
         stringProvider = this.stringProvider,
         isCredentialManagerEnabled = this.isCredentialManagerEnabled,
         isMfaEnabled = this.isMfaEnabled,
-        isAnonymousUpgradeEnabled = this.isAnonymousUpgradeEnabled,
+        isAnonymousUpgradeEnabled = isAnonymousUpgradeEnabled,
+        isCredentialLinkingEnabled = isCredentialLinkingEnabled,
         tosUrl = this.tosUrl,
         privacyPolicyUrl = this.privacyPolicyUrl,
         logo = this.logo,
@@ -255,6 +258,7 @@ class AuthUIConfiguration(
         isNewEmailAccountsAllowed = isNewEmailAccountsAllowed,
         isDisplayNameRequired = this.isDisplayNameRequired,
         isProviderChoiceAlwaysShown = this.isProviderChoiceAlwaysShown,
+        legacyFetchSignInWithEmail = this.legacyFetchSignInWithEmail,
         transitions = this.transitions,
         isReauthenticationMode = isReauthenticationMode,
     )

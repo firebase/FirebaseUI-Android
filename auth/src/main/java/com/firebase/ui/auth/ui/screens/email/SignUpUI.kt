@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -49,8 +50,10 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.EmailValidator
 import com.firebase.ui.auth.configuration.validators.GeneralFieldValidator
 import com.firebase.ui.auth.configuration.validators.PasswordValidator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +72,7 @@ fun SignUpUI(
     onGoToSignIn: () -> Unit,
     onSignUpClick: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
+    isEmailLocked: Boolean = false,
 ) {
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val context = LocalContext.current
@@ -103,7 +107,7 @@ fun SignUpUI(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = {
@@ -111,7 +115,10 @@ fun SignUpUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.BACK_BUTTON)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -131,6 +138,7 @@ fun SignUpUI(
         ) {
             if (provider.isDisplayNameRequired) {
                 AuthTextField(
+                    modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.NAME_FIELD),
                     value = displayName,
                     validator = displayNameValidator,
                     enabled = !isLoading,
@@ -144,9 +152,11 @@ fun SignUpUI(
                 Spacer(modifier = Modifier.height(16.dp))
             }
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.EMAIL_FIELD),
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
+                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },
@@ -156,6 +166,7 @@ fun SignUpUI(
             )
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD),
                 value = password,
                 validator = passwordValidator,
                 enabled = !isLoading,
@@ -165,10 +176,14 @@ fun SignUpUI(
                 },
                 onValueChange = { text ->
                     onPasswordChange(text)
-                }
+                },
+                visibilityToggleModifier = Modifier.testTag(
+                    FirebaseAuthTestTags.SignUp.PASSWORD_VISIBILITY_TOGGLE
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
+                modifier = Modifier.testTag(FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_FIELD),
                 value = confirmPassword,
                 validator = confirmPasswordValidator,
                 enabled = !isLoading,
@@ -178,7 +193,10 @@ fun SignUpUI(
                 },
                 onValueChange = { text ->
                     onConfirmPasswordChange(text)
-                }
+                },
+                visibilityToggleModifier = Modifier.testTag(
+                    FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_VISIBILITY_TOGGLE
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -186,6 +204,8 @@ fun SignUpUI(
                     .align(Alignment.End),
             ) {
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.SignUp.SIGN_IN_BUTTON),
                     onClick = {
                         onGoToSignIn()
                     },
@@ -195,6 +215,8 @@ fun SignUpUI(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
+                    modifier = Modifier
+                        .testTag(FirebaseAuthTestTags.SignUp.SIGN_UP_BUTTON),
                     onClick = {
                         onSignUpClick()
                     },

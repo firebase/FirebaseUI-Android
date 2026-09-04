@@ -410,14 +410,18 @@ interface AuthUIStringProvider {
     /** Action text for choosing a different factor during MFA challenge. */
     val useDifferentMethodAction: String
 
-    /** Action text for confirming recovery codes have been saved. */
-    val recoveryCodesSavedAction: String
-
     /** Label for secret key text displayed during TOTP setup. */
     val secretKeyLabel: String
 
     /** Label for verification code input fields. */
     val verificationCodeLabel: String
+
+    /**
+     * Content description for a single verification code digit, announced positionally
+     * (e.g. "Verification code digit 3 of 6").
+     */
+    fun verificationCodeDigitDescription(position: Int, total: Int): String =
+        "Verification code digit $position of $total"
 
     /** Generic identity verified confirmation message. */
     val identityVerifiedMessage: String
@@ -511,9 +515,6 @@ interface AuthUIStringProvider {
     /** Title for MFA verification step */
     val mfaStepVerifyFactorTitle: String
 
-    /** Title for recovery codes step */
-    val mfaStepShowRecoveryCodesTitle: String
-
     // MFA Enrollment Helper Text
     /** Helper text for selecting MFA factor */
     val mfaStepSelectFactorHelper: String
@@ -532,9 +533,6 @@ interface AuthUIStringProvider {
 
     /** Generic helper text for factor verification */
     val mfaStepVerifyFactorGenericHelper: String
-
-    /** Helper text for recovery codes */
-    val mfaStepShowRecoveryCodesHelper: String
 
     // MFA Enrollment Screen Titles
     /** Title for MFA phone number enrollment screen (top app bar) */

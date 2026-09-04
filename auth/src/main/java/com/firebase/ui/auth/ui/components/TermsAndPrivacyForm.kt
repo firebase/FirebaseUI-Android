@@ -24,11 +24,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.R
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @Composable
 fun TermsAndPrivacyForm(
@@ -38,9 +41,12 @@ fun TermsAndPrivacyForm(
 ) {
     val uriHandler = LocalUriHandler.current
     Row(
-        modifier = modifier,
+        // Flagged here too (a no-op if an ancestor already is) so tags stay exposed for any
+        // future caller without a flagged ancestor.
+        modifier = modifier.exposeTestTagsAsResourceIds(),
     ) {
         TextButton(
+            modifier = Modifier.testTag(FirebaseAuthTestTags.TermsAndPrivacy.TOS_LINK),
             onClick = {
                 tosUrl?.let {
                     uriHandler.openUri(it)
@@ -57,6 +63,7 @@ fun TermsAndPrivacyForm(
         }
         Spacer(modifier = Modifier.width(24.dp))
         TextButton(
+            modifier = Modifier.testTag(FirebaseAuthTestTags.TermsAndPrivacy.PRIVACY_LINK),
             onClick = {
                 ppUrl?.let {
                     uriHandler.openUri(it)

@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Configureu la verificació per SMS</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Configureu l\'aplicació d\'autenticació</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verifiqueu el codi</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Deseu els codis de recuperació</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Seleccioneu un segon mètode d\'autenticació per protegir el vostre compte</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Introduïu el vostre número de telèfon per rebre codis de verificació</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Introduïu el codi enviat al vostre telèfon</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Introduïu el codi de la vostra aplicació d\'autenticació</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Introduïu el vostre codi de verificació</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Deseu aquests codis en un lloc segur. Podeu utilitzar-los per iniciar sessió si perdeu l\'accés al vostre mètode d\'autenticació.</string>
 
     <string name="fui_confirm_password_hint">Confirma la contrasenya</string>
     <string name="fui_passwords_do_not_match">Les contrasenyes no coincideixen</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Es requereix reautenticació</string>
     <string name="fui_reauth_success_message">Reautenticació correcta</string>
     <string name="fui_reauthenticate_action">Reautentica</string>
-    <string name="fui_recovery_codes_saved_action">He desat els meus codis de recuperació</string>
     <string name="fui_remove_action">Elimina</string>
     <string name="fui_resend_verification_email_action">Torna a enviar el correu de verificació</string>
     <string name="fui_secret_key_label">Clau secreta</string>

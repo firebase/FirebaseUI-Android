@@ -72,9 +72,9 @@
     <string name="fui_back_action" translation_description="Generic back action label.">Back</string>
     <string name="fui_verify_action" translation_description="Generic verify action label.">Verify</string>
     <string name="fui_use_different_method_action" translation_description="Action prompting the user to select a different MFA method.">Use a different method</string>
-    <string name="fui_recovery_codes_saved_action" translation_description="Action confirming recovery codes have been saved.">I\'ve saved these codes</string>
     <string name="fui_secret_key_label" translation_description="Label for a secret key value.">Secret key</string>
     <string name="fui_verification_code_label" translation_description="Label for verification code input fields.">Verification code</string>
+    <string name="fui_verification_code_digit_description" translation_description="Content description for a single verification code digit box, announced positionally so screen readers can distinguish each box. %1$d is the 1-indexed position of this box; %2$d is the total number of boxes.">Verification code digit %1$d of %2$d</string>
     <string name="fui_identity_verified_message" translation_description="Message shown when identity verification succeeds.">Identity verified. Please try your action again.</string>
 
     <!-- MFA management -->
@@ -179,6 +179,14 @@
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email or email link is being sent">Sending...</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">That email address doesn\'t match an existing account</string>
 
+    <!-- Reauthentication error messages -->
+    <string name="fui_error_reauth_no_linked_providers" translation_description="Error shown when none of the configured sign-in providers is linked to the signed-in account, so reauthentication cannot be offered">None of the available sign-in methods is linked to your account.</string>
+    <string name="fui_error_reauth_incomplete" translation_description="Error shown when a sign-in completed but did not re-prove the account that is being confirmed">That did not confirm your identity for this account. Please try again.</string>
+    <string name="fui_error_reauth_interrupted" translation_description="Error shown when identity confirmation was interrupted (for example by the screen being recreated) and the pending sensitive operation can no longer be completed">Confirming your identity was interrupted. Please try that action again.</string>
+    <string name="fui_error_reauth_sign_up_not_allowed" translation_description="Error shown when account creation is attempted while confirming the identity of an already signed-in account">You cannot create a new account while confirming your identity.</string>
+    <string name="fui_reauth_password_required_notice" translation_description="Notice under the password field while confirming the identity of a signed-in account, for accounts that sign in with an email link and so have no password">Confirming your identity here needs this account\'s password. If you sign in with an email link instead of a password, this account cannot be confirmed with a password.</string>
+    <string name="fui_text_field_read_only" translation_description="Accessibility state description announced for an input field whose value is fixed and cannot be edited">Read-only</string>
+
     <!-- Other error messages -->
     <string name="fui_error_unknown" translation_description="General error messages for an unknown failure.">An unknown error occurred.</string>
     <string name="fui_error_invalid_password" translation_description="Error message for when the user enters an invalid or wrong password.">Incorrect password.</string>
@@ -264,7 +272,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Set Up SMS Verification</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Set Up Authenticator App</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Verify Your Code</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Save Your Recovery Codes</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Select a second authentication method to secure your account</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Enter your phone number to receive verification codes</string>
@@ -272,7 +279,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Enter the code sent to your phone</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Enter the code from your authenticator app</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Enter your verification code</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Store these codes in a safe place. You can use them to sign in if you lose access to your authentication method.</string>
 
     <string name="fui_mfa_enrollment_enter_phone_number" translation_description="Title for MFA phone number enrollment screen (top app bar)">Set Up SMS Authentication</string>
     <string name="fui_mfa_enrollment_verify_sms_code" translation_description="Title for MFA SMS verification screen (top app bar)">Verify SMS Code</string>

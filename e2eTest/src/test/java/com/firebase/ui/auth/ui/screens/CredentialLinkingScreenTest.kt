@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
-import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -44,6 +43,7 @@ import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.generateMockGoogleIdToken
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.common.truth.Truth.assertThat
@@ -233,11 +233,13 @@ class CredentialLinkingScreenTest {
 
         // Step 6: Enter verification code
         println("TEST: Entering verification code: $phoneCode")
-        val textFields = composeTestRule.onAllNodes(hasSetTextAction())
-        phoneCode.forEachIndexed { index, digit ->
-            composeTestRule.waitForIdle()
-            textFields[index].performTextInput(digit.toString())
-        }
+        // The whole code goes in via the published tag in one call, rather than selecting boxes
+        // positionally out of onAllNodes(hasSetTextAction()).
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+            .performTextInput(phoneCode)
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
             .performScrollTo()
@@ -248,11 +250,16 @@ class CredentialLinkingScreenTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Step 7: Wait for success
+        // Note: `currentAuthState` may already be `AuthState.Success` from the initial
+        // email/password sign-in, so checking `is AuthState.Success` alone can pass
+        // immediately before the phone link has actually completed. Wait for the
+        // linked provider to actually show up on the (mutated-in-place) user instead.
         println("TEST: Waiting for auth state change after phone verification...")
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state: $currentAuthState")
-            currentAuthState is AuthState.Success
+            val state = currentAuthState
+            state is AuthState.Success && state.user.providerData.any { it.providerId == "phone" }
         }
 
         // Step 8: Verify the UID is preserved (linking happened, not a new account)
@@ -358,7 +365,7 @@ class CredentialLinkingScreenTest {
         // Step 5: Click the Google sign-in button on the method picker
         println("TEST: Clicking Google sign-in button...")
         composeTestRule
-            .onNodeWithTag("AuthMethodPicker LazyColumn")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
             .performScrollToNode(hasText(stringProvider.signInWithGoogle))
         composeTestRule
             .onNode(hasText(stringProvider.signInWithGoogle))
@@ -369,11 +376,16 @@ class CredentialLinkingScreenTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Step 6: Wait for linking to complete
+        // Note: `currentAuthState` may already be `AuthState.Success` from the initial
+        // email/password sign-in, so checking `is AuthState.Success` alone can pass
+        // immediately before the Google link has actually completed. Wait for the
+        // linked provider to actually show up on the (mutated-in-place) user instead.
         println("TEST: Waiting for Google linking to complete...")
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
             println("TEST: Auth state: $currentAuthState")
-            currentAuthState is AuthState.Success
+            val state = currentAuthState
+            state is AuthState.Success && state.user.providerData.any { it.providerId == "google.com" }
         }
 
         // Step 7: Verify the UID is preserved and Google provider is added
