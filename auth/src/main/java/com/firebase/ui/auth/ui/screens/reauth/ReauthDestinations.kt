@@ -193,11 +193,9 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
             ?.let { if (it is AuthException) it else AuthException.from(it, stringProvider) }
         val error = exception?.let { getRecoveryMessage(it, stringProvider) }
 
-        // This request's own flow. Everything the credential exchange publishes lands on the
-        // phase rather than on the public state channel, so an app collecting `authStateFlow()`
-        // never sees a Loading or an Error belonging to a conversation that is not theirs.
-        // The phase is both what this scope publishes into and what the screens under it render,
-        // so the request's conversation never has to travel the public channel to be seen.
+        // This request's own flow, built where the configuration it needs is guaranteed to exist:
+        // the entry returns early when there is no surface, so the scope can never fall back to
+        // the host's and put a credential exchange's states on the public channel.
         val reauthStateHolder = remember(reauthFlowState) {
             derivedStateOf { reauthFlowState.phase ?: AuthState.Idle }
         }
@@ -340,7 +338,10 @@ internal fun EntryProviderScope<NavKey>.reauthDestinations(
                     onCancel = {
                         reauthFlowState.update(key.requestId) { it.attemptCancelled() }
                     },
-                    onError = { e -> authUI.updateAuthState(AuthState.Error(e)) },
+                    // The request's own flow, like every other outcome of this exchange. Writing
+                    // the public channel here would report a failed second factor as an ordinary
+                    // sign-in error to anything collecting `authStateFlow()`.
+                    onError = { e -> reauthScope.emit(AuthState.Error(e)) },
                 )
             }
 

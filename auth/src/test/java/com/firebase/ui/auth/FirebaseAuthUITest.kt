@@ -649,7 +649,7 @@ class FirebaseAuthUITest {
         val call = launch { runCatching { instance.delete(context) } }
         runCurrent()
 
-        val state = instance.authStateFlow().first() as AuthState.Reauthentication.Required
+        val state = requireNotNull(instance.pendingReauth.value)
         assertThat(state.user).isEqualTo(mockUser)
         assertThat(state.request.hasPendingOperation).isTrue()
         assertThat(call.isActive).isTrue()

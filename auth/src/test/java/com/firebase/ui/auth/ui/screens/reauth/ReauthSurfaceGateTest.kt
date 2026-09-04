@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.screens.reauth
 
+import androidx.compose.runtime.derivedStateOf
+import com.firebase.ui.auth.AuthFlowScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
