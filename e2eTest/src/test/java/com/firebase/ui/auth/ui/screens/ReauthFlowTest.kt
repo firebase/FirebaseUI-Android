@@ -1,5 +1,10 @@
 package com.firebase.ui.auth.ui.screens
 
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import android.content.Context
 import android.os.Looper
 import androidx.activity.ComponentActivity
@@ -47,6 +52,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 class ReauthFlowTest {
 
+    /** Runs `withReauth` on the looper these tests already pump. */
+    private val reauthScope = CoroutineScope(Dispatchers.Main.immediate)
+
     @get:Rule
     val composeAndroidTestRule = createAndroidComposeRule<ComponentActivity>()
 
@@ -75,6 +83,7 @@ class ReauthFlowTest {
 
     @After
     fun tearDown() {
+        reauthScope.cancel()
         authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
         emulatorApi.clearEmulatorData()
@@ -113,6 +122,7 @@ class ReauthFlowTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var retryOperationCalled = false
+        var attempts = 0
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -171,13 +181,19 @@ class ReauthFlowTest {
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
         // Step 2: Emit Reauthentication.Required to simulate an operation requiring reauth.
-        authUI.updateAuthState(
-            AuthState.Reauthentication.Required(
-                user = signedInUser,
-                reason = "Please verify your identity to continue",
-                retryOperation = { retryOperationCalled = true },
-            )
-        )
+        // A real sensitive operation: the first attempt fails the way Firebase fails
+        // one, so `withReauth` raises the request itself rather than the test poking
+        // a state object. It suspends here until the sheet resolves it.
+        reauthScope.launch {
+            runCatching {
+                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
+                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+            retryOperationCalled = true
+                }
+            }
+        }
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -240,6 +256,7 @@ class ReauthFlowTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var retryOperationCalled = false
+        var attempts = 0
         var capturedState: ReauthContentState? = null
         val expectedReason = "Sensitive operation requires sign-in"
 
@@ -291,13 +308,19 @@ class ReauthFlowTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Emit Reauthentication.Required to trigger the custom reauthContent slot.
-        authUI.updateAuthState(
-            AuthState.Reauthentication.Required(
-                user = capturedUser,
-                reason = expectedReason,
-                retryOperation = { retryOperationCalled = true },
-            )
-        )
+        // A real sensitive operation: the first attempt fails the way Firebase fails
+        // one, so `withReauth` raises the request itself rather than the test poking
+        // a state object. It suspends here until the sheet resolves it.
+        reauthScope.launch {
+            runCatching {
+                authUI.withReauth(applicationContext, reason = expectedReason) {
+                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+            retryOperationCalled = true
+                }
+            }
+        }
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -359,6 +382,7 @@ class ReauthFlowTest {
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
         var retryOperationCalled = false
+        var attempts = 0
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -401,13 +425,19 @@ class ReauthFlowTest {
 
         shadowOf(Looper.getMainLooper()).idle()
 
-        authUI.updateAuthState(
-            AuthState.Reauthentication.Required(
-                user = signedInUser,
-                reason = "Please verify your identity to continue",
-                retryOperation = { retryOperationCalled = true },
-            )
-        )
+        // A real sensitive operation: the first attempt fails the way Firebase fails
+        // one, so `withReauth` raises the request itself rather than the test poking
+        // a state object. It suspends here until the sheet resolves it.
+        reauthScope.launch {
+            runCatching {
+                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
+                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+            retryOperationCalled = true
+                }
+            }
+        }
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -465,6 +495,7 @@ class ReauthFlowTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var retryOperationCalled = false
+        var attempts = 0
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -521,13 +552,19 @@ class ReauthFlowTest {
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
         // Step 2: emit Reauthentication.Required with a retryOperation.
-        authUI.updateAuthState(
-            AuthState.Reauthentication.Required(
-                user = signedInUser,
-                reason = "Please verify your identity to continue",
-                retryOperation = { retryOperationCalled = true },
-            )
-        )
+        // A real sensitive operation: the first attempt fails the way Firebase fails
+        // one, so `withReauth` raises the request itself rather than the test poking
+        // a state object. It suspends here until the sheet resolves it.
+        reauthScope.launch {
+            runCatching {
+                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
+                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+            retryOperationCalled = true
+                }
+            }
+        }
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -599,6 +636,7 @@ class ReauthFlowTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var retryOperationStarted = false
+        var attempts = 0
         var retryOperationCompleted = false
 
         val configuration = authUIConfiguration {
@@ -655,21 +693,24 @@ class ReauthFlowTest {
         val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
         // Step 2: arm a request whose operation signs the user out, as delete() would.
-        authUI.updateAuthState(
-            AuthState.Reauthentication.Required(
-                user = signedInUser,
-                reason = "Please verify your identity to continue",
-                retryOperation = {
-                    retryOperationStarted = true
-                    authUI.auth.signOut()
-                    // The suspension point is what makes a dropped request observable: if the
-                    // sign-out clears the request, this coroutine is cancelled here and never
-                    // reaches the line below.
-                    yield()
-                    retryOperationCompleted = true
-                },
-            )
-        )
+        // A real sensitive operation: the first attempt fails the way Firebase fails
+        // one, so `withReauth` raises the request itself rather than the test poking
+        // a state object. It suspends here until the sheet resolves it.
+        reauthScope.launch {
+            runCatching {
+                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
+                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+            retryOperationStarted = true
+            authUI.auth.signOut()
+            // A suspension point makes a dropped operation observable: the retry runs on
+            // this scope, so anything that cancelled it would stop here.
+            yield()
+            retryOperationCompleted = true
+                }
+            }
+        }
 
         shadowOf(Looper.getMainLooper()).idle()
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {

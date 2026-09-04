@@ -54,11 +54,7 @@ class ReauthFlowStateTest {
         return request
     }
 
-    /**
-     * The counter `addReauthenticationDrainer` kept is gone because this is the same question:
-     * with no request outstanding there is no conversation for a provider state to belong to, so it stays
-     * the host's.
-     */
+    /** With no request outstanding there is no conversation to fold a provider state into. */
     @Test
     fun `nothing is folded while nothing is outstanding`() {
         val holder = holder()
