@@ -360,10 +360,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = { cancelledCount++ },
-                // The default sheet renders no app slot, so the probe hooks in through the
-                // method-picker layout — composed inside the request's own flow, and unlike
-                // reauthContent it does not flip reauthSlotActive, so the dialog behaviour these
-                // assertions are about is unchanged. The picker itself is the default one.
+                // The default sheet has no app slot; the picker layout is inside the request's flow.
                 customMethodPickerLayout = { providers, onSelected ->
                     probe.capture()
                     AuthMethodPicker(providers = providers, onProviderSelected = onSelected)
@@ -644,10 +641,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
-                // The default sheet renders no app slot, so the probe hooks in through the
-                // method-picker layout — composed inside the request's own flow, and unlike
-                // reauthContent it does not flip reauthSlotActive, so the dialog behaviour these
-                // assertions are about is unchanged. The picker itself is the default one.
+                // The default sheet has no app slot; the picker layout is inside the request's flow.
                 customMethodPickerLayout = { providers, onSelected ->
                     probe.capture()
                     AuthMethodPicker(providers = providers, onProviderSelected = onSelected)
@@ -1077,9 +1071,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
-                // A password-only user, so the sheet opens straight at the email step and the
-                // method picker is never composed — the probe hooks in there. Not `reauthContent`,
-                // so `reauthSlotActive` and the sheet's own behaviour are unaffected.
+                // Password-only, so the sheet opens at the email step and the picker never composes.
                 emailContent = { probe.capture() },
                 mfaChallengeContent = { state ->
                     challenge = state
@@ -1398,10 +1390,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         restorationTester.emulateSavedInstanceStateRestore()
         composeTestRule.waitForIdle()
 
-        // The request survives recreation on its own channel, so the surface comes back and the
-        // same operation is still waiting on it. The *failure* does not: a phase is composition
-        // -scoped by design, and only `Required` is durable. The user is returned to provider
-        // selection with a clean slate rather than shown an error from before the recreation.
+        // The request survives recreation; the phase does not.
         assertThat(signedInAuthUI.pendingReauth.value).isNotNull()
         assertThat(requireNotNull(captured).error).isNull()
         composeTestRule.onNodeWithText("SLOT_ERROR=$expectedMessage").assertDoesNotExist()
@@ -1747,8 +1736,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("reauth_slot").assertIsDisplayed()
 
-        // An attempt, then the user backing out of it: the phase returns to provider selection for
-        // the same request, which re-enters the raising branch.
+        // An attempt, then a back-out: the same request re-enters the raising branch.
         composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Loading("Signing in")) }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle { signedInAuthUI.updateAuthState(AuthState.Cancelled) }
@@ -2000,8 +1988,7 @@ class FirebaseAuthScreenReauthContentStateTest {
         }
         composeTestRule.onNodeWithTag("mfa_challenge").assertIsDisplayed()
 
-        // Straight off RequiresMfa, without the challenge's own cancel or error path running:
-        // an ordinary Cancelled folds to provider selection, which is the phase leaving RequiresMfa.
+        // Straight off RequiresMfa: a Cancelled folds to provider selection.
         composeTestRule.runOnIdle { probe.emit(AuthState.Cancelled) }
         composeTestRule.waitForIdle()
         composeTestRule.waitForIdle()

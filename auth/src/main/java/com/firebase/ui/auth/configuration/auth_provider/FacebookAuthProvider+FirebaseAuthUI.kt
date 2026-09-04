@@ -67,10 +67,7 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
     val callbackManager = remember { CallbackManager.Factory.create() }
     val loginManager = LoginManager.getInstance()
     val currentContext by rememberUpdatedState(context)
-    // The receiver, through a snapshot, exactly where `config` used to be read this way: the
-    // callback below is registered once under `DisposableEffect(Unit)` — re-registering it on a
-    // recomposition would be the expensive mistake — so it must not close over the scope this
-    // composition happened to have.
+    // Registered once under DisposableEffect(Unit), so it must not close over a stale scope.
     val currentScope by rememberUpdatedState(this)
     val currentProvider by rememberUpdatedState(provider)
     val currentOnSignInFailure by rememberUpdatedState(onSignInFailure)

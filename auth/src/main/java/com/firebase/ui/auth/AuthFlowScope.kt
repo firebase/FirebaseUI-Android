@@ -31,16 +31,8 @@ internal fun interface AuthStateSink {
 }
 
 /**
- * One auth flow's collaborators, and where its states go.
- *
- * Provider code is written against this rather than against [FirebaseAuthUI], which is what makes
- * "provider implementations do not write to the process-wide state channel" a rule the compiler
- * holds instead of one a reviewer has to hold across ninety-odd hand edits: there is no way to
- * reach `_authStateFlow` from here. Two sinks exist — the host's, which writes the public flow, and
- * a reauthentication request's, which writes its own phase and nothing else.
- *
- * It also carries [config], which used to be an explicit parameter on nearly every provider
- * function, so those signatures got shorter rather than longer.
+ * One auth flow's collaborators, and where its states go. Provider code is written against this,
+ * not [FirebaseAuthUI], so it reaches the public state channel only through [sink].
  *
  * @since 10.0.0
  */
@@ -50,12 +42,8 @@ internal class AuthFlowScope(
     val credentialManagerProvider: AuthProvider.Google.CredentialManagerProvider? = null,
     val loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider? = null,
     /**
-     * What this flow is currently doing, for the screens rendering it.
-     *
-     * The read side of [sink], and the reason a reauthentication phase no longer has to be
-     * published to the public channel for the sub-screens to see it: under a request's scope this
-     * *is* the phase, so `EmailAuthScreen` and `PhoneAuthScreen` read their spinner and their
-     * inline error from the conversation they are actually part of.
+     * What this flow is currently doing, for the screens rendering it. Under a reauthentication
+     * request's scope this is that request's phase rather than the host's state.
      */
     val state: State<AuthState>,
     private val sink: AuthStateSink,
@@ -65,9 +53,6 @@ internal class AuthFlowScope(
     /**
      * Publishes what [result] means for this flow: a password user who still owes email
      * verification is not signed in yet, however successful the credential exchange was.
-     *
-     * Moved off [FirebaseAuthUI] with the rest of provider publishing. The decision itself is
-     * [authUserState], which the host also needs when it observes FirebaseAuth directly.
      */
     fun emitResult(result: AuthResult?, defaultIsNewUser: Boolean = false) {
         val user = result?.user
@@ -84,11 +69,6 @@ internal class AuthFlowScope(
  * What a signed-in [user] means as an [AuthState]: the single source of truth for whether they
  * still owe email verification. Callers must not re-derive it — only password users with an email
  * can satisfy that screen.
- *
- * Top-level rather than a member of either [AuthFlowScope] or [FirebaseAuthUI], because both need
- * it: provider code reaches it through [AuthFlowScope.emitResult], and [FirebaseAuthUI] calls it
- * from the `callbackFlow` that observes FirebaseAuth directly, which has no flow and therefore no
- * scope. Its body reads only its three parameters.
  */
 internal fun authUserState(user: FirebaseUser, result: AuthResult?, isNewUser: Boolean): AuthState =
     if (!user.isEmailVerified &&
@@ -100,21 +80,12 @@ internal fun authUserState(user: FirebaseUser, result: AuthResult?, isNewUser: B
         AuthState.Success(result = result, user = user, isNewUser = isNewUser)
     }
 
-/**
- * The auth flow the current composition belongs to, or null outside one.
- *
- * Ambient rather than a parameter because the sub-screens that need it — `EmailAuthScreen`,
- * `PhoneAuthScreen` — are public composables, and "which conversation am I part of" is a property
- * of where they are composed, not of what their caller knows to pass. `FirebaseAuthScreen`
- * provides the host's flow; `reauthDestinations` provides the request's, so a credential exchange's
- * states go to that request and are never seen by anything collecting the public flow.
- */
+/** The auth flow the current composition belongs to, or null outside one. */
 internal val LocalAuthFlowScope = staticCompositionLocalOf<AuthFlowScope?> { null }
 
 /**
- * The flow this composition belongs to: the ambient one when composed inside a flow that provides
- * it, and otherwise a fresh one over the host's public state channel — which is what a consumer
- * composing `EmailAuthScreen` or `PhoneAuthScreen` on its own gets.
+ * The ambient flow when composed inside one, otherwise a fresh flow over [authUI]'s public state —
+ * which is what a consumer composing `EmailAuthScreen` or `PhoneAuthScreen` on its own gets.
  */
 @Composable
 internal fun rememberAuthFlowScope(
