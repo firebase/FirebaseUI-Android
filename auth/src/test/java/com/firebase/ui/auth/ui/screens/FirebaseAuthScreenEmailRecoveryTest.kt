@@ -49,7 +49,10 @@ import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -64,6 +67,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -90,6 +94,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
     private lateinit var applicationContext: Context
     private lateinit var stringProvider: DefaultAuthUIStringProvider
     private lateinit var authUI: FirebaseAuthUI
+    private lateinit var mockAuth: FirebaseAuth
     private lateinit var mockUser: FirebaseUser
 
     private var pressBack: (() -> Unit)? = null
@@ -110,9 +115,9 @@ class FirebaseAuthScreenEmailRecoveryTest {
                 .setProjectId("fake-project-id")
                 .build()
         )
-        val auth = mock(FirebaseAuth::class.java)
-        `when`(auth.app).thenReturn(app)
-        authUI = FirebaseAuthUI.create(app, auth)
+        mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.app).thenReturn(app)
+        authUI = FirebaseAuthUI.create(app, mockAuth)
         mockUser = mock(FirebaseUser::class.java)
         `when`(mockUser.uid).thenReturn("recovery-user-uid")
     }
@@ -752,6 +757,148 @@ class FirebaseAuthScreenEmailRecoveryTest {
     }
 
     // =============================================================================================
+    // The recoveries that write something through for the step they move to
+    // =============================================================================================
+
+    /**
+     * Three recoveries do more than navigate: they hand the step they move to a value the failure
+     * carried — a credential to link, or the link to complete. The write and the move sit in the
+     * same lambda, so the step has to be *reached* for the write to be observable at all, and the
+     * order of the two is what makes it so.
+     *
+     * This one starts from the method picker rather than the sign-in step, which is where the
+     * failure actually comes from: an anonymous upgrade or a provider attempt discovers an account
+     * already holding the address, and nothing has been typed into an email form yet. The address
+     * therefore has to come off the failure.
+     */
+    @Test
+    fun `an account that needs linking recovers to the sign-in step with the address the failure names`() {
+        start(configuration = emailAndPhoneConfiguration())
+
+        recoverFrom(accountLinkingRequired(mock(AuthCredential::class.java)))
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithText(OTHER_EMAIL).assertIsDisplayed()
+    }
+
+    /**
+     * The point of the recovery, and the half a landing assertion cannot see: the credential the
+     * failure carried has to survive the move and be linked once the password sign-in it asked for
+     * succeeds. `EmailAuthScreen` reads it once, on the composition of the step it is given, so a
+     * recovery that navigated before writing — or that reused the step it was already on — would
+     * land the user on the right form and quietly drop the account they were linking.
+     */
+    @Test
+    fun `signing in after an account-linking recovery links the credential the failure carried`() {
+        val credential = mock(AuthCredential::class.java)
+        val signedInUser = mock(FirebaseUser::class.java)
+        val signInResult = mock(AuthResult::class.java)
+        `when`(signInResult.user).thenReturn(signedInUser)
+        `when`(mockAuth.signInWithEmailAndPassword(OTHER_EMAIL, PASSWORD))
+            .thenReturn(Tasks.forResult(signInResult))
+        `when`(signedInUser.linkWithCredential(credential))
+            .thenReturn(Tasks.forResult(mock(AuthResult::class.java)))
+        start(configuration = emailAndPhoneConfiguration())
+
+        recoverFrom(accountLinkingRequired(credential))
+        signInWithPassword()
+
+        verify(signedInUser).linkWithCredential(credential)
+    }
+
+    /**
+     * The email link opened on a device that never asked for it: the session data naming the
+     * address is on the *other* device, so the only way forward is a form to type it into. The
+     * link itself has nowhere to live but the host, which hands it to the step it moves to.
+     */
+    @Test
+    fun `a prompt for the email address recovers to the email-link step`() {
+        start(configuration = emailConfiguration(isEmailLinkSignInEnabled = true))
+        typeSignInEmail()
+
+        recoverFrom(AuthException.EmailLinkPromptForEmailException(emailLink = EMAIL_LINK))
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.EmailLink.EMAIL_FIELD)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(TYPED_EMAIL).assertIsDisplayed()
+    }
+
+    /**
+     * The same fallback the suggested-method recovery has: with email-link sign-in unconfigured
+     * there is no such step to offer, so the recovery lands on password sign-in rather than a form
+     * the provider cannot complete. Sign-up first, so the move is a real one rather than a
+     * recovery that was already where it wanted to be.
+     */
+    @Test
+    fun `a prompt for the email address recovers to the sign-in step when email-link sign-in is disabled`() {
+        start(configuration = emailConfiguration(isEmailLinkSignInEnabled = false))
+        typeSignInEmail()
+        goToSignUp()
+
+        recoverFrom(AuthException.EmailLinkPromptForEmailException(emailLink = EMAIL_LINK))
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.EmailLink.EMAIL_FIELD)
+            .assertDoesNotExist()
+    }
+
+    /**
+     * The write-through, asserted the only way it is observable from outside: with a link in hand
+     * the step *completes* a sign-in rather than sending a fresh link, and only the completing call
+     * validates the link. So `isSignInWithEmailLink` having been asked about this exact link is
+     * both halves of the assertion — the link arrived, and it arrived where it changes what the
+     * button does.
+     */
+    @Test
+    fun `the step a prompt recovery moved to signs in with the link the failure carried`() {
+        start(configuration = emailConfiguration(isEmailLinkSignInEnabled = true))
+        typeSignInEmail()
+        recoverFrom(AuthException.EmailLinkPromptForEmailException(emailLink = EMAIL_LINK))
+
+        sendEmailLink()
+
+        verify(mockAuth).isSignInWithEmailLink(EMAIL_LINK)
+    }
+
+    /**
+     * The third of the write-through recoveries, and a separate branch from the prompt above
+     * despite doing the same two things: this failure carries a `providerName` alongside its link,
+     * so the branch has something else to pick up by mistake.
+     */
+    @Test
+    fun `a cross-device linking failure recovers to the email-link step`() {
+        start(configuration = emailConfiguration(isEmailLinkSignInEnabled = true))
+        typeSignInEmail()
+
+        recoverFrom(
+            AuthException.EmailLinkCrossDeviceLinkingException(
+                providerName = "google.com",
+                emailLink = EMAIL_LINK,
+            )
+        )
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.EmailLink.EMAIL_FIELD)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(TYPED_EMAIL).assertIsDisplayed()
+    }
+
+    @Test
+    fun `the step a cross-device recovery moved to signs in with the link the failure carried`() {
+        start(configuration = emailConfiguration(isEmailLinkSignInEnabled = true))
+        typeSignInEmail()
+        recoverFrom(
+            AuthException.EmailLinkCrossDeviceLinkingException(
+                providerName = "google.com",
+                emailLink = EMAIL_LINK,
+            )
+        )
+
+        sendEmailLink()
+
+        verify(mockAuth).isSignInWithEmailLink(EMAIL_LINK)
+    }
+
+    // =============================================================================================
     // Harness
     // =============================================================================================
 
@@ -828,6 +975,13 @@ class FirebaseAuthScreenEmailRecoveryTest {
         "${initialState.authRoute()?.let { it::class.simpleName }}->" +
                 "${targetState.authRoute()?.let { it::class.simpleName }}"
 
+    private fun accountLinkingRequired(credential: AuthCredential) =
+        AuthException.AccountLinkingRequiredException(
+            message = "an account already exists with this address",
+            email = OTHER_EMAIL,
+            credential = credential,
+        )
+
     private fun differentSignInMethodRequired() =
         AuthException.DifferentSignInMethodRequiredException(
             message = "use the email link",
@@ -879,6 +1033,22 @@ class FirebaseAuthScreenEmailRecoveryTest {
         composeTestRule.waitForIdle()
     }
 
+    /** Fills in the password the sign-in step is missing and submits it. */
+    private fun signInWithPassword() {
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD)
+            .performTextInput(PASSWORD)
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON).performClick()
+        composeTestRule.waitForIdle()
+    }
+
+    /** Submits the email-link step the address it was opened on. */
+    private fun sendEmailLink() {
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.EmailLink.SEND_LINK_BUTTON)
+            .performClick()
+        composeTestRule.waitForIdle()
+    }
+
     private fun goToSignUp() {
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON).performClick()
         composeTestRule.waitForIdle()
@@ -909,5 +1079,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
         const val TYPED_EMAIL = "user+tag@example.com"
         const val OTHER_EMAIL = "someone.else@example.com"
         const val AUTHENTICATED_TAG = "recovery_test_authenticated"
+        const val PASSWORD = "correct-horse-battery"
+        const val EMAIL_LINK = "https://example.com/finish?oobCode=abc&mode=signIn"
     }
 }

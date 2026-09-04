@@ -29,6 +29,8 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation3.runtime.entryProvider
@@ -42,6 +44,7 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.google.common.truth.Truth.assertThat
@@ -170,6 +173,64 @@ class ReauthSurfaceGateTest {
         assertThat(handedOut.filter { it.substringBefore('/') != it.substringAfter('/') }).isEmpty()
     }
 
+    /**
+     * The custom-slot presentation gate is on the **step**, not on the slot. `reauthContent`
+     * replaces the library's method picker, so that step is composed bare — no sheet, no scrim,
+     * the host draws its own chrome:
+     */
+    @Test
+    fun `a custom slot composes the method picker bare`() {
+        setContent(step = AuthRoute.MethodPicker)
+
+        composeTestRule.onAllNodes(SHEET, useUnmergedTree = true).assertCountEquals(0)
+    }
+
+    /**
+     * — but the sub-flows that step hands off to are the library's own screens, and they keep the
+     * library's sheet around them. That is what the slot has always done, so the sheet is not
+     * optional chrome here: a host that styled its picker to sit flush against the flow underneath
+     * gets a sheet the moment the user picks email, and the email form would have no surface of its
+     * own without one.
+     *
+     * Asserted through the sheet's own node rather than beside it: the step being present and a
+     * sheet being present are two facts, and only ancestry says the step is *in* it.
+     */
+    @Test
+    fun `a custom slot's email step is still shown inside the library sheet`() {
+        setContent(step = AuthRoute.Email.SignIn())
+
+        composeTestRule.onAllNodes(SHEET, useUnmergedTree = true).assertCountEquals(1)
+        composeTestRule.onNode(
+            hasTestTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD) and hasAnyAncestor(SHEET),
+            useUnmergedTree = true,
+        ).assertExists()
+    }
+
+    /** The other sub-flow the slot hands off to, on a user linked to phone rather than password. */
+    @Test
+    fun `a custom slot's phone step is still shown inside the library sheet`() {
+        setContent(step = AuthRoute.Phone.EnterPhoneNumber, user = phoneUser())
+
+        composeTestRule.onAllNodes(SHEET, useUnmergedTree = true).assertCountEquals(1)
+        composeTestRule.onNode(
+            hasTestTag(FirebaseAuthTestTags.PhoneNumber.PHONE_NUMBER_FIELD) and
+                    hasAnyAncestor(SHEET),
+            useUnmergedTree = true,
+        ).assertExists()
+    }
+
+    /** An armed request whose entry sits at [step], with a custom `reauthContent` installed. */
+    private fun setContent(step: AuthRoute.Destination, user: FirebaseUser = passwordUser()) {
+        composeTestRule.setContent {
+            Harness(
+                reauthState = AuthState.Reauthentication.Required(user),
+                useSlot = true,
+                step = step,
+            )
+        }
+        composeTestRule.waitForIdle()
+    }
+
     private fun setContent(armed: Boolean) {
         val state = if (armed) AuthState.Reauthentication.Required(passwordUser()) else null
         composeTestRule.setContent { Harness(state) }
@@ -191,6 +252,8 @@ class ReauthSurfaceGateTest {
      * @param useSlot Installs a `reauthContent` slot that records what the entry hands it. The
      * slot is the only path to the entry's `updateReauthentication` writes, so nothing recorded
      * means no write was offered.
+     * @param step The step the reauthentication entry sits at. Defaults to the method picker, the
+     * step every request starts on.
      */
     @Composable
     private fun Harness(
@@ -198,6 +261,7 @@ class ReauthSurfaceGateTest {
         entryRequestId: String = reauthState?.requestId ?: "unarmed-request",
         armedRequest: MutableState<AuthState.Reauthentication?>? = null,
         useSlot: Boolean = false,
+        step: AuthRoute.Destination = AuthRoute.MethodPicker,
     ) {
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         val configuration = remember {
@@ -210,6 +274,15 @@ class ReauthSurfaceGateTest {
                             passwordValidationRules = emptyList(),
                         )
                     )
+                    // Narrowed to what the user is actually linked to before it reaches the entry,
+                    // so configuring both leaves a password user's picker exactly as it was.
+                    provider(
+                        AuthProvider.Phone(
+                            defaultNumber = null,
+                            defaultCountryCode = null,
+                            allowedCountries = null,
+                        )
+                    )
                 }
             }
         }
@@ -218,8 +291,8 @@ class ReauthSurfaceGateTest {
             AuthRoute.MethodPicker,
             AuthRoute.Reauth(
                 requestId = entryRequestId,
-                userUid = "uid-password",
-                step = AuthRoute.MethodPicker,
+                userUid = reauthState?.userUid ?: "uid-password",
+                step = step,
             ),
         )
         if (armedRequest != null) {
@@ -287,6 +360,15 @@ class ReauthSurfaceGateTest {
                 },
             )
         }
+    }
+
+    private fun phoneUser(): FirebaseUser {
+        val providerInfo = mock(UserInfo::class.java)
+        `when`(providerInfo.providerId).thenReturn("phone")
+        val user = mock(FirebaseUser::class.java)
+        `when`(user.uid).thenReturn("uid-phone")
+        `when`(user.providerData).thenReturn(listOf(providerInfo))
+        return user
     }
 
     private fun passwordUser(): FirebaseUser {
