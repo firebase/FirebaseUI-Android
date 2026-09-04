@@ -31,6 +31,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.SmsEnrollmentHandler
 import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
+import com.firebase.ui.auth.ui.screens.enrollmentStep
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
@@ -471,15 +472,11 @@ internal fun MfaEnrollmentScreenInternal(
 
 /**
  * Where the un-hosted flow starts, and where a completed enrolment puts it back: the single
- * allowed factor's own configuration step, or the picker. The un-hosted mirror of
- * [mfaEnrollmentStartStep], which makes the same choice as a nav key for the hosted flow.
+ * allowed factor's own configuration step, or the picker. Goes through [mfaEnrollmentStartStep]
+ * rather than restating it, so the two hosts cannot start the flow in different places.
  */
 private fun unhostedStartStep(configuration: MfaConfiguration): MfaEnrollmentStep =
-    when (configuration.allowedFactors.singleOrNull()) {
-        MfaFactor.Sms -> MfaEnrollmentStep.ConfigureSms
-        MfaFactor.Totp -> MfaEnrollmentStep.ConfigureTotp
-        null -> MfaEnrollmentStep.SelectFactor
-    }
+    mfaEnrollmentStartStep(configuration).enrollmentStep
 
 /**
  * Surfaced via [MfaEnrollmentContentState.error] on [MfaEnrollmentStep.ConfigureTotp] after the
