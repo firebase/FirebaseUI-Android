@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
+import com.firebase.ui.auth.ReauthScopeProbe
 import com.firebase.ui.auth.retryingReauth
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -534,6 +536,7 @@ class FirebaseAuthScreenEmailRecoveryTest {
      */
     @Test
     fun `an error raised while a reauth request is outstanding never surfaces as an error state`() {
+        val probe = ReauthScopeProbe()
         val passwordInfo = mock(UserInfo::class.java)
         `when`(passwordInfo.providerId).thenReturn(EmailAuthProvider.PROVIDER_ID)
         val user = mock(FirebaseUser::class.java)
@@ -541,8 +544,8 @@ class FirebaseAuthScreenEmailRecoveryTest {
         `when`(user.email).thenReturn(TYPED_EMAIL)
         `when`(user.uid).thenReturn("reauth-user-uid")
 
-        // A second collector on the same flow, so the folded state can be read directly rather
-        // than inferred from what the dialog happens to render.
+        // A second collector on the same flow, to prove directly that nothing from the exchange
+        // lands on it rather than inferring it from what the dialog happens to render.
         val seen = mutableListOf<AuthState>()
         composeTestRule.setContent {
             LaunchedEffect(authUI) { authUI.authStateFlow().collect { seen += it } }
@@ -552,26 +555,31 @@ class FirebaseAuthScreenEmailRecoveryTest {
                 onSignInSuccess = {},
                 onSignInFailure = {},
                 onSignInCancelled = {},
+                // One linked provider, so the sheet opens straight at the email step and the
+                // method picker is never composed — the probe hooks in there instead. The slot
+                // is not `reauthContent`, so `reauthSlotActive` is unaffected and the dialog
+                // behaviour these assertions are about is unchanged.
+                emailContent = { probe.capture() },
             )
         }
         composeTestRule.waitForIdle()
 
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
-                retryingReauth(user) {}
-            )
+            authUI.pendingReauth.value = retryingReauth(user) {}
         }
         composeTestRule.waitForIdle()
 
         composeTestRule.runOnIdle {
-            authUI.updateAuthState(
+            probe.emit(
                 AuthState.Error(AuthException.UserNotFoundException(message = "no such user"))
             )
         }
         composeTestRule.waitForIdle()
 
-        assertThat(composeTestRule.runOnIdle { seen.lastOrNull() })
-            .isInstanceOf(AuthState.Reauthentication.AttemptFailed::class.java)
+        // The exchange's failure never reaches the public flow at all now — a stronger property
+        // than the folded phase this used to assert, and the reason the recovery stays out of
+        // reach below.
+        assertThat(composeTestRule.runOnIdle { seen.filterIsInstance<AuthState.Error>() }).isEmpty()
         // Which is what keeps the recovery out of reach: no action button on the dialog, and the
         // outer graph was not moved to a sign-up form behind the sheet.
         composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON)

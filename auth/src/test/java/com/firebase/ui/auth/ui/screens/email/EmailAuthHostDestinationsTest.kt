@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.email
 
+import androidx.compose.runtime.derivedStateOf
 import com.firebase.ui.auth.LocalAuthFlowScope
 import com.firebase.ui.auth.AuthFlowScope
 import org.mockito.Mockito.verify
