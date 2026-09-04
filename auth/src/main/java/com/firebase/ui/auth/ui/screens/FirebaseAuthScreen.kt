@@ -189,6 +189,9 @@ fun FirebaseAuthScreen(
     // the Activity and be accepted into an unrelated sign-in.
     val reauthFlowState = rememberReauthFlowState()
     val reauthState = reauthFlowState.phase
+    // The request waiting to be taken on, watched on its own channel rather than picked out of the
+    // state flow. Process-scoped, so a recreated screen sees the same one and takes it on again.
+    val pendingReauth by authUI.pendingReauth.collectAsState()
     // The host's own flow. Provider code reaches the public state channel only through this sink,
     // which is the whole point of the receiver change: there is no `authUI` on a scope to reach it
     // any other way.
@@ -196,18 +199,7 @@ fun FirebaseAuthScreen(
     val hostScope = remember(authUI, configuration, hostStateHolder) {
         hostAuthFlowScope(authUI, configuration, hostStateHolder)
     }
-    /**
-     * What the host may act on. While a request is outstanding, an ordinary state arriving on the public
-     * flow — from `withReauth`, or from an app writing it directly — belongs to the credential
-     * exchange, and the phase is what reports it. `fold` runs in an effect, so the raw state is on
-     * the flow for a frame first; without this the host's own dialogs act on it in between, putting
-     * a sign-in error dialog, retry action and all, over the reauthentication sheet.
-     *
-     * Provider code under the request's own scope never comes through here at all — that is what
-     * [AuthFlowScope] fixed. This covers the writers that still reach the public flow directly.
-     */
-    val authState = reauthState?.takeIf { rawAuthState !is AuthState.Reauthentication }
-        ?: rawAuthState
+    val authState = rawAuthState
     val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
@@ -650,81 +642,16 @@ fun FirebaseAuthScreen(
                 previousAuthState.value = state
                 // Guards below use `isAt` (runtime class), not `==`: keys carry arguments, so `==` blanks a live form.
                 val currentKey = backStack.lastOrNull()
-                // The stack itself, not the composition value derived from it: this effect is
-                // what writes the stack, so anything derived in composition describes the frame
-                // before. Recomposition happens to land between runs today, which is why the
-                // composition value also worked — but the guards below are about what is on the
-                // stack now, so they read it now.
-                val savedPresentation = backStack.presentedReauth()
-
-                // A marker that outlived its phase: the Activity was recreated with the request
-                // still outstanding. Nothing here can be driven, so report it and clear up.
-                if (savedPresentation != null &&
-                    reauthFlowState.phase == null &&
-                    state !is AuthState.Reauthentication &&
-                    state !is AuthState.Aborted
-                ) {
-                    clearReauthPresentation()
-                    authUI.updateAuthState(
-                        AuthState.Error(
-                            AuthException.UnknownException(
-                                context.getString(R.string.fui_error_reauth_interrupted)
-                            )
-                        )
-                    )
+                // A reauthentication owns the screen while it is up. The host must not navigate or
+                // tear down underneath a modal sheet, and an ambient Success from the signed-in
+                // session is not this flow's to act on. `Aborted` is the exception: it is how the
+                // host itself is dismissed, and it ends the request on the way out.
+                //
+                // This one rule replaces what `contextualizeReauthenticationState` and then `fold`
+                // did by mapping every state onto a phase — the exchange's own states no longer
+                // arrive here at all, so all that is left to say is who owns the screen.
+                if (reauthFlowState.phase != null && state !is AuthState.Aborted) {
                     return@LaunchedEffect
-                }
-
-                // A latched reauthentication state with no phase: this screen was recreated while
-                // the request was outstanding. The phase is composition-scoped and gone, but its value
-                // is still on the flow, so the exchange is accepted again from it rather than abandoned.
-                if (state is AuthState.Reauthentication && reauthFlowState.phase == null) {
-                    val request = state.request
-                    if (request == null || !request.isResumable) {
-                        clearReauthPresentation()
-                        authUI.updateAuthState(
-                            AuthState.Error(
-                                AuthException.UnknownException(
-                                    context.getString(R.string.fui_error_reauth_interrupted)
-                                )
-                            )
-                        )
-                        return@LaunchedEffect
-                    }
-                    // Two phases must not come back: `Authenticating`'s network call died with the
-                    // Activity, and re-entering `Succeeded` would resolve the caller a second time
-                    // for an operation that may already have committed. Both restart at provider
-                    // selection. Everything else is the user's own position in the exchange, and a
-                    // surfaced failure is the only report they got, so it is restored as it was.
-                    when (state) {
-                        is AuthState.Reauthentication.Authenticating,
-                        is AuthState.Reauthentication.Succeeded,
-                            -> authUI.updateAuthState(
-                            AuthState.Reauthentication.Required(request)
-                        )
-
-                        is AuthState.Reauthentication.Required -> reauthFlowState.accept(state)
-
-                        else -> reauthFlowState.moveTo(state)
-                    }
-                }
-
-                // Ordinary states published by provider code while a request is outstanding belong to
-                // the credential exchange, not to the host flow. The holder folds them into its
-                // phase and publishes that, which is what the setter used to do on the singleton's
-                // behalf; the branches below then only ever see states that are the host's.
-                reauthFlowState.fold(state)?.let { folded ->
-                    authUI.updateAuthState(folded)
-                    return@LaunchedEffect
-                }
-
-                // The challenge entry is on the stack exactly while the state is RequiresMfa: it
-                // has no resolver to render otherwise, and this is the only place that pops it, so
-                // no attempt path can strand the user on a dead challenge.
-                if (state !is AuthState.Reauthentication.RequiresMfa &&
-                    backStack.presentedReauth()?.step is AuthRoute.MfaChallenge
-                ) {
-                    backStack.returnToReauthStart()
                 }
 
                 when (state) {
@@ -746,72 +673,6 @@ fun FirebaseAuthScreen(
 
                         if (currentKey != AuthRoute.Success) {
                             backStack.resetBackStackTo(AuthRoute.Success)
-                        }
-                    }
-
-                    is AuthState.Reauthentication.Required -> {
-                        val armingConfig = configuration.toReauthConfiguration(state.user)
-                        if (armingConfig == null) {
-                            finishReauth(
-                                AuthState.Error(
-                                    AuthException.UnknownException(
-                                        context.getString(R.string.fui_error_reauth_no_linked_providers)
-                                    )
-                                ),
-                                false,
-                            )
-                            return@LaunchedEffect
-                        }
-                        // A request whose caller died with its scope cannot be completed however
-                        // well the exchange goes, so it is reported rather than presented. This is
-                        // what tells a rotation that kept its caller from one that lost it.
-                        if (!state.request.isResumable) {
-                            finishReauth(
-                                AuthState.Error(
-                                    AuthException.UnknownException(
-                                        context.getString(R.string.fui_error_reauth_interrupted)
-                                    )
-                                ),
-                                false,
-                            )
-                            return@LaunchedEffect
-                        }
-                        reauthFlowState.accept(state)
-                        if (backStack.presentedReauth()?.requestId != state.requestId) {
-                            backStack.clearReauth()
-                            backStack.add(
-                                AuthRoute.Reauth(
-                                    requestId = state.requestId,
-                                    userUid = state.userUid,
-                                    // From the request itself, not the composition value: this
-                                    // effect is what writes the phase, so anything derived from
-                                    // it in composition is still a frame behind here.
-                                    step = reauthStartStepFor(armingConfig),
-                                )
-                            )
-                        }
-                    }
-
-                    is AuthState.Reauthentication -> {
-                        val marker = backStack.presentedReauth()
-                            ?.takeIf { it.requestId == state.requestId }
-                            ?: AuthRoute.Reauth(
-                                requestId = state.requestId,
-                                userUid = state.userUid,
-                                step = state.request
-                                    ?.let { configuration.toReauthConfiguration(it.user) }
-                                    ?.let { reauthStartStepFor(it) }
-                                    ?: AuthRoute.MethodPicker,
-                            ).also {
-                                backStack.clearReauth()
-                                backStack.add(it)
-                            }
-                        // A real entry, so the challenge is pushed rather than derived; the pop
-                        // for every other state is handled above.
-                        if (state is AuthState.Reauthentication.RequiresMfa &&
-                            marker.step !is AuthRoute.MfaChallenge
-                        ) {
-                            backStack.navigateReauth(marker, AuthRoute.MfaChallenge)
                         }
                     }
 
@@ -887,17 +748,95 @@ fun FirebaseAuthScreen(
             }
 
             /**
+             * A presentation marker with no request behind it: the process died while a
+             * reauthentication was outstanding, and the request went with it — it was never
+             * serializable. The back stack survives, so without this the restored screen would
+             * render an empty sheet over a flow with nothing to drive it.
+             */
+            LaunchedEffect(pendingReauth, backStack.presentedReauth()) {
+                if (backStack.presentedReauth() == null) return@LaunchedEffect
+                if (pendingReauth != null || reauthFlowState.phase != null) return@LaunchedEffect
+                clearReauthPresentation()
+                authUI.updateAuthState(
+                    AuthState.Error(
+                        AuthException.UnknownException(
+                            context.getString(R.string.fui_error_reauth_interrupted)
+                        )
+                    )
+                )
+            }
+
+            /**
+             * Takes on the request waiting on [FirebaseAuthUI.pendingReauth].
+             *
+             * This is what the `Reauthentication.Required` branch of the state effect used to do,
+             * moved onto the request's own channel. A recreated screen runs it again against the
+             * same request, which is why nothing has to reconstruct one from a latched state.
+             */
+            LaunchedEffect(pendingReauth) {
+                val required = pendingReauth ?: return@LaunchedEffect
+                if (reauthFlowState.phase?.requestId == required.requestId) return@LaunchedEffect
+
+                val reauthConfiguration = configuration.toReauthConfiguration(required.user)
+                if (reauthConfiguration == null) {
+                    finishReauth(
+                        AuthState.Error(
+                            AuthException.UnknownException(
+                                context.getString(R.string.fui_error_reauth_no_linked_providers)
+                            )
+                        ),
+                        false,
+                    )
+                    return@LaunchedEffect
+                }
+                // A request whose caller died with its scope cannot be completed however well the
+                // exchange goes, so it is reported rather than presented. This is what tells a
+                // rotation that kept its caller from one that lost it.
+                if (!required.request.isResumable) {
+                    finishReauth(
+                        AuthState.Error(
+                            AuthException.UnknownException(
+                                context.getString(R.string.fui_error_reauth_interrupted)
+                            )
+                        ),
+                        false,
+                    )
+                    return@LaunchedEffect
+                }
+                reauthFlowState.accept(required)
+                if (backStack.presentedReauth()?.requestId != required.requestId) {
+                    backStack.clearReauth()
+                    backStack.add(
+                        AuthRoute.Reauth(
+                            requestId = required.requestId,
+                            userUid = required.userUid,
+                            step = reauthStartStepFor(reauthConfiguration),
+                        )
+                    )
+                }
+            }
+
+            /**
              * The phase's own effect. The effect above is keyed on the flow, so it never sees a
              * transition the destinations make straight on the holder — an MFA proof, a cancelled
              * attempt, a consumed notification. Keying on the phase catches all of them.
              */
             LaunchedEffect(reauthFlowState.phase) {
                 val phase = reauthFlowState.phase ?: return@LaunchedEffect
-                // The phase still goes on the public flow. The screens under the request's own
-                // scope no longer need it there, but the host's `fold` path and the flow-driven
-                // navigation both do, so this stays until requests stop being raised through the
-                // flow. It is what an app is expected to ignore: an `AuthState.Reauthentication`.
-                if (observedAuthState != phase) authUI.updateAuthState(phase)
+
+                // The challenge entry is on the stack exactly while the phase is RequiresMfa: it
+                // has no resolver to render otherwise, and this is the only place that moves it,
+                // so no attempt path can strand the user on a dead challenge.
+                val marker = backStack.presentedReauth()?.takeIf { it.requestId == phase.requestId }
+                if (marker != null) {
+                    if (phase is AuthState.Reauthentication.RequiresMfa) {
+                        if (marker.step !is AuthRoute.MfaChallenge) {
+                            backStack.navigateReauth(marker, AuthRoute.MfaChallenge)
+                        }
+                    } else if (marker.step is AuthRoute.MfaChallenge) {
+                        backStack.returnToReauthStart()
+                    }
+                }
 
                 if (phase is AuthState.Reauthentication.Succeeded) {
                     val request = phase.request
