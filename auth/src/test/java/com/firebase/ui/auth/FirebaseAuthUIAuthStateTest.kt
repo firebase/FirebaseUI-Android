@@ -754,6 +754,67 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     /**
+     * The screen hands the retry over on a loading state and steps out of the conversation, so
+     * whatever the retry ends as has to be published here or that loading never clears.
+     */
+    @Test
+    fun `a finished retry publishes the session it left behind`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        var callCount = 0
+
+        val call = launch {
+            authUI.withReauth(context) {
+                if (callCount++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                    "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                )
+            }
+        }
+        runCurrent()
+        val state = requireNotNull(authUI.pendingReauth.value)
+
+        authUI.updateAuthState(AuthState.Loading("Finishing that action..."))
+        state.request.resolve()
+        call.join()
+
+        assertThat(authUI.authStateFlow().first())
+            .isInstanceOf(AuthState.Success::class.java)
+    }
+
+    /** A failed retry is the caller's to report, but the handover state is still the library's. */
+    @Test
+    fun `a retry that fails still clears the handover state`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        val cause = RuntimeException("Network error")
+        var callCount = 0
+        var thrown: Exception? = null
+
+        val call = launch {
+            try {
+                authUI.withReauth(context) {
+                    if (callCount++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+                    throw cause
+                }
+            } catch (e: Exception) {
+                thrown = e
+            }
+        }
+        runCurrent()
+        val state = requireNotNull(authUI.pendingReauth.value)
+
+        authUI.updateAuthState(AuthState.Loading("Finishing that action..."))
+        state.request.resolve()
+        call.join()
+
+        assertThat(thrown).isEqualTo(cause)
+        assertThat(authUI.authStateFlow().first())
+            .isNotInstanceOf(AuthState.Loading::class.java)
+    }
+
+    /**
      * A decline reaches the caller as a throw rather than a quiet return. "You backed out" and
      * "your operation ran" are different outcomes, and a caller that cannot tell them apart has to
      * guess whether its work happened.
