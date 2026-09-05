@@ -52,7 +52,6 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
 import org.junit.After
-import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -503,35 +502,6 @@ class PhoneAuthRouteNavigationTest {
             AuthRoute.Phone.EnterPhoneNumber,
             AuthRoute.Phone.EnterVerificationCode,
         ).inOrder()
-    }
-
-    // =============================================================================================
-    // The hosted parameters are all-or-none
-    // =============================================================================================
-
-    /**
-     * The un-hosted screen owning its own step is public API, so the four hosted parameters have to
-     * arrive together or the screen would drive a step nothing is listening to.
-     */
-    @Test
-    fun `passing a step without the rest of the hosted parameters throws`() {
-        val thrown = assertThrows(IllegalArgumentException::class.java) {
-            composeTestRule.setContent {
-                PhoneAuthScreen(
-                    context = applicationContext,
-                    configuration = phoneConfiguration(timeout = 0L),
-                    authUI = authUI,
-                    onSuccess = {},
-                    onError = {},
-                    onCancel = {},
-                    step = PhoneAuthStep.EnterVerificationCode,
-                    content = {},
-                )
-            }
-            composeTestRule.waitForIdle()
-        }
-
-        assertThat(thrown).hasMessageThat().contains("go together")
     }
 
     // =============================================================================================

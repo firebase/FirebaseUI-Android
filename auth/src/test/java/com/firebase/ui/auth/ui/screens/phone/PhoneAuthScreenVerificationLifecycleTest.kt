@@ -18,6 +18,9 @@ import com.firebase.ui.auth.ui.screens.reauth.ReauthFlowState
 import androidx.compose.runtime.mutableStateOf
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
@@ -176,14 +179,26 @@ class PhoneAuthScreenVerificationLifecycleTest {
                 LocalAuthUIStringProvider provides configuration.stringProvider,
                 LocalTopLevelDialogController provides controller.takeIf { withDialogs },
             ) {
-                PhoneAuthScreen(
-                    context = context,
-                    configuration = configuration,
-                    authUI = authUI,
-                    onSuccess = {},
-                    onError = { reportedErrors += it },
-                    onCancel = {},
-                ) { state -> capturedState = state }
+                // Hosted the way production is: a stack of steps, and a `key` on its top, so a
+                // step switch composes fresh rather than inheriting what the last step held.
+                val stack = remember { mutableStateListOf(PhoneAuthStep.EnterPhoneNumber) }
+                val flowState = rememberPhoneAuthFlowState(configuration)
+                key(stack.last()) {
+                    PhoneAuthScreen(
+                        context = context,
+                        configuration = configuration,
+                        authUI = authUI,
+                        onSuccess = {},
+                        onError = { reportedErrors += it },
+                        onCancel = {},
+                        step = stack.last(),
+                        onNavigateToStep = { stack.add(it) },
+                        onNavigateBack = {
+                            if (stack.size > 1) stack.removeAt(stack.lastIndex)
+                        },
+                        flowState = flowState,
+                    ) { state -> capturedState = state }
+                }
             }
             if (withDialogs) controller.CurrentDialog()
         }

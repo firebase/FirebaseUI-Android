@@ -39,6 +39,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -51,6 +56,33 @@ import com.firebase.ui.auth.ui.screens.email.EmailAuthContentState
 import com.firebase.ui.auth.ui.screens.email.EmailAuthMode
 import com.firebase.ui.auth.ui.screens.email.EmailAuthScreen
 import com.google.firebase.auth.AuthResult
+import kotlinx.serialization.Serializable
+
+/**
+ * One email mode, as this demo's own back-stack key.
+ *
+ * The library's navigation keys are its own business — a caller hosting [EmailAuthScreen] outside
+ * `FirebaseAuthScreen` brings its own, built from the public [EmailAuthMode] and the address the
+ * screen hands back. Distinct keys are distinct entries, so every mode composes fresh and system
+ * back pops one mode at a time.
+ */
+@Serializable
+private data class EmailModeKey(val mode: EmailAuthMode, val email: String = "") : NavKey
+
+/**
+ * Moves to [mode], carrying the address so a switch keeps what the user typed.
+ *
+ * Adds before trimming, so no single write empties the stack: a mode already on the stack is
+ * replaced by the fresh key rather than revisited with a stale address; one that is not is pushed,
+ * leaving the mode below reachable by back.
+ */
+private fun NavBackStack<NavKey>.goToEmailMode(mode: EmailAuthMode, email: String) {
+    val existing = indexOfFirst { it is EmailModeKey && it.mode == mode }
+    add(EmailModeKey(mode, email))
+    if (existing >= 0) {
+        while (size > existing + 1) removeAt(existing)
+    }
+}
 
 class EmailAuthSlotDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -159,23 +191,44 @@ fun EmailAuthDemo(
             }
         }
     } else {
+        // Every mode is a real destination on this demo's own stack, so system back steps between
+        // modes instead of leaving the flow.
+        val backStack = rememberNavBackStack(EmailModeKey(EmailAuthMode.SignIn))
         CompositionLocalProvider(LocalAuthUIStringProvider provides configuration.stringProvider) {
-            EmailAuthScreen(
-                context = context,
-                configuration = configuration,
-                authUI = authUI,
-                onSuccess = { result: AuthResult ->
-                    Log.d("EmailAuthSlotDemo", "Auth success: ${result.user?.uid}")
+            NavDisplay(
+                backStack = backStack,
+                onBack = { backStack.removeLastOrNull() },
+                entryProvider = entryProvider {
+                    entry<EmailModeKey> { key ->
+                        EmailAuthScreen(
+                            context = context,
+                            configuration = configuration,
+                            authUI = authUI,
+                            prefillEmail = key.email.ifEmpty { null },
+                            mode = key.mode,
+                            onNavigateToMode = { mode, email ->
+                                backStack.goToEmailMode(mode, email)
+                            },
+                            onSuccess = { result: AuthResult ->
+                                Log.d("EmailAuthSlotDemo", "Auth success: ${result.user?.uid}")
+                            },
+                            onError = { exception: AuthException ->
+                                Log.e("EmailAuthSlotDemo", "Auth error", exception)
+                            },
+                            onCancel = {
+                                // Below the start mode there is nothing left to pop back to.
+                                if (backStack.size > 1) {
+                                    backStack.removeLastOrNull()
+                                } else {
+                                    Log.d("EmailAuthSlotDemo", "Auth cancelled")
+                                }
+                            }
+                        ) { state: EmailAuthContentState ->
+                            CustomEmailAuthUI(state)
+                        }
+                    }
                 },
-                onError = { exception: AuthException ->
-                    Log.e("EmailAuthSlotDemo", "Auth error", exception)
-                },
-                onCancel = {
-                    Log.d("EmailAuthSlotDemo", "Auth cancelled")
-                }
-            ) { state: EmailAuthContentState ->
-                CustomEmailAuthUI(state)
-            }
+            )
         }
     }
 }

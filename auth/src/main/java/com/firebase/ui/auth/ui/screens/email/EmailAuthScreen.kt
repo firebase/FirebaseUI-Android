@@ -41,7 +41,6 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledExcepti
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundException
-import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import kotlinx.coroutines.launch
@@ -57,12 +56,11 @@ enum class EmailAuthMode {
  * A class passed to the content slot, containing all the necessary information to render custom
  * UIs for sign-in, sign-up, and password reset flows.
  *
- * Switching modes keeps whatever address the user has typed; only the password, its confirmation
- * and the display name are cleared.
+ * Switching modes navigates, so each mode composes fresh; only the address the user typed travels
+ * with the switch.
  *
  * @param mode An enum representing the current UI mode. Use a when expression on this to render
- * the correct screen. Inside [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen] every mode is its
- * own navigation destination and this mirrors the active one.
+ * the correct screen. Every mode is its own navigation destination and this mirrors the active one.
  * @param isLoading true when an asynchronous operation (like signing in or sending an email)
  * is in progress.
  * @param error An optional error message to display to the user.
@@ -130,19 +128,21 @@ class EmailAuthContentState(
  * including sign-in, sign-up, and password reset. It exposes the state for the current mode to
  * a custom UI via a trailing lambda (slot), allowing for complete visual customization.
  *
- * The mode can be driven from the outside — [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen]
- * gives every mode its own navigation destination and passes [mode] and [onNavigateToMode] — or
- * left to this composable, which then keeps the mode in local state.
+ * The mode is always driven from the outside: a host gives every mode its own navigation
+ * destination and passes [mode] and [onNavigateToMode]. Callers that do not want to own that are
+ * served by [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen], which owns it for them.
  *
  * This composable never changes mode on its own in response to an error. Signing in with an
  * address that has no account leaves the user on the sign-in form rather than moving them to
  * sign-up; acting on an error is the host's job alone.
  *
- * @param mode The mode to render. When null this composable owns the mode itself, starting at
- * [EmailAuthMode.EmailLinkSignIn] for a cross-device email link and [EmailAuthMode.SignIn]
- * otherwise. Goes together with [onNavigateToMode]: passing either without the other is rejected.
- * @param onNavigateToMode Invoked instead of changing local state when the user switches mode,
- * with the address currently typed so the host can carry it over. Goes together with [mode].
+ * @param mode The mode to render. A flow entered for a cross-device email link starts at
+ * [EmailAuthMode.EmailLinkSignIn]; every other entry starts at [EmailAuthMode.SignIn]. Give each
+ * mode its own navigation destination: a host that instead re-renders this screen in place carries
+ * the password, display name and "link sent" latches into the mode it switches to, and leaves
+ * system back with nothing to pop.
+ * @param onNavigateToMode Invoked when the user switches mode, with the address currently typed so
+ * the host can carry it over. Never called for a mode the configuration does not offer.
  * @param onEmailTyped Invoked with the address as the user edits it, so a host driving [mode] has
  * the live value once this step is disposed. Fires per keystroke, so a host must keep what it
  * hears out of anything read during composition.
@@ -158,8 +158,8 @@ fun EmailAuthScreen(
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
     prefillEmail: String? = null,
-    mode: EmailAuthMode? = null,
-    onNavigateToMode: ((mode: EmailAuthMode, email: String) -> Unit)? = null,
+    mode: EmailAuthMode,
+    onNavigateToMode: (mode: EmailAuthMode, email: String) -> Unit,
     onEmailTyped: (String) -> Unit = {},
     /**
      * Where a consumed one-off notification leaves the flow. Null retracts to [AuthState.Idle];
@@ -169,24 +169,10 @@ fun EmailAuthScreen(
     onNotificationConsumed: (() -> Unit)? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
-    require((mode == null) == (onNavigateToMode == null)) {
-        "EmailAuthScreen's mode and onNavigateToMode go together: pass both to drive the mode " +
-                "from outside, or neither to let the screen own it. Got mode=$mode and " +
-                "onNavigateToMode=${if (onNavigateToMode == null) "null" else "a callback"}."
-    }
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
-    val dialogController = LocalTopLevelDialogController.current
     val coroutineScope = rememberCoroutineScope()
 
-    val initialMode = if (emailLinkFromDifferentDevice != null && provider.isEmailLinkSignInEnabled) {
-        EmailAuthMode.EmailLinkSignIn
-    } else {
-        EmailAuthMode.SignIn
-    }
-    // Allocated unconditionally: a rememberSaveable must not sit behind a branch on a parameter.
-    val localMode = rememberSaveable { mutableStateOf(initialMode) }
-    val currentMode = mode ?: localMode.value
     val displayNameValue = rememberSaveable { mutableStateOf("") }
     val emailTextValue = rememberSaveable { mutableStateOf(prefillEmail ?: "") }
     val passwordTextValue = rememberSaveable { mutableStateOf("") }
@@ -198,15 +184,6 @@ fun EmailAuthScreen(
 
     val isSignUpOffered = configuration.isEmailSignUpOffered()
     val isEmailLinkSignInOffered = configuration.isEmailLinkSignInOffered()
-
-    // Cleared on a mode change; the address the user typed is deliberately not among them.
-    val secretTextValues = remember {
-        listOf(
-            displayNameValue,
-            passwordTextValue,
-            confirmPasswordTextValue
-        )
-    }
 
     val authFlowScope = rememberAuthFlowScope(authUI, configuration)
     // Under a reauthentication request this is that request's phase, not the host's state.
@@ -227,27 +204,15 @@ fun EmailAuthScreen(
     val retrievedCredential = remember { mutableStateOf<Pair<String, String>?>(null) }
 
     /**
-     * The single way this screen changes mode, so every guard lives in one place. Hosted, it asks
-     * the host to navigate and hands over the typed address; unhosted, it swaps local state and
-     * clears the mode-specific fields itself.
+     * The single way this screen changes mode, so every guard lives in one place: it asks the host
+     * to navigate and hands over the typed address.
      *
      * Only ever called for a switch the user asked for; error recovery is the host's.
      */
     fun goToMode(target: EmailAuthMode) {
         if (target == EmailAuthMode.SignUp && !isSignUpOffered) return
         if (target == EmailAuthMode.EmailLinkSignIn && !isEmailLinkSignInOffered) return
-        if (onNavigateToMode != null) {
-            onNavigateToMode(target, emailTextValue.value)
-            return
-        }
-        // Unhosted, the same composition renders the target, so stale "link sent" latches must go.
-        when (target) {
-            EmailAuthMode.ResetPassword -> resetLinkSentLocal = false
-            EmailAuthMode.SignIn, EmailAuthMode.EmailLinkSignIn -> emailSignInLinkSentLocal = false
-            EmailAuthMode.SignUp -> Unit
-        }
-        secretTextValues.forEach { it.value = "" }
-        localMode.value = target
+        onNavigateToMode(target, emailTextValue.value)
     }
 
     LaunchedEffect(authState) {
@@ -261,16 +226,8 @@ fun EmailAuthScreen(
 
             is AuthState.Error -> {
                 val exception = AuthException.from(state.exception, stringProvider)
+                // The host shows this with its own recovery actions; this screen only reports it.
                 onError(exception)
-                // Hosted, the host already shows this error with its own recovery actions.
-                if (onNavigateToMode == null) {
-                    dialogController?.showErrorDialog(
-                        exception = exception,
-                        errorState = state,
-                        onRetry = null,
-                        onRecover = null,
-                    )
-                }
                 // Consumed so the error doesn't leak into a freshly created screen.
                 authFlowScope.emit(AuthState.Idle)
             }
@@ -295,7 +252,7 @@ fun EmailAuthScreen(
     }
 
     val state = EmailAuthContentState(
-        mode = currentMode,
+        mode = mode,
         displayName = displayNameValue.value,
         email = emailTextValue.value,
         isEmailLocked = isEmailLocked,
