@@ -1097,39 +1097,83 @@ val configuration = authUIConfiguration {
 
 Prompt users to enroll in MFA after sign-in:
 
+Every enrollment step is its own navigation destination, so the host owns the step and navigates
+between them. Keep the flow state above the `NavDisplay` — a step switch must not dispose what a
+previous step collected.
+
 ```kotlin
+@Serializable
+data class MfaStepKey(val step: MfaEnrollmentStep) : NavKey
+
 @Composable
 fun MfaEnrollmentFlow() {
-    val currentUser = FirebaseAuth.getInstance().currentUser
+    val auth = FirebaseAuth.getInstance()
+    val currentUser = auth.currentUser
 
     if (currentUser != null) {
         val mfaConfig = MfaConfiguration(
             allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp)
         )
+        val backStack = rememberNavBackStack(MfaStepKey(MfaEnrollmentStep.SelectFactor))
+        val flowState = rememberMfaEnrollmentFlowState()
 
-        MfaEnrollmentScreen(
-            user = currentUser,
-            configuration = mfaConfig,
-            onEnrollmentComplete = {
-                Toast.makeText(context, "MFA enrolled successfully!", Toast.LENGTH_SHORT).show()
-                navigateToHome()
+        NavDisplay(
+            backStack = backStack,
+            // NavDisplay throws on an empty back stack, and throws from recomposition, so the
+            // first step must not pop.
+            onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+            entryProvider = entryProvider {
+                entry<MfaStepKey> { key ->
+                    MfaEnrollmentScreen(
+                        user = currentUser,
+                        auth = auth,
+                        configuration = mfaConfig,
+                        onComplete = {
+                            Toast.makeText(context, "MFA enrolled!", Toast.LENGTH_SHORT).show()
+                            navigateToHome()
+                        },
+                        onSkip = { navigateToHome() },
+                        step = key.step,
+                        // A step already on top must not be pushed twice.
+                        onNavigateToStep = {
+                            val target = MfaStepKey(it)
+                            if (backStack.lastOrNull() != target) backStack.add(target)
+                        },
+                        onNavigateBack = {
+                            if (backStack.size > 1) backStack.removeLastOrNull()
+                        },
+                        flowState = flowState,
+                    )
+                }
             },
-            onSkip = {
-                navigateToHome()
-            }
         )
     }
 }
 ```
+
+A back-stack key must be `@Serializable` to survive process death, so add the
+`org.jetbrains.kotlin.plugin.serialization` plugin to the module hosting this screen. If you would
+rather not own any of the navigation, use `FirebaseAuthScreen` and its `mfaEnrollmentContent` slot,
+which owns it for you.
 
 Or with custom UI:
 
 ```kotlin
 MfaEnrollmentScreen(
     user = currentUser,
+    auth = auth,
     configuration = mfaConfig,
-    onEnrollmentComplete = { /* ... */ },
-    onSkip = { /* ... */ }
+    onComplete = { /* ... */ },
+    onSkip = { /* ... */ },
+    // Hosted exactly as above — the step and its two navigation callbacks, plus the flow state
+    // remembered above the NavDisplay.
+    step = key.step,
+    onNavigateToStep = {
+        val target = MfaStepKey(it)
+        if (backStack.lastOrNull() != target) backStack.add(target)
+    },
+    onNavigateBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    flowState = flowState,
 ) { state ->
     when (state.step) {
         MfaEnrollmentStep.SelectFactor -> {
