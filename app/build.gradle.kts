@@ -6,6 +6,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
     id("kotlin-kapt")
+    // The slot demos host the auth screens on their own Navigation 3 back stacks, and a
+    // rememberNavBackStack key has to be @Serializable to survive process death.
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

@@ -53,7 +53,7 @@ import kotlinx.coroutines.Job
  *
  * [phoneNumber], [verificationCode], [verificationId], [forceResendingToken] and
  * [resendTimerSeconds] are backed by [rememberSaveable] and survive Activity recreation.
- * [selectedCountry] is not, matching what the un-hosted screen always did.
+ * [selectedCountry] is not: it is re-resolved from the configuration instead.
  *
  * @since 10.0.0
  */

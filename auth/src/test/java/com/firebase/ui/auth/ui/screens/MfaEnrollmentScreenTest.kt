@@ -14,9 +14,16 @@
 
 package com.firebase.ui.auth.ui.screens
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -30,6 +37,7 @@ import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
 import com.firebase.ui.auth.mfa.TotpSecret
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreenInternal
+import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.mfa.TOTP_SECRET_EXPIRED_MESSAGE
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -128,44 +136,13 @@ class MfaEnrollmentScreenTest {
         )
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {},
-                onSkip = {}
-            ) { state ->
-                capturedState = state
-            }
+            MfaEnrollmentUnderTest(configuration) { state -> capturedState = state }
         }
 
         composeTestRule.waitForIdle()
         assertEquals(MfaEnrollmentStep.SelectFactor, capturedState.step)
         assertEquals(2, capturedState.availableFactors.size)
         assertNotNull(capturedState.onSkipClick)
-    }
-
-    @Test
-    fun `screen skips SelectFactor with single SMS factor`() {
-        val configuration = MfaConfiguration(
-            allowedFactors = listOf(MfaFactor.Sms),
-            requireEnrollment = false
-        )
-
-        composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {},
-                onSkip = {}
-            ) { state ->
-                capturedState = state
-            }
-        }
-
-        composeTestRule.waitForIdle()
-        assertEquals(MfaEnrollmentStep.ConfigureSms, capturedState.step)
     }
 
     @Test
@@ -176,15 +153,7 @@ class MfaEnrollmentScreenTest {
         )
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {},
-                onSkip = {}
-            ) { state ->
-                capturedState = state
-            }
+            MfaEnrollmentUnderTest(configuration) { state -> capturedState = state }
         }
 
         composeTestRule.waitForIdle()
@@ -201,14 +170,7 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
-                currentState = state
-            }
+            MfaEnrollmentUnderTest(configuration) { state -> currentState = state }
         }
 
         composeTestRule.waitForIdle()
@@ -231,12 +193,7 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
+            MfaEnrollmentUnderTest(configuration, MfaEnrollmentStep.ConfigureSms) { state ->
                 currentState = state
             }
         }
@@ -261,21 +218,9 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
+            MfaEnrollmentUnderTest(configuration, MfaEnrollmentStep.VerifyFactor) { state ->
                 currentState = state
             }
-        }
-
-        composeTestRule.waitForIdle()
-
-        // Navigate to verify step manually by updating state
-        composeTestRule.runOnUiThread {
-            currentState?.onPhoneNumberChange?.invoke("1234567890")
         }
 
         composeTestRule.waitForIdle()
@@ -297,14 +242,7 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
-                currentState = state
-            }
+            MfaEnrollmentUnderTest(configuration) { state -> currentState = state }
         }
 
         composeTestRule.waitForIdle()
@@ -333,12 +271,7 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
+            MfaEnrollmentUnderTest(configuration, MfaEnrollmentStep.ConfigureSms) { state ->
                 currentState = state
             }
         }
@@ -365,14 +298,7 @@ class MfaEnrollmentScreenTest {
         )
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
-                capturedState = state
-            }
+            MfaEnrollmentUnderTest(configuration) { state -> capturedState = state }
         }
 
         composeTestRule.waitForIdle()
@@ -386,12 +312,7 @@ class MfaEnrollmentScreenTest {
         )
 
         composeTestRule.setContent {
-            MfaEnrollmentScreen(
-                user = mockUser,
-                auth = mockAuth,
-                configuration = configuration,
-                onComplete = {}
-            ) { state ->
+            MfaEnrollmentUnderTest(configuration, MfaEnrollmentStep.ConfigureSms) { state ->
                 capturedState = state
             }
         }
@@ -440,9 +361,10 @@ class MfaEnrollmentScreenTest {
     @Test
     fun `successful TOTP enrollment refreshes the enrolled factors from the user`() {
         val enrolledFactor = mock<MultiFactorInfo>()
-        // First read is the initial state; the second is the post-enrollment refresh.
-        `when`(mockMultiFactor.enrolledFactors)
-            .thenReturn(emptyList(), listOf(enrolledFactor))
+        // Stubbed by what the user actually has rather than by read count: each step reads the
+        // enrolled factors for itself, so how many reads the walk to VerifyFactor takes is not
+        // this test's business.
+        `when`(mockMultiFactor.enrolledFactors).thenReturn(emptyList())
 
         val state = driveTotpFlowToVerifyStep(
             configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Totp)),
@@ -450,6 +372,9 @@ class MfaEnrollmentScreenTest {
         )
 
         assertEquals(emptyList<MultiFactorInfo>(), state()?.enrolledFactors)
+
+        // Enrolment is what puts the factor on the user; the refresh after it must pick that up.
+        `when`(mockMultiFactor.enrolledFactors).thenReturn(listOf(enrolledFactor))
 
         composeTestRule.runOnUiThread {
             state()?.onVerifyClick?.invoke()
@@ -504,14 +429,11 @@ class MfaEnrollmentScreenTest {
         // Two allowed factors, so nothing is auto-selected until the TOTP factor is picked.
         val restorationTester = StateRestorationTester(composeTestRule)
         restorationTester.setContent {
-            MfaEnrollmentScreenInternal(
-                user = mockUser,
-                auth = mockAuth,
+            MfaEnrollmentInternalUnderTest(
                 configuration = configuration,
-                smsHandler = mockSmsHandler,
-                totpHandler = mockTotpHandler,
+                startStep = MfaEnrollmentStep.SelectFactor,
                 onComplete = { completeCount++ },
-                onError = { errors.add(it) }
+                onError = { errors.add(it) },
             ) { state ->
                 currentState = state
             }
@@ -604,14 +526,11 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreenInternal(
-                user = mockUser,
-                auth = mockAuth,
+            MfaEnrollmentInternalUnderTest(
                 configuration = configuration,
-                smsHandler = mockSmsHandler,
-                totpHandler = mockTotpHandler,
+                startStep = MfaEnrollmentStep.ConfigureSms,
                 onComplete = {},
-                onError = { errors.add(it) }
+                onError = { errors.add(it) },
             ) { state ->
                 currentState = state
             }
@@ -680,14 +599,11 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreenInternal(
-                user = mockUser,
-                auth = mockAuth,
+            MfaEnrollmentInternalUnderTest(
                 configuration = configuration,
-                smsHandler = mockSmsHandler,
-                totpHandler = mockTotpHandler,
+                startStep = MfaEnrollmentStep.ConfigureSms,
                 onComplete = { completeCount++ },
-                onError = { errors.add(it) }
+                onError = { errors.add(it) },
             ) { state ->
                 currentState = state
             }
@@ -727,14 +643,11 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreenInternal(
-                user = mockUser,
-                auth = mockAuth,
+            MfaEnrollmentInternalUnderTest(
                 configuration = configuration,
-                smsHandler = mockSmsHandler,
-                totpHandler = mockTotpHandler,
+                startStep = MfaEnrollmentStep.ConfigureSms,
                 onComplete = { completeCount++ },
-                onError = { errors.add(it) }
+                onError = { errors.add(it) },
             ) { state ->
                 currentState = state
             }
@@ -880,14 +793,11 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreenInternal(
-                user = mockUser,
-                auth = mockAuth,
+            MfaEnrollmentInternalUnderTest(
                 configuration = MfaConfiguration(allowedFactors = listOf(MfaFactor.Sms)),
-                smsHandler = mockSmsHandler,
-                totpHandler = mockTotpHandler,
+                startStep = MfaEnrollmentStep.ConfigureSms,
                 onComplete = onComplete,
-                onError = onError
+                onError = onError,
             ) { state ->
                 currentState = state
             }
@@ -934,14 +844,11 @@ class MfaEnrollmentScreenTest {
         var currentState by mutableStateOf<MfaEnrollmentContentState?>(null)
 
         composeTestRule.setContent {
-            MfaEnrollmentScreenInternal(
-                user = mockUser,
-                auth = mockAuth,
+            MfaEnrollmentInternalUnderTest(
                 configuration = configuration,
-                smsHandler = mockSmsHandler,
-                totpHandler = mockTotpHandler,
+                startStep = MfaEnrollmentStep.ConfigureTotp,
                 onComplete = onComplete,
-                onError = onError
+                onError = onError,
             ) { state ->
                 currentState = state
             }
@@ -968,7 +875,79 @@ class MfaEnrollmentScreenTest {
         return { currentState }
     }
 
+    /**
+     * Hosts [MfaEnrollmentScreen] the way a navigation host does, since the screen no longer owns
+     * its step: a saveable stack, so it survives recreation the way a back stack does, and a [key]
+     * on the top of it, so every step composes fresh instead of inheriting what the last one held.
+     */
+    @Composable
+    private fun MfaEnrollmentUnderTest(
+        configuration: MfaConfiguration,
+        startStep: MfaEnrollmentStep = MfaEnrollmentStep.SelectFactor,
+        onComplete: () -> Unit = {},
+        onSkip: () -> Unit = {},
+        onError: (Exception) -> Unit = {},
+        content: @Composable (MfaEnrollmentContentState) -> Unit,
+    ) {
+        val stack = rememberSaveable(saver = STEP_STACK_SAVER) { mutableStateListOf(startStep) }
+        val flowState = rememberMfaEnrollmentFlowState()
+        key(stack.last()) {
+            MfaEnrollmentScreen(
+                user = mockUser,
+                auth = mockAuth,
+                configuration = configuration,
+                onComplete = onComplete,
+                onSkip = onSkip,
+                onError = onError,
+                step = stack.last(),
+                onNavigateToStep = { stack.add(it) },
+                onNavigateBack = { if (stack.size > 1) stack.removeAt(stack.lastIndex) },
+                flowState = flowState,
+                content = content,
+            )
+        }
+    }
+
+    /** [MfaEnrollmentUnderTest] against the handler-injection seam, for the enrolment tests. */
+    @Composable
+    private fun MfaEnrollmentInternalUnderTest(
+        configuration: MfaConfiguration,
+        startStep: MfaEnrollmentStep = MfaEnrollmentStep.SelectFactor,
+        onComplete: () -> Unit = {},
+        onSkip: () -> Unit = {},
+        onError: (Exception) -> Unit = {},
+        content: @Composable (MfaEnrollmentContentState) -> Unit,
+    ) {
+        val stack = rememberSaveable(saver = STEP_STACK_SAVER) { mutableStateListOf(startStep) }
+        val flowState = rememberMfaEnrollmentFlowState()
+        key(stack.last()) {
+            MfaEnrollmentScreenInternal(
+                user = mockUser,
+                auth = mockAuth,
+                configuration = configuration,
+                smsHandler = mockSmsHandler,
+                totpHandler = mockTotpHandler,
+                onComplete = onComplete,
+                onSkip = onSkip,
+                onError = onError,
+                step = stack.last(),
+                onNavigateToStep = { stack.add(it) },
+                onNavigateBack = { if (stack.size > 1) stack.removeAt(stack.lastIndex) },
+                flowState = flowState,
+                content = content,
+            )
+        }
+    }
+
     private companion object {
+        /** The host's stack is what survives process death; the flow state's secret is not. */
+        val STEP_STACK_SAVER = listSaver<SnapshotStateList<MfaEnrollmentStep>, Int>(
+            save = { stack -> stack.map { it.ordinal } },
+            restore = { saved ->
+                saved.map { MfaEnrollmentStep.entries[it] }.toMutableStateList()
+            },
+        )
+
         const val VERIFICATION_CODE = "123456"
         const val TOTP_DISPLAY_NAME = "Authenticator App"
         const val SMS_DISPLAY_NAME = "SMS"

@@ -110,6 +110,10 @@ class PhoneAuthScreenModifierTest {
                     onError = { },
                     onCancel = { },
                     modifier = modifier,
+                    step = PhoneAuthStep.EnterPhoneNumber,
+                    onNavigateToStep = { },
+                    onNavigateBack = { },
+                    flowState = rememberPhoneAuthFlowState(configuration),
                     content = content,
                 )
             }

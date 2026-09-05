@@ -20,6 +20,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -39,6 +42,7 @@ import com.firebase.ui.auth.mfa.getHelperText
 import com.firebase.ui.auth.mfa.getTitle
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
+import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactor
@@ -342,16 +346,35 @@ class MfaEnrollmentScreenTest {
         onError: (Exception) -> Unit = {},
         onStateChange: (MfaEnrollmentContentState) -> Unit = {}
     ) {
-        MfaEnrollmentScreen(
-            user = testUser,
-            auth = authUI.auth,
-            configuration = configuration,
-            onComplete = onComplete,
-            onSkip = onSkip,
-            onError = onError
-        ) { state ->
-            onStateChange(state)
-            TestMfaEnrollmentUI(state = state)
+        // The host resolves where the flow opens, exactly as the library's own does: a single
+        // allowed factor skips the picker and lands on that factor's configuration step.
+        val startStep = remember(configuration) {
+            when (configuration.allowedFactors.singleOrNull()) {
+                MfaFactor.Sms -> MfaEnrollmentStep.ConfigureSms
+                MfaFactor.Totp -> MfaEnrollmentStep.ConfigureTotp
+                null -> MfaEnrollmentStep.SelectFactor
+            }
+        }
+        // A stack of steps with a `key` on its top, so a step switch composes fresh rather than
+        // inheriting what the previous step held. The flow state deliberately outlives them.
+        val stack = remember(startStep) { mutableStateListOf(startStep) }
+        val flowState = rememberMfaEnrollmentFlowState()
+        key(stack.last()) {
+            MfaEnrollmentScreen(
+                user = testUser,
+                auth = authUI.auth,
+                configuration = configuration,
+                onComplete = onComplete,
+                onSkip = onSkip,
+                onError = onError,
+                step = stack.last(),
+                onNavigateToStep = { stack.add(it) },
+                onNavigateBack = { if (stack.size > 1) stack.removeAt(stack.lastIndex) },
+                flowState = flowState,
+            ) { state ->
+                onStateChange(state)
+                TestMfaEnrollmentUI(state = state)
+            }
         }
     }
 

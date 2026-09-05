@@ -20,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -48,12 +47,10 @@ import kotlinx.coroutines.launch
  * 2. **ConfigureSms** or **ConfigureTotp** - User sets up their chosen factor
  * 3. **VerifyFactor** - User verifies with a code
  *
- * The step can be driven from the outside —
- * [com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentDestinations] gives every step its own
- * navigation destination and passes [step], [onNavigateToStep] and [onNavigateBack] — or left to
- * this composable, which then keeps the step in local state. Hosting it is preferred: each step
- * gets a real back-stack entry and the configured screen transitions, and a step switch does not
- * dispose what a previous step held, because that lives in [flowState].
+ * The step is always driven from the outside: a host gives every step its own navigation
+ * destination and passes [step], [onNavigateToStep] and [onNavigateBack], so each step gets a real
+ * back-stack entry and the configured screen transitions, and a step switch does not dispose what a
+ * previous step held, because that lives in [flowState].
  *
  * @param user The currently authenticated [FirebaseUser] to enroll in MFA
  * @param auth The [FirebaseAuth] instance
@@ -61,19 +58,18 @@ import kotlinx.coroutines.launch
  * @param onComplete Callback invoked when enrollment completes successfully
  * @param onSkip Callback invoked when user skips enrollment (only if not required)
  * @param onError Callback invoked when an error occurs during enrollment
- * @param step The step to render. When null this composable owns the step itself, starting at
- * [MfaEnrollmentStep.SelectFactor] — or straight at the single allowed factor's configuration step
- * when [MfaConfiguration.allowedFactors] holds only one. Goes together with [onNavigateToStep],
- * [onNavigateBack] and [flowState]: passing any of the four without the rest throws.
- * @param onNavigateToStep Invoked instead of changing local state when the flow moves forward —
- * selecting a factor, or continuing from a configured one to verification. Always a push. Goes
- * together with [step].
- * @param onNavigateBack Invoked instead of changing local state when the user backs out of a
- * step. Hosted, this is `NavController.popBackStack()`, which returns to whichever of
- * [MfaEnrollmentStep.ConfigureSms] or [MfaEnrollmentStep.ConfigureTotp] was actually pushed before
- * [MfaEnrollmentStep.VerifyFactor]. Goes together with [step].
+ * @param step The step to render. A flow starts at [MfaEnrollmentStep.SelectFactor], or straight at
+ * the single allowed factor's configuration step when [MfaConfiguration.allowedFactors] holds only
+ * one. Give each step its own navigation destination: a host that instead re-renders this screen
+ * in place leaves system back with nothing to pop.
+ * @param onNavigateToStep Invoked when the flow moves forward — selecting a factor, or continuing
+ * from a configured one to verification. Always a push.
+ * @param onNavigateBack Invoked when the user backs out of a step — a pop, which returns to
+ * whichever of [MfaEnrollmentStep.ConfigureSms] or [MfaEnrollmentStep.ConfigureTotp] was actually
+ * pushed before [MfaEnrollmentStep.VerifyFactor].
  * @param flowState The data a step switch must not dispose — see
- * [com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentFlowState]. Goes together with [step].
+ * [com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentFlowState]. Build one with
+ * [com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState].
  * @param content A composable lambda that receives [MfaEnrollmentContentState] to render custom UI
  *
  * @since 10.0.0
@@ -87,25 +83,12 @@ fun MfaEnrollmentScreen(
     onComplete: () -> Unit,
     onSkip: () -> Unit = {},
     onError: (Exception) -> Unit = {},
-    step: MfaEnrollmentStep? = null,
-    onNavigateToStep: ((MfaEnrollmentStep) -> Unit)? = null,
-    onNavigateBack: (() -> Unit)? = null,
-    flowState: MfaEnrollmentFlowState? = null,
+    step: MfaEnrollmentStep,
+    onNavigateToStep: (MfaEnrollmentStep) -> Unit,
+    onNavigateBack: () -> Unit,
+    flowState: MfaEnrollmentFlowState,
     content: @Composable ((MfaEnrollmentContentState) -> Unit)? = null,
 ) {
-    require(
-        (step == null) == (onNavigateToStep == null) &&
-            (onNavigateToStep == null) == (onNavigateBack == null) &&
-            (onNavigateBack == null) == (flowState == null)
-    ) {
-        "MfaEnrollmentScreen's step, onNavigateToStep, onNavigateBack and flowState go " +
-            "together: pass all four to drive the step from outside, or none to let the " +
-            "screen own it. Got step=$step, onNavigateToStep=" +
-            "${if (onNavigateToStep == null) "null" else "a callback"}, onNavigateBack=" +
-            "${if (onNavigateBack == null) "null" else "a callback"}, flowState=" +
-            "${if (flowState == null) "null" else "provided"}."
-    }
-
     val activity = requireNotNull(LocalActivity.current) {
         "MfaEnrollmentScreen must be used within an Activity context for SMS verification"
     }
@@ -149,29 +132,24 @@ internal fun MfaEnrollmentScreenInternal(
     onComplete: () -> Unit,
     onSkip: () -> Unit = {},
     onError: (Exception) -> Unit = {},
-    step: MfaEnrollmentStep? = null,
-    onNavigateToStep: ((MfaEnrollmentStep) -> Unit)? = null,
-    onNavigateBack: (() -> Unit)? = null,
-    flowState: MfaEnrollmentFlowState? = null,
+    step: MfaEnrollmentStep,
+    onNavigateToStep: (MfaEnrollmentStep) -> Unit,
+    onNavigateBack: () -> Unit,
+    flowState: MfaEnrollmentFlowState,
     content: @Composable ((MfaEnrollmentContentState) -> Unit)? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
     val applicationContext = LocalContext.current.applicationContext
 
-    // Read only when this composable owns the step.
-    val localStep = rememberSaveable { mutableStateOf(MfaEnrollmentStep.SelectFactor) }
-    val currentStep = step ?: localStep.value
-
-    val effectiveFlowState = flowState ?: rememberMfaEnrollmentFlowState()
-    val selectedFactor = effectiveFlowState.selectedFactor
-    val phoneNumber = effectiveFlowState.phoneNumber
-    val verificationCode = effectiveFlowState.verificationCode
-    val resendTimerSeconds = effectiveFlowState.resendTimerSeconds
-    val smsSession = effectiveFlowState.smsSession
-    val totpSecret = effectiveFlowState.totpSecret
-    val totpQrCodeUrl = effectiveFlowState.totpQrCodeUrl
-    val selectedCountry = effectiveFlowState.selectedCountry
-    val totpSecretExpiredMessage = effectiveFlowState.totpSecretExpiredMessage
+    val selectedFactor = flowState.selectedFactor
+    val phoneNumber = flowState.phoneNumber
+    val verificationCode = flowState.verificationCode
+    val resendTimerSeconds = flowState.resendTimerSeconds
+    val smsSession = flowState.smsSession
+    val totpSecret = flowState.totpSecret
+    val totpQrCodeUrl = flowState.totpQrCodeUrl
+    val selectedCountry = flowState.selectedCountry
+    val totpSecretExpiredMessage = flowState.totpSecretExpiredMessage
 
     // Transient per-step UI state: never part of flowState, so a step switch resets it.
     val isLoading = remember { mutableStateOf(false) }
@@ -201,21 +179,9 @@ internal fun MfaEnrollmentScreenInternal(
         }
     }
 
-    // Un-hosted only: hosted, mfaEnrollmentStartStep already resolved the single-factor start.
-    if (step == null) {
-        LaunchedEffect(Unit) {
-            if (configuration.allowedFactors.size == 1) {
-                localStep.value = when (configuration.allowedFactors.first()) {
-                    MfaFactor.Sms -> MfaEnrollmentStep.ConfigureSms
-                    MfaFactor.Totp -> MfaEnrollmentStep.ConfigureTotp
-                }
-            }
-        }
-    }
-
     // The null-secret guard fetches once per entry, so a back-and-forward must not re-fetch.
-    LaunchedEffect(currentStep) {
-        when (currentStep) {
+    LaunchedEffect(step) {
+        when (step) {
             MfaEnrollmentStep.ConfigureSms -> selectedFactor.value = MfaFactor.Sms
             MfaEnrollmentStep.ConfigureTotp -> {
                 selectedFactor.value = MfaFactor.Totp
@@ -245,11 +211,7 @@ internal fun MfaEnrollmentScreenInternal(
                 // A null secret here means Activity recreation dropped it: recover on ConfigureTotp.
                 if (selectedFactor.value == MfaFactor.Totp && totpSecret.value == null) {
                     totpSecretExpiredMessage.value = TOTP_SECRET_EXPIRED_MESSAGE
-                    if (onNavigateBack != null) {
-                        onNavigateBack()
-                    } else {
-                        localStep.value = MfaEnrollmentStep.ConfigureTotp
-                    }
+                    onNavigateBack()
                 }
             }
             MfaEnrollmentStep.SelectFactor -> Unit
@@ -257,49 +219,20 @@ internal fun MfaEnrollmentScreenInternal(
     }
 
     /**
-     * Moves the flow forward one step: hosted, asks the host to navigate; un-hosted, swaps local
-     * state. Forward moves only — a backward move goes through `onBackClick`.
+     * Moves the flow forward one step, by asking the host to navigate. Forward moves only — a
+     * backward move goes through `onBackClick`.
      */
     fun goToStep(target: MfaEnrollmentStep) {
-        if (onNavigateToStep != null) {
-            onNavigateToStep(target)
-        } else {
-            localStep.value = target
-        }
+        onNavigateToStep(target)
     }
 
     val state = MfaEnrollmentContentState(
-        step = currentStep,
+        step = step,
         isLoading = isLoading.value,
         error = error.value,
         exception = lastException.value,
-        onBackClick = {
-            if (onNavigateBack != null) {
-                // Hosted, flowState is deliberately not cleared: a step still on the stack keeps it.
-                onNavigateBack()
-            } else {
-                when (currentStep) {
-                    MfaEnrollmentStep.SelectFactor -> {}
-                    MfaEnrollmentStep.ConfigureSms, MfaEnrollmentStep.ConfigureTotp -> {
-                        localStep.value = MfaEnrollmentStep.SelectFactor
-                        selectedFactor.value = null
-                        phoneNumber.value = ""
-                        totpSecret.value = null
-                        totpQrCodeUrl.value = null
-                    }
-                    MfaEnrollmentStep.VerifyFactor -> {
-                        verificationCode.value = ""
-                        localStep.value = when (selectedFactor.value) {
-                            MfaFactor.Sms -> MfaEnrollmentStep.ConfigureSms
-                            MfaFactor.Totp -> MfaEnrollmentStep.ConfigureTotp
-                            null -> MfaEnrollmentStep.SelectFactor
-                        }
-                    }
-                }
-                error.value = null
-                lastException.value = null
-            }
-        },
+        // flowState is deliberately not cleared: a step still on the stack keeps it.
+        onBackClick = onNavigateBack,
         availableFactors = configuration.allowedFactors,
         enrolledFactors = enrolledFactors.value,
         onFactorSelected = { factor ->

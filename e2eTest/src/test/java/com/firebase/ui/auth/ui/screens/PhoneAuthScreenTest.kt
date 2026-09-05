@@ -6,11 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -39,13 +44,13 @@ import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthStep
+import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.AuthResult
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -123,8 +128,14 @@ class PhoneAuthScreenTest {
             .assertIsDisplayed()
     }
 
+    /**
+     * Was `@Ignore`d as simply "flaky test". Three races, all the test's own: it typed the code
+     * without waiting for the verification step to arrive, it hunted for the code field before it
+     * existed, and it waited for the emulator to mint a code with `Thread.sleep` — which, under
+     * `LooperMode.PAUSED`, sleeps the one thread that would have driven the work it is waiting for.
+     * Each is now an explicit wait on the thing itself.
+     */
     @Test
-    @Ignore("Flaky test")
     fun `sign-in and verify SMS emits Success auth state`() {
         val country = CountryUtils.findByCountryCode("DE")!!
         val phone = "151${System.currentTimeMillis() % 100000000}"
@@ -144,9 +155,10 @@ class PhoneAuthScreenTest {
 
         // Track auth state changes
         var currentAuthState: AuthState = AuthState.Idle
+        var step: PhoneAuthStep? = null
 
         composeTestRule.setContent {
-            TestAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration, onStepChange = { step = it })
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -178,47 +190,45 @@ class PhoneAuthScreenTest {
             .assertIsDisplayed()
             .assertIsEnabled()
             .performClick()
-        composeTestRule.waitForIdle()
 
-        // Wait for emulator to process and generate verification code
-        shadowOf(Looper.getMainLooper()).idle()
-
-        // Retry fetching the phone code since emulator may be slow
-        // NOTE: This test requires Firebase Auth Emulator to be running on localhost:9099
-        // Start the emulator with: firebase emulators:start --only auth
-        var phoneCode: String? = null
-        var retries = 0
-        val maxRetries = 5
-        while (phoneCode == null && retries < maxRetries) {
-            Thread.sleep(if (retries == 0) 200L else 500L * retries)
+        // The screen's own step, not a guess at how long the emulator round-trip takes.
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            try {
-                phoneCode = emulatorApi.fetchVerifyPhoneCode(phone)
-                println("TEST: Found phone code after ${retries + 1} attempts")
-            } catch (e: Exception) {
-                retries++
-                if (retries >= maxRetries) {
-                    // If we can't fetch verification codes, the emulator might not be configured
-                    // correctly or might not be running. Skip this test with a clear message.
-                    Assume.assumeTrue(
-                        "Skipping test: Firebase Auth Emulator verification codes endpoint not available. " +
-                                "Ensure emulator is running on localhost:9099. Error: ${e.message}",
-                        false
-                    )
-                }
-                println("TEST: Phone code not found yet, retrying... (attempt $retries/$maxRetries)")
-            }
+            step == PhoneAuthStep.EnterVerificationCode
         }
-        requireNotNull(phoneCode) { "Phone code should not be null at this point" }
 
-        // Check current page is Verify Phone Number & Enter verification code
-        composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber)
+        // Poll the emulator for the code it minted, pumping the looper between attempts rather
+        // than sleeping the thread that has to run the work.
+        // NOTE: requires the Firebase Auth Emulator on localhost:9099
+        // (`./scripts/start-firebase-emulator.sh`).
+        var phoneCode: String? = null
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            phoneCode = try {
+                emulatorApi.fetchVerifyPhoneCode(phone)
+            } catch (_: Exception) {
+                null
+            }
+            phoneCode != null
+        }
+        // Absent after the full timeout means the emulator has no verification-codes endpoint,
+        // which is an environment problem rather than a failure of what is under test.
+        Assume.assumeTrue(
+            "Skipping test: Firebase Auth Emulator verification codes endpoint not available. " +
+                    "Ensure the emulator is running on localhost:9099.",
+            phoneCode != null
+        )
+
         // The whole code goes in via the published tag in one call, rather than selecting boxes
         // positionally out of onAllNodes(hasSetTextAction()).
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeTestRule.onAllNodesWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule
             .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
-            .performTextInput(phoneCode)
+            .performTextInput(requireNotNull(phoneCode))
         composeTestRule.waitForIdle()
         // Submit verification code
         composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
@@ -254,8 +264,14 @@ class PhoneAuthScreenTest {
         )
     }
 
+    /**
+     * Was `@Ignore`d as "flaky in CI due to timing/scrolling issues". The flakiness was the test's,
+     * not the product's: sending a code is an emulator round-trip, and this waited for it by
+     * pumping the looper a fixed number of times and hoping. Both transitions are now waited on by
+     * the step the screen actually reports, so there is nothing left to lose a race with — and the
+     * scroll no longer runs against a node that may not exist yet.
+     */
     @Test
-    @Ignore("Flaky in CI due to timing/scrolling issues - works locally")
     fun `change phone number navigates back to EnterPhoneNumber step`() {
         val defaultNumber = "+12025550123"
         val country = CountryUtils.findByCountryCode("US")!!
@@ -273,31 +289,29 @@ class PhoneAuthScreenTest {
             }
         }
 
+        var step: PhoneAuthStep? = null
         composeTestRule.setContent {
-            TestAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration, onStepChange = { step = it })
         }
 
-        // Send verification code to get to verification screen
         composeTestRule.onNodeWithText(stringProvider.sendVerificationCode.uppercase())
             .performScrollTo()
             .performClick()
-        composeTestRule.waitForIdle()
 
-        // Wait for the verification screen to appear and pump looper (CI timing)
-        shadowOf(Looper.getMainLooper()).idle()
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            step == PhoneAuthStep.EnterVerificationCode
+        }
 
-        // Click change phone number
         composeTestRule.onNodeWithText(stringProvider.changePhoneNumber)
             .performScrollTo()
             .performClick()
-        composeTestRule.waitForIdle()
 
-        // Pump looper after navigation
-        shadowOf(Looper.getMainLooper()).idle()
-        composeTestRule.waitForIdle()
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            step == PhoneAuthStep.EnterPhoneNumber
+        }
 
-        // Verify we are back to sign in with phone screen
         composeTestRule.onNodeWithText(stringProvider.signInWithPhone)
             .assertIsDisplayed()
     }
@@ -330,8 +344,13 @@ class PhoneAuthScreenTest {
             .assertIsDisplayed()
     }
 
+    /**
+     * Was `@Ignore`d as "flaky in CI due to timing issues with countdown timer". The countdown was
+     * never the problem — with `LooperMode.PAUSED` the clock does not advance, so the timer holds
+     * at the configured value. What raced was getting to the screen showing it: the assertion ran
+     * after a fixed amount of looper pumping rather than after the step actually changed.
+     */
     @Test
-    @Ignore("Flaky in CI due to timing issues with countdown timer")
     fun `resend code timer starts at configured timeout`() {
         val phone = "+12025550123"
         val timeout = 120L
@@ -349,22 +368,27 @@ class PhoneAuthScreenTest {
             }
         }
 
+        var step: PhoneAuthStep? = null
         composeTestRule.setContent {
-            TestAuthScreen(configuration = configuration)
+            TestAuthScreen(configuration = configuration, onStepChange = { step = it })
         }
 
-        // Send verification code
         composeTestRule.onNodeWithText(stringProvider.sendVerificationCode.uppercase())
             .performScrollTo()
             .performClick()
-        composeTestRule.waitForIdle()
 
-        // Process pending tasks to render the verification screen
-        shadowOf(Looper.getMainLooper()).idle()
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            step == PhoneAuthStep.EnterVerificationCode
+        }
 
-        // With LooperMode.PAUSED, time doesn't advance automatically,
-        // so the timer will stay frozen at "2:00" (the configured timeout)
+        // The clock is frozen, so the timer reads the configured timeout: 120s as "2:00".
         val expectedTimerText = stringProvider.resendCodeTimer("2:00")
+        composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
+            shadowOf(Looper.getMainLooper()).idle()
+            composeTestRule.onAllNodesWithText(expectedTimerText, substring = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         composeTestRule.onNodeWithText(expectedTimerText, substring = true)
             .assertIsDisplayed()
     }
@@ -524,6 +548,11 @@ class PhoneAuthScreenTest {
         CompositionLocalProvider(
             LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
         ) {
+            // Hosted the way production is: a stack of steps, and a `key` on its top, so a step
+            // switch composes fresh rather than inheriting what the previous step held.
+            val stack = remember { mutableStateListOf(PhoneAuthStep.EnterPhoneNumber) }
+            val flowState = rememberPhoneAuthFlowState(configuration)
+            key(stack.last()) {
             PhoneAuthScreen(
                 context = applicationContext,
                 configuration = configuration,
@@ -531,6 +560,10 @@ class PhoneAuthScreenTest {
                 onSuccess = onSuccess,
                 onError = onError,
                 onCancel = onCancel,
+                step = stack.last(),
+                onNavigateToStep = { stack.add(it) },
+                onNavigateBack = { if (stack.size > 1) stack.removeAt(stack.lastIndex) },
+                flowState = flowState,
             ) { state ->
                 onStepChange(state.step)
 
@@ -561,6 +594,7 @@ class PhoneAuthScreenTest {
                         )
                     }
                 }
+            }
             }
         }
     }

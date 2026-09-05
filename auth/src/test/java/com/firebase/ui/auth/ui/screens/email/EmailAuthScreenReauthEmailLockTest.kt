@@ -16,6 +16,11 @@ package com.firebase.ui.auth.ui.screens.email
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
@@ -24,8 +29,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
-import com.firebase.ui.auth.AuthException
-import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
@@ -34,9 +37,6 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import androidx.compose.runtime.CompositionLocalProvider
-import com.firebase.ui.auth.ui.FirebaseAuthTestTags
-import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
-import com.firebase.ui.auth.ui.components.rememberTopLevelDialogController
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.ActionCodeSettings
@@ -152,55 +152,39 @@ class EmailAuthScreenReauthEmailLockTest {
         return authUI.createReauthFlow(configuration).configuration
     }
 
+    /**
+     * Hosts the screen the way production does: a mode switch navigates, so [key] gives the target
+     * mode its own composition, seeded with the address the switch carried — which is what a host
+     * puts on the destination's key.
+     */
     @Composable
     private fun EmailAuthScreenUnderTest(
         configuration: AuthUIConfiguration,
         prefill: String?,
+        startMode: EmailAuthMode = EmailAuthMode.SignIn,
+        content: (@Composable (EmailAuthContentState) -> Unit)? = null,
     ) {
+        var mode by remember { mutableStateOf(startMode) }
+        var email by remember { mutableStateOf(prefill) }
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-            EmailAuthScreen(
-                context = applicationContext,
-                configuration = configuration,
-                authUI = authUI,
-                prefillEmail = prefill,
-                onSuccess = {},
-                onError = {},
-                onCancel = {},
-            )
-        }
-    }
-
-    /**
-     * Unhosted, this screen shows the error itself but never acts on it: error recovery belongs to
-     * a host, which alone knows what lies outside the email flow. With nothing to do, an action
-     * button on the dialog could only dismiss it, so it is not rendered — and the dialog keeps
-     * explaining the error, which is the part a standalone caller still needs.
-     */
-    @Test
-    fun `the reauth sub-flow error dialog offers no action button`() {
-        composeTestRule.setContent {
-            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-                val controller = rememberTopLevelDialogController(
-                    stringProvider = stringProvider,
-                    authState = { AuthState.Idle },
+            key(mode) {
+                EmailAuthScreen(
+                    context = applicationContext,
+                    configuration = configuration,
+                    authUI = authUI,
+                    prefillEmail = email,
+                    mode = mode,
+                    onNavigateToMode = { target, typed ->
+                        email = typed.ifEmpty { null }
+                        mode = target
+                    },
+                    onSuccess = {},
+                    onError = {},
+                    onCancel = {},
+                    content = content,
                 )
-                CompositionLocalProvider(LocalTopLevelDialogController provides controller) {
-                    EmailAuthScreenUnderTest(reauthConfiguration(), prefillEmail)
-                    controller.CurrentDialog()
-                }
             }
         }
-        composeTestRule.waitForIdle()
-
-        composeTestRule.runOnIdle {
-            authUI.updateAuthState(
-                AuthState.Error(AuthException.UserNotFoundException(message = "nope"))
-            )
-        }
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithText(stringProvider.dismissAction).assertExists()
-        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.ErrorRecovery.RETRY_BUTTON).assertDoesNotExist()
     }
 
     /**
@@ -212,29 +196,18 @@ class EmailAuthScreenReauthEmailLockTest {
     fun `the locked email survives a mode switch`() {
         var email: String? = null
         var isEmailLocked: Boolean? = null
-        var goToSignIn: (() -> Unit)? = null
+        var goToResetPassword: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-                EmailAuthScreen(
-                    context = applicationContext,
-                    configuration = reauthConfiguration(),
-                    authUI = authUI,
-                    prefillEmail = prefillEmail,
-                    onSuccess = {},
-                    onError = {},
-                    onCancel = {},
-                    content = { state ->
-                        email = state.email
-                        isEmailLocked = state.isEmailLocked
-                        goToSignIn = state.onGoToSignIn
-                    },
-                )
+            EmailAuthScreenUnderTest(reauthConfiguration(), prefillEmail) { state ->
+                email = state.email
+                isEmailLocked = state.isEmailLocked
+                goToResetPassword = state.onGoToResetPassword
             }
         }
         composeTestRule.waitForIdle()
 
-        composeTestRule.runOnIdle { requireNotNull(goToSignIn).invoke() }
+        composeTestRule.runOnIdle { requireNotNull(goToResetPassword).invoke() }
         composeTestRule.waitForIdle()
 
         assertThat(email).isEqualTo(prefillEmail)
@@ -322,21 +295,10 @@ class EmailAuthScreenReauthEmailLockTest {
         var goToEmailLinkSignIn: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-                EmailAuthScreen(
-                    context = applicationContext,
-                    configuration = reauthConfigurationWithEmailLink(),
-                    authUI = authUI,
-                    prefillEmail = prefillEmail,
-                    onSuccess = {},
-                    onError = {},
-                    onCancel = {},
-                    content = { state ->
-                        observed.add(state.mode)
-                        goToResetPassword = state.onGoToResetPassword
-                        goToEmailLinkSignIn = state.onGoToEmailLinkSignIn
-                    },
-                )
+            EmailAuthScreenUnderTest(reauthConfigurationWithEmailLink(), prefillEmail) { state ->
+                observed.add(state.mode)
+                goToResetPassword = state.onGoToResetPassword
+                goToEmailLinkSignIn = state.onGoToEmailLinkSignIn
             }
         }
         composeTestRule.waitForIdle()
@@ -408,31 +370,20 @@ class EmailAuthScreenReauthEmailLockTest {
     @Test
     fun `isEmailLocked is reported to a custom content slot and is stable across modes`() {
         val observed = mutableListOf<Pair<EmailAuthMode, Boolean>>()
-        var goToSignIn: (() -> Unit)? = null
+        var goToResetPassword: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-                EmailAuthScreen(
-                    context = applicationContext,
-                    configuration = reauthConfiguration(),
-                    authUI = authUI,
-                    prefillEmail = prefillEmail,
-                    onSuccess = {},
-                    onError = {},
-                    onCancel = {},
-                    content = { state ->
-                        observed.add(state.mode to state.isEmailLocked)
-                        goToSignIn = state.onGoToSignIn
-                    },
-                )
+            EmailAuthScreenUnderTest(reauthConfiguration(), prefillEmail) { state ->
+                observed.add(state.mode to state.isEmailLocked)
+                goToResetPassword = state.onGoToResetPassword
             }
         }
         composeTestRule.waitForIdle()
 
-        composeTestRule.runOnIdle { requireNotNull(goToSignIn).invoke() }
+        composeTestRule.runOnIdle { requireNotNull(goToResetPassword).invoke() }
         composeTestRule.waitForIdle()
 
-        assertThat(observed.map { it.first }.last()).isEqualTo(EmailAuthMode.SignIn)
+        assertThat(observed.map { it.first }.last()).isEqualTo(EmailAuthMode.ResetPassword)
         assertThat(observed.map { it.second }.toSet()).containsExactly(true)
     }
 
@@ -443,20 +394,9 @@ class EmailAuthScreenReauthEmailLockTest {
         var onEmailChange: ((String) -> Unit)? = null
 
         composeTestRule.setContent {
-            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-                EmailAuthScreen(
-                    context = applicationContext,
-                    configuration = reauthConfiguration(),
-                    authUI = authUI,
-                    prefillEmail = prefillEmail,
-                    onSuccess = {},
-                    onError = {},
-                    onCancel = {},
-                    content = { state ->
-                        email = state.email
-                        onEmailChange = state.onEmailChange
-                    },
-                )
+            EmailAuthScreenUnderTest(reauthConfiguration(), prefillEmail) { state ->
+                email = state.email
+                onEmailChange = state.onEmailChange
             }
         }
         composeTestRule.waitForIdle()
