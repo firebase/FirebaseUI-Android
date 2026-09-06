@@ -1,10 +1,18 @@
 package com.firebase.ui.auth.testutil
 
+import android.app.Activity
 import android.os.Looper
 import android.util.Base64
 import com.firebase.ui.auth.FirebaseAuthUI
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.auth.PhoneMultiFactorGenerator
 import org.robolectric.Shadows.shadowOf
+import java.util.concurrent.TimeUnit
 
 /**
  * Ensures a fresh user exists in the Firebase emulator with the given credentials.
@@ -100,6 +108,78 @@ fun verifyEmailInEmulator(authUI: FirebaseAuthUI, emulatorApi: EmulatorAuthApi, 
     println("TEST: Email verified successfully for user ${user.uid}")
     println("TEST: User isEmailVerified: ${authUI.auth.currentUser?.isEmailVerified}")
 }
+
+/**
+ * Enrolls [user] in SMS multi-factor authentication, so a test can start from an account that is
+ * challenged for a second factor at sign-in.
+ *
+ * Takes the same three steps [com.firebase.ui.auth.mfa.SmsEnrollmentHandler] does — open a
+ * multi-factor session, verify a phone number against it, enroll the resulting assertion — but
+ * from Tasks this thread can pump with [awaitWithLooper], rather than the handler's suspend
+ * functions, whose callbacks arrive on the paused main looper a `runBlocking` here would occupy.
+ *
+ * The emulator rejects enrollment for a user whose email is unverified (`UNVERIFIED_EMAIL`), so
+ * pair this with [verifyEmailInEmulator], and for an anonymous, phone or custom-token first factor
+ * (`UNSUPPORTED_FIRST_FACTOR`).
+ *
+ * @param phoneNumber The second factor's number in E.164 format (e.g. "+15551234567")
+ */
+fun enrollSmsFactorInEmulator(
+    activity: Activity,
+    authUI: FirebaseAuthUI,
+    emulatorApi: EmulatorAuthApi,
+    user: FirebaseUser,
+    phoneNumber: String,
+) {
+    println("TEST: Enrolling SMS factor $phoneNumber for user ${user.uid}")
+    val session = user.multiFactor.session.awaitWithLooper()
+
+    val verificationId = TaskCompletionSource<String>()
+    val options = PhoneAuthOptions.newBuilder(authUI.auth)
+        .setPhoneNumber(phoneNumber)
+        .setTimeout(SMS_VERIFICATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .setActivity(activity)
+        .setMultiFactorSession(session)
+        .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            // The emulator always answers with a session to redeem a code against, so the
+            // instant-verification callback firing here means the setup no longer matches the
+            // flow it is standing in for.
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                verificationId.trySetException(
+                    IllegalStateException(
+                        "Emulator auto-verified $phoneNumber instead of sending a code"
+                    )
+                )
+            }
+
+            override fun onVerificationFailed(e: FirebaseException) {
+                verificationId.trySetException(e)
+            }
+
+            override fun onCodeSent(
+                id: String,
+                token: PhoneAuthProvider.ForceResendingToken,
+            ) {
+                verificationId.trySetResult(id)
+            }
+        })
+        .build()
+    PhoneAuthProvider.verifyPhoneNumber(options)
+
+    // onCodeSent carries the emulator's response to the enrollment start, so by the time it lands
+    // the code is already readable — no polling needed.
+    val id = verificationId.task.awaitWithLooper()
+    val code = emulatorApi.fetchVerifyPhoneCode(phoneNumber)
+    println("TEST: Enrollment code for $phoneNumber is $code")
+
+    val credential = PhoneAuthProvider.getCredential(id, code)
+    user.multiFactor.enroll(PhoneMultiFactorGenerator.getAssertion(credential), "SMS")
+        .awaitWithLooper()
+    println("TEST: Enrolled factors: ${user.multiFactor.enrolledFactors.size}")
+}
+
+/** Matches [com.firebase.ui.auth.mfa.SmsEnrollmentHandler.VERIFICATION_TIMEOUT_SECONDS]. */
+private const val SMS_VERIFICATION_TIMEOUT_SECONDS = 60L
 
 fun generateMockGoogleIdToken(
     email: String,
