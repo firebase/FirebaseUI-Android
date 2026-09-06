@@ -184,32 +184,13 @@ class EmailAuthScreenModeSwitchTest {
     }
 
     /**
-     * The shape this screen cannot defend itself against, pinned so the hazard is visible: a host
-     * that satisfies [EmailAuthScreen]'s `mode` and `onNavigateToMode` out of plain state, without
-     * giving the target mode a composition of its own.
-     *
-     * Compose sees one call site and keeps the composition, so every `rememberSaveable` the screen
-     * holds survives the switch — including the password typed on the sign-in form, which then
-     * greets the user pre-filled on sign-up.
+     * Navigating to a mode gives it its own destination, and so its own composition: the password
+     * typed on the sign-in form stays with the entry it was typed into, rather than greeting the
+     * user pre-filled on sign-up.
      */
     @Test
-    fun `flipping the mode parameter within one composition carries the password over`() {
-        startFlippingAParameter(fresh = false)
-
-        type { it.onPasswordChange("hunter2") }
-        goTo(EmailAuthMode.SignUp)
-
-        assertThat(state().mode).isEqualTo(EmailAuthMode.SignUp)
-        assertThat(state().password).isEqualTo("hunter2")
-    }
-
-    /**
-     * The same host, one line different: the target mode gets its own composition. That is all real
-     * navigation does here, and it is the whole of the difference — nothing in the screen changes.
-     */
-    @Test
-    fun `giving the target mode its own composition leaves the password behind`() {
-        startFlippingAParameter(fresh = true)
+    fun `a switch to another mode leaves the password behind`() {
+        startOnABackStack()
 
         type { it.onPasswordChange("hunter2") }
         goTo(EmailAuthMode.SignUp)
@@ -218,27 +199,23 @@ class EmailAuthScreenModeSwitchTest {
         assertThat(state().password).isEmpty()
     }
 
-    /**
-     * A host driving the mode from plain state. [fresh] is the only variable under test: whether
-     * the target mode is composed anew, the way a navigation destination is.
-     */
-    private fun startFlippingAParameter(fresh: Boolean) {
+    /** A host driving the modes the only way the screen supports them: as real destinations. */
+    private fun startOnABackStack() {
         composeTestRule.setContent {
-            var mode by remember { mutableStateOf(EmailAuthMode.SignIn) }
             CompositionLocalProvider(
                 LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
             ) {
-                // NOTE: `key` re-creates state on a switch; a real NavDisplay pop would restore it.
-                key(if (fresh) mode else Unit) {
+                EmailModeBackStackHost(startMode = EmailAuthMode.SignIn) { key, goToMode ->
                     EmailAuthScreen(
                         context = applicationContext,
                         configuration = configuration(),
                         authUI = authUI,
+                        prefillEmail = key.email.ifEmpty { null },
                         onSuccess = {},
                         onError = {},
                         onCancel = {},
-                        mode = mode,
-                        onNavigateToMode = { target, _ -> mode = target },
+                        mode = key.mode,
+                        onNavigateToMode = goToMode,
                         content = { state -> lastState = state },
                     )
                 }

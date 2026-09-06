@@ -171,17 +171,6 @@ fun ResetPasswordUI(
             ) {
                 Button(
                     modifier = Modifier
-                        .testTag(FirebaseAuthTestTags.ResetPassword.SIGN_IN_BUTTON),
-                    onClick = {
-                        onGoToSignIn()
-                    },
-                    enabled = !isLoading,
-                ) {
-                    Text(stringProvider.signInDefault.uppercase())
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(
-                    modifier = Modifier
                         .testTag(FirebaseAuthTestTags.ResetPassword.SEND_BUTTON),
                     onClick = {
                         onSendResetLink()

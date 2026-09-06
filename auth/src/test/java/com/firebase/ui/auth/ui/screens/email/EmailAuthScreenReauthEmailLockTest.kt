@@ -15,6 +15,8 @@
 package com.firebase.ui.auth.ui.screens.email
 
 import android.content.Context
+import androidx.compose.runtime.SideEffect
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -74,6 +76,8 @@ class EmailAuthScreenReauthEmailLockTest {
     private lateinit var applicationContext: Context
     private lateinit var stringProvider: AuthUIStringProvider
     private lateinit var authUI: FirebaseAuthUI
+
+    private var pressBack: (() -> Unit)? = null
 
     private val prefillEmail = "linked@example.com"
 
@@ -153,9 +157,9 @@ class EmailAuthScreenReauthEmailLockTest {
     }
 
     /**
-     * Hosts the screen the way production does: a mode switch navigates, so [key] gives the target
-     * mode its own composition, seeded with the address the switch carried — which is what a host
-     * puts on the destination's key.
+     * Hosts the screen the way a caller outside `FirebaseAuthScreen` has to: every mode is a real
+     * destination on the host's own back stack, so a switch navigates and system back pops one
+     * mode. The address rides on the key, which is what carries it across a switch.
      */
     @Composable
     private fun EmailAuthScreenUnderTest(
@@ -164,21 +168,17 @@ class EmailAuthScreenReauthEmailLockTest {
         startMode: EmailAuthMode = EmailAuthMode.SignIn,
         content: (@Composable (EmailAuthContentState) -> Unit)? = null,
     ) {
-        var mode by remember { mutableStateOf(startMode) }
-        var email by remember { mutableStateOf(prefill) }
+        val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+        SideEffect { pressBack = dispatcher?.let { { it.onBackPressed() } } }
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
-            // NOTE: `key` re-creates state on a switch; a real NavDisplay pop would restore it.
-            key(mode) {
+            EmailModeBackStackHost(startMode = startMode, startEmail = prefill) { key, goToMode ->
                 EmailAuthScreen(
                     context = applicationContext,
                     configuration = configuration,
                     authUI = authUI,
-                    prefillEmail = email,
-                    mode = mode,
-                    onNavigateToMode = { target, typed ->
-                        email = typed.ifEmpty { null }
-                        mode = target
-                    },
+                    prefillEmail = key.email.ifEmpty { null } ?: prefill,
+                    mode = key.mode,
+                    onNavigateToMode = goToMode,
                     onSuccess = {},
                     onError = {},
                     onCancel = {},
@@ -342,8 +342,8 @@ class EmailAuthScreenReauthEmailLockTest {
 
         composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText(stringProvider.signInDefault, ignoreCase = true)
-            .performClick()
+        // Back, not an in-form control: recovery is a push, so the way back off it is the stack.
+        composeTestRule.runOnUiThread { requireNotNull(pressBack).invoke() }
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.emailHint)

@@ -374,7 +374,6 @@ class TestTagsAsResourceIdsTest {
                 onEmailChange = { },
                 onPasswordChange = { },
                 onConfirmPasswordChange = { },
-                onGoToSignIn = { },
                 onSignUpClick = { },
                 onNavigateBack = { },
             )
@@ -385,7 +384,6 @@ class TestTagsAsResourceIdsTest {
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.PASSWORD_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.CONFIRM_PASSWORD_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.SIGN_UP_BUTTON, button())
-        assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.SIGN_IN_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.BACK_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.SignUp.PASSWORD_VISIBILITY_TOGGLE, button())
         assertExposedAsResourceId(
@@ -398,20 +396,19 @@ class TestTagsAsResourceIdsTest {
     fun `reset password screen exposes its field and actions`() {
         setContent {
             ResetPasswordUI(
+                onGoToSignIn = { },
                 configuration = emailConfiguration(),
                 isLoading = false,
                 email = "",
                 resetLinkSent = false,
                 onEmailChange = { },
                 onSendResetLink = { },
-                onGoToSignIn = { },
                 onNavigateBack = { },
             )
         }
 
         assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.EMAIL_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.SEND_BUTTON, button())
-        assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.SIGN_IN_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.ResetPassword.BACK_BUTTON, button())
     }
 
@@ -419,13 +416,13 @@ class TestTagsAsResourceIdsTest {
     fun `email link screen exposes its field and actions`() {
         setContent {
             SignInEmailLinkUI(
+                onGoToSignIn = { },
                 configuration = emailConfiguration(),
                 isLoading = false,
                 emailSignInLinkSent = false,
                 email = "",
                 onEmailChange = { },
                 onSignInWithEmailLink = { },
-                onGoToSignIn = { },
                 onGoToResetPassword = { },
                 onNavigateBack = { },
             )
@@ -640,13 +637,13 @@ class TestTagsAsResourceIdsTest {
     fun `reset password sent dialog exposes its dismiss button`() {
         setContent {
             ResetPasswordUI(
+                onGoToSignIn = { },
                 configuration = emailConfiguration(),
                 isLoading = false,
                 email = "user@example.com",
                 resetLinkSent = true,
                 onEmailChange = { },
                 onSendResetLink = { },
-                onGoToSignIn = { },
             )
         }
 
@@ -657,13 +654,13 @@ class TestTagsAsResourceIdsTest {
     fun `email link sent dialog exposes its dismiss button`() {
         setContent {
             SignInEmailLinkUI(
+                onGoToSignIn = { },
                 configuration = emailConfiguration(),
                 isLoading = false,
                 emailSignInLinkSent = true,
                 email = "user@example.com",
                 onEmailChange = { },
                 onSignInWithEmailLink = { },
-                onGoToSignIn = { },
                 onGoToResetPassword = { },
             )
         }

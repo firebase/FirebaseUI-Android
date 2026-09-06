@@ -423,7 +423,6 @@ private fun DefaultEmailAuthContent(
                 onPasswordChange = state.onPasswordChange,
                 onConfirmPasswordChange = state.onConfirmPasswordChange,
                 onSignUpClick = state.onSignUpClick,
-                onGoToSignIn = state.onGoToSignIn,
                 onNavigateBack = onCancel,
                 isEmailLocked = state.isEmailLocked,
             )

@@ -69,7 +69,6 @@ fun SignUpUI(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
-    onGoToSignIn: () -> Unit,
     onSignUpClick: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
     isEmailLocked: Boolean = false,
@@ -205,17 +204,6 @@ fun SignUpUI(
             ) {
                 Button(
                     modifier = Modifier
-                        .testTag(FirebaseAuthTestTags.SignUp.SIGN_IN_BUTTON),
-                    onClick = {
-                        onGoToSignIn()
-                    },
-                    enabled = !isLoading,
-                ) {
-                    Text(stringProvider.signInDefault.uppercase())
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(
-                    modifier = Modifier
                         .testTag(FirebaseAuthTestTags.SignUp.SIGN_UP_BUTTON),
                     onClick = {
                         onSignUpClick()
@@ -274,7 +262,6 @@ fun PreviewSignUpUI() {
             onPasswordChange = { password -> },
             onConfirmPasswordChange = { confirmPassword -> },
             onSignUpClick = {},
-            onGoToSignIn = {}
         )
     }
 }
