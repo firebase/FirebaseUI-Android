@@ -72,7 +72,7 @@ fun EnterPhoneNumberUI(
     onNavigateBack: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
+    val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().firstOrNull()
     val stringProvider = LocalAuthUIStringProvider.current
     val phoneNumberValidator = remember(selectedCountry) {
         PhoneNumberValidator(stringProvider, selectedCountry)
@@ -134,7 +134,7 @@ fun EnterPhoneNumberUI(
                         selectedCountry = selectedCountry,
                         onCountrySelected = onCountrySelected,
                         enabled = !isLoading,
-                        allowedCountries = provider.allowedCountries?.toSet()
+                        allowedCountries = provider?.allowedCountries?.toSet()
                     )
                 },
                 onValueChange = {
