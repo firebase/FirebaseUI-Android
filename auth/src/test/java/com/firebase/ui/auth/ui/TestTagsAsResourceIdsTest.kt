@@ -416,7 +416,6 @@ class TestTagsAsResourceIdsTest {
     fun `email link screen exposes its field and actions`() {
         setContent {
             SignInEmailLinkUI(
-                onGoToSignIn = { },
                 configuration = emailConfiguration(),
                 isLoading = false,
                 emailSignInLinkSent = false,
@@ -430,7 +429,6 @@ class TestTagsAsResourceIdsTest {
 
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.EMAIL_FIELD, field())
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.SEND_LINK_BUTTON, button())
-        assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.PASSWORD_SIGN_IN_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.FORGOT_PASSWORD_BUTTON, button())
         assertExposedAsResourceId(FirebaseAuthTestTags.EmailLink.BACK_BUTTON, button())
     }
@@ -654,7 +652,6 @@ class TestTagsAsResourceIdsTest {
     fun `email link sent dialog exposes its dismiss button`() {
         setContent {
             SignInEmailLinkUI(
-                onGoToSignIn = { },
                 configuration = emailConfiguration(),
                 isLoading = false,
                 emailSignInLinkSent = true,

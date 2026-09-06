@@ -124,9 +124,6 @@ object FirebaseAuthTestTags {
         /** The button that sends the sign-in link. */
         const val SEND_LINK_BUTTON = "fui_email_link_send_link_button"
 
-        /** The button that switches back to password sign-in. */
-        const val PASSWORD_SIGN_IN_BUTTON = "fui_email_link_password_sign_in_button"
-
         /** The dismiss button of the "sign-in link sent" dialog. */
         const val DISMISS_BUTTON = "fui_email_link_dismiss_button"
 

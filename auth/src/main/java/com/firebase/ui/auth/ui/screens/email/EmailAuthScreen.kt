@@ -441,7 +441,6 @@ private fun DefaultEmailAuthContent(
                 emailSignInLinkSent = state.emailSignInLinkSent,
                 onEmailChange = state.onEmailChange,
                 onSignInWithEmailLink = state.onSignInEmailLinkClick,
-                onGoToSignIn = state.onGoToSignIn,
                 onGoToResetPassword = state.onGoToResetPassword,
                 onNavigateBack = onCancel
             )

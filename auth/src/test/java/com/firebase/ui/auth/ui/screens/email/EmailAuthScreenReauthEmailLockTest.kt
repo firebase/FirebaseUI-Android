@@ -253,7 +253,6 @@ class EmailAuthScreenReauthEmailLockTest {
                     email = prefillEmail,
                     onEmailChange = {},
                     onSignInWithEmailLink = {},
-                    onGoToSignIn = {},
                     onGoToResetPassword = {},
                     isEmailLocked = true,
                 )
