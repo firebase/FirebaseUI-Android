@@ -157,7 +157,10 @@ internal fun MfaEnrollmentScreenInternal(
     val lastException = remember { mutableStateOf<Exception?>(null) }
     val enrolledFactors = remember { mutableStateOf(user.multiFactor.enrolledFactors) }
 
-    val phoneAuthConfiguration = remember(authConfiguration, applicationContext) {
+    // The SMS steps read only the terms and privacy URLs off this, so a host that supplied no
+    // configuration gets a stand-in. Its provider is arbitrary — a configuration must declare at
+    // least one — and nothing reads it: the country restriction comes from [MfaConfiguration].
+    val stepConfiguration = remember(authConfiguration, applicationContext) {
         authConfiguration ?: authUIConfiguration {
             context = applicationContext
             providers {
@@ -277,6 +280,7 @@ internal fun MfaEnrollmentScreenInternal(
             error.value = null
         },
         selectedCountry = selectedCountry.value,
+        allowedCountries = configuration.allowedCountries,
         onCountrySelected = { country ->
             selectedCountry.value = country
         },
@@ -388,7 +392,7 @@ internal fun MfaEnrollmentScreenInternal(
     } else {
         DefaultMfaEnrollmentContent(
             state = state,
-            authConfiguration = phoneAuthConfiguration,
+            authConfiguration = stepConfiguration,
             user = user
         )
     }

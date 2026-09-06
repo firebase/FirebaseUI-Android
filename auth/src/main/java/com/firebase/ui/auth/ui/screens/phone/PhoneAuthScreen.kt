@@ -527,6 +527,11 @@ private fun DefaultPhoneAuthContent(
                 onPhoneNumberChange = state.onPhoneNumberChange,
                 onCountrySelected = state.onCountrySelected,
                 onSendCodeClick = state.onSendCodeClick,
+                allowedCountries = configuration.providers
+                    .filterIsInstance<AuthProvider.Phone>()
+                    .firstOrNull()
+                    ?.allowedCountries
+                    ?.toSet(),
                 onNavigateBack = onCancel
             )
         }

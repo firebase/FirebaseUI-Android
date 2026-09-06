@@ -24,6 +24,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -36,6 +38,7 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -60,7 +63,8 @@ import org.robolectric.annotation.Config
  * hosting [AuthUIConfiguration]'s phone provider and crashing on a configuration that declares
  * none. SMS is a second factor, configured independently of phone sign-in: Firebase enables it
  * separately, and phone sign-in cannot carry a second factor at all — so an email-only
- * configuration is the ordinary case, not an edge case.
+ * configuration is the ordinary case, not an edge case. The country restriction the step needs
+ * comes from [MfaConfiguration.allowedCountries] instead.
  *
  * @suppress Internal test class
  */
@@ -133,6 +137,28 @@ class MfaEnrollmentSmsStepTest {
             .assertIsDisplayed()
     }
 
+    @Test
+    fun `country selector offers only the countries MfaConfiguration allows`() {
+        enterSmsEnrollment(
+            MfaConfiguration(
+                allowedFactors = listOf(MfaFactor.Sms),
+                allowedCountries = listOf(ALLOWED_COUNTRY_CODE)
+            )
+        )
+
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.PhoneNumber.COUNTRY_SELECTOR_BUTTON)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(countryName(ALLOWED_COUNTRY_CODE)).assertIsDisplayed()
+        // First entry of the unrestricted list, so its absence cannot be a scroll position.
+        composeTestRule.onNodeWithText(FIRST_UNRESTRICTED_COUNTRY_NAME).assertDoesNotExist()
+    }
+
     /**
      * Renders the real screen with the default MFA content, signs in, then enters enrolment
      * through the callback the "Manage MFA" control uses. A single allowed factor starts the flow
@@ -167,6 +193,11 @@ class MfaEnrollmentSmsStepTest {
         composeTestRule.waitForIdle()
     }
 
+    private fun countryName(countryCode: String): String =
+        requireNotNull(CountryUtils.findByCountryCode(countryCode)) {
+            "No country data for $countryCode"
+        }.name
+
     private fun emailOnlyConfiguration(): AuthUIConfiguration = authUIConfiguration {
         context = applicationContext
         providers {
@@ -190,5 +221,9 @@ class MfaEnrollmentSmsStepTest {
 
     private companion object {
         const val AUTHENTICATED_TAG = "authenticated-destination"
+        const val ALLOWED_COUNTRY_CODE = "GB"
+
+        /** First entry of `ALL_COUNTRIES`, so an unrestricted list always renders it. */
+        const val FIRST_UNRESTRICTED_COUNTRY_NAME = "Afghanistan"
     }
 }

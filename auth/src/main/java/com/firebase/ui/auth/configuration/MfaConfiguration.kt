@@ -25,10 +25,17 @@ package com.firebase.ui.auth.configuration
  * @property requireEnrollment Whether MFA enrollment is mandatory for all users.
  *                             When true, users must enroll in at least one MFA factor.
  *                             Defaults to false.
+ * @property allowedCountries Country codes the [MfaFactor.Sms] enrollment step restricts its
+ *                            country selector to, or `null` for no restriction. Lives here rather
+ *                            than on the phone sign-in provider because a second factor is
+ *                            configured independently of the first: Firebase enables SMS second
+ *                            factors separately from phone sign-in, and phone sign-in cannot carry
+ *                            a second factor at all. Defaults to null.
  */
 class MfaConfiguration(
     val allowedFactors: List<MfaFactor> = listOf(MfaFactor.Sms, MfaFactor.Totp),
-    val requireEnrollment: Boolean = false
+    val requireEnrollment: Boolean = false,
+    val allowedCountries: List<String>? = null
 ) {
     init {
         require(allowedFactors.isNotEmpty()) {

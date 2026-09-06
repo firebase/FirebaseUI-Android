@@ -40,6 +40,7 @@ class MfaConfigurationTest {
 
         assertThat(config.allowedFactors).containsExactly(MfaFactor.Sms, MfaFactor.Totp)
         assertThat(config.requireEnrollment).isFalse()
+        assertThat(config.allowedCountries).isNull()
     }
 
     @Test
@@ -93,6 +94,15 @@ class MfaConfigurationTest {
 
         assertThat(config.allowedFactors).containsExactly(MfaFactor.Sms)
         assertThat(config.requireEnrollment).isTrue()
+    }
+
+    @Test
+    fun `MfaConfiguration with custom allowedCountries`() {
+        val config = MfaConfiguration(
+            allowedCountries = listOf("GB", "DE")
+        )
+
+        assertThat(config.allowedCountries).containsExactly("GB", "DE")
     }
 
     // =============================================================================================
