@@ -455,7 +455,6 @@ val phoneProvider = AuthProvider.Phone(
     allowedCountries = listOf("US", "CA", "GB"),
 
     // Optional: SMS code length (default: 6)
-    smsCodeLength = 6,
 
     // Optional: Timeout for SMS delivery in seconds (default: 60)
     timeout = 60L,

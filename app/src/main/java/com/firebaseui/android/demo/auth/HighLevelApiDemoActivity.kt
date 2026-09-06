@@ -153,7 +153,6 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                             defaultNumber = null,
                             defaultCountryCode = null,
                             allowedCountries = emptyList(),
-                            smsCodeLength = 6,
                             timeout = 120L,
                             isInstantVerificationEnabled = true
                         )
