@@ -102,6 +102,7 @@ import com.firebase.ui.auth.ui.screens.mfa.exitMfaEnrollment
 import com.firebase.ui.auth.ui.screens.mfa.mfaEnrollmentDestinations
 import com.firebase.ui.auth.ui.screens.mfa.rememberMfaEnrollmentFlowState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
+import com.firebase.ui.auth.ui.screens.phone.abandonVerification
 import com.firebase.ui.auth.ui.screens.phone.exitPhoneAuth
 import com.firebase.ui.auth.ui.screens.phone.phoneAuthDestinations
 import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
@@ -369,9 +370,30 @@ fun FirebaseAuthScreen(
             NavDisplay(
                 backStack = backStack,
                 sceneStrategies = listOf(reauthSceneStrategy),
+                // Back off a step that abandons work owes the same teardown the step's own control
+                // does; anything else is a plain pop.
                 onBack = {
-                    val top = backStack.lastOrNull()
-                    if (top is AuthRoute.Reauth) onLeaveReauthStep(top) else backStack.popOrNull()
+                    when (val top = backStack.lastOrNull()) {
+                        is AuthRoute.Reauth -> {
+                            if (top.step is AuthRoute.Phone.EnterVerificationCode) {
+                                reauthPhoneFlowState.abandonVerification(
+                                    "system back from reauthentication code entry"
+                                )
+                            }
+                            // Owns the phase move as well as the pop, so nothing is retracted here.
+                            onLeaveReauthStep(top)
+                        }
+
+                        is AuthRoute.Phone.EnterVerificationCode -> {
+                            phoneAuthFlowState.abandonVerification("system back from code entry")
+                            // Number entry is exempt from Idle's reset, so this lands there rather
+                            // than unwinding the flow.
+                            authUI.updateAuthState(AuthState.Idle)
+                            backStack.popOrNull()
+                        }
+
+                        else -> backStack.popOrNull()
+                    }
                 },
                 transitionSpec = stepTransitionSpec,
                 popTransitionSpec = stepPopTransitionSpec,

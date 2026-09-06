@@ -477,17 +477,12 @@ fun PhoneAuthScreen(
         },
         resendTimer = resendTimerSeconds.intValue,
         onChangeNumberClick = {
-            cancelVerification("changing phone number")
+            flowState.abandonVerification("changing phone number")
             // Nothing replaces the cancelled attempt here, so this handler retracts its Loading -
             // as the outstanding request's provider-selection phase when one is running, Idle otherwise.
             onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
-            verificationJob.value = null
             isSubmittingCode.value = false
             onNavigateBack()
-            verificationCodeValue.value = ""
-            verificationId.value = null
-            forceResendingToken.value = null
-            resendTimerSeconds.intValue = 0
         }
     )
 
