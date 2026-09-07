@@ -210,9 +210,6 @@ class DefaultAuthUIStringProvider(
     override val signInWithEmailLink: String
         get() = localizedContext.getString(R.string.fui_sign_in_with_email_link)
 
-    override val signInWithPassword: String
-        get() = localizedContext.getString(R.string.fui_sign_in_with_password)
-
     override val emailLinkPromptForEmailTitle: String
         get() = localizedContext.getString(R.string.fui_email_link_confirm_email_header)
 

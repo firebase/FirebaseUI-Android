@@ -88,9 +88,6 @@ object FirebaseAuthTestTags {
         /** The button that submits the new account. */
         const val SIGN_UP_BUTTON = "fui_sign_up_sign_up_button"
 
-        /** The button that navigates back to the sign-in screen. */
-        const val SIGN_IN_BUTTON = "fui_sign_up_sign_in_button"
-
         /** The toggle that shows or hides the entered password. */
         const val PASSWORD_VISIBILITY_TOGGLE = "fui_sign_up_password_visibility_toggle"
 
@@ -111,9 +108,6 @@ object FirebaseAuthTestTags {
         /** The button that sends the password reset link. */
         const val SEND_BUTTON = "fui_reset_password_send_button"
 
-        /** The button that navigates back to the sign-in screen. */
-        const val SIGN_IN_BUTTON = "fui_reset_password_sign_in_button"
-
         /** The dismiss button of the "reset link sent" dialog. */
         const val DISMISS_BUTTON = "fui_reset_password_dismiss_button"
 
@@ -129,9 +123,6 @@ object FirebaseAuthTestTags {
 
         /** The button that sends the sign-in link. */
         const val SEND_LINK_BUTTON = "fui_email_link_send_link_button"
-
-        /** The button that switches back to password sign-in. */
-        const val PASSWORD_SIGN_IN_BUTTON = "fui_email_link_password_sign_in_button"
 
         /** The dismiss button of the "sign-in link sent" dialog. */
         const val DISMISS_BUTTON = "fui_email_link_dismiss_button"

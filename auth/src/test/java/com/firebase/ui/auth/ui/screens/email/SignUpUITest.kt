@@ -89,7 +89,6 @@ class SignUpUITest {
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
                     onConfirmPasswordChange = { confirmPassword = it },
-                    onGoToSignIn = { },
                     onSignUpClick = { }
                 )
             }
@@ -142,7 +141,6 @@ class SignUpUITest {
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
                     onConfirmPasswordChange = { confirmPassword = it },
-                    onGoToSignIn = { },
                     onSignUpClick = { }
                 )
             }
@@ -195,7 +193,6 @@ class SignUpUITest {
                     onEmailChange = { email = it },
                     onPasswordChange = { password = it },
                     onConfirmPasswordChange = { confirmPassword = it },
-                    onGoToSignIn = { },
                     onSignUpClick = { }
                 )
             }

@@ -16,9 +16,7 @@ package com.firebase.ui.auth.ui.screens.email
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,7 +28,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -74,7 +71,6 @@ fun SignInEmailLinkUI(
     email: String,
     onEmailChange: (String) -> Unit,
     onSignInWithEmailLink: () -> Unit,
-    onGoToSignIn: () -> Unit,
     onGoToResetPassword: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
     isEmailLocked: Boolean = false,
@@ -210,33 +206,6 @@ fun SignInEmailLinkUI(
                 }
             }
 
-            // Show toggle to go back to password mode
-            Spacer(modifier = Modifier.height(64.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
-                Text(
-                    text = stringProvider.orContinueWith,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    style = MaterialTheme.typography.bodySmall
-                )
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            Button(
-                onClick = {
-                    onGoToSignIn()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(FirebaseAuthTestTags.EmailLink.PASSWORD_SIGN_IN_BUTTON),
-                enabled = !isLoading
-            ) {
-                Text(stringProvider.signInWithPassword.uppercase())
-            }
-
             Spacer(modifier = Modifier.height(16.dp))
             TermsAndPrivacyForm(
                 modifier = Modifier.align(Alignment.End),
@@ -282,7 +251,6 @@ fun PreviewSignInEmailLinkUI() {
             emailSignInLinkSent = false,
             onEmailChange = { email -> },
             onSignInWithEmailLink = {},
-            onGoToSignIn = {},
             onGoToResetPassword = {},
         )
     }

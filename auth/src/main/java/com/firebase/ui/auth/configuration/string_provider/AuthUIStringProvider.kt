@@ -248,9 +248,6 @@ interface AuthUIStringProvider {
     /** Button text to sign in with email link */
     val signInWithEmailLink: String
 
-    /** Button text to sign in with password */
-    val signInWithPassword: String
-
     /** Title shown when prompting the user to confirm their email for cross-device flows */
     val emailLinkPromptForEmailTitle: String
 
