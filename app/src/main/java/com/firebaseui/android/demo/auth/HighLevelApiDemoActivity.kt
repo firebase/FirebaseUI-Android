@@ -66,6 +66,7 @@ import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
+import com.firebaseui.android.demo.MainActivity
 import com.firebaseui.android.demo.R
 import com.google.firebase.auth.actionCodeSettings
 
@@ -131,7 +132,10 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                             isEmailLinkForceSameDeviceEnabled = false,
                             isEmailLinkSignInEnabled = true,
                             emailLinkActionCodeSettings = actionCodeSettings {
-                                url = "https://flutterfire-e2e-tests.firebaseapp.com"
+                                // The trailing segment is what MainActivity routes the returning
+                                // link on — see MainActivity.emailLinkOrigin.
+                                url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
+                                        MainActivity.ORIGIN_HIGH_LEVEL
                                 handleCodeInApp = true
                                 setAndroidPackageName(
                                     "com.firebaseui.android.demo",

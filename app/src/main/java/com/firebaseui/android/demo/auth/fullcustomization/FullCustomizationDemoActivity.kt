@@ -34,6 +34,9 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.mfa.MfaEnrollm
 import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSignInUI
 import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthUI
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationTheme
+import com.firebase.ui.auth.util.EmailLinkConstants
+import com.firebaseui.android.demo.MainActivity
+import com.google.firebase.auth.actionCodeSettings
 
 class FullCustomizationDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +44,8 @@ class FullCustomizationDemoActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val authUI = FirebaseAuthUI.getInstance()
+        // MainActivity owns the deep link and hands it on once it works out which demo sent it.
+        val emailLink = intent.getStringExtra(EmailLinkConstants.EXTRA_EMAIL_LINK)
         val configuration = authUIConfiguration {
             context = applicationContext
             logo = AuthUIAsset.Resource(R.drawable.firebase_auth)
@@ -61,7 +66,19 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                 provider(AuthProvider.Yahoo(customParameters = emptyMap()))
                 provider(
                     AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
+                        isEmailLinkSignInEnabled = true,
+                        emailLinkActionCodeSettings = actionCodeSettings {
+                            // The trailing segment is what MainActivity routes the returning link
+                            // on — see MainActivity.emailLinkOrigin.
+                            url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
+                                    MainActivity.ORIGIN_FULL_CUSTOMIZATION
+                            handleCodeInApp = true
+                            setAndroidPackageName(
+                                "com.firebaseui.android.demo",
+                                true,
+                                null
+                            )
+                        },
                         passwordValidationRules = emptyList()
                     )
                 )
@@ -85,6 +102,7 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                     FirebaseAuthScreen(
                         configuration = configuration,
                         authUI = authUI,
+                        emailLink = emailLink,
                         onSignInSuccess = { result ->
                             Log.d("FullCustomizationDemo", "Auth success: ${result.user?.uid}")
                         },
