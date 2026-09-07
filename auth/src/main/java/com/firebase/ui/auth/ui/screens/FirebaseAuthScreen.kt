@@ -696,6 +696,8 @@ fun FirebaseAuthScreen(
                         // Outside the guard below: the activity host ends nothing itself.
                         clearReauthPresentation()
                         reauthFlowState.finish(false)
+                        // A request raised before this composition accepted it has no phase to end.
+                        pendingReauth?.request?.decline()
                         if (activity !is FirebaseAuthActivity) {
                             pendingResolver.value = null
                             pendingLinkingCredential.value = null
