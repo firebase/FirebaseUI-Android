@@ -2,9 +2,9 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -13,6 +13,7 @@ import kotlinx.coroutines.tasks.await
 /**
  * Creates a remembered launcher function for anonymous sign-in.
  *
+ * @param config Authentication UI configuration
  * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  * @return A launcher function that starts the anonymous sign-in flow when invoked
  *
@@ -20,7 +21,8 @@ import kotlinx.coroutines.tasks.await
  * @see createOrLinkUserWithEmailAndPassword for upgrading anonymous accounts
  */
 @Composable
-internal fun AuthFlowScope.rememberAnonymousSignInHandler(
+internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(
+    config: AuthUIConfiguration,
     onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -28,14 +30,14 @@ internal fun AuthFlowScope.rememberAnonymousSignInHandler(
     return {
         coroutineScope.launch {
             try {
-                signInAnonymously()
+                signInAnonymously(config)
             } catch (e: AuthException) {
                 // Already an AuthException, don't re-wrap it
-                emit(AuthState.Error(e))
+                updateAuthState(AuthState.Error(e))
                 if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
                 val authException = AuthException.from(e, context)
-                emit(AuthState.Error(authException))
+                updateAuthState(AuthState.Error(authException))
                 if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
@@ -110,24 +112,24 @@ internal fun AuthFlowScope.rememberAnonymousSignInHandler(
  * @see createOrLinkUserWithEmailAndPassword for email/password upgrade
  * @see signInWithPhoneAuthCredential for phone authentication upgrade
  */
-internal suspend fun AuthFlowScope.signInAnonymously() {
+internal suspend fun FirebaseAuthUI.signInAnonymously(config: AuthUIConfiguration) {
     try {
-        emit(AuthState.Loading(config.stringProvider.loadingSigningInAnonymously))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInAnonymously))
         val result = auth.signInAnonymously().await()
-        emitResult(result, defaultIsNewUser = true)
+        updateAuthStateWithResult(result, defaultIsNewUser = true)
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in anonymously was cancelled",
             cause = e
         )
-        emit(AuthState.Error(cancelledException))
+        updateAuthState(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }

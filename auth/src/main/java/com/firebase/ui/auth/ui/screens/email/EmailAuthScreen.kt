@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.screens.email
 
-import com.firebase.ui.auth.rememberAuthFlowScope
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -161,12 +160,6 @@ fun EmailAuthScreen(
     mode: EmailAuthMode? = null,
     onNavigateToMode: ((mode: EmailAuthMode, email: String) -> Unit)? = null,
     onEmailTyped: (String) -> Unit = {},
-    /**
-     * Where a consumed one-off notification leaves the flow. Null retracts to [AuthState.Idle];
-     * reauthentication passes its own, returning the request to provider selection. Explicit
-     * because this screen no longer decides which flow it is in by reading a relabelled state.
-     */
-    onNotificationConsumed: (() -> Unit)? = null,
     content: @Composable ((EmailAuthContentState) -> Unit)? = null,
 ) {
     require((mode == null) == (onNavigateToMode == null)) {
@@ -208,9 +201,7 @@ fun EmailAuthScreen(
         )
     }
 
-    val authFlowScope = rememberAuthFlowScope(authUI, configuration)
-    // Under a reauthentication request this is that request's phase, not the host's state.
-    val authState by authFlowScope.state
+    val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
     val isLoading = authState is AuthState.Loading ||
         authState is AuthState.Reauthentication.Authenticating
     val authCredentialForLinking = remember { credentialForLinking }
@@ -272,22 +263,32 @@ fun EmailAuthScreen(
                     )
                 }
                 // Consumed so the error doesn't leak into a freshly created screen.
-                authFlowScope.emit(AuthState.Idle)
+                authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
-                authFlowScope.emit(AuthState.Idle)
+                authUI.updateAuthState(AuthState.Idle)
             }
 
             is AuthState.PasswordResetLinkSent -> {
                 resetLinkSentLocal = true
-                onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
+                authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.Reauthentication.PasswordResetLinkSent -> {
+                resetLinkSentLocal = true
+                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
             }
 
             is AuthState.EmailSignInLinkSent -> {
                 emailSignInLinkSentLocal = true
-                onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
+                authUI.updateAuthState(AuthState.Idle)
+            }
+
+            is AuthState.Reauthentication.EmailSignInLinkSent -> {
+                emailSignInLinkSentLocal = true
+                authUI.updateReauthentication(state.requestId) { it.returnedToProviderSelection() }
             }
 
             else -> Unit
@@ -330,8 +331,9 @@ fun EmailAuthScreen(
                         email == emailTextValue.value && password == passwordTextValue.value
                     } ?: false
 
-                    authFlowScope.signInWithEmailAndPassword(
+                    authUI.signInWithEmailAndPassword(
                         context = context,
+                        config = configuration,
                         email = emailTextValue.value,
                         password = passwordTextValue.value,
                         credentialForLinking = authCredentialForLinking,
@@ -347,15 +349,17 @@ fun EmailAuthScreen(
             coroutineScope.launch {
                 try {
                     if (emailLinkFromDifferentDevice != null) {
-                        authFlowScope.signInWithEmailLink(
+                        authUI.signInWithEmailLink(
                             context = context,
+                            config = configuration,
                             provider = provider,
                             email = emailTextValue.value,
                             emailLink = emailLinkFromDifferentDevice,
                         )
                     } else {
-                        authFlowScope.sendSignInLinkToEmail(
+                        authUI.sendSignInLinkToEmail(
                             context = context,
+                            config = configuration,
                             provider = provider,
                             email = emailTextValue.value,
                             credentialForLinking = authCredentialForLinking,
@@ -369,8 +373,9 @@ fun EmailAuthScreen(
         onSignUpClick = {
             coroutineScope.launch {
                 try {
-                    authFlowScope.createOrLinkUserWithEmailAndPassword(
+                    authUI.createOrLinkUserWithEmailAndPassword(
                         context = context,
+                        config = configuration,
                         provider = provider,
                         name = displayNameValue.value,
                         email = emailTextValue.value,
@@ -385,8 +390,9 @@ fun EmailAuthScreen(
             resetLinkSentLocal = false
             coroutineScope.launch {
                 try {
-                    authFlowScope.sendPasswordResetEmail(
+                    authUI.sendPasswordResetEmail(
                         email = emailTextValue.value,
+                        config = configuration,
                         actionCodeSettings = configuration.passwordResetActionCodeSettings,
                     )
                 } catch (e: Exception) {

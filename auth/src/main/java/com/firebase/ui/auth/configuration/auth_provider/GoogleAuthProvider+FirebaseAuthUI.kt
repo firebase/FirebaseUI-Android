@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
-import com.google.firebase.auth.FirebaseAuth
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -9,9 +8,9 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
-import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -55,8 +54,9 @@ import kotlinx.coroutines.launch
  * @see AuthProvider.Google
  */
 @Composable
-internal fun AuthFlowScope.rememberGoogleSignInHandler(
+internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
     context: Context,
+    config: AuthUIConfiguration,
     provider: AuthProvider.Google,
     onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
@@ -64,13 +64,13 @@ internal fun AuthFlowScope.rememberGoogleSignInHandler(
     return {
         coroutineScope.launch {
             try {
-                signInWithGoogle(context, provider)
+                signInWithGoogle(context, config, provider)
             } catch (e: AuthException) {
-                emit(AuthState.Error(e))
+                updateAuthState(AuthState.Error(e))
                 if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
             } catch (e: Exception) {
                 val authException = AuthException.from(e, context)
-                emit(AuthState.Error(authException))
+                updateAuthState(AuthState.Error(authException))
                 if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
@@ -114,15 +114,16 @@ internal fun AuthFlowScope.rememberGoogleSignInHandler(
  * @see AuthProvider.Google
  * @see signInAndLinkWithCredential
  */
-internal suspend fun AuthFlowScope.signInWithGoogle(
+internal suspend fun FirebaseAuthUI.signInWithGoogle(
     context: Context,
+    config: AuthUIConfiguration,
     provider: AuthProvider.Google,
     authorizationProvider: AuthProvider.Google.AuthorizationProvider = AuthProvider.Google.DefaultAuthorizationProvider(),
     credentialManagerProvider: AuthProvider.Google.CredentialManagerProvider = AuthProvider.Google.DefaultCredentialManagerProvider(),
 ) {
     var idTokenFromResult: String? = null
     try {
-        emit(AuthState.Loading(config.stringProvider.loadingSigningInWithGoogle))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithGoogle))
 
         // Request OAuth scopes if specified (before sign-in)
         if (provider.scopes.isNotEmpty()) {
@@ -132,7 +133,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
             } catch (e: Exception) {
                 // Continue with sign-in even if scope authorization fails
                 val authException = AuthException.from(e, context)
-                emit(AuthState.Error(authException))
+                updateAuthState(AuthState.Error(authException))
             }
         }
 
@@ -142,7 +143,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
         val result = if (provider.filterByAuthorizedAccounts) {
             // Default behavior: Try authorized accounts first, fallback to all accounts
             try {
-                (this.credentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
+                (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
                     context = context,
                     credentialManager = CredentialManager.create(context),
                     serverClientId = provider.serverClientId!!,
@@ -153,7 +154,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
                 // No authorized accounts found, try again with all accounts for sign-up flow
                 Log.d("GoogleAuthProvider", "No authorized accounts found, showing all Google accounts for sign-up")
                 try {
-                    (this.credentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
+                    (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
                         context = context,
                         credentialManager = CredentialManager.create(context),
                         serverClientId = provider.serverClientId!!,
@@ -185,7 +186,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
             }
         } else {
             // Developer explicitly wants to show all accounts (no fallback needed)
-            (this.credentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
+            (testCredentialManagerProvider ?: credentialManagerProvider).getGoogleCredential(
                 context = context,
                 credentialManager = CredentialManager.create(context),
                 serverClientId = provider.serverClientId!!,
@@ -196,6 +197,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
         idTokenFromResult = result.idToken
 
         signInAndLinkWithCredential(
+            config = config,
             credential = result.credential,
             provider = provider,
             displayName = result.displayName,
@@ -229,30 +231,30 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
         )
 
         // Re-throw to let UI handle the account linking flow
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: GetCredentialCancellationException) {
         // User dismissed the Credential Manager sheet - this is a normal user action,
         // not an error, so it goes to AuthState.Cancelled instead of AuthState.Error.
         // Swallow (don't rethrow) so rememberGoogleSignInHandler's catch block doesn't
         // overwrite this state with AuthState.Error.
-        emit(AuthState.Cancelled)
+        updateAuthState(AuthState.Cancelled)
 
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with google was cancelled",
             cause = e
         )
-        emit(AuthState.Error(cancelledException))
+        updateAuthState(AuthState.Error(cancelledException))
         throw cancelledException
 
     } catch (e: AuthException) {
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
 
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }
@@ -274,14 +276,13 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
  *
  * @param context Android context for Credential Manager
  */
-internal suspend fun signOutFromGoogle(
-    auth: FirebaseAuth,
+internal suspend fun FirebaseAuthUI.signOutFromGoogle(
     context: Context,
     credentialManagerProvider: AuthProvider.Google.CredentialManagerProvider = AuthProvider.Google.DefaultCredentialManagerProvider(),
 ) {
     try {
-        if (Provider.fromId(auth.currentUser?.providerId) != Provider.GOOGLE) return
-        credentialManagerProvider.clearCredentialState(
+        if (Provider.fromId(getCurrentUser()?.providerId) != Provider.GOOGLE) return
+        (testCredentialManagerProvider ?: credentialManagerProvider).clearCredentialState(
             context = context,
             credentialManager = CredentialManager.create(context)
         )

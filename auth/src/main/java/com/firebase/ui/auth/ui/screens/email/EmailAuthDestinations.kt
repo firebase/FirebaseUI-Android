@@ -74,8 +74,6 @@ internal fun EntryProviderScope<NavKey>.emailAuthDestinations(
     onEmailTyped: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit = {},
     onError: (AuthException) -> Unit = {},
-    /** Passed through to [EmailAuthScreen]: where a consumed notification leaves the flow. */
-    onNotificationConsumed: (() -> Unit)? = null,
 ) {
     val body: @Composable (AuthRoute.Email.Step) -> Unit = { step ->
         EmailAuthStep(
@@ -93,7 +91,6 @@ internal fun EntryProviderScope<NavKey>.emailAuthDestinations(
             credentialForLinking = credentialForLinking,
             emailLinkFromDifferentDevice = emailLinkFromDifferentDevice,
             onEmailTyped = onEmailTyped,
-            onNotificationConsumed = onNotificationConsumed,
             onSuccess = onSuccess,
             onError = onError,
         )
@@ -134,8 +131,6 @@ internal fun EmailAuthStep(
     onEmailTyped: (String) -> Unit = {},
     onSuccess: (AuthResult) -> Unit = {},
     onError: (AuthException) -> Unit = {},
-    /** Passed through to [EmailAuthScreen]: where a consumed notification leaves the flow. */
-    onNotificationConsumed: (() -> Unit)? = null,
 ) {
     if (!configuration.isEmailStepOffered(step)) {
         LaunchedEffect(entryKey) {
@@ -158,7 +153,6 @@ internal fun EmailAuthStep(
                 navigateToStep(AuthRoute.Email.stepFor(targetMode, email))
             },
             onEmailTyped = onEmailTyped,
-            onNotificationConsumed = onNotificationConsumed,
             onSuccess = onSuccess,
             onError = onError,
             onCancel = {
@@ -241,7 +235,7 @@ internal fun AuthUIConfiguration.isEmailSignUpOffered(): Boolean {
 
 /**
  * Whether the email flow may offer email-link sign-in. False while reauthenticating: a link
- * reopens the app with no request outstanding, so completing one there reports an interruption instead of
+ * reopens the app with nothing armed, so completing one there reports an interruption instead of
  * finishing the pending operation.
  */
 internal fun AuthUIConfiguration.isEmailLinkSignInOffered(): Boolean {

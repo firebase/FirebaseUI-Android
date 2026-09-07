@@ -14,10 +14,6 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
-import androidx.compose.runtime.derivedStateOf
-import com.firebase.ui.auth.AuthFlowScope
-import com.firebase.ui.auth.ui.screens.reauth.ReauthFlowState
-import com.firebase.ui.auth.ui.screens.reauth.rememberReauthFlowState
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.EnterTransition
@@ -115,14 +111,7 @@ class PhoneAuthHostDestinationsTest {
     /** The reauthentication harness's own stack, for the assertions that are about keys. */
     private var reauthBackStack: NavBackStack<NavKey>? = null
 
-    /**
-     * The sheet's phase holder. A reauthentication phase is the request's own state now, not
-     * something published to the public flow, so a test that wants to stand at a particular step
-     * puts it here — which is where the sink's fold would have put it.
-     */
-    private var reauthHolder: ReauthFlowState? = null
-
-    /** The request the reauthentication harness raised, which its own emissions have to carry. */
+    /** The request the reauthentication harness armed, which its own emissions have to carry. */
     private var reauthRequest: AuthState.Reauthentication.Request? = null
 
     private var reauthDismissals = 0
@@ -437,6 +426,7 @@ class PhoneAuthHostDestinationsTest {
                 requestId = REQUEST_ID,
                 user = user,
                 reason = null,
+                retryOperation = null,
             ).also { reauthRequest = it }
         }
         val backStack = rememberNavBackStack(
@@ -461,11 +451,6 @@ class PhoneAuthHostDestinationsTest {
         val stringProvider = remember { DefaultAuthUIStringProvider(applicationContext) }
         // Above the display, like the host: a step switch disposes whatever the step it left held.
         val phoneFlowState = rememberPhoneAuthFlowState(config)
-        val reauthFlowState = rememberReauthFlowState()
-        SideEffect {
-            reauthHolder = reauthFlowState
-            reauthFlowState.accept(AuthState.Reauthentication.Required(request))
-        }
         CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
             NavDisplay(
                 backStack = backStack,
@@ -490,7 +475,6 @@ class PhoneAuthHostDestinationsTest {
                         configuration = config,
                         stringProvider = stringProvider,
                         surface = surface,
-                        reauthFlowState = reauthFlowState,
                         phoneFlowState = phoneFlowState,
                         emailContent = null,
                         phoneContent = null,
@@ -514,7 +498,7 @@ class PhoneAuthHostDestinationsTest {
     /** The reauthentication phase Firebase's `onCodeSent` callback ends up published as. */
     private fun sendReauthCode(verificationId: String = "reauth-verification-id") {
         composeTestRule.runOnIdle {
-            requireNotNull(reauthHolder).moveTo(
+            authUI.updateAuthState(
                 AuthState.Reauthentication.PhoneNumberVerificationRequired(
                     request = requireNotNull(reauthRequest),
                     verificationId = verificationId,

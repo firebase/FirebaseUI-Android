@@ -14,8 +14,6 @@
 
 package com.firebase.ui.auth.ui.screens.reauth
 
-import androidx.compose.runtime.derivedStateOf
-import com.firebase.ui.auth.AuthFlowScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -70,8 +68,8 @@ import org.robolectric.annotation.Config
 /**
  * The reauthentication surface exists on exactly one condition: a resolved [ReauthSurface].
  *
- * A saved back stack can carry an [AuthRoute.Reauth] entry into a process with no outstanding request —
- * the host reports the interruption and pops it, but the entry composes first. This pins
+ * A saved back stack can carry an [AuthRoute.Reauth] entry into a process with no armed request —
+ * the state machine publishes `Interrupted` and pops it, but the entry composes first. This pins
  * what it composes: nothing. Driving [ReauthSceneStrategy] and [reauthDestinations] directly is
  * what makes the unarmed entry reachable at all; `FirebaseAuthScreen` never leaves one standing
  * long enough for a test to observe it.
@@ -121,15 +119,15 @@ class ReauthSurfaceGateTest {
 
     /** So the absence asserted below is a real absence, not a matcher that never matches. */
     @Test
-    fun `an outstanding request composes the sheet`() {
-        setContent(presented = true)
+    fun `an armed request composes the sheet`() {
+        setContent(armed = true)
 
         composeTestRule.onAllNodes(SHEET, useUnmergedTree = true).assertCountEquals(1)
     }
 
     @Test
-    fun `a reauth entry with no outstanding request composes no sheet and no scrim`() {
-        setContent(presented = false)
+    fun `a reauth entry with no armed request composes no sheet and no scrim`() {
+        setContent(armed = false)
 
         // The sheet owns the scrim and both live in the sheet's own window, so no sheet node means
         // neither is on screen; the flow underneath is what the user is left looking at.
@@ -138,16 +136,16 @@ class ReauthSurfaceGateTest {
     }
 
     /**
-     * The entry renders the outstanding request, so a key naming a different one must render nothing:
-     * every write it would offer goes to the id the key names, which is no longer the outstanding one.
+     * The entry renders the armed request, so a key naming a different one must render nothing:
+     * every write it would offer goes to the id the key names, which is no longer the armed one.
      */
     @Test
     fun `an entry keyed to a request the surface no longer holds is handed nothing`() {
         val stale = request("stale")
-        val raised = request("raised")
+        val armed = request("armed")
 
         composeTestRule.setContent {
-            Harness(reauthState = raised, entryRequestId = stale.requestId, useSlot = true)
+            Harness(reauthState = armed, entryRequestId = stale.requestId, useSlot = true)
         }
         composeTestRule.waitForIdle()
 
@@ -166,7 +164,7 @@ class ReauthSurfaceGateTest {
         val state = mutableStateOf<AuthState.Reauthentication?>(first)
 
         composeTestRule.setContent {
-            Harness(reauthState = state.value, presentedRequest = state, useSlot = true)
+            Harness(reauthState = state.value, armedRequest = state, useSlot = true)
         }
         composeTestRule.waitForIdle()
         composeTestRule.runOnIdle { state.value = second }
@@ -221,7 +219,7 @@ class ReauthSurfaceGateTest {
         ).assertExists()
     }
 
-    /** A presented request whose entry sits at [step], with a custom `reauthContent` installed. */
+    /** An armed request whose entry sits at [step], with a custom `reauthContent` installed. */
     private fun setContent(step: AuthRoute.Destination, user: FirebaseUser = passwordUser()) {
         composeTestRule.setContent {
             Harness(
@@ -233,8 +231,8 @@ class ReauthSurfaceGateTest {
         composeTestRule.waitForIdle()
     }
 
-    private fun setContent(presented: Boolean) {
-        val state = if (presented) AuthState.Reauthentication.Required(passwordUser()) else null
+    private fun setContent(armed: Boolean) {
+        val state = if (armed) AuthState.Reauthentication.Required(passwordUser()) else null
         composeTestRule.setContent { Harness(state) }
         composeTestRule.waitForIdle()
     }
@@ -245,15 +243,15 @@ class ReauthSurfaceGateTest {
             .also { labels[it.requestId] = label }
 
     /**
-     * `FirebaseAuthScreen`'s reauthentication wiring, with the outstanding state under test control.
+     * `FirebaseAuthScreen`'s reauthentication wiring, with the armed state under test control.
      *
-     * @param entryRequestId The id the reauthentication entry is keyed to. Defaults to the
-     * outstanding request's, which is what the host's steady state looks like.
-     * @param presentedRequest When given, the stack is rebuilt from it in a `LaunchedEffect`, the way
+     * @param entryRequestId The id the reauthentication entry is keyed to. Defaults to the armed
+     * request's, which is what the host's steady state looks like.
+     * @param armedRequest When given, the stack is re-armed from it in a `LaunchedEffect`, the way
      * the host does — which is what puts a composition between a new request and its entry.
      * @param useSlot Installs a `reauthContent` slot that records what the entry hands it. The
-     * slot is the only path to the entry's phase writes, so nothing recorded means no write was
-     * offered.
+     * slot is the only path to the entry's `updateReauthentication` writes, so nothing recorded
+     * means no write was offered.
      * @param step The step the reauthentication entry sits at. Defaults to the method picker, the
      * step every request starts on.
      */
@@ -261,7 +259,7 @@ class ReauthSurfaceGateTest {
     private fun Harness(
         reauthState: AuthState.Reauthentication?,
         entryRequestId: String = reauthState?.requestId ?: "unarmed-request",
-        presentedRequest: MutableState<AuthState.Reauthentication?>? = null,
+        armedRequest: MutableState<AuthState.Reauthentication?>? = null,
         useSlot: Boolean = false,
         step: AuthRoute.Destination = AuthRoute.MethodPicker,
     ) {
@@ -297,11 +295,11 @@ class ReauthSurfaceGateTest {
                 step = step,
             ),
         )
-        if (presentedRequest != null) {
-            // FirebaseAuthScreen's `Reauthentication.Required` branch, reduced to the re-entry.
-            val armedId = presentedRequest.value?.requestId
+        if (armedRequest != null) {
+            // FirebaseAuthScreen's `Reauthentication.Required` branch, reduced to the re-arming.
+            val armedId = armedRequest.value?.requestId
             LaunchedEffect(armedId) {
-                if (armedId != null && backStack.presentedReauth()?.requestId != armedId) {
+                if (armedId != null && backStack.armedReauth()?.requestId != armedId) {
                     backStack.clearReauth()
                     backStack.add(
                         AuthRoute.Reauth(
@@ -315,7 +313,7 @@ class ReauthSurfaceGateTest {
         }
         val slot: (@Composable (ReauthContentState) -> Unit)? = if (useSlot) {
             { state ->
-                val keyed = labels[backStack.presentedReauth()?.requestId] ?: "unlabelled"
+                val keyed = labels[backStack.armedReauth()?.requestId] ?: "unlabelled"
                 val handed = state.reason
                 SideEffect { handedOut += "$keyed/$handed" }
             }
@@ -331,7 +329,6 @@ class ReauthSurfaceGateTest {
             )
         }
         val phoneFlowState = rememberPhoneAuthFlowState(configuration)
-        val reauthFlowState = rememberReauthFlowState()
         CompositionLocalProvider(
             LocalAuthUIStringProvider provides configuration.stringProvider,
         ) {
@@ -351,7 +348,6 @@ class ReauthSurfaceGateTest {
                         configuration = configuration,
                         stringProvider = DefaultAuthUIStringProvider(context),
                         surface = surface,
-                        reauthFlowState = reauthFlowState,
                         phoneFlowState = phoneFlowState,
                         emailContent = null,
                         phoneContent = null,

@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
-import com.google.firebase.auth.FirebaseAuth
 import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,9 +29,9 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
@@ -57,8 +56,9 @@ import kotlinx.coroutines.launch
  * @see signInWithFacebook
  */
 @Composable
-internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
+internal fun FirebaseAuthUI.rememberSignInWithFacebookLauncher(
     context: Context,
+    config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
     onSignInFailure: (AuthException) -> Unit = {},
@@ -67,8 +67,7 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
     val callbackManager = remember { CallbackManager.Factory.create() }
     val loginManager = LoginManager.getInstance()
     val currentContext by rememberUpdatedState(context)
-    // Registered once under DisposableEffect(Unit), so it must not close over a stale scope.
-    val currentScope by rememberUpdatedState(this)
+    val currentConfig by rememberUpdatedState(config)
     val currentProvider by rememberUpdatedState(provider)
     val currentOnSignInFailure by rememberUpdatedState(onSignInFailure)
 
@@ -87,31 +86,32 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
                 override fun onSuccess(result: LoginResult) {
                     coroutineScope.launch {
                         try {
-                            currentScope.signInWithFacebook(
+                            signInWithFacebook(
                                 context = currentContext,
+                                config = currentConfig,
                                 provider = currentProvider,
                                 accessToken = result.accessToken,
                             )
                         } catch (e: AuthException) {
                             // Already an AuthException, don't re-wrap it
-                            currentScope.emit(AuthState.Error(e))
+                            updateAuthState(AuthState.Error(e))
                             if (e !is AuthException.AuthCancelledException) currentOnSignInFailure(e)
                         } catch (e: Exception) {
                             val authException = AuthException.from(e, currentContext)
-                            currentScope.emit(AuthState.Error(authException))
+                            updateAuthState(AuthState.Error(authException))
                             if (authException !is AuthException.AuthCancelledException) currentOnSignInFailure(authException)
                         }
                     }
                 }
 
                 override fun onCancel() {
-                    currentScope.emit(AuthState.Idle)
+                    updateAuthState(AuthState.Idle)
                 }
 
                 override fun onError(error: FacebookException) {
                     Log.e("FacebookAuthProvider", "Error during Facebook sign in", error)
                     val authException = AuthException.from(error, currentContext)
-                    currentScope.emit(
+                    updateAuthState(
                         AuthState.Error(
                             authException
                         )
@@ -124,11 +124,11 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
     }
 
     return {
-        emit(
+        updateAuthState(
             AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         try {
-            (this.loginManagerProvider ?: loginManagerProvider).logOut()
+            (testLoginManagerProvider ?: loginManagerProvider).logOut()
         } catch (e: Exception) {
             Log.w("FacebookAuthProvider", "Failed to clear Facebook session before sign in", e)
         }
@@ -157,19 +157,21 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
  * @see rememberSignInWithFacebookLauncher
  * @see signInAndLinkWithCredential
  */
-internal suspend fun AuthFlowScope.signInWithFacebook(
+internal suspend fun FirebaseAuthUI.signInWithFacebook(
     context: Context,
+    config: AuthUIConfiguration,
     provider: AuthProvider.Facebook,
     accessToken: AccessToken,
     credentialProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ) {
     try {
-        emit(
+        updateAuthState(
             AuthState.Loading(config.stringProvider.loadingSigningInWithFacebook)
         )
         val profileData = provider.fetchFacebookProfile(accessToken)
         val credential = credentialProvider.getCredential(accessToken.token)
         signInAndLinkWithCredential(
+            config = config,
             credential = credential,
             provider = provider,
             displayName = profileData?.displayName,
@@ -203,25 +205,25 @@ internal suspend fun AuthFlowScope.signInWithFacebook(
         )
 
         // Re-throw to let UI handle the account linking flow
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: FacebookException) {
         val authException = AuthException.from(e, context)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with facebook was cancelled",
             cause = e
         )
-        emit(AuthState.Error(cancelledException))
+        updateAuthState(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }
@@ -236,13 +238,12 @@ internal suspend fun AuthFlowScope.signInWithFacebook(
  * This is typically called as part of the overall sign-out flow when a user signs out
  * from Firebase Authentication.
  */
-internal fun signOutFromFacebook(
-    auth: FirebaseAuth,
+internal fun FirebaseAuthUI.signOutFromFacebook(
     loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ) {
     try {
-        if (Provider.fromId(auth.currentUser?.providerId) != Provider.FACEBOOK) return
-        loginManagerProvider.logOut()
+        if (Provider.fromId(getCurrentUser()?.providerId) != Provider.FACEBOOK) return
+        (testLoginManagerProvider ?: loginManagerProvider).logOut()
     } catch (e: Exception) {
         Log.e("FacebookAuthProvider", "Error during Facebook sign out", e)
     }
