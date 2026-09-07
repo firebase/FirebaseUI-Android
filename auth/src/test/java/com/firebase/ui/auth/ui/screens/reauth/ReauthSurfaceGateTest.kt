@@ -71,7 +71,7 @@ import org.robolectric.annotation.Config
  * The reauthentication surface exists on exactly one condition: a resolved [ReauthSurface].
  *
  * A saved back stack can carry an [AuthRoute.Reauth] entry into a process with no outstanding request —
- * the state machine publishes `Interrupted` and pops it, but the entry composes first. This pins
+ * the host reports the interruption and pops it, but the entry composes first. This pins
  * what it composes: nothing. Driving [ReauthSceneStrategy] and [reauthDestinations] directly is
  * what makes the unarmed entry reachable at all; `FirebaseAuthScreen` never leaves one standing
  * long enough for a test to observe it.
@@ -252,8 +252,8 @@ class ReauthSurfaceGateTest {
      * @param presentedRequest When given, the stack is rebuilt from it in a `LaunchedEffect`, the way
      * the host does — which is what puts a composition between a new request and its entry.
      * @param useSlot Installs a `reauthContent` slot that records what the entry hands it. The
-     * slot is the only path to the entry's `updateReauthentication` writes, so nothing recorded
-     * means no write was offered.
+     * slot is the only path to the entry's phase writes, so nothing recorded means no write was
+     * offered.
      * @param step The step the reauthentication entry sits at. Defaults to the method picker, the
      * step every request starts on.
      */
