@@ -3,6 +3,7 @@ package com.firebase.ui.auth.ui.screens
 import android.content.Context
 import android.os.Looper
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
@@ -24,7 +25,6 @@ import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -140,8 +140,20 @@ class MfaDisabledTest {
             .assertIsNotEnabled()
     }
 
+    /**
+     * Was `@Ignore`d as "flaky in CI due to timing issues". Two causes, neither of them the
+     * product's:
+     *
+     * `capturedUiContext` was read off the back of the auth state, but `Success` is observable a
+     * composition before `authenticatedContent` hands the context over — so the assertion could
+     * run against a context that did not exist yet.
+     *
+     * More importantly, the error was asserted by *sampling* the current state.
+     * `FirebaseAuthScreen` gives an error to the dialog controller and retracts it to
+     * [AuthState.Idle] immediately, so `Error` is the current state for about a frame: waiting
+     * longer made the test *less* likely to see it. The emissions are recorded instead.
+     */
     @Test
-    @Ignore("Flaky in CI due to timing issues")
     fun `onManageMfa throws AuthCancelledException when MFA is disabled`() {
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -159,6 +171,10 @@ class MfaDisabledTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var capturedUiContext: AuthSuccessUiContext? = null
+        // Every emission, not just the latest one. FirebaseAuthScreen hands an error to the dialog
+        // controller and retracts it to Idle in the same breath, so sampling the current state can
+        // step straight over the error this test is about.
+        val emitted = mutableListOf<AuthState>()
 
         composeTestRule.setContent {
             FirebaseAuthScreen(
@@ -173,6 +189,7 @@ class MfaDisabledTest {
                     Text("Custom authenticated content")
                 }
             )
+            LaunchedEffect(Unit) { authUI.authStateFlow().collect { emitted += it } }
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -188,10 +205,11 @@ class MfaDisabledTest {
         composeTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Wait for auth state to transition to Success
+        // Wait for the authenticated content to have handed over its context, not merely for the
+        // auth state to say Success — the first happens a composition after the second.
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            currentAuthState is AuthState.Success
+            currentAuthState is AuthState.Success && capturedUiContext != null
         }
 
         // Now call onManageMfa directly (simulating custom content calling it)
@@ -202,14 +220,18 @@ class MfaDisabledTest {
         composeTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Verify that auth state is now Error with AuthCancelledException
+        // Verify an Error carrying AuthCancelledException was emitted, whether or not it is still
+        // the current state by the time this runs.
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            currentAuthState is AuthState.Error &&
-                    (currentAuthState as AuthState.Error).exception is AuthException.AuthCancelledException
+            emitted.any {
+                it is AuthState.Error && it.exception is AuthException.AuthCancelledException
+            }
         }
 
-        val errorState = currentAuthState as AuthState.Error
+        val errorState = emitted.last {
+            it is AuthState.Error && it.exception is AuthException.AuthCancelledException
+        } as AuthState.Error
         assertThat(errorState.exception).isInstanceOf(AuthException.AuthCancelledException::class.java)
         assertThat(errorState.exception.message).contains("Multi-factor authentication is disabled")
     }

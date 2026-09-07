@@ -28,7 +28,20 @@ import com.google.firebase.auth.MultiFactorInfo
  * Use a `when` expression on [step] to determine which UI to render:
  *
  * ```kotlin
- * MfaEnrollmentScreen(user, config, onComplete, onSkip) { state ->
+ * MfaEnrollmentScreen(
+ *     user = user,
+ *     auth = auth,
+ *     configuration = config,
+ *     onComplete = onComplete,
+ *     onSkip = onSkip,
+ *     // The host owns the step: every one of them is its own navigation destination. Both writes
+ *     // are guarded — a step already on top must not be pushed twice, and the first step must not
+ *     // be popped, because NavDisplay throws on an empty back stack from recomposition.
+ *     step = step,
+ *     onNavigateToStep = { if (backStack.lastOrNull() != it) backStack.add(it) },
+ *     onNavigateBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+ *     flowState = flowState,
+ * ) { state ->
  *     when (state.step) {
  *         MfaEnrollmentStep.SelectFactor -> {
  *             // Render factor selection UI using state.availableFactors

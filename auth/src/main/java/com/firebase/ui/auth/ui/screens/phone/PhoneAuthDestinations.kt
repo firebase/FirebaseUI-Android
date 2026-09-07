@@ -31,6 +31,7 @@ import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.data.CountryData
+import com.firebase.ui.auth.data.CountryDataSaver
 import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.authRouteMetadata
 import com.firebase.ui.auth.ui.screens.phoneStep
@@ -51,9 +52,10 @@ import kotlinx.coroutines.Job
  * through [phoneAuthDestinations], this is what a step reads and writes instead of its own local
  * state.
  *
- * [phoneNumber], [verificationCode], [verificationId], [forceResendingToken] and
- * [resendTimerSeconds] are backed by [rememberSaveable] and survive Activity recreation.
- * [selectedCountry] is not, matching what the un-hosted screen always did.
+ * [phoneNumber], [verificationCode], [selectedCountry], [verificationId], [forceResendingToken]
+ * and [resendTimerSeconds] are backed by [rememberSaveable] and survive Activity recreation.
+ * [selectedCountry] has to: the number it prefixes is restored, so a country re-resolved from the
+ * configuration instead would submit the typed number under a dial code the user never chose.
  *
  * @since 10.0.0
  */
@@ -95,7 +97,7 @@ fun rememberPhoneAuthFlowState(configuration: AuthUIConfiguration): PhoneAuthFlo
     val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().firstOrNull()
     val phoneNumber = rememberSaveable { mutableStateOf(provider?.defaultNumber ?: "") }
     val verificationCode = rememberSaveable { mutableStateOf("") }
-    val selectedCountry = remember {
+    val selectedCountry = rememberSaveable(stateSaver = CountryDataSaver) {
         mutableStateOf(
             provider?.defaultCountryCode?.let { code -> CountryUtils.findByCountryCode(code) }
                 ?: CountryUtils.getDefaultCountry()
