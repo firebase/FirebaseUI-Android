@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.screens.phone
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
@@ -84,6 +85,33 @@ class PhoneAuthFlowState internal constructor(
     internal val navigatedVerificationId: MutableState<String?>,
     internal val consumedAutoCredential: MutableState<PhoneAuthCredential?>,
 )
+
+/**
+ * Cancels the verification in flight and clears everything code entry was working with, so the
+ * flow is back to what number entry started from.
+ *
+ * Shared by every way of abandoning an attempt — the "change number" control and a system back
+ * press off code entry both land on number entry, so both owe the same teardown. Leaves
+ * [PhoneAuthFlowState.pendingVerificationPhoneNumber] and
+ * [PhoneAuthFlowState.verificationStartTime] alone: the cooldown is about the number Firebase was
+ * last asked about, which abandoning the attempt does not change.
+ *
+ * Retracts nothing. The auth state a cancelled attempt leaves behind is the caller's, because who
+ * owns it differs: an ordinary flow retracts to [com.firebase.ui.auth.AuthState.Idle] via its
+ * [com.firebase.ui.auth.AuthFlowScope], while a reauthentication request moves its own phase
+ * instead.
+ */
+internal fun PhoneAuthFlowState.abandonVerification(reason: String) {
+    verificationJob.value?.let { job ->
+        Log.d("PhoneAuthScreen", "Cancelling verification attempt ($reason)")
+        job.cancel()
+    }
+    verificationJob.value = null
+    verificationCode.value = ""
+    verificationId.value = null
+    forceResendingToken.value = null
+    resendTimerSeconds.intValue = 0
+}
 
 /**
  * Creates and remembers the [PhoneAuthFlowState] a host installs [phoneAuthDestinations] with.

@@ -132,6 +132,46 @@ class EmailAuthContentState(
  * destination and passes [mode] and [onNavigateToMode]. Callers that do not want to own that are
  * served by [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen], which owns it for them.
  *
+ * Hosting it yourself means a real back stack, not a variable holding the current mode. The screen
+ * offers no in-form control for stepping back to sign-in, so system back is the way back, and only
+ * a stack gives it something to pop — which also means the flow has to **start** at
+ * [EmailAuthMode.SignIn]. Every other mode is reached from it, and back is inert at the bottom of a
+ * stack, so a flow opened straight onto sign-up, password recovery or email-link sign-in leaves the
+ * user with no way to reach the password form. Bring your own key, built from the public
+ * [EmailAuthMode] and the address the switch hands over:
+ *
+ * ```kotlin
+ * @Serializable
+ * data class EmailModeKey(val mode: EmailAuthMode, val email: String = "") : NavKey
+ *
+ * val backStack = rememberNavBackStack(EmailModeKey(EmailAuthMode.SignIn))
+ * NavDisplay(
+ *     backStack = backStack,
+ *     onBack = { backStack.removeLastOrNull() },
+ *     entryProvider = entryProvider {
+ *         entry<EmailModeKey> { key ->
+ *             EmailAuthScreen(
+ *                 context = context,
+ *                 configuration = configuration,
+ *                 authUI = authUI,
+ *                 prefillEmail = key.email.ifEmpty { null },
+ *                 mode = key.mode,
+ *                 // Replace a mode already on the stack rather than stacking a second copy;
+ *                 // add before trimming, so no single write empties it.
+ *                 onNavigateToMode = { mode, email ->
+ *                     val existing = backStack.indexOfFirst { it is EmailModeKey && it.mode == mode }
+ *                     backStack.add(EmailModeKey(mode, email))
+ *                     if (existing >= 0) { while (backStack.size > existing + 1) backStack.removeAt(existing) }
+ *                 },
+ *                 onSuccess = { /* … */ },
+ *                 onError = { /* … */ },
+ *                 onCancel = { /* … */ },
+ *             )
+ *         }
+ *     },
+ * )
+ * ```
+ *
  * This composable never changes mode on its own in response to an error. Signing in with an
  * address that has no account leaves the user on the sign-in form rather than moving them to
  * sign-up; acting on an error is the host's job alone.
@@ -404,7 +444,6 @@ private fun DefaultEmailAuthContent(
                 emailSignInLinkSent = state.emailSignInLinkSent,
                 onEmailChange = state.onEmailChange,
                 onSignInWithEmailLink = state.onSignInEmailLinkClick,
-                onGoToSignIn = state.onGoToSignIn,
                 onGoToResetPassword = state.onGoToResetPassword,
                 onNavigateBack = onCancel
             )
@@ -423,7 +462,6 @@ private fun DefaultEmailAuthContent(
                 onPasswordChange = state.onPasswordChange,
                 onConfirmPasswordChange = state.onConfirmPasswordChange,
                 onSignUpClick = state.onSignUpClick,
-                onGoToSignIn = state.onGoToSignIn,
                 onNavigateBack = onCancel,
                 isEmailLocked = state.isEmailLocked,
             )

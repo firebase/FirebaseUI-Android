@@ -138,7 +138,9 @@ class PhoneAuthScreenTest {
     @Test
     fun `sign-in and verify SMS emits Success auth state`() {
         val country = CountryUtils.findByCountryCode("DE")!!
-        val phone = "151${System.currentTimeMillis() % 100000000}"
+        // Zero-padded: the modulo alone yields fewer than 8 digits for ~2.8h out of every 27.8h,
+        // and a short 151 number is not a valid German mobile, so the send button stays disabled.
+        val phone = "151%08d".format(System.currentTimeMillis() % 100000000)
 
         val configuration = authUIConfiguration {
             context = applicationContext
