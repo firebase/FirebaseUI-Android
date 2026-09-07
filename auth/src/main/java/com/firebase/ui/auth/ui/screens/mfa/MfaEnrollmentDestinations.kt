@@ -114,11 +114,6 @@ class MfaEnrollmentFlowState internal constructor(
 }
 
 /**
- * Creates and remembers the [MfaEnrollmentFlowState] a host installs [mfaEnrollmentDestinations]
- * with. Called once, above the `NavDisplay`, so the same instance is handed to every step — see
- * [MfaEnrollmentFlowState] for which of its fields actually survive Activity recreation.
- */
-/**
  * The country the SMS step opens on: the device's own when [allowedCountries] permits it, else the
  * first permitted one — so a restricted configuration cannot open pre-set to a country its own
  * selector will not offer.
@@ -132,6 +127,11 @@ internal fun initialEnrollmentCountry(allowedCountries: List<String>?): CountryD
         ?: deviceCountry
 }
 
+/**
+ * Creates and remembers the [MfaEnrollmentFlowState] a host installs [mfaEnrollmentDestinations]
+ * with. Called once, above the `NavDisplay`, so the same instance is handed to every step — see
+ * [MfaEnrollmentFlowState] for which of its fields actually survive Activity recreation.
+ */
 @Composable
 fun rememberMfaEnrollmentFlowState(
     allowedCountries: List<String>? = null,

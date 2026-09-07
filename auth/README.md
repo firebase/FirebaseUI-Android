@@ -1114,10 +1114,14 @@ fun MfaEnrollmentFlow() {
 
     if (currentUser != null) {
         val mfaConfig = MfaConfiguration(
-            allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp)
+            allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+            allowedCountries = listOf("US", "CA", "GB")
         )
         val backStack = rememberNavBackStack(MfaStepKey(MfaEnrollmentStep.SelectFactor))
-        val flowState = rememberMfaEnrollmentFlowState()
+        // Pass the restriction so the SMS step opens on a country the selector will offer. The
+        // screen also reconciles this itself, so a host that forgets cannot end up sending to an
+        // unpermitted dial code.
+        val flowState = rememberMfaEnrollmentFlowState(mfaConfig.allowedCountries)
 
         NavDisplay(
             backStack = backStack,

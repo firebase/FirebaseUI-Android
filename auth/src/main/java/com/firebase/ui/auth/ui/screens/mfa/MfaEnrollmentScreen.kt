@@ -30,6 +30,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.SmsEnrollmentHandler
 import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
@@ -218,6 +219,22 @@ internal fun MfaEnrollmentScreenInternal(
                 }
             }
             MfaEnrollmentStep.SelectFactor -> Unit
+        }
+    }
+
+    // Snapped here rather than only where the flow state is created, because the selected country
+    // has two other ways of holding a value this configuration does not permit: a host driving
+    // this screen supplies `flowState` itself and may never have passed the list to
+    // `rememberMfaEnrollmentFlowState`, and a `rememberSaveable` restore can bring back a country
+    // allowed by an earlier configuration. Without this, the selector filters the list while the
+    // send still uses the unpermitted dial code.
+    LaunchedEffect(configuration.allowedCountries) {
+        val permitted = configuration.allowedCountries
+        if (!permitted.isNullOrEmpty() &&
+            CountryUtils.filterByAllowedCountries(permitted.toSet())
+                .none { it.countryCode == selectedCountry.value.countryCode }
+        ) {
+            selectedCountry.value = initialEnrollmentCountry(permitted)
         }
     }
 
