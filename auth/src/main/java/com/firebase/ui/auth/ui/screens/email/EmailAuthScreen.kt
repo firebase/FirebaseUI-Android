@@ -134,8 +134,11 @@ class EmailAuthContentState(
  *
  * Hosting it yourself means a real back stack, not a variable holding the current mode. The screen
  * offers no in-form control for stepping back to sign-in, so system back is the way back, and only
- * a stack gives it something to pop. Bring your own key, built from the public [EmailAuthMode] and
- * the address the switch hands over:
+ * a stack gives it something to pop — which also means the flow has to **start** at
+ * [EmailAuthMode.SignIn]. Every other mode is reached from it, and back is inert at the bottom of a
+ * stack, so a flow opened straight onto sign-up, password recovery or email-link sign-in leaves the
+ * user with no way to reach the password form. Bring your own key, built from the public
+ * [EmailAuthMode] and the address the switch hands over:
  *
  * ```kotlin
  * @Serializable

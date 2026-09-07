@@ -419,6 +419,25 @@ class PhoneAuthHostDestinationsTest {
         assertThat(reauthDismissals).isEqualTo(0)
     }
 
+    /**
+     * System back is inert inside the reauthentication sheet: it reaches neither the display's
+     * `onBack` nor the sheet's own `onDismissRequest`, so the step stays put. Pinned because it is
+     * why the host needs no attempt-teardown branch for a reauthentication entry — the only way out
+     * of a step is the back arrow, which goes through the screen's own `onCancel`.
+     */
+    @Test
+    fun `system back inside the reauthentication sheet does nothing`() {
+        startReauthSheet()
+        sendReauthCode()
+        assertAtCodeEntry()
+
+        composeTestRule.runOnUiThread { requireNotNull(pressBack).invoke() }
+        composeTestRule.waitForIdle()
+
+        assertAtCodeEntry()
+        assertThat(reauthDismissals).isEqualTo(0)
+    }
+
     // =============================================================================================
     // Harness
     // =============================================================================================
@@ -592,7 +611,11 @@ class PhoneAuthHostDestinationsTest {
             AuthRoute.Success,
             AuthRoute.Reauth(REQUEST_ID, REAUTH_UID, startStep),
         )
-        SideEffect { reauthBackStack = backStack }
+        val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+        SideEffect {
+            reauthBackStack = backStack
+            pressBack = dispatcher?.let { { it.onBackPressed() } }
+        }
         val surface = remember {
             mutableStateOf(
                 AuthState.Reauthentication.Required(request).toReauthSurface(config)

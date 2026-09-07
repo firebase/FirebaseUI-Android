@@ -374,15 +374,9 @@ fun FirebaseAuthScreen(
                 // does; anything else is a plain pop.
                 onBack = {
                     when (val top = backStack.lastOrNull()) {
-                        is AuthRoute.Reauth -> {
-                            if (top.step is AuthRoute.Phone.EnterVerificationCode) {
-                                reauthPhoneFlowState.abandonVerification(
-                                    "system back from reauthentication code entry"
-                                )
-                            }
-                            // Owns the phase move as well as the pop, so nothing is retracted here.
-                            onLeaveReauthStep(top)
-                        }
+                        // Unreachable for a sheet-presented step, which swallows the gesture, but
+                        // a bare reauth entry still routes here; the phase move is onLeaveStep's.
+                        is AuthRoute.Reauth -> onLeaveReauthStep(top)
 
                         is AuthRoute.Phone.EnterVerificationCode -> {
                             phoneAuthFlowState.abandonVerification("system back from code entry")
