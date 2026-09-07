@@ -119,7 +119,8 @@ fun verifyEmailInEmulator(authUI: FirebaseAuthUI, emulatorApi: EmulatorAuthApi, 
  * functions, whose callbacks arrive on the paused main looper a `runBlocking` here would occupy.
  *
  * The emulator rejects enrollment for a user whose email is unverified (`UNVERIFIED_EMAIL`), so
- * pair this with [verifyEmailInEmulator], and for an anonymous, phone or custom-token first factor
+ * pair this with [verifyEmailInEmulator], and for an anonymous, phone, custom-token or Game
+ * Center first factor
  * (`UNSUPPORTED_FIRST_FACTOR`).
  *
  * @param phoneNumber The second factor's number in E.164 format (e.g. "+15551234567")

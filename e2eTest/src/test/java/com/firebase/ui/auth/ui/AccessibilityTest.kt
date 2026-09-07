@@ -273,6 +273,7 @@ class AccessibilityTest {
                     isLoading = false,
                     phoneNumber = "",
                     selectedCountry = CountryUtils.getDefaultCountry(),
+                    allowedCountries = null,
                     onPhoneNumberChange = {},
                     onCountrySelected = {},
                     onSendCodeClick = {}

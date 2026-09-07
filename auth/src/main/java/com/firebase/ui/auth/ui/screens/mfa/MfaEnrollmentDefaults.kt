@@ -160,7 +160,9 @@ internal fun DefaultMfaEnrollmentContent(
                         onPhoneNumberChange = state.onPhoneNumberChange,
                         onCountrySelected = state.onCountrySelected,
                         onSendCodeClick = state.onSendSmsCodeClick,
-                        allowedCountries = state.allowedCountries?.toSet(),
+                        allowedCountries = remember(state.allowedCountries) {
+                            state.allowedCountries?.toSet()
+                        },
                         title = stringProvider.mfaEnrollmentEnterPhoneNumber
                     )
                 }

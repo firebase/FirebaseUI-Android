@@ -65,6 +65,8 @@ import com.firebase.ui.auth.util.CountryUtils
  * because MFA enrollment reaches this step on configurations that declare no phone provider —
  * it restricts countries through
  * [com.firebase.ui.auth.configuration.MfaConfiguration.allowedCountries] instead.
+ * Deliberately has no default: a host that upgrades has to decide, rather than silently losing
+ * the restriction it used to get from [configuration].
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,10 +76,10 @@ fun EnterPhoneNumberUI(
     isLoading: Boolean,
     phoneNumber: String,
     selectedCountry: CountryData,
+    allowedCountries: Set<String>?,
     onPhoneNumberChange: (String) -> Unit,
     onCountrySelected: (CountryData) -> Unit,
     onSendCodeClick: () -> Unit,
-    allowedCountries: Set<String>? = null,
     title: String? = null,
     onNavigateBack: (() -> Unit)? = null,
 ) {
@@ -205,6 +207,7 @@ fun PreviewEnterPhoneNumberUI() {
             isLoading = false,
             phoneNumber = "",
             selectedCountry = CountryUtils.getDefaultCountry(),
+            allowedCountries = null,
             onPhoneNumberChange = {},
             onCountrySelected = {},
             onSendCodeClick = {},

@@ -59,6 +59,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * E2E happy paths for SMS multi-factor authentication, driven through [FirebaseAuthScreen] against
@@ -71,7 +72,7 @@ import org.robolectric.annotation.Config
  *
  * The two paths the emulator enforces, and that every test here has to satisfy:
  * - Enrollment requires a **verified** email (`UNVERIFIED_EMAIL` otherwise).
- * - Anonymous, phone and custom-token sign-ins cannot carry a second factor
+ * - Anonymous, phone, custom-token and Game Center sign-ins cannot carry a second factor
  *   (`UNSUPPORTED_FIRST_FACTOR`), so the first factor here is always email/password.
  */
 @Config(sdk = [34])
@@ -148,12 +149,13 @@ class MfaSmsFlowTest {
 
         awaitNode(FirebaseAuthTestTags.PhoneNumber.PHONE_NUMBER_FIELD)
             .performTextInput(nationalNumber)
+        val codeBeforeSend = peekPhoneVerificationCode(phoneNumber)
         composeAndroidTestRule.onNodeWithTag(FirebaseAuthTestTags.PhoneNumber.SEND_CODE_BUTTON)
             .performScrollTo()
             .assertIsEnabled()
             .performClick()
 
-        val code = awaitPhoneVerificationCode(phoneNumber)
+        val code = awaitPhoneVerificationCode(phoneNumber, codeBeforeSend)
         awaitNode(FirebaseAuthTestTags.VerificationCode.CODE_FIELD).performTextInput(code)
         composeAndroidTestRule.onNodeWithTag(FirebaseAuthTestTags.VerificationCode.VERIFY_BUTTON)
             .performScrollTo()
@@ -195,6 +197,10 @@ class MfaSmsFlowTest {
         )
         signOut()
 
+        // Enrollment above redeemed its own code, so this is normally null; snapshotting anyway
+        // keeps the wait below honest if the emulator ever holds a leftover for this number.
+        val codeBeforeChallenge = peekPhoneVerificationCode(phoneNumber)
+
         var currentAuthState: AuthState = AuthState.Idle
         composeAndroidTestRule.setContent {
             TestFirebaseAuthScreen(configuration = emailProviderConfiguration())
@@ -213,7 +219,7 @@ class MfaSmsFlowTest {
 
         // The challenge screen requests the code itself on entry, so this is the first code the
         // emulator holds for this number since enrollment redeemed the last one.
-        val code = awaitPhoneVerificationCode(phoneNumber)
+        val code = awaitPhoneVerificationCode(phoneNumber, codeBeforeChallenge)
         awaitNode(FirebaseAuthTestTags.MfaChallenge.CODE_FIELD).performTextInput(code)
         composeAndroidTestRule.onNodeWithTag(FirebaseAuthTestTags.MfaChallenge.VERIFY_BUTTON)
             .performScrollTo()
@@ -271,22 +277,27 @@ class MfaSmsFlowTest {
         assertThat(state()).isInstanceOf(T::class.java)
     }
 
+    /** The code the emulator currently holds for [phoneNumber], or null if it holds none. */
+    private fun peekPhoneVerificationCode(phoneNumber: String): String? =
+        runCatching { emulatorApi.fetchVerifyPhoneCode(phoneNumber) }.getOrNull()
+
     /**
-     * Waits for the emulator to publish an SMS code for [phoneNumber], then returns it.
+     * Waits for the emulator to publish an SMS code for [phoneNumber] that differs from
+     * [previous], then returns it.
      *
      * Both flows under test send their code from a coroutine the paused main looper has to run, so
-     * the wait pumps that looper rather than sleeping the thread that owes the work. Waiting for
-     * the code to appear is also what orders the read after the send, so there is no window in
-     * which an earlier code could be read instead.
+     * the wait pumps that looper rather than sleeping the thread that owes the work. Comparing
+     * against the code held before the send is what makes the wait unambiguous: a stale code left
+     * unredeemed for this number by an earlier test cannot satisfy it.
      */
-    private fun awaitPhoneVerificationCode(phoneNumber: String): String {
+    private fun awaitPhoneVerificationCode(phoneNumber: String, previous: String?): String {
         var code: String? = null
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            code = runCatching { emulatorApi.fetchVerifyPhoneCode(phoneNumber) }.getOrNull()
-            code != null
+            code = peekPhoneVerificationCode(phoneNumber)
+            code != null && code != previous
         }
-        return requireNotNull(code) { "No verification code for $phoneNumber" }
+        return requireNotNull(code) { "No fresh verification code for $phoneNumber" }
     }
 
     @OptIn(ExperimentalTestApi::class)
@@ -301,11 +312,12 @@ class MfaSmsFlowTest {
 
     /**
      * A US number in libphonenumber's valid range — the enrollment step's send button stays
-     * disabled otherwise — varying per run, so the emulator's `verificationCodes` list, which
-     * survives the account wipe between tests, is unlikely to hold another test's code for it.
+     * disabled otherwise — distinct per call. Uses exchange 556 because `PhoneAuthScreenTest`
+     * hardcodes 202555xxxx numbers and the emulator's `verificationCodes` list survives the
+     * account wipe between tests, so a shared number could serve a stale code.
      */
     private fun uniqueNationalNumber(): String =
-        "202555${(System.currentTimeMillis() % 10_000).toString().padStart(4, '0')}"
+        "202556%04d".format(phoneCounter.getAndIncrement() % 10_000)
 
     /**
      * Deliberately passes no `authenticatedContent`: enrollment is reached from the default
@@ -324,5 +336,10 @@ class MfaSmsFlowTest {
                 onSignInCancelled = { },
             )
         }
+    }
+
+    private companion object {
+        /** Monotonic within a run, so two tests here can never draw the same number. */
+        val phoneCounter = AtomicInteger(0)
     }
 }

@@ -197,7 +197,7 @@ fun FirebaseAuthScreen(
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
-    val mfaEnrollmentFlowState = rememberMfaEnrollmentFlowState()
+    val mfaEnrollmentFlowState = rememberMfaEnrollmentFlowState(mfaConfiguration.allowedCountries)
     val phoneAuthFlowState = rememberPhoneAuthFlowState(configuration)
     val reauthRequest = reauthState?.request
     val reauthConfig = reauthRequest?.let { configuration.toReauthConfiguration(it.user) }

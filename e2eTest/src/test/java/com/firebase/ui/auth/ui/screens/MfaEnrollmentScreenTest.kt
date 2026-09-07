@@ -72,7 +72,8 @@ import org.robolectric.annotation.Config
  *   `mfaSignIn:start`/`:finalize`, and publishes both flows' codes on the same
  *   `verificationCodes` endpoint [com.firebase.ui.auth.testutil.EmulatorAuthApi.fetchVerifyPhoneCode]
  *   already reads for phone auth. It enforces two preconditions: the user's email must be verified
- *   (`UNVERIFIED_EMAIL`), and anonymous, phone and custom-token first factors are rejected
+ *   (`UNVERIFIED_EMAIL`), and anonymous, phone, custom-token and Game Center first factors
+ *   are rejected
  *   (`UNSUPPORTED_FIRST_FACTOR`).
  * - **TOTP does not work.** The emulator's `mfaEnrollment:start` accepts only `phoneEnrollmentInfo`,
  *   so enrollment fails on its very first call — `TotpMultiFactorGenerator.generateSecret` returns

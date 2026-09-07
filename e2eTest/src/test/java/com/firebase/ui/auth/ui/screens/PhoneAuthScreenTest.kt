@@ -579,6 +579,13 @@ class PhoneAuthScreenTest {
                                 isLoading = state.isLoading,
                                 phoneNumber = state.phoneNumber,
                                 selectedCountry = state.selectedCountry,
+                                // A custom content slot now supplies this itself; the step no
+                                // longer reads it off the configuration.
+                                allowedCountries = configuration.providers
+                                    .filterIsInstance<AuthProvider.Phone>()
+                                    .firstOrNull()
+                                    ?.allowedCountries
+                                    ?.toSet(),
                                 onPhoneNumberChange = state.onPhoneNumberChange,
                                 onCountrySelected = state.onCountrySelected,
                                 onSendCodeClick = state.onSendCodeClick,

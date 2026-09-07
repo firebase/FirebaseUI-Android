@@ -517,6 +517,14 @@ private fun DefaultPhoneAuthContent(
     state: PhoneAuthContentState,
     onCancel: () -> Unit,
 ) {
+    // Keyed on the extracted list rather than on `configuration`, which is a plain class with no
+    // equals and is commonly rebuilt inside composition — keying on it would re-run every pass.
+    val allowedCountries = configuration.providers
+        .filterIsInstance<AuthProvider.Phone>()
+        .firstOrNull()
+        ?.allowedCountries
+    val allowedCountrySet = remember(allowedCountries) { allowedCountries?.toSet() }
+
     when (state.step) {
         PhoneAuthStep.EnterPhoneNumber -> {
             EnterPhoneNumberUI(
@@ -527,11 +535,7 @@ private fun DefaultPhoneAuthContent(
                 onPhoneNumberChange = state.onPhoneNumberChange,
                 onCountrySelected = state.onCountrySelected,
                 onSendCodeClick = state.onSendCodeClick,
-                allowedCountries = configuration.providers
-                    .filterIsInstance<AuthProvider.Phone>()
-                    .firstOrNull()
-                    ?.allowedCountries
-                    ?.toSet(),
+                allowedCountries = allowedCountrySet,
                 onNavigateBack = onCancel
             )
         }

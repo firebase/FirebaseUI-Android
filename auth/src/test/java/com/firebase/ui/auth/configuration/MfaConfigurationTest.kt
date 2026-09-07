@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.configuration
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -140,6 +141,46 @@ class MfaConfigurationTest {
     // =============================================================================================
     // MfaFactor Enum Tests
     // =============================================================================================
+
+    // =============================================================================================
+    // allowedCountries validation
+    // =============================================================================================
+
+    @Test
+    fun `allowedCountries accepts alpha-2 codes in either case`() {
+        val config = MfaConfiguration(allowedCountries = listOf("gb", "US"))
+
+        assertThat(config.allowedCountries).containsExactly("gb", "US")
+    }
+
+    /**
+     * A dial code is the trap this validation exists for: `AuthProvider.Phone` accepts one, but
+     * the filter behind `allowedCountries` matches alpha-2 only, so accepting it here would
+     * silently restrict the selector to nothing instead of failing.
+     */
+    @Test
+    fun `allowedCountries rejects a dial code`() {
+        val failure = assertThrows(IllegalArgumentException::class.java) {
+            MfaConfiguration(allowedCountries = listOf("+44"))
+        }
+
+        assertThat(failure).hasMessageThat().contains("+44")
+        assertThat(failure).hasMessageThat().contains("alpha-2")
+    }
+
+    @Test
+    fun `allowedCountries rejects an unknown code`() {
+        val failure = assertThrows(IllegalArgumentException::class.java) {
+            MfaConfiguration(allowedCountries = listOf("GB", "USA"))
+        }
+
+        assertThat(failure).hasMessageThat().contains("USA")
+    }
+
+    @Test
+    fun `allowedCountries defaults to null and stays unvalidated when absent`() {
+        assertThat(MfaConfiguration().allowedCountries).isNull()
+    }
 
     @Test
     fun `MfaFactor enum has exactly two values`() {
