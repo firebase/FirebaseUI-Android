@@ -82,14 +82,15 @@ class TopLevelDialogController(
      * for de-duplication. Pass this explicitly when the caller might not be the only observer of
      * the same error: by the time this runs, another observer may have already reset the live
      * auth state to `Idle`, so falling back to [currentAuthState] alone would miss the dedup.
-     * @param onRetry Callback when user clicks retry button
+     * @param onRetry Callback when user clicks retry button, or `null` when there is nothing to
+     * retry — [ErrorRecoveryDialog] then renders no action button at all
      * @param onRecover Callback when user clicks recover button (e.g., navigate to different screen)
      * @param onDismiss Callback when dialog is dismissed
      */
     fun showErrorDialog(
         exception: AuthException,
         errorState: AuthState.Error? = null,
-        onRetry: (AuthException) -> Unit = {},
+        onRetry: ((AuthException) -> Unit)? = null,
         onRecover: ((AuthException) -> Unit)? = null,
         onDismiss: () -> Unit = {}
     ) {
@@ -135,9 +136,11 @@ class TopLevelDialogController(
                 ErrorRecoveryDialog(
                     error = state.exception,
                     stringProvider = stringProvider,
-                    onRetry = { exception ->
-                        state.onRetry(exception)
-                        state.onDismiss()
+                    onRetry = state.onRetry?.let { onRetry ->
+                        { exception: AuthException ->
+                            onRetry(exception)
+                            state.onDismiss()
+                        }
                     },
                     onRecover = state.onRecover?.let { onRecover ->
                         { exception ->
@@ -157,7 +160,7 @@ class TopLevelDialogController(
     private sealed class DialogState {
         data class ErrorDialog(
             val exception: AuthException,
-            val onRetry: (AuthException) -> Unit,
+            val onRetry: ((AuthException) -> Unit)?,
             val onRecover: ((AuthException) -> Unit)?,
             val onDismiss: () -> Unit
         ) : DialogState()

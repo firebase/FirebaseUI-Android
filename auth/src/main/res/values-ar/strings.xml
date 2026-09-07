@@ -115,7 +115,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">إعداد التحقق بالرسائل القصيرة</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">إعداد تطبيق المصادقة</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">تحقق من الرمز</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">احفظ رموز الاسترداد</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">اختر طريقة مصادقة ثانية لتأمين حسابك</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">أدخل رقم هاتفك لتلقي رموز التحقق</string>
@@ -123,7 +122,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">أدخل الرمز المرسل إلى هاتفك</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">أدخل الرمز من تطبيق المصادقة</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">أدخل رمز التحقق</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">احفظ هذه الرموز في مكان آمن. يمكنك استخدامها لتسجيل الدخول إذا فقدت الوصول إلى طريقة المصادقة.</string>
 
     <string name="fui_confirm_password_hint">تأكيد كلمة المرور</string>
     <string name="fui_passwords_do_not_match">كلمتا المرور غير متطابقتين</string>
@@ -164,7 +162,6 @@
     <string name="fui_reauth_required_error">إعادة المصادقة مطلوبة</string>
     <string name="fui_reauth_success_message">نجحت إعادة المصادقة</string>
     <string name="fui_reauthenticate_action">إعادة المصادقة</string>
-    <string name="fui_recovery_codes_saved_action">حفظت رموز الاسترداد</string>
     <string name="fui_remove_action">إزالة</string>
     <string name="fui_resend_verification_email_action">إعادة إرسال بريد التحقق</string>
     <string name="fui_secret_key_label">المفتاح السري</string>

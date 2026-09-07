@@ -412,23 +412,6 @@ class PhoneAuthProviderFirebaseAuthUITest {
         }
 
     @Test
-    fun `verifyPhoneNumber - cancellation clears the pending Loading state`() = runTest {
-        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-        val deferred = startNeverResolvingVerifyPhoneNumber(instance)
-
-        deferred.cancel()
-        try {
-            deferred.await()
-        } catch (_: CancellationException) {
-            // Expected
-        }
-
-        val state = instance.authStateFlow().first()
-        assertThat(state).isNotInstanceOf(AuthState.Loading::class.java)
-        assertThat(state).isInstanceOf(AuthState.Idle::class.java)
-    }
-
-    @Test
     fun `verifyPhoneNumber - cancellation does not clobber a newer unrelated state`() = runTest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
         val deferred = startNeverResolvingVerifyPhoneNumber(instance)
@@ -469,32 +452,6 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
             resend.cancel()
         }
-
-    @Test
-    fun `clearLoadingState - equal but distinct Loading instances do not clear each other`() =
-        runTest {
-            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-            val first = AuthState.Loading("verifying")
-            val second = AuthState.Loading("verifying")
-            assertThat(first).isEqualTo(second)
-
-            instance.updateAuthState(first)
-            val firstRevision = instance.currentAuthStateRevision()
-            instance.updateAuthState(second)
-            instance.clearLoadingState(firstRevision)
-
-            assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Loading::class.java)
-        }
-
-    @Test
-    fun `clearLoadingState - clears when its Loading is still the latest state`() = runTest {
-        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
-        instance.updateAuthState(AuthState.Loading("verifying"))
-
-        instance.clearLoadingState(instance.currentAuthStateRevision())
-
-        assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Idle::class.java)
-    }
 
     // Starts verifyPhoneNumber against a flow that never emits, UNDISPATCHED so the call reaches
     // its suspension point (past the Loading emission) before the caller can cancel it.

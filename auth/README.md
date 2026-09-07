@@ -6,7 +6,7 @@ Built entirely with **Jetpack Compose** and **Material Design 3**, FirebaseUI Au
 
 - **Simple API** - Choose between high-level screens or low-level controllers for maximum flexibility
 - **12+ Authentication Methods** - Email/Password, Phone, Google, Facebook, Twitter, GitHub, Microsoft, Yahoo, Apple, Anonymous, and custom OAuth providers
-- **Multi-Factor Authentication** - SMS and TOTP (Time-based One-Time Password) with recovery codes
+- **Multi-Factor Authentication** - SMS and TOTP (Time-based One-Time Password)
 - **Android Credential Manager** - Automatic credential saving and one-tap sign-in
 - **Material Design 3** - Beautiful, themeable UI components that integrate seamlessly with your app
 - **Localization Support** - Customizable strings for internationalization
@@ -69,6 +69,7 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
    - [Email Link Sign-In](#email-link-sign-in)
    - [Password Validation Rules](#password-validation-rules)
    - [Credential Manager Integration](#credential-manager-integration)
+   - [Automated Testing (Firebase Test Lab & Robo)](#automated-testing-firebase-test-lab--robo)
    - [Sign Out & Account Deletion](#sign-out--account-deletion)
 10. [Localization](#localization)
 11. [Error Handling](#error-handling)
@@ -827,7 +828,7 @@ FirebaseAuthScreen(
     phoneContent = { state -> /* ... */ },
     mfaEnrollmentContent = { state -> /* ... */ },
     mfaChallengeContent = { state -> /* ... */ },
-    reauthContent = { state, onDismiss -> /* ... */ },
+    reauthContent = { state -> /* ... */ },
 ) { authState, uiContext ->
     // authenticated content
 }
@@ -992,35 +993,40 @@ mfaChallengeContent = { state ->
 
 #### Reauthentication (`reauthContent`)
 
-Replaces the default reauthentication bottom sheet shown when a sensitive operation requires the user to re-verify their identity. Receives the `AuthState.ReauthenticationRequired` state (including an optional `reason` string and the signed-in `user`) and an `onDismiss` callback that resets auth state to `Idle`.
+Replaces the default reauthentication bottom sheet shown when a sensitive operation requires the user to re-verify their identity. The `ReauthContentState` carries `user`, `reason`, the `providers` already filtered to those linked to that user, and callbacks to select a provider or dismiss.
+
+The library owns the credential exchange, so the slot only renders a provider chooser. Selecting a federated provider reauthenticates directly; selecting `AuthProvider.Email` or `AuthProvider.Phone` hands off to the library's own email/phone sub-flow, which honours your `emailContent` / `phoneContent` slots and replaces this slot while it is active. Password and OTP entry therefore never appear here.
+
+If the account has multi-factor authentication enrolled, Firebase needs the second factor to complete the reauthentication too. The library presents the MFA challenge as another sub-flow over this slot, honouring your `mfaChallengeContent` slot; resolving it completes the reauthentication and the pending operation resumes. Backing out of the challenge returns to this slot with the operation still pending, and a failed challenge latches into `state.error` like any other failed attempt.
 
 ```kotlin
-reauthContent = { state, onDismiss ->
+reauthContent = { state ->
     AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Verify your identity") },
+        onDismissRequest = state.onDismiss,
+        title = { Text(state.reason ?: "Verify your identity") },
         text = {
-            Column {
-                state.reason?.let { Text(it) }
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation(),
-                )
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                if (state.isLoading) CircularProgressIndicator()
+                state.providers.forEach { provider ->
+                    Button(
+                        onClick = { state.onProviderSelected(provider) },
+                        enabled = !state.isLoading,
+                    ) { Text("Continue with ${provider.providerName}") }
+                }
             }
         },
-        confirmButton = {
-            Button(onClick = {
-                // Re-authenticate then update auth state on success
-            }) { Text("Confirm") }
-        },
+        confirmButton = {},
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = state.onDismiss) { Text("Cancel") }
         },
     )
 }
 ```
+
+While this slot is shown the library suppresses its own loading and error dialogs, so render `state.isLoading` and `state.error` yourself. `state.error` is the same message the library's own error dialog would have shown, and `state.exception` carries the exception behind it when you need to branch on the failure type. On success the library resumes the operation that required reauthentication — there is nothing to retry. `state.onDismiss` abandons reauthentication and calls `onSignInCancelled`, so any pending operation will never run; backing out of a single provider attempt returns to the slot with the operation still pending and does *not* call `onSignInCancelled`. Render the slot so it blocks interaction with the content behind it — that content stays composed, and the library only makes its own affordances inert.
+
+An armed reauthentication survives Activity recreation: rotating keeps the pending operation, the latched `state.error`, its `state.exception`, and any active email/phone sub-flow. The pending operation cannot survive process death, and if it is lost the flow emits an `AuthState.Error` explaining that identity confirmation was interrupted rather than dropping the operation silently.
 
 For most cases, use [`withReauth`](#reauthentication) instead — it handles the full reauth cycle automatically and only shows the default bottom sheet. Use `reauthContent` when you need a custom design for the reauth UI.
 
@@ -1028,7 +1034,7 @@ For most cases, use [`withReauth`](#reauthentication) instead — it handles the
 
 Firebase requires the user to have signed in recently before performing sensitive operations like deleting their account or changing their password. If the session is too old, Firebase throws `FirebaseAuthRecentLoginRequiredException`.
 
-`withReauth` wraps any sensitive operation. If the exception is thrown, it automatically emits `AuthState.ReauthenticationRequired` and — once the user reauthenticates via the default bottom sheet or your `reauthContent` slot — retries the original operation.
+`withReauth` wraps any sensitive operation. If the exception is thrown, it automatically emits `AuthState.Reauthentication.Required` and — once the user reauthenticates via the default bottom sheet or your `reauthContent` slot — retries the original operation.
 
 ```kotlin
 lifecycleScope.launch {
@@ -1044,15 +1050,18 @@ lifecycleScope.launch {
 `withReauth` handles the full cycle:
 
 1. Runs the operation.
-2. If `FirebaseAuthRecentLoginRequiredException` is thrown, emits `AuthState.ReauthenticationRequired` with the retry attached.
-3. `FirebaseAuthScreen` shows the reauth UI scoped to the user's linked providers.
+2. If `FirebaseAuthRecentLoginRequiredException` is thrown, emits `AuthState.Reauthentication.Required` with the retry attached.
+3. `FirebaseAuthScreen` shows the reauth UI scoped to the user's linked providers, including the MFA challenge when the account has a second factor enrolled.
 4. On successful reauthentication, retries the operation automatically and emits `AuthState.Success` or `AuthState.Error`.
+
+The armed reauthentication lives on the process-cached `FirebaseAuthUI`, so it survives Activity recreation; it does not survive process death, and a lost operation is reported as an `AuthState.Error` rather than silently dropped. The operation runs at most once: if a recreation interrupts it mid-flight the flow reports the interruption instead of starting it again, because the first attempt may already have committed.
+
+**What `authStateFlow()` emits while this is running.** From the moment `FirebaseAuthScreen` picks the request up until it ends, every state is published as an `AuthState.Reauthentication` — the phases of that one request, each carrying its `requestId` and `userUid`. The ordinary `AuthState.Loading` / `AuthState.Error` / `AuthState.Cancelled` of the credential exchange are folded into those phases, so `is AuthState.Error` and `is AuthState.Loading` do **not** match for the duration and app-side error dialogs and spinners stay quiet: the library owns the UI for that window. Match `is AuthState.Reauthentication` if you need to know it is happening. The final outcome — `AuthState.Success`, `AuthState.Error` or `AuthState.Idle` — is published as an ordinary state once the request ends. Arming a request with no `FirebaseAuthScreen` composed (catching `withReauth`/`delete`'s exception and showing your own UI) folds nothing: states are published normally, and the next one simply replaces the arming.
 
 **Activity-based alternative:** use `createReauthFlow` to start a standalone reauthentication activity scoped to the current user's linked providers, returning an `AuthFlowController`.
 
 ```kotlin
 val reauth = authUI.createReauthFlow(
-    context = context,
     configuration = authUIConfiguration {
         // Providers are automatically filtered to those linked to the current user
     },
@@ -1073,10 +1082,7 @@ val mfaConfig = MfaConfiguration(
     allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
 
     // Optional: Require MFA enrollment (default: false)
-    requireEnrollment = false,
-
-    // Optional: Enable recovery codes (default: true)
-    enableRecoveryCodes = true
+    requireEnrollment = false
 )
 
 val configuration = authUIConfiguration {
@@ -1137,9 +1143,6 @@ MfaEnrollmentScreen(
         }
         MfaEnrollmentStep.VerifyFactor -> {
             CustomVerificationUI(state)
-        }
-        MfaEnrollmentStep.ShowRecoveryCodes -> {
-            CustomRecoveryCodesUI(state)
         }
     }
 }
@@ -1846,6 +1849,92 @@ val configuration = authUIConfiguration {
     isCredentialManagerEnabled = false
 }
 ```
+
+### Automated Testing (Firebase Test Lab & Robo)
+
+Every input and button on the auth screens carries a stable, public test tag, and FirebaseUI exposes those tags as Android resource ids automatically — no setup required in your app. This is what lets [Firebase Test Lab's Robo test](https://firebase.google.com/docs/test-lab/android/robo-ux-test) and the Google Play Console's pre-launch report drive a real sign-in during automated testing, instead of typing into the wrong field or getting stuck on a screen it can't navigate.
+
+**Why this matters:** a crawler that can't tell which field is the password will happily type a username into it, then hammer "sign in" and "forgot password" until your test account is buried in reset emails. Every field and button below resolves to one unambiguous resource id, so a crawler — or your own instrumented test — can target it directly.
+
+**Tag reference.** Tags are grouped by screen; import `com.firebase.ui.auth.ui.FirebaseAuthTestTags`.
+
+| Screen | Constant | Resource id |
+|---|---|---|
+| Sign in | `SignIn.EMAIL_FIELD` | `fui_sign_in_email_field` |
+| | `SignIn.PASSWORD_FIELD` | `fui_sign_in_password_field` |
+| | `SignIn.SIGN_IN_BUTTON` | `fui_sign_in_sign_in_button` |
+| | `SignIn.SIGN_UP_BUTTON` | `fui_sign_in_sign_up_button` |
+| | `SignIn.FORGOT_PASSWORD_BUTTON` | `fui_sign_in_forgot_password_button` |
+| | `SignIn.EMAIL_LINK_BUTTON` | `fui_sign_in_email_link_button` |
+| Sign up | `SignUp.NAME_FIELD` | `fui_sign_up_name_field` |
+| | `SignUp.EMAIL_FIELD` | `fui_sign_up_email_field` |
+| | `SignUp.PASSWORD_FIELD` | `fui_sign_up_password_field` |
+| | `SignUp.CONFIRM_PASSWORD_FIELD` | `fui_sign_up_confirm_password_field` |
+| | `SignUp.SIGN_UP_BUTTON` | `fui_sign_up_sign_up_button` |
+| | `SignUp.SIGN_IN_BUTTON` | `fui_sign_up_sign_in_button` |
+| Password recovery | `ResetPassword.EMAIL_FIELD` | `fui_reset_password_email_field` |
+| | `ResetPassword.SEND_BUTTON` | `fui_reset_password_send_button` |
+| | `ResetPassword.SIGN_IN_BUTTON` | `fui_reset_password_sign_in_button` |
+| | `ResetPassword.DISMISS_BUTTON` | `fui_reset_password_dismiss_button` |
+| Email link sign-in | `EmailLink.EMAIL_FIELD` | `fui_email_link_email_field` |
+| | `EmailLink.SEND_LINK_BUTTON` | `fui_email_link_send_link_button` |
+| | `EmailLink.PASSWORD_SIGN_IN_BUTTON` | `fui_email_link_password_sign_in_button` |
+| | `EmailLink.DISMISS_BUTTON` | `fui_email_link_dismiss_button` |
+| Phone number entry | `PhoneNumber.PHONE_NUMBER_FIELD` | `fui_phone_number_phone_number_field` |
+| | `PhoneNumber.COUNTRY_SELECTOR_BUTTON` | `fui_phone_number_country_selector_button` |
+| | `PhoneNumber.SEND_CODE_BUTTON` | `fui_phone_number_send_code_button` |
+| SMS verification | `VerificationCode.CODE_FIELD` | `fui_verification_code_code_field` |
+| | `VerificationCode.VERIFY_BUTTON` | `fui_verification_code_verify_button` |
+| | `VerificationCode.RESEND_CODE_BUTTON` | `fui_verification_code_resend_code_button` |
+| | `VerificationCode.CHANGE_PHONE_NUMBER_BUTTON` | `fui_verification_code_change_phone_number_button` |
+| MFA sign-in challenge | `MfaChallenge.CODE_FIELD` | `fui_mfa_challenge_code_field` |
+| | `MfaChallenge.VERIFY_BUTTON` | `fui_mfa_challenge_verify_button` |
+| Re-authentication | `Reauth.PASSWORD_FIELD` | `fui_reauth_password_field` |
+| | `Reauth.VERIFY_BUTTON` | `fui_reauth_verify_button` |
+| | `Reauth.DISMISS_BUTTON` | `fui_reauth_dismiss_button` |
+| Method picker | `MethodPicker.PROVIDER_LIST` | `fui_method_picker_provider_list` |
+| | `MethodPicker.CONTINUE_AS_BUTTON` | `fui_method_picker_continue_as_button` |
+| Country selector | `CountrySelector.COUNTRY_LIST` | `fui_country_selector_country_list` |
+
+`VerificationCode.CODE_FIELD` and `MfaChallenge.CODE_FIELD` each name the whole six-digit input rather than an individual digit box: the field accepts a complete code in a single `ACTION_SET_TEXT`/`performTextInput` call and distributes it across the digit boxes, so one Robo directive or one `performTextInput("123456")` types the entire code.
+
+**In your own instrumented tests**, target these the same way you'd target any other tag:
+
+```kotlin
+composeTestRule
+    .onNodeWithTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD)
+    .performTextInput("test@example.com")
+
+composeTestRule
+    .onNodeWithTag(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD)
+    .performTextInput("correcthorsebatterystaple")
+
+composeTestRule
+    .onNodeWithTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON)
+    .performClick()
+```
+
+Or with UiAutomator, by resource name:
+
+```kotlin
+device.findObject(By.res("fui_sign_in_email_field")).text = "test@example.com"
+```
+
+**With Firebase Test Lab.** Pass the resource ids as [Robo directives](https://firebase.google.com/docs/test-lab/android/command-line#robo-test-with-a-script) so the crawler fills real values instead of guessing:
+
+```bash
+gcloud firebase test android run \
+  --type=robo \
+  --app=app-debug.apk \
+  --robo-directives=fui_sign_in_email_field=test@example.com,fui_sign_in_password_field=correcthorsebatterystaple \
+  --device model=MediumPhone.arm,version=34
+```
+
+This is exactly the mechanism a **Play Console pre-launch report** uses, under **Test and release → Testing → Pre-launch report → Settings → Test account credentials**; the resource ids above are what you enter there for the username and password fields.
+
+Verified with a real Firebase Test Lab Robo run against the sign-in screen (August 2026): the crawler resolved `fui_sign_in_email_field` and `fui_sign_in_password_field` as `android.widget.EditText` nodes, typed the directive values into both, and submitted via `fui_sign_in_sign_in_button` — along the way also navigating by resource id through sign-up, password recovery, and phone entry, confirming the tagging works generally rather than only where a directive points. Robo's crawling behavior is Google's, not ours, and can change independently of this library; treat this as a snapshot of current behavior rather than a permanent guarantee.
+
+Renaming or removing a tag, or changing the resource id it resolves to, is a breaking change to FirebaseUI's public API — not an internal detail — so a value documented here will not change without a major version bump.
 
 ### Sign Out & Account Deletion
 

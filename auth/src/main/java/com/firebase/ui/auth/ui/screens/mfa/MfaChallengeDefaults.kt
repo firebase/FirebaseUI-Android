@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.screens
+package com.firebase.ui.auth.ui.screens.mfa
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +46,9 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.VerificationCodeValidator
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.VerificationCodeInputField
+import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @Composable
 internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
@@ -55,7 +58,7 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
         VerificationCodeValidator(stringProvider)
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,7 +100,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
             Spacer(modifier = Modifier.height(8.dp))
 
             VerificationCodeInputField(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .testTag(FirebaseAuthTestTags.MfaChallenge.CODE_FIELD),
                 codeLength = 6,
                 validator = verificationCodeValidator,
                 isError = state.error != null,
@@ -114,6 +119,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(
+                        modifier = Modifier.testTag(
+                            FirebaseAuthTestTags.MfaChallenge.RESEND_CODE_BUTTON
+                        ),
                         onClick = { state.onResendCodeClick?.invoke() },
                         enabled = state.onResendCodeClick != null && !state.isLoading && state.resendTimer == 0
                     ) {
@@ -130,6 +138,7 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
                     }
 
                     TextButton(
+                        modifier = Modifier.testTag(FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON),
                         onClick = state.onCancelClick,
                         enabled = !state.isLoading
                     ) {
@@ -140,7 +149,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
                 OutlinedButton(
                     onClick = state.onCancelClick,
                     enabled = !state.isLoading,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(FirebaseAuthTestTags.MfaChallenge.CANCEL_BUTTON)
                 ) {
                     Text(stringProvider.dismissAction)
                 }
@@ -149,7 +160,9 @@ internal fun DefaultMfaChallengeContent(state: MfaChallengeContentState) {
             Button(
                 onClick = state.onVerifyClick,
                 enabled = state.isValid && !state.isLoading,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(FirebaseAuthTestTags.MfaChallenge.VERIFY_BUTTON)
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(

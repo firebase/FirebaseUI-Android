@@ -20,6 +20,7 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
@@ -462,7 +463,7 @@ class AuthMethodPickerTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("AuthMethodPicker LazyColumn")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST)
             .performScrollToNode(hasText(context.getString(R.string.fui_sign_in_anonymously)))
 
         composeTestRule
@@ -494,9 +495,27 @@ class AuthMethodPickerTest {
             )
         }
 
+        // Load-bearing: catches the tag drifting onto a non-clickable wrapper around the button.
         composeTestRule
-            .onNodeWithTag("ContinueAsButton")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON)
             .assertIsDisplayed()
+            .assertHasClickAction()
+    }
+
+    @Test
+    fun `AuthMethodPicker hides ContinueAsButton when there is no lastSignInPreference`() {
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(
+                    AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+                ),
+                onProviderSelected = { selectedProvider = it }
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON)
+            .assertDoesNotExist()
     }
 
     @Test
@@ -518,7 +537,7 @@ class AuthMethodPickerTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ContinueAsButton")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON)
             .assertDoesNotExist()
     }
 
@@ -549,7 +568,7 @@ class AuthMethodPickerTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ContinueAsButton")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON)
             .performClick()
 
         Truth.assertThat(continueAsProvider).isEqualTo(emailProvider)
@@ -578,7 +597,7 @@ class AuthMethodPickerTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ContinueAsButton")
+            .onNodeWithTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON)
             .performClick()
 
         Truth.assertThat(selectedProvider).isEqualTo(emailProvider)

@@ -45,6 +45,9 @@ Tier commands and handoff sequence: [validation checklist](../testing/validation
 - Configuration is Kotlin DSL (`AuthProvider.Email()`, etc.), not 9.x `IdpConfig` builders.
 - Theming uses `AuthUITheme` / Material 3, not XML Auth themes as the primary path.
 - State is reactive (`Flow`-oriented Auth state), not only `AuthStateListener` callbacks.
+- Reauthentication phases share one request-scoped `AuthState.Reauthentication` hierarchy;
+  Compose saves only a request marker/sub-route so Activity recreation resumes the same request
+  and process death reports the lost callback explicitly.
 - Credential Manager integration lives under `credentialmanager/` — treat password-save/retrieve as Auth-critical surface.
 - MFA (SMS/TOTP) has dedicated screens and e2e coverage (`MfaEnrollmentScreenTest`, `MfaChallengeScreenTest`, …).
 

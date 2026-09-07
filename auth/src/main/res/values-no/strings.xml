@@ -116,7 +116,6 @@
     <string name="fui_mfa_step_configure_sms_title" translation_description="Title for SMS MFA configuration step">Konfigurer SMS-bekreftelse</string>
     <string name="fui_mfa_step_configure_totp_title" translation_description="Title for TOTP MFA configuration step">Konfigurer autentiseringsapp</string>
     <string name="fui_mfa_step_verify_factor_title" translation_description="Title for MFA verification step">Bekreft koden din</string>
-    <string name="fui_mfa_step_show_recovery_codes_title" translation_description="Title for recovery codes step">Lagre gjenopprettingskodene dine</string>
 
     <string name="fui_mfa_step_select_factor_helper" translation_description="Helper text for selecting MFA factor">Velg en andre autentiseringsmetode for å sikre kontoen din</string>
     <string name="fui_mfa_step_configure_sms_helper" translation_description="Helper text for SMS configuration">Skriv inn telefonnummeret ditt for å motta bekreftelseskoder</string>
@@ -124,7 +123,6 @@
     <string name="fui_mfa_step_verify_factor_sms_helper" translation_description="Helper text for SMS verification">Skriv inn koden som ble sendt til telefonen din</string>
     <string name="fui_mfa_step_verify_factor_totp_helper" translation_description="Helper text for TOTP verification">Skriv inn koden fra autentiseringsappen din</string>
     <string name="fui_mfa_step_verify_factor_generic_helper" translation_description="Generic helper text for factor verification">Skriv inn bekreftelseskoden din</string>
-    <string name="fui_mfa_step_show_recovery_codes_helper" translation_description="Helper text for recovery codes">Lagre disse kodene på et sikkert sted. Du kan bruke dem til å logge inn hvis du mister tilgang til autentiseringsmetoden din.</string>
 
     <string name="fui_confirm_password_hint">Bekreft passord</string>
     <string name="fui_passwords_do_not_match">Passordene stemmer ikke overens</string>
@@ -165,7 +163,6 @@
     <string name="fui_reauth_required_error">Ny autentisering påkrevd</string>
     <string name="fui_reauth_success_message">Ny autentisering vellykket</string>
     <string name="fui_reauthenticate_action">Autentiser på nytt</string>
-    <string name="fui_recovery_codes_saved_action">Jeg har lagret gjenopprettingskodene mine</string>
     <string name="fui_remove_action">Fjern</string>
     <string name="fui_resend_verification_email_action">Send bekreftelsese-post på nytt</string>
     <string name="fui_secret_key_label">Hemmelig nøkkel</string>

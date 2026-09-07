@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -35,6 +34,7 @@ import com.firebase.ui.auth.testutil.awaitWithLooper
 import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
+import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
@@ -159,7 +159,7 @@ class PhoneAuthScreenTest {
             .performClick()
         composeTestRule.waitForIdle()
         // Select country from list
-        composeTestRule.onNodeWithTag("CountrySelector LazyColumn")
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST)
             .assertIsDisplayed()
             .performScrollToNode(hasText(country.name))
         composeTestRule.onNodeWithText(country.name)
@@ -213,12 +213,12 @@ class PhoneAuthScreenTest {
 
         // Check current page is Verify Phone Number & Enter verification code
         composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber)
-        val textFields = composeTestRule.onAllNodes(hasSetTextAction())
-        // Enter each digit into its corresponding field
-        phoneCode.forEachIndexed { index, digit ->
-            composeTestRule.waitForIdle()
-            textFields[index].performTextInput(digit.toString())
-        }
+        // The whole code goes in via the published tag in one call, rather than selecting boxes
+        // positionally out of onAllNodes(hasSetTextAction()).
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+            .performTextInput(phoneCode)
         composeTestRule.waitForIdle()
         // Submit verification code
         composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
@@ -484,11 +484,13 @@ class PhoneAuthScreenTest {
 
         // Step 5: enter verification code
         println("TEST: Entering verification code: $phoneCode")
-        val textFields = composeTestRule.onAllNodes(hasSetTextAction())
-        phoneCode.forEachIndexed { index, digit ->
-            composeTestRule.waitForIdle()
-            textFields[index].performTextInput(digit.toString())
-        }
+        // The whole code goes in via the published tag in one call, rather than selecting boxes
+        // positionally out of onAllNodes(hasSetTextAction()).
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNodeWithTag(FirebaseAuthTestTags.VerificationCode.CODE_FIELD)
+            .performTextInput(phoneCode)
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText(stringProvider.verifyPhoneNumber.uppercase())
             .performScrollTo()

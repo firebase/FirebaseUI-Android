@@ -18,23 +18,48 @@ class EmulatorAuthApi(
      * This function calls the emulator's clear data endpoint to remove all accounts,
      * OOB codes, and other authentication data. This ensures test isolation by providing
      * a clean slate for each test.
+     *
+     * Retries on transient failures (e.g. a loaded CI runner momentarily failing to respond)
+     * and throws if the emulator still can't be cleared, so a broken reset fails the test
+     * loudly instead of silently leaking stale accounts into the next test.
      */
     fun clearEmulatorData() {
-        try {
-            clearAccounts()
-        } catch (e: Exception) {
-            println("WARNING: Exception while clearing emulator data: ${e.message}")
+        val maxRetries = 3
+        var lastError: Exception? = null
+        for (attempt in 1..maxRetries) {
+            try {
+                clearAccounts()
+                return
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+                throw e
+            } catch (e: Exception) {
+                lastError = e
+                println("WARNING: Failed to clear emulator data (attempt $attempt/$maxRetries): ${e.message}")
+                if (attempt < maxRetries) {
+                    try {
+                        Thread.sleep(500L * attempt)
+                    } catch (ie: InterruptedException) {
+                        Thread.currentThread().interrupt()
+                        throw ie
+                    }
+                }
+            }
         }
+        throw IllegalStateException(
+            "Failed to clear Firebase Auth Emulator data after $maxRetries attempts. " +
+                    "Aborting test to avoid running against stale emulator state.",
+            lastError
+        )
     }
 
     fun clearAccounts() {
         httpClient.delete("/emulator/v1/projects/$projectId/accounts") { connection ->
             val responseCode = connection.responseCode
             if (responseCode !in 200..299) {
-                println("WARNING: Failed to clear emulator data: HTTP $responseCode")
-            } else {
-                println("TEST: Cleared emulator data")
+                throw IllegalStateException("Failed to clear emulator data: HTTP $responseCode")
             }
+            println("TEST: Cleared emulator data")
         }
     }
 

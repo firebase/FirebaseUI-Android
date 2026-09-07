@@ -15,21 +15,54 @@
 package com.firebase.ui.auth.configuration
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.navigation.NavBackStackEntry
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.scene.Scene
 
 /**
  * Container for screen transition animations used in Firebase Auth UI.
- * 
- * @property enterTransition Transition when entering a new screen
- * @property exitTransition Transition when exiting current screen
- * @property popEnterTransition Transition when returning to previous screen (back navigation)
- * @property popExitTransition Transition when exiting during back navigation
+ *
+ * Each spec is an [AnimatedContentTransitionScope] receiver on [Scene]`<`[NavKey]`>` returning a
+ * single [ContentTransform], pairing the enter and exit halves with `togetherWith`. To vary the
+ * animation per destination, read [com.firebase.ui.auth.ui.screens.authRoute] off `initialState`
+ * / `targetState`.
+ *
+ * @property transitionSpec Forward navigation.
+ * @property popTransitionSpec Back navigation.
+ * @property predictivePopTransitionSpec Predictive-back gesture. Its `Int` is the swipe edge:
+ * [androidx.navigationevent.NavigationEvent.EDGE_LEFT] (`0`),
+ * [androidx.navigationevent.NavigationEvent.EDGE_RIGHT] (`1`) or
+ * [androidx.navigationevent.NavigationEvent.EDGE_NONE] (`2`) for a back from no edge at all. Left
+ * null it falls back to the library's default cross-fade, not to [popTransitionSpec]. It runs when
+ * the gesture **starts**, not when a back navigation completes, so any side effect placed in it
+ * (analytics, logging a screen change) also fires for gestures the user goes on to cancel.
+ *
+ * @since 10.0.0
  */
 data class AuthUITransitions(
-    val enterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition)? = null,
-    val exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition)? = null,
-    val popEnterTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition)? = null,
-    val popExitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition)? = null,
+    val transitionSpec:
+    (AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform)? = null,
+    val popTransitionSpec:
+    (AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform)? = null,
+    val predictivePopTransitionSpec:
+    (AnimatedContentTransitionScope<Scene<NavKey>>.(Int) -> ContentTransform)? = null,
 )
+
+private const val DEFAULT_TRANSITION_MILLIS = 700
+
+/** The cross-fade every auth surface animates with when the host configured no spec of its own. */
+internal val DefaultAuthContentTransform:
+    AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform = {
+        fadeIn(animationSpec = tween(DEFAULT_TRANSITION_MILLIS)) togetherWith
+                fadeOut(animationSpec = tween(DEFAULT_TRANSITION_MILLIS))
+    }
+
+/** [DefaultAuthContentTransform] at the predictive-pop arity. */
+internal val DefaultAuthPredictivePopContentTransform:
+    AnimatedContentTransitionScope<Scene<NavKey>>.(Int) -> ContentTransform = {
+        DefaultAuthContentTransform()
+    }

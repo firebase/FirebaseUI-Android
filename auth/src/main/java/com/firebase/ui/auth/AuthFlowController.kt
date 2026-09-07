@@ -129,6 +129,8 @@ class AuthFlowController internal constructor(
      * - [AuthState.Aborted] - The whole flow was ended via [cancel]
      * - [AuthState.RequiresMfa] - Multi-factor authentication required
      * - [AuthState.RequiresEmailVerification] - Email verification required
+     * - [AuthState.Reauthentication] - A reauthentication [FirebaseAuthScreen] is driving; the
+     *   states above are reported as its library-owned phases until it ends
      */
     val authStateFlow: Flow<AuthState>
         get() {
