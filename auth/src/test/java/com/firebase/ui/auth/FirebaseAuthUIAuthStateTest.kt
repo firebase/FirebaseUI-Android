@@ -815,6 +815,47 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     /**
+     * A failed retry must not read as a success on its way to being reported. The user is still
+     * signed in, so the session state is an [AuthState.Success] that says nothing about the
+     * operation — and a collector acting on emissions would act on the wrong one.
+     */
+    @Test
+    fun `a retry that fails never publishes a success on the way to the error`() = runTest {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
+        val cause = RuntimeException("Network error")
+        var callCount = 0
+
+        val call = launch {
+            runCatching {
+                authUI.withReauth(context) {
+                    if (callCount++ == 0) throw FirebaseAuthRecentLoginRequiredException(
+                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
+                    )
+                    throw cause
+                }
+            }
+        }
+        runCurrent()
+        val state = requireNotNull(authUI.pendingReauth.value)
+
+        authUI.updateAuthState(AuthState.Loading("Finishing that action..."))
+        val seen = mutableListOf<AuthState>()
+        val collector = launch { authUI.authStateFlow().collect { seen += it } }
+        runCurrent()
+        seen.clear()
+
+        state.request.resolve()
+        call.join()
+        runCurrent()
+        collector.cancel()
+
+        assertThat(seen).isNotEmpty()
+        assertThat(seen.filterIsInstance<AuthState.Success>()).isEmpty()
+        assertThat(seen.last()).isInstanceOf(AuthState.Error::class.java)
+    }
+
+    /**
      * A decline reaches the caller as a throw rather than a quiet return. "You backed out" and
      * "your operation ran" are different outcomes, and a caller that cannot tell them apart has to
      * guess whether its work happened.
