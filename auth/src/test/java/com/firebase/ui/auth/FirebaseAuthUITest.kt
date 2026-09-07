@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth
 
+import kotlinx.coroutines.test.runCurrent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -643,14 +644,17 @@ class FirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        // Perform delete and expect mapped exception
-        try {
-            instance.delete(context)
-            assertThat(false).isTrue() // Should not reach here
-        } catch (e: AuthException.InvalidCredentialsException) {
-            assertThat(e.message).contains("Recent login required")
-            assertThat(e.cause).isEqualTo(recentLoginException)
-        }
+        // Raises a request and waits, rather than throwing a mapped exception.
+        val call = launch { runCatching { instance.delete(context) } }
+        runCurrent()
+
+        val state = requireNotNull(instance.pendingReauth.value)
+        assertThat(state.user).isEqualTo(mockUser)
+        assertThat(state.request.hasPendingOperation).isTrue()
+        assertThat(call.isActive).isTrue()
+
+        state.request.decline()
+        call.join()
     }
 
     @Test

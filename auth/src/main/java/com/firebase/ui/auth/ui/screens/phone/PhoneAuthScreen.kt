@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
+import com.firebase.ui.auth.rememberAuthFlowScope
 import android.content.Context
 import android.util.Log
 import androidx.activity.compose.LocalActivity
@@ -147,6 +148,16 @@ fun PhoneAuthScreen(
     onNavigateToStep: ((PhoneAuthStep) -> Unit)? = null,
     onNavigateBack: (() -> Unit)? = null,
     flowState: PhoneAuthFlowState? = null,
+    /**
+     * Where a consumed one-off notification leaves the flow. Null retracts to [AuthState.Idle];
+     * reauthentication passes its own, returning the request to provider selection.
+     */
+    onNotificationConsumed: (() -> Unit)? = null,
+    /**
+     * A credential attempt is starting. Null retracts to [AuthState.Idle]; reauthentication passes
+     * its own, moving the request to its authenticating phase.
+     */
+    onAttemptStarted: (() -> Unit)? = null,
     content: @Composable ((PhoneAuthContentState) -> Unit)? = null,
 ) {
     require(
@@ -214,7 +225,9 @@ fun PhoneAuthScreen(
         }
     }
 
-    val currentAuthState = remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
+    val authFlowScope = rememberAuthFlowScope(authUI, configuration)
+    // Under a reauthentication request this is that request's phase, not the host's state.
+    val currentAuthState = authFlowScope.state
     val authState by currentAuthState
     val isLoading = authState is AuthState.Loading ||
         authState is AuthState.Reauthentication.Authenticating
@@ -224,12 +237,12 @@ fun PhoneAuthScreen(
     //
     // Only an ordinary Loading is retracted here. Under a reauthentication request the pending
     // Loading is published as Reauthentication.Authenticating, which the reauth flow's own teardown
-    // owns; and were this to write anyway, updateAuthState folds Idle back into the armed request
+    // owns; and were this to write anyway, updateAuthState folds Idle back into the outstanding request
     // rather than dropping it.
     DisposableEffect(authUI) {
         onDispose {
             if (currentAuthState.value is AuthState.Loading) {
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
         }
     }
@@ -307,25 +320,20 @@ fun PhoneAuthScreen(
                     Log.d("PhoneAuthScreen", "Suppressed auto sign-in: manual submit in flight")
                     // Restoring the submit's Loading both consumes the credential (so it can't
                     // leak to a freshly composed screen) and keeps Verify/Resend disabled.
-                    authUI.updateAuthState(
+                    authFlowScope.emit(
                         AuthState.Loading(configuration.stringProvider.loadingSigningInWithPhone)
                     )
                 } else {
                     consumedAutoCredential.value = credential
                     // Consumed before the async sign-in call so it can't be clobbered by that
                     // call's own state.
-                    if (state is AuthState.Reauthentication.SmsAutoVerified) {
-                        authUI.updateReauthentication(state.requestId) { it.attemptStarted() }
-                    } else {
-                        authUI.updateAuthState(AuthState.Idle)
-                    }
+                    onAttemptStarted?.invoke() ?: authFlowScope.emit(AuthState.Idle)
                     // The flow's scope, not this step's: a transition can dispose the step this
                     // ran from before the sign-in it started has landed.
                     verificationScope.launch {
                         try {
-                            authUI.signInWithPhoneAuthCredential(
+                            authFlowScope.signInWithPhoneAuthCredential(
                                 context = context,
-                                config = configuration,
                                 credential = credential
                             )
                         } catch (e: Exception) {
@@ -365,13 +373,13 @@ fun PhoneAuthScreen(
                     )
                 }
                 // Consumed immediately so this doesn't leak to a freshly created screen.
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.Cancelled -> {
                 onCancel()
                 // Consumed so this doesn't leak to a freshly created screen.
-                authUI.updateAuthState(AuthState.Idle)
+                authFlowScope.emit(AuthState.Idle)
             }
 
             is AuthState.Reauthentication.AttemptFailed -> {
@@ -419,7 +427,7 @@ fun PhoneAuthScreen(
                 val plural = if (remainingCooldownSeconds != 1L) "s" else ""
                 // Rejected before anything is cancelled: a duplicate tap must not tear down the
                 // healthy in-flight verification it was rejected in favour of.
-                authUI.updateAuthState(
+                authFlowScope.emit(
                     AuthState.Error(
                         AuthException.PhoneVerificationCooldownException(
                             message = "Please wait $remainingCooldownSeconds second$plural " +
@@ -440,11 +448,10 @@ fun PhoneAuthScreen(
                 // to code entry, and cancelVerification is what ends it.
                 verificationJob.value = verificationScope.launch {
                     try {
-                        authUI.verifyPhoneNumber(
+                        authFlowScope.verifyPhoneNumber(
                             provider = provider,
                             activity = activity,
                             phoneNumber = fullPhoneNumber,
-                            config = configuration,
                         )
                     } catch (e: Exception) {
                         // Error will be handled by authState flow
@@ -463,9 +470,8 @@ fun PhoneAuthScreen(
             coroutineScope.launch {
                 try {
                     verificationId.value?.let { id ->
-                        authUI.submitVerificationCode(
+                        authFlowScope.submitVerificationCode(
                             context = context,
-                            config = configuration,
                             verificationId = id,
                             code = verificationCodeValue.value
                         )
@@ -487,11 +493,10 @@ fun PhoneAuthScreen(
                     try {
                         // The timer is restarted by the PhoneNumberVerificationRequired branch
                         // above: this call only returns once the verification window closes.
-                        authUI.verifyPhoneNumber(
+                        authFlowScope.verifyPhoneNumber(
                             activity = activity,
                             provider = provider,
                             phoneNumber = fullPhoneNumber,
-                            config = configuration,
                             forceResendingToken = forceResendingToken.value,
                         )
                     } catch (e: Exception) {
@@ -504,15 +509,8 @@ fun PhoneAuthScreen(
         onChangeNumberClick = {
             cancelVerification("changing phone number")
             // Nothing replaces the cancelled attempt here, so this handler retracts its Loading -
-            // as the armed request's provider-selection phase when one is running, Idle otherwise.
-            val currentReauthentication = authState as? AuthState.Reauthentication
-            if (currentReauthentication != null) {
-                authUI.updateReauthentication(currentReauthentication.requestId) {
-                    it.returnedToProviderSelection()
-                }
-            } else {
-                authUI.updateAuthState(AuthState.Idle)
-            }
+            // as the outstanding request's provider-selection phase when one is running, Idle otherwise.
+            onNotificationConsumed?.invoke() ?: authFlowScope.emit(AuthState.Idle)
             verificationJob.value = null
             isSubmittingCode.value = false
             navigateBack()

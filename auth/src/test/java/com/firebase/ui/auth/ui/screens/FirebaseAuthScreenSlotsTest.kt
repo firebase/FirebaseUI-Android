@@ -244,7 +244,7 @@ class FirebaseAuthScreenSlotsTest {
             )
         }
 
-        authUI.updateAuthState(AuthState.Reauthentication.Required(mockUser))
+        authUI.pendingReauth.value = AuthState.Reauthentication.Required(mockUser)
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("custom_reauth_picker").assertIsDisplayed()

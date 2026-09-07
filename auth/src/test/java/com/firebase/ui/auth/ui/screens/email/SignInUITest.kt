@@ -487,9 +487,9 @@ class SignInUITest {
 
     /**
      * The asymmetry between the two out-of-band email routes during reauthentication. A password
-     * reset email leaves the reauth sheet up and the request armed, so blocking it only stranded a
+     * reset email leaves the reauth sheet up and the request outstanding, so blocking it only stranded a
      * user who had forgotten their password with no route but dismissal. An email *link* reopens
-     * the app with nothing armed, so completing it reports an interruption instead of finishing the
+     * the app with no request outstanding, so completing it reports an interruption instead of finishing the
      * pending operation — useless, and it stays hidden.
      */
     @Test
