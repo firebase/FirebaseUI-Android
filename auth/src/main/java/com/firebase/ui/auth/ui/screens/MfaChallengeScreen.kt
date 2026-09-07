@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.screens.mfa
+package com.firebase.ui.auth.ui.screens
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable

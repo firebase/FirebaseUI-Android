@@ -40,6 +40,7 @@ class MfaConfigurationTest {
 
         assertThat(config.allowedFactors).containsExactly(MfaFactor.Sms, MfaFactor.Totp)
         assertThat(config.requireEnrollment).isFalse()
+        assertThat(config.enableRecoveryCodes).isTrue()
     }
 
     @Test
@@ -85,14 +86,25 @@ class MfaConfigurationTest {
     }
 
     @Test
-    fun `MfaConfiguration with both parameters customized`() {
+    fun `MfaConfiguration with enableRecoveryCodes disabled`() {
+        val config = MfaConfiguration(
+            enableRecoveryCodes = false
+        )
+
+        assertThat(config.enableRecoveryCodes).isFalse()
+    }
+
+    @Test
+    fun `MfaConfiguration with all custom values`() {
         val config = MfaConfiguration(
             allowedFactors = listOf(MfaFactor.Sms),
-            requireEnrollment = true
+            requireEnrollment = true,
+            enableRecoveryCodes = false
         )
 
         assertThat(config.allowedFactors).containsExactly(MfaFactor.Sms)
         assertThat(config.requireEnrollment).isTrue()
+        assertThat(config.enableRecoveryCodes).isFalse()
     }
 
     // =============================================================================================

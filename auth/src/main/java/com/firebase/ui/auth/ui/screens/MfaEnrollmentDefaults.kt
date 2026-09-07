@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.screens.mfa
+package com.firebase.ui.auth.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +46,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,10 +57,8 @@ import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.toMfaErrorMessage
-import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.QrCodeImage
 import com.firebase.ui.auth.ui.components.ReauthenticationDialog
-import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.ui.screens.phone.EnterPhoneNumberUI
 import com.firebase.ui.auth.ui.screens.phone.EnterVerificationCodeUI
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
@@ -133,8 +130,6 @@ internal fun DefaultMfaEnrollmentContent(
         )
     }
 
-    // Each step flags itself with exposeTestTagsAsResourceIds() because this screen is public and
-    // can be called standalone, with no flagged ancestor of ours above it.
     Box(modifier = Modifier.fillMaxSize()) {
         when (state.step) {
             MfaEnrollmentStep.SelectFactor -> {
@@ -213,6 +208,16 @@ internal fun DefaultMfaEnrollmentContent(
                     null -> Unit
                 }
             }
+
+            MfaEnrollmentStep.ShowRecoveryCodes -> {
+                ShowRecoveryCodesUI(
+                    recoveryCodes = state.recoveryCodes.orEmpty(),
+                    onDoneClick = state.onCodesSavedClick,
+                    isLoading = state.isLoading,
+                    error = state.error,
+                    stringProvider = stringProvider
+                )
+            }
         }
 
         SnackbarHost(
@@ -247,7 +252,6 @@ private fun SelectFactorUI(
     val factorsToEnroll = availableFactors.filter { it !in enrolledFactorIds }
 
     Scaffold(
-        modifier = Modifier.exposeTestTagsAsResourceIds(),
         topBar = {
             TopAppBar(
                 title = { Text(stringProvider.mfaManageFactorsTitle) },
@@ -307,20 +311,11 @@ private fun SelectFactorUI(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Keyed per factor because a user enrolled in neither factor sees both buttons
-                // at once, and a shared tag would collide.
                 factorsToEnroll.forEach { factor ->
                     Button(
                         onClick = { onFactorSelected(factor) },
                         enabled = !isLoading,
-                        modifier = when (factor) {
-                            MfaFactor.Sms -> Modifier
-                                .fillMaxWidth()
-                                .testTag(FirebaseAuthTestTags.MfaEnrollment.ENROLL_SMS_BUTTON)
-                            MfaFactor.Totp -> Modifier
-                                .fillMaxWidth()
-                                .testTag(FirebaseAuthTestTags.MfaEnrollment.ENROLL_TOTP_BUTTON)
-                        }
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         when (factor) {
                             MfaFactor.Sms -> Text(stringProvider.mfaStepConfigureSmsTitle)
@@ -340,7 +335,6 @@ private fun SelectFactorUI(
 
             onSkipClick?.let {
                 TextButton(
-                    modifier = Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.SKIP_BUTTON),
                     onClick = it,
                     enabled = !isLoading
                 ) {
@@ -400,18 +394,9 @@ private fun EnrolledFactorItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            // Same collision risk as the enroll buttons above (one item per enrolled factor),
-            // resolved the same way: key the tag off the factor type.
             OutlinedButton(
                 onClick = onRemove,
                 enabled = enabled,
-                modifier = when (factorInfo) {
-                    is PhoneMultiFactorInfo ->
-                        Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.REMOVE_SMS_BUTTON)
-                    is TotpMultiFactorInfo ->
-                        Modifier.testTag(FirebaseAuthTestTags.MfaEnrollment.REMOVE_TOTP_BUTTON)
-                    else -> Modifier
-                },
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 )
@@ -433,7 +418,7 @@ private fun ConfigureTotpUI(
     error: String?,
     stringProvider: AuthUIStringProvider
 ) {
-    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -494,9 +479,7 @@ private fun ConfigureTotpUI(
                 TextButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag(FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_BACK_BUTTON)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(stringProvider.backAction)
                 }
@@ -504,9 +487,7 @@ private fun ConfigureTotpUI(
                 Button(
                     onClick = onContinueClick,
                     enabled = !isLoading && isValid,
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag(FirebaseAuthTestTags.MfaEnrollment.CONFIGURE_TOTP_CONTINUE_BUTTON)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(stringProvider.continueText)
                 }
@@ -526,7 +507,7 @@ private fun VerifyTotpUI(
     error: String?,
     stringProvider: AuthUIStringProvider
 ) {
-    Scaffold(modifier = Modifier.exposeTestTagsAsResourceIds()) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -564,9 +545,7 @@ private fun VerifyTotpUI(
                 label = { Text(stringProvider.verificationCodeLabel) },
                 enabled = !isLoading,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_CODE_FIELD)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Row(
@@ -576,9 +555,7 @@ private fun VerifyTotpUI(
                 OutlinedButton(
                     onClick = onBackClick,
                     enabled = !isLoading,
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BACK_BUTTON)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(stringProvider.backAction)
                 }
@@ -586,12 +563,77 @@ private fun VerifyTotpUI(
                 Button(
                     onClick = onVerifyClick,
                     enabled = !isLoading && isValid,
-                    modifier = Modifier
-                        .weight(1f)
-                        .testTag(FirebaseAuthTestTags.MfaEnrollment.VERIFY_TOTP_BUTTON)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(stringProvider.verifyAction)
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShowRecoveryCodesUI(
+    recoveryCodes: List<String>,
+    onDoneClick: () -> Unit,
+    isLoading: Boolean,
+    error: String?,
+    stringProvider: AuthUIStringProvider
+) {
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = stringProvider.mfaStepShowRecoveryCodesTitle,
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = stringProvider.mfaStepShowRecoveryCodesHelper,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                recoveryCodes.forEach { code ->
+                    Text(
+                        text = code,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            Button(
+                onClick = onDoneClick,
+                enabled = !isLoading,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringProvider.recoveryCodesSavedAction)
             }
         }
     }

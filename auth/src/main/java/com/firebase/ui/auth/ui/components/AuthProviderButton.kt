@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,8 +66,7 @@ import com.firebase.ui.auth.configuration.theme.ProviderStyleDefaults
  * )
  * ```
  *
- * @param modifier Applied to the button itself; the content row always fills available width, so
- * constrain sizing from the parent layout instead.
+ * @param modifier A modifier for the button
  * @param provider The provider to represent.
  * @param onClick A callback when the button is clicked
  * @param enabled If the button is enabled. Defaults to true.
@@ -120,7 +118,7 @@ fun AuthProviderButton(
         enabled = enabled,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {

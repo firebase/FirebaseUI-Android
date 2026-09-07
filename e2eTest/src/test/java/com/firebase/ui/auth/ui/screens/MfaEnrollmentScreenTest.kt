@@ -38,7 +38,6 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.getHelperText
 import com.firebase.ui.auth.mfa.getTitle
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
-import com.firebase.ui.auth.ui.screens.mfa.MfaEnrollmentScreen
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactor
@@ -432,6 +431,18 @@ class MfaEnrollmentScreenTest {
                     }
                     Button(onClick = state.onBackClick) {
                         Text("BACK")
+                    }
+                }
+
+                MfaEnrollmentStep.ShowRecoveryCodes -> {
+                    state.recoveryCodes?.forEach { code ->
+                        Text(code)
+                    }
+                    Button(
+                        onClick = state.onCodesSavedClick,
+                        enabled = !state.isLoading
+                    ) {
+                        Text("DONE")
                     }
                 }
             }

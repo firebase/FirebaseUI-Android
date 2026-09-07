@@ -43,9 +43,7 @@ import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
 import com.firebase.ui.auth.configuration.auth_provider.Provider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
-import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthProviderButton
-import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.util.SignInPreferenceManager
 
 /**
@@ -119,7 +117,7 @@ fun AuthMethodPicker(
             termsConfiguration.accepted
 
     Column(
-        modifier = modifier.exposeTestTagsAsResourceIds()
+        modifier = modifier
     ) {
         logo?.let {
             Image(
@@ -146,7 +144,7 @@ fun AuthMethodPicker(
                     modifier = Modifier
                         .widthIn(max = 400.dp)
                         .padding(horizontal = 24.dp)
-                        .testTag(FirebaseAuthTestTags.MethodPicker.PROVIDER_LIST),
+                        .testTag("AuthMethodPicker LazyColumn"),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     // Show "Continue as..." button if last sign-in preference exists
@@ -241,7 +239,7 @@ private fun ContinueAsButton(
     AuthProviderButton(
         modifier = Modifier
             .fillMaxWidth()
-            .testTag(FirebaseAuthTestTags.MethodPicker.CONTINUE_AS_BUTTON),
+            .testTag("ContinueAsButton"),
         onClick = onClick,
         enabled = enabled,
         provider = provider,
