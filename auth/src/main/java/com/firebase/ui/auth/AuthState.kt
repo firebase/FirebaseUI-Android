@@ -21,8 +21,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.MultiFactorResolver
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import kotlinx.coroutines.CompletableDeferred
-import java.util.UUID
 
 /**
  * Represents the authentication state in Firebase Auth UI.
@@ -30,8 +28,7 @@ import java.util.UUID
  * This class encapsulates all possible authentication states that can occur during
  * the authentication flow, including success, error, and intermediate states.
  *
- * Instances come from the companion object factory methods or a subclass constructor; states only
- * the library may publish have an `internal` constructor.
+ * Use the companion object factory methods or specific subclass constructors to create instances.
  *
  * @since 10.0.0
  */
@@ -79,14 +76,11 @@ abstract class AuthState private constructor() {
      * @property result The [AuthResult] containing the authenticated user, may be null if not available
      * @property user The authenticated [FirebaseUser]
      * @property isNewUser Whether this is a newly created user account
-     * @property reauthenticatedUid The uid this success re-proved, or `null` if it is not a
-     * reauthentication. Settable only from within the library.
      */
-    class Success internal constructor(
+    class Success(
         val result: AuthResult?,
         val user: FirebaseUser,
-        val isNewUser: Boolean = false,
-        val reauthenticatedUid: String? = null
+        val isNewUser: Boolean = false
     ) : AuthState() {
         override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
@@ -94,21 +88,18 @@ abstract class AuthState private constructor() {
             if (other !is Success) return false
             return result == other.result &&
                     user == other.user &&
-                    isNewUser == other.isNewUser &&
-                    reauthenticatedUid == other.reauthenticatedUid
+                    isNewUser == other.isNewUser
         }
 
         override fun hashCode(): Int {
             var result1 = result?.hashCode() ?: 0
             result1 = 31 * result1 + user.hashCode()
             result1 = 31 * result1 + isNewUser.hashCode()
-            result1 = 31 * result1 + (reauthenticatedUid?.hashCode() ?: 0)
             return result1
         }
 
         override fun toString(): String =
-            "AuthState.Success(result=$result, user=$user, isNewUser=$isNewUser, " +
-                    "reauthenticatedUid=$reauthenticatedUid)"
+            "AuthState.Success(result=$result, user=$user, isNewUser=$isNewUser)"
     }
 
     /**
@@ -257,208 +248,33 @@ abstract class AuthState private constructor() {
     }
 
     /**
-     * A state in the lifecycle of one reauthentication request. Every state carries a stable
-     * [requestId], so recreation can tell a continuation from a new operation for the same user.
+     * Reauthentication is required before a sensitive operation (e.g. delete account, change email)
+     * can proceed. Use [FirebaseAuthUI.createReauthFlow] to launch the reauthentication flow.
+     *
+     * @property user The [FirebaseUser] that needs to reauthenticate
+     * @property reason Optional human-readable reason to show the user
      */
-    sealed class Reauthentication : AuthState() {
-        abstract val requestId: String
-        abstract val userUid: String
-        internal abstract val request: Request?
+    class ReauthenticationRequired(
+        val user: FirebaseUser,
+        val reason: String? = null,
+        // Not included in equals/hashCode — lambdas have no meaningful equality.
+        val retryOperation: (suspend (android.content.Context) -> Unit)? = null,
+    ) : AuthState() {
         override val isNotification: Boolean = false
-
-        /** Process-local data shared by every resumable state of one reauthentication request. */
-        internal class Request(
-            val requestId: String,
-            val user: FirebaseUser,
-            val reason: String?,
-            /**
-             * Where the caller awaiting this request is parked, or null when nobody is — a
-             * standalone flow from [FirebaseAuthUI.createReauthFlow] has no operation behind it.
-             */
-            val resolver: CompletableDeferred<Boolean>? = null,
-        ) {
-            /** Whether a caller is waiting on this request to decide a pending operation. */
-            val hasPendingOperation: Boolean get() = resolver != null
-
-            /** Whether the awaiting caller is still there to resume. */
-            val isResumable: Boolean get() = resolver?.isActive != false
-
-            /** Credentials were accepted: the caller resumes and retries. Idempotent. */
-            fun resolve() {
-                resolver?.complete(true)
-            }
-
-            /**
-             * The request ended without proof. Completed with a value, not an exception: failing a
-             * parented Deferred would cancel the caller's scope, so [FirebaseAuthUI.withReauth]
-             * throws in its own frame instead.
-             */
-            fun decline() {
-                resolver?.complete(false)
-            }
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ReauthenticationRequired) return false
+            return user == other.user && reason == other.reason
         }
 
-        /**
-         * Reauthentication is required before a sensitive operation (e.g. delete account, change
-         * email) can proceed. Use [FirebaseAuthUI.createReauthFlow] to launch a standalone
-         * reauthentication flow.
-         *
-         * @property requestId Stable identifier for this sensitive operation
-         * @property user The [FirebaseUser] that needs to reauthenticate
-         * @property reason Optional human-readable reason to show the user
-         */
-        class Required internal constructor(
-            override val request: Request,
-        ) : Reauthentication() {
-            /** A request with nobody waiting on it, as a standalone reauthentication flow has. */
-            internal constructor(
-                user: FirebaseUser,
-                reason: String? = null,
-            ) : this(
-                Request(
-                    requestId = UUID.randomUUID().toString(),
-                    user = user,
-                    reason = reason,
-                )
-            )
-
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-            val user: FirebaseUser get() = request.user
-            val reason: String? get() = request.reason
-
-            /**
-             * Identity is the request. Snapshot state and [FirebaseAuthUI.pendingReauth] both
-             * conflate equal values, so a transition that must be observed changes the phase type.
-             */
-            override fun equals(other: Any?): Boolean =
-                other is Required && requestId == other.requestId
-
-            override fun hashCode(): Int = requestId.hashCode()
-
-            override fun toString(): String =
-                "AuthState.Reauthentication.Required(requestId=$requestId, " +
-                        "user=$user, reason=$reason)"
+        override fun hashCode(): Int {
+            var result = user.hashCode()
+            result = 31 * result + (reason?.hashCode() ?: 0)
+            return result
         }
 
-        /** The user has selected a provider and the library is exchanging credentials. */
-        internal class Authenticating(
-            override val request: Request,
-            val message: String? = null,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** The most recent credential attempt failed, but the request remains outstanding. */
-        internal class AttemptFailed(
-            override val request: Request,
-            val exception: Exception,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** A credential attempt requires MFA, which reauthentication UI does not yet support. */
-        internal class RequiresMfa(
-            override val request: Request,
-            val resolver: MultiFactorResolver,
-            val hint: String? = null,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** Phone verification sent a code and is waiting for the user to enter it. */
-        internal class PhoneNumberVerificationRequired(
-            override val request: Request,
-            val verificationId: String,
-            val forceResendingToken: PhoneAuthProvider.ForceResendingToken,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** Phone verification obtained a credential automatically. */
-        internal class SmsAutoVerified(
-            override val request: Request,
-            val credential: PhoneAuthCredential,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** A password-reset email was sent from the reauthentication email sub-flow. */
-        internal class PasswordResetLinkSent(
-            override val request: Request,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** A sign-in link was sent from the reauthentication email sub-flow. */
-        internal class EmailSignInLinkSent(
-            override val request: Request,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /** Credentials were accepted for the request's user. Terminal for the exchange. */
-        internal class Succeeded(
-            override val request: Request,
-            val success: Success,
-        ) : Reauthentication() {
-            override val requestId: String get() = request.requestId
-            override val userUid: String get() = request.user.uid
-        }
-
-        /**
-         * A provider attempt is about to run, clearing any previously surfaced failure. Null once
-         * credentials were accepted, so a late attempt cannot rewind a finished request.
-         */
-        internal fun attemptStarted(): AuthState? = when (this) {
-            is Required,
-            is Authenticating,
-            is AttemptFailed,
-            is RequiresMfa,
-            is PhoneNumberVerificationRequired,
-            is SmsAutoVerified,
-            is PasswordResetLinkSent,
-            is EmailSignInLinkSent,
-                -> request?.let { Authenticating(it) }
-
-            else -> null
-        }
-
-        /**
-         * The active sub-flow was consumed, so the request returns to provider selection. Null from
-         * a surfaced failure: only [attemptStarted] clears one, when a real attempt replaces it.
-         */
-        internal fun returnedToProviderSelection(): AuthState? = when (this) {
-            is Authenticating,
-            is PhoneNumberVerificationRequired,
-            is SmsAutoVerified,
-            is PasswordResetLinkSent,
-            is EmailSignInLinkSent,
-                -> request?.let { Required(it) }
-
-            else -> null
-        }
-
-        /**
-         * The user backed out of an in-flight provider sub-flow. Null in every other phase, so a
-         * surfaced failure or a finished request is never rewound to provider selection.
-         */
-        internal fun attemptCancelled(): AuthState? = when (this) {
-            is Authenticating,
-            is RequiresMfa,
-            is PhoneNumberVerificationRequired,
-            is SmsAutoVerified,
-                -> request?.let { Required(it) }
-
-            else -> null
-        }
+        override fun toString(): String =
+            "AuthState.ReauthenticationRequired(user=$user, reason=$reason)"
     }
 
     /**

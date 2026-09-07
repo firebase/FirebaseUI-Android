@@ -39,7 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,11 +49,9 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.configuration.validators.PhoneNumberValidator
 import com.firebase.ui.auth.data.CountryData
-import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.CountrySelector
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
-import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.util.CountryUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +82,7 @@ fun EnterPhoneNumberUI(
     }
 
     Scaffold(
-        modifier = modifier.exposeTestTagsAsResourceIds(),
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -93,10 +90,7 @@ fun EnterPhoneNumberUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(
-                            onClick = onNavigateBack,
-                            modifier = Modifier.testTag(FirebaseAuthTestTags.PhoneNumber.BACK_BUTTON)
-                        ) {
+                        IconButton(onClick = onNavigateBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -117,7 +111,6 @@ fun EnterPhoneNumberUI(
             Text(stringProvider.enterPhoneNumberTitle)
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
-                modifier = Modifier.testTag(FirebaseAuthTestTags.PhoneNumber.PHONE_NUMBER_FIELD),
                 value = phoneNumber,
                 validator = phoneNumberValidator,
                 enabled = !isLoading,
@@ -129,8 +122,6 @@ fun EnterPhoneNumberUI(
                 ),
                 leadingIcon = {
                     CountrySelector(
-                        modifier = Modifier
-                            .testTag(FirebaseAuthTestTags.PhoneNumber.COUNTRY_SELECTOR_BUTTON),
                         selectedCountry = selectedCountry,
                         onCountrySelected = onCountrySelected,
                         enabled = !isLoading,
@@ -148,8 +139,6 @@ fun EnterPhoneNumberUI(
                     .align(Alignment.End),
             ) {
                 Button(
-                    modifier = Modifier
-                        .testTag(FirebaseAuthTestTags.PhoneNumber.SEND_CODE_BUTTON),
                     onClick = onSendCodeClick,
                     enabled = !isLoading && isFormValid.value,
                 ) {

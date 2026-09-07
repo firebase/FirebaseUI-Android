@@ -19,6 +19,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.configuration.MfaFactor
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,11 +42,12 @@ class MfaEnrollmentStepTest {
     fun `enum has all expected values`() {
         val values = MfaEnrollmentStep.entries.toTypedArray()
 
-        assertEquals(4, values.size)
+        assertEquals(5, values.size)
         assertEquals(MfaEnrollmentStep.SelectFactor, values[0])
         assertEquals(MfaEnrollmentStep.ConfigureSms, values[1])
         assertEquals(MfaEnrollmentStep.ConfigureTotp, values[2])
         assertEquals(MfaEnrollmentStep.VerifyFactor, values[3])
+        assertEquals(MfaEnrollmentStep.ShowRecoveryCodes, values[4])
     }
 
     @Test
@@ -54,6 +56,7 @@ class MfaEnrollmentStepTest {
         assertEquals(MfaEnrollmentStep.ConfigureSms, MfaEnrollmentStep.valueOf("ConfigureSms"))
         assertEquals(MfaEnrollmentStep.ConfigureTotp, MfaEnrollmentStep.valueOf("ConfigureTotp"))
         assertEquals(MfaEnrollmentStep.VerifyFactor, MfaEnrollmentStep.valueOf("VerifyFactor"))
+        assertEquals(MfaEnrollmentStep.ShowRecoveryCodes, MfaEnrollmentStep.valueOf("ShowRecoveryCodes"))
     }
 
     @Test
@@ -62,6 +65,7 @@ class MfaEnrollmentStepTest {
         assertEquals(1, MfaEnrollmentStep.ConfigureSms.ordinal)
         assertEquals(2, MfaEnrollmentStep.ConfigureTotp.ordinal)
         assertEquals(3, MfaEnrollmentStep.VerifyFactor.ordinal)
+        assertEquals(4, MfaEnrollmentStep.ShowRecoveryCodes.ordinal)
     }
 
     @Test
@@ -70,6 +74,7 @@ class MfaEnrollmentStepTest {
         assertEquals("Set Up SMS Verification", MfaEnrollmentStep.ConfigureSms.getTitle(stringProvider))
         assertEquals("Set Up Authenticator App", MfaEnrollmentStep.ConfigureTotp.getTitle(stringProvider))
         assertEquals("Verify Your Code", MfaEnrollmentStep.VerifyFactor.getTitle(stringProvider))
+        assertEquals("Save Your Recovery Codes", MfaEnrollmentStep.ShowRecoveryCodes.getTitle(stringProvider))
     }
 
     @Test
@@ -126,6 +131,12 @@ class MfaEnrollmentStepTest {
             "Enter your verification code",
             MfaEnrollmentStep.VerifyFactor.getHelperText(stringProvider)
         )
+    }
+
+    @Test
+    fun `getHelperText returns correct text for ShowRecoveryCodes`() {
+        val helperText = MfaEnrollmentStep.ShowRecoveryCodes.getHelperText(stringProvider)
+        assertTrue(helperText.contains("Store these codes in a safe place"))
     }
 
     @Test

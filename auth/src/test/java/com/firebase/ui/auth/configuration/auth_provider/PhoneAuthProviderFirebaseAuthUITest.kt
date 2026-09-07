@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
-import com.firebase.ui.auth.flowScope
 import android.app.Activity
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -156,10 +155,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
             flowOf(AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified(mockCredential))
         )
 
-        instance.flowScope(phoneConfig).verifyPhoneNumber(
+        instance.verifyPhoneNumber(
             provider = phoneProvider,
             activity = null,
             phoneNumber = "+1234567890",
+            config = phoneConfig,
             verifier = mockPhoneAuthVerifier
         )
 
@@ -201,10 +201,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 )
             )
 
-            instance.flowScope(phoneConfig).verifyPhoneNumber(
+            instance.verifyPhoneNumber(
                 provider = phoneProvider,
                 activity = null,
                 phoneNumber = "+1234567890",
+                config = phoneConfig,
                 verifier = mockPhoneAuthVerifier
             )
 
@@ -252,10 +253,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 )
             )
 
-            instance.flowScope(phoneConfig).verifyPhoneNumber(
+            instance.verifyPhoneNumber(
                 provider = phoneProvider,
                 activity = null,
                 phoneNumber = "+1234567890",
+                config = phoneConfig,
                 verifier = mockPhoneAuthVerifier
             )
 
@@ -297,10 +299,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
             )
         )
 
-        instance.flowScope(phoneConfig).verifyPhoneNumber(
+        instance.verifyPhoneNumber(
             provider = phoneProvider,
             activity = null,
             phoneNumber = "+1234567890",
+            config = phoneConfig,
             forceResendingToken = mockToken,
             verifier = mockPhoneAuthVerifier
         )
@@ -343,10 +346,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
             )
         )
 
-        instance.flowScope(phoneConfig).verifyPhoneNumber(
+        instance.verifyPhoneNumber(
             provider = phoneProvider,
             activity = null,
             phoneNumber = "+1234567890",
+            config = phoneConfig,
             verifier = mockPhoneAuthVerifier
         )
 
@@ -388,10 +392,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
 
             var thrown: Throwable? = null
             try {
-                instance.flowScope(phoneConfig).verifyPhoneNumber(
+                instance.verifyPhoneNumber(
                     provider = phoneProvider,
                     activity = null,
                     phoneNumber = "+1234567890",
+                    config = phoneConfig,
                     verifier = cancellingVerifier
                 )
             } catch (t: Throwable) {
@@ -405,6 +410,23 @@ class PhoneAuthProviderFirebaseAuthUITest {
             assertThat(instance.authStateFlow().first())
                 .isNotInstanceOf(AuthState.Error::class.java)
         }
+
+    @Test
+    fun `verifyPhoneNumber - cancellation clears the pending Loading state`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val deferred = startNeverResolvingVerifyPhoneNumber(instance)
+
+        deferred.cancel()
+        try {
+            deferred.await()
+        } catch (_: CancellationException) {
+            // Expected
+        }
+
+        val state = instance.authStateFlow().first()
+        assertThat(state).isNotInstanceOf(AuthState.Loading::class.java)
+        assertThat(state).isInstanceOf(AuthState.Idle::class.java)
+    }
 
     @Test
     fun `verifyPhoneNumber - cancellation does not clobber a newer unrelated state`() = runTest {
@@ -448,6 +470,32 @@ class PhoneAuthProviderFirebaseAuthUITest {
             resend.cancel()
         }
 
+    @Test
+    fun `clearLoadingState - equal but distinct Loading instances do not clear each other`() =
+        runTest {
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val first = AuthState.Loading("verifying")
+            val second = AuthState.Loading("verifying")
+            assertThat(first).isEqualTo(second)
+
+            instance.updateAuthState(first)
+            val firstRevision = instance.currentAuthStateRevision()
+            instance.updateAuthState(second)
+            instance.clearLoadingState(firstRevision)
+
+            assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Loading::class.java)
+        }
+
+    @Test
+    fun `clearLoadingState - clears when its Loading is still the latest state`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        instance.updateAuthState(AuthState.Loading("verifying"))
+
+        instance.clearLoadingState(instance.currentAuthStateRevision())
+
+        assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Idle::class.java)
+    }
+
     // Starts verifyPhoneNumber against a flow that never emits, UNDISPATCHED so the call reaches
     // its suspension point (past the Loading emission) before the caller can cancel it.
     private fun CoroutineScope.startNeverResolvingVerifyPhoneNumber(
@@ -473,10 +521,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
         }
 
         return async(start = CoroutineStart.UNDISPATCHED) {
-            instance.flowScope(phoneConfig).verifyPhoneNumber(
+            instance.verifyPhoneNumber(
                 provider = phoneProvider,
                 activity = null,
                 phoneNumber = "+1234567890",
+                config = phoneConfig,
                 verifier = neverResolvingVerifier
             )
         }
@@ -516,8 +565,9 @@ class PhoneAuthProviderFirebaseAuthUITest {
             }
         }
 
-        val result = instance.flowScope(config).submitVerificationCode(
+        val result = instance.submitVerificationCode(
             applicationContext,
+            config = config,
             verificationId = "test-verification-id",
             code = "123456",
             credentialProvider = mockPhoneAuthCredentialProvider
@@ -558,8 +608,9 @@ class PhoneAuthProviderFirebaseAuthUITest {
             }
         }
 
-        val result = instance.flowScope(config).signInWithPhoneAuthCredential(
+        val result = instance.signInWithPhoneAuthCredential(
             applicationContext,
+            config = config,
             credential = mockCredential
         )
 
@@ -598,8 +649,9 @@ class PhoneAuthProviderFirebaseAuthUITest {
             isAnonymousUpgradeEnabled = true
         }
 
-        val result = instance.flowScope(config).signInWithPhoneAuthCredential(
+        val result = instance.signInWithPhoneAuthCredential(
             applicationContext,
+            config = config,
             credential = mockCredential
         )
 

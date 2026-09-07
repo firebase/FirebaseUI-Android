@@ -131,6 +131,30 @@ class MfaEnrollmentContentStateTest {
     }
 
     @Test
+    fun `isValid returns true for ShowRecoveryCodes with codes`() {
+        // Given
+        val state = MfaEnrollmentContentState(
+            step = MfaEnrollmentStep.ShowRecoveryCodes,
+            recoveryCodes = listOf("code1", "code2", "code3")
+        )
+
+        // When & Then
+        assertTrue(state.isValid)
+    }
+
+    @Test
+    fun `isValid returns false for ShowRecoveryCodes without codes`() {
+        // Given
+        val state = MfaEnrollmentContentState(
+            step = MfaEnrollmentStep.ShowRecoveryCodes,
+            recoveryCodes = null
+        )
+
+        // When & Then
+        assertFalse(state.isValid)
+    }
+
+    @Test
     fun `hasError returns true when error is present`() {
         // Given
         val state = MfaEnrollmentContentState(
@@ -219,7 +243,8 @@ class MfaEnrollmentContentStateTest {
         val steps = listOf(
             MfaEnrollmentStep.ConfigureSms,
             MfaEnrollmentStep.ConfigureTotp,
-            MfaEnrollmentStep.VerifyFactor
+            MfaEnrollmentStep.VerifyFactor,
+            MfaEnrollmentStep.ShowRecoveryCodes
         )
 
         // When & Then
@@ -246,6 +271,7 @@ class MfaEnrollmentContentStateTest {
             totpQrCodeUrl = "otpauth://totp/test",
             verificationCode = "123456",
             selectedFactor = MfaFactor.Totp,
+            recoveryCodes = listOf("code1", "code2"),
             availableFactors = listOf(MfaFactor.Sms, MfaFactor.Totp)
         )
 
@@ -259,6 +285,7 @@ class MfaEnrollmentContentStateTest {
         assertEquals("otpauth://totp/test", state.totpQrCodeUrl)
         assertEquals("123456", state.verificationCode)
         assertEquals(MfaFactor.Totp, state.selectedFactor)
+        assertEquals(listOf("code1", "code2"), state.recoveryCodes)
         assertEquals(listOf(MfaFactor.Sms, MfaFactor.Totp), state.availableFactors)
     }
 }

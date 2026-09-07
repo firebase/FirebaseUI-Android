@@ -14,8 +14,6 @@
 
 package com.firebase.ui.auth.ui.screens.phone
 
-import com.firebase.ui.auth.ui.screens.reauth.ReauthFlowState
-import androidx.compose.runtime.mutableStateOf
 import android.content.Context
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -45,7 +43,6 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
-import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -239,17 +236,6 @@ class PhoneAuthScreenVerificationLifecycleTest {
         val result = mock(AuthResult::class.java)
         `when`(result.user).thenReturn(mock(FirebaseUser::class.java))
         return result
-    }
-
-    /** A signed-in user linked to the phone provider, as a reauthentication requires. */
-    private fun phoneUser(): FirebaseUser {
-        val providerInfo = mock(UserInfo::class.java)
-        `when`(providerInfo.providerId).thenReturn("phone")
-        val user = mock(FirebaseUser::class.java)
-        `when`(user.providerData).thenReturn(listOf(providerInfo))
-        `when`(user.uid).thenReturn("uid-phone")
-        `when`(user.email).thenReturn(null)
-        return user
     }
 
     private fun multiFactorException(): FirebaseAuthMultiFactorException {
@@ -524,20 +510,6 @@ class PhoneAuthScreenVerificationLifecycleTest {
     }
 
     @Test
-    fun `change-number clears the loading state left behind by the cancelled attempt`() {
-        mockStatic(PhoneAuthProvider::class.java).use { statics ->
-            setScreenContent()
-            sendCode(statics)
-            assertThat(capturedState!!.isLoading).isTrue()
-
-            onUi { it.onChangeNumberClick() }
-            settle()
-
-            assertThat(capturedState!!.isLoading).isFalse()
-        }
-    }
-
-    @Test
     fun `a failed sign-in reports exactly one error`() {
         val credential = mock(PhoneAuthCredential::class.java)
         `when`(mockAuth.signInWithCredential(any()))
@@ -556,54 +528,6 @@ class PhoneAuthScreenVerificationLifecycleTest {
             // spurious cancellation error behind the real one.
             assertThat(reportedErrors.map { it.message }).containsExactly("sign-in blew up")
         }
-    }
-
-    /**
-     * The same teardown, but while a reauthentication request is outstanding. The failure is folded into
-     * [AuthState.Reauthentication.AttemptFailed], so a `when` that only tears down on
-     * [AuthState.Error] leaves the verification open and the late auto-retrieval below starts a
-     * second reauthentication the user never asked for. `resend cancels the superseded
-     * verification attempt` above establishes that a cancelled attempt's emissions are dropped.
-     */
-    @Test
-    fun `a failed reauthentication attempt cancels the in-flight verification`() {
-        configuration = phoneConfiguration(timeout = 0L).copy(isReauthenticationMode = true)
-        val user = phoneUser()
-        `when`(mockAuth.currentUser).thenReturn(user)
-        `when`(user.reauthenticate(any())).thenReturn(Tasks.forException(Exception("wrong code")))
-        val credential = mock(PhoneAuthCredential::class.java)
-
-        val observed = mutableListOf<AuthState>()
-        // Stands in for the composed FirebaseAuthScreen, which owns folding.
-        val required = AuthState.Reauthentication.Required(user)
-        val reauthFlowState = ReauthFlowState(mutableStateOf(null))
-        reauthFlowState.accept(required)
-        val collector = CoroutineScope(Dispatchers.Main.immediate).launch {
-            authUI.authStateFlow().collect { state ->
-                observed += state
-                reauthFlowState.fold(state)?.let { authUI.updateAuthState(it) }
-            }
-        }
-        authUI.updateAuthState(required)
-
-        mockStatic(PhoneAuthProvider::class.java).use { statics ->
-            stubGetCredential(statics, credential)
-            setScreenContent()
-            val callbacks = sendCode(statics)
-            codeSent(callbacks, "verification-id-1")
-
-            submitCode("123456")
-            settle()
-            verify(user, times(1)).reauthenticate(any())
-            // Precondition: the failure really did reach the screen as the reauthentication phase.
-            assertThat(observed.filterIsInstance<AuthState.Reauthentication.AttemptFailed>())
-                .isNotEmpty()
-
-            autoVerified(callbacks, credential)
-            settle()
-            verify(user, times(1)).reauthenticate(any())
-        }
-        collector.cancel()
     }
 
     @Test

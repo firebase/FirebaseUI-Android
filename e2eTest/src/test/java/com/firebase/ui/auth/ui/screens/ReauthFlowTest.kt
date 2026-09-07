@@ -9,9 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
@@ -27,19 +25,10 @@ import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringPro
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
-import com.firebase.ui.auth.testutil.awaitWithLooper
 import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
-import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 import org.junit.After
 import org.junit.Assume
 import org.junit.Before
@@ -53,9 +42,6 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
 class ReauthFlowTest {
-
-    /** Runs `withReauth` on the looper these tests already pump. */
-    private val reauthScope = CoroutineScope(Dispatchers.Main.immediate)
 
     @get:Rule
     val composeAndroidTestRule = createAndroidComposeRule<ComponentActivity>()
@@ -85,14 +71,13 @@ class ReauthFlowTest {
 
     @After
     fun tearDown() {
-        reauthScope.cancel()
         authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
         emulatorApi.clearEmulatorData()
     }
 
     /**
-     * Full cycle: sign in via the main flow, then emit Reauthentication.Required to simulate a
+     * Full cycle: sign in via the main flow, then emit ReauthenticationRequired to simulate a
      * sensitive operation. Verifies the default ModalBottomSheet reauth UI appears, completing
      * reauthentication triggers the pending retry operation.
      *
@@ -124,7 +109,6 @@ class ReauthFlowTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var retryOperationCalled = false
-        var attempts = 0
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -180,19 +164,16 @@ class ReauthFlowTest {
         // Main screen now shows authenticated content — no email form visible.
         composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
 
-        requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
+        val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
-        // Step 2: the first attempt fails the way Firebase fails one, so `withReauth` raises it.
-        reauthScope.launch {
-            runCatching {
-                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    retryOperationCalled = true
-                }
-            }
-        }
+        // Step 2: Emit ReauthenticationRequired to simulate a sensitive operation requiring reauth.
+        authUI.updateAuthState(
+            AuthState.ReauthenticationRequired(
+                user = signedInUser,
+                reason = "Please verify your identity to continue",
+                retryOperation = { retryOperationCalled = true },
+            )
+        )
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -203,9 +184,10 @@ class ReauthFlowTest {
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
+        // Step 3: Enter credentials in the reauth bottom sheet.
         composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
-            .assertTextContains(email)
+            .performTextInput(email)
         composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
             .performScrollTo()
             .performTextInput(password)
@@ -225,38 +207,22 @@ class ReauthFlowTest {
     }
 
     /**
-     * Verifies the [ReauthContentState] contract for the custom reauthContent slot: it receives the
-     * reauthenticating user, the reason, and the configured providers already filtered to the ones
-     * linked to that user; dismissing it drops the pending retry operation without firing it.
-     *
-     * The user stays signed in, as they always are during reauthentication. That is why dismissing
-     * does *not* leave the state on [AuthState.Idle]: `onDismiss` resets the library's internal
-     * state, and `authStateFlow()` then falls back to the live session, which is an
-     * [AuthState.Success] for the session that already existed.
+     * Verifies that when reauthContent is provided, it receives the ReauthenticationRequired state
+     * and calling onDismiss resets the auth state to Idle.
      */
     @Test
-    fun `custom reauthContent receives linked providers and dismisses without retrying`() {
+    fun `custom reauthContent receives ReauthenticationRequired state and dismisses to Idle`() {
         val email = "reauth-custom-${System.currentTimeMillis()}@example.com"
         val password = "test123"
 
         val user = ensureFreshUser(authUI, email, password)
         requireNotNull(user) { "Failed to create user" }
 
-        try {
-            verifyEmailInEmulator(authUI, emulatorApi, user)
-        } catch (e: Exception) {
-            Assume.assumeTrue(
-                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
-                false
-            )
-        }
-
         val capturedUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in after creation" }
+        authUI.auth.signOut()
+        shadowOf(Looper.getMainLooper()).idle()
 
         var currentAuthState: AuthState = AuthState.Idle
-        var retryOperationCalled = false
-        var attempts = 0
-        var capturedState: ReauthContentState? = null
         val expectedReason = "Sensitive operation requires sign-in"
 
         val configuration = authUIConfiguration {
@@ -266,13 +232,6 @@ class ReauthFlowTest {
                     AuthProvider.Email(
                         emailLinkActionCodeSettings = null,
                         passwordValidationRules = emptyList()
-                    )
-                )
-                provider(
-                    AuthProvider.Phone(
-                        defaultNumber = null,
-                        defaultCountryCode = null,
-                        allowedCountries = null
                     )
                 )
             }
@@ -289,11 +248,10 @@ class ReauthFlowTest {
                     onSignInSuccess = {},
                     onSignInFailure = {},
                     onSignInCancelled = {},
-                    reauthContent = { reauthState ->
-                        capturedState = reauthState
+                    reauthContent = { reauthState, onDismiss ->
                         Column {
                             Text("REAUTH REQUIRED - ${reauthState.reason}")
-                            Button(onClick = reauthState.onDismiss) { Text("DISMISS REAUTH") }
+                            Button(onClick = onDismiss) { Text("DISMISS REAUTH") }
                         }
                     },
                 ) { _, _ ->
@@ -306,17 +264,13 @@ class ReauthFlowTest {
 
         shadowOf(Looper.getMainLooper()).idle()
 
-        // The first attempt fails the way Firebase fails one, so `withReauth` raises the request.
-        reauthScope.launch {
-            runCatching {
-                authUI.withReauth(applicationContext, reason = expectedReason) {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    retryOperationCalled = true
-                }
-            }
-        }
+        // Emit ReauthenticationRequired to trigger the custom reauthContent slot.
+        authUI.updateAuthState(
+            AuthState.ReauthenticationRequired(
+                user = capturedUser,
+                reason = expectedReason,
+            )
+        )
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -330,140 +284,18 @@ class ReauthFlowTest {
         composeAndroidTestRule.onNodeWithText("REAUTH REQUIRED - $expectedReason")
             .assertIsDisplayed()
 
-        val state = requireNotNull(capturedState) { "reauthContent was never composed" }
-        assertThat(state.user.uid).isEqualTo(capturedUser.uid)
-        assertThat(state.reason).isEqualTo(expectedReason)
-        assertThat(state.providers.map { it.providerId }).containsExactly("password")
-
+        // Dismiss the custom reauth UI via the onDismiss callback.
         composeAndroidTestRule.onNodeWithText("DISMISS REAUTH").performClick()
 
         shadowOf(Looper.getMainLooper()).idle()
 
+        // Verify that dismissing resets auth state to Idle.
         composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText("CONTENT").fetchSemanticsNodes().isNotEmpty()
+            currentAuthState is AuthState.Idle
         }
 
-        composeAndroidTestRule.onAllNodesWithText("REAUTH REQUIRED - $expectedReason")
-            .assertCountEquals(0)
-        val observedState = currentAuthState
-        assertThat(observedState).isInstanceOf(AuthState.Success::class.java)
-        assertThat((observedState as AuthState.Success).user.uid).isEqualTo(capturedUser.uid)
-        assertThat(observedState.result).isNull()
-        assertThat(retryOperationCalled).isFalse()
-    }
-
-    /**
-     * The custom slot only picks a provider: selecting email makes the library present its own
-     * email sub-flow (prefilled with the user's address), and completing it fires the pending
-     * retry operation — mirroring the default bottom sheet path.
-     */
-    @Test
-    fun `reauth through the custom slot email sub-flow triggers the retry operation`() {
-        val email = "reauth-slot-email-${System.currentTimeMillis()}@example.com"
-        val password = "test123"
-
-        val user = ensureFreshUser(authUI, email, password)
-        requireNotNull(user) { "Failed to create user" }
-
-        try {
-            verifyEmailInEmulator(authUI, emulatorApi, user)
-        } catch (e: Exception) {
-            Assume.assumeTrue(
-                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
-                false
-            )
-        }
-
-        requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
-
-        var retryOperationCalled = false
-        var attempts = 0
-
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
-            isCredentialManagerEnabled = false
-        }
-
-        composeAndroidTestRule.setContent {
-            CompositionLocalProvider(
-                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
-            ) {
-                FirebaseAuthScreen(
-                    configuration = configuration,
-                    authUI = authUI,
-                    onSignInSuccess = {},
-                    onSignInFailure = {},
-                    onSignInCancelled = {},
-                    reauthContent = { reauthState ->
-                        Column {
-                            Text("PICK A PROVIDER")
-                            reauthState.providers.forEach { provider ->
-                                Button(
-                                    onClick = { reauthState.onProviderSelected(provider) }
-                                ) { Text("USE ${provider.providerId}") }
-                            }
-                        }
-                    },
-                ) { _, _ ->
-                    Text("AUTHENTICATED")
-                }
-            }
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        // The first attempt fails the way Firebase fails one, so `withReauth` raises the request.
-        reauthScope.launch {
-            runCatching {
-                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    retryOperationCalled = true
-                }
-            }
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText("USE password")
-                .fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeAndroidTestRule.onNodeWithText("USE password").performClick()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText(email).fetchSemanticsNodes().isNotEmpty()
-        }
-
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            retryOperationCalled
-        }
-
-        assertThat(retryOperationCalled).isTrue()
+        assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
     }
 
     @Test
@@ -489,7 +321,6 @@ class ReauthFlowTest {
 
         var currentAuthState: AuthState = AuthState.Idle
         var retryOperationCalled = false
-        var attempts = 0
 
         val configuration = authUIConfiguration {
             context = applicationContext
@@ -543,20 +374,16 @@ class ReauthFlowTest {
         }
         composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
 
-        requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
+        val signedInUser = requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
 
-        // Step 2: emit Reauthentication.Required with a retryOperation.
-        // The first attempt fails the way Firebase fails one, so `withReauth` raises the request.
-        reauthScope.launch {
-            runCatching {
-                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    retryOperationCalled = true
-                }
-            }
-        }
+        // Step 2: emit ReauthenticationRequired with a retryOperation.
+        authUI.updateAuthState(
+            AuthState.ReauthenticationRequired(
+                user = signedInUser,
+                reason = "Please verify your identity to continue",
+                retryOperation = { retryOperationCalled = true },
+            )
+        )
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -566,9 +393,10 @@ class ReauthFlowTest {
                 .fetchSemanticsNodes().isNotEmpty()
         }
 
+        // Step 3: enter the WRONG password in the reauth sheet.
         composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
             .performScrollTo()
-            .assertTextContains(email)
+            .performTextInput(email)
         composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
             .performScrollTo()
             .performTextInput(wrongPassword)
@@ -591,422 +419,4 @@ class ReauthFlowTest {
 
         assertThat(retryOperationCalled).isFalse()
     }
-
-    /**
-     * End-to-end cover for a sensitive operation that signs the user out as its own success
-     * condition — `delete()` is the canonical one. `signOut()` stands in for it: same listener
-     * path, same `currentUser == null`, without depending on the emulator honouring a
-     * recent-login check.
-     *
-     * This is coverage of the full cycle, not a proof of the `isReauthenticated` guard in
-     * `FirebaseAuthUI`'s auth-state listener: removing that guard does not fail this test. Real
-     * `FirebaseAuth` posts its listener notification to the looper, so whether the request is
-     * cleared before or after the retry coroutine resumes is not deterministic here. The guard is
-     * pinned by `FirebaseAuthScreenReauthIdleResetTest.an operation that signs the user out is
-     * reported as completed, not interrupted`, which mocks `FirebaseAuth` and fires the listener
-     * synchronously from inside the operation to force the ordering.
-     */
-    @Test
-    fun `an operation that signs the user out completes instead of reporting an interruption`() {
-        val email = "reauth-signout-${System.currentTimeMillis()}@example.com"
-        val password = "test123"
-
-        val user = ensureFreshUser(authUI, email, password)
-        requireNotNull(user) { "Failed to create user" }
-
-        try {
-            verifyEmailInEmulator(authUI, emulatorApi, user)
-        } catch (e: Exception) {
-            Assume.assumeTrue(
-                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
-                false
-            )
-        }
-
-        authUI.auth.signOut()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        var currentAuthState: AuthState = AuthState.Idle
-        var retryOperationStarted = false
-        var attempts = 0
-        var retryOperationCompleted = false
-
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
-            isCredentialManagerEnabled = false
-        }
-
-        composeAndroidTestRule.setContent {
-            CompositionLocalProvider(
-                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
-            ) {
-                FirebaseAuthScreen(
-                    configuration = configuration,
-                    authUI = authUI,
-                    onSignInSuccess = {},
-                    onSignInFailure = {},
-                    onSignInCancelled = {},
-                ) { state, _ ->
-                    if (state is AuthState.Success) Text("AUTHENTICATED") else Text("NOT AUTHENTICATED")
-                }
-                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
-                currentAuthState = authState
-            }
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        // Step 1: initial sign-in through the main screen.
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
-            .performScrollTo()
-            .performTextInput(email)
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            currentAuthState is AuthState.Success
-        }
-        composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
-
-        requireNotNull(authUI.auth.currentUser) { "User must be signed in" }
-
-        // Step 2: an operation that signs the user out, as delete() does.
-        reauthScope.launch {
-            runCatching {
-                authUI.withReauth(applicationContext, reason = "Please verify your identity to continue") {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    retryOperationStarted = true
-                    authUI.auth.signOut()
-                    // A suspension point makes a dropped operation observable.
-                    yield()
-                    retryOperationCompleted = true
-                }
-            }
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailHint)
-                .fetchSemanticsNodes().isNotEmpty()
-        }
-
-        // Step 3: reauthenticate, which runs the signing-out operation.
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            retryOperationStarted && currentAuthState !is AuthState.Reauthentication
-        }
-
-        // Settle before asserting an absence: dropping the request mid-retry surfaces the
-        // interruption a frame or two later, and asserting too early would miss it.
-        repeat(5) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.waitForIdle()
-        }
-
-        // The operation ran to completion, and its sign-out is the outcome — not an interruption.
-        assertThat(retryOperationStarted).isTrue()
-        assertThat(retryOperationCompleted).isTrue()
-        assertThat(authUI.auth.currentUser).isNull()
-        assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
-        composeAndroidTestRule.onAllNodesWithText(stringProvider.errorDialogTitle)
-            .assertCountEquals(0)
-    }
-
-    /**
-     * The password change this ticket asked to be checked by hand, done here instead: the retry
-     * runs a real `updatePassword` against the emulator, and afterwards only the new password
-     * signs the account in.
-     *
-     * Firebase's [FirebaseAuthRecentLoginRequiredException] is thrown rather than waited for — the
-     * emulator does not age tokens.
-     */
-    @Test
-    fun `reauthenticating to change the password leaves the new password working`() {
-        val email = "reauth-password-${System.currentTimeMillis()}@example.com"
-        val password = "test123"
-        val newPassword = "changed456"
-
-        val user = ensureFreshUser(authUI, email, password)
-        requireNotNull(user) { "Failed to create user" }
-
-        try {
-            verifyEmailInEmulator(authUI, emulatorApi, user)
-        } catch (e: Exception) {
-            Assume.assumeTrue(
-                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
-                false
-            )
-        }
-
-        authUI.auth.signOut()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        var currentAuthState: AuthState = AuthState.Idle
-        var passwordChanged = false
-        var failure: Throwable? = null
-        var attempts = 0
-
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
-            isCredentialManagerEnabled = false
-        }
-
-        composeAndroidTestRule.setContent {
-            CompositionLocalProvider(
-                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
-            ) {
-                FirebaseAuthScreen(
-                    configuration = configuration,
-                    authUI = authUI,
-                    onSignInSuccess = {},
-                    onSignInFailure = {},
-                    onSignInCancelled = {},
-                ) { state, _ ->
-                    if (state is AuthState.Success) Text("AUTHENTICATED") else Text("NOT AUTHENTICATED")
-                }
-                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
-                currentAuthState = authState
-            }
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        // Step 1: initial sign-in through the main screen.
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
-            .performScrollTo()
-            .performTextInput(email)
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            currentAuthState is AuthState.Success
-        }
-        composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
-
-        // Step 2: the first attempt fails the way Firebase fails one, so `withReauth` raises it.
-        reauthScope.launch {
-            failure = runCatching {
-                authUI.withReauth(applicationContext, reason = "Confirm it's you to change your password") {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    val updated = CompletableDeferred<Unit>()
-                    requireNotNull(authUI.auth.currentUser).updatePassword(newPassword)
-                        .addOnSuccessListener { updated.complete(Unit) }
-                        .addOnFailureListener { updated.completeExceptionally(it) }
-                    updated.await()
-                    passwordChanged = true
-                }
-            }.exceptionOrNull()
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailHint)
-                .fetchSemanticsNodes().isNotEmpty()
-        }
-
-        // Step 3: reauthenticate, which runs the password change.
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            passwordChanged
-        }
-
-        assertThat(failure).isNull()
-
-        // The change took: the old password no longer signs this account in, the new one does.
-        authUI.auth.signOut()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        val withOldPassword = runCatching {
-            authUI.auth.signInWithEmailAndPassword(email, password).awaitWithLooper()
-        }
-        assertThat(withOldPassword.isFailure).isTrue()
-
-        val withNewPassword = authUI.auth.signInWithEmailAndPassword(email, newPassword)
-            .awaitWithLooper()
-        assertThat(withNewPassword.user?.uid).isEqualTo(user.uid)
-    }
-
-    /**
-     * The account deletion this ticket asked to be checked by hand, done here instead: the retry
-     * calls [FirebaseAuthUI.delete], which now completes instead of reporting invalid credentials,
-     * and the account is gone from the emulator afterwards.
-     */
-    @Test
-    fun `reauthenticating to delete the account leaves it gone`() {
-        val email = "reauth-delete-${System.currentTimeMillis()}@example.com"
-        val password = "test123"
-
-        val user = ensureFreshUser(authUI, email, password)
-        requireNotNull(user) { "Failed to create user" }
-        val uid = user.uid
-
-        try {
-            verifyEmailInEmulator(authUI, emulatorApi, user)
-        } catch (e: Exception) {
-            Assume.assumeTrue(
-                "Skipping: Firebase Auth Emulator OOB codes not available. Error: ${e.message}",
-                false
-            )
-        }
-
-        authUI.auth.signOut()
-        shadowOf(Looper.getMainLooper()).idle()
-
-        var currentAuthState: AuthState = AuthState.Idle
-        var deleted = false
-        var failure: Throwable? = null
-        var attempts = 0
-
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
-            isCredentialManagerEnabled = false
-        }
-
-        composeAndroidTestRule.setContent {
-            CompositionLocalProvider(
-                LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
-            ) {
-                FirebaseAuthScreen(
-                    configuration = configuration,
-                    authUI = authUI,
-                    onSignInSuccess = {},
-                    onSignInFailure = {},
-                    onSignInCancelled = {},
-                ) { state, _ ->
-                    if (state is AuthState.Success) Text("AUTHENTICATED") else Text("NOT AUTHENTICATED")
-                }
-                val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
-                currentAuthState = authState
-            }
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        // Step 1: initial sign-in through the main screen.
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
-            .performScrollTo()
-            .performTextInput(email)
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            currentAuthState is AuthState.Success
-        }
-        composeAndroidTestRule.onNodeWithText("AUTHENTICATED").assertIsDisplayed()
-
-        // Step 2: the first attempt fails the way Firebase fails one, so `withReauth` raises it.
-        reauthScope.launch {
-            failure = runCatching {
-                authUI.withReauth(applicationContext, reason = "Confirm it's you to delete your account") {
-                    if (attempts++ == 0) throw FirebaseAuthRecentLoginRequiredException(
-                        "ERROR_REQUIRES_RECENT_LOGIN", "Recent login required"
-                    )
-                    authUI.delete(applicationContext)
-                    deleted = true
-                }
-            }.exceptionOrNull()
-        }
-
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailHint)
-                .fetchSemanticsNodes().isNotEmpty()
-        }
-
-        // Step 3: reauthenticate, which runs the deletion.
-        composeAndroidTestRule.onNodeWithText(stringProvider.passwordHint)
-            .performScrollTo()
-            .performTextInput(password)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .performClick()
-
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            deleted
-        }
-
-        repeat(5) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.waitForIdle()
-        }
-
-        assertThat(failure).isNull()
-        assertThat(authUI.auth.currentUser).isNull()
-        assertThat(currentAuthState).isInstanceOf(AuthState.Idle::class.java)
-        composeAndroidTestRule.onAllNodesWithText(stringProvider.errorDialogTitle)
-            .assertCountEquals(0)
-
-        // The account is gone, not just signed out.
-        val signInAfterDelete = runCatching {
-            authUI.auth.signInWithEmailAndPassword(email, password).awaitWithLooper()
-        }
-        assertThat(signInAfterDelete.isFailure).isTrue()
-        assertThat(signInAfterDelete.getOrNull()?.user?.uid).isNotEqualTo(uid)
-    }
-
 }

@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth
 
-import kotlinx.coroutines.test.runCurrent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -644,17 +643,14 @@ class FirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(defaultApp, mockAuth)
         val context = ApplicationProvider.getApplicationContext<Context>()
 
-        // Raises a request and waits, rather than throwing a mapped exception.
-        val call = launch { runCatching { instance.delete(context) } }
-        runCurrent()
-
-        val state = requireNotNull(instance.pendingReauth.value)
-        assertThat(state.user).isEqualTo(mockUser)
-        assertThat(state.request.hasPendingOperation).isTrue()
-        assertThat(call.isActive).isTrue()
-
-        state.request.decline()
-        call.join()
+        // Perform delete and expect mapped exception
+        try {
+            instance.delete(context)
+            assertThat(false).isTrue() // Should not reach here
+        } catch (e: AuthException.InvalidCredentialsException) {
+            assertThat(e.message).contains("Recent login required")
+            assertThat(e.cause).isEqualTo(recentLoginException)
+        }
     }
 
     @Test
@@ -796,43 +792,6 @@ class FirebaseAuthUITest {
 
         assertThat(controller.configuration.isNewEmailAccountsAllowed).isFalse()
         assertThat(controller.configuration.isReauthenticationMode).isTrue()
-    }
-
-    /**
-     * Defence in depth alongside the `canLinkCredential` / `canUpgradeAnonymous` guards: forcing
-     * both flags off makes the reauthentication config self-describing, so nothing reading the
-     * configuration alone can conclude that linking a credential is allowed here.
-     */
-    @Test
-    fun `createReauthFlow resulting config forces credential linking and anonymous upgrade off`() {
-        val mockUser = mock(FirebaseUser::class.java)
-        val info = mock(UserInfo::class.java)
-        `when`(info.providerId).thenReturn("password")
-        `when`(mockUser.providerData).thenReturn(listOf(info))
-        val mockAuth = mock(FirebaseAuth::class.java)
-        `when`(mockAuth.currentUser).thenReturn(mockUser)
-        val authUI = FirebaseAuthUI.create(defaultApp, mockAuth)
-
-        val config = authUIConfiguration {
-            this.context = ApplicationProvider.getApplicationContext<Context>()
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        emailLinkActionCodeSettings = null,
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
-            isAnonymousUpgradeEnabled = true
-            isCredentialLinkingEnabled = true
-        }
-        assertThat(config.isAnonymousUpgradeEnabled).isTrue()
-        assertThat(config.isCredentialLinkingEnabled).isTrue()
-
-        val controller = authUI.createReauthFlow(config)
-
-        assertThat(controller.configuration.isAnonymousUpgradeEnabled).isFalse()
-        assertThat(controller.configuration.isCredentialLinkingEnabled).isFalse()
     }
 
 

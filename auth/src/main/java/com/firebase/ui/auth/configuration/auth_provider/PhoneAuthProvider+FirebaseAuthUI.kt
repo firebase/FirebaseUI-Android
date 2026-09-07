@@ -2,9 +2,9 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import android.app.Activity
 import android.content.Context
-import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
+import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthResult
@@ -110,16 +110,20 @@ import kotlinx.coroutines.CancellationException
  * @throws AuthException.NetworkException if a network error occurs
  * @throws kotlinx.coroutines.CancellationException if the caller's coroutine is cancelled
  */
-internal suspend fun AuthFlowScope.verifyPhoneNumber(
+internal suspend fun FirebaseAuthUI.verifyPhoneNumber(
     provider: AuthProvider.Phone,
     activity: Activity?,
     phoneNumber: String,
+    config: AuthUIConfiguration,
     multiFactorSession: MultiFactorSession? = null,
     forceResendingToken: PhoneAuthProvider.ForceResendingToken? = null,
     verifier: AuthProvider.Phone.Verifier = AuthProvider.Phone.DefaultVerifier(),
 ) {
+    // -1 never matches a real revision, so a cancellation before the Loading lands clears nothing.
+    var loadingRevision = -1L
     try {
-        emit(AuthState.Loading(config.stringProvider.loadingVerifyingPhoneNumber))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingVerifyingPhoneNumber))
+        loadingRevision = currentAuthStateRevision()
         provider.verifyPhoneNumberFlow(
             auth = auth,
             activity = activity,
@@ -130,11 +134,11 @@ internal suspend fun AuthFlowScope.verifyPhoneNumber(
         ).collect { result ->
             when (result) {
                 is AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified -> {
-                    emit(AuthState.SMSAutoVerified(credential = result.credential))
+                    updateAuthState(AuthState.SMSAutoVerified(credential = result.credential))
                 }
 
                 is AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification -> {
-                    emit(
+                    updateAuthState(
                         AuthState.PhoneNumberVerificationRequired(
                             verificationId = result.verificationId,
                             forceResendingToken = result.token,
@@ -144,15 +148,16 @@ internal suspend fun AuthFlowScope.verifyPhoneNumber(
             }
         }
     } catch (e: CancellationException) {
-        // Writes nothing: the caller cancelling this attempt owns whatever state replaces it, and
-        // a retraction from here would race the replacement's own Loading.
+        // Cancellation here is the screen's own bookkeeping, not a failure: retract only the
+        // Loading this call emitted, then rethrow so no spurious Error reaches authStateFlow.
+        clearLoadingState(loadingRevision)
         throw e
     } catch (e: AuthException) {
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }
@@ -204,17 +209,19 @@ internal suspend fun AuthFlowScope.verifyPhoneNumber(
  * @throws AuthException.AuthCancelledException if the operation is cancelled
  * @throws AuthException.NetworkException if a network error occurs
  */
-internal suspend fun AuthFlowScope.submitVerificationCode(
+internal suspend fun FirebaseAuthUI.submitVerificationCode(
     context: Context,
+    config: AuthUIConfiguration,
     verificationId: String,
     code: String,
     credentialProvider: AuthProvider.Phone.CredentialProvider = AuthProvider.Phone.DefaultCredentialProvider(),
 ): AuthResult? {
     try {
-        emit(AuthState.Loading(config.stringProvider.loadingSubmittingVerificationCode))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSubmittingVerificationCode))
         val credential = credentialProvider.getCredential(verificationId, code)
         return signInWithPhoneAuthCredential(
             context = context,
+            config = config,
             credential = credential
         )
     } catch (e: CancellationException) {
@@ -222,14 +229,14 @@ internal suspend fun AuthFlowScope.submitVerificationCode(
             message = "Submit verification code was cancelled",
             cause = e
         )
-        emit(AuthState.Error(cancelledException))
+        updateAuthState(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }
@@ -295,13 +302,15 @@ internal suspend fun AuthFlowScope.submitVerificationCode(
  * @throws AuthException.AuthCancelledException if the operation is cancelled
  * @throws AuthException.NetworkException if a network error occurs
  */
-internal suspend fun AuthFlowScope.signInWithPhoneAuthCredential(
+internal suspend fun FirebaseAuthUI.signInWithPhoneAuthCredential(
     context: Context,
+    config: AuthUIConfiguration,
     credential: PhoneAuthCredential,
 ): AuthResult? {
     try {
-        emit(AuthState.Loading(config.stringProvider.loadingSigningInWithPhone))
+        updateAuthState(AuthState.Loading(config.stringProvider.loadingSigningInWithPhone))
         val result = signInAndLinkWithCredential(
+            config = config,
             credential = credential,
         )
 
@@ -330,14 +339,14 @@ internal suspend fun AuthFlowScope.signInWithPhoneAuthCredential(
             message = "Sign in with phone was cancelled",
             cause = e
         )
-        emit(AuthState.Error(cancelledException))
+        updateAuthState(AuthState.Error(cancelledException))
         throw cancelledException
     } catch (e: AuthException) {
-        emit(AuthState.Error(e))
+        updateAuthState(AuthState.Error(e))
         throw e
     } catch (e: Exception) {
         val authException = AuthException.from(e, context)
-        emit(AuthState.Error(authException))
+        updateAuthState(AuthState.Error(authException))
         throw authException
     }
 }

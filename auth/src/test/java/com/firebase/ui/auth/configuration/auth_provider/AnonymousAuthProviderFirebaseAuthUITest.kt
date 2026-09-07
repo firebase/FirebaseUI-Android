@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
-import com.firebase.ui.auth.flowScope
 import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
@@ -124,7 +123,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
 
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
-        instance.flowScope(config).signInAnonymously()
+        instance.signInAnonymously(config)
 
         verify(mockFirebaseAuth).signInAnonymously()
 
@@ -141,7 +140,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         // Queue signInAnonymously first; first{} suspends and lets the scheduler run it
-        val job = launch { runCatching { instance.flowScope(config).signInAnonymously() } }
+        val job = launch { runCatching { instance.signInAnonymously(config) } }
         val loadingState = instance.authStateFlow().first { it is AuthState.Loading }
 
         assertThat((loadingState as AuthState.Loading).message)
@@ -161,7 +160,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.flowScope(config).signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.NetworkException) {
             assertThat(e.cause).isEqualTo(networkException)
@@ -184,7 +183,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.flowScope(config).signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.AuthCancelledException) {
             assertThat(e.message).contains("cancelled")
@@ -208,7 +207,7 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
 
         try {
-            instance.flowScope(config).signInAnonymously()
+            instance.signInAnonymously(config)
             assertThat(false).isTrue() // Should not reach here
         } catch (e: AuthException.UnknownException) {
             assertThat(e.cause).isEqualTo(genericException)
@@ -236,7 +235,8 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         var launcher: (() -> Unit)? = null
 
         composeTestRule.setContent {
-            launcher = instance.flowScope(config).rememberAnonymousSignInHandler(
+            launcher = instance.rememberAnonymousSignInHandler(
+                config = config,
                 onSignInFailure = { reportedFailures.add(it) },
             )
         }
@@ -277,8 +277,9 @@ class AnonymousAuthProviderFirebaseAuthUITest {
             isAnonymousUpgradeEnabled = true
         }
 
-        instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
+        instance.createOrLinkUserWithEmailAndPassword(
             context = applicationContext,
+            config = config,
             provider = emailProvider,
             name = null,
             email = "test@example.com",
@@ -319,8 +320,9 @@ class AnonymousAuthProviderFirebaseAuthUITest {
         }
 
         try {
-            instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
+            instance.createOrLinkUserWithEmailAndPassword(
                 context = applicationContext,
+                config = config,
                 provider = emailProvider,
                 name = null,
                 email = "test@example.com",
@@ -367,7 +369,8 @@ class AnonymousAuthProviderFirebaseAuthUITest {
             isAnonymousUpgradeEnabled = true
         }
 
-        val result = instance.flowScope(config).signInAndLinkWithCredential(
+        val result = instance.signInAndLinkWithCredential(
+            config = config,
             credential = credential
         )
 
@@ -408,8 +411,9 @@ class AnonymousAuthProviderFirebaseAuthUITest {
             isCredentialLinkingEnabled = true
         }
 
-        instance.flowScope(config).createOrLinkUserWithEmailAndPassword(
+        instance.createOrLinkUserWithEmailAndPassword(
             context = applicationContext,
+            config = config,
             provider = emailProvider,
             name = null,
             email = "test@example.com",

@@ -7,16 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -45,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.firebase.ui.auth.AuthException
@@ -62,7 +58,6 @@ import com.firebase.ui.auth.configuration.theme.AuthUIAsset
 import com.firebase.ui.auth.configuration.theme.AuthUITheme
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.ui.screens.FirebaseAuthScreen
-import com.firebase.ui.auth.ui.screens.reauth.ReauthContentState
 import com.firebase.ui.auth.util.EmailLinkConstants
 import com.firebase.ui.auth.util.displayIdentifier
 import com.firebase.ui.auth.util.getDisplayEmail
@@ -107,15 +102,10 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                 isMfaEnabled = false
                 stringProvider = customStringProvider
                 transitions = AuthUITransitions(
-                    transitionSpec = {
-                        slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
-                    },
-                    popTransitionSpec = {
-                        slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
-                    },
-                    predictivePopTransitionSpec = { _ ->
-                        slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
-                    },
+                    enterTransition = { slideInHorizontally { it } },
+                    exitTransition = { slideOutHorizontally { -it } },
+                    popEnterTransition = { slideInHorizontally { -it } },
+                    popExitTransition = { slideOutHorizontally { it } }
                 )
                 providers {
                     provider(AuthProvider.Anonymous)
@@ -239,7 +229,13 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                         onSignInCancelled = {
                             Log.d("HighLevelApiDemoActivity", "Authentication cancelled")
                         },
-                        reauthContent = { state -> ReauthDialog(state = state) },
+                        reauthContent = { state, onDismiss ->
+                            ReauthDialog(
+                                authUI = authUI,
+                                state = state,
+                                onDismiss = onDismiss,
+                            )
+                        },
                         authenticatedContent = { state, uiContext ->
                             AppAuthenticatedContent(state, uiContext)
                         }
@@ -335,13 +331,11 @@ private fun AppAuthenticatedContent(
                         lifecycleOwner.lifecycleScope.launch {
                             isDeletingAccount = true
                             try {
-                                // Reauthentication, if it is needed, happens inside this call:
-                                // the progress indicator below covers it, and the deletion is
-                                // retried here rather than needing anything from this caller.
                                 uiContext.authUI.delete(context)
-                            } catch (e: AuthException.AuthCancelledException) {
-                                // Declined at the identity check; the account is untouched.
-                                Log.d("HighLevelApiDemoActivity", "Delete cancelled", e)
+                            } catch (e: AuthException.InvalidCredentialsException) {
+                                // ReauthenticationRequired state was emitted —
+                                // FirebaseAuthScreen navigates to the reauth flow automatically.
+                                Log.d("HighLevelApiDemoActivity", "Reauth required before delete")
                             } catch (e: AuthException) {
                                 Log.e("HighLevelApiDemoActivity", "Delete failed", e)
                             } finally {
@@ -420,15 +414,20 @@ private fun AppAuthenticatedContent(
     }
 }
 
-/**
- * Custom reauth UI. The slot only chooses a provider — the library owns every credential path, and
- * for email/phone it presents its own sub-flow, which replaces this dialog while it is up. Keep the
- * slot stateless for that reason.
- */
 @Composable
-private fun ReauthDialog(state: ReauthContentState) {
+private fun ReauthDialog(
+    authUI: FirebaseAuthUI,
+    state: AuthState.ReauthenticationRequired,
+    onDismiss: () -> Unit,
+) {
+    var password by remember { mutableStateOf("") }
+    var isVerifying by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+    val email = state.user.email.orEmpty()
+
     AlertDialog(
-        onDismissRequest = state.onDismiss,
+        onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         title = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -443,42 +442,59 @@ private fun ReauthDialog(state: ReauthContentState) {
             }
         },
         text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    "Signed in as ${state.user.displayIdentifier()}",
+                    "Signing in as $email",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
-                state.error?.let { error ->
-                    Text(
-                        error,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-                if (state.isLoading) {
+                com.firebase.ui.auth.ui.components.AuthTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                        errorMessage = null
+                    },
+                    label = { Text("Password") },
+                    isSecureTextField = true,
+                    isError = errorMessage != null,
+                    errorMessage = errorMessage,
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        isVerifying = true
+                        errorMessage = null
+                        try {
+                            val result = authUI.auth
+                                .signInWithEmailAndPassword(email, password)
+                                .await()
+                            result.user?.let { user ->
+                                authUI.updateAuthState(AuthState.Success(result, user))
+                            }
+                        } catch (e: Exception) {
+                            errorMessage = "Incorrect password. Please try again."
+                        } finally {
+                            isVerifying = false
+                        }
+                    }
+                },
+                enabled = password.isNotBlank() && !isVerifying,
+            ) {
+                if (isVerifying) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(16.dp),
                         strokeWidth = 2.dp,
                     )
-                }
-                state.providers.forEach { provider ->
-                    Button(
-                        onClick = { state.onProviderSelected(provider) },
-                        enabled = !state.isLoading,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text("Continue with ${provider.providerName}")
-                    }
+                } else {
+                    Text("Verify")
                 }
             }
-        },
-        confirmButton = {},
-        dismissButton = {
-            TextButton(onClick = state.onDismiss) { Text("Cancel") }
         },
     )
 }
@@ -572,15 +588,6 @@ private fun ChangePasswordDialog(
                                 Log.d("HighLevelApiDemoActivity", "Password changed successfully")
                                 onDismiss()
                             }
-                        } catch (e: CancellationException) {
-                            // withReauth suspends across the reauthentication sheet, so this
-                            // scope really can be cancelled mid-call. Never report that as a
-                            // failure the user can retry.
-                            throw e
-                        } catch (e: AuthException.AuthCancelledException) {
-                            // The user backed out of confirming their identity. Nothing failed,
-                            // and the password was not changed — so say neither.
-                            Log.d("HighLevelApiDemoActivity", "Reauthentication declined", e)
                         } catch (e: Exception) {
                             updateError = "Failed to update password. Please try again."
                         } finally {

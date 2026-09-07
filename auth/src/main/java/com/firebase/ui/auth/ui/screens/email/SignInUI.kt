@@ -48,14 +48,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.firebase.ui.auth.R
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.authUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider
@@ -68,11 +66,9 @@ import com.firebase.ui.auth.credentialmanager.PasswordCredentialCancelledExcepti
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialException
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialNotFoundException
-import com.firebase.ui.auth.ui.FirebaseAuthTestTags
 import com.firebase.ui.auth.ui.components.AuthTextField
 import com.firebase.ui.auth.ui.components.LocalTopLevelDialogController
 import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
-import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +87,6 @@ fun SignInUI(
     onGoToResetPassword: () -> Unit,
     onGoToEmailLinkSignIn: () -> Unit,
     onNavigateBack: (() -> Unit)? = null,
-    isEmailLocked: Boolean = false,
 ) {
     val context = LocalContext.current
     val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
@@ -110,21 +105,11 @@ fun SignInUI(
         }
     }
 
-    val isSignUpOffered = provider.isNewAccountsAllowed &&
-            configuration.isNewEmailAccountsAllowed &&
-            !configuration.isReauthenticationMode
-
-    // An email link reopens the app with no request outstanding, so completing it reports an interruption
-    // instead of the operation; a reset email leaves the reauth sheet and its request intact.
-    val isEmailLinkSignInOffered =
-        provider.isEmailLinkSignInEnabled && !configuration.isReauthenticationMode
-
     // Retrieve saved credentials when in SignIn mode
     val credentialRetrievalAttempted = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (configuration.isCredentialManagerEnabled &&
-            !configuration.isReauthenticationMode &&
             !credentialRetrievalAttempted.value &&
             PasswordCredentialHandler.hasSavedCredentials(context)) {
             credentialRetrievalAttempted.value = true
@@ -160,7 +145,7 @@ fun SignInUI(
     }
 
     Scaffold(
-        modifier = modifier.exposeTestTagsAsResourceIds(),
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -171,10 +156,7 @@ fun SignInUI(
                 },
                 navigationIcon = {
                     if (onNavigateBack != null) {
-                        IconButton(
-                            onClick = onNavigateBack,
-                            modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.BACK_BUTTON),
-                        ) {
+                        IconButton(onClick = onNavigateBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringProvider.backAction
@@ -193,11 +175,9 @@ fun SignInUI(
                 .verticalScroll(rememberScrollState()),
         ) {
             AuthTextField(
-                modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.EMAIL_FIELD),
                 value = email,
                 validator = emailValidator,
                 enabled = !isLoading,
-                readOnly = isEmailLocked,
                 label = {
                     Text(stringProvider.emailHint)
                 },
@@ -207,7 +187,6 @@ fun SignInUI(
             )
             Spacer(modifier = Modifier.height(16.dp))
             AuthTextField(
-                modifier = Modifier.testTag(FirebaseAuthTestTags.SignIn.PASSWORD_FIELD),
                 value = password,
                 validator = passwordValidator,
                 enabled = !isLoading,
@@ -217,16 +196,12 @@ fun SignInUI(
                 },
                 onValueChange = { text ->
                     onPasswordChange(text)
-                },
-                visibilityToggleModifier = Modifier.testTag(
-                    FirebaseAuthTestTags.SignIn.PASSWORD_VISIBILITY_TOGGLE
-                )
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .testTag(FirebaseAuthTestTags.SignIn.FORGOT_PASSWORD_BUTTON),
+                    .align(Alignment.Start),
                 onClick = {
                     onGoToResetPassword()
                 },
@@ -234,6 +209,7 @@ fun SignInUI(
                 contentPadding = PaddingValues.Zero
             ) {
                 Text(
+                    modifier = modifier,
                     text = stringProvider.troubleSigningIn,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
@@ -241,26 +217,12 @@ fun SignInUI(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            if (configuration.isReauthenticationMode) {
-                // Firebase reports "password" for passwordless email-link accounts too, so such a
-                // user is offered a password field they can never fill. Say so instead of stalling.
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .testTag(FirebaseAuthTestTags.SignIn.REAUTH_PASSWORD_NOTICE),
-                    text = context.getString(R.string.fui_reauth_password_required_notice),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
             Row(
                 modifier = Modifier
                     .align(Alignment.End),
             ) {
-                if (isSignUpOffered) {
+                if (provider.isNewAccountsAllowed) {
                     Button(
-                        modifier = Modifier
-                            .testTag(FirebaseAuthTestTags.SignIn.SIGN_UP_BUTTON),
                         onClick = {
                             onGoToSignUp()
                         },
@@ -271,8 +233,6 @@ fun SignInUI(
                     Spacer(modifier = Modifier.width(16.dp))
                 }
                 Button(
-                    modifier = Modifier
-                        .testTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON),
                     onClick = {
                         onSignInClick()
                     },
@@ -290,7 +250,7 @@ fun SignInUI(
             }
 
             // Show toggle to email link sign-in
-            if (isEmailLinkSignInOffered) {
+            if (provider.isEmailLinkSignInEnabled) {
                 Spacer(modifier = Modifier.height(64.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -309,9 +269,7 @@ fun SignInUI(
                     onClick = {
                         onGoToEmailLinkSignIn()
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(FirebaseAuthTestTags.SignIn.EMAIL_LINK_BUTTON),
+                    modifier = Modifier.fillMaxWidth(),
                     enabled = !isLoading
                 ) {
                     Text(stringProvider.signInWithEmailLink.uppercase())
