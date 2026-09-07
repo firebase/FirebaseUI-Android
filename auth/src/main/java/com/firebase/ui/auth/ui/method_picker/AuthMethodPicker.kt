@@ -88,6 +88,9 @@ class MethodPickerTermsConfiguration(
  * @param lastSignInPreference The last sign-in preference to show a "Continue as..." button.
  * @param termsConfiguration Optional configuration for a custom ToS/Privacy Policy footer.
  * When provided, replaces the default "By continuing..." text. See [MethodPickerTermsConfiguration].
+ * @param onContinueAsSelected A callback when the "Continue as..." button is selected, with the
+ * provider and saved identifier (email address). Falls back to [onProviderSelected]
+ * if not provided.
  *
  * @since 10.0.0
  */
@@ -102,7 +105,10 @@ fun AuthMethodPicker(
     lastSignInPreference: SignInPreferenceManager.SignInPreference? = null,
     customLayout: (@Composable (List<AuthProvider>, (AuthProvider) -> Unit) -> Unit)? = null,
     termsConfiguration: MethodPickerTermsConfiguration? = null,
+    onContinueAsSelected: ((AuthProvider, String?) -> Unit)? = null,
 ) {
+    val continueAsHandler: (AuthProvider, String?) -> Unit =
+        onContinueAsSelected ?: { provider, _ -> onProviderSelected(provider) }
     val context = LocalContext.current
     val inPreview = LocalInspectionMode.current
     val stringProvider = LocalAuthUIStringProvider.current
@@ -150,7 +156,7 @@ fun AuthMethodPicker(
                                     provider = lastProvider,
                                     identifier = preference.identifier,
                                     enabled = providerButtonsEnabled,
-                                    onClick = { onProviderSelected(lastProvider) }
+                                    onClick = { continueAsHandler(lastProvider, preference.identifier) }
                                 )
                                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -218,7 +224,7 @@ fun AuthMethodPicker(
  * A prominent "Continue as..." button that shows the last-used provider and identifier.
  *
  * @param provider The authentication provider
- * @param identifier The user identifier (email, phone number, etc.)
+ * @param identifier The user identifier (email address)
  * @param onClick Callback when the button is clicked
  */
 @Composable

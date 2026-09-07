@@ -16,6 +16,7 @@ package com.firebase.ui.auth.configuration.auth_provider
 
 import android.app.Activity
 import android.content.Context
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -30,6 +31,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWebException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.OAuthCredential
 import com.google.firebase.auth.OAuthProvider
@@ -38,6 +40,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -59,6 +62,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class OAuthProviderFirebaseAuthUITest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     @Mock
     private lateinit var mockFirebaseAuth: FirebaseAuth
@@ -289,5 +295,44 @@ class OAuthProviderFirebaseAuthUITest {
         assertThat(finalState).isInstanceOf(AuthState.Error::class.java)
         val errorState = finalState as AuthState.Error
         assertThat(errorState.exception).isInstanceOf(AuthException.AuthCancelledException::class.java)
+    }
+
+    @Test
+    fun `rememberOAuthSignInHandler does not report onSignInFailure when the web context is cancelled`() {
+        `when`(mockFirebaseAuth.pendingAuthResult).thenReturn(null)
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        val taskCompletionSource = TaskCompletionSource<AuthResult>()
+        taskCompletionSource.setException(
+            FirebaseAuthWebException("ERROR_WEB_CONTEXT_CANCELED", "The web operation was canceled")
+        )
+        `when`(mockFirebaseAuth.startActivityForSignInWithProvider(any<Activity>(), any<OAuthProvider>()))
+            .thenReturn(taskCompletionSource.task)
+
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val microsoftProvider = AuthProvider.Microsoft(tenant = null, customParameters = emptyMap())
+        val config = authUIConfiguration {
+            context = applicationContext
+            providers {
+                provider(microsoftProvider)
+            }
+        }
+
+        val reportedFailures = mutableListOf<AuthException>()
+        var launcher: (() -> Unit)? = null
+
+        composeTestRule.setContent {
+            launcher = instance.rememberOAuthSignInHandler(
+                context = applicationContext,
+                activity = mockActivity,
+                config = config,
+                provider = microsoftProvider,
+                onSignInFailure = { reportedFailures.add(it) },
+            )
+        }
+
+        composeTestRule.runOnIdle { launcher?.invoke() }
+        composeTestRule.waitForIdle()
+
+        assertThat(reportedFailures).isEmpty()
     }
 }

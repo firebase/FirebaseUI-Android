@@ -227,6 +227,7 @@ fun AuthFlowDemo(
                         is AuthState.Success -> "Success - User: ${(authState as AuthState.Success).user.email}"
                         is AuthState.Error -> "Error: ${(authState as AuthState.Error).exception.message}"
                         is AuthState.Cancelled -> "Cancelled"
+                        is AuthState.Aborted -> "Aborted"
                         is AuthState.RequiresMfa -> "MFA Required"
                         is AuthState.RequiresEmailVerification -> "Email Verification Required"
                         else -> "Unknown"

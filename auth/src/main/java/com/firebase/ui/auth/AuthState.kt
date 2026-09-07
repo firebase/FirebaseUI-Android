@@ -35,9 +35,18 @@ import com.google.firebase.auth.PhoneAuthProvider
 abstract class AuthState private constructor() {
 
     /**
+     * Whether this is a one-off notification: something a screen shows once (a dialog, a "link
+     * sent" message) and must reset back to [Idle] immediately after consuming, so it doesn't
+     * leak to a screen/Activity created later. `abstract` so every new state must explicitly
+     * decide this rather than silently defaulting one way.
+     */
+    abstract val isNotification: Boolean
+
+    /**
      * Initial state before any authentication operation has been started.
      */
     class Idle internal constructor() : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean = other is Idle
         override fun hashCode(): Int = javaClass.hashCode()
         override fun toString(): String = "AuthState.Idle"
@@ -49,6 +58,7 @@ abstract class AuthState private constructor() {
      * @property message Optional message describing what is being loaded
      */
     class Loading(val message: String? = null) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Loading) return false
@@ -72,6 +82,7 @@ abstract class AuthState private constructor() {
         val user: FirebaseUser,
         val isNewUser: Boolean = false
     ) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Success) return false
@@ -101,6 +112,7 @@ abstract class AuthState private constructor() {
         val exception: Exception,
         val isRecoverable: Boolean = true
     ) : AuthState() {
+        override val isNotification: Boolean = true
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is Error) return false
@@ -120,11 +132,35 @@ abstract class AuthState private constructor() {
 
     /**
      * Authentication was cancelled by the user.
+     *
+     * This is an operation-level cancellation: the user backed out of a single sign-in
+     * attempt (e.g. dismissed the Google Credential Manager sheet, backed out of an MFA
+     * challenge). The flow stays open and the screen returns to the method picker.
+     *
+     * @see Aborted for the state that ends the whole flow instead
      */
     class Cancelled internal constructor() : AuthState() {
+        override val isNotification: Boolean = true
         override fun equals(other: Any?): Boolean = other is Cancelled
         override fun hashCode(): Int = javaClass.hashCode()
         override fun toString(): String = "AuthState.Cancelled"
+    }
+
+    /**
+     * The entire authentication flow was aborted.
+     *
+     * This state is emitted only by [AuthFlowController.cancel]. Unlike [Cancelled], which is
+     * a normal in-flow outcome that leaves the flow open, [Aborted] ends the whole flow —
+     * for example, [FirebaseAuthActivity] finishes with `RESULT_CANCELED` when it observes
+     * this state.
+     *
+     * @see Cancelled for the operation-level state that leaves the flow open
+     */
+    class Aborted internal constructor() : AuthState() {
+        override val isNotification: Boolean = true
+        override fun equals(other: Any?): Boolean = other is Aborted
+        override fun hashCode(): Int = javaClass.hashCode()
+        override fun toString(): String = "AuthState.Aborted"
     }
 
     /**
@@ -137,6 +173,7 @@ abstract class AuthState private constructor() {
         val resolver: MultiFactorResolver,
         val hint: String? = null
     ) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is RequiresMfa) return false
@@ -164,6 +201,7 @@ abstract class AuthState private constructor() {
         val user: FirebaseUser,
         val email: String
     ) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is RequiresEmailVerification) return false
@@ -191,6 +229,7 @@ abstract class AuthState private constructor() {
         val user: FirebaseUser,
         val missingFields: List<String> = emptyList()
     ) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is RequiresProfileCompletion) return false
@@ -221,6 +260,7 @@ abstract class AuthState private constructor() {
         // Not included in equals/hashCode — lambdas have no meaningful equality.
         val retryOperation: (suspend (android.content.Context) -> Unit)? = null,
     ) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ReauthenticationRequired) return false
@@ -241,6 +281,7 @@ abstract class AuthState private constructor() {
      * Password reset link has been sent to the user's email.
      */
     class PasswordResetLinkSent : AuthState() {
+        override val isNotification: Boolean = true
         override fun equals(other: Any?): Boolean = other is PasswordResetLinkSent
         override fun hashCode(): Int = javaClass.hashCode()
         override fun toString(): String = "AuthState.PasswordResetLinkSent"
@@ -250,6 +291,7 @@ abstract class AuthState private constructor() {
      * Email sign in link has been sent to the user's email.
      */
     class EmailSignInLinkSent : AuthState() {
+        override val isNotification: Boolean = true
         override fun equals(other: Any?): Boolean = other is EmailSignInLinkSent
         override fun hashCode(): Int = javaClass.hashCode()
         override fun toString(): String = "AuthState.EmailSignInLinkSent"
@@ -267,6 +309,7 @@ abstract class AuthState private constructor() {
      * @see PhoneNumberVerificationRequired for the manual verification flow
      */
     class SMSAutoVerified(val credential: PhoneAuthCredential) : AuthState() {
+        override val isNotification: Boolean = true
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is SMSAutoVerified) return false
@@ -305,6 +348,7 @@ abstract class AuthState private constructor() {
         val verificationId: String,
         val forceResendingToken: PhoneAuthProvider.ForceResendingToken,
     ) : AuthState() {
+        override val isNotification: Boolean = false
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is PhoneNumberVerificationRequired) return false
@@ -337,5 +381,12 @@ abstract class AuthState private constructor() {
          */
         @JvmStatic
         val Cancelled: Cancelled = Cancelled()
+
+        /**
+         * Creates an Aborted state instance.
+         * @return A new [Aborted] state
+         */
+        @JvmStatic
+        val Aborted: Aborted = Aborted()
     }
 }

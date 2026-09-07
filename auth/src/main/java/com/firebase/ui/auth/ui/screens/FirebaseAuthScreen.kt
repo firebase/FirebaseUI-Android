@@ -62,6 +62,7 @@ import androidx.navigation.compose.rememberNavController
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.BuildConfig
+import com.firebase.ui.auth.FirebaseAuthActivity
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.MfaConfiguration
@@ -144,11 +145,11 @@ fun FirebaseAuthScreen(
     val activity = LocalActivity.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val stringProvider = DefaultAuthUIStringProvider(context)
+    val stringProvider = remember(context) { DefaultAuthUIStringProvider(context) }
     val navController = rememberNavController()
 
     val authState by remember(authUI) { authUI.authStateFlow() }.collectAsState(AuthState.Idle)
-    val dialogController = rememberTopLevelDialogController(stringProvider, authState)
+    val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
     val lastSuccessfulUserId = remember { mutableStateOf<String?>(null) }
     val pendingLinkingCredential = remember { mutableStateOf<AuthCredential?>(null) }
     val pendingResolver = remember { mutableStateOf<MultiFactorResolver?>(null) }
@@ -156,8 +157,12 @@ fun FirebaseAuthScreen(
     val pendingReauthState = remember { mutableStateOf<AuthState.ReauthenticationRequired?>(null) }
     val pendingReauthOperation = remember { mutableStateOf<(suspend (android.content.Context) -> Unit)?>(null) }
     val emailLinkFromDifferentDevice = remember { mutableStateOf<String?>(null) }
+    val prefillEmail = remember { mutableStateOf<String?>(null) }
     val lastSignInPreference =
         remember { mutableStateOf<SignInPreferenceManager.SignInPreference?>(null) }
+    // Last-processed AuthState, so the Idle branch below can tell a genuine reset apart from
+    // Idle-as-a-side-effect of consuming a notification (see AuthState.isNotification).
+    val previousAuthState = remember { mutableStateOf<AuthState>(AuthState.Idle) }
     val startRoute = remember(configuration.providers, configuration.isProviderChoiceAlwaysShown) {
         getStartRoute(configuration)
     }
@@ -185,6 +190,7 @@ fun FirebaseAuthScreen(
                 )
             )
         },
+        onSignInFailure = onSignInFailure,
     )
     val continueWithProvider: (String) -> Unit = { providerId ->
         configuration.providers.find { it.providerId == providerId }?.let { onProviderSelected(it) }
@@ -231,7 +237,14 @@ fun FirebaseAuthScreen(
                                 privacyPolicyUrl = configuration.privacyPolicyUrl,
                                 lastSignInPreference = lastSignInPreference.value,
                                 termsConfiguration = customMethodPickerTermsConfiguration,
-                                onProviderSelected = onProviderSelected,
+                                onProviderSelected = { provider ->
+                                    prefillEmail.value = null
+                                    onProviderSelected(provider)
+                                },
+                                onContinueAsSelected = { provider, identifier ->
+                                    prefillEmail.value = if (provider is AuthProvider.Email) identifier else null
+                                    onProviderSelected(provider)
+                                },
                             )
                         }
                     }
@@ -242,6 +255,7 @@ fun FirebaseAuthScreen(
                         context = context,
                         configuration = configuration,
                         authUI = authUI,
+                        prefillEmail = prefillEmail.value,
                         credentialForLinking = pendingLinkingCredential.value,
                         emailLinkFromDifferentDevice = emailLinkFromDifferentDevice.value,
                         onContinueWithProvider = continueWithProvider,
@@ -447,30 +461,36 @@ fun FirebaseAuthScreen(
             // Synchronise auth state changes with navigation stack.
             LaunchedEffect(authState) {
                 val state = authState
+                val previous = previousAuthState.value
+                previousAuthState.value = state
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
                 when (state) {
                     is AuthState.Success -> {
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
 
-                        // If reauth just completed, execute the pending retry and skip normal success handling
-                        pendingReauthOperation.value?.let { retry ->
-                            pendingReauthOperation.value = null
-                            pendingReauthConfig.value = null
-                            pendingReauthState.value = null
-                            // Lock the state to Loading before launching the retry so no
-                            // intermediate Success emission can navigate to AuthRoute.Success.
-                            authUI.updateAuthState(AuthState.Loading())
-                            coroutineScope.launch {
-                                try {
-                                    retry(context)
-                                } catch (e: kotlinx.coroutines.CancellationException) {
-                                    throw e
-                                } catch (e: Exception) {
-                                    authUI.updateAuthState(AuthState.Error(e))
+                        // If reauth just completed, execute the pending retry and skip normal success handling.
+                        // Guarded on !previous.isNotification: a wrong-password Error masks back into
+                        // Success while signed in, and that must not be mistaken for a completed reauth.
+                        if (!previous.isNotification) {
+                            pendingReauthOperation.value?.let { retry ->
+                                pendingReauthOperation.value = null
+                                pendingReauthConfig.value = null
+                                pendingReauthState.value = null
+                                // Lock the state to Loading before launching the retry so no
+                                // intermediate Success emission can navigate to AuthRoute.Success.
+                                authUI.updateAuthState(AuthState.Loading())
+                                coroutineScope.launch {
+                                    try {
+                                        retry(context)
+                                    } catch (e: kotlinx.coroutines.CancellationException) {
+                                        throw e
+                                    } catch (e: Exception) {
+                                        authUI.updateAuthState(AuthState.Error(e))
+                                    }
                                 }
+                                return@LaunchedEffect
                             }
-                            return@LaunchedEffect
                         }
 
                         state.result?.let { result ->
@@ -553,22 +573,39 @@ fun FirebaseAuthScreen(
                                 launchSingleTop = true
                             }
                         }
-                        // Keep external cancellation reporting centralized here so child screens
-                        // can handle local navigation without triggering duplicate callbacks.
                         onSignInCancelled()
+                        authUI.updateAuthState(AuthState.Idle)
+                    }
+
+                    is AuthState.Aborted -> {
+                        // Hosted by FirebaseAuthActivity: its own authStateFlow collector
+                        // independently finishes the activity and resets state on Aborted.
+                        if (activity !is FirebaseAuthActivity) {
+                            pendingReauthOperation.value = null
+                            pendingReauthConfig.value = null
+                            pendingReauthState.value = null
+                            pendingResolver.value = null
+                            pendingLinkingCredential.value = null
+                            lastSuccessfulUserId.value = null
+                            authUI.updateAuthState(AuthState.Idle)
+                        }
                     }
 
                     is AuthState.Idle -> {
-                        pendingReauthOperation.value = null
-                        pendingReauthConfig.value = null
-                        pendingReauthState.value = null
-                        pendingResolver.value = null
-                        pendingLinkingCredential.value = null
-                        lastSuccessfulUserId.value = null
-                        if (currentRoute != startRoute.route) {
-                            navController.navigate(startRoute.route) {
-                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
-                                launchSingleTop = true
+                        // A notification resets to Idle purely to avoid leaking to a freshly
+                        // created screen — that's not a request to leave the current one.
+                        if (!previous.isNotification) {
+                            pendingReauthOperation.value = null
+                            pendingReauthConfig.value = null
+                            pendingReauthState.value = null
+                            pendingResolver.value = null
+                            pendingLinkingCredential.value = null
+                            lastSuccessfulUserId.value = null
+                            if (currentRoute != startRoute.route) {
+                                navController.navigate(startRoute.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                                    launchSingleTop = true
+                                }
                             }
                         }
                     }
@@ -588,6 +625,7 @@ fun FirebaseAuthScreen(
 
                     dialogController.showErrorDialog(
                         exception = exception,
+                        errorState = errorState,
                         onRetry = { _ ->
                             // Child screens handle their own retry logic
                         },
@@ -646,6 +684,8 @@ fun FirebaseAuthScreen(
                             // Dialog dismissed
                         }
                     )
+                    // Consumed immediately so this doesn't leak to a freshly created screen.
+                    authUI.updateAuthState(AuthState.Idle)
                 }
             }
 
@@ -994,6 +1034,7 @@ private fun FirebaseAuthUI.rememberOnProviderSelected(
     config: AuthUIConfiguration,
     onNavigate: (AuthRoute) -> Unit,
     onUnknownProvider: ((AuthProvider) -> Unit)? = null,
+    onSignInFailure: (AuthException) -> Unit = {},
 ): (AuthProvider) -> Unit {
     val anonymousProvider = config.providers.filterIsInstance<AuthProvider.Anonymous>().firstOrNull()
     val googleProvider = config.providers.filterIsInstance<AuthProvider.Google>().firstOrNull()
@@ -1005,16 +1046,18 @@ private fun FirebaseAuthUI.rememberOnProviderSelected(
     val twitterProvider = config.providers.filterIsInstance<AuthProvider.Twitter>().firstOrNull()
     val genericOAuthProviders = config.providers.filterIsInstance<AuthProvider.GenericOAuth>()
 
-    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(config) }
-    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it) }
-    val onSignInWithFacebook = facebookProvider?.let { rememberSignInWithFacebookLauncher(context, config, it) }
-    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
-    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, config, it) }
+    val onSignInAnonymously = anonymousProvider?.let { rememberAnonymousSignInHandler(config, onSignInFailure) }
+    val onSignInWithGoogle = googleProvider?.let { rememberGoogleSignInHandler(context, config, it, onSignInFailure) }
+    val onSignInWithFacebook = facebookProvider?.let {
+        rememberSignInWithFacebookLauncher(context, config, it, onSignInFailure = onSignInFailure)
+    }
+    val onSignInWithApple = appleProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithGithub = githubProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithMicrosoft = microsoftProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithYahoo = yahooProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
+    val onSignInWithTwitter = twitterProvider?.let { rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure) }
     val genericOAuthHandlers = genericOAuthProviders.associateWith {
-        rememberOAuthSignInHandler(context, activity, config, it)
+        rememberOAuthSignInHandler(context, activity, config, it, onSignInFailure)
     }
 
     return { provider ->

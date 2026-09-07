@@ -13,7 +13,7 @@ timestamp: 2026-07-31T00:00:00Z
 - Root build: `build.gradle.kts`, `settings.gradle`, `gradle.properties`, Wrapper via `./gradlew`
 - Version catalog: `gradle/libs.versions.toml`
 - Shared constants: `buildSrc/src/main/kotlin/Config.kt`
-  - `Config.version` (e.g. `10.0.0-beta03`)
+  - `Config.version` (e.g. `10.0.0-beta04`)
   - `Config.submodules` = `auth`, `common`, `firestore`, `database`, `storage`
   - `Config.SdkVersions` — compile / target / min
 - Checkstyle: `library/quality/checkstyle.xml`

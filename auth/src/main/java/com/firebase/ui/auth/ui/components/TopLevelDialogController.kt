@@ -40,18 +40,18 @@ val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?
  * **Usage:**
  * ```kotlin
  * // At the root of your auth flow (FirebaseAuthScreen):
- * val dialogController = rememberTopLevelDialogController(stringProvider)
- * 
+ * val dialogController = rememberTopLevelDialogController(stringProvider) { authState }
+ *
  * CompositionLocalProvider(LocalTopLevelDialogController provides dialogController) {
  *     // Your auth screens...
- *     
+ *
  *     // Show dialog at root level (only one instance)
  *     dialogController.CurrentDialog()
  * }
- * 
+ *
  * // In any child screen (EmailAuthScreen, PhoneAuthScreen, etc.):
  * val dialogController = LocalTopLevelDialogController.current
- * 
+ *
  * LaunchedEffect(error) {
  *     error?.let { exception ->
  *         dialogController?.showErrorDialog(
@@ -68,7 +68,7 @@ val LocalTopLevelDialogController = compositionLocalOf<TopLevelDialogController?
  */
 class TopLevelDialogController(
     private val stringProvider: AuthUIStringProvider,
-    private val authState: AuthState
+    private val currentAuthState: () -> AuthState
 ) {
     private var dialogState by mutableStateOf<DialogState?>(null)
     private val shownErrorStates = mutableSetOf<AuthState.Error>()
@@ -78,18 +78,22 @@ class TopLevelDialogController(
      * Automatically prevents duplicate dialogs for the same AuthState.Error instance.
      *
      * @param exception The auth exception to display
+     * @param errorState The specific [AuthState.Error] instance this call is reacting to, used
+     * for de-duplication. Pass this explicitly when the caller might not be the only observer of
+     * the same error: by the time this runs, another observer may have already reset the live
+     * auth state to `Idle`, so falling back to [currentAuthState] alone would miss the dedup.
      * @param onRetry Callback when user clicks retry button
      * @param onRecover Callback when user clicks recover button (e.g., navigate to different screen)
      * @param onDismiss Callback when dialog is dismissed
      */
     fun showErrorDialog(
         exception: AuthException,
+        errorState: AuthState.Error? = null,
         onRetry: (AuthException) -> Unit = {},
         onRecover: ((AuthException) -> Unit)? = null,
         onDismiss: () -> Unit = {}
     ) {
-        // Get current error state
-        val currentErrorState = authState as? AuthState.Error
+        val currentErrorState = errorState ?: (currentAuthState() as? AuthState.Error)
 
         // If this exact error state has already been shown, skip
         if (currentErrorState != null && currentErrorState in shownErrorStates) {
@@ -162,13 +166,21 @@ class TopLevelDialogController(
 
 /**
  * Creates and remembers a [TopLevelDialogController].
+ *
+ * [authState] is a lambda rather than a snapshot value so the controller can read the
+ * live auth state on every [TopLevelDialogController.showErrorDialog] call without being
+ * recreated (and losing its de-duplication history) whenever the auth state changes.
+ *
+ * Keyed on [stringProvider] rather than left unkeyed: callers must pass a `remember`ed
+ * [stringProvider] (stable across recompositions), otherwise the controller — and its
+ * de-duplication history — would be recreated on every recomposition.
  */
 @Composable
 fun rememberTopLevelDialogController(
     stringProvider: AuthUIStringProvider,
-    authState: AuthState
+    authState: () -> AuthState
 ): TopLevelDialogController {
-    return remember(stringProvider, authState) {
+    return remember(stringProvider) {
         TopLevelDialogController(stringProvider, authState)
     }
 }

@@ -319,6 +319,53 @@ class FirebaseAuthUIAuthStateTest {
     }
 
     // =============================================================================================
+    // Stale one-off AuthState regression tests
+    // =============================================================================================
+
+    @Test
+    fun `Error does not leak to a fresh collector after being consumed`() = runBlocking {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+
+        authUI.updateAuthState(AuthState.Error(Exception("boom")))
+        authUI.updateAuthState(AuthState.Idle)
+
+        // A brand-new collector (simulating a freshly created Activity) must see Idle.
+        assertThat(authUI.authStateFlow().first()).isEqualTo(AuthState.Idle)
+    }
+
+    @Test
+    fun `Cancelled does not leak to a fresh collector after being consumed`() = runBlocking {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+
+        authUI.updateAuthState(AuthState.Cancelled)
+        authUI.updateAuthState(AuthState.Idle)
+
+        assertThat(authUI.authStateFlow().first()).isEqualTo(AuthState.Idle)
+    }
+
+    @Test
+    fun `SMSAutoVerified does not leak to a fresh collector after being consumed`() = runBlocking {
+        `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+        val credential = mock(com.google.firebase.auth.PhoneAuthCredential::class.java)
+
+        authUI.updateAuthState(AuthState.SMSAutoVerified(credential))
+        authUI.updateAuthState(AuthState.Idle)
+
+        assertThat(authUI.authStateFlow().first()).isEqualTo(AuthState.Idle)
+    }
+
+    @Test
+    fun `Error left uncleared still leaks to a fresh collector (pins down the bug being fixed)`() =
+        runBlocking {
+            `when`(mockFirebaseAuth.currentUser).thenReturn(null)
+
+            // No consuming reset here — documents the pre-fix leaking behavior.
+            authUI.updateAuthState(AuthState.Error(Exception("boom")))
+
+            assertThat(authUI.authStateFlow().first()).isInstanceOf(AuthState.Error::class.java)
+        }
+
+    // =============================================================================================
     // AuthState Class Tests
     // =============================================================================================
 

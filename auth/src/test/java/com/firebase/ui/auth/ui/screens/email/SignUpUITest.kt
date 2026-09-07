@@ -112,4 +112,103 @@ class SignUpUITest {
         composeTestRule.onNode(hasText(stringProvider.signupPageTitle.uppercase()) and hasClickAction())
             .assertIsEnabled()
     }
+
+    @Test
+    fun `eager form validation does not surface an error on the untouched email field`() {
+        val provider = AuthProvider.Email(
+            isDisplayNameRequired = false,
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                var email by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                var confirmPassword by remember { mutableStateOf("") }
+
+                SignUpUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    displayName = "",
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    onDisplayNameChange = { },
+                    onEmailChange = { email = it },
+                    onPasswordChange = { password = it },
+                    onConfirmPasswordChange = { confirmPassword = it },
+                    onGoToSignIn = { },
+                    onSignUpClick = { }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        // isFormValid validates every field on each recomposition, so emailValidator.hasError
+        // flips to true while email is still empty. That stays invisible because FieldValidator
+        // backs its state with a plain var, not a Compose MutableState, so nothing recomposes.
+        // Guards a regression: making isFormValid a plain Boolean moves validation ahead of the
+        // text fields in the same composition pass, and the error does then show up.
+        composeTestRule.onNodeWithText(stringProvider.missingEmailAddress).assertDoesNotExist()
+
+        // Touch ONLY the password field; email is never focused or edited.
+        composeTestRule.onNodeWithText(stringProvider.passwordHint)
+            .performTextInput("Password123")
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.missingEmailAddress).assertDoesNotExist()
+    }
+
+    @Test
+    fun `typing an invalid email into the email field shows its error`() {
+        val provider = AuthProvider.Email(
+            isDisplayNameRequired = false,
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(provider) }
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalAuthUIStringProvider provides stringProvider) {
+                var email by remember { mutableStateOf("") }
+                var password by remember { mutableStateOf("") }
+                var confirmPassword by remember { mutableStateOf("") }
+
+                SignUpUI(
+                    configuration = configuration,
+                    isLoading = false,
+                    displayName = "",
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    onDisplayNameChange = { },
+                    onEmailChange = { email = it },
+                    onPasswordChange = { password = it },
+                    onConfirmPasswordChange = { confirmPassword = it },
+                    onGoToSignIn = { },
+                    onSignUpClick = { }
+                )
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText(stringProvider.invalidEmailAddress).assertDoesNotExist()
+
+        composeTestRule.onNodeWithText(stringProvider.emailHint)
+            .performTextInput("notanemail")
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(stringProvider.invalidEmailAddress).assertExists()
+    }
 }

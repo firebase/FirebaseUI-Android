@@ -35,9 +35,8 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.mfa.MfaChallengeContentState
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.MultiFactorInfo
 import com.google.firebase.auth.MultiFactorResolver
 import com.google.firebase.auth.MultiFactorSession
@@ -91,23 +90,8 @@ class MfaChallengeScreenTest {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
-        }
-
-        // Initialize default FirebaseApp
-        FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
 
         // Setup mock resolver
         `when`(mockResolver.session).thenReturn(mockSession)

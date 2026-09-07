@@ -65,35 +65,44 @@ class FirebaseAuthActivityTest {
 
         applicationContext = ApplicationProvider.getApplicationContext()
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
+        // Reuse FirebaseApps across tests in this class rather than deleting and
+        // re-initializing them for every test, to reduce churn on the "[DEFAULT]"
+        // app name (Robolectric shares statics across test methods in this class).
+        val secondaryApp = if (FirebaseApp.getApps(applicationContext).isEmpty()) {
+            FirebaseApp.initializeApp(
+                applicationContext,
+                FirebaseOptions.Builder()
+                    .setApiKey("fake-api-key")
+                    .setApplicationId("fake-app-id")
+                    .setProjectId("fake-project-id")
+                    .build()
+            )
+
+            val app = FirebaseApp.initializeApp(
+                applicationContext,
+                FirebaseOptions.Builder()
+                    .setApiKey("fake-api-key-2")
+                    .setApplicationId("fake-app-id-2")
+                    .setProjectId("fake-project-id-2")
+                    .build(),
+                "secondary"
+            )
+
+            // Other test classes in this module independently delete and recreate
+            // the "[DEFAULT]" FirebaseApp. Newer firebase-auth releases sometimes
+            // surface that unrelated churn here as "FirebaseApp was deleted" from
+            // useEmulator(), even though the app we just initialized is live. This
+            // call is a defensive safety net (these tests drive UI state through
+            // mocks, never real network calls), so it's safe to ignore.
+            runCatching { FirebaseAuthUI.getInstance().auth.useEmulator("127.0.0.1", 9099) }
+            runCatching { FirebaseAuthUI.getInstance(app).auth.useEmulator("127.0.0.1", 9099) }
+            app
+        } else {
+            FirebaseApp.getInstance("secondary")
         }
 
-        // Initialize default FirebaseApp
-        FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
-        val secondaryApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key-2")
-                .setApplicationId("fake-app-id-2")
-                .setProjectId("fake-project-id-2")
-                .build(),
-            "secondary"
-        )
-
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
         secondaryAuthUI = FirebaseAuthUI.getInstance(secondaryApp)
-        secondaryAuthUI.auth.useEmulator("127.0.0.1", 9099)
 
         configuration = AuthUIConfiguration(
             context = applicationContext,
@@ -113,13 +122,6 @@ class FirebaseAuthActivityTest {
     fun tearDown() {
         FirebaseAuthActivity.clearLaunchStateCache()
         FirebaseAuthUI.clearInstanceCache()
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            try {
-                app.delete()
-            } catch (_: Exception) {
-                // Ignore if already deleted
-            }
-        }
     }
 
     // =============================================================================================
@@ -313,18 +315,17 @@ class FirebaseAuthActivityTest {
     }
 
     // =============================================================================================
-    // Auth State Cancelled Tests
+    // Auth State Aborted Tests
     // =============================================================================================
 
     @Test
-    fun `activity finishes with RESULT_CANCELED on Cancelled state`() = runTest {
+    fun `activity finishes with RESULT_CANCELED on Aborted state`() = runTest {
         val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
         val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
 
         val activity = controller.create().start().resume().get()
 
-        // Update to Cancelled state
-        authUI.updateAuthState(AuthState.Cancelled)
+        authUI.updateAuthState(AuthState.Aborted)
 
         shadowOf(Looper.getMainLooper()).idle()
 
@@ -334,6 +335,44 @@ class FirebaseAuthActivityTest {
         // Result should be RESULT_CANCELED
         val shadowActivity = shadowOf(activity)
         assertThat(shadowActivity.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+    }
+
+    @Test
+    fun `Aborted state resets to Idle so a later flow on the same authUI does not immediately finish`() = runTest {
+        val firstIntent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val firstController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, firstIntent)
+        val firstActivity = firstController.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.Aborted)
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(firstActivity.isFinishing).isTrue()
+
+        val secondIntent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val secondController = Robolectric.buildActivity(FirebaseAuthActivity::class.java, secondIntent)
+        val secondActivity = secondController.create().start().resume().get()
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(secondActivity.isFinishing).isFalse()
+    }
+
+    // =============================================================================================
+    // Auth State Cancelled Tests
+    // =============================================================================================
+
+    @Test
+    fun `activity does not finish on Cancelled state`() = runTest {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.Cancelled)
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        assertThat(activity.isFinishing).isFalse()
     }
 
     // =============================================================================================
@@ -556,6 +595,27 @@ class FirebaseAuthActivityTest {
         shadowOf(Looper.getMainLooper()).idle()
 
         // Activity should NOT finish on RequiresMfa state
+        assertThat(activity.isFinishing).isFalse()
+    }
+
+    @Test
+    fun `activity does not finish when MFA challenge is cancelled`() = runTest {
+        val intent = FirebaseAuthActivity.createIntent(applicationContext, configuration)
+        val controller = Robolectric.buildActivity(FirebaseAuthActivity::class.java, intent)
+
+        val activity = controller.create().start().resume().get()
+
+        authUI.updateAuthState(AuthState.RequiresMfa(
+            resolver = mockMultiFactorResolver,
+            hint = "Enter verification code"
+        ))
+
+        shadowOf(Looper.getMainLooper()).idle()
+
+        authUI.updateAuthState(AuthState.Cancelled)
+
+        shadowOf(Looper.getMainLooper()).idle()
+
         assertThat(activity.isFinishing).isFalse()
     }
 

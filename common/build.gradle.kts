@@ -42,7 +42,6 @@ android {
     buildTypes {
         named("release").configure {
             isMinifyEnabled = false
-            consumerProguardFiles("proguard-rules.pro")
         }
     }
 }

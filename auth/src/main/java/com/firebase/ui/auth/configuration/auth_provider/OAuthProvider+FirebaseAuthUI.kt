@@ -3,7 +3,6 @@ package com.firebase.ui.auth.configuration.auth_provider
 import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -21,8 +20,9 @@ import kotlinx.coroutines.tasks.await
 /**
  * Creates a Composable handler for OAuth provider sign-in.
  *
- * This function creates a remember-scoped sign-in handler that can be invoked
- * from button clicks or other UI events. It automatically handles:
+ * This function creates a sign-in handler, rebuilt on every recomposition so it always
+ * captures the latest parameters, that can be invoked from button clicks or other UI events.
+ * It automatically handles:
  * - Activity retrieval from LocalActivity
  * - Coroutine scope management
  * - Error handling and state updates
@@ -41,6 +41,7 @@ import kotlinx.coroutines.tasks.await
  *
  * @param config Authentication UI configuration
  * @param provider OAuth provider configuration
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  *
  * @return Lambda that triggers OAuth sign-in when invoked
  *
@@ -54,6 +55,7 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
     activity: Activity?,
     config: AuthUIConfiguration,
     provider: AuthProvider.OAuth,
+    onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
     activity ?: throw IllegalStateException(
@@ -61,22 +63,22 @@ internal fun FirebaseAuthUI.rememberOAuthSignInHandler(
                 "Ensure FirebaseAuthScreen is used within an Activity."
     )
 
-    return remember(this, provider.providerId, config) {
-        {
-            coroutineScope.launch {
-                try {
-                    signInWithProvider(
-                        context = context,
-                        config = config,
-                        activity = activity,
-                        provider = provider
-                    )
-                } catch (e: AuthException) {
-                    updateAuthState(AuthState.Error(e))
-                } catch (e: Exception) {
-                    val authException = AuthException.from(e, context)
-                    updateAuthState(AuthState.Error(authException))
-                }
+    return {
+        coroutineScope.launch {
+            try {
+                signInWithProvider(
+                    context = context,
+                    config = config,
+                    activity = activity,
+                    provider = provider
+                )
+            } catch (e: AuthException) {
+                updateAuthState(AuthState.Error(e))
+                if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
+            } catch (e: Exception) {
+                val authException = AuthException.from(e, context)
+                updateAuthState(AuthState.Error(authException))
+                if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
     }

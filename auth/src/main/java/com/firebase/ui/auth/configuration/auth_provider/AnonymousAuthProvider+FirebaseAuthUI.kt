@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.configuration.auth_provider
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
@@ -14,27 +13,32 @@ import kotlinx.coroutines.tasks.await
 /**
  * Creates a remembered launcher function for anonymous sign-in.
  *
+ * @param config Authentication UI configuration
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  * @return A launcher function that starts the anonymous sign-in flow when invoked
  *
  * @see signInAnonymously
  * @see createOrLinkUserWithEmailAndPassword for upgrading anonymous accounts
  */
 @Composable
-internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(config: AuthUIConfiguration): () -> Unit {
+internal fun FirebaseAuthUI.rememberAnonymousSignInHandler(
+    config: AuthUIConfiguration,
+    onSignInFailure: (AuthException) -> Unit = {},
+): () -> Unit {
     val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    return remember(this) {
-        {
-            coroutineScope.launch {
-                try {
-                    signInAnonymously(config)
-                } catch (e: AuthException) {
-                    // Already an AuthException, don't re-wrap it
-                    updateAuthState(AuthState.Error(e))
-                } catch (e: Exception) {
-                    val authException = AuthException.from(e, context)
-                    updateAuthState(AuthState.Error(authException))
-                }
+    return {
+        coroutineScope.launch {
+            try {
+                signInAnonymously(config)
+            } catch (e: AuthException) {
+                // Already an AuthException, don't re-wrap it
+                updateAuthState(AuthState.Error(e))
+                if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
+            } catch (e: Exception) {
+                val authException = AuthException.from(e, context)
+                updateAuthState(AuthState.Error(authException))
+                if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
     }

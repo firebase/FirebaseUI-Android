@@ -34,9 +34,8 @@ import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringPro
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.ensureFreshUser
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -68,23 +67,8 @@ class AnonymousAuthScreenTest {
 
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
-        }
-
-        // Initialize default FirebaseApp
-        val firebaseApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        val firebaseApp = ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
 
         emulatorApi = EmulatorAuthApi(
             projectId = firebaseApp.options.projectId
@@ -99,7 +83,10 @@ class AnonymousAuthScreenTest {
 
     @After
     fun tearDown() {
-        // Clean up after each test to prevent test pollution
+        // Clean up after each test to prevent test pollution. The FirebaseApp itself is
+        // shared across test classes (see ensureTestFirebaseApp), so the client-side
+        // session must be reset explicitly here rather than relying on app re-creation.
+        authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
 
         // Clear emulator data
@@ -310,9 +297,13 @@ class AnonymousAuthScreenTest {
         }
 
         var currentAuthState: AuthState = AuthState.Idle
+        var capturedFailure: AuthException? = null
 
         composeTestRule.setContent {
-            TestAuthScreen(configuration = configuration)
+            TestAuthScreen(
+                configuration = configuration,
+                onSignInFailure = { capturedFailure = it },
+            )
             val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
             currentAuthState = authState
         }
@@ -382,12 +373,18 @@ class AnonymousAuthScreenTest {
         composeTestRule.waitForIdle()
         shadowOf(Looper.getMainLooper()).idle()
 
-        // Step 5: Wait for error state (AccountLinkingRequiredException)
+        // Step 5: Wait for onSignInFailure to fire with AccountLinkingRequiredException.
+        //
+        // This is captured via the onSignInFailure callback rather than polling authStateFlow():
+        // the screen resets AuthState back to Idle immediately after consuming the Error (so a
+        // second, independent authStateFlow() collector — like polling currentAuthState here —
+        // can miss the transient value entirely per StateFlow's conflation contract), whereas
+        // onSignInFailure is a direct, synchronous call from the same effect, so it can't race.
         println("TEST: Waiting for AccountLinkingRequiredException...")
         composeTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
             shadowOf(Looper.getMainLooper()).idle()
-            println("TEST: Auth state: $currentAuthState")
-            currentAuthState is AuthState.Error
+            println("TEST: Captured failure: $capturedFailure")
+            capturedFailure != null
         }
 
         // Step 6: Verify ErrorRecoveryDialog is displayed
@@ -396,24 +393,22 @@ class AnonymousAuthScreenTest {
             .assertIsDisplayed()
 
         // Verify exception
-        assertThat(currentAuthState).isInstanceOf(AuthState.Error::class.java)
-        val errorState = currentAuthState as AuthState.Error
-        assertThat(errorState.exception).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
+        assertThat(capturedFailure).isInstanceOf(AuthException.AccountLinkingRequiredException::class.java)
 
-        val linkingException = errorState.exception as AuthException.AccountLinkingRequiredException
+        val linkingException = capturedFailure as AuthException.AccountLinkingRequiredException
         assertThat(linkingException.email).isEqualTo(email)
     }
 
     @Composable
-    private fun TestAuthScreen(configuration: AuthUIConfiguration) {
-        composeTestRule.waitForIdle()
-        shadowOf(Looper.getMainLooper()).idle()
-
+    private fun TestAuthScreen(
+        configuration: AuthUIConfiguration,
+        onSignInFailure: (AuthException) -> Unit = {},
+    ) {
         FirebaseAuthScreen(
             configuration = configuration,
             authUI = authUI,
             onSignInSuccess = { result -> },
-            onSignInFailure = { exception: AuthException -> },
+            onSignInFailure = onSignInFailure,
             onSignInCancelled = {},
             authenticatedContent = { state, uiContext ->
                 when (state) {

@@ -20,9 +20,8 @@ import com.firebase.ui.auth.configuration.string_provider.AuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
+import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -58,23 +57,8 @@ class MfaDisabledTest {
         applicationContext = ApplicationProvider.getApplicationContext()
         stringProvider = DefaultAuthUIStringProvider(applicationContext)
 
-        // Clear any existing Firebase apps
-        FirebaseApp.getApps(applicationContext).forEach { app ->
-            app.delete()
-        }
-
-        // Initialize default FirebaseApp
-        val firebaseApp = FirebaseApp.initializeApp(
-            applicationContext,
-            FirebaseOptions.Builder()
-                .setApiKey("fake-api-key")
-                .setApplicationId("fake-app-id")
-                .setProjectId("fake-project-id")
-                .build()
-        )
-
+        val firebaseApp = ensureTestFirebaseApp(applicationContext)
         authUI = FirebaseAuthUI.getInstance()
-        authUI.auth.useEmulator("127.0.0.1", 9099)
 
         emulatorApi = EmulatorAuthApi(
             projectId = firebaseApp.options.projectId
@@ -89,7 +73,10 @@ class MfaDisabledTest {
 
     @After
     fun tearDown() {
-        // Clean up after each test to prevent test pollution
+        // Clean up after each test to prevent test pollution. The FirebaseApp itself is
+        // shared across test classes (see ensureTestFirebaseApp), so the client-side
+        // session must be reset explicitly here rather than relying on app re-creation.
+        authUI.auth.signOut()
         FirebaseAuthUI.clearInstanceCache()
 
         // Clear emulator data

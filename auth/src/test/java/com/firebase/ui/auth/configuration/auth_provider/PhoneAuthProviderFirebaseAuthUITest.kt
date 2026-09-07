@@ -14,8 +14,10 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
+import android.app.Activity
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -27,9 +29,19 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.MultiFactorSession
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -139,7 +151,9 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 multiFactorSession = anyOrNull(),
                 isInstantVerificationEnabled = eq(true)
             )
-        ).thenReturn(AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified(mockCredential))
+        ).thenReturn(
+            flowOf(AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified(mockCredential))
+        )
 
         instance.verifyPhoneNumber(
             provider = phoneProvider,
@@ -179,9 +193,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
                     isInstantVerificationEnabled = eq(true)
                 )
             ).thenReturn(
-                AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
-                    "test-verification-id",
-                    mockToken
+                flowOf(
+                    AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
+                        "test-verification-id",
+                        mockToken
+                    )
                 )
             )
 
@@ -199,6 +215,56 @@ class PhoneAuthProviderFirebaseAuthUITest {
             val verificationState = finalState as AuthState.PhoneNumberVerificationRequired
             assertThat(verificationState.verificationId).isEqualTo("test-verification-id")
             assertThat(verificationState.forceResendingToken).isEqualTo(mockToken)
+        }
+
+    @Test
+    fun `verifyPhoneNumber - late auto-verification after code sent emits SMSAutoVerified`() =
+        runTest {
+            val mockToken = mock(PhoneAuthProvider.ForceResendingToken::class.java)
+            val mockCredential = mock(PhoneAuthCredential::class.java)
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val phoneProvider = AuthProvider.Phone(
+                defaultNumber = null,
+                defaultCountryCode = null,
+                allowedCountries = null,
+                timeout = 60L,
+                isInstantVerificationEnabled = true
+            )
+
+            // Firebase's SMS auto-retrieval order: the code is sent first, then the credential
+            // arrives on its own. The late credential must not be dropped.
+            `when`(
+                mockPhoneAuthVerifier.verifyPhoneNumber(
+                    auth = any(),
+                    activity = anyOrNull(),
+                    phoneNumber = any(),
+                    timeout = eq(60L),
+                    forceResendingToken = anyOrNull(),
+                    multiFactorSession = anyOrNull(),
+                    isInstantVerificationEnabled = eq(true)
+                )
+            ).thenReturn(
+                flowOf(
+                    AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
+                        "test-verification-id",
+                        mockToken
+                    ),
+                    AuthProvider.Phone.VerifyPhoneNumberResult.AutoVerified(mockCredential)
+                )
+            )
+
+            instance.verifyPhoneNumber(
+                provider = phoneProvider,
+                activity = null,
+                phoneNumber = "+1234567890",
+                config = phoneConfig,
+                verifier = mockPhoneAuthVerifier
+            )
+
+            val finalState = instance.authStateFlow().first()
+            assertThat(finalState).isInstanceOf(AuthState.SMSAutoVerified::class.java)
+            assertThat((finalState as AuthState.SMSAutoVerified).credential)
+                .isEqualTo(mockCredential)
         }
 
     @Test
@@ -225,9 +291,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 isInstantVerificationEnabled = eq(true)
             )
         ).thenReturn(
-            AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
-                "new-verification-id",
-                newMockToken
+            flowOf(
+                AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
+                    "new-verification-id",
+                    newMockToken
+                )
             )
         )
 
@@ -270,9 +338,11 @@ class PhoneAuthProviderFirebaseAuthUITest {
                 isInstantVerificationEnabled = eq(false)
             )
         ).thenReturn(
-            AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
-                "test-id",
-                mock()
+            flowOf(
+                AuthProvider.Phone.VerifyPhoneNumberResult.NeedsManualVerification(
+                    "test-id",
+                    mock()
+                )
             )
         )
 
@@ -293,6 +363,172 @@ class PhoneAuthProviderFirebaseAuthUITest {
             anyOrNull(),
             eq(false)
         )
+    }
+
+    @Test
+    fun `verifyPhoneNumber - cancellation propagates CancellationException and emits no Error`() =
+        runTest {
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val phoneProvider = AuthProvider.Phone(
+                defaultNumber = null,
+                defaultCountryCode = null,
+                allowedCountries = null,
+                timeout = 60L,
+                isInstantVerificationEnabled = true
+            )
+            val cancellingVerifier = object : AuthProvider.Phone.Verifier {
+                override fun verifyPhoneNumber(
+                    auth: FirebaseAuth,
+                    activity: Activity?,
+                    phoneNumber: String,
+                    timeout: Long,
+                    forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
+                    multiFactorSession: MultiFactorSession?,
+                    isInstantVerificationEnabled: Boolean,
+                ): Flow<AuthProvider.Phone.VerifyPhoneNumberResult> = flow {
+                    throw CancellationException("Verification cancelled")
+                }
+            }
+
+            var thrown: Throwable? = null
+            try {
+                instance.verifyPhoneNumber(
+                    provider = phoneProvider,
+                    activity = null,
+                    phoneNumber = "+1234567890",
+                    config = phoneConfig,
+                    verifier = cancellingVerifier
+                )
+            } catch (t: Throwable) {
+                thrown = t
+            }
+
+            // The screen cancels this collection as routine bookkeeping, so the cancellation must
+            // travel back untranslated and leave nothing behind in authStateFlow.
+            assertThat(thrown).isInstanceOf(CancellationException::class.java)
+            assertThat(thrown).isNotInstanceOf(AuthException::class.java)
+            assertThat(instance.authStateFlow().first())
+                .isNotInstanceOf(AuthState.Error::class.java)
+        }
+
+    @Test
+    fun `verifyPhoneNumber - cancellation clears the pending Loading state`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val deferred = startNeverResolvingVerifyPhoneNumber(instance)
+
+        deferred.cancel()
+        try {
+            deferred.await()
+        } catch (_: CancellationException) {
+            // Expected
+        }
+
+        val state = instance.authStateFlow().first()
+        assertThat(state).isNotInstanceOf(AuthState.Loading::class.java)
+        assertThat(state).isInstanceOf(AuthState.Idle::class.java)
+    }
+
+    @Test
+    fun `verifyPhoneNumber - cancellation does not clobber a newer unrelated state`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        val deferred = startNeverResolvingVerifyPhoneNumber(instance)
+
+        // A newer, unrelated state lands while the verification is still in flight.
+        instance.updateAuthState(AuthState.PasswordResetLinkSent())
+
+        deferred.cancel()
+        try {
+            deferred.await()
+        } catch (_: CancellationException) {
+            // Expected
+        }
+
+        val state = instance.authStateFlow().first()
+        assertThat(state).isInstanceOf(AuthState.PasswordResetLinkSent::class.java)
+    }
+
+    @Test
+    fun `verifyPhoneNumber - cancellation does not clear a newer Loading from a resend`() =
+        runTest {
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val first = startNeverResolvingVerifyPhoneNumber(instance)
+
+            // A resend starts while the first call is still in flight and emits its own Loading,
+            // which carries the same message and so compares equal to the first one.
+            val resend = startNeverResolvingVerifyPhoneNumber(instance)
+
+            first.cancel()
+            try {
+                first.await()
+            } catch (_: CancellationException) {
+                // Expected
+            }
+
+            val state = instance.authStateFlow().first()
+            assertThat(state).isInstanceOf(AuthState.Loading::class.java)
+
+            resend.cancel()
+        }
+
+    @Test
+    fun `clearLoadingState - equal but distinct Loading instances do not clear each other`() =
+        runTest {
+            val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+            val first = AuthState.Loading("verifying")
+            val second = AuthState.Loading("verifying")
+            assertThat(first).isEqualTo(second)
+
+            instance.updateAuthState(first)
+            val firstRevision = instance.currentAuthStateRevision()
+            instance.updateAuthState(second)
+            instance.clearLoadingState(firstRevision)
+
+            assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Loading::class.java)
+        }
+
+    @Test
+    fun `clearLoadingState - clears when its Loading is still the latest state`() = runTest {
+        val instance = FirebaseAuthUI.create(firebaseApp, mockFirebaseAuth)
+        instance.updateAuthState(AuthState.Loading("verifying"))
+
+        instance.clearLoadingState(instance.currentAuthStateRevision())
+
+        assertThat(instance.authStateFlow().first()).isInstanceOf(AuthState.Idle::class.java)
+    }
+
+    // Starts verifyPhoneNumber against a flow that never emits, UNDISPATCHED so the call reaches
+    // its suspension point (past the Loading emission) before the caller can cancel it.
+    private fun CoroutineScope.startNeverResolvingVerifyPhoneNumber(
+        instance: FirebaseAuthUI,
+    ): Deferred<Unit> {
+        val phoneProvider = AuthProvider.Phone(
+            defaultNumber = null,
+            defaultCountryCode = null,
+            allowedCountries = null,
+            timeout = 60L,
+            isInstantVerificationEnabled = true
+        )
+        val neverResolvingVerifier = object : AuthProvider.Phone.Verifier {
+            override fun verifyPhoneNumber(
+                auth: FirebaseAuth,
+                activity: Activity?,
+                phoneNumber: String,
+                timeout: Long,
+                forceResendingToken: PhoneAuthProvider.ForceResendingToken?,
+                multiFactorSession: MultiFactorSession?,
+                isInstantVerificationEnabled: Boolean,
+            ): Flow<AuthProvider.Phone.VerifyPhoneNumberResult> = flow { awaitCancellation() }
+        }
+
+        return async(start = CoroutineStart.UNDISPATCHED) {
+            instance.verifyPhoneNumber(
+                provider = phoneProvider,
+                activity = null,
+                phoneNumber = "+1234567890",
+                config = phoneConfig,
+                verifier = neverResolvingVerifier
+            )
+        }
     }
 
     // =============================================================================================

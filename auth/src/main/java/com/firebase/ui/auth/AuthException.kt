@@ -513,6 +513,14 @@ abstract class AuthException(
                             cause = firebaseException
                         )
 
+                        // FirebaseAuthWebException code for backing out of the OAuth custom tab
+                        "ERROR_WEB_CONTEXT_CANCELED" -> AuthCancelledException(
+                            message = stringProvider?.errorAuthCancelled.nonEmpty()
+                                ?: firebaseException.message
+                                ?: "Authentication was cancelled",
+                            cause = firebaseException
+                        )
+
                         else -> UnknownException(
                             message = stringProvider?.errorUnknownAuth.nonEmpty()
                                 ?: firebaseException.message

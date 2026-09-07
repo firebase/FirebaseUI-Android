@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.firebase.bom))
+    api(platform(libs.firebase.bom))
     api(project(":common"))
     api(libs.firebase.database)
 

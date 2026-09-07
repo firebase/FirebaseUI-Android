@@ -130,7 +130,7 @@ fun ErrorRecoveryDialog(
  * @param stringProvider The [AuthUIStringProvider] for localized strings
  * @return The localized recovery message
  */
-private fun getRecoveryMessage(
+internal fun getRecoveryMessage(
     error: AuthException,
     stringProvider: AuthUIStringProvider
 ): String {
@@ -202,12 +202,12 @@ private fun getRecoveryMessage(
  * @param stringProvider The [AuthUIStringProvider] for localized strings
  * @return The localized action text
  */
-private fun getRecoveryActionText(
+internal fun getRecoveryActionText(
     error: AuthException,
     stringProvider: AuthUIStringProvider
 ): String {
     return when (error) {
-        is AuthException.AuthCancelledException -> error.message ?: stringProvider.continueText
+        is AuthException.AuthCancelledException -> stringProvider.continueText
         is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault // Use existing "Sign in" text
         is AuthException.AccountLinkingRequiredException -> stringProvider.signInDefault // User needs to sign in to link accounts
         is AuthException.DifferentSignInMethodRequiredException ->
@@ -236,7 +236,7 @@ private fun getRecoveryActionText(
  * @param error The [AuthException] to check
  * @return `true` if the error is recoverable, `false` otherwise
  */
-private fun isRecoverable(error: AuthException): Boolean {
+internal fun isRecoverable(error: AuthException): Boolean {
     return when (error) {
         is AuthException.NetworkException -> true
         is AuthException.InvalidCredentialsException -> true

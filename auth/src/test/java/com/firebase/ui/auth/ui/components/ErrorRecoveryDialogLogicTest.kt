@@ -185,9 +185,10 @@ class ErrorRecoveryDialogLogicTest {
     }
 
     @Test
-    fun `getRecoveryActionText returns continue for AuthCancelledException`() {
-        // Arrange
-        val error = AuthException.AuthCancelledException("Auth cancelled")
+    fun `getRecoveryActionText returns continue for AuthCancelledException, ignoring the raw exception message`() {
+        // Arrange - message mirrors the raw GetCredentialCancellationException message from GH #2422;
+        // the action label must never surface this raw string to the user
+        val error = AuthException.AuthCancelledException("User cancelled the selector")
 
         // Act
         val actionText = getRecoveryActionText(error, mockStringProvider)
@@ -209,15 +210,15 @@ class ErrorRecoveryDialogLogicTest {
     }
 
     @Test
-    fun `getRecoveryActionText returns continue for AccountLinkingRequiredException`() {
-        // Arrange
+    fun `getRecoveryActionText returns sign in for AccountLinkingRequiredException`() {
+        // Arrange - user needs to sign in with the existing method to link accounts
         val error = AuthException.AccountLinkingRequiredException("Account linking required")
 
         // Act
         val actionText = getRecoveryActionText(error, mockStringProvider)
 
         // Assert
-        Truth.assertThat(actionText).isEqualTo("Continue")
+        Truth.assertThat(actionText).isEqualTo("Sign in")
     }
 
     @Test
@@ -307,76 +308,5 @@ class ErrorRecoveryDialogLogicTest {
 
         // Act & Assert
         Truth.assertThat(isRecoverable(error)).isTrue()
-    }
-
-    // Helper functions to test the private functions - we need to make them internal for testing
-    private fun getRecoveryMessage(error: AuthException, stringProvider: AuthUIStringProvider): String {
-        return when (error) {
-            is AuthException.NetworkException -> stringProvider.networkErrorRecoveryMessage
-            is AuthException.InvalidCredentialsException -> {
-                // Use the actual error message from Firebase if available, otherwise fallback to generic message
-                error.message?.takeIf { it.isNotBlank() && it != "Invalid credentials provided" }
-                    ?: stringProvider.invalidCredentialsRecoveryMessage
-            }
-            is AuthException.UserNotFoundException -> stringProvider.userNotFoundRecoveryMessage
-            is AuthException.WeakPasswordException -> {
-                val baseMessage = stringProvider.weakPasswordRecoveryMessage
-                error.reason?.let { reason ->
-                    "$baseMessage\n\nReason: $reason"
-                } ?: baseMessage
-            }
-            is AuthException.EmailAlreadyInUseException -> {
-                val baseMessage = stringProvider.emailAlreadyInUseRecoveryMessage
-                error.email?.let { email ->
-                    "$baseMessage ($email)"
-                } ?: baseMessage
-            }
-            is AuthException.TooManyRequestsException -> stringProvider.tooManyRequestsRecoveryMessage
-            is AuthException.MfaRequiredException -> stringProvider.mfaRequiredRecoveryMessage
-            is AuthException.AccountLinkingRequiredException -> stringProvider.accountLinkingRequiredRecoveryMessage
-            is AuthException.DifferentSignInMethodRequiredException ->
-                error.message ?: stringProvider.accountLinkingRequiredRecoveryMessage
-            is AuthException.AuthCancelledException -> stringProvider.authCancelledRecoveryMessage
-            is AuthException.UnknownException -> stringProvider.unknownErrorRecoveryMessage
-            else -> stringProvider.unknownErrorRecoveryMessage
-        }
-    }
-
-    private fun getRecoveryActionText(error: AuthException, stringProvider: AuthUIStringProvider): String {
-        return when (error) {
-            is AuthException.AuthCancelledException -> stringProvider.continueText
-            is AuthException.EmailAlreadyInUseException -> stringProvider.signInDefault
-            is AuthException.AccountLinkingRequiredException -> stringProvider.continueText
-            is AuthException.DifferentSignInMethodRequiredException -> when (error.suggestedSignInMethod) {
-                GoogleAuthProvider.PROVIDER_ID -> stringProvider.continueWithGoogle
-                EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD -> stringProvider.signInWithEmailLink
-                else -> stringProvider.continueText
-            }
-            is AuthException.MfaRequiredException -> stringProvider.continueText
-            is AuthException.NetworkException,
-            is AuthException.InvalidCredentialsException,
-            is AuthException.UserNotFoundException,
-            is AuthException.WeakPasswordException,
-            is AuthException.TooManyRequestsException,
-            is AuthException.UnknownException -> stringProvider.retryAction
-            else -> stringProvider.retryAction
-        }
-    }
-
-    private fun isRecoverable(error: AuthException): Boolean {
-        return when (error) {
-            is AuthException.NetworkException -> true
-            is AuthException.InvalidCredentialsException -> true
-            is AuthException.UserNotFoundException -> true
-            is AuthException.WeakPasswordException -> true
-            is AuthException.EmailAlreadyInUseException -> true
-            is AuthException.TooManyRequestsException -> false
-            is AuthException.MfaRequiredException -> true
-            is AuthException.AccountLinkingRequiredException -> true
-            is AuthException.DifferentSignInMethodRequiredException -> true
-            is AuthException.AuthCancelledException -> true
-            is AuthException.UnknownException -> true
-            else -> true
-        }
     }
 }

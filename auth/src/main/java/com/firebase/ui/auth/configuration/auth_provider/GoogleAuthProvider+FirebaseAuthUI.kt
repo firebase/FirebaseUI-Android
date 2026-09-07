@@ -3,9 +3,9 @@ package com.firebase.ui.auth.configuration.auth_provider
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.credentials.CredentialManager
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.firebase.ui.auth.AuthException
@@ -23,8 +23,8 @@ import kotlinx.coroutines.launch
  * Creates a remembered callback for Google Sign-In that can be invoked from UI components.
  *
  * This Composable function returns a lambda that, when invoked, initiates the Google Sign-In
- * flow using [signInWithGoogle]. The callback is stable across recompositions and automatically
- * handles coroutine scoping and error state management.
+ * flow using [signInWithGoogle]. The callback is rebuilt on every recomposition so it always
+ * captures the latest parameters, and handles coroutine scoping and error state management.
  *
  * **Usage:**
  * ```kotlin
@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
  * @param context Android context for Credential Manager
  * @param config Authentication UI configuration
  * @param provider Google provider configuration with server client ID and optional scopes
+ * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
  * @return A callback function that initiates Google Sign-In when invoked
  *
  * @see signInWithGoogle
@@ -57,19 +58,20 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
     context: Context,
     config: AuthUIConfiguration,
     provider: AuthProvider.Google,
+    onSignInFailure: (AuthException) -> Unit = {},
 ): () -> Unit {
     val coroutineScope = rememberCoroutineScope()
-    return remember(this, config) {
-        {
-            coroutineScope.launch {
-                try {
-                    signInWithGoogle(context, config, provider)
-                } catch (e: AuthException) {
-                    updateAuthState(AuthState.Error(e))
-                } catch (e: Exception) {
-                    val authException = AuthException.from(e, context)
-                    updateAuthState(AuthState.Error(authException))
-                }
+    return {
+        coroutineScope.launch {
+            try {
+                signInWithGoogle(context, config, provider)
+            } catch (e: AuthException) {
+                updateAuthState(AuthState.Error(e))
+                if (e !is AuthException.AuthCancelledException) onSignInFailure(e)
+            } catch (e: Exception) {
+                val authException = AuthException.from(e, context)
+                updateAuthState(AuthState.Error(authException))
+                if (authException !is AuthException.AuthCancelledException) onSignInFailure(authException)
             }
         }
     }
@@ -94,7 +96,9 @@ internal fun FirebaseAuthUI.rememberGoogleSignInHandler(
  * **Error Handling:**
  * - [GoogleIdTokenParsingException]: Library version mismatch
  * - [NoCredentialException]: No Google accounts on device
- * - [GetCredentialException]: User cancellation, configuration errors, or no credentials
+ * - [GetCredentialCancellationException]: User dismissed the Credential Manager sheet -
+ *   updates [AuthState.Cancelled] and does not throw
+ * - [GetCredentialException]: Configuration errors or no credentials
  * - Configuration errors trigger detailed developer guidance logs
  *
  * @param context Android context for Credential Manager
@@ -214,6 +218,13 @@ internal suspend fun FirebaseAuthUI.signInWithGoogle(
         // Re-throw to let UI handle the account linking flow
         updateAuthState(AuthState.Error(e))
         throw e
+    } catch (e: GetCredentialCancellationException) {
+        // User dismissed the Credential Manager sheet - this is a normal user action,
+        // not an error, so it goes to AuthState.Cancelled instead of AuthState.Error.
+        // Swallow (don't rethrow) so rememberGoogleSignInHandler's catch block doesn't
+        // overwrite this state with AuthState.Error.
+        updateAuthState(AuthState.Cancelled)
+
     } catch (e: CancellationException) {
         val cancelledException = AuthException.AuthCancelledException(
             message = "Sign in with google was cancelled",

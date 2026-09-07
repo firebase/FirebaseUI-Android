@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.method_picker.MethodPickerTermsConfiguration
 import com.firebase.ui.auth.configuration.string_provider.DefaultAuthUIStringProvider
 import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvider
 import com.firebase.ui.auth.configuration.theme.AuthUIAsset
+import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
@@ -467,5 +468,119 @@ class AuthMethodPickerTest {
         composeTestRule
             .onNodeWithText(context.getString(R.string.fui_sign_in_anonymously))
             .assertIsDisplayed()
+    }
+
+    // =============================================================================================
+    // Continue As Tests
+    // =============================================================================================
+
+    @Test
+    fun `AuthMethodPicker shows ContinueAsButton when lastSignInPreference matches a provider`() {
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val preference = SignInPreferenceManager.SignInPreference(
+            providerId = emailProvider.providerId,
+            identifier = "user@example.com",
+            timestamp = 0L
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(emailProvider),
+                onProviderSelected = { selectedProvider = it },
+                lastSignInPreference = preference
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag("ContinueAsButton")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `AuthMethodPicker hides ContinueAsButton when lastSignInPreference has no matching provider`() {
+        val preference = SignInPreferenceManager.SignInPreference(
+            providerId = "some.unlisted.provider",
+            identifier = "user@example.com",
+            timestamp = 0L
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(
+                    AuthProvider.Google(scopes = emptyList(), serverClientId = null)
+                ),
+                onProviderSelected = { selectedProvider = it },
+                lastSignInPreference = preference
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag("ContinueAsButton")
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `AuthMethodPicker calls onContinueAsSelected with provider and identifier when ContinueAsButton is clicked`() {
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val preference = SignInPreferenceManager.SignInPreference(
+            providerId = emailProvider.providerId,
+            identifier = "user@example.com",
+            timestamp = 0L
+        )
+        var continueAsProvider: AuthProvider? = null
+        var continueAsIdentifier: String? = null
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(emailProvider),
+                onProviderSelected = { selectedProvider = it },
+                lastSignInPreference = preference,
+                onContinueAsSelected = { provider, identifier ->
+                    continueAsProvider = provider
+                    continueAsIdentifier = identifier
+                }
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag("ContinueAsButton")
+            .performClick()
+
+        Truth.assertThat(continueAsProvider).isEqualTo(emailProvider)
+        Truth.assertThat(continueAsIdentifier).isEqualTo("user@example.com")
+        Truth.assertThat(selectedProvider).isNull()
+    }
+
+    @Test
+    fun `AuthMethodPicker falls back to onProviderSelected when onContinueAsSelected is not provided`() {
+        val emailProvider = AuthProvider.Email(
+            emailLinkActionCodeSettings = null,
+            passwordValidationRules = emptyList()
+        )
+        val preference = SignInPreferenceManager.SignInPreference(
+            providerId = emailProvider.providerId,
+            identifier = "user@example.com",
+            timestamp = 0L
+        )
+
+        setContentWithStringProvider {
+            AuthMethodPicker(
+                providers = listOf(emailProvider),
+                onProviderSelected = { selectedProvider = it },
+                lastSignInPreference = preference
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag("ContinueAsButton")
+            .performClick()
+
+        Truth.assertThat(selectedProvider).isEqualTo(emailProvider)
     }
 }
