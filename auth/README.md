@@ -1915,14 +1915,11 @@ Every input and button on the auth screens carries a stable, public test tag, an
 | | `SignUp.PASSWORD_FIELD` | `fui_sign_up_password_field` |
 | | `SignUp.CONFIRM_PASSWORD_FIELD` | `fui_sign_up_confirm_password_field` |
 | | `SignUp.SIGN_UP_BUTTON` | `fui_sign_up_sign_up_button` |
-| | `SignUp.SIGN_IN_BUTTON` | `fui_sign_up_sign_in_button` |
 | Password recovery | `ResetPassword.EMAIL_FIELD` | `fui_reset_password_email_field` |
 | | `ResetPassword.SEND_BUTTON` | `fui_reset_password_send_button` |
-| | `ResetPassword.SIGN_IN_BUTTON` | `fui_reset_password_sign_in_button` |
 | | `ResetPassword.DISMISS_BUTTON` | `fui_reset_password_dismiss_button` |
 | Email link sign-in | `EmailLink.EMAIL_FIELD` | `fui_email_link_email_field` |
 | | `EmailLink.SEND_LINK_BUTTON` | `fui_email_link_send_link_button` |
-| | `EmailLink.PASSWORD_SIGN_IN_BUTTON` | `fui_email_link_password_sign_in_button` |
 | | `EmailLink.DISMISS_BUTTON` | `fui_email_link_dismiss_button` |
 | Phone number entry | `PhoneNumber.PHONE_NUMBER_FIELD` | `fui_phone_number_phone_number_field` |
 | | `PhoneNumber.COUNTRY_SELECTOR_BUTTON` | `fui_phone_number_country_selector_button` |
