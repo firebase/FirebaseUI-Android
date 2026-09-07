@@ -1360,9 +1360,8 @@ class FirebaseAuthScreenReauthContentStateTest {
             )
         }
 
-        composeTestRule.runOnIdle {
-            authUI.pendingReauth.value = retryingReauth(user) { retryRan = true }
-        }
+        val raised = retryingReauth(user) { retryRan = true }
+        composeTestRule.runOnIdle { authUI.pendingReauth.value = raised }
         composeTestRule.waitForIdle()
         assertThat(cancelledCount).isEqualTo(0)
 
@@ -1372,6 +1371,10 @@ class FirebaseAuthScreenReauthContentStateTest {
 
         assertThat(cancelledCount).isEqualTo(1)
         assertThat(retryRan).isFalse()
+        // Declined, not merely un-retried: a caller left waiting would satisfy the flag above.
+        val resolver = requireNotNull(raised.request.resolver)
+        assertThat(resolver.isCompleted).isTrue()
+        assertThat(resolver.getCompleted()).isFalse()
         composeTestRule.onNodeWithTag("dismiss_reauth").assertDoesNotExist()
     }
 
