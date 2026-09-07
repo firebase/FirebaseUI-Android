@@ -251,6 +251,15 @@ fun FirebaseAuthScreen(
                 authUI.updateAuthState(terminal)
             }
         }
+    // A request that is never presented has no phase to end, so its caller is resolved directly.
+    val refuseReauth: (AuthState.Reauthentication.Required, AuthState) -> Unit =
+        remember(authUI, clearReauthPresentation) {
+            { required, terminal ->
+                clearReauthPresentation()
+                required.request.decline()
+                authUI.updateAuthState(terminal)
+            }
+        }
     val currentOnSignInCancelled = rememberUpdatedState(onSignInCancelled)
     val onReauthDismiss: () -> Unit = remember(finishReauth) {
         {
@@ -738,25 +747,25 @@ fun FirebaseAuthScreen(
 
                 val reauthConfiguration = configuration.toReauthConfiguration(required.user)
                 if (reauthConfiguration == null) {
-                    finishReauth(
+                    refuseReauth(
+                        required,
                         AuthState.Error(
                             AuthException.UnknownException(
                                 context.getString(R.string.fui_error_reauth_no_linked_providers)
                             )
                         ),
-                        false,
                     )
                     return@LaunchedEffect
                 }
                 // A request whose caller is gone can never complete, so it is reported.
                 if (!required.request.isResumable) {
-                    finishReauth(
+                    refuseReauth(
+                        required,
                         AuthState.Error(
                             AuthException.UnknownException(
                                 context.getString(R.string.fui_error_reauth_interrupted)
                             )
                         ),
-                        false,
                     )
                     return@LaunchedEffect
                 }
