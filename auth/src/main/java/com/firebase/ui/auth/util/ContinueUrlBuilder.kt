@@ -22,15 +22,28 @@ import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.SESSION_IDENTIFI
 /**
  * Builder for constructing continue URLs with embedded session and authentication parameters.
  * Used in email link sign-in flows to pass state between devices.
+ *
+ * The incoming URL comes from the consumer's [com.google.firebase.auth.ActionCodeSettings], so it
+ * may already carry a query string and/or a fragment. Appended parameters join an existing query
+ * with `&` and are always placed before the fragment.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ContinueUrlBuilder(url: String) {
 
-    private val continueUrl: StringBuilder
+    /** The incoming URL up to, but not including, the fragment. */
+    private val baseUrl: String
+
+    /** The fragment including its leading `#`, or empty when the URL has none. */
+    private val fragment: String
+
+    private val params = StringBuilder()
 
     init {
         require(url.isNotBlank()) { "URL cannot be empty" }
-        continueUrl = StringBuilder(url).append("?")
+
+        val fragmentStart = url.indexOf('#')
+        baseUrl = if (fragmentStart == -1) url else url.substring(0, fragmentStart)
+        fragment = if (fragmentStart == -1) "" else url.substring(fragmentStart)
     }
 
     fun appendSessionId(sessionId: String): ContinueUrlBuilder {
@@ -57,16 +70,22 @@ class ContinueUrlBuilder(url: String) {
     private fun addQueryParam(key: String, value: String) {
         if (value.isBlank()) return
 
-        val isFirstParam = continueUrl.last() == '?'
-        val mark = if (isFirstParam) "" else "&"
-        continueUrl.append("$mark$key=$value")
+        if (params.isNotEmpty()) {
+            params.append("&")
+        }
+        params.append("$key=$value")
     }
 
     fun build(): String {
-        if (continueUrl.last() == '?') {
-            // No params added so we remove the '?'
-            continueUrl.setLength(continueUrl.length - 1)
+        // No params added, so the URL is handed back untouched.
+        if (params.isEmpty()) return baseUrl + fragment
+
+        val separator = when {
+            !baseUrl.contains('?') -> "?"
+            // The query is already open (`...?` or `...&`), so no separator is needed.
+            baseUrl.endsWith('?') || baseUrl.endsWith('&') -> ""
+            else -> "&"
         }
-        return continueUrl.toString()
+        return baseUrl + separator + params + fragment
     }
 }
