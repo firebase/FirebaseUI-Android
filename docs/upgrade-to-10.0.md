@@ -409,18 +409,58 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 
 ### Issue: "How do I customize the UI?"
 
-**Solution:** Use content slots for custom UI:
+**Solution:** Use content slots for custom UI. `EmailAuthScreen` renders the mode it is given and
+never changes it on its own, so the host owns the mode and navigates between them — give each mode
+its own destination, or the fields of the one you leave carry over into the one you arrive at:
+
 ```kotlin
-EmailAuthScreen(
-    configuration = emailConfig,
-    onSuccess = { /* ... */ },
-    onError = { /* ... */ },
-    onCancel = { /* ... */ }
-) { state ->
-    // Your custom UI here
-    CustomSignInUI(state)
-}
+@Serializable
+data class EmailModeKey(val mode: EmailAuthMode, val email: String = "") : NavKey
+
+val backStack = rememberNavBackStack(EmailModeKey(EmailAuthMode.SignIn))
+
+NavDisplay(
+    backStack = backStack,
+    // NavDisplay throws on an empty back stack, and throws from recomposition, so the first
+    // mode must not pop.
+    onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    entryProvider = entryProvider {
+        entry<EmailModeKey> { key ->
+            EmailAuthScreen(
+                context = context,
+                configuration = emailConfig,
+                authUI = authUI,
+                prefillEmail = key.email.ifEmpty { null },
+                mode = key.mode,
+                // The typed address travels with the switch, so the mode you arrive at can
+                // prefill it. Replace a mode already on the stack rather than revisiting it
+                // with a stale address.
+                onNavigateToMode = { mode, email ->
+                    val existing = backStack.indexOfFirst { it is EmailModeKey && it.mode == mode }
+                    backStack.add(EmailModeKey(mode, email))
+                    if (existing >= 0) {
+                        while (backStack.size > existing + 1) backStack.removeAt(existing)
+                    }
+                },
+                onSuccess = { /* ... */ },
+                onError = { /* ... */ },
+                onCancel = { /* ... */ },
+            ) { state ->
+                // Your custom UI here
+                CustomSignInUI(state)
+            }
+        }
+    },
+)
 ```
+
+`PhoneAuthScreen` and `MfaEnrollmentScreen` work the same way, with `step` / `onNavigateToStep` /
+`onNavigateBack` plus a `flowState` from `rememberPhoneAuthFlowState` or
+`rememberMfaEnrollmentFlowState` remembered above the `NavDisplay`. If you would rather not own any
+of this, use `FirebaseAuthScreen`, which owns it for you.
+
+A back-stack key must be `@Serializable` to survive process death, so add the
+`org.jetbrains.kotlin.plugin.serialization` plugin to the module hosting these screens.
 
 ### Issue: "My XML themes aren't working"
 

@@ -38,6 +38,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.FirebaseAuthUI
 import com.firebase.ui.auth.configuration.AuthUIConfiguration
@@ -47,7 +52,32 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthContentState
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthScreen
 import com.firebase.ui.auth.ui.screens.phone.PhoneAuthStep
+import com.firebase.ui.auth.ui.screens.phone.rememberPhoneAuthFlowState
 import com.google.firebase.auth.AuthResult
+import kotlinx.serialization.Serializable
+
+/**
+ * One phone step, as this demo's own back-stack key.
+ *
+ * A caller hosting [PhoneAuthScreen] outside `FirebaseAuthScreen` brings its own keys, built from
+ * the public [PhoneAuthStep]. The data a step switch must not dispose lives in the flow state,
+ * which is remembered above the display so it outlives the entries.
+ */
+@Serializable
+private data class PhoneStepKey(val step: PhoneAuthStep) : NavKey
+
+/**
+ * Moves to [step], ignoring a move to the step already on top.
+ *
+ * The guard is the point: the screen asks to go to code entry for every verification id it has not
+ * navigated for, and a resend mints a new one — so without this, resending stacks a second code
+ * entry under the first and back returns to an identical screen instead of to number entry.
+ */
+private fun NavBackStack<NavKey>.goToPhoneStep(step: PhoneAuthStep) {
+    val key = PhoneStepKey(step)
+    if (lastOrNull() == key) return
+    add(key)
+}
 
 class PhoneAuthSlotDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +140,13 @@ fun PhoneAuthDemo(
         }
     }
 
+    // Each step is a real destination, so system back returns to the number entry rather than
+    // leaving the flow. The flow state sits above the display: a step switch must not dispose the
+    // verification it holds. Both are allocated above the branch, because a rememberSaveable must
+    // not sit behind one.
+    val backStack = rememberNavBackStack(PhoneStepKey(PhoneAuthStep.EnterPhoneNumber))
+    val flowState = rememberPhoneAuthFlowState(configuration)
+
     if (currentUser != null) {
         Column(
             modifier = Modifier
@@ -137,22 +174,41 @@ fun PhoneAuthDemo(
         }
     } else {
         CompositionLocalProvider(LocalAuthUIStringProvider provides configuration.stringProvider) {
-            PhoneAuthScreen(
-                context = context,
-                configuration = configuration,
-                authUI = authUI,
-                onSuccess = { result: AuthResult ->
-                    Log.d("PhoneAuthSlotDemo", "Auth success: ${result.user?.uid}")
+            NavDisplay(
+                backStack = backStack,
+                // Guarded like the library's popOrNull: NavDisplay throws on an empty
+                // stack, and throws from recomposition, so the first step must not pop.
+                onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+                entryProvider = entryProvider {
+                    entry<PhoneStepKey> { key ->
+                        PhoneAuthScreen(
+                            context = context,
+                            configuration = configuration,
+                            authUI = authUI,
+                            step = key.step,
+                            onNavigateToStep = { backStack.goToPhoneStep(it) },
+                            onNavigateBack = { backStack.removeLastOrNull() },
+                            flowState = flowState,
+                            onSuccess = { result: AuthResult ->
+                                Log.d("PhoneAuthSlotDemo", "Auth success: ${result.user?.uid}")
+                            },
+                            onError = { exception: AuthException ->
+                                Log.e("PhoneAuthSlotDemo", "Auth error", exception)
+                            },
+                            onCancel = {
+                                // Below the first step there is nothing left to pop back to.
+                                if (backStack.size > 1) {
+                                    backStack.removeLastOrNull()
+                                } else {
+                                    Log.d("PhoneAuthSlotDemo", "Auth cancelled")
+                                }
+                            }
+                        ) { state: PhoneAuthContentState ->
+                            CustomPhoneAuthUI(state)
+                        }
+                    }
                 },
-                onError = { exception: AuthException ->
-                    Log.e("PhoneAuthSlotDemo", "Auth error", exception)
-                },
-                onCancel = {
-                    Log.d("PhoneAuthSlotDemo", "Auth cancelled")
-                }
-            ) { state: PhoneAuthContentState ->
-                CustomPhoneAuthUI(state)
-            }
+            )
         }
     }
 }
