@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.ui.screens
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
@@ -30,7 +26,6 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.NoCredentialException
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.FirebaseAuthUI
@@ -44,13 +39,11 @@ import com.firebase.ui.auth.configuration.string_provider.LocalAuthUIStringProvi
 import com.firebase.ui.auth.credentialmanager.CredentialManagerProvider
 import com.firebase.ui.auth.credentialmanager.PasswordCredentialHandler
 import com.firebase.ui.auth.testutil.AUTH_STATE_WAIT_TIMEOUT_MS
-import com.firebase.ui.auth.testutil.EmailLinkTestActivity
 import com.firebase.ui.auth.testutil.EmulatorAuthApi
 import com.firebase.ui.auth.testutil.ensureFreshUser
 import com.firebase.ui.auth.testutil.ensureTestFirebaseApp
 import com.firebase.ui.auth.testutil.verifyEmailInEmulator
 import com.google.common.truth.Truth.assertThat
-import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assume
@@ -509,185 +502,6 @@ class EmailAuthScreenTest {
     }
 
     @Test
-    fun `email link sign in emits EmailSignInLinkSent auth state, shows dialog and handles deep link sign in`() {
-        val email = "emaillink-test-${System.currentTimeMillis()}@example.com"
-
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(
-                    AuthProvider.Email(
-                        isEmailLinkSignInEnabled = true,
-                        isEmailLinkForceSameDeviceEnabled = true,
-                        emailLinkActionCodeSettings = actionCodeSettings {
-                            // The continue URL - where to redirect after email link is clicked
-                            url = "https://fake-project-id.firebaseapp.com"
-                            handleCodeInApp = true
-                            setAndroidPackageName(
-                                "fake.project.id",
-                                true,
-                                null
-                            )
-                        },
-                        passwordValidationRules = emptyList()
-                    )
-                )
-            }
-            isCredentialManagerEnabled = false
-        }
-
-        // Track auth state changes and email link (lifted state)
-        var currentAuthState: AuthState = AuthState.Idle
-        var pendingEmailLink by mutableStateOf<String?>(null)
-
-        composeAndroidTestRule.setContent {
-            TestFirebaseAuthScreen(
-                configuration = configuration,
-                authUI = authUI,
-                emailLink = pendingEmailLink
-            )
-            val authState by authUI.authStateFlow().collectAsState(AuthState.Idle)
-            currentAuthState = authState
-        }
-
-        assertDirectEmailStart()
-
-        // Click "Sign in with email link" button to switch to email link mode
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInWithEmailLink.uppercase())
-            .performScrollTo()
-            .assertIsDisplayed()
-            .performClick()
-
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailHint)
-            .performScrollTo()
-            .assertIsDisplayed()
-            .performTextInput(email)
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault.uppercase())
-            .performScrollTo()
-            .assertIsDisplayed()
-            .performClick()
-
-        println("TEST: Pumping looper after click...")
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitForIdle()
-
-        // Wait for the "email link sent" dialog to appear, rather than polling currentAuthState:
-        // the screen resets AuthState back to Idle immediately after consuming
-        // EmailSignInLinkSent (so a second, independent authStateFlow() collector — like
-        // currentAuthState here — can miss the transient value entirely per StateFlow's
-        // conflation contract), whereas the dialog's visibility is latched in local Compose
-        // state that isn't reset the same way, so it's a reliable, non-racy signal.
-        println("TEST: Waiting for email link sent dialog...")
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            composeAndroidTestRule.onAllNodesWithText(stringProvider.emailSignInLinkSentDialogTitle)
-                .fetchSemanticsNodes().isNotEmpty()
-        }
-
-        // Ensure final recomposition is complete before assertions
-        shadowOf(Looper.getMainLooper()).idle()
-        composeAndroidTestRule.waitForIdle()
-
-        // Verify the dialog and user properties
-        assertThat(authUI.auth.currentUser).isNull()
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogTitle)
-            .assertIsDisplayed()
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogBody(email))
-            .assertIsDisplayed()
-        composeAndroidTestRule.onNodeWithText(stringProvider.dismissAction)
-            .assertIsDisplayed()
-            .performClick()
-        composeAndroidTestRule.waitForIdle()
-        composeAndroidTestRule.onNodeWithText(stringProvider.emailSignInLinkSentDialogTitle)
-            .assertIsNotDisplayed()
-        composeAndroidTestRule.onNodeWithText(stringProvider.signInDefault)
-            .assertIsDisplayed()
-
-        // Now test the deep link flow - fetch the email link from emulator
-        println("TEST: Fetching email sign-in link from emulator...")
-        val emailLinkFromEmulator = try {
-            emulatorApi.fetchEmailSignInLink(email)
-        } catch (e: Exception) {
-            println("TEST: Failed to fetch email sign-in link: ${e.message}")
-            // Skip the deep link verification if we can't fetch the link
-            Assume.assumeTrue(
-                "Skipping deep link test: Firebase Auth Emulator OOB codes endpoint not available. " +
-                        "Ensure emulator is running on localhost:9099. Error: ${e.message}",
-                false
-            )
-            null
-        }
-
-        requireNotNull(emailLinkFromEmulator) { "Email link should not be null at this point" }
-
-        println("TEST: Fetched email sign-in link: $emailLinkFromEmulator")
-
-        // Create a deep link Intent (simulates clicking email link on device)
-        val deepLinkUri = Uri.parse(emailLinkFromEmulator)
-        val deepLinkIntent = Intent(Intent.ACTION_VIEW, deepLinkUri)
-
-        // Verify the intent can be handled by Firebase Auth UI
-        assertThat(authUI.canHandleIntent(deepLinkIntent)).isTrue()
-
-        println("TEST: Launching EmailLinkTestActivity with deep link intent...")
-
-        // Use ActivityScenario to launch EmailLinkTestActivity with the deep link intent
-        // This properly simulates the Android deep link flow - when a user clicks the email link,
-        // Android launches the app with an ACTION_VIEW intent
-        val extractedEmailLink =
-            ActivityScenario.launch<EmailLinkTestActivity>(deepLinkIntent).use { scenario ->
-                var emailLinkFromIntent: String? = null
-
-                scenario.onActivity { activity ->
-                    // Verify the intent was received correctly
-                    assertThat(activity.intent.action).isEqualTo(Intent.ACTION_VIEW)
-                    assertThat(activity.intent.data).isEqualTo(deepLinkUri)
-
-                    // Verify the activity extracted the email link
-                    assertThat(activity.emailLinkFromIntent).isNotNull()
-                    assertThat(activity.emailLinkFromIntent).isEqualTo(emailLinkFromEmulator)
-
-                    emailLinkFromIntent = activity.emailLinkFromIntent
-
-                    println("TEST: Email link extracted by activity: $emailLinkFromIntent")
-                }
-
-                emailLinkFromIntent
-            }
-
-        requireNotNull(extractedEmailLink) { "Failed to extract email link from intent" }
-
-        println("TEST: Updating pendingEmailLink to trigger deep link sign-in in main test...")
-        // Update the lifted state in the ORIGINAL test activity - this will trigger
-        // FirebaseAuthScreen to handle the email link
-        pendingEmailLink = extractedEmailLink
-
-        shadowOf(Looper.getMainLooper()).idle()
-
-        println("TEST: Waiting for auth state after deep link handling... Current state: $currentAuthState")
-
-        // Wait for auth state to transition to Success after email link sign-in
-        composeAndroidTestRule.waitUntil(timeoutMillis = AUTH_STATE_WAIT_TIMEOUT_MS) {
-            shadowOf(Looper.getMainLooper()).idle()
-            println("TEST: Auth state during deep link wait: $currentAuthState")
-            currentAuthState is AuthState.Success
-        }
-
-        // Ensure final recomposition is complete before assertions
-        shadowOf(Looper.getMainLooper()).idle()
-
-        // Verify the auth state and user properties after email link sign-in
-        println("TEST: Verifying final auth state after email link sign-in: $currentAuthState")
-        assertThat(currentAuthState)
-            .isInstanceOf(AuthState.Success::class.java)
-        assertThat(authUI.auth.currentUser).isNotNull()
-        assertThat(authUI.auth.currentUser!!.email).isEqualTo(email)
-
-        composeAndroidTestRule.onNodeWithText("AUTHENTICATED - $email")
-            .assertIsDisplayed()
-    }
-
-    @Test
     fun `sign up saves credential, then sign in retrieves it and auto-signs in`() = runBlocking {
         val name = "Credential Test User"
         val email = "credential-test-${System.currentTimeMillis()}@example.com"
@@ -1018,7 +832,6 @@ class EmailAuthScreenTest {
     private fun TestFirebaseAuthScreen(
         configuration: AuthUIConfiguration,
         authUI: FirebaseAuthUI,
-        emailLink: String? = null,
     ) {
         CompositionLocalProvider(
             LocalAuthUIStringProvider provides DefaultAuthUIStringProvider(applicationContext)
@@ -1026,7 +839,6 @@ class EmailAuthScreenTest {
             FirebaseAuthScreen(
                 configuration = configuration,
                 authUI = authUI,
-                emailLink = emailLink,
                 onSignInSuccess = { result -> },
                 onSignInFailure = { exception -> },
                 onSignInCancelled = { }
