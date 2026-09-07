@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.screens
 import com.firebase.ui.auth.ui.method_picker.AuthMethodPicker
 import com.firebase.ui.auth.ReauthScopeProbe
 import com.firebase.ui.auth.abandonedReauth
+import com.firebase.ui.auth.raisedReauth
 import com.firebase.ui.auth.retryingReauth
 import android.content.Context
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -501,6 +502,35 @@ class FirebaseAuthScreenReauthContentStateTest {
         composeTestRule.waitForIdle()
 
         assertThat(retryRan).isFalse()
+    }
+
+    /**
+     * With nothing linked there is no credential to ask for, so the request cannot be presented.
+     * The caller waiting on it has to be told that, or it stays parked on a sheet that will never
+     * appear.
+     */
+    @Test
+    fun `no linked providers declines the waiting caller`() {
+        val user = googleOnlyUser("federated@example.com")
+        val resolver = CompletableDeferred<Boolean>()
+
+        composeTestRule.setContent {
+            FirebaseAuthScreen(
+                configuration = emailAndPhoneConfiguration(),
+                authUI = authUI,
+                onSignInSuccess = {},
+                onSignInFailure = {},
+                onSignInCancelled = {},
+            ) { _, _ -> Text(text = "CONTENT") }
+        }
+
+        composeTestRule.runOnIdle {
+            authUI.pendingReauth.value = raisedReauth(user, resolver = resolver)
+        }
+        composeTestRule.waitForIdle()
+
+        assertThat(resolver.isCompleted).isTrue()
+        assertThat(resolver.getCompleted()).isFalse()
     }
 
     /**
