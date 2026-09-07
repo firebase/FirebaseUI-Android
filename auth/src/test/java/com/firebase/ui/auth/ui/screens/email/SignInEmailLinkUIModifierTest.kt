@@ -78,7 +78,6 @@ class SignInEmailLinkUIModifierTest {
                     email = "",
                     onEmailChange = { },
                     onSignInWithEmailLink = { },
-                    onGoToSignIn = { },
                     onGoToResetPassword = { },
                 )
             }

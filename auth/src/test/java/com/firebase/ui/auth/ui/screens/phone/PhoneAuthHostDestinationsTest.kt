@@ -77,6 +77,19 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import androidx.compose.runtime.LaunchedEffect
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
+import org.mockito.ArgumentCaptor
+import org.mockito.MockedStatic
+import org.mockito.Mockito.any
+import org.mockito.Mockito.atLeastOnce
+import org.mockito.Mockito.mockStatic
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
@@ -127,6 +140,9 @@ class PhoneAuthHostDestinationsTest {
 
     private var reauthDismissals = 0
 
+    /** Every state the host observed, so a retraction can be asserted after the fact. */
+    private val observedStates = mutableListOf<AuthState>()
+
     @Before
     fun setUp() {
         FirebaseAuthUI.clearInstanceCache()
@@ -153,6 +169,7 @@ class PhoneAuthHostDestinationsTest {
         reauthBackStack = null
         reauthRequest = null
         reauthDismissals = 0
+        observedStates.clear()
         FirebaseAuthUI.clearInstanceCache()
         FirebaseApp.getApps(applicationContext).forEach {
             try {
@@ -237,6 +254,92 @@ class PhoneAuthHostDestinationsTest {
     }
 
     /**
+     * The teardown gap. Code entry has two ways back to number entry and they used to disagree:
+     * "change number" cancelled the attempt in flight, while the system back gesture was a bare
+     * pop. The attempt outlives the step, so a late auto-verification then signed the user in on
+     * the number they had just backed away from.
+     */
+    @Test
+    fun `system back from code entry cancels the attempt started on number entry`() {
+        `when`(mockAuth.signInWithCredential(any()))
+            .thenReturn(TaskCompletionSource<AuthResult>().task)
+
+        mockStatic(PhoneAuthProvider::class.java).use { statics ->
+            val credential = mock(PhoneAuthCredential::class.java)
+            statics.`when`<PhoneAuthCredential> {
+                PhoneAuthProvider.getCredential(any(), any())
+            }.thenReturn(credential)
+            start()
+            enterPhoneFlow()
+            val callbacks = sendCodeForReal(statics)
+            assertAtCodeEntry()
+
+            back()
+            composeTestRule.runOnUiThread { callbacks.onVerificationCompleted(credential) }
+            repeat(3) { composeTestRule.waitForIdle() }
+
+            assertAtNumberEntry()
+            assertStillInTheFlow()
+            verify(mockAuth, never()).signInWithCredential(any())
+        }
+    }
+
+    /**
+     * Leaving the flow abandons the attempt too, not only stepping back inside it. Code entry's own
+     * back arrow exits the whole flow by design, and the verification outlives the step — so
+     * without the teardown a late auto-verification signs the user in on the number they left.
+     */
+    @Test
+    fun `the back arrow out of code entry cancels the attempt`() {
+        `when`(mockAuth.signInWithCredential(any()))
+            .thenReturn(TaskCompletionSource<AuthResult>().task)
+
+        mockStatic(PhoneAuthProvider::class.java).use { statics ->
+            val credential = mock(PhoneAuthCredential::class.java)
+            statics.`when`<PhoneAuthCredential> {
+                PhoneAuthProvider.getCredential(any(), any())
+            }.thenReturn(credential)
+            start()
+            enterPhoneFlow()
+            val callbacks = sendCodeForReal(statics)
+            assertAtCodeEntry()
+
+            composeTestRule.onNodeWithTag(FirebaseAuthTestTags.VerificationCode.BACK_BUTTON)
+                .performClick()
+            composeTestRule.waitForIdle()
+            composeTestRule.runOnUiThread { callbacks.onVerificationCompleted(credential) }
+            repeat(3) { composeTestRule.waitForIdle() }
+
+            // Re-entered, because that is what makes the leak reachable: with the flow left there
+            // is no screen composed to act on the emission, and a fresh one would act on it.
+            enterPhoneFlow()
+
+            verify(mockAuth, never()).signInWithCredential(any())
+        }
+    }
+
+    /**
+     * The other half of the same teardown: nothing replaces the cancelled attempt, so the state it
+     * left up has to come down too. Number entry is exempt from an [AuthState.Idle] reset, so the
+     * retraction lands there rather than unwinding the flow.
+     */
+    @Test
+    fun `system back from code entry retracts the verification state`() {
+        start()
+        enterPhoneFlow()
+        sendCode()
+        assertAtCodeEntry()
+        assertThat(observedStates.last())
+            .isInstanceOf(AuthState.PhoneNumberVerificationRequired::class.java)
+
+        back()
+
+        assertThat(observedStates.last()).isInstanceOf(AuthState.Idle::class.java)
+        assertAtNumberEntry()
+        assertStillInTheFlow()
+    }
+
+    /**
      * "Change number" retracts the attempt it is abandoning, and that retraction runs through the
      * host's own abandonment reset on its way back — which used to send a multi-provider
      * configuration all the way out to the method picker.
@@ -316,6 +419,25 @@ class PhoneAuthHostDestinationsTest {
         assertThat(reauthDismissals).isEqualTo(0)
     }
 
+    /**
+     * System back is inert inside the reauthentication sheet: it reaches neither the display's
+     * `onBack` nor the sheet's own `onDismissRequest`, so the step stays put. Pinned because it is
+     * why the host needs no attempt-teardown branch for a reauthentication entry — the only way out
+     * of a step is the back arrow, which goes through the screen's own `onCancel`.
+     */
+    @Test
+    fun `system back inside the reauthentication sheet does nothing`() {
+        startReauthSheet()
+        sendReauthCode()
+        assertAtCodeEntry()
+
+        composeTestRule.runOnUiThread { requireNotNull(pressBack).invoke() }
+        composeTestRule.waitForIdle()
+
+        assertAtCodeEntry()
+        assertThat(reauthDismissals).isEqualTo(0)
+    }
+
     // =============================================================================================
     // Harness
     // =============================================================================================
@@ -334,6 +456,7 @@ class PhoneAuthHostDestinationsTest {
     private fun Host() {
         val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
         SideEffect { pressBack = dispatcher?.let { { it.onBackPressed() } } }
+        LaunchedEffect(authUI) { authUI.authStateFlow().collect { observedStates += it } }
 
         FirebaseAuthScreen(
             configuration = emailAndPhoneConfiguration(),
@@ -369,6 +492,51 @@ class PhoneAuthHostDestinationsTest {
             )
         }
         composeTestRule.waitForIdle()
+    }
+
+    /**
+     * The send the user performs, through the default UI, so a real verification attempt is in
+     * flight for the teardown to cancel. Returns the callbacks Firebase was handed.
+     */
+    private fun sendCodeForReal(
+        statics: MockedStatic<PhoneAuthProvider>,
+        verificationId: String = "verification-id-1",
+    ): OnVerificationStateChangedCallbacks {
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.PhoneNumber.PHONE_NUMBER_FIELD)
+            .performTextInput(VALID_PHONE_NUMBER)
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.PhoneNumber.SEND_CODE_BUTTON)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        val callbacks = latestCallbacks(statics)
+        composeTestRule.runOnUiThread {
+            callbacks.onCodeSent(
+                verificationId,
+                mock(PhoneAuthProvider.ForceResendingToken::class.java),
+            )
+        }
+        composeTestRule.waitForIdle()
+        return callbacks
+    }
+
+    /** The callbacks handed to the most recent `verifyPhoneNumber` call. */
+    private fun latestCallbacks(
+        statics: MockedStatic<PhoneAuthProvider>
+    ): OnVerificationStateChangedCallbacks {
+        val captor = ArgumentCaptor.forClass(PhoneAuthOptions::class.java)
+        statics.verify({ PhoneAuthProvider.verifyPhoneNumber(captor.capture()) }, atLeastOnce())
+        val candidates = PhoneAuthOptions::class.java.declaredMethods.filter {
+            it.parameterCount == 0 &&
+                it.returnType == OnVerificationStateChangedCallbacks::class.java
+        }
+        check(candidates.size == 1) {
+            "Expected exactly one zero-arg accessor returning " +
+                "OnVerificationStateChangedCallbacks on PhoneAuthOptions, found " +
+                "${candidates.size}: $candidates"
+        }
+        return candidates.single().also { it.isAccessible = true }
+            .invoke(captor.allValues.last()) as OnVerificationStateChangedCallbacks
     }
 
     /** Puts the screen on its authenticated destination, where `onNavigate` is reachable. */
@@ -443,7 +611,11 @@ class PhoneAuthHostDestinationsTest {
             AuthRoute.Success,
             AuthRoute.Reauth(REQUEST_ID, REAUTH_UID, startStep),
         )
-        SideEffect { reauthBackStack = backStack }
+        val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+        SideEffect {
+            reauthBackStack = backStack
+            pressBack = dispatcher?.let { { it.onBackPressed() } }
+        }
         val surface = remember {
             mutableStateOf(
                 AuthState.Reauthentication.Required(request).toReauthSurface(config)
@@ -587,6 +759,9 @@ class PhoneAuthHostDestinationsTest {
         const val AUTHENTICATED_TAG = "authenticated-destination"
         const val PHONE_PROVIDER_LABEL = "Sign in with phone"
         const val PHONE_NUMBER = "5555550123"
+
+        /** Passes libphonenumber, which rejects the 555 range the display tests use. */
+        const val VALID_PHONE_NUMBER = "2024561111"
         const val FULL_PHONE_NUMBER = "+15555550123"
         const val REQUEST_ID = "reauth-request-id"
         const val REAUTH_UID = "reauth-uid"
