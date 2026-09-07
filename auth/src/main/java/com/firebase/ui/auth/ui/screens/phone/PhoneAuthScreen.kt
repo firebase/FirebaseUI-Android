@@ -177,6 +177,16 @@ fun PhoneAuthScreen(
     val navigatedVerificationId = flowState.navigatedVerificationId
     val consumedAutoCredential = flowState.consumedAutoCredential
 
+    /**
+     * Leaving the flow, rather than stepping inside it. Abandons the attempt on the way out: the
+     * verification outlives this step, so a live one would go on to sign in on a number the user
+     * has walked away from.
+     */
+    val leaveFlow: () -> Unit = {
+        flowState.abandonVerification("leaving the phone flow")
+        onCancel()
+    }
+
     val fullPhoneNumber = remember(selectedCountry.value, phoneNumberValue.value) {
         CountryUtils.formatPhoneNumber(selectedCountry.value.dialCode, phoneNumberValue.value)
     }
@@ -347,7 +357,7 @@ fun PhoneAuthScreen(
             }
 
             is AuthState.Cancelled -> {
-                onCancel()
+                leaveFlow()
                 // Consumed so this doesn't leak to a freshly created screen.
                 authFlowScope.emit(AuthState.Idle)
             }
@@ -495,7 +505,7 @@ fun PhoneAuthScreen(
             DefaultPhoneAuthContent(
                 configuration = configuration,
                 state = state,
-                onCancel = onCancel
+                onCancel = leaveFlow
             )
         }
     }

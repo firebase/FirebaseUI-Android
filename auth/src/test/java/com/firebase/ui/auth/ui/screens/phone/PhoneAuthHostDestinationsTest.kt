@@ -254,11 +254,6 @@ class PhoneAuthHostDestinationsTest {
     }
 
     /**
-     * "Change number" retracts the attempt it is abandoning, and that retraction runs through the
-     * host's own abandonment reset on its way back — which used to send a multi-provider
-     * configuration all the way out to the method picker.
-     */
-    /**
      * The teardown gap. Code entry has two ways back to number entry and they used to disagree:
      * "change number" cancelled the attempt in flight, while the system back gesture was a bare
      * pop. The attempt outlives the step, so a late auto-verification then signed the user in on
@@ -290,6 +285,40 @@ class PhoneAuthHostDestinationsTest {
     }
 
     /**
+     * Leaving the flow abandons the attempt too, not only stepping back inside it. Code entry's own
+     * back arrow exits the whole flow by design, and the verification outlives the step — so
+     * without the teardown a late auto-verification signs the user in on the number they left.
+     */
+    @Test
+    fun `the back arrow out of code entry cancels the attempt`() {
+        `when`(mockAuth.signInWithCredential(any()))
+            .thenReturn(TaskCompletionSource<AuthResult>().task)
+
+        mockStatic(PhoneAuthProvider::class.java).use { statics ->
+            val credential = mock(PhoneAuthCredential::class.java)
+            statics.`when`<PhoneAuthCredential> {
+                PhoneAuthProvider.getCredential(any(), any())
+            }.thenReturn(credential)
+            start()
+            enterPhoneFlow()
+            val callbacks = sendCodeForReal(statics)
+            assertAtCodeEntry()
+
+            composeTestRule.onNodeWithTag(FirebaseAuthTestTags.VerificationCode.BACK_BUTTON)
+                .performClick()
+            composeTestRule.waitForIdle()
+            composeTestRule.runOnUiThread { callbacks.onVerificationCompleted(credential) }
+            repeat(3) { composeTestRule.waitForIdle() }
+
+            // Re-entered, because that is what makes the leak reachable: with the flow left there
+            // is no screen composed to act on the emission, and a fresh one would act on it.
+            enterPhoneFlow()
+
+            verify(mockAuth, never()).signInWithCredential(any())
+        }
+    }
+
+    /**
      * The other half of the same teardown: nothing replaces the cancelled attempt, so the state it
      * left up has to come down too. Number entry is exempt from an [AuthState.Idle] reset, so the
      * retraction lands there rather than unwinding the flow.
@@ -310,6 +339,11 @@ class PhoneAuthHostDestinationsTest {
         assertStillInTheFlow()
     }
 
+    /**
+     * "Change number" retracts the attempt it is abandoning, and that retraction runs through the
+     * host's own abandonment reset on its way back — which used to send a multi-provider
+     * configuration all the way out to the method picker.
+     */
     @Test
     fun `changing the number returns to number entry rather than the method picker`() {
         start()
@@ -441,7 +475,6 @@ class PhoneAuthHostDestinationsTest {
         composeTestRule.waitForIdle()
     }
 
-    /** Puts the screen on its authenticated destination, where `onNavigate` is reachable. */
     /**
      * The send the user performs, through the default UI, so a real verification attempt is in
      * flight for the teardown to cancel. Returns the callbacks Firebase was handed.
@@ -487,6 +520,7 @@ class PhoneAuthHostDestinationsTest {
             .invoke(captor.allValues.last()) as OnVerificationStateChangedCallbacks
     }
 
+    /** Puts the screen on its authenticated destination, where `onNavigate` is reachable. */
     private fun signIn() {
         val user = mock(FirebaseUser::class.java)
         `when`(user.uid).thenReturn("phone-host-user")
