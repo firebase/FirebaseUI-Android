@@ -106,13 +106,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyAppTheme {
-                val configuration = authUIConfiguration {
-                    context = applicationContext
-                    providers {
-                        provider(AuthProvider.Email())
-                        provider(AuthProvider.Google())
+                val authTheme = AuthUITheme.fromMaterialTheme()
+                val configuration = remember(authTheme) {
+                    authUIConfiguration {
+                        context = applicationContext
+                        providers {
+                            provider(AuthProvider.Email())
+                            provider(AuthProvider.Google())
+                        }
+                        theme = authTheme
                     }
-                    theme = AuthUITheme.fromMaterialTheme()
                 }
 
                 FirebaseAuthScreen(
@@ -199,10 +202,14 @@ val configuration = authUIConfiguration {
 Or inherit from your app theme:
 ```kotlin
 MyAppTheme {
-    val configuration = authUIConfiguration {
-        context = applicationContext
-        providers { provider(AuthProvider.Email()) }
-        theme = AuthUITheme.fromMaterialTheme()
+    val localContext = LocalContext.current
+    val authTheme = AuthUITheme.fromMaterialTheme()
+    val configuration = remember(localContext, authTheme) {
+        authUIConfiguration {
+            context = localContext
+            providers { provider(AuthProvider.Email()) }
+            theme = authTheme
+        }
     }
 
     FirebaseAuthScreen(configuration = configuration, ...)
