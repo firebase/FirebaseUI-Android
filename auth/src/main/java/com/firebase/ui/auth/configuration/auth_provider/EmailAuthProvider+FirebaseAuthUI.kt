@@ -66,75 +66,15 @@ internal suspend fun AuthFlowScope.signInOrReauth(
 }
 
 /**
- * Creates an email/password account or links the credential to an anonymous user.
+ * Creates an email/password account, or links the credential to the signed-in anonymous user.
  *
- * Mirrors the legacy email sign-up handler: validates password strength, validates custom
- * password rules, checks if new accounts are allowed, chooses between
- * `createUserWithEmailAndPassword` and `linkWithCredential`, merges the supplied display name
- * into the Firebase profile, and throws [AuthException.AccountLinkingRequiredException] when
- * anonymous upgrade encounters an existing account for the email.
+ * Validates the password against [AuthProvider.Email.minimumPasswordLength] and
+ * [AuthProvider.Email.passwordValidationRules], refuses a new account when the provider
+ * disallows one, then either links to the anonymous user or creates a fresh account and merges
+ * [name] into the profile.
  *
- * **Flow:**
- * 1. Check if new accounts are allowed (for non-upgrade flows)
- * 2. Validate password length against [AuthProvider.Email.minimumPasswordLength]
- * 3. Validate password against custom [AuthProvider.Email.passwordValidationRules]
- * 4. If upgrading anonymous user: link credential to existing anonymous account
- * 5. Otherwise: create new account with `createUserWithEmailAndPassword`
- * 6. Merge display name into user profile
- *
- * @param context Android [Context] for localized strings
- * @param config Auth UI configuration describing provider settings
- * @param provider Email provider configuration
- * @param name Optional display name collected during sign-up
- * @param email Email address for the new account
- * @param password Password for the new account
- *
- * @return [AuthResult] containing the newly created or linked user, or null if failed
- *
- * @throws AuthException.UserNotFoundException if new accounts are not allowed
- * @throws AuthException.WeakPasswordException if the password fails validation rules
- * @throws AuthException.InvalidCredentialsException if the email or password is invalid
- * @throws AuthException.EmailAlreadyInUseException if the email already exists
- * @throws AuthException.AuthCancelledException if the coroutine is cancelled
- * @throws AuthException.NetworkException for network-related failures
- *
- * **Example: Normal sign-up**
- * ```kotlin
- * try {
- *     val result = firebaseAuthUI.createOrLinkUserWithEmailAndPassword(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         name = "John Doe",
- *         email = "john@example.com",
- *         password = "SecurePass123!"
- *     )
- *     // User account created successfully
- * } catch (e: AuthException.WeakPasswordException) {
- *     // Password doesn't meet validation rules
- * } catch (e: AuthException.EmailAlreadyInUseException) {
- *     // Email already exists - redirect to sign-in
- * }
- * ```
- *
- * **Example: Anonymous user upgrade**
- * ```kotlin
- * // User is currently signed in anonymously
- * try {
- *     val result = firebaseAuthUI.createOrLinkUserWithEmailAndPassword(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         name = "Jane Smith",
- *         email = "jane@example.com",
- *         password = "MyPassword456"
- *     )
- *     // Anonymous account upgraded to permanent email/password account
- * } catch (e: AuthException.AccountLinkingRequiredException) {
- *     // Email already exists - show account linking UI
- *     // User needs to sign in with existing account to link
- * }
- * ```
+ * @throws AuthException.AccountLinkingRequiredException when an anonymous upgrade meets an
+ * account that already owns [email] — the host must sign that account in to link.
  */
 internal suspend fun AuthFlowScope.createOrLinkUserWithEmailAndPassword(
     context: Context,
@@ -259,85 +199,12 @@ internal suspend fun AuthFlowScope.createOrLinkUserWithEmailAndPassword(
 }
 
 /**
- * Signs in a user with email and password, optionally linking a social credential.
+ * Signs in with email and password, optionally linking a social credential afterwards.
  *
- * This method handles both normal sign-in and anonymous upgrade flows. In anonymous upgrade
- * scenarios, it validates credentials in a scratch auth instance before throwing
- * [AuthException.AccountLinkingRequiredException].
- *
- * **Flow:**
- * 1. If anonymous upgrade:
- *    - Create scratch auth instance to validate credential
- *    - If linking social provider: sign in with email, then link social credential (safe link)
- *    - Otherwise: just validate email credential
- *    - Throw [AuthException.AccountLinkingRequiredException] after successful validation
- * 2. If normal sign-in:
- *    - Sign in with email/password
- *    - If credential provided: link it and merge profile
- *
- * @param context Android [Context] for creating scratch auth instance
- * @param config Auth UI configuration describing provider settings
- * @param email Email address for sign-in
- * @param password Password for sign-in
- * @param credentialForLinking Optional social provider credential to link after sign-in
- *
- * @return [AuthResult] containing the signed-in user, or null if validation-only (anonymous upgrade)
- *
- * @throws AuthException.InvalidCredentialsException if email or password is incorrect
- * @throws AuthException.UserNotFoundException if the user doesn't exist
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.NetworkException for network-related failures
- *
- * **Example: Normal sign-in**
- * ```kotlin
- * try {
- *     val result = firebaseAuthUI.signInWithEmailAndPassword(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = "user@example.com",
- *         password = "password123"
- *     )
- *     // User signed in successfully
- * } catch (e: AuthException.InvalidCredentialsException) {
- *     // Wrong password
- * }
- * ```
- *
- * **Example: Sign-in with social credential linking**
- * ```kotlin
- * // User tried to sign in with Google, but account exists with email/password
- * // Prompt for password, then link Google credential
- * val googleCredential = GoogleAuthProvider.getCredential(idToken, null)
- *
- * val result = firebaseAuthUI.signInWithEmailAndPassword(
- *     context = context,
- *     config = authUIConfig,
- *     provider = emailProvider,
- *     email = "user@example.com",
- *     password = "password123",
- *     credentialForLinking = googleCredential
- * )
- * // User signed in with email/password AND Google is now linked
- * // Profile updated with Google display name and photo
- * ```
- *
- * **Example: Anonymous upgrade validation**
- * ```kotlin
- * // User is anonymous, wants to upgrade with existing email/password account
- * try {
- *     firebaseAuthUI.signInWithEmailAndPassword(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = "existing@example.com",
- *         password = "password123"
- *     )
- * } catch (e: AuthException.AccountLinkingRequiredException) {
- *     // Account linking required - UI shows account linking screen
- *     // User needs to sign in with existing account to link anonymous account
- * }
- * ```
+ * An anonymous upgrade never signs the anonymous user out: the credentials are validated in a
+ * scratch auth instance first, and only then is [AuthException.AccountLinkingRequiredException]
+ * thrown for the host to resolve. A normal sign-in links [credentialForLinking], when given,
+ * and merges its profile.
  */
 internal suspend fun AuthFlowScope.signInWithEmailAndPassword(
     context: Context,
@@ -556,87 +423,11 @@ private fun SignInMethodQueryResult?.toSignInMethods(): List<String> =
     this?.signInMethods?.filter { it.isNotBlank() } ?: emptyList()
 
 /**
- * Signs in with a credential or links it to an existing anonymous user.
+ * Signs in with [credential], or links it to the signed-in anonymous user when upgrade is on.
  *
- * This method handles both normal sign-in and anonymous upgrade flows. After successful
- * authentication, it merges profile information (display name and photo URL) into the
- * Firebase user profile if provided.
- *
- * **Flow:**
- * 1. Check if user is anonymous and upgrade is enabled
- * 2. If yes: Link credential to anonymous user
- * 3. If no: Sign in with credential
- * 4. Merge profile information (name, photo) into Firebase user
- * 5. Handle collision exceptions by throwing [AuthException.AccountLinkingRequiredException]
- *
- * @param config The [AuthUIConfiguration] containing authentication settings
- * @param credential The [AuthCredential] to use for authentication. Can be from any provider.
- * @param displayName Optional display name from the provider to merge into the user profile
- * @param photoUrl Optional photo URL from the provider to merge into the user profile
- *
- * @return [AuthResult] containing the authenticated user
- *
- * @throws AuthException.InvalidCredentialsException if credential is invalid or expired
- * @throws AuthException.EmailAlreadyInUseException if linking and email is already in use
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.NetworkException if a network error occurs
- *
- * **Example: Google Sign-In**
- * ```kotlin
- * val googleCredential = GoogleAuthProvider.getCredential(idToken, null)
- * val displayName = "John Doe"  // From Google profile
- * val photoUrl = Uri.parse("https://...")  // From Google profile
- *
- * val result = firebaseAuthUI.signInAndLinkWithCredential(
- *     config = authUIConfig,
- *     credential = googleCredential,
- *     displayName = displayName,
- *     photoUrl = photoUrl
- * )
- * // User signed in with Google AND profile updated with Google data
- * ```
- *
- * **Example: Phone Auth**
- * ```kotlin
- * val phoneCredential = PhoneAuthProvider.getCredential(verificationId, code)
- *
- * val result = firebaseAuthUI.signInAndLinkWithCredential(
- *     config = authUIConfig,
- *     credential = phoneCredential
- * )
- * // User signed in with phone number
- * ```
- *
- * **Example: Phone Auth with Collision (Anonymous Upgrade)**
- * ```kotlin
- * // User is currently anonymous, trying to link a phone number
- * val phoneCredential = PhoneAuthProvider.getCredential(verificationId, code)
- *
- * try {
- *     firebaseAuthUI.signInAndLinkWithCredential(
- *         config = authUIConfig,
- *         credential = phoneCredential
- *     )
- * } catch (e: AuthException.AccountLinkingRequiredException) {
- *     // Phone number already exists on another account
- *     // Account linking required - UI can show account linking screen
- *     // User needs to sign in with existing account to link
- * }
- * ```
- *
- * **Example: Email Link Sign-In**
- * ```kotlin
- * val emailLinkCredential = EmailAuthProvider.getCredentialWithLink(
- *     email = "user@example.com",
- *     emailLink = emailLink
- * )
- *
- * val result = firebaseAuthUI.signInAndLinkWithCredential(
- *     config = authUIConfig,
- *     credential = emailLinkCredential
- * )
- * // User signed in with email link (passwordless)
- * ```
+ * Merges [displayName] and [photoUrl] into the Firebase profile once authenticated. A collision
+ * surfaces as [AuthException.AccountLinkingRequiredException] rather than the raw Firebase
+ * exception, so the host can drive the linking flow.
  */
 internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
     credential: AuthCredential,
@@ -716,118 +507,16 @@ internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
 }
 
 /**
- * Sends a passwordless sign-in link to the specified email address.
+ * Sends a passwordless sign-in link to [email].
  *
- * This method initiates the email-link (passwordless) authentication flow by sending
- * an email containing a magic link. The link includes session information for validation
- * and security.
+ * The link's continue URL carries a session id, the anonymous user's id when upgrading, and the
+ * force-same-device flag; the email and session are persisted so [signInWithEmailLink] can
+ * validate the link when it comes back.
  *
- * **How it works:**
- * 1. Generates a unique session ID for same-device validation
- * 2. Retrieves anonymous user ID if upgrading anonymous account
- * 3. Enriches the [ActionCodeSettings] URL with session data (session ID, anonymous user ID, force same-device flag)
- * 4. Sends the email via [com.google.firebase.auth.FirebaseAuth.sendSignInLinkToEmail]
- * 5. Saves session data to DataStore for validation when the user clicks the link
- * 6. User receives email with a magic link containing the session information
- * 7. When user clicks link, app opens via deep link and calls [signInWithEmailLink] to complete authentication
- *
- * **Account Linking Support:**
- * If a user tries to sign in with a social provider (Google, Facebook) but an email link
- * account already exists with that email, the social provider implementation should:
- * 1. Catch the [FirebaseAuthUserCollisionException] from the sign-in attempt
- * 2. Call [EmailLinkPersistenceManager.default.saveCredentialForLinking] with the provider tokens
- * 3. Call this method to send the email link
- * 4. When [signInWithEmailLink] completes, it automatically retrieves and links the saved credential
- *
- * **Session Security:**
- * - **Session ID**: Random 10-character string for same-device validation
- * - **Anonymous User ID**: Stored if upgrading anonymous account to prevent account hijacking
- * - **Force Same Device**: Can be configured via [AuthProvider.Email.isEmailLinkForceSameDeviceEnabled]
- * - All session data is validated in [signInWithEmailLink] before completing authentication
- *
- * @param context Android [Context] for DataStore access
- * @param config The [AuthUIConfiguration] containing authentication settings
- * @param provider The [AuthProvider.Email] configuration with [ActionCodeSettings]
- * @param email The email address to send the sign-in link to
- * @param credentialForLinking Optional [AuthCredential] from a social provider to link after email sign-in.
- *                             If provided, the credential is saved to DataStore and automatically linked
- *                             when [signInWithEmailLink] completes. Used for account linking flows.
- *
- * @throws AuthException.InvalidCredentialsException if email is invalid
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.NetworkException if a network error occurs
- * @throws IllegalStateException if ActionCodeSettings is not configured
- *
- * **Example 1: Basic email link sign-in**
- * ```kotlin
- * // Send the email link
- * firebaseAuthUI.sendSignInLinkToEmail(
- *     context = context,
- *     config = authUIConfig,
- *     provider = emailProvider,
- *     email = "user@example.com"
- * )
- * // Show "Check your email" UI to user
- *
- * // Later, when user clicks the link in their email:
- * // (In your deep link handling Activity)
- * val emailLink = intent.data.toString()
- * firebaseAuthUI.signInWithEmailLink(
- *     context = context,
- *     config = authUIConfig,
- *     provider = emailProvider,
- *     email = "user@example.com",
- *     emailLink = emailLink
- * )
- * // User is now signed in
- * ```
- *
- * **Example 2: Anonymous user upgrade**
- * ```kotlin
- * // User is currently signed in anonymously
- * // Send email link to upgrade anonymous account to permanent email account
- * firebaseAuthUI.sendSignInLinkToEmail(
- *     context = context,
- *     config = authUIConfig,
- *     provider = emailProvider,
- *     email = "user@example.com"
- * )
- * // Session includes anonymous user ID for validation
- * // When user clicks link, anonymous account is upgraded to permanent account
- * ```
- *
- * **Example 3: Social provider linking**
- * ```kotlin
- * try {
- *     // Try to sign in with Google
- *     authUI.signInWithGoogle(...)
- * } catch (e: FirebaseAuthUserCollisionException) {
- *     // Email already exists with email-link provider
- *     val googleCredential = e.updatedCredential
- *     
- *     // Save credential for linking
- *     EmailLinkPersistenceManager.default.saveCredentialForLinking(
- *         context = context,
- *         providerType = "google.com",
- *         idToken = (googleCredential as GoogleAuthCredential).idToken,
- *         accessToken = null
- *     )
- *     
- *     // Send email link with credential
- *     firebaseAuthUI.sendSignInLinkToEmail(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = e.email!!,
- *         credentialForLinking = googleCredential
- *     )
- *     // When user clicks link and signs in, Google is automatically linked
- * }
- * ```
- *
- * @see signInWithEmailLink
- * @see EmailLinkPersistenceManager
- * @see com.google.firebase.auth.FirebaseAuth.sendSignInLinkToEmail
+ * [credentialForLinking] only adds the provider id to that URL — it is **not** persisted here. A
+ * caller linking a collided social credential must save it itself, via
+ * `EmailLinkPersistenceManager.saveCredentialForLinking`, before calling this; that is what
+ * [signInWithEmailLink] later picks up.
  */
 internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
     context: Context,
@@ -883,108 +572,21 @@ internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
 }
 
 /**
- * Signs in a user using an email link (passwordless authentication).
+ * Completes a passwordless sign-in from the link the user followed.
  *
- * This method completes the email link sign-in flow after the user clicks the magic link
- * sent to their email. It validates the link, extracts session information, and either
- * signs in the user normally or upgrades an anonymous account based on configuration.
+ * On the same device the address and session id come from storage and the user is signed in
+ * without further input. When the session id does not match — a different device, or storage
+ * cleared — an empty [email] raises [AuthException.EmailLinkPromptForEmailException]; call again
+ * with the address the user supplies. On the same-device path an empty [email] instead means the
+ * stored address is gone, and raises [AuthException.EmailMismatchException].
  *
- * **Flow:**
- * 1. User receives email with magic link
- * 2. User clicks link, app opens via deep link
- * 3. Activity extracts emailLink from Intent.data
- * 4. This method validates and completes sign-in
- *
- * **Same-Device Flow:**
- * - Email is retrieved from DataStore automatically
- * - Session ID from link matches stored session ID
- * - User is signed in immediately without additional input
- *
- * **Cross-Device Flow:**
- * - Session ID from link doesn't match (or no local session exists)
- * - If [email] is empty: throws [AuthException.EmailLinkPromptForEmailException]
- * - User must provide their email address
- * - Call this method again with user-provided email to complete sign-in
- *
- * @param context Android [Context] for DataStore access
- * @param config The [AuthUIConfiguration] containing authentication settings
- * @param provider The [AuthProvider.Email] configuration with email-link settings
- * @param email The email address of the user. On same-device, retrieved from DataStore.
- *              On cross-device first call, pass empty string to trigger validation.
- *              On cross-device second call, pass user-provided email.
- * @param emailLink The complete deep link URL received from the Intent.
- * @param persistenceManager Optional [PersistenceManager] for testing. Defaults to [EmailLinkPersistenceManager.default]
- *
- * This URL contains:
- * - Firebase action code (oobCode) for authentication
- * - Session ID (ui_sid) for same-device validation
- * - Anonymous user ID (ui_auid) if upgrading anonymous account
- * - Force same-device flag (ui_sd) for security enforcement
- * - Provider ID (ui_pid) if linking social provider credential
- *
- * Example:
- * `https://yourapp.page.link/__/auth/action?oobCode=ABC123&continueUrl=https://yourapp.com?ui_sid=123456&ui_auid=anon-uid`
- *
- * @return [AuthResult] containing the signed-in user, or null if cross-device validation is required
- *
- * @throws AuthException.InvalidEmailLinkException if the email link is invalid or expired
- * @throws AuthException.EmailLinkPromptForEmailException if cross-device and email is empty
- * @throws AuthException.EmailLinkWrongDeviceException if force same-device is enabled on different device
- * @throws AuthException.EmailLinkCrossDeviceLinkingException if trying to link provider on different device
- * @throws AuthException.EmailLinkDifferentAnonymousUserException if anonymous user ID doesn't match
- * @throws AuthException.EmailMismatchException if email is empty on same-device flow
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.NetworkException if a network error occurs
- * @throws AuthException.UnknownException for other errors
- *
- * **Example 1: Same-device sign-in (automatic)**
- * ```kotlin
- * // In your deep link handler Activity:
- * val emailLink = intent.data.toString()
- * val savedEmail = EmailLinkPersistenceManager.default.retrieveSessionRecord(context)?.email
- *
- * if (savedEmail != null) {
- *     // Same device - email and session are stored
- *     val result = firebaseAuthUI.signInWithEmailLink(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = savedEmail,
- *         emailLink = emailLink
- *     )
- *     // User is signed in automatically
- * }
- * ```
- *
- * **Example 2: Cross-device sign-in (with email prompt)**
- * ```kotlin
- * // First call with empty email to validate link
- * try {
- *     firebaseAuthUI.signInWithEmailLink(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = "", // Empty email on different device
- *         emailLink = emailLink
- *     )
- * } catch (e: AuthException.EmailLinkPromptForEmailException) {
- *     // Show dialog asking user to enter their email
- *     val userEmail = showEmailInputDialog()
- *     
- *     // Second call with user-provided email
- *     val result = firebaseAuthUI.signInWithEmailLink(
- *         context = context,
- *         config = authUIConfig,
- *         provider = emailProvider,
- *         email = userEmail, // User provided email
- *         emailLink = emailLink
- *     )
- *     // User is now signed in
- * }
- * ```
- *
- * @see sendSignInLinkToEmail for sending the initial email link
- * @see EmailLinkPersistenceManager for session data management
+ * @throws AuthException.EmailLinkWrongDeviceException if the link requires the originating device
+ * — force-same-device, or an anonymous upgrade — and was opened elsewhere.
+ * @throws AuthException.EmailLinkCrossDeviceLinkingException if a link carrying a social
+ * credential to link is opened on another device.
+ * @throws AuthException.EmailLinkDifferentAnonymousUserException if the anonymous uid in the link
+ * is not the uid signed in now.
+ * @throws AuthException.InvalidEmailLinkException if the link is not a sign-in link.
  */
 internal suspend fun AuthFlowScope.signInWithEmailLink(
     context: Context,
@@ -1199,68 +801,9 @@ private suspend fun AuthFlowScope.handleEmailLinkCredentialLinkingFlow(
 }
 
 /**
- * Sends a password reset email to the specified email address.
+ * Sends a password reset email to [email] and emits [AuthState.PasswordResetLinkSent].
  *
- * This method initiates the "forgot password" flow by sending an email to the user
- * with a link to reset their password. The user will receive an email from Firebase
- * containing a link that allows them to set a new password for their account.
- *
- * **Flow:**
- * 1. Validate the email address exists in Firebase Auth
- * 2. Send password reset email to the user
- * 3. Emit [AuthState.PasswordResetLinkSent] state
- * 4. User clicks link in email to reset password
- * 5. User is redirected to Firebase-hosted password reset page (or custom URL if configured)
- *
- * **Error Handling:**
- * - If the email doesn't exist: throws [AuthException.UserNotFoundException]
- * - If the email is invalid: throws [AuthException.InvalidCredentialsException]
- * - If network error occurs: throws [AuthException.NetworkException]
- *
- * @param email The email address to send the password reset email to
- * @param actionCodeSettings Optional [ActionCodeSettings] to configure the password reset link.
- *                           Use this to customize the continue URL, dynamic link domain, and other settings.
- *
- * @throws AuthException.UserNotFoundException if no account exists with this email
- * @throws AuthException.InvalidCredentialsException if the email format is invalid
- * @throws AuthException.NetworkException if a network error occurs
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.UnknownException for other errors
- *
- * **Example 1: Basic password reset**
- * ```kotlin
- * try {
- *     firebaseAuthUI.sendPasswordResetEmail(
- *         email = "user@example.com"
- *     )
- *     // Show success message: "Password reset email sent to $email"
- * } catch (e: AuthException.UserNotFoundException) {
- *     // Show error: "No account exists with this email"
- * } catch (e: AuthException.InvalidCredentialsException) {
- *     // Show error: "Invalid email address"
- * }
- * ```
- *
- * **Example 2: Custom password reset with ActionCodeSettings**
- * ```kotlin
- * val actionCodeSettings = ActionCodeSettings.newBuilder()
- *     .setUrl("https://myapp.com/resetPassword")  // Continue URL after reset
- *     .setHandleCodeInApp(false)  // Use Firebase-hosted reset page
- *     .setAndroidPackageName(
- *         "com.myapp",
- *         true,  // Install if not available
- *         null   // Minimum version
- *     )
- *     .build()
- *
- * firebaseAuthUI.sendPasswordResetEmail(
- *     email = "user@example.com",
- *     actionCodeSettings = actionCodeSettings
- * )
- * // User receives email with custom continue URL
- * ```
- *
- * @see com.google.firebase.auth.ActionCodeSettings
+ * [actionCodeSettings] points the link at your own page instead of the Firebase-hosted one.
  */
 internal suspend fun AuthFlowScope.sendPasswordResetEmail(
     email: String,
