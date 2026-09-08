@@ -78,6 +78,7 @@ fun AuthChooserScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = "Firebase Auth UI Compose",
             style = MaterialTheme.typography.headlineLarge,

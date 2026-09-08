@@ -30,9 +30,10 @@ import kotlinx.coroutines.launch
  * Drives the auth flow from an Activity with [AuthFlowController], instead of composing
  * `FirebaseAuthScreen` directly.
  *
- * The flow runs in its own Activity, so its result arrives through an `ActivityResultLauncher`
- * rather than a callback. The controller owns a coroutine scope that nothing in the composition
- * will clean up, so `onDestroy` has to dispose it.
+ * The flow runs in its own Activity, so its outcome arrives as an Activity result. That result
+ * only reports that the flow ended, which is why the demo also collects `authStateFlow` and
+ * registers an `AuthStateListener` beside it — those are what report progress and the signed-in
+ * user. Disposing the controller in `onDestroy` is the contract [AuthFlowController] documents.
  */
 class AuthFlowControllerDemoActivity : ComponentActivity() {
 
