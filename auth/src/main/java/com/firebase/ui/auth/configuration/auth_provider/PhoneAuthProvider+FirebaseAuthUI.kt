@@ -5,7 +5,6 @@ import android.content.Context
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorSession

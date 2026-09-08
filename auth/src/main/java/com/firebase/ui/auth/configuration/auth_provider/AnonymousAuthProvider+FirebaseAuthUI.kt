@@ -5,7 +5,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

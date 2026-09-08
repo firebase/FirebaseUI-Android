@@ -510,10 +510,13 @@ internal suspend fun AuthFlowScope.signInAndLinkWithCredential(
  * Sends a passwordless sign-in link to [email].
  *
  * The link's continue URL carries a session id, the anonymous user's id when upgrading, and the
- * force-same-device flag; the same values are persisted so [signInWithEmailLink] can validate
- * the link when it comes back. [credentialForLinking] is stored alongside them, which is how a
- * social credential that collided with an existing email-link account is linked once the user
- * follows the link.
+ * force-same-device flag; the email and session are persisted so [signInWithEmailLink] can
+ * validate the link when it comes back.
+ *
+ * [credentialForLinking] only adds the provider id to that URL — it is **not** persisted here. A
+ * caller linking a collided social credential must save it itself, via
+ * `EmailLinkPersistenceManager.saveCredentialForLinking`, before calling this; that is what
+ * [signInWithEmailLink] later picks up.
  */
 internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
     context: Context,
@@ -574,7 +577,16 @@ internal suspend fun AuthFlowScope.sendSignInLinkToEmail(
  * On the same device the address and session id come from storage and the user is signed in
  * without further input. When the session id does not match — a different device, or storage
  * cleared — an empty [email] raises [AuthException.EmailLinkPromptForEmailException]; call again
- * with the address the user supplies.
+ * with the address the user supplies. On the same-device path an empty [email] instead means the
+ * stored address is gone, and raises [AuthException.EmailMismatchException].
+ *
+ * @throws AuthException.EmailLinkWrongDeviceException if the link requires the originating device
+ * — force-same-device, or an anonymous upgrade — and was opened elsewhere.
+ * @throws AuthException.EmailLinkCrossDeviceLinkingException if a link carrying a social
+ * credential to link is opened on another device.
+ * @throws AuthException.EmailLinkDifferentAnonymousUserException if the anonymous uid in the link
+ * is not the uid signed in now.
+ * @throws AuthException.InvalidEmailLinkException if the link is not a sign-in link.
  */
 internal suspend fun AuthFlowScope.signInWithEmailLink(
     context: Context,

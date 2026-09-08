@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
@@ -16,7 +15,6 @@ import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.android.gms.common.api.Scope
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -54,6 +52,9 @@ internal fun AuthFlowScope.rememberGoogleSignInHandler(
  * Requests OAuth authorization first when [AuthProvider.Google.scopes] is non-empty, then hands
  * the credential to [signInAndLinkWithCredential], which owns anonymous upgrade and collision
  * handling.
+ *
+ * Dismissing the Credential Manager sheet is not an error: it emits [AuthState.Cancelled] and
+ * returns normally rather than throwing, so the flow stays open on the method picker.
  */
 internal suspend fun AuthFlowScope.signInWithGoogle(
     context: Context,
@@ -210,7 +211,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
  * - Before allowing user to select a different Google account
  * - When switching between accounts
  *
- * **Note:** This does not sign out from Firebase Auth itself. Call [FirebaseAuthUI.signOut]
+ * **Note:** This does not sign out from Firebase Auth itself. Call [com.firebase.ui.auth.FirebaseAuthUI.signOut]
  * separately if you need to sign out from Firebase.
  *
  * @param context Android context for Credential Manager

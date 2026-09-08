@@ -7,7 +7,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.configuration.auth_provider.AuthProvider.Companion.canUpgradeAnonymous
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -20,8 +19,10 @@ import kotlinx.coroutines.tasks.await
 /**
  * Remembers a callback that runs [signInWithProvider] in the composition's scope.
  *
- * Rebuilt on every recomposition so it always captures the latest parameters, and resolves the
- * host Activity itself.
+ * Rebuilt on every recomposition so it always captures the latest parameters.
+ *
+ * @throws IllegalStateException if [activity] is null. This is raised while composing, not when
+ * the returned callback runs, so a host that cannot supply an Activity fails at first composition.
  */
 @Composable
 internal fun AuthFlowScope.rememberOAuthSignInHandler(
@@ -60,8 +61,10 @@ internal fun AuthFlowScope.rememberOAuthSignInHandler(
  * Signs in with an OAuth provider — GitHub, Microsoft, Yahoo, Apple, Twitter, or a custom
  * OIDC/SAML provider.
  *
- * Uses Firebase's native OAuth flow, then hands the credential to
- * [signInAndLinkWithCredential], which owns anonymous upgrade and collision handling.
+ * Runs Firebase's native OAuth activity flow and handles upgrade and collision itself: an
+ * eligible anonymous user is linked via `startActivityForLinkWithProvider`, and a collision
+ * becomes [AuthException.AccountLinkingRequiredException]. [signInAndLinkWithCredential] is used
+ * only to finish a `pendingAuthResult` left behind when the process died mid-flow.
  */
 internal suspend fun AuthFlowScope.signInWithProvider(
     context: Context,
