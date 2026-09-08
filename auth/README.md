@@ -282,6 +282,8 @@ val authUI = FirebaseAuthUI.create(app = customApp, auth = customAuth)
 `AuthUIConfiguration` defines all settings for your authentication flow. Use the DSL builder function for easy configuration:
 
 ```kotlin
+val authTheme = AuthUITheme.fromMaterialTheme()   // @Composable — resolve it here, not below
+
 val configuration = authUIConfiguration {
     // Required: an application Context. Omitting it throws when the block is evaluated.
     context = applicationContext
@@ -293,8 +295,9 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Phone())
     }
 
-    // Optional: Theme configuration
-    theme = AuthUITheme.fromMaterialTheme()
+    // Optional: Theme. AuthUITheme.fromMaterialTheme() and AuthUITheme.Adaptive are
+    // @Composable, so resolve them above the builder and assign the result here.
+    theme = authTheme
 
     // Optional: Terms of Service and Privacy Policy URLs
     tosUrl = "https://example.com/terms"
@@ -352,6 +355,7 @@ val configuration = authUIConfiguration {
 ```kotlin
 val controller = authUI.createAuthFlow(configuration)
 
+// Must be registered during Activity/Fragment initialization, not in onCreate or a listener
 val authLauncher = registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
 ) { /* the flow finished; inspect FirebaseAuth.currentUser or the result extras */ }
@@ -670,8 +674,9 @@ The high-level API provides a complete, opinionated authentication experience wi
 ```kotlin
 @Composable
 fun AuthenticationScreen() {
+    val localContext = LocalContext.current
     val configuration = authUIConfiguration {
-        context = applicationContext
+        context = localContext
         providers {
             provider(AuthProvider.Email())
             provider(AuthProvider.Google())
@@ -1310,13 +1315,15 @@ val configuration = authUIConfiguration {
 `AuthUITheme.Adaptive` automatically switches between light and dark themes based on the system setting:
 
 ```kotlin
+val adaptiveTheme = AuthUITheme.Adaptive   // @Composable getter — read it outside the builder
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Email())
         provider(AuthProvider.Google())
     }
-    theme = AuthUITheme.Adaptive  // Adapts to system dark mode
+    theme = adaptiveTheme
 }
 ```
 
@@ -1331,12 +1338,13 @@ Use `.copy()` to customize specific properties of the default theme:
 ```kotlin
 @Composable
 fun AuthScreen() {
+    val localContext = LocalContext.current
     val customTheme = AuthUITheme.Adaptive.copy(
         providerButtonShape = MaterialTheme.shapes.extraLarge  // Pill-shaped buttons
     )
 
     val configuration = authUIConfiguration {
-        context = applicationContext
+        context = localContext
         providers {
             provider(AuthProvider.Google())
             provider(AuthProvider.Email())
@@ -1362,12 +1370,14 @@ FirebaseUI Auth supports two theming patterns with clear precedence rules:
 The simplest approach is to set the theme only in `authUIConfiguration`:
 
 ```kotlin
+val adaptiveTheme = AuthUITheme.Adaptive
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
-    theme = AuthUITheme.Adaptive  // Set theme here
+    theme = adaptiveTheme  // Set theme here
 }
 
 FirebaseAuthScreen(
@@ -1383,15 +1393,17 @@ FirebaseAuthScreen(
 You can also wrap `FirebaseAuthScreen` with `AuthUITheme`:
 
 ```kotlin
+val adaptiveTheme = AuthUITheme.Adaptive
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
-    theme = AuthUITheme.Adaptive  // Theme in configuration
+    theme = adaptiveTheme  // Theme in configuration
 }
 
-AuthUITheme(theme = AuthUITheme.Adaptive) {  // Optional wrapper
+AuthUITheme(theme = adaptiveTheme) {  // Optional wrapper
     Surface(color = MaterialTheme.colorScheme.background) {
         FirebaseAuthScreen(
             configuration = configuration,
@@ -1454,12 +1466,16 @@ Use `fromMaterialTheme()` to automatically inherit your app's Material Design th
 @Composable
 fun App() {
     MyAppTheme {  // Your existing Material3 theme
-        val configuration = authUIConfiguration {
-            context = applicationContext
-            providers {
-                provider(AuthProvider.Email())
+        val localContext = LocalContext.current
+        val authTheme = AuthUITheme.fromMaterialTheme()  // Inherits colors, typography, shapes
+        val configuration = remember(localContext, authTheme) {
+            authUIConfiguration {
+                context = localContext
+                providers {
+                    provider(AuthProvider.Email())
+                }
+                theme = authTheme
             }
-            theme = AuthUITheme.fromMaterialTheme()  // Inherits colors, typography, shapes
         }
 
         FirebaseAuthScreen(
@@ -2238,7 +2254,7 @@ var errorState by remember { mutableStateOf<AuthException?>(null) }
 errorState?.let { error ->
     ErrorRecoveryDialog(
         error = error,
-        stringProvider = DefaultAuthUIStringProvider(context),
+        stringProvider = DefaultAuthUIStringProvider(LocalContext.current),
         onRetry = {
             // Retry the authentication
             errorState = null
