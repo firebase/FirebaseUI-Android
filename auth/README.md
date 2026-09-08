@@ -101,7 +101,7 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta04")
 
     // Required: Firebase Auth
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
     implementation("com.google.firebase:firebase-auth")
 
     // Required: Jetpack Compose
@@ -303,8 +303,8 @@ val configuration = authUIConfiguration {
     tosUrl = "https://example.com/terms"
     privacyPolicyUrl = "https://example.com/privacy"
 
-    // Optional: App logo
-    logo = Icons.Default.AccountCircle
+    // Optional: App logo. Wrap the source in an AuthUIAsset — a bare ImageVector is a type error.
+    logo = AuthUIAsset.Vector(Icons.Default.AccountCircle)
 
     // Optional: Enable MFA (default: true)
     isMfaEnabled = true
@@ -330,8 +330,8 @@ val configuration = authUIConfiguration {
     // Optional: Locale override
     locale = Locale.FRENCH
 
-    // Optional: link a new credential onto the signed-in account instead of switching
-    // accounts when the email already exists (default: false)
+    // Optional: when a non-anonymous user is already signed in, link the new credential
+    // onto that account instead of switching accounts (default: false)
     isCredentialLinkingEnabled = false
 
     // Optional: send password-reset links to your own page rather than the Firebase-hosted
@@ -339,6 +339,7 @@ val configuration = authUIConfiguration {
     passwordResetActionCodeSettings = actionCodeSettings {
         url = "https://example.com/reset"
         handleCodeInApp = true
+        setAndroidPackageName(packageName, true, null)
     }
 
     // Optional: resolve an email to its providers with the legacy fetchSignInMethodsForEmail
@@ -355,7 +356,8 @@ val configuration = authUIConfiguration {
 ```kotlin
 val controller = authUI.createAuthFlow(configuration)
 
-// Must be registered during Activity/Fragment initialization, not in onCreate or a listener
+// Register before the Activity reaches STARTED — as a property initializer or in onCreate.
+// Registering later (in a click listener, say) throws.
 val authLauncher = registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
 ) { /* the flow finished; inspect FirebaseAuth.currentUser or the result extras */ }
@@ -685,7 +687,7 @@ fun AuthenticationScreen() {
         }
         tosUrl = "https://example.com/terms"
         privacyPolicyUrl = "https://example.com/privacy"
-        logo = Icons.Default.Lock
+        logo = AuthUIAsset.Vector(Icons.Default.Lock)
     }
 
     FirebaseAuthScreen(
@@ -797,7 +799,11 @@ class AuthActivity : ComponentActivity() {
         }
 
         controller = authUI.createAuthFlow(configuration)
-        authLauncher.launch(controller.createIntent(this))
+
+        // Only on a fresh start; unguarded, every recreation would launch a second flow.
+        if (savedInstanceState == null) {
+            authLauncher.launch(controller.createIntent(this))
+        }
 
         lifecycleScope.launch {
             controller.authStateFlow.collect { handleAuthState(it) }
@@ -1083,7 +1089,7 @@ lifecycleScope.launch {
         context = context,
         reason = "Verify your identity to delete your account",
     ) {
-        auth.currentUser?.delete()?.await()
+        authUI.auth.currentUser?.delete()?.await()
     }
 }
 ```
@@ -1105,7 +1111,12 @@ The armed reauthentication lives on the process-cached `FirebaseAuthUI`, so it s
 val reauth = authUI.createReauthFlow(
     configuration = authUIConfiguration {
         context = applicationContext
-        // Providers are automatically filtered to those linked to the current user
+        // Required by the builder; createReauthFlow then filters this list down to the
+        // providers actually linked to the current user.
+        providers {
+            provider(AuthProvider.Email())
+            provider(AuthProvider.Google())
+        }
     },
 )
 val intent = reauth.createIntent(context)
@@ -1168,6 +1179,8 @@ fun MfaEnrollmentFlow() {
         // screen also reconciles this itself, so a host that forgets cannot end up sending to an
         // unpermitted dial code.
         val flowState = rememberMfaEnrollmentFlowState(mfaConfig.allowedCountries)
+        // Read here, not inside onComplete: LocalContext.current is a @Composable read.
+        val context = LocalContext.current
 
         NavDisplay(
             backStack = backStack,
@@ -1258,7 +1271,8 @@ FirebaseAuthScreen(
         // MFA challenges are handled automatically by FirebaseAuthScreen
         // But you can also handle them manually:
         if (exception is AuthException.MfaRequiredException) {
-            showMfaChallengeScreen(exception.resolver)
+            // The resolver arrives on AuthState.RequiresMfa, not on the exception.
+            showMfaChallengePrompt()
         }
     }
 )
@@ -1423,6 +1437,7 @@ Understanding which theme applies is important:
    ```kotlin
    val configuration = authUIConfiguration {
        context = applicationContext
+       providers { provider(AuthProvider.Email()) }
        theme = AuthUITheme.Default  // LIGHT theme
    }
 
@@ -1436,6 +1451,7 @@ Understanding which theme applies is important:
    ```kotlin
    val configuration = authUIConfiguration {
        context = applicationContext
+       providers { provider(AuthProvider.Email()) }
        // theme not specified (null)
    }
 
@@ -1449,6 +1465,7 @@ Understanding which theme applies is important:
    ```kotlin
    val configuration = authUIConfiguration {
        context = applicationContext
+       providers { provider(AuthProvider.Email()) }
        // theme not specified (null)
    }
 
@@ -1489,15 +1506,17 @@ fun App() {
 You can also customize while inheriting:
 
 ```kotlin
+val authTheme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
+)
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
     }
-    theme = AuthUITheme.fromMaterialTheme(
-        providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
-    )
+    theme = authTheme
 }
 ```
 
@@ -1559,15 +1578,17 @@ val configuration = authUIConfiguration {
 **Option 2: Using `fromMaterialTheme()`:**
 
 ```kotlin
+val authTheme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(16.dp)
+)
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
     }
-    theme = AuthUITheme.fromMaterialTheme(
-        providerButtonShape = RoundedCornerShape(16.dp)
-    )
+    theme = authTheme
 }
 ```
 
@@ -1635,16 +1656,18 @@ val customProviderStyles = mapOf(
     )
 )
 
+val authTheme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(12.dp),
+    providerStyles = customProviderStyles
+)
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
     }
-    theme = AuthUITheme.fromMaterialTheme(
-        providerButtonShape = RoundedCornerShape(12.dp),
-        providerStyles = customProviderStyles
-    )
+    theme = authTheme
 }
 ```
 
@@ -2117,12 +2140,13 @@ Renaming or removing a tag, or changing the resource id it resolves to, is a bre
 ```kotlin
 @Composable
 fun SettingsScreen() {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val authUI = remember { FirebaseAuthUI.getInstance() }
 
     Button(
         onClick = {
-            lifecycleScope.launch {
+            scope.launch {
                 authUI.signOut(context)
                 // User is signed out, navigate to auth screen
                 navigateToAuth()
@@ -2167,13 +2191,14 @@ Button(
 FirebaseUI includes default English strings. To add custom localization:
 
 ```kotlin
-class SpanishStringProvider(context: Context) : AuthUIStringProvider {
-    override fun signInWithEmail() = "Iniciar sesión con correo"
-    override fun signInWithGoogle() = "Iniciar sesión con Google"
-    override fun signInWithFacebook() = "Iniciar sesión con Facebook"
-    override fun invalidEmail() = "Correo inválido"
-    override fun weakPassword() = "Contraseña débil"
-    // ... implement all other required methods
+// AuthUIStringProvider declares ~170 abstract `val`s, so override properties, not functions,
+// and expect to supply every one — DefaultAuthUIStringProvider is final and cannot be subclassed.
+// For most apps, translating the library's own string resources is the lighter option.
+class SpanishStringProvider : AuthUIStringProvider {
+    override val signInWithEmail = "Iniciar sesión con correo"
+    override val signInWithGoogle = "Iniciar sesión con Google"
+    override val invalidEmailAddress = "Correo inválido"
+    // ... every other member of AuthUIStringProvider
 }
 
 val configuration = authUIConfiguration {
