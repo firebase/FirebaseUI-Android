@@ -27,27 +27,22 @@ import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.launch
 
 /**
- * Demo activity showcasing the AuthFlowController API for managing
- * Firebase authentication with lifecycle-safe control.
+ * Drives the auth flow from an Activity with [AuthFlowController], instead of composing
+ * `FirebaseAuthScreen` directly.
  *
- * This demonstrates:
- * - Creating an AuthFlowController with configuration
- * - Starting the auth flow using ActivityResultLauncher
- * - Observing auth state changes
- * - Handling results (success, cancelled, error)
- * - Proper lifecycle management with dispose()
+ * The flow runs in its own Activity, so its result arrives through an `ActivityResultLauncher`
+ * rather than a callback. The controller owns a coroutine scope that nothing in the composition
+ * will clean up, so `onDestroy` has to dispose it.
  */
 class AuthFlowControllerDemoActivity : ComponentActivity() {
 
     private lateinit var authController: AuthFlowController
 
-    // Modern ActivityResultLauncher for auth flow
     private val authLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
-                // Get user data from result
                 val userId = result.data?.getStringExtra(FirebaseAuthActivity.EXTRA_USER_ID)
                 val isNewUser = result.data?.getBooleanExtra(
                     FirebaseAuthActivity.EXTRA_IS_NEW_USER,
@@ -71,10 +66,8 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize FirebaseAuthUI
         val authUI = FirebaseAuthUI.getInstance()
 
-        // Create auth configuration
         val configuration = AuthUIConfiguration(
             context = applicationContext,
             providers = listOf(
@@ -112,7 +105,6 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
             privacyPolicyUrl = "https://policies.google.com/privacy?hl=en-NG&fg=1"
         )
 
-        // Create AuthFlowController
         authController = authUI.createAuthFlow(configuration)
 
         setContent {
@@ -133,7 +125,6 @@ class AuthFlowControllerDemoActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Clean up resources
         authController.dispose()
     }
 
@@ -163,7 +154,6 @@ fun AuthFlowDemo(
     val authState by authController.authStateFlow.collectAsState(AuthState.Idle)
     var currentUser by remember { mutableStateOf(FirebaseAuth.getInstance().currentUser) }
 
-    // Observe Firebase auth state changes
     DisposableEffect(Unit) {
         val authStateListener = FirebaseAuth.AuthStateListener { auth ->
             currentUser = auth.currentUser
@@ -204,7 +194,6 @@ fun AuthFlowDemo(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Current Auth State Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -242,7 +231,6 @@ fun AuthFlowDemo(
             }
         }
 
-        // Current User Card
         currentUser?.let { user ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -273,7 +261,6 @@ fun AuthFlowDemo(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Action Buttons
         if (currentUser == null) {
             Button(
                 onClick = onStartAuth,
@@ -301,7 +288,6 @@ fun AuthFlowDemo(
             }
         }
 
-        // Info Card
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
