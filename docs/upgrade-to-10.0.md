@@ -153,6 +153,10 @@ List<AuthUI.IdpConfig> providers = Arrays.asList(
 ```
 
 **New (10.x):**
+
+`context` is required — the builder throws without it. `applicationContext` is an Activity
+property; from a composable use `LocalContext.current.applicationContext` instead.
+
 ```kotlin
 val configuration = authUIConfiguration {
     context = applicationContext
@@ -281,7 +285,10 @@ FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
 @Composable
 fun AuthGate() {
     val authUI = remember { FirebaseAuthUI.getInstance() }
-    val authState by authUI.authStateFlow().collectAsState(initial = AuthState.Idle)
+    // remember the flow: authStateFlow() builds a new one per call, and without this every
+    // recomposition would restart collection and re-register the underlying Firebase listener.
+    val authStateFlow = remember(authUI) { authUI.authStateFlow() }
+    val authState by authStateFlow.collectAsState(initial = AuthState.Idle)
 
     when (authState) {
         is AuthState.Success -> {
@@ -391,7 +398,12 @@ class AuthActivity : ComponentActivity() {
         }
 
         controller = authUI.createAuthFlow(configuration)
-        authLauncher.launch(controller.createIntent(this))
+
+        // Only on a fresh start. Launching unguarded would start a second flow every time the
+        // Activity is recreated — a rotation, or a restore after process death.
+        if (savedInstanceState == null) {
+            authLauncher.launch(controller.createIntent(this))
+        }
     }
 
     override fun onDestroy() {
@@ -402,9 +414,10 @@ class AuthActivity : ComponentActivity() {
 ```
 
 The flow runs in its own Activity, so the outcome arrives as an Activity result rather than a
-return value. To follow it in more detail — loading, errors, MFA — collect
-`controller.authStateFlow` alongside the launcher. Dispose the controller in `onDestroy`; it owns
-a coroutine scope nothing else will clean up.
+return value. That result only says the flow ended, so to follow it in detail — loading, errors,
+MFA — collect `controller.authStateFlow` alongside the launcher. Dispose the controller in
+`onDestroy`: a disposed controller cannot be reused, and disposal is the contract its other
+members are documented against.
 
 ## Common Issues and Solutions
 
@@ -417,7 +430,9 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 
 ### Issue: "ActivityResultLauncher is deprecated"
 
-**Solution:** In 10.x, you no longer need `ActivityResultLauncher`. Use direct callbacks with `FirebaseAuthScreen` or `AuthFlowController`.
+**Solution:** Compose `FirebaseAuthScreen` and use its callbacks — no `ActivityResultLauncher`
+needed. The exception is the Activity-based route above: `AuthFlowController` hands you an Intent,
+so that one still launches through a result contract.
 
 ### Issue: "How do I customize the UI?"
 
@@ -509,7 +524,8 @@ val configuration = authUIConfiguration {
 - [ ] Updated all provider configurations
 - [ ] Converted XML themes to `AuthUITheme`
 - [ ] Updated error handling from result codes to exceptions
-- [ ] Removed `ActivityResultLauncher` code
+- [ ] Replaced `ActivityResultLauncher` with `FirebaseAuthScreen` callbacks (Activity-based apps
+      keep one, for `AuthFlowController.createIntent()`)
 - [ ] Updated sign-out to use suspend functions
 - [ ] Updated account deletion to use suspend functions
 - [ ] Tested all authentication flows
