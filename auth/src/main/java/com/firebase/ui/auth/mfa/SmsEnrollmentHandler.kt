@@ -72,7 +72,6 @@ class SmsEnrollmentHandler(
         defaultNumber = null,
         defaultCountryCode = null,
         allowedCountries = null,
-        smsCodeLength = SMS_CODE_LENGTH,
         timeout = VERIFICATION_TIMEOUT_SECONDS,
         isInstantVerificationEnabled = true
     )

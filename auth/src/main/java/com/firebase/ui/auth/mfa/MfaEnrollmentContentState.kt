@@ -69,6 +69,7 @@ import com.google.firebase.auth.MultiFactorInfo
  * @property phoneNumber (Step: [MfaEnrollmentStep.ConfigureSms]) The current value of the phone number input field. Does not include country code prefix.
  * @property onPhoneNumberChange (Step: [MfaEnrollmentStep.ConfigureSms]) Callback invoked when the phone number input changes. Receives the new phone number string.
  * @property selectedCountry (Step: [MfaEnrollmentStep.ConfigureSms]) The currently selected country for phone number formatting. Contains dial code, country code, and flag.
+ * @property allowedCountries (Step: [MfaEnrollmentStep.ConfigureSms]) Country codes the selector is restricted to, or `null` for no restriction. Determined by [com.firebase.ui.auth.configuration.MfaConfiguration.allowedCountries].
  * @property onCountrySelected (Step: [MfaEnrollmentStep.ConfigureSms]) Callback invoked when the user selects a different country. Receives the new [CountryData].
  * @property onSendSmsCodeClick (Step: [MfaEnrollmentStep.ConfigureSms]) Callback to send the SMS verification code to the entered phone number.
  *
@@ -118,6 +119,8 @@ data class MfaEnrollmentContentState(
     val onPhoneNumberChange: (String) -> Unit = {},
 
     val selectedCountry: CountryData? = null,
+
+    val allowedCountries: List<String>? = null,
 
     val onCountrySelected: (CountryData) -> Unit = {},
 

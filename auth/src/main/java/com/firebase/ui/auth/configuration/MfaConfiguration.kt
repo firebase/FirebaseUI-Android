@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.configuration
 
+import com.firebase.ui.auth.util.CountryUtils
+
 /**
  * Configuration class for Multi-Factor Authentication (MFA) enrollment and verification behavior.
  *
@@ -25,14 +27,29 @@ package com.firebase.ui.auth.configuration
  * @property requireEnrollment Whether MFA enrollment is mandatory for all users.
  *                             When true, users must enroll in at least one MFA factor.
  *                             Defaults to false.
+ * @property allowedCountries ISO 3166-1 alpha-2 country codes the [MfaFactor.Sms] enrollment step
+ *                            restricts its country selector to, or `null` for no restriction. Dial
+ *                            codes are rejected: the filter behind this matches alpha-2 only, so a
+ *                            dial code would silently restrict to nothing. Lives here rather
+ *                            than on the phone sign-in provider because a second factor is
+ *                            configured independently of the first: Firebase enables SMS second
+ *                            factors separately from phone sign-in, and phone sign-in cannot carry
+ *                            a second factor at all. Defaults to null.
  */
 class MfaConfiguration(
     val allowedFactors: List<MfaFactor> = listOf(MfaFactor.Sms, MfaFactor.Totp),
-    val requireEnrollment: Boolean = false
+    val requireEnrollment: Boolean = false,
+    val allowedCountries: List<String>? = null
 ) {
     init {
         require(allowedFactors.isNotEmpty()) {
             "At least one MFA factor must be allowed"
+        }
+        allowedCountries?.forEach { code ->
+            require(CountryUtils.findByCountryCode(code) != null) {
+                "Invalid country code: $code. allowedCountries takes ISO 3166-1 alpha-2 codes " +
+                        "(e.g. 'us', 'GB'). Dial codes are not accepted."
+            }
         }
     }
 }

@@ -95,7 +95,6 @@ class PhoneAuthSlotDemoActivity : ComponentActivity() {
                         defaultNumber = null,
                         defaultCountryCode = "US",
                         allowedCountries = emptyList(),
-                        smsCodeLength = 6,
                         timeout = 60L,
                         isInstantVerificationEnabled = true
                     )

@@ -30,6 +30,7 @@ import com.firebase.ui.auth.mfa.MfaEnrollmentContentState
 import com.firebase.ui.auth.mfa.MfaEnrollmentStep
 import com.firebase.ui.auth.mfa.SmsEnrollmentHandler
 import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
@@ -157,7 +158,10 @@ internal fun MfaEnrollmentScreenInternal(
     val lastException = remember { mutableStateOf<Exception?>(null) }
     val enrolledFactors = remember { mutableStateOf(user.multiFactor.enrolledFactors) }
 
-    val phoneAuthConfiguration = remember(authConfiguration, applicationContext) {
+    // The SMS steps read only the terms and privacy URLs off this, so a host that supplied no
+    // configuration gets a stand-in. Its provider is arbitrary — a configuration must declare at
+    // least one — and nothing reads it: the country restriction comes from [MfaConfiguration].
+    val stepConfiguration = remember(authConfiguration, applicationContext) {
         authConfiguration ?: authUIConfiguration {
             context = applicationContext
             providers {
@@ -215,6 +219,22 @@ internal fun MfaEnrollmentScreenInternal(
                 }
             }
             MfaEnrollmentStep.SelectFactor -> Unit
+        }
+    }
+
+    // Snapped here rather than only where the flow state is created, because the selected country
+    // has two other ways of holding a value this configuration does not permit: a host driving
+    // this screen supplies `flowState` itself and may never have passed the list to
+    // `rememberMfaEnrollmentFlowState`, and a `rememberSaveable` restore can bring back a country
+    // allowed by an earlier configuration. Without this, the selector filters the list while the
+    // send still uses the unpermitted dial code.
+    LaunchedEffect(configuration.allowedCountries) {
+        val permitted = configuration.allowedCountries
+        if (!permitted.isNullOrEmpty() &&
+            CountryUtils.filterByAllowedCountries(permitted.toSet())
+                .none { it.countryCode == selectedCountry.value.countryCode }
+        ) {
+            selectedCountry.value = initialEnrollmentCountry(permitted)
         }
     }
 
@@ -277,6 +297,7 @@ internal fun MfaEnrollmentScreenInternal(
             error.value = null
         },
         selectedCountry = selectedCountry.value,
+        allowedCountries = configuration.allowedCountries,
         onCountrySelected = { country ->
             selectedCountry.value = country
         },
@@ -388,7 +409,7 @@ internal fun MfaEnrollmentScreenInternal(
     } else {
         DefaultMfaEnrollmentContent(
             state = state,
-            authConfiguration = phoneAuthConfiguration,
+            authConfiguration = stepConfiguration,
             user = user
         )
     }

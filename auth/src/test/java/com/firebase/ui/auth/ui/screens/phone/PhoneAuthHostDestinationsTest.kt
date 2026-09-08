@@ -37,6 +37,7 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -65,6 +66,7 @@ import com.firebase.ui.auth.ui.screens.popOrNull
 import com.firebase.ui.auth.ui.screens.reauth.ReauthSceneStrategy
 import com.firebase.ui.auth.ui.screens.reauth.reauthDestinations
 import com.firebase.ui.auth.ui.screens.reauth.toReauthSurface
+import com.firebase.ui.auth.util.CountryUtils
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -447,19 +449,45 @@ class PhoneAuthHostDestinationsTest {
      * is the entry underneath the phone flow and "left the flow" is distinguishable from "stepped
      * back inside it".
      */
-    private fun start() {
-        composeTestRule.setContent { Host() }
+    /**
+     * The country restriction reaches the step through the host, not through the step reading the
+     * configuration itself. Nothing else asserts this: every other `allowedCountries` in either
+     * suite is null, so deleting the host's lookup left both suites green.
+     */
+    @Test
+    fun `country selector offers only the countries the phone provider allows`() {
+        start(restrictedPhoneConfiguration())
+        enterPhoneFlow()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.PhoneNumber.COUNTRY_SELECTOR_BUTTON)
+            .performClick()
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.CountrySelector.COUNTRY_LIST)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(countryName(ALLOWED_COUNTRY_CODE)).assertIsDisplayed()
+        // ALL_COUNTRIES[0]; on screen only if the restriction was dropped.
+        composeTestRule.onAllNodesWithText(FIRST_UNRESTRICTED_COUNTRY_NAME).assertCountEquals(0)
+    }
+
+    private fun countryName(countryCode: String): String =
+        requireNotNull(CountryUtils.findByCountryCode(countryCode)) {
+            "No country data for $countryCode"
+        }.name
+
+    private fun start(configuration: AuthUIConfiguration = emailAndPhoneConfiguration()) {
+        composeTestRule.setContent { Host(configuration) }
         composeTestRule.waitForIdle()
     }
 
     @Composable
-    private fun Host() {
+    private fun Host(configuration: AuthUIConfiguration = emailAndPhoneConfiguration()) {
         val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
         SideEffect { pressBack = dispatcher?.let { { it.onBackPressed() } } }
         LaunchedEffect(authUI) { authUI.authStateFlow().collect { observedStates += it } }
 
         FirebaseAuthScreen(
-            configuration = emailAndPhoneConfiguration(),
+            configuration = configuration,
             authUI = authUI,
             onSignInSuccess = {},
             onSignInFailure = {},
@@ -734,6 +762,31 @@ class PhoneAuthHostDestinationsTest {
         )
     }
 
+    /**
+     * As [emailAndPhoneConfiguration], but with the phone provider restricting its countries — the
+     * setting `EnterPhoneNumberUI` no longer reads off the configuration itself.
+     */
+    private fun restrictedPhoneConfiguration(): AuthUIConfiguration = authUIConfiguration {
+        context = applicationContext
+        providers {
+            provider(
+                AuthProvider.Email(
+                    emailLinkActionCodeSettings = null,
+                    passwordValidationRules = emptyList()
+                )
+            )
+            provider(
+                AuthProvider.Phone(
+                    defaultNumber = null,
+                    defaultCountryCode = "US",
+                    allowedCountries = listOf(ALLOWED_COUNTRY_CODE),
+                    timeout = 0L,
+                )
+            )
+        }
+        isCredentialManagerEnabled = false
+    }
+
     /** Phone alone, so the surface's own start step is the phone flow's rather than the picker. */
     private fun phoneReauthConfiguration(): AuthUIConfiguration = authUIConfiguration {
         context = applicationContext
@@ -765,5 +818,9 @@ class PhoneAuthHostDestinationsTest {
         const val FULL_PHONE_NUMBER = "+15555550123"
         const val REQUEST_ID = "reauth-request-id"
         const val REAUTH_UID = "reauth-uid"
+        const val ALLOWED_COUNTRY_CODE = "GB"
+
+        /** First entry of `ALL_COUNTRIES`, so an unrestricted list always renders it. */
+        const val FIRST_UNRESTRICTED_COUNTRY_NAME = "Afghanistan"
     }
 }
