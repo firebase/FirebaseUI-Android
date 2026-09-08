@@ -75,6 +75,7 @@ class MfaEnrollmentFlowState internal constructor(
     val totpQrCodeUrl: MutableState<String?>,
     val selectedCountry: MutableState<CountryData>,
     val totpSecretExpiredMessage: MutableState<String?>,
+    private val initialCountry: CountryData,
 ) {
 
     /**
@@ -107,9 +108,23 @@ class MfaEnrollmentFlowState internal constructor(
         smsSession.value = null
         totpSecret.value = null
         totpQrCodeUrl.value = null
-        selectedCountry.value = CountryUtils.getDefaultCountry()
+        selectedCountry.value = initialCountry
         totpSecretExpiredMessage.value = null
     }
+}
+
+/**
+ * The country the SMS step opens on: the device's own when [allowedCountries] permits it, else the
+ * first permitted one — so a restricted configuration cannot open pre-set to a country its own
+ * selector will not offer.
+ */
+internal fun initialEnrollmentCountry(allowedCountries: List<String>?): CountryData {
+    val deviceCountry = CountryUtils.getDefaultCountry()
+    if (allowedCountries.isNullOrEmpty()) return deviceCountry
+    val permitted = CountryUtils.filterByAllowedCountries(allowedCountries.toSet())
+    return permitted.firstOrNull { it.countryCode == deviceCountry.countryCode }
+        ?: permitted.firstOrNull()
+        ?: deviceCountry
 }
 
 /**
@@ -118,7 +133,10 @@ class MfaEnrollmentFlowState internal constructor(
  * [MfaEnrollmentFlowState] for which of its fields actually survive Activity recreation.
  */
 @Composable
-fun rememberMfaEnrollmentFlowState(): MfaEnrollmentFlowState {
+fun rememberMfaEnrollmentFlowState(
+    allowedCountries: List<String>? = null,
+): MfaEnrollmentFlowState {
+    val initialCountry = remember(allowedCountries) { initialEnrollmentCountry(allowedCountries) }
     val selectedFactor = rememberSaveable { mutableStateOf<MfaFactor?>(null) }
     val phoneNumber = rememberSaveable { mutableStateOf("") }
     val verificationCode = rememberSaveable { mutableStateOf("") }
@@ -129,10 +147,10 @@ fun rememberMfaEnrollmentFlowState(): MfaEnrollmentFlowState {
     val totpSecret = remember { mutableStateOf<TotpSecret?>(null) }
     val totpQrCodeUrl = remember { mutableStateOf<String?>(null) }
     val selectedCountry = rememberSaveable(stateSaver = CountryDataSaver) {
-        mutableStateOf(CountryUtils.getDefaultCountry())
+        mutableStateOf(initialCountry)
     }
     val totpSecretExpiredMessage = remember { mutableStateOf<String?>(null) }
-    return remember {
+    return remember(initialCountry) {
         MfaEnrollmentFlowState(
             selectedFactor = selectedFactor,
             phoneNumber = phoneNumber,
@@ -143,6 +161,7 @@ fun rememberMfaEnrollmentFlowState(): MfaEnrollmentFlowState {
             totpQrCodeUrl = totpQrCodeUrl,
             selectedCountry = selectedCountry,
             totpSecretExpiredMessage = totpSecretExpiredMessage,
+            initialCountry = initialCountry,
         )
     }
 }

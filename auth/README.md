@@ -454,9 +454,6 @@ val phoneProvider = AuthProvider.Phone(
     // Optional: Allowed countries
     allowedCountries = listOf("US", "CA", "GB"),
 
-    // Optional: SMS code length (default: 6)
-    smsCodeLength = 6,
-
     // Optional: Timeout for SMS delivery in seconds (default: 60)
     timeout = 60L,
 
@@ -1082,7 +1079,12 @@ val mfaConfig = MfaConfiguration(
     allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
 
     // Optional: Require MFA enrollment (default: false)
-    requireEnrollment = false
+    requireEnrollment = false,
+
+    // Optional: restrict the SMS enrollment step's country selector, as ISO 3166-1 alpha-2
+    // codes (default: null, no restriction). Independent of the phone sign-in provider's own
+    // allowedCountries — an SMS second factor is configured separately from phone sign-in.
+    allowedCountries = listOf("US", "CA", "GB")
 )
 
 val configuration = authUIConfiguration {
@@ -1112,10 +1114,14 @@ fun MfaEnrollmentFlow() {
 
     if (currentUser != null) {
         val mfaConfig = MfaConfiguration(
-            allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp)
+            allowedFactors = listOf(MfaFactor.Sms, MfaFactor.Totp),
+            allowedCountries = listOf("US", "CA", "GB")
         )
         val backStack = rememberNavBackStack(MfaStepKey(MfaEnrollmentStep.SelectFactor))
-        val flowState = rememberMfaEnrollmentFlowState()
+        // Pass the restriction so the SMS step opens on a country the selector will offer. The
+        // screen also reconciles this itself, so a host that forgets cannot end up sending to an
+        // unpermitted dial code.
+        val flowState = rememberMfaEnrollmentFlowState(mfaConfig.allowedCountries)
 
         NavDisplay(
             backStack = backStack,

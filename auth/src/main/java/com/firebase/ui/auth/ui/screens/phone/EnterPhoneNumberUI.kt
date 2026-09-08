@@ -57,6 +57,17 @@ import com.firebase.ui.auth.ui.components.TermsAndPrivacyForm
 import com.firebase.ui.auth.ui.exposeTestTagsAsResourceIds
 import com.firebase.ui.auth.util.CountryUtils
 
+/**
+ * The phone number entry step, shared by phone sign-in and SMS multi-factor enrollment.
+ *
+ * @param allowedCountries Country codes the selector is restricted to, or `null` for no
+ * restriction. Supplied by the caller rather than read off [configuration]'s phone provider,
+ * because MFA enrollment reaches this step on configurations that declare no phone provider —
+ * it restricts countries through
+ * [com.firebase.ui.auth.configuration.MfaConfiguration.allowedCountries] instead.
+ * Deliberately has no default: a host that upgrades has to decide, rather than silently losing
+ * the restriction it used to get from [configuration].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnterPhoneNumberUI(
@@ -65,6 +76,7 @@ fun EnterPhoneNumberUI(
     isLoading: Boolean,
     phoneNumber: String,
     selectedCountry: CountryData,
+    allowedCountries: Set<String>?,
     onPhoneNumberChange: (String) -> Unit,
     onCountrySelected: (CountryData) -> Unit,
     onSendCodeClick: () -> Unit,
@@ -72,7 +84,6 @@ fun EnterPhoneNumberUI(
     onNavigateBack: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Phone>().first()
     val stringProvider = LocalAuthUIStringProvider.current
     val phoneNumberValidator = remember(selectedCountry) {
         PhoneNumberValidator(stringProvider, selectedCountry)
@@ -134,7 +145,7 @@ fun EnterPhoneNumberUI(
                         selectedCountry = selectedCountry,
                         onCountrySelected = onCountrySelected,
                         enabled = !isLoading,
-                        allowedCountries = provider.allowedCountries?.toSet()
+                        allowedCountries = allowedCountries
                     )
                 },
                 onValueChange = {
@@ -196,6 +207,7 @@ fun PreviewEnterPhoneNumberUI() {
             isLoading = false,
             phoneNumber = "",
             selectedCountry = CountryUtils.getDefaultCountry(),
+            allowedCountries = null,
             onPhoneNumberChange = {},
             onCountrySelected = {},
             onSendCodeClick = {},

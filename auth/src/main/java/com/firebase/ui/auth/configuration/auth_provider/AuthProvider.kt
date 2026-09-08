@@ -274,11 +274,6 @@ abstract class AuthProvider(open val providerId: String, open val providerName: 
         val allowedCountries: List<String>?,
 
         /**
-         * The expected length of the SMS verification code. Defaults to 6.
-         */
-        val smsCodeLength: Int = 6,
-
-        /**
          * The timeout in seconds for receiving the SMS. Defaults to 60L.
          */
         val timeout: Long = 60L,

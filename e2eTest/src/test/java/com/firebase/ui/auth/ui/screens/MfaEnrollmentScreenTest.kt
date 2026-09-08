@@ -58,15 +58,29 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * E2E tests for [MfaEnrollmentScreen].
+ * E2E tests for [MfaEnrollmentScreen]'s own state machine — step transitions, factor selection and
+ * button enablement — driven against a mocked [FirebaseUser] so each can start on the step it is
+ * about.
  *
- * These tests verify the UI state management and transitions for the MFA enrollment flow.
+ * **These tests deliberately enroll nothing.** The real SMS enrollment happy path, driven through
+ * [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen] against the emulator and asserted on
+ * `user.multiFactor.enrolledFactors`, lives in [MfaSmsFlowTest]; add SMS coverage there rather
+ * than here.
  *
- * **Important Note**: Firebase Auth Emulator has **limited MFA support**, so these tests
- * use mocked Firebase users and focus on UI flow validation. Actual MFA operations
- * (enrollment, verification) will fail with the emulator and are caught/ignored in tests.
- *
- * For full integration testing of MFA functionality, use a real Firebase project.
+ * **Emulator MFA support** (firebase-tools 15.x, verified 2026-09):
+ * - **SMS works end to end.** The emulator implements `mfaEnrollment:start`/`:finalize` and
+ *   `mfaSignIn:start`/`:finalize`, and publishes both flows' codes on the same
+ *   `verificationCodes` endpoint [com.firebase.ui.auth.testutil.EmulatorAuthApi.fetchVerifyPhoneCode]
+ *   already reads for phone auth. It enforces two preconditions: the user's email must be verified
+ *   (`UNVERIFIED_EMAIL`), and anonymous, phone, custom-token and Game Center first factors
+ *   are rejected
+ *   (`UNSUPPORTED_FIRST_FACTOR`).
+ * - **TOTP does not work.** The emulator's `mfaEnrollment:start` accepts only `phoneEnrollmentInfo`,
+ *   so enrollment fails on its very first call — `TotpMultiFactorGenerator.generateSecret` returns
+ *   `FirebaseException: An internal error has occurred. [ INVALID_ARGUMENT:((Missing
+ *   phoneEnrollmentInfo.)) ]`. The TOTP request/response types exist in the emulator's OpenAPI spec
+ *   but have no implementation behind them. Testing TOTP needs a real Firebase project; the TOTP
+ *   tests below tolerate the missing secret rather than asserting on it.
  */
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)

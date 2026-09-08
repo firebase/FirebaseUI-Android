@@ -55,12 +55,17 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * E2E tests for [MfaChallengeScreen].
+ * E2E tests for [MfaChallengeScreen]'s presentation of a challenge — masked number rendering,
+ * resend availability per factor, 6-digit gating — driven against a mocked [MultiFactorResolver]
+ * so each factor's variant can be composed on demand, TOTP included.
  *
- * These tests verify the MFA challenge flow including UI interactions and state transitions.
+ * **These tests deliberately complete no sign-in.** The real SMS challenge happy path, driven
+ * through [com.firebase.ui.auth.ui.screens.FirebaseAuthScreen] against the emulator and asserted
+ * on [com.firebase.ui.auth.AuthState.Success], lives in [MfaSmsFlowTest]; add SMS coverage there
+ * rather than here.
  *
- * Note: Firebase Auth Emulator has limited MFA support, so these tests use mocked
- * MultiFactorResolver to test the UI flow.
+ * The emulator supports SMS MFA in full and does not implement TOTP at all —
+ * [MfaEnrollmentScreenTest] carries the details and the exact TOTP failure.
  */
 @Config(sdk = [34])
 @RunWith(RobolectricTestRunner::class)
