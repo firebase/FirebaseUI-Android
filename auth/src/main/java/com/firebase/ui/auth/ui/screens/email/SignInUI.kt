@@ -94,7 +94,6 @@ fun SignInUI(
     isEmailLocked: Boolean = false,
 ) {
     val context = LocalContext.current
-    val provider = configuration.providers.filterIsInstance<AuthProvider.Email>().first()
     val stringProvider = LocalAuthUIStringProvider.current
     val emailValidator = remember { EmailValidator(stringProvider) }
     val passwordValidator = remember {
@@ -110,14 +109,9 @@ fun SignInUI(
         }
     }
 
-    val isSignUpOffered = provider.isNewAccountsAllowed &&
-            configuration.isNewEmailAccountsAllowed &&
-            !configuration.isReauthenticationMode
+    val isSignUpOffered = configuration.isEmailSignUpOffered()
 
-    // An email link reopens the app with no request outstanding, so completing it reports an interruption
-    // instead of the operation; a reset email leaves the reauth sheet and its request intact.
-    val isEmailLinkSignInOffered =
-        provider.isEmailLinkSignInEnabled && !configuration.isReauthenticationMode
+    val isEmailLinkSignInOffered = configuration.isEmailLinkSignInOffered()
 
     // Retrieve saved credentials when in SignIn mode
     val credentialRetrievalAttempted = remember { mutableStateOf(false) }
