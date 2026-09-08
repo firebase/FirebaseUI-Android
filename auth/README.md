@@ -1703,6 +1703,7 @@ import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
         provider(AuthProvider.Google())
@@ -1729,6 +1730,7 @@ import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Phone())
     }
@@ -1751,6 +1753,7 @@ import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Facebook())
     }
@@ -1776,6 +1779,7 @@ import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
@@ -1802,6 +1806,7 @@ import com.firebase.ui.auth.ui.screens.AuthRoute
 import com.firebase.ui.auth.ui.screens.authRoute
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
