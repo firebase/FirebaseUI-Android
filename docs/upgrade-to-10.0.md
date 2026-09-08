@@ -50,10 +50,10 @@ dependencies {
     // FirebaseUI Auth
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta04")
 
     // Required: Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
 }
@@ -107,10 +107,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyAppTheme {
                 val configuration = authUIConfiguration {
-                    providers = listOf(
-                        AuthProvider.Email(),
-                        AuthProvider.Google()
-                    )
+                    context = applicationContext
+                    providers {
+                        provider(AuthProvider.Email())
+                        provider(AuthProvider.Google())
+                    }
                     theme = AuthUITheme.fromMaterialTheme()
                 }
 
@@ -151,18 +152,17 @@ List<AuthUI.IdpConfig> providers = Arrays.asList(
 **New (10.x):**
 ```kotlin
 val configuration = authUIConfiguration {
-    providers = listOf(
-        AuthProvider.Email(
-            isDisplayNameRequired = true
-        ),
-        AuthProvider.Google(
-            scopes = listOf("email"),
-            serverClientId = "YOUR_CLIENT_ID"
-        ),
-        AuthProvider.Phone(
-            defaultCountryCode = "US"
+    context = applicationContext
+    providers {
+        provider(AuthProvider.Email(isDisplayNameRequired = true))
+        provider(
+            AuthProvider.Google(
+                scopes = listOf("email"),
+                serverClientId = "YOUR_CLIENT_ID"
+            )
         )
-    )
+        provider(AuthProvider.Phone(defaultCountryCode = "US"))
+    }
 }
 ```
 
@@ -184,7 +184,8 @@ val configuration = authUIConfiguration {
 **New (10.x) - Material 3:**
 ```kotlin
 val configuration = authUIConfiguration {
-    providers = listOf(AuthProvider.Email())
+    context = applicationContext
+    providers { provider(AuthProvider.Email()) }
     theme = AuthUITheme(
         colorScheme = lightColorScheme(
             primary = Color(0xFF6200EE),
@@ -199,7 +200,8 @@ Or inherit from your app theme:
 ```kotlin
 MyAppTheme {
     val configuration = authUIConfiguration {
-        providers = listOf(AuthProvider.Email())
+        context = applicationContext
+        providers { provider(AuthProvider.Email()) }
         theme = AuthUITheme.fromMaterialTheme()
     }
 
@@ -360,31 +362,29 @@ If you have an existing Activity-based app and want to keep using Activities:
 class AuthActivity : ComponentActivity() {
     private lateinit var controller: AuthFlowController
 
+    private val authLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val authUI = FirebaseAuthUI.getInstance()
         val configuration = authUIConfiguration {
-            providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Email())
+                provider(AuthProvider.Google())
+            }
         }
 
         controller = authUI.createAuthFlow(configuration)
-
-        lifecycleScope.launch {
-            val state = controller.start()
-            when (state) {
-                is AuthState.Success -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                }
-                is AuthState.Error -> {
-                    // Handle error
-                }
-                else -> {
-                    // Handle other states
-                }
-            }
-        }
+        authLauncher.launch(controller.createIntent(this))
     }
 
     override fun onDestroy() {
@@ -393,6 +393,11 @@ class AuthActivity : ComponentActivity() {
     }
 }
 ```
+
+The flow runs in its own Activity, so the outcome arrives as an Activity result rather than a
+return value. To follow it in more detail — loading, errors, MFA — collect
+`controller.authStateFlow` alongside the launcher. Dispose the controller in `onDestroy`; it owns
+a coroutine scope nothing else will clean up.
 
 ## Common Issues and Solutions
 
@@ -467,6 +472,8 @@ A back-stack key must be `@Serializable` to survive process death, so add the
 **Solution:** Convert XML themes to Kotlin code using `AuthUITheme`:
 ```kotlin
 val configuration = authUIConfiguration {
+    context = applicationContext
+    providers { provider(AuthProvider.Email()) }
     theme = AuthUITheme(
         colorScheme = lightColorScheme(
             primary = Color(0xFF6200EE),
@@ -488,7 +495,7 @@ val configuration = authUIConfiguration {
 
 ## Checklist
 
-- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta01`
+- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta04`
 - [ ] Migrated to Jetpack Compose
 - [ ] Converted Activities to ComponentActivities with `setContent {}`
 - [ ] Replaced `createSignInIntentBuilder()` with `authUIConfiguration {}`
