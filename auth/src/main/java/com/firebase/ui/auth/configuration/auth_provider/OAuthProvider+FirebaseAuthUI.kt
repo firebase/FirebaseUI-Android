@@ -18,36 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 /**
- * Creates a Composable handler for OAuth provider sign-in.
+ * Remembers a callback that runs [signInWithProvider] in the composition's scope.
  *
- * This function creates a sign-in handler, rebuilt on every recomposition so it always
- * captures the latest parameters, that can be invoked from button clicks or other UI events.
- * It automatically handles:
- * - Activity retrieval from LocalActivity
- * - Coroutine scope management
- * - Error handling and state updates
- *
- * **Usage:**
- * ```kotlin
- * val onSignInWithGitHub = authUI.rememberOAuthSignInHandler(
- *     config = configuration,
- *     provider = githubProvider
- * )
- *
- * Button(onClick = onSignInWithGitHub) {
- *     Text("Sign in with GitHub")
- * }
- * ```
- *
- * @param config Authentication UI configuration
- * @param provider OAuth provider configuration
- * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
- *
- * @return Lambda that triggers OAuth sign-in when invoked
- *
- * @throws IllegalStateException if LocalActivity.current is null
- *
- * @see signInWithProvider
+ * Rebuilt on every recomposition so it always captures the latest parameters, and resolves the
+ * host Activity itself.
  */
 @Composable
 internal fun AuthFlowScope.rememberOAuthSignInHandler(
@@ -83,44 +57,11 @@ internal fun AuthFlowScope.rememberOAuthSignInHandler(
 }
 
 /**
- * Signs in with an OAuth provider (GitHub, Microsoft, Yahoo, Apple, Twitter).
+ * Signs in with an OAuth provider — GitHub, Microsoft, Yahoo, Apple, Twitter, or a custom
+ * OIDC/SAML provider.
  *
- * This function implements OAuth provider authentication using Firebase's native OAuthProvider.
- * It handles both normal sign-in flow and anonymous user upgrade flow.
- *
- * **Supported Providers:**
- * - GitHub (github.com)
- * - Microsoft (microsoft.com)
- * - Yahoo (yahoo.com)
- * - Apple (apple.com)
- * - Twitter (twitter.com)
- *
- * **Flow:**
- * 1. Checks for pending auth results (e.g., from app restart during OAuth flow)
- * 2. If anonymous upgrade is enabled and user is anonymous, links credential to anonymous account
- * 3. Otherwise, performs normal sign-in
- * 4. Updates auth state to Idle on success
- *
- * **Anonymous Upgrade:**
- * If [AuthUIConfiguration.isAnonymousUpgradeEnabled] is true and a user is currently signed in
- * anonymously, this will attempt to link the OAuth credential to the anonymous account instead
- * of creating a new account.
- *
- * **Error Handling:**
- * - [AuthException.AuthCancelledException]: User cancelled OAuth flow
- * - [AuthException.AccountLinkingRequiredException]: Account collision (email already exists)
- * - [AuthException]: Other authentication errors
- *
- * @param config Authentication UI configuration
- * @param activity Activity for OAuth flow
- * @param provider OAuth provider configuration with scopes and custom parameters
- *
- * @throws AuthException.AuthCancelledException if user cancels
- * @throws AuthException.AccountLinkingRequiredException if account collision occurs
- * @throws AuthException if OAuth flow or sign-in fails
- *
- * @see AuthProvider.OAuth
- * @see signInAndLinkWithCredential
+ * Uses Firebase's native OAuth flow, then hands the credential to
+ * [signInAndLinkWithCredential], which owns anonymous upgrade and collision handling.
  */
 internal suspend fun AuthFlowScope.signInWithProvider(
     context: Context,

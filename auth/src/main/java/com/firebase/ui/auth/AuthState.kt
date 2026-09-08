@@ -513,20 +513,12 @@ abstract class AuthState private constructor() {
     /**
      * Phone number verification requires manual code entry.
      *
-     * This state is emitted when Firebase Phone Authentication cannot instantly verify
-     * the phone number and sends an SMS code that the user must manually enter. This is
-     * the normal flow when automatic SMS retrieval is not available or fails.
+     * Emitted when instant verification is unavailable or fails, so the code has to be typed
+     * in. `PhoneAuthScreen` holds both properties in its flow state and hands them back when
+     * submitting a code or resending.
      *
-     * **Resending codes:**
-     * To allow users to resend the verification code (if they didn't receive it),
-     * call [FirebaseAuthUI.verifyPhoneNumber] again with:
-     * - `isForceResendingTokenEnabled = true`
-     * - `forceResendingToken` from this state
-     *
-     * @property verificationId The verification ID to use when submitting the code.
-     *                          This must be passed to [FirebaseAuthUI.submitVerificationCode].
-     * @property forceResendingToken Token that can be used to resend the SMS code if needed
-     *
+     * @property verificationId Identifies the verification the submitted code belongs to.
+     * @property forceResendingToken Resends the SMS without restarting the verification.
      */
     class PhoneNumberVerificationRequired(
         val verificationId: String,

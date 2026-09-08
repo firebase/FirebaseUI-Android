@@ -183,10 +183,11 @@ class FirebaseAuthUI private constructor(
      *
      *         val authUI = FirebaseAuthUI.getInstance()
      *         val configuration = authUIConfiguration {
-     *             providers = listOf(
-     *                 AuthProvider.Email(),
-     *                 AuthProvider.Google(...)
-     *             )
+     *             context = applicationContext
+     *             providers {
+     *                 provider(AuthProvider.Email(...))
+     *                 provider(AuthProvider.Google(...))
+     *             }
      *         }
      *
      *         authController = authUI.createAuthFlow(configuration)
