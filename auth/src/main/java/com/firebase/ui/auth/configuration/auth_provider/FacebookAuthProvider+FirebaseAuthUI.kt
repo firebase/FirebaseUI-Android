@@ -33,7 +33,6 @@ import com.facebook.login.LoginResult
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import kotlinx.coroutines.CancellationException
@@ -47,7 +46,6 @@ import kotlinx.coroutines.launch
  * linking when an email collision occurs.
  *
  * @param context Android context for DataStore access when saving credentials for linking
- * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Facebook] configuration with scopes and credential provider
  * @param loginManagerProvider Provides logout operations to clear stale Facebook sessions
  * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
@@ -144,7 +142,6 @@ internal fun AuthFlowScope.rememberSignInWithFacebookLauncher(
  * for linking and throwing [AuthException.AccountLinkingRequiredException].
  *
  * @param context Android context for DataStore access when saving credentials for linking
- * @param config The [AuthUIConfiguration] containing authentication settings
  * @param provider The [AuthProvider.Facebook] configuration
  * @param accessToken The Facebook [AccessToken] from successful login
  * @param credentialProvider Creates Firebase credentials from Facebook tokens

@@ -48,10 +48,14 @@ import java.util.concurrent.ConcurrentHashMap
  * ```kotlin
  * val authUI = FirebaseAuthUI.getInstance()
  * val configuration = authUIConfiguration {
- *     providers = listOf(AuthProvider.Email(), AuthProvider.Google(...))
+ *     context = applicationContext
+ *     providers {
+ *         provider(AuthProvider.Email(...))
+ *         provider(AuthProvider.Google(...))
+ *     }
  * }
  * val controller = authUI.createAuthFlow(configuration)
- * val intent = controller.createIntent(context)
+ * val intent = controller.createIntent(this)
  * launcher.launch(intent)
  * ```
  *
