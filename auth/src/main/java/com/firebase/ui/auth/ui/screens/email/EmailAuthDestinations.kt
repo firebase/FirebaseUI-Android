@@ -124,7 +124,6 @@ internal fun EmailAuthStep(
     context: Context,
     configuration: AuthUIConfiguration,
     authUI: FirebaseAuthUI,
-    content: (@Composable (EmailAuthContentState) -> Unit)?,
     navigateToStep: (AuthRoute.Email.Step) -> Unit,
     isStepBelow: (NavKey?) -> Boolean,
     onCancel: () -> Unit,
@@ -136,6 +135,7 @@ internal fun EmailAuthStep(
     onError: (AuthException) -> Unit = {},
     /** Passed through to [EmailAuthScreen]: where a consumed notification leaves the flow. */
     onNotificationConsumed: (() -> Unit)? = null,
+    content: (@Composable (EmailAuthContentState) -> Unit)? = null,
 ) {
     if (!configuration.isEmailStepOffered(step)) {
         LaunchedEffect(entryKey) {

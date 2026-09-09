@@ -5,6 +5,7 @@ GitHub Actions job shape and failure triage for FirebaseUI-Android.
 ## Jobs
 
 * [Android CI](android.md) — `android.yml`: JDK 21, Gradle cache, `./scripts/build.sh`
+* [Android Lint](android.md#lint-workflow) — `lint.yml`: JDK 21, Gradle cache, `./gradlew lintAll`. Separate workflow so it runs in parallel with `build.sh` and a lint failure cannot mask unit-test results.
 * [E2E Tests](e2e.md) — `e2e_test.yml`: firebase-tools, Auth emulator, `./gradlew e2eTest`
 
 ## Shared dependencies

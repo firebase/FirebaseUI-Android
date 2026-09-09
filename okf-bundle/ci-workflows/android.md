@@ -38,6 +38,20 @@ Canonical owner for the CI unit-path step list. Script: [scripts/build.sh](../..
 4. `./gradlew --max-workers=2 checkstyle`
 5. `./gradlew --max-workers=2 testDebugUnitTest -x :e2eTest:testDebugUnitTest`
 
+Step 4 is **Java-only** (`include("**/*.java")`), so it inspects zero files in the Kotlin modules — [Kotlin blind spot](../testing/agent-command-policy.md#checkstyle-kotlin-blind-spot). Android Lint covers that gap and runs in its own workflow, **not** in `build.sh` — see below.
+
+<a id="lint-workflow"></a>
+
+## Android Lint (`lint.yml`)
+
+Separate workflow, `pull_request` only, running `./gradlew --max-workers=2 lintAll`.
+
+`lintAll` is registered in the root `build.gradle.kts` and gates the 8 modules that configure a `lint { }` block; `:app` and `:e2eTest` are not yet among them (CPRN-433).
+
+It is a separate workflow rather than a step in `build.sh` for two reasons. Lint measured **~4-5 minutes** on this repo — the `build` job went from 3-6 min to 8-11 min when it was inline — so running it in parallel roughly halves PR feedback time at about the same total runner cost, since the extra compile the lint job pays is the one `build.sh` stops paying (`lintAnalyze` depends on `compileDebugKotlin`, and there is no remote build cache: Develocity here is configured for build scans only). And under `set -e` an inline lint failure aborted the run **before** `testDebugUnitTest`, so one new finding cost you every test result for that run.
+
+The workflow copies `library/google-services.json` into `app/` and `proguard-tests/` before running, because `lintAll` gates `:proguard-tests:lintRelease` and that module applies the `google-services` plugin.
+
 `proguard-tests:build` is currently commented out (re-enable before release). Green Android CI does **not** prove ProGuard/R8 packaging.
 
 ## Agent notes

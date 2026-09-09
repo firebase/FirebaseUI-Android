@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.createBitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.WriterException
@@ -97,7 +98,7 @@ private fun generateQrCodeBitmap(
             hints
         )
 
-        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(sizePx, sizePx)
 
         val foregroundArgb = android.graphics.Color.argb(
             (foregroundColor.alpha * 255).toInt(),
@@ -113,15 +114,15 @@ private fun generateQrCodeBitmap(
             (backgroundColor.blue * 255).toInt()
         )
 
-        for (x in 0 until sizePx) {
-            for (y in 0 until sizePx) {
-                bitmap.setPixel(
-                    x,
-                    y,
-                    if (bitMatrix[x, y]) foregroundArgb else backgroundArgb
-                )
+        // One bulk copy rather than sizePx^2 setPixel calls: at the default 250.dp rendered
+        // at 2x that is 250,000 JNI crossings on the composition thread.
+        val pixels = IntArray(sizePx * sizePx)
+        for (y in 0 until sizePx) {
+            for (x in 0 until sizePx) {
+                pixels[y * sizePx + x] = if (bitMatrix[x, y]) foregroundArgb else backgroundArgb
             }
         }
+        bitmap.setPixels(pixels, 0, sizePx, 0, 0, sizePx, sizePx)
 
         bitmap
     } catch (e: WriterException) {

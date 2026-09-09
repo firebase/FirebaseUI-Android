@@ -34,9 +34,8 @@ android {
 
         checkAllWarnings = true
         warningsAsErrors = true
-        abortOnError = false // Override
+        abortOnError = true
 
-        baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 }
 

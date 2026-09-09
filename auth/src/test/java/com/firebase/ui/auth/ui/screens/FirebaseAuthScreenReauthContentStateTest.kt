@@ -305,7 +305,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = { cancelledCount++ },
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -363,7 +363,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInCancelled = { cancelledCount++ },
                 // The default sheet has no app slot; the picker layout is inside the request's flow.
                 customMethodPickerLayout = { providers, onSelected ->
-                    probe.capture()
+                    probe.Capture()
                     AuthMethodPicker(providers = providers, onProviderSelected = onSelected)
                 },
             )
@@ -414,7 +414,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = { state ->
-                    probe.capture()
+                    probe.Capture()
                     captured = state
                     Button(
                         onClick = { state.onProviderSelected(state.providers.first()) },
@@ -618,7 +618,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
                 authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
@@ -673,7 +673,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInCancelled = {},
                 // The default sheet has no app slot; the picker layout is inside the request's flow.
                 customMethodPickerLayout = { providers, onSelected ->
-                    probe.capture()
+                    probe.Capture()
                     AuthMethodPicker(providers = providers, onProviderSelected = onSelected)
                 },
             )
@@ -820,7 +820,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -873,7 +873,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
                 authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
@@ -925,7 +925,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = { state ->
-                    probe.capture()
+                    probe.Capture()
                     captured = state
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
@@ -1044,7 +1044,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                     Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
                 },
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
                 authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
@@ -1102,7 +1102,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 // Password-only, so the sheet opens at the email step and the picker never composes.
-                emailContent = { probe.capture() },
+                emailContent = { probe.Capture() },
                 mfaChallengeContent = { state ->
                     challenge = state
                     Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
@@ -1165,7 +1165,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                     Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
                 },
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
                 authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
@@ -1232,7 +1232,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                     Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
                 },
                 reauthContent = { state ->
-                    probe.capture()
+                    probe.Capture()
                     captured = state
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
@@ -1296,7 +1296,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                     Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
                 },
                 reauthContent = { state ->
-                    probe.capture()
+                    probe.Capture()
                     captured = state
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
@@ -1404,7 +1404,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = { state ->
-                    probe.capture()
+                    probe.Capture()
                     captured = state
                     Text(text = "SLOT_ERROR=${state.error}", modifier = Modifier.testTag("slot"))
                 }
@@ -1500,7 +1500,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -1552,7 +1552,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -1609,7 +1609,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -1666,7 +1666,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -1715,7 +1715,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -1801,7 +1801,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -1949,7 +1949,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 emailContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "EMAIL", modifier = Modifier.testTag("reauth_email"))
                 },
                 mfaChallengeContent = {
@@ -2001,7 +2001,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                     Text(text = "MFA", modifier = Modifier.testTag("mfa_challenge"))
                 },
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 },
                 authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },
@@ -2052,7 +2052,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 reauthContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "REAUTH", modifier = Modifier.testTag("reauth_slot"))
                 }
             )
@@ -2092,7 +2092,7 @@ class FirebaseAuthScreenReauthContentStateTest {
                 onSignInFailure = {},
                 onSignInCancelled = {},
                 emailContent = {
-                    probe.capture()
+                    probe.Capture()
                     Text(text = "EMAIL", modifier = Modifier.testTag("reauth_email"))
                 },
                 authenticatedContent = { _, _ -> Text(text = "AUTHENTICATED") },

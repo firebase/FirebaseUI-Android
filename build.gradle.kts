@@ -30,3 +30,23 @@ allprojects {
         }
     }
 }
+
+// Android Lint is configured per module, so there is no repo-wide entry point by default.
+// This task is that entry point, and the module list is the gate's definition:
+//   - :app and :e2eTest declare no lint { } block yet, so they are deliberately absent (CPRN-433).
+//   - :proguard-tests disables its debug variant on CI, so it is gated on release instead.
+tasks.register("lintAll") {
+    group = "verification"
+    description = "Runs Android Lint for every module that configures a lint { } block."
+
+    dependsOn(
+        ":auth:lintDebug",
+        ":common:lintDebug",
+        ":database:lintDebug",
+        ":firestore:lintDebug",
+        ":library:lintDebug",
+        ":storage:lintDebug",
+        ":internal:lintchecks:lintDebug",
+        ":proguard-tests:lintRelease"
+    )
+}

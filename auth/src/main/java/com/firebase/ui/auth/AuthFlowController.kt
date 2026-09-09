@@ -23,7 +23,6 @@ import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -111,7 +110,8 @@ class AuthFlowController internal constructor(
     internal val configuration: AuthUIConfiguration
 ) {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
+    private val coroutineJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + coroutineJob)
     private val isDisposed = AtomicBoolean(false)
     private var stateCollectionJob: Job? = null
 
@@ -245,7 +245,7 @@ class AuthFlowController internal constructor(
     fun dispose() {
         if (isDisposed.compareAndSet(false, true)) {
             stateCollectionJob?.cancel()
-            coroutineScope.cancel()
+            coroutineJob.cancel()
         }
     }
 
