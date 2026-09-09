@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Ellenőrző e-mail újraküldése</string>
     <string name="fui_secret_key_label">Titkos kulcs</string>
     <string name="fui_sign_out_action">Kijelentkezés</string>
-    <string name="fui_signed_in_as">Bejelentkezve mint</string>
+    <string name="fui_signed_in_as">Bejelentkezve mint %1$s</string>
     <string name="fui_skip_action">Kihagyás</string>
     <string name="fui_use_different_method_action">Másik módszer használata</string>
     <string name="fui_verification_code_label">Ellenőrző kód</string>

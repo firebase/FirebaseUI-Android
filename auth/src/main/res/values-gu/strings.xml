@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">ચકાસણી ઇમેઇલ ફરી મોકલો</string>
     <string name="fui_secret_key_label">ગુપ્ત કી</string>
     <string name="fui_sign_out_action">સાઇન આઉટ</string>
-    <string name="fui_signed_in_as">તરીકે સાઇન ઇન કર્યું</string>
+    <string name="fui_signed_in_as">%1$s તરીકે સાઇન ઇન કર્યું</string>
     <string name="fui_skip_action">છોડો</string>
     <string name="fui_use_different_method_action">એક અલગ પદ્ધતિ વાપરો</string>
     <string name="fui_verification_code_label">ચકાસણી કોડ</string>

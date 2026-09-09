@@ -26,6 +26,10 @@ class DefaultAuthUIStringProvider(
     /**
      * Allows overriding locale.
      */
+    // AppBundleLocaleChanges tells app modules to pair a dynamic locale change with a Play Core
+    // language download. A library cannot: the bundle configuration and any Play Core dependency
+    // belong to the app that embeds us, so there is nothing here to fix.
+    @Suppress("AppBundleLocaleChanges")
     private val localizedContext = locale?.let { locale ->
         context.createConfigurationContext(
             Configuration(context.resources.configuration).apply {
