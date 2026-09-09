@@ -34,8 +34,7 @@ fun OtherSignInMethodsSheet(
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.primaryContainer,
     ) {
-        // Scrollable: the demo offers nine alternative providers plus the ToS footer, which
-        // overflows a bottom sheet on shorter screens and in landscape.
+        // Scrollable: nine providers plus the ToS footer overflow a sheet on shorter screens.
         Column(
             modifier = Modifier
                 .fillMaxWidth()

@@ -68,8 +68,7 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                     AuthProvider.Email(
                         isEmailLinkSignInEnabled = true,
                         emailLinkActionCodeSettings = actionCodeSettings {
-                            // The trailing segment is what MainActivity routes the returning link
-                            // on — see MainActivity.emailLinkOrigin.
+                            // Trailing segment is what MainActivity.emailLinkOrigin routes on.
                             url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
                                     MainActivity.ORIGIN_FULL_CUSTOMIZATION
                             handleCodeInApp = true
@@ -124,9 +123,7 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                                 onProviderSelected = onProviderSelected,
                             )
                         },
-                        // The picker hosts its own email entry; this slot covers the email
-                        // flows the library navigates to itself (reauth, linking, recovery), which
-                        // would otherwise render its stock screen.
+                        // Covers the email flows the library navigates to itself.
                         emailContent = { state -> EmailAuthUI(state) },
                         phoneContent = { state -> PhoneSignInUI(state) },
                         mfaEnrollmentContent = { state -> MfaEnrollmentUI(state) },
@@ -158,8 +155,7 @@ private fun MainUI(
             modifier = Modifier.fillMaxSize()
         )
         Column(modifier = Modifier.fillMaxSize()) {
-            // Hosts its own per-mode navigation for the email path; no wrapping EmailAuthScreen
-            // call needed here any more — AuthMethodPickerUI builds one instance per step itself.
+            // AuthMethodPickerUI builds its own EmailAuthScreen per step, so none is needed here.
             AuthMethodPickerUI(
                 context = context,
                 configuration = configuration,

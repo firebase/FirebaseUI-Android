@@ -42,8 +42,7 @@ fun ConfigureSmsStep(state: MfaEnrollmentContentState) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                // CountrySelector needs a non-null country; the library's own default UI skips the
-                // whole step while the country is still resolving, so match that.
+                // CountrySelector needs a non-null country, so skip the step while it resolves.
                 state.selectedCountry?.let { country ->
                     Surface(
                         color = Color.White,

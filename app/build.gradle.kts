@@ -6,10 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
     id("kotlin-kapt")
-    // The slot demos and the full customization demo (AuthMethodPickerUI.kt) each host auth
-    // screens on their own Navigation 3 back stacks, and a rememberNavBackStack key has to be
-    // @Serializable to survive process death — the same support the auth module applies for its
-    // own Navigation 3 keys.
+    // Nav3 back-stack keys must be @Serializable to survive process death.
     alias(libs.plugins.kotlin.serialization)
 }
 

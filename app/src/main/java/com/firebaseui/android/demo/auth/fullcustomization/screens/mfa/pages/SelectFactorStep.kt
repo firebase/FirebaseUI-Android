@@ -92,8 +92,7 @@ fun SelectFactorStep(state: MfaEnrollmentContentState) {
                     text = factorCtaLabel(factor),
                     onClick = { state.onFactorSelected(factor) },
                     enabled = !state.isLoading,
-                    // The first factor carries the primary CTA colour; the rest read as
-                    // alternatives, matching how LoginStep tiers its two CTAs.
+                    // First factor takes the primary CTA colour; the rest read as alternatives.
                     colors = if (index == 0) {
                         ButtonDefaults.buttonColors()
                     } else {

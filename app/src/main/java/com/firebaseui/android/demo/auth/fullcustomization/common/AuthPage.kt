@@ -51,8 +51,7 @@ fun AuthPage(
     card: @Composable ColumnScope.() -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Full-bleed, and deliberately outside the safeDrawingPadding below so it runs edge to
-        // edge under the system bars — same as MainUI and PhoneSignInUI do for their slots.
+        // Outside safeDrawingPadding so it runs edge to edge under the system bars.
         Image(
             painter = painterResource(id = R.drawable.custom_background),
             contentDescription = null,

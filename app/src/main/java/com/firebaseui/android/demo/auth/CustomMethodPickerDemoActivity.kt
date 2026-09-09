@@ -142,11 +142,7 @@ class CustomMethodPickerDemoActivity : ComponentActivity() {
                             Log.d("CustomMethodPickerDemo", "Auth cancelled")
                         },
                         customMethodPickerLayout = { providers, onProviderSelected ->
-                            // customMethodPickerLayout now renders as the entire screen (no
-                            // built-in logo/ToS footer/inset handling), so the terms checkbox
-                            // that used to live in customMethodPickerTermsConfiguration is
-                            // rendered inline here instead, and this composable owns its own
-                            // insets via Modifier.safeDrawingPadding() in SpotlightMethodPicker.
+                            // Owns the whole screen now, so the terms checkbox is inline here.
                             SpotlightMethodPicker(
                                 providers = providers,
                                 onProviderSelected = onProviderSelected,
@@ -186,8 +182,7 @@ fun SpotlightMethodPicker(
     val anonymous = groups["anonymous"]?.firstOrNull()
 
     LazyColumn(
-        // customMethodPickerLayout now renders as the entire screen, so this composable is
-        // responsible for its own insets.
+        // Owns the whole screen, so it handles its own insets.
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding(),
