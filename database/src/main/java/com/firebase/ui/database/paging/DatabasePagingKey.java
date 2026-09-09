@@ -2,19 +2,23 @@ package com.firebase.ui.database.paging;
 
 import java.util.Objects;
 
+import androidx.annotation.Nullable;
+
 public class DatabasePagingKey {
     private final Object mChildValue;
     private final String mNodeKey;
 
-    public DatabasePagingKey(Object childValue, String nodeKey) {
+    public DatabasePagingKey(@Nullable Object childValue, @Nullable String nodeKey) {
         mChildValue = childValue;
         mNodeKey = nodeKey;
     }
 
+    @Nullable
     public Object getChildValue() {
         return mChildValue;
     }
 
+    @Nullable
     public String getNodeKey() {
         return mNodeKey;
     }

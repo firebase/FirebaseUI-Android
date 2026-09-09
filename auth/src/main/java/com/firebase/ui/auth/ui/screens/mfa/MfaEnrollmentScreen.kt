@@ -33,6 +33,7 @@ import com.firebase.ui.auth.mfa.TotpEnrollmentHandler
 import com.firebase.ui.auth.util.CountryUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.MultiFactorInfo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -156,7 +157,11 @@ internal fun MfaEnrollmentScreenInternal(
     val isLoading = remember { mutableStateOf(false) }
     val error = remember { mutableStateOf<String?>(null) }
     val lastException = remember { mutableStateOf<Exception?>(null) }
-    val enrolledFactors = remember { mutableStateOf(user.multiFactor.enrolledFactors) }
+    // Snapshot the SDK's list: it hands back a mutable one, and holding that instance would
+    // both trip MutableCollectionMutableState and skip recomposition if it mutated in place.
+    val enrolledFactors = remember {
+        mutableStateOf<List<MultiFactorInfo>>(user.multiFactor.enrolledFactors.toList())
+    }
 
     // The SMS steps read only the terms and privacy URLs off this, so a host that supplied no
     // configuration gets a stand-in. Its provider is arbitrary — a configuration must declare at
@@ -269,7 +274,7 @@ internal fun MfaEnrollmentScreenInternal(
                 try {
                     user.multiFactor.unenroll(factorInfo).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            enrolledFactors.value = user.multiFactor.enrolledFactors
+                            enrolledFactors.value = user.multiFactor.enrolledFactors.toList()
                             error.value = null
                         } else {
                             error.value = task.exception?.message
@@ -361,7 +366,7 @@ internal fun MfaEnrollmentScreenInternal(
                         null -> throw IllegalStateException("No factor selected")
                     }
 
-                    enrolledFactors.value = user.multiFactor.enrolledFactors
+                    enrolledFactors.value = user.multiFactor.enrolledFactors.toList()
 
                     onComplete()
                     error.value = null

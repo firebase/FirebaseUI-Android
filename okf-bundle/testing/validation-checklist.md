@@ -26,7 +26,7 @@ Work types and tiers: [change authoring workflow](change-authoring-workflow.md).
 
 ## Build and unit tests
 
-Repo root. Full CI unit path (what `build.sh` runs): [Android CI](../ci-workflows/android.md).
+Repo root. Full CI unit path (what `build.sh` runs — `assembleDebug`, `checkstyle`, unit tests): [Android CI](../ci-workflows/android.md). Lint and e2e are **separate** workflows; `build.sh` does not run them.
 
 ```bash
 ./scripts/build.sh
@@ -55,13 +55,20 @@ Instrumented `androidTest` (database/firestore) is **not** in CI or the agent al
 
 ## Lint and formatting
 
-**Blocking before `implementation` handoff and on the frozen tree for `independent-review`** when Java/Kotlin style-relevant sources changed.
+**Blocking before `implementation` handoff and on the frozen tree for `independent-review`** when style-relevant sources changed. Which gate applies depends on the language:
 
 ```bash
-./gradlew checkstyle
+./gradlew checkstyle   # Java sources only
+./gradlew lintAll      # Android Lint — reads Kotlin and resources
 ```
 
-Config: `library/quality/checkstyle.xml` (wired from root `build.gradle.kts`). There is **no** separate agent entrypoint for ktlint/detekt — do not invent one.
+`checkstyle` is scoped `include("**/*.java")` from the root `build.gradle.kts`, so on a Kotlin-only diff it inspects **zero files and exits 0**. A green checkstyle is not evidence for a change in `:auth`, `:app` or `:e2eTest` — [Kotlin blind spot](agent-command-policy.md#checkstyle-kotlin-blind-spot).
+
+`lintAll` runs Android Lint for the 8 modules that configure a `lint { }` block, each at `checkAllWarnings = true`, `warningsAsErrors = true` and `abortOnError = true` — so any new finding fails the build. It runs in its own workflow ([lint.yml](../ci-workflows/android.md#lint-workflow)), **not** in `build.sh`, so you must run it separately — a green `build.sh` says nothing about lint. `:app` and `:e2eTest` are not yet gated (CPRN-433). Config: each module's `lint { }` block; `library/quality/checkstyle.xml` for checkstyle.
+
+`auth/lint-baseline.xml` suppresses 180 pre-existing findings. **Never** run `updateLintBaseline` to clear a failure your change caused — [baseline trap](agent-command-policy.md#lint-baseline-trap).
+
+There is **no** separate agent entrypoint for ktlint/detekt — do not invent one.
 
 Follow [Kotlin coding conventions](https://kotlinlang.org/docs/coding-conventions.html), [Android Kotlin style](https://developer.android.com/kotlin/style-guide), and [Compose API guidelines](https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md) as described in [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
@@ -98,7 +105,8 @@ Before closing **`implementation_gate`**, **`review_gate`**, **`commit_gate`**, 
 | unit CI     | ./scripts/build.sh                                                      | 0    | —                                             |
 | module unit | ./gradlew :<module>:testDebugUnitTest                                   | 0    | N/N tests — only if module has `src/test`     |
 | assemble    | ./gradlew :<module>:assembleDebug                                       | 0    | when module has no JVM unit suite             |
-| checkstyle  | ./gradlew checkstyle                                                    | 0    | when style-relevant sources                   |
+| checkstyle  | ./gradlew checkstyle                                                    | 0    | Java sources only — no signal on Kotlin       |
+| lint        | ./gradlew lintAll                                                       | 0    | when Kotlin/resources changed in a gated module |
 | e2e         | ./gradlew e2eTest                                                       | 0    | when Auth UI — /tmp/...log                    |
 ```
 
@@ -108,7 +116,8 @@ Before closing **`implementation_gate`**, **`review_gate`**, **`commit_gate`**, 
 
 - [ ] `./scripts/build.sh` (or equivalent assemble + checkstyle + unit exclusion path) exit 0
 - [ ] Module evidence per [module validation matrix](#module-validation-matrix)
-- [ ] `./gradlew checkstyle` when style-relevant sources changed
+- [ ] `./gradlew checkstyle` when **Java** sources changed
+- [ ] `./gradlew lintAll` when Kotlin or resources changed in a gated module
 - [ ] E2e green when Auth UI / `e2eTest` changed ([running e2e](running-e2e.md))
 - [ ] [Validation evidence package](#validation-evidence-package) recorded
 - [ ] OKF bundle reviewed/updated per § above

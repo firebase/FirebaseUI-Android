@@ -38,7 +38,6 @@ android {
         warningsAsErrors = true
         abortOnError = true
 
-        baseline = file("$rootDir/library/quality/lint-baseline.xml")
     }
 
     buildTypes {

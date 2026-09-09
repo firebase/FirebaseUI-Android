@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -242,7 +243,7 @@ fun SignInUI(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .testTag(FirebaseAuthTestTags.SignIn.REAUTH_PASSWORD_NOTICE),
-                    text = context.getString(R.string.fui_reauth_password_required_notice),
+                    text = stringResource(R.string.fui_reauth_password_required_notice),
                     style = MaterialTheme.typography.bodySmall,
                 )
                 Spacer(modifier = Modifier.height(8.dp))

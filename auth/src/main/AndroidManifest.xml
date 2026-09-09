@@ -34,10 +34,15 @@
             android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token"/>
 
+        <!-- The empty label suppresses this activity's own title. Launched as documented, it
+             joins the caller's task and does not affect the recents card, which takes its
+             label from that task's root. Lint reads it as redundant only because this library
+             manifest has no <application> label of its own to compare against. -->
         <activity
             android:name=".FirebaseAuthActivity"
             android:label=""
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="RedundantLabel" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
