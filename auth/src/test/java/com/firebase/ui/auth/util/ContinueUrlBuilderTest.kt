@@ -83,16 +83,38 @@ class ContinueUrlBuilderTest {
     }
 
     @Test
-    fun `url ending in an open query marker is not given a second separator`() {
+    fun `url ending in an open query marker keeps every param retrievable`() {
         assertThat(
             ContinueUrlBuilder("https://example.com/finish?").appendSessionId("sid123").build()
         ).isEqualTo("https://example.com/finish?ui_sid=sid123")
 
-        assertThat(
-            ContinueUrlBuilder("https://example.com/finish?demo=full&")
-                .appendSessionId("sid123")
-                .build()
-        ).isEqualTo("https://example.com/finish?demo=full&ui_sid=sid123")
+        // A trailing `&` is an empty param, which Uri keeps rather than folding away. Cosmetic
+        // only: both the consumer's params and ours still parse out.
+        val url = ContinueUrlBuilder("https://example.com/finish?demo=full&")
+            .appendSessionId("sid123")
+            .build()
+
+        assertThat(url).isEqualTo("https://example.com/finish?demo=full&&ui_sid=sid123")
+
+        val uri = url.toUri()
+        assertThat(uri.getQueryParameter("demo")).isEqualTo("full")
+        assertThat(uri.getQueryParameter("ui_sid")).isEqualTo("sid123")
+    }
+
+    @Test
+    fun `param values are percent encoded`() {
+        val hostile = "a&b=c d#e"
+        val url = ContinueUrlBuilder("https://example.com/finish?demo=full")
+            .appendAnonymousUserId(hostile)
+            .build()
+
+        // Interpolated raw, this value would split the query and open a fragment.
+        assertThat(url).doesNotContain(hostile)
+
+        val uri = url.toUri()
+        assertThat(uri.getQueryParameter("ui_auid")).isEqualTo(hostile)
+        assertThat(uri.getQueryParameter("demo")).isEqualTo("full")
+        assertThat(uri.fragment).isNull()
     }
 
     @Test

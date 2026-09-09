@@ -13,7 +13,9 @@
  */
 package com.firebase.ui.auth.util
 
+import android.net.Uri
 import androidx.annotation.RestrictTo
+import androidx.core.net.toUri
 import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.ANONYMOUS_USER_ID_IDENTIFIER
 import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.FORCE_SAME_DEVICE_IDENTIFIER
 import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.PROVIDER_ID_IDENTIFIER
@@ -24,26 +26,18 @@ import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.SESSION_IDENTIFI
  * Used in email link sign-in flows to pass state between devices.
  *
  * The incoming URL comes from the consumer's [com.google.firebase.auth.ActionCodeSettings], so it
- * may already carry a query string and/or a fragment. Appended parameters join an existing
- * query rather than starting a second one, and are always placed before the fragment.
+ * may already carry a query string and/or a fragment. Parameters are appended through [Uri], the
+ * same parser [EmailLinkParser] reads them back with, which places them in the query whatever the
+ * URL's shape and percent-encodes their values.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ContinueUrlBuilder(url: String) {
 
-    /** The incoming URL up to, but not including, the fragment. */
-    private val baseUrl: String
-
-    /** The fragment including its leading `#`, or empty when the URL has none. */
-    private val fragment: String
-
-    private val params = StringBuilder()
+    private var continueUrl: Uri
 
     init {
         require(url.isNotBlank()) { "URL cannot be empty" }
-
-        val fragmentStart = url.indexOf('#')
-        baseUrl = if (fragmentStart == -1) url else url.substring(0, fragmentStart)
-        fragment = if (fragmentStart == -1) "" else url.substring(fragmentStart)
+        continueUrl = url.toUri()
     }
 
     fun appendSessionId(sessionId: String): ContinueUrlBuilder {
@@ -70,24 +64,9 @@ class ContinueUrlBuilder(url: String) {
     private fun addQueryParam(key: String, value: String) {
         if (value.isBlank()) return
 
-        if (params.isNotEmpty()) {
-            params.append("&")
-        }
-        params.append("$key=$value")
+        continueUrl = continueUrl.buildUpon().appendQueryParameter(key, value).build()
     }
 
-    fun build(): String {
-        // No params added, so the URL is handed back untouched.
-        if (params.isEmpty()) return baseUrl + fragment
-
-        val queryStart = baseUrl.indexOf('?')
-        val separator = when {
-            queryStart == -1 -> "?"
-            // The query is open, so no separator is needed. Only the first `?` marks the
-            // query; a later one is a literal inside a value and leaves it open to append.
-            queryStart == baseUrl.length - 1 || baseUrl.endsWith('&') -> ""
-            else -> "&"
-        }
-        return baseUrl + separator + params + fragment
-    }
+    // Untouched when nothing was appended: Uri hands back the string it was parsed from.
+    fun build(): String = continueUrl.toString()
 }
