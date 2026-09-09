@@ -32,9 +32,7 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthE
  */
 @Composable
 fun EmailAuthUI(state: EmailAuthContentState) {
-    // isEmailLocked is only ever true in reauthentication mode (EmailAuthScreen sets it from
-    // isReauthenticationMode and a prefilled address), and reauth composes this slot inside a modal
-    // bottom sheet, so it needs its own sheet-shaped screen rather than the sign-in page.
+    // A fixed address leaves nothing to choose, so render the compact confirm form.
     if (state.isEmailLocked) {
         ReauthEmailStep(state)
         return
@@ -49,8 +47,7 @@ fun EmailAuthUI(state: EmailAuthContentState) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // The email pages don't paint their own background — MainUI and PhoneSignInUI do it for
-        // theirs — so this slot has to, or the screen renders on bare surface colour.
+        // The email pages don't paint their own background, so this slot must.
         Image(
             painter = painterResource(id = R.drawable.custom_background),
             contentDescription = null,

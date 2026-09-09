@@ -68,13 +68,10 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val authUI = uiContext.authUI
-    // Read on every recomposition rather than remembering: the identifier has to follow the
-    // current user, which changes across sign-out and reauth.
+    // Not remembered: the identifier changes across sign-out and reauth.
     val identifier = authUI.getCurrentUser().displayIdentifier()
 
-    // enrolledFactors reads the cached user, so it still shows the pre-enrollment list when we come
-    // back from the MFA flow. This destination is disposed while that flow is on screen, so the
-    // effect re-runs on return and refreshes it; keyed on Unit, it can't loop on its own update.
+    // Refreshes the cached factor list on return from MFA; keyed on Unit so it cannot loop.
     LaunchedEffect(Unit) { uiContext.onReloadUser() }
     val enrolledFactors = authUI.getCurrentUser()?.multiFactor?.enrolledFactors.orEmpty()
 
@@ -139,8 +136,7 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
             CtaButton(
                 text = "Change password",
                 onClick = {
-                    // lifecycleScope rather than rememberCoroutineScope: the reauth overlay
-                    // replaces this screen mid-flight, and the retried operation has to outlive it.
+                    // lifecycleScope: the reauth overlay replaces this screen; the retry outlives it.
                     lifecycleOwner.lifecycleScope.launch {
                         isUpdating = true
                         statusMessage = null
@@ -154,8 +150,7 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
                                 Log.d(TAG, "Password changed successfully")
                             }
                         } catch (e: AuthException.AuthCancelledException) {
-                            // The user backed out of confirming their identity. Nothing failed and
-                            // the password is unchanged, so say neither.
+                            // Declined, not failed: the password is unchanged, so report neither.
                             Log.d(TAG, "Reauthentication declined", e)
                         } catch (e: Exception) {
                             Log.e(TAG, "Password change failed", e)
@@ -174,8 +169,7 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
             Spacer(modifier = Modifier.height(16.dp))
 
             CtaButton(
-                // Relabelled rather than disabled: SelectFactorStep is the only place a factor can
-                // be removed, so greying this out once one exists would strand the user with it.
+                // Relabelled, not disabled: SelectFactorStep is the only place a factor can be removed.
                 text = if (enrolledFactors.isEmpty()) "Set up two-factor" else "Manage two-factor",
                 onClick = uiContext.onManageMfa,
                 enabled = !isUpdating,

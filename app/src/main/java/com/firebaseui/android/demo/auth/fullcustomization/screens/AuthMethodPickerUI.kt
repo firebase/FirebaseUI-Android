@@ -120,8 +120,7 @@ fun AuthMethodPickerUI(
             predictivePopTransitionSpec = EmailStepPredictivePopTransform,
             entryProvider = entryProvider {
                 entry<EmailEntryKey> {
-                    // Local and disposable: this step performs no auth operation of its own, so
-                    // there is nothing here for EmailAuthContentState to own.
+                    // No auth operation here, so there is nothing for EmailAuthContentState to own.
                     var email by rememberSaveable { mutableStateOf("") }
                     EmailEntryStep(
                         email = email,
@@ -180,9 +179,7 @@ private fun EmailStep(
     onError: (AuthException) -> Unit,
     onCancel: () -> Unit,
 ) {
-    // Resets to the chooser rather than popping one entry: from ResetPassword (reached via
-    // LoginStep's "forgot password" link) the stack is [chooser, SignIn, ResetPassword], and this
-    // is meant to leave the whole in-progress mode, not step back into it.
+    // Resets rather than pops: from ResetPassword the stack is [chooser, SignIn, ResetPassword].
     val onUseDifferentEmail: () -> Unit = dropUnlessResumed {
         backStack.clear()
         backStack.add(EmailEntryKey)
@@ -201,8 +198,7 @@ private fun EmailStep(
     ) { state ->
         when (state.mode) {
             EmailAuthMode.SignUp -> SignUpStep(state, onUseDifferentEmail)
-            // Reset-password and email-link are offered inline on the login form, which also
-            // reports their "sent" states, so every mode has a screen and none can blank out.
+            // Reset-password and email-link are inline on the login form, so every mode has a screen.
             EmailAuthMode.SignIn,
             EmailAuthMode.ResetPassword,
             EmailAuthMode.EmailLinkSignIn -> LoginStep(state, onUseDifferentEmail)

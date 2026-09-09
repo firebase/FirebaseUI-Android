@@ -47,11 +47,7 @@ fun PhoneEntryStep(state: PhoneAuthContentState) {
         android.util.Patterns.PHONE.matcher(state.phoneNumber).matches()
     }
 
-    // verticalScroll measures content with infinite max height, and Column distributes weights
-    // against the MIN height when max is infinite (RowColumnMeasurePolicy.kt) — so
-    // heightIn(min = viewport) makes the weighted spacers expand (centering content, anchoring
-    // the CTA to the bottom) when everything fits, and collapse to zero (plain scrolling) when it
-    // doesn't.
+    // heightIn(min = maxHeight) centres content when it fits and plain-scrolls when it doesn't.
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()

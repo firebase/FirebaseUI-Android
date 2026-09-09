@@ -31,8 +31,7 @@ import com.firebaseui.android.demo.auth.fullcustomization.common.SheetProviderBu
  */
 @Composable
 fun ReauthUI(state: ReauthContentState) {
-    // The slot renders as an overlay outside the NavHost, so nothing else consumes the system back
-    // press — without this it would fall through and finish the Activity mid-reauthentication.
+    // Overlay outside the NavHost: without this, back would finish the Activity mid-reauth.
     BackHandler(enabled = !state.isLoading) { state.onDismiss() }
 
     AuthPage(

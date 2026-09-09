@@ -56,10 +56,7 @@ class MainActivity : ComponentActivity() {
         // the process, so this must only run once per process, not on every onCreate().
         private var emulatorsConfigured = false
 
-        // Every demo sends its email links through the same Firebase host, so the only thing
-        // telling them apart is the last path segment each one puts on its continue URL. It goes
-        // in the path rather than the query because ContinueUrlBuilder appends "?" to the URL
-        // unconditionally, which corrupts a query string that is already there.
+        // Path segments, not query params: ContinueUrlBuilder appends "?" and would corrupt a query.
         const val ORIGIN_FULL_CUSTOMIZATION = "fullcustomization"
         const val ORIGIN_HIGH_LEVEL = "highlevel"
 
@@ -112,8 +109,7 @@ class MainActivity : ComponentActivity() {
         fun launchDemoForEmailLink() {
             val target = when (emailLinkOrigin(pendingEmailLink)) {
                 ORIGIN_FULL_CUSTOMIZATION -> FullCustomizationDemoActivity::class.java
-                // Anything else, including links sent before the demos started tagging
-                // themselves, belongs to the demo that has always handled them.
+                // Untagged links predate this routing, so they belong to the demo that always handled them.
                 else -> HighLevelApiDemoActivity::class.java
             }
             val demoIntent = Intent(this, target).apply {

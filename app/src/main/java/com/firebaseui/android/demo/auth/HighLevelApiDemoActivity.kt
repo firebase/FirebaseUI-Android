@@ -132,8 +132,7 @@ class HighLevelApiDemoActivity : ComponentActivity() {
                             isEmailLinkForceSameDeviceEnabled = false,
                             isEmailLinkSignInEnabled = true,
                             emailLinkActionCodeSettings = actionCodeSettings {
-                                // The trailing segment is what MainActivity routes the returning
-                                // link on — see MainActivity.emailLinkOrigin.
+                                // Trailing segment is what MainActivity.emailLinkOrigin routes on.
                                 url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
                                         MainActivity.ORIGIN_HIGH_LEVEL
                                 handleCodeInApp = true

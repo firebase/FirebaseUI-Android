@@ -58,11 +58,7 @@ fun EmailEntryStep(
     }
     val showEmailError = email.isNotBlank() && !isEmailValid
 
-    // verticalScroll measures content with infinite max height, and Column distributes weights
-    // against the MIN height when max is infinite (RowColumnMeasurePolicy.kt) — so
-    // heightIn(min = viewport) makes the weighted spacers expand (centering content, anchoring
-    // the link to the bottom) when everything fits, and collapse to zero (plain scrolling) when
-    // it doesn't.
+    // heightIn(min = maxHeight) centres content when it fits and plain-scrolls when it doesn't.
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -156,9 +152,7 @@ fun EmailEntryStep(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Two explicit choices rather than one "Continue" that guesses: with email
-                // enumeration protection enabled, Firebase deliberately withholds whether an
-                // address is registered, so asking is the only reliable route.
+                // Two explicit choices: enumeration protection withholds whether an address is registered.
                 CtaButton(
                     text = "Sign in",
                     onClick = onSignIn,
@@ -172,8 +166,7 @@ fun EmailEntryStep(
                 CtaButton(
                     text = "Create account",
                     onClick = onCreateAccount,
-                    // Not gated on the address: the sign-up form collects and confirms it, so
-                    // there is nothing to validate here first.
+                    // Not gated on the address: the sign-up form collects and confirms it.
                     enabled = !isLoading,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,

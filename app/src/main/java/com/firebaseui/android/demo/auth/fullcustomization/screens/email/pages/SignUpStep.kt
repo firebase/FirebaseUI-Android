@@ -63,8 +63,7 @@ fun SignUpStep(
     var lastName by remember { mutableStateOf("") }
     var confirmEmail by remember { mutableStateOf("") }
 
-    // Compared case-insensitively and trimmed: this field uses the default keyboard, which
-    // auto-capitalises on many IMEs, so an exact match would reject the user's own address.
+    // Trimmed and case-insensitive: the default keyboard auto-capitalises on many IMEs.
     val emailsMatch = confirmEmail.isNotBlank() &&
         confirmEmail.trim().equals(state.email.trim(), ignoreCase = true)
     val passwordsMatch = state.confirmPassword.isNotBlank() && state.confirmPassword == state.password
@@ -75,11 +74,7 @@ fun SignUpStep(
         passwordsMatch &&
         !state.isLoading
 
-    // verticalScroll measures content with infinite max height, and Column distributes weights
-    // against the MIN height when max is infinite (RowColumnMeasurePolicy.kt) — so
-    // heightIn(min = viewport) makes the weighted spacers expand (centering content, anchoring
-    // CTAs to the bottom) when everything fits, and collapse to zero (plain scrolling) when it
-    // doesn't.
+    // heightIn(min = maxHeight) centres content when it fits and plain-scrolls when it doesn't.
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -146,9 +141,7 @@ fun SignUpStep(
                             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                                 FullCustomizationTextField(
                                     value = state.email,
-                                    // Editable here, unlike the login form: the account doesn't
-                                    // exist yet, and "Create account" can be reached without
-                                    // having typed an address on the previous screen.
+                                    // Editable unlike the login form: the account does not exist yet.
                                     onValueChange = state.onEmailChange,
                                     label = "Email",
                                     enabled = !state.isLoading,

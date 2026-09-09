@@ -412,8 +412,7 @@ fun FirebaseAuthScreen(
                     metadata = authRouteMetadata(AuthRoute.MethodPicker)
                 ) {
                     if (customMethodPickerLayout != null) {
-                        // Takes over the entire screen — no logo, no ToS/Privacy footer, and no
-                        // automatic inset handling. See the KDoc on customMethodPickerLayout.
+                        // Takes over the entire screen; see the KDoc on customMethodPickerLayout.
                         Box(modifier = Modifier.fillMaxSize()) {
                             customMethodPickerLayout(configuration.providers, onProviderSelected)
                         }
