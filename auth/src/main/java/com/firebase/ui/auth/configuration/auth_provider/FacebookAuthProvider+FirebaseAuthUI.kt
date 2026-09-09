@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.configuration.auth_provider
 
-import com.google.firebase.auth.FirebaseAuth
 import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -224,22 +223,21 @@ internal suspend fun AuthFlowScope.signInWithFacebook(
 }
 
 /**
- * Signs out the current user from Facebook.
+ * Logs the user out of their Facebook session via Facebook's LoginManager.
  *
- * Invokes Facebook's LoginManager to log out the user from their Facebook session.
- * This method silently catches and ignores any exceptions that may occur during the
- * logout process to ensure the sign-out flow continues even if Facebook logout fails.
+ * Best-effort: failures are logged and swallowed so sign-out continues. [LinkageError] is caught
+ * alongside [Exception] because the Facebook SDK is `compileOnly`, so an absent or mismatched SDK
+ * surfaces as an error rather than an exception.
  *
- * This is typically called as part of the overall sign-out flow when a user signs out
- * from Firebase Authentication.
+ * The caller decides whether Facebook applies; reaching this function at all links the SDK.
  */
 internal fun signOutFromFacebook(
-    auth: FirebaseAuth,
     loginManagerProvider: AuthProvider.Facebook.LoginManagerProvider = AuthProvider.Facebook.DefaultLoginManagerProvider(),
 ) {
     try {
-        if (Provider.fromId(auth.currentUser?.providerId) != Provider.FACEBOOK) return
         loginManagerProvider.logOut()
+    } catch (e: LinkageError) {
+        Log.e("FacebookAuthProvider", "Facebook SDK not available or mismatched", e)
     } catch (e: Exception) {
         Log.e("FacebookAuthProvider", "Error during Facebook sign out", e)
     }
