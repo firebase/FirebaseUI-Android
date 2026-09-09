@@ -650,6 +650,10 @@ fun FirebaseAuthScreen(
                 previousAuthState.value = state
                 // Guards below use `isAt` (runtime class), not `==`: keys carry arguments, so `==` blanks a live form.
                 val currentKey = backStack.lastOrNull()
+                // These steps show a "link sent" confirmation latched in their own composition,
+                // so resetting off one loses it. Same reasoning as Phone.EnterPhoneNumber below.
+                val ownsConfirmation = currentKey is AuthRoute.Email.EmailLinkSignIn ||
+                        currentKey is AuthRoute.Email.ResetPassword
                 // A modal reauthentication owns the screen; Aborted is how the host is dismissed.
                 if (reauthFlowState.phase != null && state !is AuthState.Aborted) {
                     return@LaunchedEffect
@@ -672,7 +676,12 @@ fun FirebaseAuthScreen(
                             }
                         }
 
-                        if (currentKey != AuthRoute.Success) {
+                        // Only a real credential exchange carries a result — a re-asserted
+                        // session does not (see CPRN-425), so it must not reset off a
+                        // confirmation the user has not read yet.
+                        if ((state.result != null || !ownsConfirmation) &&
+                            currentKey != AuthRoute.Success
+                        ) {
                             backStack.resetBackStackTo(AuthRoute.Success)
                         }
                     }
@@ -682,7 +691,9 @@ fun FirebaseAuthScreen(
                         -> {
                         pendingResolver.value = null
                         pendingLinkingCredential.value = null
-                        if (currentKey != AuthRoute.Success) {
+                        // authUserState drops the result on these, so an exchange cannot be told
+                        // from a re-asserted session here — the confirmation wins either way.
+                        if (!ownsConfirmation && currentKey != AuthRoute.Success) {
                             backStack.resetBackStackTo(AuthRoute.Success)
                         }
                     }
