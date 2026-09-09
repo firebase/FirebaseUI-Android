@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Kirim ulang email verifikasi</string>
     <string name="fui_secret_key_label">Kunci rahasia</string>
     <string name="fui_sign_out_action">Keluar</string>
-    <string name="fui_signed_in_as">Masuk sebagai</string>
+    <string name="fui_signed_in_as">Masuk sebagai %1$s</string>
     <string name="fui_skip_action">Lewati</string>
     <string name="fui_use_different_method_action">Gunakan metode lain</string>
     <string name="fui_verification_code_label">Kode verifikasi</string>

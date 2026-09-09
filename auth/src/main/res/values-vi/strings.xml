@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Gửi lại email xác minh</string>
     <string name="fui_secret_key_label">Khóa bí mật</string>
     <string name="fui_sign_out_action">Đăng xuất</string>
-    <string name="fui_signed_in_as">Đã đăng nhập với tư cách</string>
+    <string name="fui_signed_in_as">Đã đăng nhập với tư cách %1$s</string>
     <string name="fui_skip_action">Bỏ qua</string>
     <string name="fui_use_different_method_action">Sử dụng phương thức khác</string>
     <string name="fui_verification_code_label">Mã xác minh</string>

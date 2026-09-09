@@ -164,7 +164,7 @@
     <string name="fui_resend_verification_email_action">확인 이메일 다시 보내기</string>
     <string name="fui_secret_key_label">비밀 키</string>
     <string name="fui_sign_out_action">로그아웃</string>
-    <string name="fui_signed_in_as">로그인 상태</string>
+    <string name="fui_signed_in_as">%1$s(으)로 로그인 상태</string>
     <string name="fui_skip_action">건너뛰기</string>
     <string name="fui_use_different_method_action">다른 방법 사용</string>
     <string name="fui_verification_code_label">확인 코드</string>

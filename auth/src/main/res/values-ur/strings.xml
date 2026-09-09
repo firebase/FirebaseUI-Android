@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">تصدیقی ای میل دوبارہ بھیجیں</string>
     <string name="fui_secret_key_label">خفیہ کلید</string>
     <string name="fui_sign_out_action">سائن آؤٹ</string>
-    <string name="fui_signed_in_as">بطور سائن ان ہیں</string>
+    <string name="fui_signed_in_as">بطور %1$s سائن ان ہیں</string>
     <string name="fui_skip_action">چھوڑیں</string>
     <string name="fui_use_different_method_action">ایک مختلف طریقہ استعمال کریں</string>
     <string name="fui_verification_code_label">تصدیقی کوڈ</string>

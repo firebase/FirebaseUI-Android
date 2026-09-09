@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Надіслати лист підтвердження повторно</string>
     <string name="fui_secret_key_label">Секретний ключ</string>
     <string name="fui_sign_out_action">Вийти</string>
-    <string name="fui_signed_in_as">Ви ввійшли як</string>
+    <string name="fui_signed_in_as">Ви ввійшли як %1$s</string>
     <string name="fui_skip_action">Пропустити</string>
     <string name="fui_use_different_method_action">Використати інший спосіб</string>
     <string name="fui_verification_code_label">Код підтвердження</string>

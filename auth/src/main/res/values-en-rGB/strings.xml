@@ -124,7 +124,7 @@
 
     <string name="fui_confirm_password_hint">Confirm password</string>
     <string name="fui_passwords_do_not_match">Passwords do not match</string>
-    <string name="fui_error_password_too_short">Password must be at least %1$d characters long</string>
+    <string name="fui_error_password_too_short" tools:ignore="PluralsCandidate">Password must be at least %1$d characters long</string>
     <string name="fui_error_password_missing_uppercase">Password must contain at least one upper-case letter</string>
     <string name="fui_error_password_missing_lowercase">Password must contain at least one lower-case letter</string>
     <string name="fui_error_password_missing_digit">Password must contain at least one number</string>
@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Resend verification email</string>
     <string name="fui_secret_key_label">Secret key</string>
     <string name="fui_sign_out_action">Sign out</string>
-    <string name="fui_signed_in_as">Signed in as</string>
+    <string name="fui_signed_in_as">Signed in as %1$s</string>
     <string name="fui_skip_action">Skip</string>
     <string name="fui_use_different_method_action">Use a different method</string>
     <string name="fui_verification_code_label">Verification code</string>

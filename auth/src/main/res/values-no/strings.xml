@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Send bekreftelsese-post på nytt</string>
     <string name="fui_secret_key_label">Hemmelig nøkkel</string>
     <string name="fui_sign_out_action">Logg ut</string>
-    <string name="fui_signed_in_as">Logget inn som</string>
+    <string name="fui_signed_in_as">Logget inn som %1$s</string>
     <string name="fui_skip_action">Hopp over</string>
     <string name="fui_use_different_method_action">Bruk en annen metode</string>
     <string name="fui_verification_code_label">Bekreftelseskode</string>

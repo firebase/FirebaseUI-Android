@@ -166,7 +166,7 @@
     <string name="fui_resend_verification_email_action">Atkārtoti nosūtīt verifikācijas e-pastu</string>
     <string name="fui_secret_key_label">Slepenā atslēga</string>
     <string name="fui_sign_out_action">Izrakstīties</string>
-    <string name="fui_signed_in_as">Pierakstījies kā</string>
+    <string name="fui_signed_in_as">Pierakstījies kā %1$s</string>
     <string name="fui_skip_action">Izlaist</string>
     <string name="fui_use_different_method_action">Izmantot citu metodi</string>
     <string name="fui_verification_code_label">Verifikācijas kods</string>

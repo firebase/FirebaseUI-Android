@@ -165,7 +165,7 @@
     <string name="fui_resend_verification_email_action">Verifizierigs-E-Mail erneut sende</string>
     <string name="fui_secret_key_label">Gheime Schlüssel</string>
     <string name="fui_sign_out_action">Abmelde</string>
-    <string name="fui_signed_in_as">Agmeldet als</string>
+    <string name="fui_signed_in_as">Agmeldet als %1$s</string>
     <string name="fui_skip_action">Überspringe</string>
     <string name="fui_use_different_method_action">E anderi Methode verwände</string>
     <string name="fui_verification_code_label">Verifizierigscode</string>
