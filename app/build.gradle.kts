@@ -39,6 +39,26 @@ android {
             }
         }
     }
+
+    lint {
+        // Module specific
+        disable += mutableSetOf(
+            // Reads the root wrapper, but only the application module analyses it, so it
+            // belongs here rather than in the shared policy. For reproducible builds.
+            "AndroidGradlePluginVersion",
+            // The demos log their auth callbacks unconditionally on purpose — watching
+            // logcat is how you see one fire. Unlike :auth's, none of these log user data.
+            "LogConditional",
+            // Glide's KSP processor does not generate GlideApp, which the storage demo and
+            // storage/README.md are both written around. Migration tracked separately.
+            "KaptUsageInsteadOfKsp",
+            // A themed icon needs a flat silhouette drawn for the purpose. The only
+            // candidate here is ic_launcher_foreground, whose opaque region is a solid
+            // plate, so it tints to a featureless block — worse than no monochrome layer.
+            "MonochromeLauncherIcon"
+        )
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
