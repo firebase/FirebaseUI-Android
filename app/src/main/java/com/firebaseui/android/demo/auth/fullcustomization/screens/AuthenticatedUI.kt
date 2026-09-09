@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
 import com.firebase.ui.auth.ui.screens.AuthSuccessUiContext
 import com.firebase.ui.auth.util.displayIdentifier
@@ -152,6 +153,10 @@ private fun SignedInPage(uiContext: AuthSuccessUiContext) {
                                 authUI.getCurrentUser()?.updatePassword(newPassword)?.await()
                                 Log.d(TAG, "Password changed successfully")
                             }
+                        } catch (e: AuthException.AuthCancelledException) {
+                            // The user backed out of confirming their identity. Nothing failed and
+                            // the password is unchanged, so say neither.
+                            Log.d(TAG, "Reauthentication declined", e)
                         } catch (e: Exception) {
                             Log.e(TAG, "Password change failed", e)
                             isError = true
