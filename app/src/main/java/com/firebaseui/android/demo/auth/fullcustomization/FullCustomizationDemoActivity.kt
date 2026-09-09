@@ -35,10 +35,14 @@ import com.firebaseui.android.demo.auth.fullcustomization.screens.phone.PhoneSig
 import com.firebaseui.android.demo.auth.fullcustomization.screens.reauth.ReauthUI
 import com.firebaseui.android.demo.auth.fullcustomization.theme.FullCustomizationTheme
 import com.firebase.ui.auth.util.EmailLinkConstants
-import com.firebaseui.android.demo.MainActivity
 import com.google.firebase.auth.actionCodeSettings
 
 class FullCustomizationDemoActivity : ComponentActivity() {
+    companion object {
+        /** Marks this demo's email links so MainActivity can route the return trip back here. */
+        const val EMAIL_LINK_ORIGIN = "fullcustomization"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -68,9 +72,9 @@ class FullCustomizationDemoActivity : ComponentActivity() {
                     AuthProvider.Email(
                         isEmailLinkSignInEnabled = true,
                         emailLinkActionCodeSettings = actionCodeSettings {
-                            // Trailing segment is what MainActivity.emailLinkOrigin routes on.
+                            // Trailing segment is what MainActivity routes the return trip on.
                             url = "https://flutterfire-e2e-tests.firebaseapp.com/demo/" +
-                                    MainActivity.ORIGIN_FULL_CUSTOMIZATION
+                                    EMAIL_LINK_ORIGIN
                             handleCodeInApp = true
                             setAndroidPackageName(
                                 "com.firebaseui.android.demo",
