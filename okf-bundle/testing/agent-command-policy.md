@@ -17,7 +17,7 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 <a id="agent-rule-read-first"></a>
 
 1. Run **only** commands in the [registry](#canonical-registry) below (repo root unless noted).
-2. Prefer **`./scripts/build.sh`** for the CI-equivalent unit build/test path (step list: [Android CI](../ci-workflows/android.md#what-buildsh-runs)). Do not invent alternate Gradle task graphs that skip `checkstyle` or re-include `:e2eTest` unit tests in the unit CI path.
+2. Prefer **`./scripts/build.sh`** for the CI-equivalent unit build/test path (step list: [Android CI](../ci-workflows/android.md#what-buildsh-runs)). Do not invent alternate Gradle task graphs that skip `checkstyle` or re-include `:e2eTest` unit tests in the unit CI path. `build.sh` is the unit path only — lint and e2e are separate gates with their own workflows, so a green `build.sh` is **not** a green CI.
 3. When a canonical command fails: read the **full** output, fix **product code** (or environment prerequisites), re-run the **same** command. Do **not** switch invocation style.
 4. Do **not** infer alternate commands from error strings — see [known traps](#known-traps).
 5. Subagents (Task, explore, orchestrator): same rule — paste the [handoff block](#subagent-handoff) into every FirebaseUI-Android task prompt.
@@ -30,7 +30,10 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 | Unit tests (all library modules; exclude e2eTest) | `./gradlew testDebugUnitTest -x :e2eTest:testDebugUnitTest` | Bare `./gradlew test` (pulls wrong tasks / e2e); IDE-only as the agent gate |
 | Unit tests (one module with a real `src/test` suite) | `./gradlew :<module>:testDebugUnitTest` (e.g. `:auth:testDebugUnitTest`, `:firestore:…`, `:storage:…`) | `:common:testDebugUnitTest` / `:database:testDebugUnitTest` as “green” evidence (empty suites — [empty unit-suite trap](#empty-unit-suite-trap)); full suite when only one module changed *as a substitute for* the CI path at handoff |
 | Assemble one module (when no JVM unit suite) | `./gradlew :<module>:assembleDebug` (e.g. `:database`, `:common`) | Treating empty `testDebugUnitTest` as validation |
-| Checkstyle | `./gradlew checkstyle` | Invented ktlint/detekt entrypoints; editing files without re-running checkstyle when Java/Kotlin style is in scope |
+| Checkstyle (**Java only**) | `./gradlew checkstyle` | Invented ktlint/detekt entrypoints; treating a green checkstyle as style coverage for Kotlin sources ([Kotlin blind spot](#checkstyle-kotlin-blind-spot)) |
+| Android Lint (all gated modules) — **not** in `build.sh`, own workflow | `./gradlew lintAll` | Bare `./gradlew lint` / `lintDebug` (pulls `:app` and `:e2eTest`, which declare no `lint { }` block yet); assuming a green `build.sh` covered lint |
+| Android Lint (one module) | `./gradlew :<module>:lintDebug` (`:proguard-tests` uses `lintRelease`) | Editing Kotlin in a gated module without re-running lint |
+| Accept new lint debt (**needs a human decision**) | `./gradlew :auth:updateLintBaseline` | Running this to make a red build green — see [lint baseline trap](#lint-baseline-trap) |
 | Assemble debug | `./gradlew assembleDebug` | Module-scoped assemble as the only CI substitute at handoff |
 | Install demo app | `./gradlew :app:installDebug` | Manual APK sideload scripts |
 | Start Auth emulator (e2e prerequisite) | `./scripts/start-firebase-emulator.sh` | Bare `firebase emulators:start` with invented flags/ports; starting Firestore/Database emulators “just in case” |
@@ -54,7 +57,7 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 1. Re-run from repo root with the **same** canonical command (full log — do not truncate). On CI-shaped failures, also run `./scripts/print_build_logs.sh`.
 2. Fix **product code** or missing prerequisites (JDK, SDK, emulator online).
 3. Re-run the **same** command.
-4. Do **not** “verify tooling” with invented Gradle flags, alternate tasks, or skipping checkstyle.
+4. Do **not** “verify tooling” with invented Gradle flags, alternate tasks, or skipping checkstyle/lint.
 
 ## Forbidden (always)
 
@@ -64,7 +67,8 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 | Including `:e2eTest:testDebugUnitTest` in the unit CI path without an emulator | E2e suite expects Auth emulator; unit CI explicitly excludes it (`scripts/build.sh`) |
 | Bare `firebase emulators:start` with custom ports | Ports and project ID come from `e2eTest/firebase.json` / `.firebaserc` via the start script |
 | `connectedAndroidTest` / device Espresso as a substitute for `e2eTest` | Canonical e2e is Robolectric + emulator via `./gradlew e2eTest` |
-| Invented formatters (`ktlintFormat`, random `spotlessApply`) as the style gate | Canonical style gate is `./gradlew checkstyle` |
+| Invented formatters (`ktlintFormat`, random `spotlessApply`) as the style gate | Canonical gates are `./gradlew checkstyle` (Java) and `./gradlew lintAll` (everything else) |
+| `updateLintBaseline` to clear a lint failure you introduced | The baseline records **pre-existing** debt only — see [lint baseline trap](#lint-baseline-trap) |
 | Publishing to Maven Central / Sonatype unless the user explicitly requested a release | Release process is human-gated — [repo tooling](../repo-tooling/index.md) |
 
 ## Known traps
@@ -85,6 +89,31 @@ Single source for **which shell commands agents may run** in this repo. E2e is a
 - `./gradlew :common:testDebugUnitTest` / `:database:testDebugUnitTest` can exit **0 with zero tests** — that is **not** validation evidence.
 - Modules with real JVM unit suites today: `:auth`, `:firestore`, `:storage` (and `:e2eTest` via the custom `e2eTest` task, not the unit CI path).
 - Instrumented `connectedAndroidTest` is forbidden as an Auth e2e substitute and is **not** an allowlisted database/firestore gate (not run in `android.yml`). Module matrix: [validation checklist](validation-checklist.md#module-validation-matrix).
+
+<a id="checkstyle-kotlin-blind-spot"></a>
+
+### Checkstyle is Java-only
+
+- Root `build.gradle.kts` scopes the `checkstyle` task with `include("**/*.java")`.
+- `:auth`, `:app` and `:e2eTest` are Kotlin. `./gradlew checkstyle` inspects **zero files** there and exits 0.
+- A green `checkstyle` on a Kotlin-only diff is **not** evidence of anything. `./gradlew lintAll` is the gate that reads Kotlin (via UAST).
+
+<a id="lint-rerun-tasks-flake"></a>
+
+### `lintAll --rerun-tasks` can fail for reasons unrelated to your diff
+
+- Observed once: `Unexpected failure during lint analysis of Bean.java (this is a bug in lint…)`, a `FileNotFoundException` on a `:database` annotation-processor output under `build/generated/ap_generated_sources/`. It did not reproduce on an immediate re-run.
+- It is a race between annotation-processor regeneration and lint analysis that `--rerun-tasks` makes possible. Re-run the same command before investigating; treat a single red `--rerun-tasks` run naming a module you did not touch as suspect, not as a finding.
+- Plain `./gradlew lintAll` (no `--rerun-tasks`) has not shown it.
+
+<a id="lint-baseline-trap"></a>
+
+### Lint baseline is pre-existing debt, not an escape hatch
+
+- `auth/lint-baseline.xml` suppresses 180 pre-existing findings (localization: CPRN-432; Compose: CPRN-436). It is the **only** baseline in the repo — every other gated module is clean and declares no `baseline`.
+- `warningsAsErrors = true` and `abortOnError = true` in every gated module, so a **new** finding fails the build hard. That is the point.
+- Running `updateLintBaseline` to absorb a finding your change introduced defeats the gate. Fix the code instead; regenerating the baseline is a human decision tied to a tracked issue.
+- A baseline's `file=` paths are recorded relative to the module that produced them, and `updateLintBaseline` rewrites the whole file per module — so a shared baseline silently misbehaves in both directions. The old `library/quality/lint-baseline.xml` had one entry (`src/main/AndroidManifest.xml`) that matched *any* module's manifest and one (`auth/src/main/res/...`) recorded root-relative that matched *none*, which is why every module reported `LintBaselineFixed`. Keep baselines per module.
 
 <a id="pr-template-gradlew-check"></a>
 
@@ -110,7 +139,8 @@ Paste into Task / explore / work-queue prompts:
 FirebaseUI-Android agent command policy: okf-bundle/testing/agent-command-policy.md ONLY.
 Unit CI path: ./scripts/build.sh (or the exact gradle tasks it runs) — never invent alternate graphs.
 Unit tests: ./gradlew testDebugUnitTest -x :e2eTest:testDebugUnitTest OR ./gradlew :<module>:testDebugUnitTest only for modules with src/test (auth/firestore/storage). Never treat :common/:database testDebugUnitTest as evidence (empty suites).
-Style: ./gradlew checkstyle ONLY — do not invent ktlint/detekt entrypoints.
+Style: ./gradlew checkstyle (Java only — it inspects zero files in Kotlin modules) AND ./gradlew lintAll (Android Lint, covers Kotlin; separate workflow, NOT run by build.sh). Do not invent ktlint/detekt entrypoints.
+Never run updateLintBaseline to silence a failure you caused; the baseline is pre-existing debt only.
 E2e: ./scripts/start-firebase-emulator.sh then ./gradlew e2eTest — okf-bundle/testing/running-e2e.md.
 Never: bare firebase emulators:start with invented ports; connectedCheck as e2e substitute; Maven Central publish unless user asked.
 On failure: fix product code / prerequisites, re-run the same canonical command; use ./scripts/print_build_logs.sh for CI-shaped failures.

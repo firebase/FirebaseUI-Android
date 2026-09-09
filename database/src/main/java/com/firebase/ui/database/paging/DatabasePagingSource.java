@@ -32,7 +32,7 @@ public class DatabasePagingSource extends RxPagingSource<DatabasePagingKey, Data
     private static final String MESSAGE_DATABASE_NOT_FOUND = "Data not found at given child path!";
     private static final String DETAILS_DATABASE_NOT_FOUND = "No data was returned for the given query: ";
 
-    public DatabasePagingSource(Query query) {
+    public DatabasePagingSource(@NonNull Query query) {
         this.mQuery = query;
     }
 

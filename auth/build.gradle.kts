@@ -53,14 +53,24 @@ android {
             "DuplicateStrings",
             "LocaleFolder",
             "IconLocation",
-            "VectorPath"
+            "VectorPath",
+            "RtlEnabled", // A library cannot decide this; the consuming app declares it
+            // Satisfied by any enclosing if(), so it flags 5 of this module's 23 Log.d calls
+            // and misses the rest. Guarding those 5 with Log.isLoggable does not protect them,
+            // it silences them: the default per-tag level is INFO. Two of the five are wanted
+            // in field reports (PhoneAuthScreen.kt "Logged, not silent") and carry no user
+            // data; the other three log an email, a display name and a verificationId, which
+            // needs redaction rather than a guard — CPRN-440, which also owns re-enabling this.
+            "LogConditional"
         )
 
         checkAllWarnings = true
         warningsAsErrors = true
         abortOnError = true
 
-        baseline = file("$rootDir/library/quality/lint-baseline.xml")
+        // Pre-existing debt only: 168 localization findings (CPRN-432) and 12 Compose
+        // correctness findings (CPRN-436). Every entry is suppressed; new ones still fail.
+        baseline = file("lint-baseline.xml")
     }
 
     testOptions {

@@ -1,0 +1,46 @@
+name: Android Lint
+
+# pull_request only, matching e2e_test.yml. android.yml's [pull_request, push]
+# is why every commit there produces two identical `build` runs.
+on:
+  - pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Gradle packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # lintAll gates :proguard-tests, which applies the google-services plugin and
+      # will not configure without this file. Mirrors what scripts/build.sh copies.
+      - name: Copy google-services.json
+        run: |
+          cp library/google-services.json app/google-services.json
+          cp library/google-services.json proguard-tests/google-services.json
+
+      - name: Android Lint
+        run: ./gradlew --max-workers=2 lintAll
+
+      - name: Print Logs
+        if: failure()
+        run: ./scripts/print_build_logs.sh
