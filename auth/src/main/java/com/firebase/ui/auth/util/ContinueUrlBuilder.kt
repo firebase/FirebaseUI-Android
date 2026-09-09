@@ -24,8 +24,8 @@ import com.firebase.ui.auth.util.EmailLinkParser.LinkParameters.SESSION_IDENTIFI
  * Used in email link sign-in flows to pass state between devices.
  *
  * The incoming URL comes from the consumer's [com.google.firebase.auth.ActionCodeSettings], so it
- * may already carry a query string and/or a fragment. Appended parameters join an existing query
- * with `&` and are always placed before the fragment.
+ * may already carry a query string and/or a fragment. Appended parameters join an existing
+ * query rather than starting a second one, and are always placed before the fragment.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class ContinueUrlBuilder(url: String) {
@@ -80,10 +80,12 @@ class ContinueUrlBuilder(url: String) {
         // No params added, so the URL is handed back untouched.
         if (params.isEmpty()) return baseUrl + fragment
 
+        val queryStart = baseUrl.indexOf('?')
         val separator = when {
-            !baseUrl.contains('?') -> "?"
-            // The query is already open (`...?` or `...&`), so no separator is needed.
-            baseUrl.endsWith('?') || baseUrl.endsWith('&') -> ""
+            queryStart == -1 -> "?"
+            // The query is open, so no separator is needed. Only the first `?` marks the
+            // query; a later one is a literal inside a value and leaves it open to append.
+            queryStart == baseUrl.length - 1 || baseUrl.endsWith('&') -> ""
             else -> "&"
         }
         return baseUrl + separator + params + fragment
