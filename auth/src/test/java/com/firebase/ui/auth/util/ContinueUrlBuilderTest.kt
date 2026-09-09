@@ -159,7 +159,7 @@ class ContinueUrlBuilderTest {
     }
 
     @Test
-    fun `path encoded url is untouched`() {
+    fun `multi segment path is untouched`() {
         val url = ContinueUrlBuilder("https://example.com/finish/fullcustomization")
             .appendSessionId("sid123")
             .build()
@@ -180,6 +180,61 @@ class ContinueUrlBuilderTest {
         assertThat(
             ContinueUrlBuilder("https://example.com/finish").appendForceSameDeviceBit(false).build()
         ).isEqualTo("https://example.com/finish?ui_sd=0")
+    }
+
+    @Test
+    fun `query ending in an unencoded question mark still keeps every param`() {
+        // An unencoded '?' is legal inside a query (RFC 3986), so a trailing one does
+        // not mean the query is still open.
+        val input = "https://example.com/finish?next=/search?"
+        val url = ContinueUrlBuilder(input)
+            .appendSessionId("sid123")
+            .appendForceSameDeviceBit(true)
+            .build()
+
+        val uri = url.toUri()
+        assertThat(uri.getQueryParameter("ui_sid")).isEqualTo("sid123")
+        assertThat(uri.getQueryParameter("ui_sd")).isEqualTo("1")
+        assertThat(uri.getQueryParameter("next")).isEqualTo("/search?")
+    }
+
+    @Test
+    fun `url ending in a bare double question mark keeps every param`() {
+        val url = ContinueUrlBuilder("https://example.com/finish??")
+            .appendSessionId("sid123")
+            .build()
+
+        assertThat(url.toUri().getQueryParameter("ui_sid")).isEqualTo("sid123")
+    }
+
+    @Test
+    fun `fragment before a query keeps the params in the query`() {
+        // Everything after the first '#' is the fragment, query-looking or not.
+        val url = ContinueUrlBuilder("https://example.com/finish#section?x=1")
+            .appendSessionId("sid123")
+            .build()
+
+        val uri = url.toUri()
+        assertThat(uri.getQueryParameter("ui_sid")).isEqualTo("sid123")
+        assertThat(uri.fragment).isEqualTo("section?x=1")
+    }
+
+    @Test
+    fun `percent encoded url in a query value survives untouched`() {
+        val input = "https://example.com/finish?redirect=https%3A%2F%2Ffoo.com%2Fa%3Fb%3Dc"
+        val url = ContinueUrlBuilder(input).appendSessionId("sid123").build()
+
+        val uri = url.toUri()
+        assertThat(uri.getQueryParameter("redirect")).isEqualTo("https://foo.com/a?b=c")
+        assertThat(uri.getQueryParameter("ui_sid")).isEqualTo("sid123")
+    }
+
+    @Test
+    fun `the consumer's url is preserved verbatim ahead of the appended params`() {
+        val input = "https://example.com/finish?demo=full&lang=en"
+        val url = ContinueUrlBuilder(input).appendSessionId("sid123").build()
+
+        assertThat(url).startsWith(input)
     }
 
     @Test(expected = IllegalArgumentException::class)

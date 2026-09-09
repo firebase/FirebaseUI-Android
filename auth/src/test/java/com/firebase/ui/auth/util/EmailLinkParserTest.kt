@@ -115,6 +115,35 @@ class EmailLinkParserTest {
         assertThat(parser.forceSameDeviceBit).isFalse()
     }
 
+    @Test
+    fun `parses the parameters out of a continue url nested behind a dynamic link`() {
+        val continueUrl = ContinueUrlBuilder("https://example.com/finish?demo=fullcustomization")
+            .appendSessionId("sid123")
+            .appendAnonymousUserId("auid456")
+            .build()
+
+        val actionLink = "https://example.firebaseapp.com/__/auth/action".toUri()
+            .buildUpon()
+            .appendQueryParameter("mode", "signIn")
+            .appendQueryParameter("oobCode", "oob789")
+            .appendQueryParameter("continueUrl", continueUrl)
+            .build()
+            .toString()
+
+        // Exercises parseUri's `link=` branch, not just `continueUrl=`.
+        val dynamicLink = "https://example.page.link/x".toUri()
+            .buildUpon()
+            .appendQueryParameter("link", actionLink)
+            .build()
+            .toString()
+
+        val parser = EmailLinkParser(dynamicLink)
+
+        assertThat(parser.oobCode).isEqualTo("oob789")
+        assertThat(parser.sessionId).isEqualTo("sid123")
+        assertThat(parser.anonymousUserId).isEqualTo("auid456")
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `blank link is rejected`() {
         EmailLinkParser("   ")
