@@ -52,10 +52,11 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  *         val authUI = FirebaseAuthUI.getInstance()
  *         val configuration = authUIConfiguration {
- *             providers = listOf(
- *                 AuthProvider.Email(),
- *                 AuthProvider.Google(...)
- *             )
+ *             context = applicationContext
+ *             providers {
+ *                 provider(AuthProvider.Email(...))
+ *                 provider(AuthProvider.Google(...))
+ *             }
  *         }
  *
  *         authController = authUI.createAuthFlow(configuration)
@@ -228,17 +229,10 @@ class AuthFlowController internal constructor(
     }
 
     /**
-     * Disposes the controller and releases all resources.
+     * Cancels the controller's coroutines and state collection, and marks it disposed.
      *
-     * This method:
-     * - Cancels all coroutines in the controller scope
-     * - Stops listening to auth state changes
-     * - Marks the controller as disposed
-     *
-     * Call this method in your Activity's `onDestroy()` to prevent memory leaks.
-     *
-     * **Important:** Once disposed, this controller cannot be reused. Create a new
-     * controller if you need to start another auth flow.
+     * Call this from your Activity's `onDestroy()`. Disposing twice is harmless, but a
+     * disposed controller cannot be reused — create a new one to start another flow.
      *
      * **Example:**
      * ```kotlin
@@ -247,8 +241,6 @@ class AuthFlowController internal constructor(
      *     authController.dispose()
      * }
      * ```
-     *
-     * @throws IllegalStateException if already disposed (when called multiple times)
      */
     fun dispose() {
         if (isDisposed.compareAndSet(false, true)) {

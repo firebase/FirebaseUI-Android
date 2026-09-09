@@ -5,7 +5,6 @@ import android.content.Context
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
 import com.firebase.ui.auth.AuthState
-import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.MultiFactorSession
@@ -14,101 +13,19 @@ import com.google.firebase.auth.PhoneAuthProvider
 import kotlinx.coroutines.CancellationException
 
 /**
- * Initiates phone number verification with Firebase Phone Authentication.
+ * Starts phone verification for [phoneNumber].
  *
- * This method starts the phone verification flow, which can complete in two ways:
- * 1. **Instant verification** (auto): Firebase SDK automatically retrieves and verifies
- *    the SMS code without user interaction. This happens when Google Play services can
- *    detect the incoming SMS automatically.
- * 2. **Manual verification**: SMS code is sent to the user's device, and the user must
- *    manually enter the code via [submitVerificationCode].
+ * Firebase may verify instantly, emitting [AuthState.SMSAutoVerified] with a ready credential,
+ * or fall back to SMS and emit [AuthState.PhoneNumberVerificationRequired] for code entry.
+ * Passing [forceResendingToken] from that state resends the code.
  *
- * **Flow:**
- * - Call this method with the phone number
- * - Firebase SDK attempts instant verification
- * - If instant verification succeeds:
- *   - Emits [AuthState.SMSAutoVerified] with the credential
- *   - UI should observe this state and call [signInWithPhoneAuthCredential]
- * - If instant verification fails:
- *   - Emits [AuthState.PhoneNumberVerificationRequired] with verification details
- *   - UI should show code entry screen
- *   - User enters code → call [submitVerificationCode]
- *
- * **Lifecycle:** Firebase reports verification progress as a stream, so this call does not
- * return once the code is sent - on the SMS path it keeps collecting until the auto-retrieval
- * window expires, verification fails, or the caller is cancelled. A credential auto-retrieved
- * after [AuthState.PhoneNumberVerificationRequired] is therefore still emitted, as
- * [AuthState.SMSAutoVerified]. On the instant-verification path Firebase reports no terminal
- * callback at all, so only cancellation ends the call. Callers should cancel a superseded
- * attempt before starting a new one.
- *
- * **Resending codes:**
- * To resend a verification code, call this method again with:
- * - `forceResendingToken` = the token from [AuthState.PhoneNumberVerificationRequired]
- *
- * **Example: Basic phone verification**
- * ```kotlin
- * // Step 1: Start verification
- * firebaseAuthUI.verifyPhoneNumber(
- *     provider = phoneProvider,
- *     phoneNumber = "+1234567890",
- * )
- *
- * // Step 2: Observe AuthState
- * authUI.authStateFlow().collect { state ->
- *     when (state) {
- *         is AuthState.SMSAutoVerified -> {
- *             // Instant verification succeeded!
- *             showToast("Phone number verified automatically")
- *             // Now sign in with the credential
- *             firebaseAuthUI.signInWithPhoneAuthCredential(
- *                 config = authUIConfig,
- *                 credential = state.credential
- *             )
- *         }
- *         is AuthState.PhoneNumberVerificationRequired -> {
- *             // Show code entry screen
- *             showCodeEntryScreen(
- *                 verificationId = state.verificationId,
- *                 forceResendingToken = state.forceResendingToken
- *             )
- *         }
- *         is AuthState.Error -> {
- *             // Handle error
- *             showError(state.exception.message)
- *         }
- *     }
- * }
- *
- * // Step 3: When user enters code
- * firebaseAuthUI.submitVerificationCode(
- *     config = authUIConfig,
- *     verificationId = verificationId,
- *     code = userEnteredCode
- * )
- * ```
- *
- * **Example: Resending verification code**
- * ```kotlin
- * // User didn't receive the code, wants to resend
- * firebaseAuthUI.verifyPhoneNumber(
- *     provider = phoneProvider,
- *     phoneNumber = "+1234567890",
- *     forceResendingToken = savedToken  // From PhoneNumberVerificationRequired state
- * )
- * ```
- *
- * @param provider The [AuthProvider.Phone] configuration containing timeout and other settings
- * @param phoneNumber The phone number to verify in E.164 format (e.g., "+1234567890")
- * @param multiFactorSession Optional [MultiFactorSession] for MFA enrollment. When provided,
- * this initiates phone verification for enrolling a second factor rather than primary sign-in.
- * Obtain this from `FirebaseUser.multiFactor.session` when enrolling MFA.
- * @param forceResendingToken Optional token from previous verification for resending SMS
- *
- * @throws AuthException.InvalidCredentialsException if the phone number is invalid
- * @throws AuthException.TooManyRequestsException if SMS quota is exceeded
- * @throws AuthException.NetworkException if a network error occurs
- * @throws kotlinx.coroutines.CancellationException if the caller's coroutine is cancelled
+ * Firebase reports progress as a stream, so this call does not return when the code is sent. On
+ * the SMS path it keeps collecting until the auto-retrieval window expires, verification fails,
+ * or the caller is cancelled — so a credential auto-retrieved after
+ * [AuthState.PhoneNumberVerificationRequired] still arrives, and a host already on code entry
+ * must handle the late [AuthState.SMSAutoVerified]. On the instant path Firebase reports no
+ * terminal callback at all, so only cancellation ends the call: cancel a superseded attempt
+ * before starting a new one.
  */
 internal suspend fun AuthFlowScope.verifyPhoneNumber(
     provider: AuthProvider.Phone,
@@ -158,51 +75,13 @@ internal suspend fun AuthFlowScope.verifyPhoneNumber(
 }
 
 /**
- * Submits a verification code entered by the user and signs them in.
+ * Builds a credential from [verificationId] and the [code] the user typed, then signs in.
  *
- * This method is called after [verifyPhoneNumber] emits [AuthState.PhoneNumberVerificationRequired],
- * indicating that manual code entry is needed. It creates a [PhoneAuthCredential] from the
- * verification ID and user-entered code, then signs in the user by calling
- * [signInWithPhoneAuthCredential].
+ * Follows [AuthState.PhoneNumberVerificationRequired], which carries the verification id.
+ * Signing in goes through [signInWithPhoneAuthCredential], so anonymous upgrade is handled
+ * there rather than here.
  *
- * **Flow:**
- * 1. User receives SMS with 6-digit code
- * 2. User enters code in UI
- * 3. UI calls this method with the code
- * 4. Credential is created and used to sign in
- * 5. Returns [AuthResult] with signed-in user
- *
- * This method handles both normal sign-in and anonymous account upgrade scenarios based
- * on the [AuthUIConfiguration] settings.
- *
- * **Example: Manual code entry flow*
- * ```
- * val userEnteredCode = "123456"
- * try {
- *     val result = firebaseAuthUI.submitVerificationCode(
- *         config = authUIConfig,
- *         verificationId = savedVerificationId!!,
- *         code = userEnteredCode
- *     )
- *     // User is now signed in
- * } catch (e: AuthException.InvalidCredentialsException) {
- *     // Wrong code entered
- *     showError("Invalid verification code")
- * } catch (e: AuthException.SessionExpiredException) {
- *     // Code expired
- *     showError("Verification code expired. Please request a new one.")
- * }
- * ```
- *
- * @param config The [AuthUIConfiguration] containing authentication settings
- * @param verificationId The verification ID from [AuthState.PhoneNumberVerificationRequired]
- * @param code The 6-digit verification code entered by the user
- *
- * @return [AuthResult] containing the signed-in user
- *
- * @throws AuthException.InvalidCredentialsException if the code is incorrect or expired
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.NetworkException if a network error occurs
+ * @throws AuthException.InvalidCredentialsException when the code is wrong or has expired.
  */
 internal suspend fun AuthFlowScope.submitVerificationCode(
     context: Context,
@@ -235,65 +114,11 @@ internal suspend fun AuthFlowScope.submitVerificationCode(
 }
 
 /**
- * Signs in a user with a phone authentication credential.
+ * Signs in with a verified [PhoneAuthCredential], from either verification path.
  *
- * This method is the final step in the phone authentication flow. It takes a
- * [PhoneAuthCredential] (either from instant verification or manual code entry) and
- * signs in the user. The method handles both normal sign-in and anonymous account
- * upgrade scenarios by delegating to [signInAndLinkWithCredential].
- *
- * **When to call this:**
- * - After [verifyPhoneNumber] emits [AuthState.SMSAutoVerified] (instant verification)
- * - Called internally by [submitVerificationCode] (manual verification)
- *
- * The method automatically handles:
- * - Normal sign-in for new or returning users
- * - Linking phone credential to anonymous accounts (if enabled in config)
- * - Throwing [AuthException.AccountLinkingRequiredException] if phone number already exists on another account
- *
- * **Example: Sign in after instant verification**
- * ```kotlin
- * authUI.authStateFlow().collect { state ->
- *     when (state) {
- *         is AuthState.SMSAutoVerified -> {
- *             // Phone was instantly verified
- *             showToast("Phone verified automatically!")
- *
- *             // Now sign in with the credential
- *             val result = firebaseAuthUI.signInWithPhoneAuthCredential(
- *                 config = authUIConfig,
- *                 credential = state.credential
- *             )
- *             // User is now signed in
- *         }
- *     }
- * }
- * ```
- *
- * **Example: Anonymous upgrade with collision**
- * ```kotlin
- * // User is currently anonymous
- * try {
- *     firebaseAuthUI.signInWithPhoneAuthCredential(
- *         config = authUIConfig,
- *         credential = phoneCredential
- *     )
- * } catch (e: AuthException.AccountLinkingRequiredException) {
- *     // Phone number already exists on another account
- *     // Account linking required - show account linking screen
- *     // User needs to sign in with existing account to link
- * }
- * ```
- *
- * @param config The [AuthUIConfiguration] containing authentication settings
- * @param credential The [PhoneAuthCredential] to use for signing in
- *
- * @return [AuthResult] containing the signed-in user, or null if anonymous upgrade collision occurred
- *
- * @throws AuthException.InvalidCredentialsException if the credential is invalid or expired
- * @throws AuthException.EmailAlreadyInUseException if phone number is linked to another account
- * @throws AuthException.AuthCancelledException if the operation is cancelled
- * @throws AuthException.NetworkException if a network error occurs
+ * Delegates to [signInAndLinkWithCredential], so anonymous upgrade and the
+ * [AuthException.AccountLinkingRequiredException] raised when the number already belongs to
+ * another account behave as they do for every other provider.
  */
 internal suspend fun AuthFlowScope.signInWithPhoneAuthCredential(
     context: Context,

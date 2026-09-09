@@ -78,7 +78,7 @@ fun AuthChooserScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Spacer(modifier = Modifier.height(16.dp))
-        // Header
+
         Text(
             text = "Firebase Auth UI Compose",
             style = MaterialTheme.typography.headlineLarge,
@@ -92,7 +92,6 @@ fun AuthChooserScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // Emulator Mode Warning
         if (isEmulatorMode) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -121,7 +120,6 @@ fun AuthChooserScreen(
             }
         }
 
-        // High-Level API Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             onClick = onHighLevelApiClick
@@ -157,7 +155,6 @@ fun AuthChooserScreen(
             }
         }
 
-        // Low-Level API Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             onClick = onLowLevelApiClick
@@ -193,7 +190,6 @@ fun AuthChooserScreen(
             }
         }
 
-        // Custom Slots & Theming Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             onClick = onCustomSlotsClick
@@ -229,7 +225,6 @@ fun AuthChooserScreen(
             }
         }
 
-        // Credential Linking Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             onClick = onCredentialLinkingClick
@@ -257,7 +252,6 @@ fun AuthChooserScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Info card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(

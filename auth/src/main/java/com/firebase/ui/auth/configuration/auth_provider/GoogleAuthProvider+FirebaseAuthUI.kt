@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.firebase.ui.auth.AuthFlowScope
 import com.firebase.ui.auth.AuthException
@@ -16,43 +15,13 @@ import com.firebase.ui.auth.configuration.AuthUIConfiguration
 import com.firebase.ui.auth.util.EmailLinkPersistenceManager
 import com.firebase.ui.auth.util.SignInPreferenceManager
 import com.google.android.gms.common.api.Scope
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 /**
- * Creates a remembered callback for Google Sign-In that can be invoked from UI components.
+ * Remembers a callback that runs [signInWithGoogle] in the composition's scope.
  *
- * This Composable function returns a lambda that, when invoked, initiates the Google Sign-In
- * flow using [signInWithGoogle]. The callback is rebuilt on every recomposition so it always
- * captures the latest parameters, and handles coroutine scoping and error state management.
- *
- * **Usage:**
- * ```kotlin
- * val onSignInWithGoogle = authUI.rememberGoogleSignInHandler(
- *     context = context,
- *     config = configuration,
- *     provider = googleProvider
- * )
- *
- * Button(onClick = onSignInWithGoogle) {
- *     Text("Sign in with Google")
- * }
- * ```
- *
- * **Error Handling:**
- * - Catches all exceptions and converts them to [AuthException]
- * - Automatically updates [AuthState.Error] on failures
- * - Logs errors for debugging purposes
- *
- * @param context Android context for Credential Manager
- * @param config Authentication UI configuration
- * @param provider Google provider configuration with server client ID and optional scopes
- * @param onSignInFailure Callback invoked with the resulting [AuthException] on failure
- * @return A callback function that initiates Google Sign-In when invoked
- *
- * @see signInWithGoogle
- * @see AuthProvider.Google
+ * Rebuilt on every recomposition, so it always captures the latest parameters.
  */
 @Composable
 internal fun AuthFlowScope.rememberGoogleSignInHandler(
@@ -78,41 +47,14 @@ internal fun AuthFlowScope.rememberGoogleSignInHandler(
 }
 
 /**
- * Signs in with Google using Credential Manager and optionally requests OAuth scopes.
+ * Signs in with Google through Credential Manager.
  *
- * This function implements Google Sign-In using Android's Credential Manager API with
- * comprehensive error handling.
+ * Requests OAuth authorization first when [AuthProvider.Google.scopes] is non-empty, then hands
+ * the credential to [signInAndLinkWithCredential], which owns anonymous upgrade and collision
+ * handling.
  *
- * **Flow:**
- * 1. If [AuthProvider.Google.scopes] are specified, requests OAuth authorization first
- * 2. Attempts sign-in using Credential Manager
- * 3. Creates Firebase credential and calls [signInAndLinkWithCredential]
- *
- * **Scopes Behavior:**
- * - If [AuthProvider.Google.scopes] is not empty, requests OAuth authorization before sign-in
- * - Basic profile, email, and ID token are always included automatically
- * - Scopes are requested using the AuthorizationClient API
- *
- * **Error Handling:**
- * - [GoogleIdTokenParsingException]: Library version mismatch
- * - [NoCredentialException]: No Google accounts on device
- * - [GetCredentialCancellationException]: User dismissed the Credential Manager sheet -
- *   updates [AuthState.Cancelled] and does not throw
- * - [GetCredentialException]: Configuration errors or no credentials
- * - Configuration errors trigger detailed developer guidance logs
- *
- * @param context Android context for Credential Manager
- * @param config Authentication UI configuration
- * @param provider Google provider configuration with optional scopes
- * @param authorizationProvider Provider for OAuth scopes authorization (for testing)
- * @param credentialManagerProvider Provider for Credential Manager flow (for testing)
- *
- * @throws AuthException.InvalidCredentialsException if token parsing fails
- * @throws AuthException.AuthCancelledException if user cancels or no accounts found
- * @throws AuthException if sign-in or linking fails
- *
- * @see AuthProvider.Google
- * @see signInAndLinkWithCredential
+ * Dismissing the Credential Manager sheet is not an error: it emits [AuthState.Cancelled] and
+ * returns normally rather than throwing, so the flow stays open on the method picker.
  */
 internal suspend fun AuthFlowScope.signInWithGoogle(
     context: Context,
@@ -269,7 +211,7 @@ internal suspend fun AuthFlowScope.signInWithGoogle(
  * - Before allowing user to select a different Google account
  * - When switching between accounts
  *
- * **Note:** This does not sign out from Firebase Auth itself. Call [FirebaseAuthUI.signOut]
+ * **Note:** This does not sign out from Firebase Auth itself. Call [com.firebase.ui.auth.FirebaseAuthUI.signOut]
  * separately if you need to sign out from Firebase.
  *
  * @param context Android context for Credential Manager

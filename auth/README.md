@@ -86,10 +86,10 @@ Equivalent FirebaseUI libraries are available for [iOS](https://github.com/fireb
 Ensure your application is configured for use with Firebase. See the [Firebase documentation](https://firebase.google.com/docs/android/setup) for setup instructions.
 
 **Minimum Requirements:**
-- Android SDK 21+ (Android 5.0 Lollipop)
-- Kotlin 1.9+
-- Jetpack Compose (Compiler 1.5+)
-- Firebase Auth 22.0.0+
+- Android SDK 23+ (Android 6.0 Marshmallow)
+- Kotlin 2.0+
+- Jetpack Compose
+- Firebase BoM 34.0.0+
 
 ### Installation
 
@@ -101,11 +101,11 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta04")
 
     // Required: Firebase Auth
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.17.0"))
     implementation("com.google.firebase:firebase-auth")
 
     // Required: Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
 
@@ -164,6 +164,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyAppTheme {
                 val configuration = authUIConfiguration {
+                    context = applicationContext
                     providers {
                         provider(AuthProvider.Email())
                         provider(AuthProvider.Google())
@@ -262,7 +263,7 @@ val authUI = FirebaseAuthUI.getInstance(customApp)
 
 // Or create with custom auth (for multi-tenancy)
 val customAuth = Firebase.auth(customApp)
-val authUI = FirebaseAuthUI.create(auth = customAuth)
+val authUI = FirebaseAuthUI.create(app = customApp, auth = customAuth)
 ```
 
 **Key Methods:**
@@ -281,7 +282,12 @@ val authUI = FirebaseAuthUI.create(auth = customAuth)
 `AuthUIConfiguration` defines all settings for your authentication flow. Use the DSL builder function for easy configuration:
 
 ```kotlin
+val authTheme = AuthUITheme.fromMaterialTheme()   // @Composable — resolve it here, not below
+
 val configuration = authUIConfiguration {
+    // Required: an application Context. Omitting it throws when the block is evaluated.
+    context = applicationContext
+
     // Required: Authentication providers
     providers {
         provider(AuthProvider.Email())
@@ -289,15 +295,16 @@ val configuration = authUIConfiguration {
         provider(AuthProvider.Phone())
     }
 
-    // Optional: Theme configuration
-    theme = AuthUITheme.fromMaterialTheme()
+    // Optional: Theme. AuthUITheme.fromMaterialTheme() and AuthUITheme.Adaptive are
+    // @Composable, so resolve them above the builder and assign the result here.
+    theme = authTheme
 
     // Optional: Terms of Service and Privacy Policy URLs
     tosUrl = "https://example.com/terms"
     privacyPolicyUrl = "https://example.com/privacy"
 
-    // Optional: App logo
-    logo = Icons.Default.AccountCircle
+    // Optional: App logo. Wrap the source in an AuthUIAsset — a bare ImageVector is a type error.
+    logo = AuthUIAsset.Vector(Icons.Default.AccountCircle)
 
     // Optional: Enable MFA (default: true)
     isMfaEnabled = true
@@ -322,6 +329,23 @@ val configuration = authUIConfiguration {
 
     // Optional: Locale override
     locale = Locale.FRENCH
+
+    // Optional: when a non-anonymous user is already signed in, link the new credential
+    // onto that account instead of switching accounts (default: false)
+    isCredentialLinkingEnabled = false
+
+    // Optional: send password-reset links to your own page rather than the Firebase-hosted
+    // one (default: null)
+    passwordResetActionCodeSettings = actionCodeSettings {
+        url = "https://example.com/reset"
+        handleCodeInApp = true
+        setAndroidPackageName(packageName, true, null)
+    }
+
+    // Optional: resolve an email to its providers with the legacy fetchSignInMethodsForEmail
+    // call. Only useful if email enumeration protection is disabled on your project
+    // (default: false)
+    legacyFetchSignInWithEmail = false
 }
 ```
 
@@ -332,29 +356,37 @@ val configuration = authUIConfiguration {
 ```kotlin
 val controller = authUI.createAuthFlow(configuration)
 
-lifecycleScope.launch {
-    // Start the flow
-    val state = controller.start()
+// Register before the Activity reaches STARTED — as a property initializer or in onCreate.
+// Registering later (in a click listener, say) throws.
+val authLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+) { /* the flow finished; inspect FirebaseAuth.currentUser or the result extras */ }
 
-    when (state) {
-        is AuthState.Success -> {
-            // Handle success
-            val user = state.result.user
-        }
-        is AuthState.Error -> {
-            // Handle error
-            Log.e(TAG, "Auth failed", state.exception)
-        }
-        is AuthState.Cancelled -> {
-            // User cancelled a single sign-in attempt (e.g. dismissed the
-            // Credential Manager sheet, backed out of MFA); the flow stays open
-        }
-        is AuthState.Aborted -> {
-            // Flow was ended via controller.cancel()
-            finish()
-        }
-        else -> {
-            // Handle other states (RequiresMfa, RequiresEmailVerification, etc.)
+authLauncher.launch(controller.createIntent(this))
+
+// Follow the flow in detail by collecting its state
+lifecycleScope.launch {
+    controller.authStateFlow.collect { state ->
+        when (state) {
+            is AuthState.Success -> {
+                // Handle success
+                val user = state.user
+            }
+            is AuthState.Error -> {
+                // Handle error
+                Log.e(TAG, "Auth failed", state.exception)
+            }
+            is AuthState.Cancelled -> {
+                // User cancelled a single sign-in attempt (e.g. dismissed the
+                // Credential Manager sheet, backed out of MFA); the flow stays open
+            }
+            is AuthState.Aborted -> {
+                // Flow was ended via controller.cancel()
+                finish()
+            }
+            else -> {
+                // Handle other states (RequiresMfa, RequiresEmailVerification, etc.)
+            }
         }
     }
 }
@@ -435,7 +467,8 @@ val emailProvider = AuthProvider.Email(
 )
 
 val configuration = authUIConfiguration {
-    providers = listOf(emailProvider)
+    context = applicationContext
+    providers { provider(emailProvider) }
 }
 ```
 
@@ -462,6 +495,7 @@ val phoneProvider = AuthProvider.Phone(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(phoneProvider)
     }
@@ -485,6 +519,7 @@ val googleProvider = AuthProvider.Google(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(googleProvider)
     }
@@ -505,6 +540,7 @@ val facebookProvider = AuthProvider.Facebook(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(facebookProvider)
     }
@@ -565,6 +601,7 @@ val appleProvider = AuthProvider.Apple(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(twitterProvider)
         provider(githubProvider)
@@ -581,6 +618,7 @@ Enable anonymous authentication to let users use your app without signing in:
 
 ```kotlin
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Anonymous())
     }
@@ -622,6 +660,7 @@ val lineProvider = AuthProvider.GenericOAuth(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(lineProvider)
     }
@@ -637,7 +676,9 @@ The high-level API provides a complete, opinionated authentication experience wi
 ```kotlin
 @Composable
 fun AuthenticationScreen() {
+    val localContext = LocalContext.current
     val configuration = authUIConfiguration {
+        context = localContext
         providers {
             provider(AuthProvider.Email())
             provider(AuthProvider.Google())
@@ -646,7 +687,7 @@ fun AuthenticationScreen() {
         }
         tosUrl = "https://example.com/terms"
         privacyPolicyUrl = "https://example.com/privacy"
-        logo = Icons.Default.Lock
+        logo = AuthUIAsset.Vector(Icons.Default.Lock)
     }
 
     FirebaseAuthScreen(
@@ -741,11 +782,16 @@ For maximum control, use the `AuthFlowController`:
 class AuthActivity : ComponentActivity() {
     private lateinit var controller: AuthFlowController
 
+    private val authLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { /* the flow finished */ }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val authUI = FirebaseAuthUI.getInstance()
         val configuration = authUIConfiguration {
+            context = applicationContext
             providers {
                 provider(AuthProvider.Email())
                 provider(AuthProvider.Google())
@@ -754,9 +800,13 @@ class AuthActivity : ComponentActivity() {
 
         controller = authUI.createAuthFlow(configuration)
 
+        // Only on a fresh start; unguarded, every recreation would launch a second flow.
+        if (savedInstanceState == null) {
+            authLauncher.launch(controller.createIntent(this))
+        }
+
         lifecycleScope.launch {
-            val state = controller.start()
-            handleAuthState(state)
+            controller.authStateFlow.collect { handleAuthState(it) }
         }
     }
 
@@ -764,7 +814,7 @@ class AuthActivity : ComponentActivity() {
         when (state) {
             is AuthState.Success -> {
                 // Successfully signed in
-                val user = state.result.user
+                val user = state.user
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
@@ -1039,7 +1089,7 @@ lifecycleScope.launch {
         context = context,
         reason = "Verify your identity to delete your account",
     ) {
-        auth.currentUser?.delete()?.await()
+        authUI.auth.currentUser?.delete()?.await()
     }
 }
 ```
@@ -1060,7 +1110,13 @@ The armed reauthentication lives on the process-cached `FirebaseAuthUI`, so it s
 ```kotlin
 val reauth = authUI.createReauthFlow(
     configuration = authUIConfiguration {
-        // Providers are automatically filtered to those linked to the current user
+        context = applicationContext
+        // Required by the builder; createReauthFlow then filters this list down to the
+        // providers actually linked to the current user.
+        providers {
+            provider(AuthProvider.Email())
+            provider(AuthProvider.Google())
+        }
     },
 )
 val intent = reauth.createIntent(context)
@@ -1088,6 +1144,7 @@ val mfaConfig = MfaConfiguration(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
@@ -1122,6 +1179,8 @@ fun MfaEnrollmentFlow() {
         // screen also reconciles this itself, so a host that forgets cannot end up sending to an
         // unpermitted dial code.
         val flowState = rememberMfaEnrollmentFlowState(mfaConfig.allowedCountries)
+        // Read here, not inside onComplete: LocalContext.current is a @Composable read.
+        val context = LocalContext.current
 
         NavDisplay(
             backStack = backStack,
@@ -1212,7 +1271,8 @@ FirebaseAuthScreen(
         // MFA challenges are handled automatically by FirebaseAuthScreen
         // But you can also handle them manually:
         if (exception is AuthException.MfaRequiredException) {
-            showMfaChallengeScreen(exception.resolver)
+            // The resolver arrives on AuthState.RequiresMfa, not on the exception.
+            showMfaChallengePrompt()
         }
     }
 )
@@ -1225,20 +1285,15 @@ Or handle manually:
 fun ManualMfaChallenge(resolver: MultiFactorResolver) {
     MfaChallengeScreen(
         resolver = resolver,
-        onChallengeComplete = { assertion ->
-            // Complete sign-in with the assertion
-            lifecycleScope.launch {
-                try {
-                    val result = resolver.resolveSignIn(assertion)
-                    navigateToHome()
-                } catch (e: Exception) {
-                    showError(e)
-                }
-            }
+        auth = FirebaseAuth.getInstance(),
+        onSuccess = { result ->
+            // The library resolved the challenge; the user is signed in
+            navigateToHome()
         },
         onCancel = {
             navigateBack()
-        }
+        },
+        onError = { showError(it) }
     )
 }
 ```
@@ -1258,6 +1313,7 @@ FirebaseUI provides pre-configured themes for light and dark modes:
 
 ```kotlin
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
         provider(AuthProvider.Google())
@@ -1273,12 +1329,15 @@ val configuration = authUIConfiguration {
 `AuthUITheme.Adaptive` automatically switches between light and dark themes based on the system setting:
 
 ```kotlin
+val adaptiveTheme = AuthUITheme.Adaptive   // @Composable getter — read it outside the builder
+
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
         provider(AuthProvider.Google())
     }
-    theme = AuthUITheme.Adaptive  // Adapts to system dark mode
+    theme = adaptiveTheme
 }
 ```
 
@@ -1293,12 +1352,13 @@ Use `.copy()` to customize specific properties of the default theme:
 ```kotlin
 @Composable
 fun AuthScreen() {
+    val localContext = LocalContext.current
     val customTheme = AuthUITheme.Adaptive.copy(
         providerButtonShape = MaterialTheme.shapes.extraLarge  // Pill-shaped buttons
     )
 
     val configuration = authUIConfiguration {
-        context = applicationContext
+        context = localContext
         providers {
             provider(AuthProvider.Google())
             provider(AuthProvider.Email())
@@ -1324,12 +1384,14 @@ FirebaseUI Auth supports two theming patterns with clear precedence rules:
 The simplest approach is to set the theme only in `authUIConfiguration`:
 
 ```kotlin
+val adaptiveTheme = AuthUITheme.Adaptive
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
-    theme = AuthUITheme.Adaptive  // Set theme here
+    theme = adaptiveTheme  // Set theme here
 }
 
 FirebaseAuthScreen(
@@ -1345,15 +1407,17 @@ FirebaseAuthScreen(
 You can also wrap `FirebaseAuthScreen` with `AuthUITheme`:
 
 ```kotlin
+val adaptiveTheme = AuthUITheme.Adaptive
+
 val configuration = authUIConfiguration {
     context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
-    theme = AuthUITheme.Adaptive  // Theme in configuration
+    theme = adaptiveTheme  // Theme in configuration
 }
 
-AuthUITheme(theme = AuthUITheme.Adaptive) {  // Optional wrapper
+AuthUITheme(theme = adaptiveTheme) {  // Optional wrapper
     Surface(color = MaterialTheme.colorScheme.background) {
         FirebaseAuthScreen(
             configuration = configuration,
@@ -1372,6 +1436,8 @@ Understanding which theme applies is important:
 1. **Configuration theme takes precedence:**
    ```kotlin
    val configuration = authUIConfiguration {
+       context = applicationContext
+       providers { provider(AuthProvider.Email()) }
        theme = AuthUITheme.Default  // LIGHT theme
    }
 
@@ -1384,6 +1450,8 @@ Understanding which theme applies is important:
 2. **Wrapper as fallback:**
    ```kotlin
    val configuration = authUIConfiguration {
+       context = applicationContext
+       providers { provider(AuthProvider.Email()) }
        // theme not specified (null)
    }
 
@@ -1396,6 +1464,8 @@ Understanding which theme applies is important:
 3. **Ultimate fallback:**
    ```kotlin
    val configuration = authUIConfiguration {
+       context = applicationContext
+       providers { provider(AuthProvider.Email()) }
        // theme not specified (null)
    }
 
@@ -1413,11 +1483,16 @@ Use `fromMaterialTheme()` to automatically inherit your app's Material Design th
 @Composable
 fun App() {
     MyAppTheme {  // Your existing Material3 theme
-        val configuration = authUIConfiguration {
-            providers {
-                provider(AuthProvider.Email())
+        val localContext = LocalContext.current
+        val authTheme = AuthUITheme.fromMaterialTheme()  // Inherits colors, typography, shapes
+        val configuration = remember(localContext, authTheme) {
+            authUIConfiguration {
+                context = localContext
+                providers {
+                    provider(AuthProvider.Email())
+                }
+                theme = authTheme
             }
-            theme = AuthUITheme.fromMaterialTheme()  // Inherits colors, typography, shapes
         }
 
         FirebaseAuthScreen(
@@ -1431,14 +1506,17 @@ fun App() {
 You can also customize while inheriting:
 
 ```kotlin
+val authTheme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
+)
+
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
     }
-    theme = AuthUITheme.fromMaterialTheme(
-        providerButtonShape = RoundedCornerShape(16.dp)  // Override button shape
-    )
+    theme = authTheme
 }
 ```
 
@@ -1467,6 +1545,7 @@ val customTheme = AuthUITheme(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
@@ -1486,7 +1565,12 @@ val customTheme = AuthUITheme.Default.copy(
 )
 
 val configuration = authUIConfiguration {
-    providers = listOf(AuthProvider.Google(), AuthProvider.Facebook(), AuthProvider.Email())
+    context = applicationContext
+    providers {
+        provider(AuthProvider.Google())
+        provider(AuthProvider.Facebook())
+        provider(AuthProvider.Email())
+    }
     theme = customTheme
 }
 ```
@@ -1494,14 +1578,17 @@ val configuration = authUIConfiguration {
 **Option 2: Using `fromMaterialTheme()`:**
 
 ```kotlin
+val authTheme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(16.dp)
+)
+
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
     }
-    theme = AuthUITheme.fromMaterialTheme(
-        providerButtonShape = RoundedCornerShape(16.dp)
-    )
+    theme = authTheme
 }
 ```
 
@@ -1516,6 +1603,7 @@ val customTheme = AuthUITheme(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
@@ -1549,6 +1637,7 @@ val customTheme = AuthUITheme.Default.copy(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
@@ -1567,15 +1656,18 @@ val customProviderStyles = mapOf(
     )
 )
 
+val authTheme = AuthUITheme.fromMaterialTheme(
+    providerButtonShape = RoundedCornerShape(12.dp),
+    providerStyles = customProviderStyles
+)
+
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Google())
         provider(AuthProvider.Facebook())
     }
-    theme = AuthUITheme.fromMaterialTheme(
-        providerButtonShape = RoundedCornerShape(12.dp),
-        providerStyles = customProviderStyles
-    )
+    theme = authTheme
 }
 ```
 
@@ -1604,6 +1696,7 @@ val customTheme = AuthUITheme.Default.copy(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Google())      // Uses custom shape (24.dp)
         provider(AuthProvider.Facebook())    // Uses custom shape (8.dp)
@@ -1626,6 +1719,7 @@ val customTheme = AuthUITheme.Default.copy(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers { provider(AuthProvider.Email()) }
     theme = customTheme
 }
@@ -1635,25 +1729,33 @@ If left unset (`null`), the top app bar falls back to colors derived from `color
 
 ### Screen Transitions
 
-Customize the animations when navigating between screens using the `AuthUITransitions` object:
+Customize the animations when navigating between screens using the `AuthUITransitions` object.
+Each spec is an `AnimatedContentTransitionScope<Scene<NavKey>>` receiver returning one
+`ContentTransform`, so the enter and exit halves are paired with `togetherWith`:
 
 **Slide animations:**
 
 ```kotlin
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
         provider(AuthProvider.Google())
     }
     transitions = AuthUITransitions(
-        enterTransition = { slideInHorizontally { it } },  // Slide in from right
-        exitTransition = { slideOutHorizontally { -it } },  // Slide out to left
-        popEnterTransition = { slideInHorizontally { -it } },  // Slide in from left
-        popExitTransition = { slideOutHorizontally { it } }  // Slide out to right
+        // Slide in from right, slide out to left
+        transitionSpec = { slideInHorizontally { it } togetherWith slideOutHorizontally { -it } },
+        // Slide in from left, slide out to right
+        popTransitionSpec = { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } },
+        // Predictive back falls back to the default cross-fade if left unset, so mirror the pop
+        predictivePopTransitionSpec = {
+            slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+        }
     )
 }
 ```
@@ -1663,17 +1765,18 @@ val configuration = authUIConfiguration {
 ```kotlin
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Phone())
     }
     transitions = AuthUITransitions(
-        enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { fadeIn() },
-        popExitTransition = { fadeOut() }
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        popTransitionSpec = { fadeIn() togetherWith fadeOut() },
+        predictivePopTransitionSpec = { fadeIn() togetherWith fadeOut() }
     )
 }
 ```
@@ -1685,17 +1788,23 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Facebook())
     }
     transitions = AuthUITransitions(
-        enterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
-        exitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) },
-        popEnterTransition = { fadeIn() + scaleIn(initialScale = 0.9f) },
-        popExitTransition = { fadeOut() + scaleOut(targetScale = 0.9f) }
+        transitionSpec = {
+            fadeIn() + scaleIn(initialScale = 0.9f) togetherWith
+                    fadeOut() + scaleOut(targetScale = 0.9f)
+        },
+        popTransitionSpec = {
+            fadeIn() + scaleIn(initialScale = 0.9f) togetherWith
+                    fadeOut() + scaleOut(targetScale = 0.9f)
+        }
     )
 }
 ```
@@ -1705,20 +1814,58 @@ val configuration = authUIConfiguration {
 ```kotlin
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import com.firebase.ui.auth.configuration.AuthUITransitions
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
     transitions = AuthUITransitions(
-        enterTransition = { slideInVertically { it } },  // Slide up
-        exitTransition = { slideOutVertically { -it } }  // Slide down
+        // A vertical push: the new step rises from the bottom as the old one leaves via the top
+        transitionSpec = { slideInVertically { it } togetherWith slideOutVertically { -it } }
     )
 }
 ```
 
-> **Note:** If not specified, default fade in/out transitions with 700ms duration are used.
+**Per-destination animations:**
+
+Read `authRoute()` off `initialState` / `targetState` to vary the animation by the screen being
+navigated to or from:
+
+```kotlin
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import com.firebase.ui.auth.configuration.AuthUITransitions
+import com.firebase.ui.auth.ui.screens.AuthRoute
+import com.firebase.ui.auth.ui.screens.authRoute
+
+val configuration = authUIConfiguration {
+    context = applicationContext
+    providers {
+        provider(AuthProvider.Email())
+    }
+    transitions = AuthUITransitions(
+        transitionSpec = {
+            if (targetState.authRoute() is AuthRoute.Success) {
+                fadeIn() togetherWith fadeOut()
+            } else {
+                slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+            }
+        }
+    )
+}
+```
+
+> **Note:** Each spec is independent. Any one left unset falls back to the library's default
+> 700ms cross-fade — `predictivePopTransitionSpec` included, which does *not* fall back to
+> `popTransitionSpec`. `predictivePopTransitionSpec` also receives the swipe edge
+> (`NavigationEvent.EDGE_LEFT`, `EDGE_RIGHT` or `EDGE_NONE`) and runs when the gesture *starts*,
+> so a side effect placed in it fires even for gestures the user goes on to cancel.
 
 ## Advanced Features
 
@@ -1729,6 +1876,7 @@ Seamlessly upgrade anonymous users to permanent accounts:
 ```kotlin
 // 1. Configure anonymous authentication with upgrade enabled
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Anonymous())
         provider(AuthProvider.Email())
@@ -1764,6 +1912,7 @@ val emailProvider = AuthProvider.Email(
 )
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(emailProvider)
     }
@@ -1893,6 +2042,7 @@ Credential Manager is enabled by default. To disable:
 
 ```kotlin
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
@@ -1990,12 +2140,13 @@ Renaming or removing a tag, or changing the resource id it resolves to, is a bre
 ```kotlin
 @Composable
 fun SettingsScreen() {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val authUI = remember { FirebaseAuthUI.getInstance() }
 
     Button(
         onClick = {
-            lifecycleScope.launch {
+            scope.launch {
                 authUI.signOut(context)
                 // User is signed out, navigate to auth screen
                 navigateToAuth()
@@ -2040,16 +2191,18 @@ Button(
 FirebaseUI includes default English strings. To add custom localization:
 
 ```kotlin
-class SpanishStringProvider(context: Context) : AuthUIStringProvider {
-    override fun signInWithEmail() = "Iniciar sesión con correo"
-    override fun signInWithGoogle() = "Iniciar sesión con Google"
-    override fun signInWithFacebook() = "Iniciar sesión con Facebook"
-    override fun invalidEmail() = "Correo inválido"
-    override fun weakPassword() = "Contraseña débil"
-    // ... implement all other required methods
+// AuthUIStringProvider declares ~170 abstract `val`s, so override properties, not functions,
+// and expect to supply every one — DefaultAuthUIStringProvider is final and cannot be subclassed.
+// For most apps, translating the library's own string resources is the lighter option.
+class SpanishStringProvider : AuthUIStringProvider {
+    override val signInWithEmail = "Iniciar sesión con correo"
+    override val signInWithGoogle = "Iniciar sesión con Google"
+    override val invalidEmailAddress = "Correo inválido"
+    // ... every other member of AuthUIStringProvider
 }
 
 val configuration = authUIConfiguration {
+    context = applicationContext
     providers {
         provider(AuthProvider.Email())
     }
@@ -2126,6 +2279,7 @@ var errorState by remember { mutableStateOf<AuthException?>(null) }
 errorState?.let { error ->
     ErrorRecoveryDialog(
         error = error,
+        stringProvider = DefaultAuthUIStringProvider(LocalContext.current),
         onRetry = {
             // Retry the authentication
             errorState = null
@@ -2148,67 +2302,9 @@ errorState?.let { error ->
 
 ## Migration Guide
 
-### From FirebaseUI Auth 9.x (View-based)
-
-The new Compose library has a completely different architecture. Here's how to migrate:
-
-**Old (9.x - View/Activity based):**
-
-```java
-// Old approach with startActivityForResult
-Intent signInIntent = AuthUI.getInstance()
-    .createSignInIntentBuilder()
-    .setAvailableProviders(Arrays.asList(
-        new AuthUI.IdpConfig.EmailBuilder().build(),
-        new AuthUI.IdpConfig.GoogleBuilder().build()
-    ))
-    .setTheme(R.style.AppTheme)
-    .build();
-
-signInLauncher.launch(signInIntent);
-```
-
-**New (10.x - Compose based):**
-
-```kotlin
-// New approach with Composable
-val configuration = authUIConfiguration {
-    providers {
-        provider(AuthProvider.Email())
-        provider(AuthProvider.Google())
-    }
-    theme = AuthUITheme.fromMaterialTheme()
-}
-
-FirebaseAuthScreen(
-    configuration = configuration,
-    onSignInSuccess = { result -> /* ... */ },
-    onSignInFailure = { exception -> /* ... */ },
-    onSignInCancelled = { /* ... */ }
-)
-```
-
-**Key Changes:**
-
-1. **Pure Compose** - No more Activities or Intents, everything is Composable
-2. **Configuration DSL** - Use `authUIConfiguration {}` instead of `createSignInIntentBuilder()`
-3. **Provider Builders** - `AuthProvider.Email()` instead of `IdpConfig.EmailBuilder().build()`
-4. **Callbacks** - Direct callback parameters instead of `ActivityResultLauncher`
-5. **Theming** - `AuthUITheme` instead of `R.style` theme resources
-6. **State Management** - Reactive `Flow<AuthState>` instead of `AuthStateListener`
-
-**Migration Checklist:**
-
-- [ ] Update dependency to `firebase-ui-auth:10.0.0-beta02`
-- [ ] Convert Activities to Composables
-- [ ] Replace Intent-based flow with `FirebaseAuthScreen`
-- [ ] Update configuration from builder pattern to DSL
-- [ ] Replace theme resources with `AuthUITheme`
-- [ ] Update error handling from result codes to `AuthException`
-- [ ] Remove `ActivityResultLauncher` and use direct callbacks
-- [ ] Update sign-out/delete to use suspend functions
-
-For a complete migration example, see the [migration guide](../docs/upgrade-to-10.0.md).
+Migrating from 9.x? [docs/upgrade-to-10.0.md](../docs/upgrade-to-10.0.md) is the full guide —
+dependencies, provider configuration, theming, sign-out and deletion, auth-state observation, and
+the Activity-based route for apps that can't use Compose everywhere.
 
 ---
 

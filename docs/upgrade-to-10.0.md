@@ -50,10 +50,10 @@ dependencies {
     // FirebaseUI Auth
     // Check Maven Central for the latest version:
     // https://central.sonatype.com/artifact/com.firebaseui/firebase-ui-auth/versions
-    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta02")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0-beta04")
 
     // Required: Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:2024.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
 }
@@ -106,12 +106,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyAppTheme {
-                val configuration = authUIConfiguration {
-                    providers = listOf(
-                        AuthProvider.Email(),
-                        AuthProvider.Google()
-                    )
-                    theme = AuthUITheme.fromMaterialTheme()
+                val authTheme = AuthUITheme.fromMaterialTheme()
+                val configuration = remember(authTheme) {
+                    authUIConfiguration {
+                        context = applicationContext
+                        providers {
+                            provider(AuthProvider.Email())
+                            provider(AuthProvider.Google())
+                        }
+                        theme = authTheme
+                    }
                 }
 
                 FirebaseAuthScreen(
@@ -149,20 +153,23 @@ List<AuthUI.IdpConfig> providers = Arrays.asList(
 ```
 
 **New (10.x):**
+
+`context` is required — the builder throws without it. `applicationContext` is an Activity
+property; from a composable use `LocalContext.current.applicationContext` instead.
+
 ```kotlin
 val configuration = authUIConfiguration {
-    providers = listOf(
-        AuthProvider.Email(
-            isDisplayNameRequired = true
-        ),
-        AuthProvider.Google(
-            scopes = listOf("email"),
-            serverClientId = "YOUR_CLIENT_ID"
-        ),
-        AuthProvider.Phone(
-            defaultCountryCode = "US"
+    context = applicationContext
+    providers {
+        provider(AuthProvider.Email(isDisplayNameRequired = true))
+        provider(
+            AuthProvider.Google(
+                scopes = listOf("email"),
+                serverClientId = "YOUR_CLIENT_ID"
+            )
         )
-    )
+        provider(AuthProvider.Phone(defaultCountryCode = "US"))
+    }
 }
 ```
 
@@ -184,7 +191,8 @@ val configuration = authUIConfiguration {
 **New (10.x) - Material 3:**
 ```kotlin
 val configuration = authUIConfiguration {
-    providers = listOf(AuthProvider.Email())
+    context = applicationContext
+    providers { provider(AuthProvider.Email()) }
     theme = AuthUITheme(
         colorScheme = lightColorScheme(
             primary = Color(0xFF6200EE),
@@ -198,9 +206,14 @@ val configuration = authUIConfiguration {
 Or inherit from your app theme:
 ```kotlin
 MyAppTheme {
-    val configuration = authUIConfiguration {
-        providers = listOf(AuthProvider.Email())
-        theme = AuthUITheme.fromMaterialTheme()
+    val localContext = LocalContext.current
+    val authTheme = AuthUITheme.fromMaterialTheme()
+    val configuration = remember(localContext, authTheme) {
+        authUIConfiguration {
+            context = localContext
+            providers { provider(AuthProvider.Email()) }
+            theme = authTheme
+        }
     }
 
     FirebaseAuthScreen(configuration = configuration, ...)
@@ -272,7 +285,10 @@ FirebaseAuth.getInstance().addAuthStateListener(firebaseAuth -> {
 @Composable
 fun AuthGate() {
     val authUI = remember { FirebaseAuthUI.getInstance() }
-    val authState by authUI.authStateFlow().collectAsState(initial = AuthState.Idle)
+    // remember the flow: authStateFlow() builds a new one per call, and without this every
+    // recomposition would restart collection and re-register the underlying Firebase listener.
+    val authStateFlow = remember(authUI) { authUI.authStateFlow() }
+    val authState by authStateFlow.collectAsState(initial = AuthState.Idle)
 
     when (authState) {
         is AuthState.Success -> {
@@ -360,30 +376,33 @@ If you have an existing Activity-based app and want to keep using Activities:
 class AuthActivity : ComponentActivity() {
     private lateinit var controller: AuthFlowController
 
+    private val authLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val authUI = FirebaseAuthUI.getInstance()
         val configuration = authUIConfiguration {
-            providers = listOf(AuthProvider.Email(), AuthProvider.Google())
+            context = applicationContext
+            providers {
+                provider(AuthProvider.Email())
+                provider(AuthProvider.Google())
+            }
         }
 
         controller = authUI.createAuthFlow(configuration)
 
-        lifecycleScope.launch {
-            val state = controller.start()
-            when (state) {
-                is AuthState.Success -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                }
-                is AuthState.Error -> {
-                    // Handle error
-                }
-                else -> {
-                    // Handle other states
-                }
-            }
+        // Only on a fresh start. Launching unguarded would start a second flow every time the
+        // Activity is recreated — a rotation, or a restore after process death.
+        if (savedInstanceState == null) {
+            authLauncher.launch(controller.createIntent(this))
         }
     }
 
@@ -393,6 +412,12 @@ class AuthActivity : ComponentActivity() {
     }
 }
 ```
+
+The flow runs in its own Activity, so the outcome arrives as an Activity result rather than a
+return value. That result only says the flow ended, so to follow it in detail — loading, errors,
+MFA — collect `controller.authStateFlow` alongside the launcher. Dispose the controller in
+`onDestroy`: a disposed controller cannot be reused, and disposal is the contract its other
+members are documented against.
 
 ## Common Issues and Solutions
 
@@ -405,7 +430,9 @@ import com.firebase.ui.auth.configuration.authUIConfiguration
 
 ### Issue: "ActivityResultLauncher is deprecated"
 
-**Solution:** In 10.x, you no longer need `ActivityResultLauncher`. Use direct callbacks with `FirebaseAuthScreen` or `AuthFlowController`.
+**Solution:** Compose `FirebaseAuthScreen` and use its callbacks — no `ActivityResultLauncher`
+needed. The exception is the Activity-based route above: `AuthFlowController` hands you an Intent,
+so that one still launches through a result contract.
 
 ### Issue: "How do I customize the UI?"
 
@@ -467,6 +494,8 @@ A back-stack key must be `@Serializable` to survive process death, so add the
 **Solution:** Convert XML themes to Kotlin code using `AuthUITheme`:
 ```kotlin
 val configuration = authUIConfiguration {
+    context = applicationContext
+    providers { provider(AuthProvider.Email()) }
     theme = AuthUITheme(
         colorScheme = lightColorScheme(
             primary = Color(0xFF6200EE),
@@ -488,14 +517,15 @@ val configuration = authUIConfiguration {
 
 ## Checklist
 
-- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta01`
+- [ ] Updated dependency to `firebase-ui-auth:10.0.0-beta04`
 - [ ] Migrated to Jetpack Compose
 - [ ] Converted Activities to ComponentActivities with `setContent {}`
 - [ ] Replaced `createSignInIntentBuilder()` with `authUIConfiguration {}`
 - [ ] Updated all provider configurations
 - [ ] Converted XML themes to `AuthUITheme`
 - [ ] Updated error handling from result codes to exceptions
-- [ ] Removed `ActivityResultLauncher` code
+- [ ] Replaced `ActivityResultLauncher` with `FirebaseAuthScreen` callbacks (Activity-based apps
+      keep one, for `AuthFlowController.createIntent()`)
 - [ ] Updated sign-out to use suspend functions
 - [ ] Updated account deletion to use suspend functions
 - [ ] Tested all authentication flows
