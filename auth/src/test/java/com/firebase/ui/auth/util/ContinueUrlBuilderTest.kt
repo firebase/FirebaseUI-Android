@@ -111,6 +111,10 @@ class ContinueUrlBuilderTest {
         // Interpolated raw, this value would split the query and open a fragment.
         assertThat(url).doesNotContain(hostile)
 
+        // Pin the encoded form on the wire, not just that it survives a round trip.
+        assertThat(url)
+            .isEqualTo("https://example.com/finish?demo=full&ui_auid=a%26b%3Dc%20d%23e")
+
         val uri = url.toUri()
         assertThat(uri.getQueryParameter("ui_auid")).isEqualTo(hostile)
         assertThat(uri.getQueryParameter("demo")).isEqualTo("full")
