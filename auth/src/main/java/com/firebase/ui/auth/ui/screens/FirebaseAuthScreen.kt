@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
@@ -181,6 +182,14 @@ fun FirebaseAuthScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val stringProvider = remember(context) { DefaultAuthUIStringProvider(context) }
+
+    // The reauth effects below run outside composition, so they cannot call stringResource
+    // themselves.
+    val reauthInterruptedMessage = stringResource(R.string.fui_error_reauth_interrupted)
+    val reauthNoLinkedProvidersMessage =
+        stringResource(R.string.fui_error_reauth_no_linked_providers)
+    val reauthIncompleteMessage = stringResource(R.string.fui_error_reauth_incomplete)
+    val reauthRetryingMessage = stringResource(R.string.fui_loading_reauth_retrying)
 
     val observedAuthState by remember(authUI) { authUI.authStateFlow() }
         .collectAsState(initial = null as AuthState?)
@@ -764,7 +773,7 @@ fun FirebaseAuthScreen(
                 authUI.updateAuthState(
                     AuthState.Error(
                         AuthException.UnknownException(
-                            context.getString(R.string.fui_error_reauth_interrupted)
+                            reauthInterruptedMessage
                         )
                     )
                 )
@@ -781,7 +790,7 @@ fun FirebaseAuthScreen(
                         required,
                         AuthState.Error(
                             AuthException.UnknownException(
-                                context.getString(R.string.fui_error_reauth_no_linked_providers)
+                                reauthNoLinkedProvidersMessage
                             )
                         ),
                     )
@@ -793,7 +802,7 @@ fun FirebaseAuthScreen(
                         required,
                         AuthState.Error(
                             AuthException.UnknownException(
-                                context.getString(R.string.fui_error_reauth_interrupted)
+                                reauthInterruptedMessage
                             )
                         ),
                     )
@@ -839,7 +848,7 @@ fun FirebaseAuthScreen(
                             AuthState.Reauthentication.AttemptFailed(
                                 request,
                                 AuthException.UnknownException(
-                                    context.getString(R.string.fui_error_reauth_incomplete)
+                                    reauthIncompleteMessage
                                 ),
                             )
                         }
@@ -848,7 +857,7 @@ fun FirebaseAuthScreen(
                     // A Success here would claim the pending operation had already succeeded.
                     val terminal = if (request.hasPendingOperation) {
                         AuthState.Loading(
-                            context.getString(R.string.fui_loading_reauth_retrying)
+                            reauthRetryingMessage
                         )
                     } else {
                         AuthState.Success(result = null, user = request.user)
