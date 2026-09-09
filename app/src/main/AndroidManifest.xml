@@ -14,7 +14,6 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.firebaseui.android.demo.MainActivity"
-            android:label="@string/app_name"
             android:exported="true"
             android:theme="@style/Theme.FirebaseUIAndroid">
             <intent-filter>
@@ -22,7 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter android:autoVerify="true">
+            <!--
+                The host is a placeholder the demo's own Firebase project fills in, so lint
+                can neither read it as a domain nor resolve it over the network.
+            -->
+            <intent-filter
+                android:autoVerify="true"
+                tools:ignore="AppLinkUrlError,AppLinksAutoVerify">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

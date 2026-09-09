@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
+import com.firebaseui.android.demo.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -129,7 +130,8 @@ class ScoreAdapter(options: FirestorePagingOptions<ScoreItem>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ScoreViewHolder(parent)
 
     override fun onBindViewHolder(holder: ScoreViewHolder, position: Int, model: ScoreItem) {
-        (holder.itemView as TextView).text = "${model.name}  —  score: ${model.score}"
+        val row = holder.itemView as TextView
+        row.text = row.context.getString(R.string.demo_score_row, model.name, model.score)
     }
 }
 
