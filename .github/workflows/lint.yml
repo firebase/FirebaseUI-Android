@@ -31,8 +31,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # lintAll gates :proguard-tests, which applies the google-services plugin and
-      # will not configure without this file. Mirrors what scripts/build.sh copies.
+      # lintAll gates :app and :proguard-tests, both of which apply the google-services
+      # plugin and will not configure without this file. Mirrors what build.sh copies.
       - name: Copy google-services.json
         run: |
           cp library/google-services.json app/google-services.json

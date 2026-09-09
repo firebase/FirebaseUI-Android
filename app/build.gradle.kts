@@ -39,6 +39,38 @@ android {
             }
         }
     }
+
+    lint {
+        // Common lint options across all modules
+        disable += mutableSetOf(
+            "IconExpectedSize",
+            "InvalidPackage", // Firestore uses GRPC which makes lint mad
+            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
+            "SelectableText", "SyntheticAccessor" // We almost never care about this
+        )
+
+        // Module specific
+        disable += mutableSetOf(
+            // Reads the root wrapper, but only the application module analyses it, so it
+            // cannot sit in the common set above. For reproducible builds.
+            "AndroidGradlePluginVersion",
+            // The demos log their auth callbacks unconditionally on purpose — watching
+            // logcat is how you see one fire. Same call as :auth.
+            "LogConditional",
+            // Glide's KSP processor does not generate GlideApp, which the storage demo and
+            // storage/README.md are both written around. Migration tracked separately.
+            "KaptUsageInsteadOfKsp",
+            // A themed icon needs a flat silhouette drawn for the purpose. The only
+            // candidate here is ic_launcher_foreground, whose opaque region is a solid
+            // plate, so it tints to a featureless block — worse than no monochrome layer.
+            "MonochromeLauncherIcon"
+        )
+
+        checkAllWarnings = true
+        warningsAsErrors = true
+        abortOnError = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

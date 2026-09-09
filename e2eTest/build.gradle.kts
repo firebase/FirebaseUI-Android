@@ -14,6 +14,20 @@ android {
         minSdk = Config.SdkVersions.min
     }
 
+    lint {
+        // Common lint options across all modules
+        disable += mutableSetOf(
+            "IconExpectedSize",
+            "InvalidPackage", // Firestore uses GRPC which makes lint mad
+            "NewerVersionAvailable", "GradleDependency", // For reproducible builds
+            "SelectableText", "SyntheticAccessor" // We almost never care about this
+        )
+
+        checkAllWarnings = true
+        warningsAsErrors = true
+        abortOnError = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

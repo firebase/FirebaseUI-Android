@@ -40,9 +40,11 @@ tasks.register("lintAll") {
     description = "Runs Android Lint for every module that configures a lint { } block."
 
     dependsOn(
+        ":app:lintDebug",
         ":auth:lintDebug",
         ":common:lintDebug",
         ":database:lintDebug",
+        ":e2eTest:lintDebug",
         ":firestore:lintDebug",
         ":library:lintDebug",
         ":storage:lintDebug",

@@ -62,9 +62,9 @@ Instrumented `androidTest` (database/firestore) is **not** in CI or the agent al
 ./gradlew lintAll      # Android Lint — reads Kotlin and resources
 ```
 
-`checkstyle` is scoped `include("**/*.java")` from the root `build.gradle.kts`, so on a Kotlin-only diff it inspects **zero files and exits 0**. A green checkstyle is not evidence for a change in `:auth`, `:app` or `:e2eTest` — [Kotlin blind spot](agent-command-policy.md#checkstyle-kotlin-blind-spot).
+`checkstyle` is scoped `include("**/*.java")` from the root `build.gradle.kts`, so on a Kotlin-only diff it inspects **zero files and exits 0**. A green checkstyle is not evidence for a change in `:auth`, `:app` or `:e2eTest`; `lintAll` is what covers those — [Kotlin blind spot](agent-command-policy.md#checkstyle-kotlin-blind-spot).
 
-`lintAll` runs Android Lint for the 8 modules that configure a `lint { }` block, each at `checkAllWarnings = true`, `warningsAsErrors = true` and `abortOnError = true` — so any new finding fails the build. It runs in its own workflow ([lint.yml](../ci-workflows/android.md#lint-workflow)), **not** in `build.sh`, so you must run it separately — a green `build.sh` says nothing about lint. `:app` and `:e2eTest` are not yet gated (CPRN-433). Config: each module's `lint { }` block; `library/quality/checkstyle.xml` for checkstyle.
+`lintAll` runs Android Lint for all 10 modules that configure a `lint { }` block, each at `checkAllWarnings = true`, `warningsAsErrors = true` and `abortOnError = true` — so any new finding fails the build. It runs in its own workflow ([lint.yml](../ci-workflows/android.md#lint-workflow)), **not** in `build.sh`, so you must run it separately — a green `build.sh` says nothing about lint. Config: each module's `lint { }` block; `library/quality/checkstyle.xml` for checkstyle.
 
 `auth/lint-baseline.xml` suppresses 180 pre-existing findings. **Never** run `updateLintBaseline` to clear a failure your change caused — [baseline trap](agent-command-policy.md#lint-baseline-trap).
 
