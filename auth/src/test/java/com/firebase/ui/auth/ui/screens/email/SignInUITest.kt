@@ -524,6 +524,49 @@ class SignInUITest {
             .assertExists()
     }
 
+    /**
+     * The negative of the control above: the toggle is gated on the provider's own
+     * `isEmailLinkSignInEnabled` as well as on reauthentication mode, so leaving it off keeps the
+     * affordance hidden in an ordinary sign-in too.
+     */
+    @Test
+    fun `email link sign-in is not offered when the provider disables it`() {
+        val configuration = authUIConfiguration {
+            context = applicationContext
+            providers { provider(emailProvider(isEmailLinkSignInEnabled = false)) }
+        }
+
+        setStatefulSignInUIContent(configuration, initialEmail = "")
+
+        composeTestRule.onNodeWithText(stringProvider.troubleSigningIn).assertExists()
+        composeTestRule
+            .onNode(hasText(stringProvider.signInWithEmailLink.uppercase()) and hasClickAction())
+            .assertDoesNotExist()
+    }
+
+    /**
+     * [SignInUI] is public API and [AuthUIConfiguration] has a public constructor whose `providers`
+     * defaults to empty, so a caller really can reach this. Reading
+     * `providers.filterIsInstance<AuthProvider.Email>().first()` unconditionally at the top of the
+     * composable threw `NoSuchElementException` here; the offer helpers short-circuit instead, and
+     * both email affordances simply go unoffered.
+     */
+    @Test
+    fun `no email provider hides sign up and email link sign-in instead of throwing`() {
+        setStatefulSignInUIContent(
+            AuthUIConfiguration(context = applicationContext),
+            initialEmail = "",
+        )
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag(FirebaseAuthTestTags.SignIn.SIGN_IN_BUTTON).assertExists()
+        composeTestRule.onNode(hasText(stringProvider.signupPageTitle.uppercase()) and hasClickAction())
+            .assertDoesNotExist()
+        composeTestRule
+            .onNode(hasText(stringProvider.signInWithEmailLink.uppercase()) and hasClickAction())
+            .assertDoesNotExist()
+    }
+
     /** The notice is specific to reauthentication and must not appear in a normal sign-in. */
     @Test
     fun `no password requirement notice outside reauthentication`() {
